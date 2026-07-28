@@ -1,0 +1,90 @@
+---
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableGroupSeparator from "./DsTableGroupSeparator.astro";
+import DsTableRow from "./DsTableRow.astro";
+import DsTableRowGroup from "./DsTableRowGroup.astro";
+
+type AttributeRow = {
+  property: string;
+  token: string;
+  valueRem: string;
+  valuePx: string;
+};
+
+type AttributeGroup = {
+  name: string;
+  attribute: string;
+  value: string;
+  rows: AttributeRow[];
+};
+
+type Props = {
+  groups: AttributeGroup[];
+  size?: "tiny";
+};
+
+const { groups, size = "tiny" } = Astro.props;
+const columns =
+  "minmax(13rem, 0.22fr) minmax(10rem, 0.16fr) minmax(18rem, 0.3fr) minmax(9rem, 0.16fr) minmax(9rem, 0.16fr)";
+---
+
+<DsTableFrame
+  class="ds-attribute-block"
+  columns={columns}
+  label="Component size attributes"
+  minWidth="58rem"
+  size={size}
+>
+  <DsTableRow variant="header">
+    <DsTableCell role="columnheader" variant="header">Attribute</DsTableCell>
+    <DsTableCell role="columnheader" variant="header">Property</DsTableCell>
+    <DsTableCell role="columnheader" variant="header">Token</DsTableCell>
+    <DsTableCell role="columnheader" variant="header">Value (REM)</DsTableCell>
+    <DsTableCell role="columnheader" variant="header">Value (PX)</DsTableCell>
+  </DsTableRow>
+
+  {
+    groups.map((group, groupIndex) => (
+      <>
+        <DsTableRowGroup class="ds-attribute-block__group">
+          <DsTableCopyCell
+            gridColumn={1}
+            gridRow={`1 / span ${group.rows.length}`}
+            label={`Copy ${group.attribute} ${group.value}`}
+            role="rowheader"
+            value={`${group.attribute}="${group.value}"`}
+          />
+          {
+            group.rows.map((row, rowIndex) => (
+              <>
+                <DsTableCell gridColumn={2} gridRow={rowIndex + 1} role="cell">
+                  {row.property}
+                </DsTableCell>
+                <DsTableCell gridColumn={3} gridRow={rowIndex + 1} role="cell">
+                  <code>{row.token}</code>
+                </DsTableCell>
+                <DsTableCell gridColumn={4} gridRow={rowIndex + 1} role="cell" tone="secondary">
+                  {row.valueRem}
+                </DsTableCell>
+                <DsTableCell gridColumn={5} gridRow={rowIndex + 1} role="cell" tone="secondary">
+                  {row.valuePx}
+                </DsTableCell>
+              </>
+            ))
+          }
+        </DsTableRowGroup>
+        {
+          groupIndex < groups.length - 1 && <DsTableGroupSeparator />
+        }
+      </>
+    ))
+  }
+</DsTableFrame>
+
+<style>
+  :global(.ds-attribute-block__group) {
+    grid-auto-flow: row;
+  }
+</style>

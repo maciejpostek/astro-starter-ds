@@ -1,0 +1,348 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "../../../atoms/actions/Button.astro";
+import Eyebrow from "../../../atoms/text/Eyebrow.astro";
+import ButtonGroup from "../../../molecules/actions/ButtonGroup.astro";
+import CalloutCard from "../../cards/CalloutCard.astro";
+import type { MediaRatioValue } from "../../../atoms/media/types";
+import type { PanelPatternVariant } from "../../../../data/panel-patterns";
+
+export type CtaSectionVariant =
+  "banner" | "card" | "split" | "full-bleed";
+
+export interface CtaSectionAction {
+  label: string;
+  href: string;
+  variant?: "primary" | "secondary" | "link";
+}
+
+export interface CtaSectionVisual {
+  label?: string;
+  ratio?: MediaRatioValue;
+  variant?: PanelPatternVariant;
+}
+
+export interface CtaSectionContent {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  actions: CtaSectionAction[];
+  visual?: CtaSectionVisual;
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: CtaSectionContent;
+  variant: CtaSectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "CtaSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const safeHrefPattern = /^(?:https?:\/\/|\/(?!\/)|#(?!$)|mailto:|tel:)/i;
+const supportedVariants: CtaSectionVariant[] = [
+  "banner",
+  "card",
+  "split",
+  "full-bleed",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const supportedActionVariants = ["primary", "secondary", "link"] as const;
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedEyebrow = content?.eyebrow?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "CtaSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("CtaSection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("CtaSection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "CtaSection description must be non-empty when provided.",
+  );
+}
+if (content.eyebrow !== undefined && !normalizedEyebrow) {
+  throw new Error("CtaSection eyebrow must be non-empty when provided.");
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `CtaSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `CtaSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error("CtaSection ariaLabel must be non-empty when provided.");
+}
+if (!normalizedComponentName) {
+  throw new Error("CtaSection requires a non-empty componentName.");
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("CtaSection does not expose public slots.");
+}
+
+if (!Array.isArray(content.actions) || content.actions.length < 1) {
+  throw new Error("CtaSection requires at least one action.");
+}
+if (content.actions.length > 2) {
+  throw new Error("CtaSection supports at most two actions.");
+}
+
+const actionDestinations = new Set<string>();
+const normalizedActions = content.actions.map((action, index) => {
+  const label = action?.label?.trim();
+  const href = action?.href?.trim();
+  const actionVariant =
+    action?.variant ?? (index === 0 ? "primary" : "secondary");
+  if (!label || !href || !safeHrefPattern.test(href)) {
+    throw new Error(
+      `CtaSection action ${index + 1} requires a non-empty label and safe supplied href.`,
+    );
+  }
+  if (!supportedActionVariants.includes(actionVariant)) {
+    throw new Error(
+      `CtaSection action ${index + 1} received an unsupported variant.`,
+    );
+  }
+  if (actionDestinations.has(href)) {
+    throw new Error(
+      `CtaSection contains duplicate action destination "${href}".`,
+    );
+  }
+  actionDestinations.add(href);
+  return { label, href, variant: actionVariant };
+});
+
+if (
+  normalizedActions.filter((action) => action.variant === "primary").length > 1
+) {
+  throw new Error("CtaSection supports at most one primary action.");
+}
+
+const usesCalloutCard = variant === "split";
+if (usesCalloutCard) {
+  if (!normalizedEyebrow) {
+    throw new Error("CtaSection Split requires a non-empty eyebrow.");
+  }
+  if (content.description !== undefined) {
+    throw new Error(
+      "CtaSection Split rejects description because CalloutCard does not expose that content role.",
+    );
+  }
+  if (normalizedActions.length !== 1) {
+    throw new Error("CtaSection Split requires exactly one action.");
+  }
+} else {
+  if (!normalizedDescription) {
+    throw new Error(
+      "CtaSection Banner, Card, and Full Bleed require a non-empty description.",
+    );
+  }
+  if (content.visual !== undefined) {
+    throw new Error(
+      "CtaSection visual content is supported only by Split.",
+    );
+  }
+}
+
+const normalizedVisual = usesCalloutCard
+  ? {
+      label: content.visual?.label?.trim(),
+      ratio: content.visual?.ratio,
+      variant: content.visual?.variant,
+    }
+  : undefined;
+if (
+  content.visual?.label !== undefined &&
+  !normalizedVisual?.label
+) {
+  throw new Error(
+    "CtaSection visual label must be non-empty when provided.",
+  );
+}
+
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const calloutHeadingLevel = `h${headingLevel}` as "h2" | "h3";
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "cta-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="conversion"
+  data-section-type="call-to-action"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container cta-section__container" data-container="main">
+    {
+      usesCalloutCard ? (
+        <CalloutCard
+          eyebrow={normalizedEyebrow!}
+          title={normalizedTitle}
+          action={normalizedActions[0].label}
+          href={normalizedActions[0].href}
+          visualLabel={normalizedVisual?.label}
+          visualRatio={normalizedVisual?.ratio}
+          visualVariant={normalizedVisual?.variant}
+          headingLevel={calloutHeadingLevel}
+          componentName={`${normalizedComponentName}.CalloutCard`}
+        />
+      ) : (
+        <div class="cta-section__content">
+          <header class="cta-section__header">
+            {normalizedEyebrow && <Eyebrow text={normalizedEyebrow} />}
+            <Heading>{normalizedTitle}</Heading>
+            <p>{normalizedDescription}</p>
+          </header>
+          <ButtonGroup data-cta-actions>
+            {normalizedActions.map((action) => (
+              <Button href={action.href} variant={action.variant}>
+                {action.label}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .cta-section,
+  .cta-section__container,
+  .cta-section__content,
+  .cta-section__header {
+    min-width: 0;
+  }
+
+  .cta-section__content,
+  .cta-section__header {
+    display: grid;
+  }
+
+  .cta-section__content {
+    gap: var(--gap-large);
+  }
+
+  .cta-section__header {
+    max-width: 48rem;
+    gap: var(--gap-medium);
+  }
+
+  .cta-section__header :is(h2, h3),
+  .cta-section__header p {
+    margin: 0;
+  }
+
+  .cta-section__header p {
+    color: var(--color-text-secondary);
+  }
+
+  .cta-section[data-section-variant="banner"] .cta-section__content {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .cta-section[data-section-variant="card"] .cta-section__content {
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+    padding: var(--component-padding-xlarge);
+  }
+
+  .cta-section[data-section-variant="full-bleed"] {
+    background: var(--color-background-inverse);
+  }
+
+  .cta-section[data-section-variant="full-bleed"]
+    .cta-section__content {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .cta-section[data-section-variant="full-bleed"]
+    .cta-section__header {
+    justify-items: center;
+  }
+
+  .cta-section[data-section-variant="full-bleed"]
+    .cta-section__header :is(h2, h3) {
+    color: var(--color-text-inverse);
+  }
+
+  .cta-section[data-section-variant="full-bleed"]
+    .cta-section__header p {
+    color: var(--color-text-tertiary);
+  }
+
+  .cta-section[data-section-variant="full-bleed"]
+    :global(.eyebrow) {
+    color: var(--color-text-accent);
+  }
+
+  .cta-section :global(.button-group),
+  .cta-section :global(.callout-card) {
+    max-width: 100%;
+  }
+
+  @media (width < 64rem) {
+    .cta-section[data-section-variant="banner"] .cta-section__content {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (width < 40rem) {
+    .cta-section__content {
+      gap: var(--gap-medium);
+    }
+
+    .cta-section[data-section-variant="card"] .cta-section__content {
+      padding: var(--component-padding-medium);
+    }
+
+    .cta-section :global(.button-group) {
+      width: 100%;
+    }
+
+    .cta-section :global(.button-group > .button) {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+  }
+</style>

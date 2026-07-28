@@ -1,0 +1,96 @@
+{
+  "version": "0.1.0",
+  "description": "Canonical node ontology for the Astro Design System architecture graph.",
+  "types": [
+    {
+      "id": "actor",
+      "description": "A person or autonomous agent that initiates or performs work.",
+      "d2Shape": "person",
+      "color": "#2563eb"
+    },
+    {
+      "id": "input",
+      "description": "Supplied evidence, context, or parameters consumed by a workflow.",
+      "d2Shape": "parallelogram",
+      "color": "#0891b2"
+    },
+    {
+      "id": "prompt",
+      "description": "A user instruction interpreted by the agentic routing layer.",
+      "d2Shape": "parallelogram",
+      "color": "#0284c7"
+    },
+    {
+      "id": "router",
+      "description": "A routing mechanism that selects rules, modes, or downstream processes.",
+      "d2Shape": "hexagon",
+      "color": "#7c3aed"
+    },
+    {
+      "id": "decision-gate",
+      "description": "A condition that selects, permits, pauses, or blocks a path.",
+      "d2Shape": "diamond",
+      "color": "#c026d3"
+    },
+    {
+      "id": "process",
+      "description": "An executable activity that reads, transforms, validates, or coordinates state.",
+      "d2Shape": "rectangle",
+      "color": "#4f46e5"
+    },
+    {
+      "id": "source-of-truth",
+      "description": "The primary authority for one explicitly named concern.",
+      "d2Shape": "cylinder",
+      "color": "#059669"
+    },
+    {
+      "id": "artifact",
+      "description": "A durable file or generated projection used by people or automation.",
+      "d2Shape": "page",
+      "color": "#0d9488"
+    },
+    {
+      "id": "component",
+      "description": "A reusable UI component or an architectural grouping of components.",
+      "d2Shape": "rectangle",
+      "color": "#16a34a"
+    },
+    {
+      "id": "foundation",
+      "description": "A reusable value, token, layout, typography, motion, or elevation foundation.",
+      "d2Shape": "rectangle",
+      "color": "#65a30d"
+    },
+    {
+      "id": "validator",
+      "description": "A deterministic check that can accept or reject architecture or implementation state.",
+      "d2Shape": "hexagon",
+      "color": "#d97706"
+    },
+    {
+      "id": "human-approval",
+      "description": "A non-automated checkpoint requiring an explicit human decision.",
+      "d2Shape": "diamond",
+      "color": "#ea580c"
+    },
+    {
+      "id": "external-system",
+      "description": "A tool or system outside the repository that participates in a workflow.",
+      "d2Shape": "cloud",
+      "color": "#475569"
+    },
+    {
+      "id": "output",
+      "description": "A terminal, reader-facing, runtime, or published workflow result.",
+      "d2Shape": "parallelogram",
+      "color": "#15803d"
+    },
+    {
+      "id": "state",
+      "description": "A named current or target condition used to separate observations from proposals.",
+      "d2Shape": "oval",
+      "color": "#64748b"
+    }
+  ]
+}

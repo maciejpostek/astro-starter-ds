@@ -1,0 +1,30 @@
+---
+interface Props {
+  timezone: string;
+  label?: string;
+  componentName?: string;
+}
+
+const { timezone, label = "Timezone", componentName = "TimezoneLabel" } = Astro.props;
+const hasTime = Astro.slots.has("time");
+---
+
+<span
+  class="timezone-label"
+  data-component-name={componentName}
+  data-component-family="data-display"
+  data-data-display-state="default"
+  data-preview-target
+>
+  <span class="timezone-label__label">{label}</span>
+  {hasTime && <span class="timezone-label__time"><slot name="time" /></span>}
+  {hasTime && <span class="timezone-label__divider" aria-hidden="true"></span>}
+  <span class="timezone-label__zone">{timezone}</span>
+</span>
+
+<style>
+  .timezone-label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--gap-small); color: var(--color-text-secondary); font-size: var(--font-size-body-small); line-height: var(--line-height-normal); font-variant-numeric: tabular-nums; }
+  .timezone-label__label { color: var(--label-metric-text-default); font-family: var(--font-family-mono); font-size: var(--font-size-body-tiny); text-transform: var(--text-transform-uppercase); }
+  .timezone-label__time { display: inline-flex; min-width: 3.4rem; }
+  .timezone-label__divider { width: var(--border-width-default); height: var(--size-12); background: currentColor; }
+</style>

@@ -1,0 +1,31 @@
+/*
+ * Design system token entrypoint.
+ * BaseLayout imports this file before global.css.
+ */
+
+/* Reference values
+ * Raw color and dimension scales.
+ */
+@import "./color-primitives.css";
+@import "./size-primitives.css";
+
+/* Global semantics and foundations
+ * Role-based colors, spacing, typography and site layout.
+ */
+@import "./color-semantic.css";
+@import "./size-semantic.css";
+@import "./typography-foundations.css";
+@import "./typography-semantic.css";
+@import "./typography-styles.css";
+@import "./layout-foundations.css";
+@import "./layout-semantic.css";
+@import "./layout-styles.css";
+@import "./motion-foundations.css";
+@import "./elevation-foundations.css";
+
+/* Component contracts
+ * Component-specific colors and shared component size profiles.
+ */
+@import "./color-components.css";
+@import "./component-sizes.css";
+@import "./design-system-components.css";

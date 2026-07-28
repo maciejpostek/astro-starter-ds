@@ -1,0 +1,183 @@
+---
+import Button from "../../atoms/actions/Button.astro";
+import Label from "../../atoms/forms/Label.astro";
+
+interface Item {
+  title: string;
+  description: string;
+}
+
+type HeadingLevel = "h2" | "h3" | "h4" | "h5" | "h6";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  items: Item[];
+  action: string;
+  href: string;
+  headingLevel?: HeadingLevel;
+  componentName?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  description,
+  items,
+  action,
+  href,
+  headingLevel = "h2",
+  componentName = "UiKitCard"
+} = Astro.props;
+
+const resolvedEyebrow = eyebrow.trim();
+const resolvedTitle = title.trim();
+const resolvedDescription = description.trim();
+const resolvedItems = items.map((item) => ({
+  title: item.title.trim(),
+  description: item.description.trim()
+}));
+const resolvedAction = action.trim();
+const resolvedHref = href.trim();
+const resolvedComponentName = componentName.trim();
+const HeadingTag = headingLevel;
+
+if (
+  !resolvedEyebrow ||
+  !resolvedTitle ||
+  !resolvedDescription ||
+  !resolvedAction
+) {
+  throw new Error(
+    "UiKitCard requires non-empty eyebrow, title, description, and action values."
+  );
+}
+
+if (!Array.isArray(items) || resolvedItems.length === 0) {
+  throw new Error("UiKitCard requires at least one item.");
+}
+
+if (resolvedItems.some((item) => !item.title || !item.description)) {
+  throw new Error("UiKitCard items require non-empty title and description values.");
+}
+
+if (!resolvedHref || resolvedHref === "#") {
+  throw new Error("UiKitCard requires a real non-placeholder href.");
+}
+
+if (!resolvedComponentName) {
+  throw new Error("UiKitCard requires a non-empty componentName.");
+}
+---
+
+<article
+  class="ui-kit-card"
+  data-component-name={resolvedComponentName}
+  data-component-family="cards"
+  data-card-state="default"
+  data-preview-target
+>
+  <div class="ui-kit-card__main">
+    <Label variant="metric">{resolvedEyebrow}</Label>
+    <HeadingTag class="ui-kit-card__title">{resolvedTitle}</HeadingTag>
+    <p>{resolvedDescription}</p>
+    <Button href={resolvedHref}>{resolvedAction}</Button>
+  </div>
+  <div class="ui-kit-card__items">
+    {
+      resolvedItems.map((item) => (
+        <div class="ui-kit-card__item">
+          <strong>{item.title}</strong>
+          <p>{item.description}</p>
+        </div>
+      ))
+    }
+  </div>
+</article>
+
+<style>
+  .ui-kit-card {
+    display: grid;
+    min-width: 0;
+    min-height:
+      calc(var(--size-320) + var(--size-192) + var(--size-8));
+    grid-template-columns: 1fr 1fr;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-small);
+    overflow: hidden;
+  }
+
+  .ui-kit-card__main {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-large);
+  }
+
+  .ui-kit-card__title {
+    max-width:
+      calc(var(--size-320) + var(--size-256) + var(--size-40) + var(--size-4));
+    margin: var(--space-media-content) 0 0;
+    color: var(--color-text-primary);
+    font-family: var(--text-style-heading-h4-font-family);
+    font-size: var(--text-style-heading-h4-font-size);
+    font-weight: var(--text-style-heading-h4-font-weight);
+    line-height: var(--text-style-heading-h4-line-height);
+    letter-spacing: var(--text-style-heading-h4-letter-spacing);
+  }
+
+  .ui-kit-card__main > p {
+    max-width:
+      calc(var(--size-320) + var(--size-192) + var(--size-24) + var(--size-4));
+    margin: var(--space-media-content) 0 var(--space-large);
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .ui-kit-card__items {
+    display: grid;
+    grid-auto-rows: minmax(var(--size-96), 1fr);
+    background: var(--color-background-surface);
+  }
+
+  .ui-kit-card__item {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-large);
+  }
+
+  .ui-kit-card__item:last-child {
+    border-bottom: 0;
+  }
+
+  .ui-kit-card__items strong {
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  .ui-kit-card__items p {
+    margin: var(--space-tiny) 0 0;
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+    overflow-wrap: anywhere;
+  }
+
+  @media (width < 64rem) {
+    .ui-kit-card {
+      grid-template-columns: 1fr;
+    }
+
+    .ui-kit-card__main {
+      border-right: 0;
+      border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    }
+  }
+</style>

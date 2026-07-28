@@ -1,0 +1,393 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Eyebrow from "../../../atoms/text/Eyebrow.astro";
+import PanelPatternVisualSystem from "../../visual/PanelPatternVisualSystem.astro";
+
+export type ProcessSectionVariant = "numbered-steps" | "cards" | "timeline" | "sticky" | "workflow-diagram";
+
+export interface ProcessSectionStep {
+  id: string;
+  title: string;
+  description: string;
+  eyebrow?: string;
+}
+
+export interface ProcessSectionContent {
+  title: string;
+  description?: string;
+  steps: ProcessSectionStep[];
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: ProcessSectionContent;
+  variant: ProcessSectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "ProcessSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const supportedVariants: ProcessSectionVariant[] = [
+  "numbered-steps",
+  "cards",
+  "timeline",
+  "sticky",
+  "workflow-diagram",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "ProcessSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("ProcessSection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("ProcessSection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "ProcessSection description must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `ProcessSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `ProcessSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error("ProcessSection ariaLabel must be non-empty when provided.");
+}
+if (!normalizedComponentName) {
+  throw new Error("ProcessSection requires a non-empty componentName.");
+}
+if (!Array.isArray(content.steps) || content.steps.length < 2) {
+  throw new Error("ProcessSection requires at least two process steps.");
+}
+if (content.steps.length > 6) {
+  throw new Error("ProcessSection supports at most six process steps.");
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("ProcessSection does not expose public slots.");
+}
+
+const stepIds = new Set<string>();
+const normalizedSteps = content.steps.map((step, index) => {
+  const stepId = step?.id?.trim();
+  const title = step?.title?.trim();
+  const description = step?.description?.trim();
+  const eyebrow = step?.eyebrow?.trim();
+
+  if (!stepId || !selectorSafeIdPattern.test(stepId)) {
+    throw new Error(
+      `ProcessSection step ${index + 1} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (stepIds.has(stepId)) {
+    throw new Error(`ProcessSection contains duplicate step id "${stepId}".`);
+  }
+  if (!title || !description) {
+    throw new Error(
+      `ProcessSection step "${stepId}" requires non-empty title and description values.`,
+    );
+  }
+  if (step.eyebrow !== undefined && !eyebrow) {
+    throw new Error(
+      `ProcessSection step "${stepId}" eyebrow must be non-empty when provided.`,
+    );
+  }
+
+  stepIds.add(stepId);
+  return {
+    id: stepId,
+    title,
+    description,
+    eyebrow,
+    ordinal: String(index + 1).padStart(2, "0"),
+  };
+});
+
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const StepHeading = `h${headingLevel + 1}` as "h3" | "h4";
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "process-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="how-it-works-use-cases"
+  data-section-type="process"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container process-section__container" data-container="main">
+    <header class="process-section__header">
+      <Heading>{normalizedTitle}</Heading>
+      {normalizedDescription && <p>{normalizedDescription}</p>}
+    </header>
+
+    {
+      variant === "workflow-diagram" && (
+        <div class="process-section__diagram">
+          <PanelPatternVisualSystem
+            variant="heroPrimary"
+            label={`${normalizedTitle} process diagram`}
+            componentName={`${normalizedComponentName}.Diagram`}
+          />
+        </div>
+      )
+    }
+
+    <ol class="process-section__steps">
+      {
+        normalizedSteps.map((step) => (
+          <li
+            id={`${normalizedId}-${step.id}`}
+            class="process-section__step"
+            data-process-step={step.id}
+          >
+            <span class="process-section__ordinal" aria-hidden="true">
+              {step.ordinal}
+            </span>
+            <div class="process-section__step-content">
+              {step.eyebrow && <Eyebrow text={step.eyebrow} />}
+              <StepHeading>{step.title}</StepHeading>
+              <p>{step.description}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process-section,
+  .process-section__container,
+  .process-section__header,
+  .process-section__diagram,
+  .process-section__steps,
+  .process-section__step,
+  .process-section__step-content {
+    min-width: 0;
+  }
+
+  .process-section__container,
+  .process-section__header,
+  .process-section__step,
+  .process-section__step-content {
+    display: grid;
+  }
+
+  .process-section__container {
+    gap: var(--gap-extra-large);
+  }
+
+  .process-section__header {
+    max-width: var(--content-max-width);
+    gap: var(--gap-small);
+  }
+
+  .process-section__header :is(h2, h3),
+  .process-section__header p,
+  .process-section__step-content :is(h3, h4),
+  .process-section__step-content p {
+    margin: 0;
+  }
+
+  .process-section__header p,
+  .process-section__step-content p {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .process-section__steps {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: var(--gap-large);
+  }
+
+  .process-section__step {
+    position: relative;
+    align-content: start;
+    gap: var(--gap-medium);
+  }
+
+  .process-section__ordinal {
+    color: var(--color-text-accent);
+    font-family: var(--text-style-heading-h2-font-family);
+    font-size: var(--text-style-heading-h2-font-size);
+    font-weight: var(--text-style-heading-h2-font-weight);
+    line-height: var(--text-style-heading-h2-line-height);
+    letter-spacing: var(--text-style-heading-h2-letter-spacing);
+  }
+
+  .process-section__step-content {
+    gap: var(--gap-small);
+  }
+
+  .process-section__step-content :is(h3, h4) {
+    overflow-wrap: anywhere;
+  }
+
+  .process-section[data-section-variant="numbered-steps"] .process-section__steps,
+  .process-section[data-section-variant="cards"] .process-section__steps,
+  .process-section[data-section-variant="workflow-diagram"] .process-section__steps {
+    grid-template-columns:
+      repeat(auto-fit, minmax(min(100%, var(--size-192)), 1fr));
+  }
+
+  .process-section[data-section-variant="numbered-steps"] .process-section__step {
+    padding-block-start: var(--component-padding-medium);
+    border-block-start: var(--border-width-default) solid var(--color-border-default);
+  }
+
+  .process-section[data-section-variant="cards"] .process-section__step,
+  .process-section[data-section-variant="workflow-diagram"] .process-section__step {
+    height: 100%;
+    padding: var(--component-padding-large);
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+  }
+
+  .process-section[data-section-variant="timeline"] .process-section__steps {
+    gap: 0;
+  }
+
+  .process-section[data-section-variant="timeline"] .process-section__step {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--gap-large);
+    padding-block: var(--component-padding-large);
+  }
+
+  .process-section[data-section-variant="timeline"] .process-section__step::before {
+    position: absolute;
+    inset-block: calc(var(--component-padding-large) + var(--size-16)) calc(-1 * var(--component-padding-large));
+    inset-inline-start: var(--size-24);
+    width: var(--border-width-default);
+    background: var(--color-border-default);
+    content: "";
+  }
+
+  .process-section[data-section-variant="timeline"] .process-section__step:last-child::before {
+    display: none;
+  }
+
+  .process-section[data-section-variant="timeline"] .process-section__ordinal {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: var(--size-48);
+    height: var(--size-48);
+    place-items: center;
+    border: var(--border-width-default) solid var(--color-border-accent);
+    background: var(--color-background-canvas);
+    font-size: var(--text-style-body-small-font-size);
+    line-height: 1;
+  }
+
+  .process-section[data-section-variant="sticky"] .process-section__container {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+  }
+
+  .process-section[data-section-variant="sticky"] .process-section__header {
+    position: sticky;
+    top: var(--component-padding-large);
+  }
+
+  .process-section[data-section-variant="sticky"] .process-section__steps {
+    gap: 0;
+  }
+
+  .process-section[data-section-variant="sticky"] .process-section__step {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--gap-large);
+    padding-block: var(--component-padding-large);
+    border-block-start: var(--border-width-default) solid var(--color-border-default);
+  }
+
+  .process-section__diagram {
+    padding: var(--component-padding-large);
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+  }
+
+  @media (width < 64rem) {
+    .process-section[data-section-variant="numbered-steps"] .process-section__steps,
+    .process-section[data-section-variant="cards"] .process-section__steps,
+    .process-section[data-section-variant="workflow-diagram"] .process-section__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .process-section[data-section-variant="sticky"] .process-section__container {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .process-section[data-section-variant="sticky"] .process-section__header {
+      position: static;
+    }
+  }
+
+  @media (width < 40rem) {
+    .process-section__container {
+      gap: var(--gap-large);
+    }
+
+    .process-section[data-section-variant="numbered-steps"] .process-section__steps,
+    .process-section[data-section-variant="cards"] .process-section__steps,
+    .process-section[data-section-variant="workflow-diagram"] .process-section__steps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .process-section[data-section-variant="cards"] .process-section__step,
+    .process-section[data-section-variant="workflow-diagram"] .process-section__step,
+    .process-section__diagram {
+      padding: var(--component-padding-medium);
+    }
+
+    .process-section[data-section-variant="timeline"] .process-section__step,
+    .process-section[data-section-variant="sticky"] .process-section__step {
+      gap: var(--gap-medium);
+    }
+  }
+</style>

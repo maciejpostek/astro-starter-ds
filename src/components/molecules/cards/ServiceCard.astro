@@ -1,0 +1,206 @@
+---
+import { MessageCircle } from "@lucide/astro";
+import IconButton from "../../atoms/actions/IconButton.astro";
+import BulletPoint from "../../atoms/content/BulletPoint.astro";
+import Label from "../../atoms/forms/Label.astro";
+import Tag from "../../atoms/data-display/Tag.astro";
+
+interface ServiceCardData {
+  name: string;
+  eyebrow: string;
+  description: string;
+  includes: string[];
+  tools: { abbr: string; name: string }[];
+}
+
+type HeadingLevel = "h2" | "h3" | "h4" | "h5" | "h6";
+
+interface Props {
+  service: ServiceCardData;
+  index: number;
+  href: string;
+  headingLevel?: HeadingLevel;
+  componentName?: string;
+}
+
+const {
+  service,
+  index,
+  href,
+  headingLevel = "h3",
+  componentName = "ServiceCard"
+} = Astro.props;
+
+const resolvedService = {
+  name: service.name.trim(),
+  eyebrow: service.eyebrow.trim(),
+  description: service.description.trim(),
+  includes: service.includes.map((item) => item.trim()),
+  tools: service.tools.map((tool) => ({
+    abbr: tool.abbr.trim(),
+    name: tool.name.trim()
+  }))
+};
+const resolvedHref = href.trim();
+const resolvedComponentName = componentName.trim();
+const HeadingTag = headingLevel;
+
+if (!resolvedService.name || !resolvedService.eyebrow || !resolvedService.description) {
+  throw new Error("ServiceCard requires non-empty name, eyebrow, and description values.");
+}
+
+if (!Array.isArray(service.includes) || resolvedService.includes.length === 0) {
+  throw new Error("ServiceCard requires at least one included item.");
+}
+
+if (resolvedService.includes.some((item) => !item)) {
+  throw new Error("ServiceCard included items must be non-empty strings.");
+}
+
+if (!Array.isArray(service.tools)) {
+  throw new Error("ServiceCard tools must be an array.");
+}
+
+if (resolvedService.tools.some((tool) => !tool.abbr || !tool.name)) {
+  throw new Error("ServiceCard tools require non-empty abbr and name values.");
+}
+
+if (!Number.isSafeInteger(index) || index < 0) {
+  throw new Error("ServiceCard index must be a non-negative safe integer.");
+}
+
+if (!resolvedHref || resolvedHref === "#") {
+  throw new Error("ServiceCard requires a real non-placeholder href.");
+}
+
+if (!resolvedComponentName) {
+  throw new Error("ServiceCard requires a non-empty componentName.");
+}
+---
+
+<article
+  class="service-card"
+  data-component-name={resolvedComponentName}
+  data-component-family="cards"
+  data-card-state="default"
+  data-preview-target
+>
+  <span class="service-card__index">{String(index + 1).padStart(2, "0")}</span>
+  <div class="service-card__content">
+    <Label variant="metric">{resolvedService.eyebrow}</Label>
+    <HeadingTag class="service-card__title">{resolvedService.name}</HeadingTag>
+    <p>{resolvedService.description}</p>
+    <div class="service-card__tools">
+      {
+        resolvedService.tools.map((tool) => (
+          <Tag title={tool.name}>{tool.abbr} · {tool.name}</Tag>
+        ))
+      }
+    </div>
+  </div>
+  <ul class="service-card__includes">
+    {
+      resolvedService.includes.map((item) => (
+        <li><BulletPoint text={item} componentSize="small" tone="success" /></li>
+      ))
+    }
+  </ul>
+  <IconButton
+    class="service-card__action"
+    href={resolvedHref}
+    label={`Discuss ${resolvedService.name}`}
+  >
+    <MessageCircle aria-hidden="true" />
+  </IconButton>
+</article>
+
+<style>
+  .service-card {
+    --service-card-includes-min-width:
+      calc(var(--size-256) + var(--size-24));
+    --service-card-copy-max-width:
+      calc(var(--size-320) + var(--size-256) + var(--size-40) + var(--size-4));
+
+    display: grid;
+    grid-template-columns:
+      var(--size-48)
+      minmax(0, 1fr)
+      minmax(var(--service-card-includes-min-width), 0.65fr)
+      var(--component-size-small-min-height);
+    gap: var(--gap-medium);
+    align-items: center;
+    min-height: var(--size-192);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  }
+  .service-card__index {
+    align-self: start;
+    padding-top: var(--component-padding-large);
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+  }
+
+  .service-card__title {
+    margin: var(--space-small) 0 0;
+    color: var(--color-text-primary);
+    font-family: var(--text-style-heading-h6-font-family);
+    font-size: var(--text-style-heading-h6-font-size);
+    font-weight: var(--text-style-heading-h6-font-weight);
+    line-height: var(--text-style-heading-h6-line-height);
+    letter-spacing: var(--text-style-heading-h6-letter-spacing);
+  }
+
+  p {
+    max-width: var(--service-card-copy-max-width);
+    margin: var(--space-small) 0 0;
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .service-card__tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-small);
+    margin-top: var(--space-medium);
+  }
+
+  .service-card__includes {
+    display: grid;
+    gap: var(--gap-small);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (width < 64rem) {
+    .service-card {
+      grid-template-columns:
+        var(--size-40)
+        minmax(0, 1fr)
+        var(--component-size-small-min-height);
+    }
+
+    .service-card__includes {
+      grid-column: 2 / -1;
+      padding-bottom: var(--component-padding-large);
+    }
+  }
+
+  @media (width < 48rem) {
+    .service-card {
+      grid-template-columns:
+        minmax(0, 1fr)
+        var(--component-size-small-min-height);
+      padding-block: var(--component-padding-large);
+    }
+
+    .service-card__index {
+      display: none;
+    }
+
+    .service-card__includes {
+      grid-column: 1 / -1;
+      padding-bottom: 0;
+    }
+  }
+</style>

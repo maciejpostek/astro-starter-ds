@@ -1,0 +1,146 @@
+---
+import Tag from "../../atoms/data-display/Tag.astro";
+import PanelPatternVisualSystem from "../../organisms/visual/PanelPatternVisualSystem.astro";
+import type { PanelPatternVariant } from "../../../data/panel-patterns";
+
+type HeadingLevel = "h2" | "h3" | "h4" | "h5" | "h6";
+
+interface Props {
+  title: string;
+  description: string;
+  items: string[];
+  visualVariant?: PanelPatternVariant;
+  visualLabel?: string;
+  headingLevel?: HeadingLevel;
+  componentName?: string;
+}
+
+const {
+  title,
+  description,
+  items,
+  visualVariant = "fieldStrategy",
+  visualLabel,
+  headingLevel = "h3",
+  componentName = "FieldCard"
+} = Astro.props;
+
+const resolvedTitle = title.trim();
+const resolvedDescription = description.trim();
+const resolvedComponentName = componentName.trim();
+const resolvedItems = items.map((item) => item.trim());
+const resolvedVisualLabel =
+  visualLabel?.trim() || `${resolvedTitle} modular panel pattern`;
+const HeadingTag = headingLevel;
+
+if (!resolvedTitle) {
+  throw new Error("FieldCard requires a non-empty title.");
+}
+
+if (!resolvedDescription) {
+  throw new Error("FieldCard requires a non-empty description.");
+}
+
+if (!resolvedComponentName) {
+  throw new Error("FieldCard requires a non-empty componentName.");
+}
+
+if (!Array.isArray(items) || resolvedItems.length === 0) {
+  throw new Error("FieldCard requires at least one scope item.");
+}
+
+if (resolvedItems.some((item) => !item)) {
+  throw new Error("FieldCard scope items must be non-empty strings.");
+}
+---
+
+<article
+  class="field-card"
+  data-component-name={resolvedComponentName}
+  data-component-family="cards"
+  data-card-state="default"
+  data-preview-target
+>
+  <div class="field-card__content">
+    <div class="field-card__copy">
+      <HeadingTag class="field-card__title">{resolvedTitle}</HeadingTag>
+      <p class="field-card__description">{resolvedDescription}</p>
+    </div>
+    <div class="field-card__tags" aria-label={`${resolvedTitle} scope`}>
+      {resolvedItems.map((item) => <Tag>{item}</Tag>)}
+    </div>
+  </div>
+  <div class="field-card__visual" data-component-name="FieldCard.Visual">
+    <PanelPatternVisualSystem
+      variant={visualVariant}
+      label={resolvedVisualLabel}
+      componentName={`PanelPatternVisual.${visualVariant}`}
+    />
+  </div>
+</article>
+
+<style>
+  .field-card {
+    --field-card-tag-gap: var(--gap-tag-group);
+    --field-card-min-height:
+      calc(var(--size-256) + var(--size-160) + var(--size-16));
+    --field-card-content-min-height:
+      calc(var(--size-256) + var(--size-16));
+
+    display: flex;
+    min-width: 0;
+    min-height: var(--field-card-min-height);
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--color-background-subtle);
+    padding: 0;
+  }
+
+  .field-card__content {
+    display: flex;
+    min-height: var(--field-card-content-min-height);
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--gap-large);
+    padding: var(--component-padding-medium);
+  }
+
+  .field-card__copy {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .field-card__title {
+    font-family: var(--text-style-heading-h6-font-family);
+    font-size: var(--text-style-heading-h6-font-size);
+    font-weight: var(--text-style-heading-h6-font-weight);
+    line-height: var(--text-style-heading-h6-line-height);
+    letter-spacing: var(--text-style-heading-h6-letter-spacing);
+    margin: 0;
+    color: var(--color-text-accent);
+  }
+
+  .field-card__description {
+    font-family: var(--text-style-heading-h6-font-family);
+    font-size: var(--text-style-heading-h6-font-size);
+    font-weight: var(--text-style-heading-h6-font-weight);
+    line-height: var(--text-style-heading-h6-line-height);
+    letter-spacing: var(--text-style-heading-h6-letter-spacing);
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+
+  .field-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--field-card-tag-gap);
+  }
+
+  .field-card__visual {
+    display: flex;
+    min-height: var(--size-160);
+    align-items: center;
+    background: var(--color-background-accent);
+    overflow: hidden;
+  }
+</style>

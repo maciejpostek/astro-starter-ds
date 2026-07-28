@@ -1,0 +1,237 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Logo from "../../atoms/media/Logo.astro";
+import Tag from "../../atoms/data-display/Tag.astro";
+
+export type IntegrationCardVariant = "compact" | "detailed";
+export type IntegrationCardHeadingLevel = 2 | 3 | 4;
+
+type Props = {
+  name: string;
+  category: string;
+  href: string;
+  logoLabel: string;
+  variant: IntegrationCardVariant;
+  description?: string;
+  status?: string;
+  headingLevel?: IntegrationCardHeadingLevel;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"article">, "class">;
+
+const {
+  name,
+  category,
+  href,
+  logoLabel,
+  variant,
+  description,
+  status,
+  headingLevel = 3,
+  componentName = "IntegrationCard",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const supportedVariants: IntegrationCardVariant[] = ["compact", "detailed"];
+const supportedHeadingLevels: IntegrationCardHeadingLevel[] = [2, 3, 4];
+const safeHrefPattern = /^(?:https?:\/\/|\/(?!\/)|#|mailto:|tel:)/i;
+const normalizedName = name?.trim();
+const normalizedCategory = category?.trim();
+const normalizedHref = href?.trim();
+const normalizedLogoLabel = logoLabel?.trim();
+const normalizedDescription = description?.trim();
+const normalizedStatus = status?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (
+  !normalizedName ||
+  !normalizedCategory ||
+  !normalizedHref ||
+  !normalizedLogoLabel
+) {
+  throw new Error(
+    "IntegrationCard requires non-empty name, category, href, and logoLabel strings.",
+  );
+}
+if (!safeHrefPattern.test(normalizedHref)) {
+  throw new Error("IntegrationCard requires a safe supplied href.");
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `IntegrationCard received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `IntegrationCard received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error("IntegrationCard requires a non-empty componentName.");
+}
+if (!Astro.slots.has("logo")) {
+  throw new Error("IntegrationCard requires project-owned artwork in the logo slot.");
+}
+if (Astro.slots.has("default")) {
+  throw new Error("IntegrationCard does not expose a default slot.");
+}
+if (variant === "detailed" && !normalizedDescription) {
+  throw new Error(
+    "IntegrationCard Detailed requires a non-empty description.",
+  );
+}
+if (variant === "compact" && description !== undefined) {
+  throw new Error(
+    "IntegrationCard description is supported only by Detailed.",
+  );
+}
+if (description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "IntegrationCard description must be non-empty when provided.",
+  );
+}
+if (status !== undefined && !normalizedStatus) {
+  throw new Error("IntegrationCard status must be non-empty when provided.");
+}
+
+const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
+---
+
+<article
+  {...attributes}
+  class:list={["integration-card", className]}
+  data-component-name={normalizedComponentName}
+  data-component-family="cards"
+  data-card-state="actionable"
+  data-card-variant={variant}
+  data-preview-target
+>
+  <a class="integration-card__link" href={normalizedHref}>
+    <div class="integration-card__logo">
+      <Logo label={normalizedLogoLabel}>
+        <slot name="logo" />
+      </Logo>
+    </div>
+
+    <div class="integration-card__content">
+      <div class="integration-card__tags">
+        <Tag variant="neutral" size="small">{normalizedCategory}</Tag>
+        {
+          normalizedStatus && (
+            <Tag variant="accent" size="small">{normalizedStatus}</Tag>
+          )
+        }
+      </div>
+      <Heading>{normalizedName}</Heading>
+      {
+        variant === "detailed" && normalizedDescription && (
+          <p>{normalizedDescription}</p>
+        )
+      }
+    </div>
+  </a>
+</article>
+
+<style>
+  .integration-card,
+  .integration-card__link,
+  .integration-card__content,
+  .integration-card__tags {
+    min-width: 0;
+  }
+
+  .integration-card {
+    height: 100%;
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+    transition:
+      border-color var(--motion-transition),
+      background var(--motion-transition);
+  }
+
+  .integration-card:hover {
+    border-color: var(--color-border-accent);
+    background: var(--color-background-subtle);
+  }
+
+  .integration-card:has(.integration-card__link:focus-visible) {
+    border-color: var(--color-border-accent);
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: var(--size-2);
+  }
+
+  .integration-card__link {
+    display: grid;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .integration-card[data-card-variant="compact"] .integration-card__link {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--gap-regular);
+    padding: var(--component-padding-medium);
+  }
+
+  .integration-card[data-card-variant="detailed"] .integration-card__link {
+    align-content: start;
+    gap: var(--gap-large);
+    padding: var(--component-padding-large);
+  }
+
+  .integration-card__logo {
+    display: grid;
+    width: var(--size-64);
+    height: var(--size-64);
+    flex: none;
+    place-items: center;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+    padding: var(--component-padding-small);
+  }
+
+  .integration-card__logo :global(.logo),
+  .integration-card__logo :global(svg),
+  .integration-card__logo :global(img),
+  .integration-card__logo :global(picture) {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .integration-card__content {
+    display: grid;
+    align-content: start;
+    gap: var(--gap-small);
+  }
+
+  .integration-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-small);
+  }
+
+  .integration-card__content :is(h2, h3, h4),
+  .integration-card__content p {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .integration-card__content p {
+    color: var(--color-text-secondary);
+  }
+
+  @media (width < 40rem) {
+    .integration-card[data-card-variant="compact"] .integration-card__link {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .integration-card[data-card-variant="detailed"] .integration-card__link {
+      gap: var(--gap-medium);
+      padding: var(--component-padding-medium);
+    }
+  }
+</style>

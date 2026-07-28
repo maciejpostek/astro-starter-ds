@@ -1,0 +1,489 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astro-design-system.local/architecture/system-map.schema.json",
+  "title": "Astro Design System Architecture Map",
+  "description": "Schema for the canonical semantic graph, workflow traces, and generated architecture views.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "modelVersion",
+    "title",
+    "status",
+    "capturedAt",
+    "architectureStates",
+    "nodes",
+    "edges",
+    "workflows",
+    "views"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "0.1.0"
+    },
+    "modelVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": ["draft", "review", "active", "deprecated"]
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "description": {
+      "type": "string"
+    },
+    "languagePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifacts", "conversation"],
+      "properties": {
+        "artifacts": {
+          "const": "en"
+        },
+        "conversation": {
+          "const": "pl"
+        }
+      }
+    },
+    "architectureStates": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/architectureState"
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "workflows": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/workflow"
+      }
+    },
+    "views": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/view"
+      }
+    }
+  },
+  "$defs": {
+    "canonicalId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "architectureState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "status", "description"],
+      "properties": {
+        "id": {
+          "enum": ["current", "target"]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "readers",
+        "writers",
+        "validatorNodeIds",
+        "contextCost"
+      ],
+      "properties": {
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "readers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "writers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validatorNodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/canonicalId"
+          }
+        },
+        "contextCost": {
+          "enum": ["none", "low", "medium", "high", "very-high"]
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "type",
+        "scope",
+        "concerns",
+        "status",
+        "architectureState",
+        "sourcePaths",
+        "ownership",
+        "metadata"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "concerns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "architectureState": {
+          "enum": ["current", "target"]
+        },
+        "sourcePaths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "ownership": {
+          "$ref": "#/$defs/ownership"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "source",
+        "target",
+        "type",
+        "architectureState"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "source": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "target": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "architectureState": {
+          "enum": ["current", "target"]
+        },
+        "condition": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "workflowStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "kind", "nodeIds"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "input",
+            "read",
+            "route",
+            "gate",
+            "process",
+            "write",
+            "validate",
+            "tool-call",
+            "approval",
+            "output"
+          ]
+        },
+        "nodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/canonicalId"
+          }
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "condition": {
+          "type": "string"
+        },
+        "terminalOutput": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "workflowValidator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeId", "when", "reason"],
+      "properties": {
+        "nodeId": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "when": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "mode",
+        "architectureState",
+        "contextCost",
+        "description",
+        "steps",
+        "validators",
+        "toolCalls",
+        "humanApprovals",
+        "duplicatedChecks",
+        "terminalOutputs",
+        "mustSkipNodeIds"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "enum": [
+            "fast-reuse",
+            "guided-composition",
+            "creative-creation",
+            "repair",
+            "synchronization"
+          ]
+        },
+        "architectureState": {
+          "enum": ["current", "target"]
+        },
+        "contextCost": {
+          "enum": ["low", "medium", "high", "very-high"]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/workflowStep"
+          }
+        },
+        "validators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/workflowValidator"
+          }
+        },
+        "toolCalls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "humanApprovals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "duplicatedChecks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "terminalOutputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "mustSkipNodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/canonicalId"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "level",
+        "architectureStates",
+        "description",
+        "nodeIds",
+        "edgeIds"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "level": {
+          "type": "string",
+          "minLength": 1
+        },
+        "architectureStates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": ["current", "target"]
+          }
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/canonicalId"
+          }
+        },
+        "edgeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/canonicalId"
+          }
+        },
+        "workflowId": {
+          "$ref": "#/$defs/canonicalId"
+        },
+        "direction": {
+          "enum": ["right", "down"]
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

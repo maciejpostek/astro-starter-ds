@@ -1,0 +1,177 @@
+---
+import { ExternalLink } from "@lucide/astro";
+import IconButton from "../../atoms/actions/IconButton.astro";
+import Tag from "../../atoms/data-display/Tag.astro";
+
+interface ProjectRowData {
+  slug: string;
+  title: string;
+  date: string;
+  summary: string;
+  scope: string;
+  industry: string;
+  liveUrl?: string;
+}
+
+type HeadingLevel = "h2" | "h3" | "h4" | "h5" | "h6";
+
+interface Props {
+  project: ProjectRowData;
+  headingLevel?: HeadingLevel;
+  componentName?: string;
+}
+
+const {
+  project,
+  headingLevel = "h3",
+  componentName = "ProjectRowCard"
+} = Astro.props;
+
+const resolvedProject = {
+  slug: project.slug.trim(),
+  title: project.title.trim(),
+  date: project.date.trim(),
+  summary: project.summary.trim(),
+  scope: project.scope.trim(),
+  industry: project.industry.trim(),
+  liveUrl: project.liveUrl?.trim()
+};
+const resolvedComponentName = componentName.trim();
+const HeadingTag = headingLevel;
+
+if (
+  !resolvedProject.slug ||
+  !resolvedProject.title ||
+  !resolvedProject.date ||
+  !resolvedProject.summary ||
+  !resolvedProject.scope ||
+  !resolvedProject.industry
+) {
+  throw new Error(
+    "ProjectRowCard requires non-empty slug, title, date, summary, scope, and industry values."
+  );
+}
+
+if (
+  project.liveUrl !== undefined &&
+  (!resolvedProject.liveUrl || resolvedProject.liveUrl === "#")
+) {
+  throw new Error("ProjectRowCard liveUrl must be a real non-placeholder URL.");
+}
+
+if (!resolvedComponentName) {
+  throw new Error("ProjectRowCard requires a non-empty componentName.");
+}
+---
+
+<article
+  class="project-row-card"
+  data-component-name={resolvedComponentName}
+  data-component-family="cards"
+  data-card-state={resolvedProject.liveUrl ? "actionable" : "static"}
+  data-preview-target
+>
+  <span class="project-row-card__date">{resolvedProject.date}</span>
+  <div class="project-row-card__copy">
+    <HeadingTag class="project-row-card__title">{resolvedProject.title}</HeadingTag>
+    <p>{resolvedProject.summary}</p>
+  </div>
+  <span class="project-row-card__scope">{resolvedProject.scope}</span>
+  <Tag>{resolvedProject.industry}</Tag>
+  {
+    resolvedProject.liveUrl && (
+      <IconButton
+        href={resolvedProject.liveUrl}
+        label={`Open live project: ${resolvedProject.title}`}
+      >
+        <ExternalLink aria-hidden="true" />
+      </IconButton>
+    )
+  }
+</article>
+
+<style>
+  .project-row-card {
+    display: grid;
+    min-width: 0;
+    min-height: var(--size-112);
+    grid-template-columns:
+      var(--size-80)
+      minmax(0, 1fr)
+      minmax(var(--size-160), 0.55fr)
+      auto
+      var(--component-size-small-min-height);
+    gap: var(--gap-medium);
+    align-items: center;
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .project-row-card[data-card-state="static"] {
+    grid-template-columns:
+      var(--size-80)
+      minmax(0, 1fr)
+      minmax(var(--size-160), 0.55fr)
+      auto;
+  }
+
+  .project-row-card__date,
+  .project-row-card__scope {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+  }
+
+  .project-row-card__copy {
+    min-width: 0;
+  }
+
+  .project-row-card__title {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body-base);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  p {
+    max-width:
+      calc(var(--size-320) + var(--size-192) + var(--size-8));
+    margin: var(--space-tiny) 0 0;
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+  }
+
+  @media (width < 64rem) {
+    .project-row-card {
+      grid-template-columns:
+        var(--size-64)
+        minmax(0, 1fr)
+        var(--component-size-small-min-height);
+    }
+
+    .project-row-card[data-card-state="static"] {
+      grid-template-columns: var(--size-64) minmax(0, 1fr);
+    }
+
+    .project-row-card__scope,
+    .project-row-card :global(.tag) {
+      display: none;
+    }
+  }
+
+  @media (width < 48rem) {
+    .project-row-card {
+      grid-template-columns:
+        minmax(0, 1fr)
+        var(--component-size-small-min-height);
+      padding-block: var(--component-padding-medium);
+    }
+
+    .project-row-card[data-card-state="static"] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .project-row-card__date {
+      display: none;
+    }
+  }
+</style>

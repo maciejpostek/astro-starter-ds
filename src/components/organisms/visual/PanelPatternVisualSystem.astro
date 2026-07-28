@@ -1,0 +1,204 @@
+---
+import {
+  defaultPanelPatternVariant,
+  panelPatternPresets,
+  type PanelPatternGroup,
+  type PanelPatternPreset,
+  type PanelPatternVariant,
+  type PanelTone
+} from "../../../data/panel-patterns";
+
+interface Panel {
+  x: number;
+  y: number;
+  width: number;
+  tone: PanelTone;
+}
+
+interface Props {
+  variant?: PanelPatternVariant;
+  label?: string;
+  componentName?: string;
+}
+
+const {
+  variant = defaultPanelPatternVariant,
+  label,
+  componentName
+} = Astro.props;
+
+const supportedVariants = Object.keys(panelPatternPresets) as PanelPatternVariant[];
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `PanelPatternVisualSystem received unsupported variant "${variant}".`
+  );
+}
+if (label !== undefined && !label.trim()) {
+  throw new Error(
+    "PanelPatternVisualSystem label must be non-empty when provided."
+  );
+}
+if (componentName !== undefined && !componentName.trim()) {
+  throw new Error(
+    "PanelPatternVisualSystem componentName must be non-empty when provided."
+  );
+}
+
+const preset: PanelPatternPreset = panelPatternPresets[variant];
+const ariaLabel = label?.trim() ?? preset.label;
+const renderedComponentName =
+  componentName?.trim() ?? `PanelPatternVisual.${variant}`;
+const sourceWidth = preset.sourceWidth;
+const extensionWidth = preset.extension?.width ?? 0;
+const coreWidthPercent = `${((sourceWidth / preset.totalWidth) * 100).toFixed(4)}%`;
+const extensionWidthPercent = extensionWidth
+  ? `${((extensionWidth / preset.totalWidth) * 100).toFixed(4)}%`
+  : "0%";
+const extensionInnerWidth = extensionWidth
+  ? `${((sourceWidth / extensionWidth) * 100).toFixed(4)}%`
+  : "100%";
+
+const toPercent = (value: number, base: number) => (
+  `${((value / base) * 100).toFixed(4)}%`
+);
+
+const neutralizeGroups = (groups: PanelPatternGroup[]): PanelPatternGroup[] => (
+  groups.map((group) => ({
+    rows: group.rows.map((row) => (
+      row.map((segment) => ({
+        size: segment.size,
+        tone: segment.tone ? "neutral" : undefined
+      }))
+    ))
+  }))
+);
+
+const getPanels = (groups: PanelPatternGroup[]): Panel[] => (
+  groups.flatMap((group, groupIndex) => {
+    const groupTop = groupIndex * ((preset.rowHeight * 3) + preset.groupGap);
+
+    return group.rows.flatMap((row, rowIndex) => {
+      let x = 0;
+      const rowTop = groupTop + (rowIndex * preset.rowHeight);
+
+      return row.flatMap((segment) => {
+        const panelX = x;
+        x += segment.size;
+
+        if (!segment.tone) {
+          return [];
+        }
+
+        return [{
+          x: panelX,
+          y: rowTop,
+          width: segment.size,
+          tone: segment.tone
+        }];
+      });
+    });
+  })
+);
+
+const corePanels = getPanels(preset.coreGroups);
+const extensionPanels = preset.extension?.mode === "neutralize-core"
+  ? getPanels(neutralizeGroups(preset.coreGroups))
+  : [];
+---
+
+<div
+  class="panel-pattern-visual-system"
+  data-component-name={renderedComponentName}
+  data-component-family="visual"
+  data-pattern-variant={variant}
+  data-preview-target
+  role="img"
+  aria-label={ariaLabel}
+  style={`--panel-pattern-height: ${preset.height}; --panel-pattern-mobile-scale: ${preset.mobileHeightScale}; --panel-pattern-core-width: ${coreWidthPercent}; --panel-pattern-extension-width: ${extensionWidthPercent}; --panel-pattern-extension-inner-width: ${extensionInnerWidth};`}
+>
+  <div class="panel-pattern-visual-system__core">
+    {
+      corePanels.map((panel) => (
+        <span
+          class="panel-pattern-visual-system__panel"
+          data-tone={panel.tone}
+          style={`--panel-left: ${toPercent(panel.x, sourceWidth)}; --panel-top: ${toPercent(panel.y, preset.sourceHeight)}; --panel-width: ${toPercent(panel.width, sourceWidth)}; --panel-height: ${toPercent(preset.rowHeight, preset.sourceHeight)};`}
+        />
+      ))
+    }
+  </div>
+
+  {extensionPanels.length > 0 && (
+    <div class="panel-pattern-visual-system__extension" aria-hidden="true">
+      <div class="panel-pattern-visual-system__extension-inner">
+        {
+          extensionPanels.map((panel) => (
+            <span
+              class="panel-pattern-visual-system__panel"
+              data-tone={panel.tone}
+              style={`--panel-left: ${toPercent(panel.x, sourceWidth)}; --panel-top: ${toPercent(panel.y, preset.sourceHeight)}; --panel-width: ${toPercent(panel.width, sourceWidth)}; --panel-height: ${toPercent(preset.rowHeight, preset.sourceHeight)};`}
+            />
+          ))
+        }
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .panel-pattern-visual-system {
+    --panel-pattern-overlap: 1px;
+
+    position: relative;
+    width: 100%;
+    height: var(--panel-pattern-height);
+    overflow: hidden;
+  }
+
+  .panel-pattern-visual-system__core,
+  .panel-pattern-visual-system__extension-inner {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+  }
+
+  .panel-pattern-visual-system__core {
+    width: var(--panel-pattern-core-width);
+  }
+
+  .panel-pattern-visual-system__extension {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: var(--panel-pattern-extension-width);
+    overflow: hidden;
+  }
+
+  .panel-pattern-visual-system__extension-inner {
+    width: var(--panel-pattern-extension-inner-width);
+  }
+
+  .panel-pattern-visual-system__panel {
+    position: absolute;
+    display: block;
+    left: var(--panel-left);
+    top: var(--panel-top);
+    width: calc(var(--panel-width) + var(--panel-pattern-overlap));
+    height: calc(var(--panel-height) + var(--panel-pattern-overlap));
+    transform: translateZ(0);
+  }
+
+  .panel-pattern-visual-system__panel[data-tone="neutral"] {
+    background: var(--color-background-subtle);
+  }
+
+  .panel-pattern-visual-system__panel[data-tone="accent"] {
+    background: var(--color-background-accent);
+  }
+
+  @media (max-width: 48rem) {
+    .panel-pattern-visual-system {
+      height: calc(var(--panel-pattern-height) * var(--panel-pattern-mobile-scale));
+    }
+  }
+</style>

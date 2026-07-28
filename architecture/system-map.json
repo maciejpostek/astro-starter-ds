@@ -1,0 +1,2706 @@
+{
+  "$schema": "./system-map.schema.json",
+  "schemaVersion": "0.1.0",
+  "modelVersion": "0.2.0",
+  "title": "Astro Design System Architecture Map",
+  "status": "review",
+  "capturedAt": "2026-07-27",
+  "description": "Canonical semantic index of the current Astro/Figma framework and the proposed architecture observability layer. It references existing authorities without replacing them.",
+  "languagePolicy": {
+    "artifacts": "en",
+    "conversation": "pl"
+  },
+  "architectureStates": [
+    {
+      "id": "current",
+      "title": "Verified Current State",
+      "status": "frozen-for-audit",
+      "description": "Observed repository behavior and ownership captured before architecture simplification."
+    },
+    {
+      "id": "target",
+      "title": "Target Architecture Control Layer",
+      "status": "proposed",
+      "description": "A compact semantic graph, generated projections, focused lookup, and deterministic audits. It does not change component APIs, tokens, Figma, or brand output."
+    }
+  ],
+  "inventory": {
+    "componentRegistry": {
+      "immutablePhase0Baseline": 66,
+      "totalRecords": 135,
+      "publicRecords": 125,
+      "publicFiles": 125,
+      "readyPublicRecords": 124,
+      "reviewPublicRecords": 1,
+      "capturedFrom": "src/data/design-system/componentArchitecture.json"
+    },
+    "publicComponentsByLayer": {
+      "atom": 24,
+      "molecule": 38,
+      "organism": 62,
+      "template": 1
+    },
+    "websiteSections": {
+      "total": 36,
+      "ready": 35,
+      "review": 1,
+      "reviewItem": "ChangelogSection"
+    },
+    "roadmap": {
+      "items": 181,
+      "ready": 136,
+      "review": 1,
+      "partial": 8,
+      "planned": 35,
+      "blocked": 1,
+      "currentFocus": [
+        "section.content-resources.changelog"
+      ],
+      "capturedFrom": "src/data/design-system-roadmap.json"
+    },
+    "currentStateGaps": [
+      "No ready page-template catalog exists. The only public template-layer record is SwiperStarter, which is a media starter rather than a page template.",
+      "D2 SVG generation depends on the local D2 CLI and remains reproducible from the semantic graph.",
+      "Workflow routing is documented across several files but was not previously represented as one queryable graph."
+    ]
+  },
+  "nodes": [
+    {
+      "id": "state.current",
+      "title": "Current Architecture",
+      "type": "state",
+      "scope": "framework",
+      "concerns": ["architecture-state"],
+      "status": "frozen-for-audit",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["humans", "AI agents"],
+        "writers": ["architecture audit"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Current behavior must remain distinguishable from proposed simplification."
+      }
+    },
+    {
+      "id": "state.target",
+      "title": "Target Architecture",
+      "type": "state",
+      "scope": "framework",
+      "concerns": ["architecture-state"],
+      "status": "proposed",
+      "architectureState": "target",
+      "sourcePaths": ["architecture/system-map.json"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["humans", "AI agents"],
+        "writers": ["architecture maintainers"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Target controls must be reviewed without rewriting current-state evidence."
+      }
+    },
+    {
+      "id": "actor.user",
+      "title": "User",
+      "type": "actor",
+      "scope": "interaction",
+      "concerns": ["intent", "approval"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "user",
+        "readers": ["AI agent"],
+        "writers": ["user"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Work begins with human intent and may require explicit approval."
+      }
+    },
+    {
+      "id": "actor.ai-agent",
+      "title": "AI Agent",
+      "type": "actor",
+      "scope": "interaction",
+      "concerns": ["routing", "implementation", "validation"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["AGENTS.md"],
+      "ownership": {
+        "owner": "agent runtime",
+        "readers": ["user"],
+        "writers": ["agent runtime"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "The executor needs explicit routing and terminal-output contracts."
+      }
+    },
+    {
+      "id": "prompt.user-request",
+      "title": "User Prompt",
+      "type": "prompt",
+      "scope": "interaction",
+      "concerns": ["task-intent", "scope"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "user",
+        "readers": ["AI agent", "routers"],
+        "writers": ["user"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Prompts vary from direct reuse to brand-sensitive creation."
+      }
+    },
+    {
+      "id": "input.project-context",
+      "title": "Project Context",
+      "type": "input",
+      "scope": "project",
+      "concerns": ["brand", "audience", "offer", "content", "page-composition"],
+      "status": "not-configured",
+      "architectureState": "current",
+      "sourcePaths": ["project-context/README.md"],
+      "ownership": {
+        "owner": "project team",
+        "readers": ["AI agents", "page authors"],
+        "writers": ["project team"],
+        "validatorNodeIds": [],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Project-specific decisions cannot be inferred from neutral starter examples."
+      }
+    },
+    {
+      "id": "input.brand-references",
+      "title": "Approved Brand References",
+      "type": "input",
+      "scope": "project",
+      "concerns": ["reference-evidence", "art-direction"],
+      "status": "not-configured",
+      "architectureState": "current",
+      "sourcePaths": ["project-context/brand-foundations/brand-expression/reference-manifest.json"],
+      "ownership": {
+        "owner": "project team",
+        "readers": ["AI agents", "design reviewers"],
+        "writers": ["project team"],
+        "validatorNodeIds": ["validator.brand-expression"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Reference traits require explicit adopt, avoid, rights, and approval evidence."
+      }
+    },
+    {
+      "id": "router.agentic-rules",
+      "title": "Agentic Rules Router",
+      "type": "router",
+      "scope": "framework",
+      "concerns": ["rule-routing", "workflow-mode"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["AGENTIC-RULES.json", "AGENTIC-RULES.md"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["AI agents"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.agentic-rules"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Agents need one entrypoint that routes only to relevant rule packs."
+      }
+    },
+    {
+      "id": "gate.scope",
+      "title": "Scope and Mode Gate",
+      "type": "decision-gate",
+      "scope": "workflow",
+      "concerns": ["fast-reuse", "guided-composition", "creative-creation", "repair", "synchronization"],
+      "status": "documented",
+      "architectureState": "current",
+      "sourcePaths": ["WORKFLOW.md", "AGENTIC-RULES.json"],
+      "ownership": {
+        "owner": "AI agent",
+        "readers": ["AI agents"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Different prompts should not incur the same context and validation cost."
+      }
+    },
+    {
+      "id": "gate.reuse",
+      "title": "Existing Asset Reuse Gate",
+      "type": "decision-gate",
+      "scope": "component-system",
+      "concerns": ["discovery", "reuse", "extension"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": [".agentic-rules/00-framework.md", ".agentic-rules/05-components.md"],
+      "ownership": {
+        "owner": "AI agent",
+        "readers": ["AI agents"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.component-architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Existing components and tokens must be checked before creation."
+      }
+    },
+    {
+      "id": "gate.project-context",
+      "title": "Project Context Availability Gate",
+      "type": "decision-gate",
+      "scope": "project",
+      "concerns": ["audience", "content", "offer", "information-architecture", "page-composition"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["project-context/README.md"],
+      "ownership": {
+        "owner": "project team",
+        "readers": ["AI agents", "page authors"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Page and section composition must report missing project inputs instead of inventing audience, content, offer, or information architecture."
+      }
+    },
+    {
+      "id": "gate.brand-sensitive",
+      "title": "Brand Sensitivity Gate",
+      "type": "decision-gate",
+      "scope": "project",
+      "concerns": ["visual-direction", "brand-expression"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": [".agentic-rules/08-brand-expression.md"],
+      "ownership": {
+        "owner": "AI agent",
+        "readers": ["AI agents", "design reviewers"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.brand-expression"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Fast reuse must skip the brand system while creative brand work must activate it."
+      }
+    },
+    {
+      "id": "gate.brand-contract",
+      "title": "Approved Brand Contract Gate",
+      "type": "decision-gate",
+      "scope": "project",
+      "concerns": ["visual-intent", "propagation-scope"],
+      "status": "blocked",
+      "architectureState": "current",
+      "sourcePaths": ["project-context/brand-foundations/brand-expression/contract.md"],
+      "ownership": {
+        "owner": "project team",
+        "readers": ["AI agents", "design reviewers"],
+        "writers": ["project team"],
+        "validatorNodeIds": ["validator.brand-expression"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "The starter contract is not-configured and cannot authorize production visual direction."
+      }
+    },
+    {
+      "id": "gate.component-gap",
+      "title": "Genuine Component Gap Gate",
+      "type": "decision-gate",
+      "scope": "component-system",
+      "concerns": ["component-creation", "API-extension"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": [".agentic-rules/05-components.md"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["AI agents"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.component-architecture"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "A new component is justified only by a reusable gap, not a local visual variation."
+      }
+    },
+    {
+      "id": "gate.roadmap-checkpoint",
+      "title": "Roadmap Checkpoint Gate",
+      "type": "decision-gate",
+      "scope": "release",
+      "concerns": ["status", "dependency-order", "acceptance"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["src/data/design-system-roadmap.json"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["AI agents", "humans"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.roadmap"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Work must not advance beyond checkpoints that require acceptance."
+      }
+    },
+    {
+      "id": "gate.architecture-freeze",
+      "title": "Architecture Phase Component Freeze",
+      "type": "decision-gate",
+      "scope": "governance",
+      "concerns": ["architecture-phase", "component-freeze"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["architecture/README.md"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["humans", "AI agents"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "New component development must remain frozen while current architecture is inventoried and reviewed."
+      }
+    },
+    {
+      "id": "process.lookup",
+      "title": "Focused Architecture and Component Lookup",
+      "type": "process",
+      "scope": "workflow",
+      "concerns": ["discovery", "context-minimization"],
+      "status": "partially-manual",
+      "architectureState": "current",
+      "sourcePaths": ["COMPONENTS.md", "src/data/design-system/componentArchitecture.json"],
+      "ownership": {
+        "owner": "AI agent",
+        "readers": ["AI agents"],
+        "writers": [],
+        "validatorNodeIds": ["validator.component-architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Agents should retrieve one relevant component or workflow instead of loading complete catalogs."
+      }
+    },
+    {
+      "id": "process.compose",
+      "title": "Compose Existing Components",
+      "type": "process",
+      "scope": "implementation",
+      "concerns": ["page-composition", "section-composition", "reuse"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["WORKFLOW.md", ".agentic-rules/components/sections.md"],
+      "ownership": {
+        "owner": "page or component author",
+        "readers": ["AI agents", "developers"],
+        "writers": ["AI agents", "developers"],
+        "validatorNodeIds": ["validator.build"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Ready assets need a preferred composition path that preserves child ownership."
+      }
+    },
+    {
+      "id": "process.implement-astro",
+      "title": "Implement or Repair Astro",
+      "type": "process",
+      "scope": "implementation",
+      "concerns": ["component-API", "runtime", "semantics", "accessibility"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": [".agentic-rules/05-components.md"],
+      "ownership": {
+        "owner": "component maintainers",
+        "readers": ["developers", "AI agents"],
+        "writers": ["developers", "AI agents"],
+        "validatorNodeIds": ["validator.component-architecture", "validator.build"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Executable contracts must be changed in code before representations."
+      }
+    },
+    {
+      "id": "process.document",
+      "title": "Update Operational Documentation",
+      "type": "process",
+      "scope": "documentation",
+      "concerns": ["usage-guidance", "API-documentation", "mapping-contract"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["COMPONENTS.md", "src/pages/design-system/components.astro"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["humans", "AI agents"],
+        "writers": ["developers", "AI agents"],
+        "validatorNodeIds": ["validator.agentic-rules", "validator.build"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Documentation must mirror executable code and operational rules."
+      }
+    },
+    {
+      "id": "process.browser-validation",
+      "title": "Browser Validation",
+      "type": "process",
+      "scope": "validation",
+      "concerns": ["responsive-behavior", "runtime", "accessibility", "visual-evidence"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["WORKFLOW.md"],
+      "ownership": {
+        "owner": "implementer",
+        "readers": ["humans", "AI agents"],
+        "writers": ["implementer"],
+        "validatorNodeIds": ["validator.build"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Runtime and responsive behavior cannot be validated from source or Figma alone."
+      }
+    },
+    {
+      "id": "process.visual-calibration",
+      "title": "Brand Visual Calibration",
+      "type": "process",
+      "scope": "project",
+      "concerns": ["art-direction", "representative-pilot", "visual-quality"],
+      "status": "blocked-without-approved-contract",
+      "architectureState": "current",
+      "sourcePaths": ["art-direction/README.md", ".agentic-rules/08-brand-expression.md"],
+      "ownership": {
+        "owner": "project design team",
+        "readers": ["AI agents", "design reviewers"],
+        "writers": ["project design team", "AI agents"],
+        "validatorNodeIds": ["validator.brand-expression"],
+        "contextCost": "very-high"
+      },
+      "metadata": {
+        "problem": "Subjective visual direction requires evidence, a bounded pilot, and human judgment."
+      }
+    },
+    {
+      "id": "process.figma-sync",
+      "title": "Synchronize Accepted Astro to Figma",
+      "type": "process",
+      "scope": "figma",
+      "concerns": ["editable-representation", "identity-mapping", "parity"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["Figma2Astro Agentic Rules/README.md", "Figma2Astro Agentic Rules/07-component-library-roadmap.md"],
+      "ownership": {
+        "owner": "design-system maintainers",
+        "readers": ["designers", "AI agents"],
+        "writers": ["design-system maintainers", "Figma MCP"],
+        "validatorNodeIds": ["validator.family"],
+        "contextCost": "very-high"
+      },
+      "metadata": {
+        "problem": "Figma must mirror accepted public contracts without becoming executable API truth."
+      }
+    },
+    {
+      "id": "process.release",
+      "title": "Lifecycle and Release",
+      "type": "process",
+      "scope": "release",
+      "concerns": ["status", "parity", "publication"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["src/data/design-system-roadmap.json", "Figma2Astro Agentic Rules/07-component-library-roadmap.md"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["humans", "AI agents"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.roadmap", "validator.build"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Ready status requires aligned code, docs, browser evidence, Figma parity, audits, and checkpoints."
+      }
+    },
+    {
+      "id": "process.project-fork",
+      "title": "Create Project Fork from Starter",
+      "type": "process",
+      "scope": "project",
+      "concerns": ["project-fork", "starter-inheritance"],
+      "status": "manual",
+      "architectureState": "current",
+      "sourcePaths": ["project-context/README.md", "README.md"],
+      "ownership": {
+        "owner": "project team",
+        "readers": ["humans", "AI agents"],
+        "writers": ["project team"],
+        "validatorNodeIds": ["validator.build"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "A new project needs an explicit fork boundary so framework foundations and project-owned context do not become mixed."
+      }
+    },
+    {
+      "id": "process.duplicate-figma-file",
+      "title": "Duplicate Figma File for Project",
+      "type": "process",
+      "scope": "figma",
+      "concerns": ["figma-file-duplication", "project-representation"],
+      "status": "manual-no-repository-automation",
+      "architectureState": "current",
+      "sourcePaths": ["Figma2Astro Agentic Rules/README.md"],
+      "ownership": {
+        "owner": "project design team",
+        "readers": ["designers", "AI agents"],
+        "writers": ["project design team"],
+        "validatorNodeIds": ["validator.family"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "A duplicated Figma file needs project ownership while preserving stable registry identity and code-first mapping."
+      }
+    },
+    {
+      "id": "source.component-registry",
+      "title": "Component Registry",
+      "type": "source-of-truth",
+      "scope": "component-system",
+      "concerns": ["component-discovery", "stable-component-identity", "dependency-index"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["src/data/design-system/componentArchitecture.json"],
+      "ownership": {
+        "owner": "component maintainers",
+        "readers": ["AI agents", "documentation", "audits"],
+        "writers": ["component maintainers"],
+        "validatorNodeIds": ["validator.component-architecture"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "A queryable catalog is required for discovery, but it does not own executable API behavior.",
+        "primaryFor": ["component-discovery", "stable-component-identity"]
+      }
+    },
+    {
+      "id": "source.astro-components",
+      "title": "Astro Component Source",
+      "type": "source-of-truth",
+      "scope": "component-system",
+      "concerns": ["component-API", "runtime", "semantics", "accessibility"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["src/components"],
+      "ownership": {
+        "owner": "component maintainers",
+        "readers": ["developers", "AI agents", "build"],
+        "writers": ["component maintainers"],
+        "validatorNodeIds": ["validator.component-architecture", "validator.build"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Executable component behavior needs one production authority.",
+        "primaryFor": ["component-API", "runtime", "semantics", "accessibility"],
+        "pathKind": "directory"
+      }
+    },
+    {
+      "id": "source.css-variables",
+      "title": "CSS Variable Foundations",
+      "type": "source-of-truth",
+      "scope": "foundations",
+      "concerns": ["design-values", "tokens"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["src/styles/tokens/tokens.css"],
+      "ownership": {
+        "owner": "foundation maintainers",
+        "readers": ["Astro components", "documentation", "Figma adapters"],
+        "writers": ["foundation maintainers"],
+        "validatorNodeIds": ["validator.foundations", "validator.build"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Shared design values require one code-owned authority.",
+        "primaryFor": ["design-values", "tokens"]
+      }
+    },
+    {
+      "id": "source.roadmap",
+      "title": "Design System Roadmap",
+      "type": "source-of-truth",
+      "scope": "governance",
+      "concerns": ["target-scope", "priority", "delivery-status", "release-evidence"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["src/data/design-system-roadmap.json"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["humans", "AI agents", "audits"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.roadmap"],
+        "contextCost": "very-high"
+      },
+      "metadata": {
+        "problem": "Delivery scope and status require one auditable authority.",
+        "primaryFor": ["target-scope", "priority", "delivery-status", "release-evidence"]
+      }
+    },
+    {
+      "id": "source.brand-contract",
+      "title": "Approved Brand Expression Contract",
+      "type": "source-of-truth",
+      "scope": "project",
+      "concerns": ["project-visual-intent", "propagation-scope"],
+      "status": "not-configured",
+      "architectureState": "current",
+      "sourcePaths": ["project-context/brand-foundations/brand-expression/contract.md"],
+      "ownership": {
+        "owner": "project team",
+        "readers": ["AI agents", "designers", "developers"],
+        "writers": ["project team"],
+        "validatorNodeIds": ["validator.brand-expression"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Project visual intent must be explicit, evidence-backed, and approved.",
+        "primaryFor": ["project-visual-intent", "propagation-scope"]
+      }
+    },
+    {
+      "id": "source.art-direction",
+      "title": "Universal Art Direction Knowledge",
+      "type": "source-of-truth",
+      "scope": "framework",
+      "concerns": ["visual-design-knowledge", "calibration-method"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["art-direction/README.md"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["AI agents", "designers"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.brand-expression"],
+        "contextCost": "very-high"
+      },
+      "metadata": {
+        "problem": "Reusable visual-design knowledge must remain separate from project direction.",
+        "primaryFor": ["visual-design-knowledge", "calibration-method"]
+      }
+    },
+    {
+      "id": "source.figma-adapters",
+      "title": "Figma2Astro Mapping Adapters",
+      "type": "source-of-truth",
+      "scope": "figma",
+      "concerns": ["representation-differences", "property-mapping", "parity-contract"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["Figma2Astro Agentic Rules/README.md"],
+      "ownership": {
+        "owner": "design-system maintainers",
+        "readers": ["AI agents", "designers", "developers"],
+        "writers": ["design-system maintainers"],
+        "validatorNodeIds": ["validator.family", "validator.agentic-rules"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Intentional code-to-Figma differences need explicit adapters.",
+        "primaryFor": ["representation-differences", "property-mapping", "parity-contract"]
+      }
+    },
+    {
+      "id": "artifact.documentation",
+      "title": "Design System Documentation",
+      "type": "artifact",
+      "scope": "documentation",
+      "concerns": ["human-guidance", "AI-operational-context"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["COMPONENTS.md", "src/pages/design-system/components.astro"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["humans", "AI agents"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": ["validator.build"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Documentation mirrors code and provides usage context, but does not own API truth."
+      }
+    },
+    {
+      "id": "foundation.tokens",
+      "title": "Foundations",
+      "type": "foundation",
+      "scope": "atomic-design",
+      "concerns": ["tokens", "styles", "layout"],
+      "status": "ready",
+      "architectureState": "current",
+      "sourcePaths": ["src/styles/tokens/tokens.css"],
+      "ownership": {
+        "owner": "foundation maintainers",
+        "readers": ["all component layers"],
+        "writers": ["foundation maintainers"],
+        "validatorNodeIds": ["validator.foundations"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "All reusable UI layers depend on stable foundations."
+      }
+    },
+    {
+      "id": "component.atoms",
+      "title": "Atoms (24 public)",
+      "type": "component",
+      "scope": "atomic-design",
+      "concerns": ["atoms"],
+      "status": "ready",
+      "architectureState": "current",
+      "sourcePaths": ["src/components/atoms"],
+      "ownership": {
+        "owner": "component maintainers",
+        "readers": ["component authors", "page authors"],
+        "writers": ["component maintainers"],
+        "validatorNodeIds": ["validator.component-architecture"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Small public primitives form the first reusable component layer.",
+        "pathKind": "directory"
+      }
+    },
+    {
+      "id": "component.molecules",
+      "title": "Molecules (38 public)",
+      "type": "component",
+      "scope": "atomic-design",
+      "concerns": ["molecules"],
+      "status": "ready",
+      "architectureState": "current",
+      "sourcePaths": ["src/components/molecules"],
+      "ownership": {
+        "owner": "component maintainers",
+        "readers": ["component authors", "page authors"],
+        "writers": ["component maintainers"],
+        "validatorNodeIds": ["validator.component-architecture"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Compact compositions reuse atoms across families.",
+        "pathKind": "directory"
+      }
+    },
+    {
+      "id": "component.family-parts",
+      "title": "Private Family Parts",
+      "type": "component",
+      "scope": "atomic-design",
+      "concerns": ["private-parts", "figma-composition"],
+      "status": "conditional",
+      "architectureState": "current",
+      "sourcePaths": ["Figma2Astro Agentic Rules/07-component-library-roadmap.md"],
+      "ownership": {
+        "owner": "family maintainers",
+        "readers": ["component authors", "Figma authors"],
+        "writers": ["family maintainers"],
+        "validatorNodeIds": ["validator.family"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Complex repeatable parts need private reusable masters without inflating public component count."
+      }
+    },
+    {
+      "id": "component.cards",
+      "title": "Cards (19 public)",
+      "type": "component",
+      "scope": "atomic-design",
+      "concerns": ["cards", "content-containers"],
+      "status": "ready",
+      "architectureState": "current",
+      "sourcePaths": ["src/components/molecules/cards", "src/components/organisms/cards"],
+      "ownership": {
+        "owner": "cards family maintainers",
+        "readers": ["section authors", "page authors"],
+        "writers": ["cards family maintainers"],
+        "validatorNodeIds": ["validator.family"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Cards are a cross-layer composition tier between small parts and larger regions.",
+        "pathKind": "directory-list"
+      }
+    },
+    {
+      "id": "component.organisms-sections",
+      "title": "Organisms and Sections (62 public; 35 sections ready)",
+      "type": "component",
+      "scope": "atomic-design",
+      "concerns": ["organisms", "website-sections"],
+      "status": "ready-with-one-review-section",
+      "architectureState": "current",
+      "sourcePaths": ["src/components/organisms", ".agentic-rules/components/sections.md"],
+      "ownership": {
+        "owner": "component and section maintainers",
+        "readers": ["page authors", "AI agents"],
+        "writers": ["component and section maintainers"],
+        "validatorNodeIds": ["validator.component-architecture", "validator.family"],
+        "contextCost": "very-high"
+      },
+      "metadata": {
+        "problem": "Large reusable regions coordinate complete child roles without redrawing them.",
+        "pathKind": "directory-list"
+      }
+    },
+    {
+      "id": "component.templates-pages",
+      "title": "Templates and Pages",
+      "type": "component",
+      "scope": "atomic-design",
+      "concerns": ["templates", "pages"],
+      "status": "gap-no-page-template-catalog",
+      "architectureState": "current",
+      "sourcePaths": ["src/components/templates", "src/pages"],
+      "ownership": {
+        "owner": "page authors",
+        "readers": ["AI agents", "developers"],
+        "writers": ["project teams"],
+        "validatorNodeIds": ["validator.build"],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "The current registry has one media template but no ready page-template catalog.",
+        "pathKind": "directory-list"
+      }
+    },
+    {
+      "id": "external.browser",
+      "title": "Browser Runtime",
+      "type": "external-system",
+      "scope": "validation",
+      "concerns": ["runtime", "responsive", "visual-validation"],
+      "status": "available",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "local development environment",
+        "readers": ["humans", "AI agents"],
+        "writers": ["Astro dev server"],
+        "validatorNodeIds": [],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Rendered behavior needs a real runtime surface."
+      }
+    },
+    {
+      "id": "external.figma",
+      "title": "Figma Editable Representation",
+      "type": "external-system",
+      "scope": "figma",
+      "concerns": ["editable-design", "visual-exploration", "component-masters"],
+      "status": "external",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "design-system maintainers",
+        "readers": ["designers", "AI agents"],
+        "writers": ["designers", "Figma MCP"],
+        "validatorNodeIds": ["validator.family"],
+        "contextCost": "very-high"
+      },
+      "metadata": {
+        "problem": "Designers need an editable representation that preserves code-first identity.",
+        "primaryFor": ["editable-design-representation"]
+      }
+    },
+    {
+      "id": "external.terminal",
+      "title": "Terminal and Repository Tools",
+      "type": "external-system",
+      "scope": "implementation",
+      "concerns": ["discovery", "editing", "validation"],
+      "status": "available",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "local development environment",
+        "readers": ["AI agents", "developers"],
+        "writers": ["AI agents", "developers"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Repository work requires inspect, patch, audit, and build operations."
+      }
+    },
+    {
+      "id": "approval.visual",
+      "title": "Human Visual Approval",
+      "type": "human-approval",
+      "scope": "project",
+      "concerns": ["visual-quality", "brand-propagation"],
+      "status": "required-when-brand-sensitive",
+      "architectureState": "current",
+      "sourcePaths": [".agentic-rules/08-brand-expression.md"],
+      "ownership": {
+        "owner": "project decision maker",
+        "readers": ["AI agents", "design team"],
+        "writers": ["project decision maker"],
+        "validatorNodeIds": [],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Automated technical parity cannot judge subjective visual quality."
+      }
+    },
+    {
+      "id": "approval.family",
+      "title": "Family Checkpoint Acceptance",
+      "type": "human-approval",
+      "scope": "figma",
+      "concerns": ["family-release", "figma-checkpoint"],
+      "status": "required",
+      "architectureState": "current",
+      "sourcePaths": ["Figma2Astro Agentic Rules/07-component-library-roadmap.md"],
+      "ownership": {
+        "owner": "design-system decision maker",
+        "readers": ["AI agents", "design-system maintainers"],
+        "writers": ["design-system decision maker"],
+        "validatorNodeIds": [],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Figma family work pauses at stable review checkpoints."
+      }
+    },
+    {
+      "id": "validator.component-architecture",
+      "title": "Component Architecture Audit",
+      "type": "validator",
+      "scope": "component-system",
+      "concerns": ["registry-parity", "baseline", "duplicate-identity"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["scripts/audit-component-architecture.mjs"],
+      "ownership": {
+        "owner": "component maintainers",
+        "readers": ["CI", "AI agents", "developers"],
+        "writers": ["component maintainers"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Public files and registry records must remain one-to-one."
+      }
+    },
+    {
+      "id": "validator.family",
+      "title": "Family and Parity Audits",
+      "type": "validator",
+      "scope": "component-system",
+      "concerns": ["family-contracts", "documentation", "figma-parity"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["scripts/audit-actions-family.mjs", "scripts/audit-website-sections.mjs"],
+      "ownership": {
+        "owner": "family maintainers",
+        "readers": ["CI", "AI agents", "developers"],
+        "writers": ["family maintainers"],
+        "validatorNodeIds": [],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Family-specific contracts need checks beyond registry existence."
+      }
+    },
+    {
+      "id": "validator.foundations",
+      "title": "Foundation Audit",
+      "type": "validator",
+      "scope": "foundations",
+      "concerns": ["token-contracts", "documentation", "figma-mapping"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["scripts/audit-design-system-foundations.mjs"],
+      "ownership": {
+        "owner": "foundation maintainers",
+        "readers": ["CI", "AI agents", "developers"],
+        "writers": ["foundation maintainers"],
+        "validatorNodeIds": [],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Foundation code, documentation, and mapping contracts must stay aligned."
+      }
+    },
+    {
+      "id": "validator.roadmap",
+      "title": "Roadmap Audit",
+      "type": "validator",
+      "scope": "governance",
+      "concerns": ["status", "dependencies", "evidence"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["scripts/audit-design-system-roadmap.mjs"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["CI", "AI agents", "developers"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": [],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Roadmap state must correspond to checks, dependencies, and evidence."
+      }
+    },
+    {
+      "id": "validator.brand-expression",
+      "title": "Brand Expression Audit",
+      "type": "validator",
+      "scope": "project",
+      "concerns": ["activation-state", "reference-shape", "language-policy"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["scripts/audit-brand-expression.mjs"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["CI", "AI agents", "designers"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "An empty starter must not silently become an approved brand."
+      }
+    },
+    {
+      "id": "validator.agentic-rules",
+      "title": "Agentic Rules Audit",
+      "type": "validator",
+      "scope": "governance",
+      "concerns": ["router-links", "language-policy", "rule-contracts"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["scripts/audit-agentic-rules.mjs"],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["CI", "AI agents"],
+        "writers": ["framework maintainers"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Operational rules require deterministic structural validation."
+      }
+    },
+    {
+      "id": "validator.build",
+      "title": "Astro Check and Build",
+      "type": "validator",
+      "scope": "runtime",
+      "concerns": ["syntax", "imports", "build-output"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["package.json"],
+      "ownership": {
+        "owner": "project maintainers",
+        "readers": ["CI", "AI agents", "developers"],
+        "writers": ["project maintainers"],
+        "validatorNodeIds": [],
+        "contextCost": "high"
+      },
+      "metadata": {
+        "problem": "Structural changes need executable project verification."
+      }
+    },
+    {
+      "id": "output.astro",
+      "title": "Accepted Astro Output",
+      "type": "output",
+      "scope": "runtime",
+      "concerns": ["page-output", "component-output"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": ["src/pages", "src/components"],
+      "ownership": {
+        "owner": "project or component maintainers",
+        "readers": ["users", "developers", "designers"],
+        "writers": ["Astro build"],
+        "validatorNodeIds": ["validator.build"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Every implementation workflow needs a concrete runtime result.",
+        "pathKind": "directory-list"
+      }
+    },
+    {
+      "id": "output.figma",
+      "title": "Accepted Figma Representation",
+      "type": "output",
+      "scope": "figma",
+      "concerns": ["component-master", "parity-evidence"],
+      "status": "external",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "design-system maintainers",
+        "readers": ["designers", "developers", "AI agents"],
+        "writers": ["design-system maintainers", "Figma MCP"],
+        "validatorNodeIds": ["validator.family"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Synchronization needs a named terminal representation and evidence."
+      }
+    },
+    {
+      "id": "output.terminal",
+      "title": "Terminal Result and Handoff",
+      "type": "output",
+      "scope": "interaction",
+      "concerns": ["validation-summary", "files-changed", "blockers"],
+      "status": "active",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "AI agent",
+        "readers": ["user", "developers"],
+        "writers": ["AI agent", "validation scripts"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Workflows need explicit terminal output instead of silent completion."
+      }
+    },
+    {
+      "id": "output.project-input-gap",
+      "title": "Blocked: Project Input Required",
+      "type": "output",
+      "scope": "interaction",
+      "concerns": ["project-context", "input-gap"],
+      "status": "conditional",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "AI agent",
+        "readers": ["user", "project team"],
+        "writers": ["AI agent"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "A page or section prompt must stop with an explicit request when required audience, content, offer, or information-architecture input is missing."
+      }
+    },
+    {
+      "id": "output.component-creation-deferred",
+      "title": "Deferred: Component Creation",
+      "type": "output",
+      "scope": "interaction",
+      "concerns": ["component-gap", "architecture-freeze"],
+      "status": "conditional",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "framework maintainers",
+        "readers": ["user", "AI agents", "component maintainers"],
+        "writers": ["AI agent"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "A proven reusable component gap must be reported without silently bypassing the active architecture-phase component freeze."
+      }
+    },
+    {
+      "id": "output.brand-input-gap",
+      "title": "Blocked: Brand Approval Required",
+      "type": "output",
+      "scope": "interaction",
+      "concerns": ["brand-contract", "approval-gap"],
+      "status": "conditional",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "project team",
+        "readers": ["user", "AI agents", "design reviewers"],
+        "writers": ["AI agent"],
+        "validatorNodeIds": ["validator.brand-expression"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Brand-sensitive production work must stop when visual direction is unapproved or outside the contract propagation scope."
+      }
+    },
+    {
+      "id": "output.project-fork",
+      "title": "Project-Owned Starter Fork",
+      "type": "output",
+      "scope": "project",
+      "concerns": ["project-repository", "project-context"],
+      "status": "manual",
+      "architectureState": "current",
+      "sourcePaths": [],
+      "ownership": {
+        "owner": "project team",
+        "readers": ["developers", "designers", "AI agents"],
+        "writers": ["project team"],
+        "validatorNodeIds": ["validator.build"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "The project needs an explicit output boundary separate from the reusable starter foundation."
+      }
+    },
+    {
+      "id": "target.architecture-graph",
+      "title": "Canonical Semantic Architecture Graph",
+      "type": "source-of-truth",
+      "scope": "architecture",
+      "concerns": ["architecture-index", "workflow-traces", "view-definitions"],
+      "status": "review",
+      "architectureState": "target",
+      "sourcePaths": ["architecture/system-map.json"],
+      "ownership": {
+        "owner": "framework architecture maintainers",
+        "readers": ["humans", "AI agents", "generators", "audits"],
+        "writers": ["framework architecture maintainers"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "medium"
+      },
+      "metadata": {
+        "problem": "Architecture knowledge needs one semantic, machine-readable index without competing with concern-specific authorities.",
+        "primaryFor": ["architecture-index", "workflow-traces", "view-definitions"],
+        "projectionPolicy": {
+          "D2": "primary durable code-first renderer",
+          "Mermaid": "small inline microflows only",
+          "FigJam": "optional presentation or workshop projection, never canonical",
+          "React Flow and ELK": "deferred interactive explorer option, not part of this phase"
+        }
+      }
+    },
+    {
+      "id": "target.view-generator",
+      "title": "Architecture View Generator",
+      "type": "process",
+      "scope": "architecture",
+      "concerns": ["D2-generation", "view-projection"],
+      "status": "review",
+      "architectureState": "target",
+      "sourcePaths": ["scripts/generate-architecture-views.mjs"],
+      "ownership": {
+        "owner": "framework architecture maintainers",
+        "readers": ["humans", "CI"],
+        "writers": ["architecture maintainers"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Durable diagrams must be regenerated from the graph rather than hand-maintained."
+      }
+    },
+    {
+      "id": "validator.architecture",
+      "title": "System Architecture Audit",
+      "type": "validator",
+      "scope": "architecture",
+      "concerns": ["schema", "ownership", "cycles", "routers", "workflow-cost"],
+      "status": "review",
+      "architectureState": "target",
+      "sourcePaths": ["scripts/audit-system-architecture.mjs"],
+      "ownership": {
+        "owner": "framework architecture maintainers",
+        "readers": ["humans", "CI", "AI agents"],
+        "writers": ["architecture maintainers"],
+        "validatorNodeIds": [],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Architecture drift and anti-patterns require deterministic detection."
+      }
+    },
+    {
+      "id": "target.workflow-tracer",
+      "title": "Focused Workflow and Component Tracer",
+      "type": "process",
+      "scope": "architecture",
+      "concerns": ["workflow-lookup", "component-context", "context-minimization"],
+      "status": "review",
+      "architectureState": "target",
+      "sourcePaths": ["scripts/trace-agentic-workflow.mjs"],
+      "ownership": {
+        "owner": "framework architecture maintainers",
+        "readers": ["humans", "AI agents"],
+        "writers": ["architecture maintainers"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Agents need one workflow, view, or component context without reading the entire graph."
+      }
+    },
+    {
+      "id": "artifact.d2-views",
+      "title": "Generated D2 Views",
+      "type": "artifact",
+      "scope": "architecture",
+      "concerns": ["durable-diagrams", "human-review"],
+      "status": "generated",
+      "architectureState": "target",
+      "sourcePaths": ["architecture/views"],
+      "ownership": {
+        "owner": "architecture view generator",
+        "readers": ["humans", "AI agents"],
+        "writers": ["architecture view generator"],
+        "validatorNodeIds": ["validator.architecture"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Humans need durable visual projections while JSON remains canonical.",
+        "pathKind": "directory"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge.user-creates-prompt",
+      "source": "actor.user",
+      "target": "prompt.user-request",
+      "type": "creates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.prompt-routes-router",
+      "source": "prompt.user-request",
+      "target": "router.agentic-rules",
+      "type": "routes-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.prompt-routes-agent",
+      "source": "prompt.user-request",
+      "target": "actor.ai-agent",
+      "type": "routes-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.agent-reads-router",
+      "source": "actor.ai-agent",
+      "target": "router.agentic-rules",
+      "type": "reads",
+      "architectureState": "current",
+      "evidence": ["AGENTS.md", "AGENTIC-RULES.json"]
+    },
+    {
+      "id": "edge.router-selects-scope",
+      "source": "router.agentic-rules",
+      "target": "gate.scope",
+      "type": "selects",
+      "architectureState": "current",
+      "evidence": ["AGENTIC-RULES.json", "WORKFLOW.md"]
+    },
+    {
+      "id": "edge.scope-routes-reuse",
+      "source": "gate.scope",
+      "target": "gate.reuse",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "Any UI or component task."
+    },
+    {
+      "id": "edge.scope-routes-project-context",
+      "source": "gate.scope",
+      "target": "gate.project-context",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "The task composes a project page or reusable page section."
+    },
+    {
+      "id": "edge.project-context-reads-input",
+      "source": "gate.project-context",
+      "target": "input.project-context",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.project-context-routes-lookup",
+      "source": "gate.project-context",
+      "target": "process.lookup",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "Required audience, content, offer, and information-architecture inputs are available."
+    },
+    {
+      "id": "edge.project-context-blocks-output",
+      "source": "gate.project-context",
+      "target": "output.project-input-gap",
+      "type": "blocks",
+      "architectureState": "current",
+      "condition": "A required project input is missing."
+    },
+    {
+      "id": "edge.scope-routes-brand",
+      "source": "gate.scope",
+      "target": "gate.brand-sensitive",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "Visual direction, redesign, polish, reference-driven work, or brand-sensitive composition."
+    },
+    {
+      "id": "edge.reuse-routes-lookup",
+      "source": "gate.reuse",
+      "target": "process.lookup",
+      "type": "routes-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.lookup-routes-reuse",
+      "source": "process.lookup",
+      "target": "gate.reuse",
+      "type": "routes-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.lookup-reads-registry",
+      "source": "process.lookup",
+      "target": "source.component-registry",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.lookup-reads-astro",
+      "source": "process.lookup",
+      "target": "source.astro-components",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.reuse-selects-compose",
+      "source": "gate.reuse",
+      "target": "process.compose",
+      "type": "selects",
+      "architectureState": "current",
+      "condition": "A ready component or section already satisfies the required role."
+    },
+    {
+      "id": "edge.reuse-selects-gap",
+      "source": "gate.reuse",
+      "target": "gate.component-gap",
+      "type": "selects",
+      "architectureState": "current",
+      "condition": "No ready component satisfies the reusable role."
+    },
+    {
+      "id": "edge.reuse-routes-brand",
+      "source": "gate.reuse",
+      "target": "gate.brand-sensitive",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "The selected ready assets satisfy the requested reusable roles."
+    },
+    {
+      "id": "edge.gap-routes-freeze",
+      "source": "gate.component-gap",
+      "target": "gate.architecture-freeze",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "A genuinely missing reusable component or API is evidenced during the architecture phase."
+    },
+    {
+      "id": "edge.freeze-blocks-output",
+      "source": "gate.architecture-freeze",
+      "target": "output.component-creation-deferred",
+      "type": "blocks",
+      "architectureState": "current",
+      "condition": "New component development is deferred until the architecture phase is accepted."
+    },
+    {
+      "id": "edge.gap-routes-implement",
+      "source": "gate.component-gap",
+      "target": "process.implement-astro",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "A genuinely reusable component or API gap is evidenced."
+    },
+    {
+      "id": "edge.freeze-blocks-implementation",
+      "source": "gate.architecture-freeze",
+      "target": "process.implement-astro",
+      "type": "blocks",
+      "architectureState": "current",
+      "condition": "New component development remains frozen during the architecture inventory and schema-review phase."
+    },
+    {
+      "id": "edge.compose-reads-astro",
+      "source": "process.compose",
+      "target": "source.astro-components",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.compose-creates-output",
+      "source": "process.compose",
+      "target": "output.astro",
+      "type": "creates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.compose-reads-tokens",
+      "source": "process.compose",
+      "target": "source.css-variables",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.compose-routes-build",
+      "source": "process.compose",
+      "target": "validator.build",
+      "type": "routes-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.build-routes-browser",
+      "source": "validator.build",
+      "target": "process.browser-validation",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "Astro structure and imports compile."
+    },
+    {
+      "id": "edge.browser-routes-rework",
+      "source": "process.browser-validation",
+      "target": "process.compose",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "Responsive, runtime, accessibility, or visual evidence fails."
+    },
+    {
+      "id": "edge.browser-validates-astro-output",
+      "source": "process.browser-validation",
+      "target": "output.astro",
+      "type": "validates",
+      "architectureState": "current",
+      "condition": "The requested page or section passes browser inspection."
+    },
+    {
+      "id": "edge.astro-output-generates-terminal",
+      "source": "output.astro",
+      "target": "output.terminal",
+      "type": "generates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.implement-writes-astro",
+      "source": "process.implement-astro",
+      "target": "source.astro-components",
+      "type": "writes",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.implement-depends-tokens",
+      "source": "process.implement-astro",
+      "target": "source.css-variables",
+      "type": "depends-on",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.implement-routes-docs",
+      "source": "process.implement-astro",
+      "target": "process.document",
+      "type": "routes-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.document-writes-docs",
+      "source": "process.document",
+      "target": "artifact.documentation",
+      "type": "writes",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.implement-routes-browser",
+      "source": "process.implement-astro",
+      "target": "process.browser-validation",
+      "type": "routes-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.browser-reads-runtime",
+      "source": "process.browser-validation",
+      "target": "external.browser",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.brand-routes-contract",
+      "source": "gate.brand-sensitive",
+      "target": "gate.brand-contract",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "The task is brand-sensitive."
+    },
+    {
+      "id": "edge.brand-routes-compose",
+      "source": "gate.brand-sensitive",
+      "target": "process.compose",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "The task is structural reuse and does not require brand-specific visual direction."
+    },
+    {
+      "id": "edge.brand-contract-reads-source",
+      "source": "gate.brand-contract",
+      "target": "source.brand-contract",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.brand-contract-blocks-calibration",
+      "source": "gate.brand-contract",
+      "target": "process.visual-calibration",
+      "type": "blocks",
+      "architectureState": "current",
+      "condition": "Contract status is not-configured, draft, deprecated, or otherwise outside permitted scope."
+    },
+    {
+      "id": "edge.brand-contract-routes-calibration",
+      "source": "gate.brand-contract",
+      "target": "process.visual-calibration",
+      "type": "routes-to",
+      "architectureState": "current",
+      "condition": "The Brand Expression Contract is approved and covers the requested propagation scope."
+    },
+    {
+      "id": "edge.brand-contract-blocks-output",
+      "source": "gate.brand-contract",
+      "target": "output.brand-input-gap",
+      "type": "blocks",
+      "architectureState": "current",
+      "condition": "The contract is missing, draft, deprecated, or outside the approved scope."
+    },
+    {
+      "id": "edge.calibration-reads-knowledge",
+      "source": "process.visual-calibration",
+      "target": "source.art-direction",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.calibration-reads-references",
+      "source": "process.visual-calibration",
+      "target": "input.brand-references",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.visual-approves-calibration",
+      "source": "approval.visual",
+      "target": "process.visual-calibration",
+      "type": "approves",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.calibration-routes-approval",
+      "source": "process.visual-calibration",
+      "target": "approval.visual",
+      "type": "routes-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.approval-routes-compose",
+      "source": "approval.visual",
+      "target": "process.compose",
+      "type": "approves",
+      "architectureState": "current",
+      "condition": "The representative calibration pilot is accepted."
+    },
+    {
+      "id": "edge.calibration-writes-astro",
+      "source": "process.visual-calibration",
+      "target": "source.astro-components",
+      "type": "writes",
+      "architectureState": "current",
+      "condition": "Only within an approved contract propagation scope."
+    },
+    {
+      "id": "edge.astro-maps-adapters",
+      "source": "source.astro-components",
+      "target": "source.figma-adapters",
+      "type": "maps-to",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.registry-maps-figma",
+      "source": "source.component-registry",
+      "target": "external.figma",
+      "type": "maps-to",
+      "architectureState": "current",
+      "evidence": ["Figma2Astro Agentic Rules/07-component-library-roadmap.md"]
+    },
+    {
+      "id": "edge.figma-sync-reads-astro",
+      "source": "process.figma-sync",
+      "target": "source.astro-components",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.figma-sync-reads-adapters",
+      "source": "process.figma-sync",
+      "target": "source.figma-adapters",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.figma-sync-writes-figma",
+      "source": "process.figma-sync",
+      "target": "external.figma",
+      "type": "writes",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.figma-sync-creates-output",
+      "source": "process.figma-sync",
+      "target": "output.figma",
+      "type": "creates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.family-validates-figma",
+      "source": "validator.family",
+      "target": "external.figma",
+      "type": "validates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.family-approval-approves-output",
+      "source": "approval.family",
+      "target": "output.figma",
+      "type": "approves",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.component-audit-validates-registry",
+      "source": "validator.component-architecture",
+      "target": "source.component-registry",
+      "type": "validates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.component-audit-validates-astro",
+      "source": "validator.component-architecture",
+      "target": "source.astro-components",
+      "type": "validates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.foundations-audit-validates-tokens",
+      "source": "validator.foundations",
+      "target": "source.css-variables",
+      "type": "validates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.roadmap-audit-validates-roadmap",
+      "source": "validator.roadmap",
+      "target": "source.roadmap",
+      "type": "validates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.brand-audit-validates-contract",
+      "source": "validator.brand-expression",
+      "target": "source.brand-contract",
+      "type": "validates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.agentic-audit-validates-router",
+      "source": "validator.agentic-rules",
+      "target": "router.agentic-rules",
+      "type": "validates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.build-validates-output",
+      "source": "validator.build",
+      "target": "output.astro",
+      "type": "validates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.release-reads-roadmap",
+      "source": "process.release",
+      "target": "source.roadmap",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.release-publishes-astro",
+      "source": "process.release",
+      "target": "output.astro",
+      "type": "publishes",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.tokens-to-atoms",
+      "source": "component.atoms",
+      "target": "foundation.tokens",
+      "type": "depends-on",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.molecules-to-atoms",
+      "source": "component.molecules",
+      "target": "component.atoms",
+      "type": "depends-on",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.parts-to-molecules",
+      "source": "component.family-parts",
+      "target": "component.molecules",
+      "type": "depends-on",
+      "architectureState": "current",
+      "condition": "Only when a family needs private repeatable parts."
+    },
+    {
+      "id": "edge.cards-to-parts",
+      "source": "component.cards",
+      "target": "component.family-parts",
+      "type": "depends-on",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.organisms-to-cards",
+      "source": "component.organisms-sections",
+      "target": "component.cards",
+      "type": "depends-on",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.templates-to-organisms",
+      "source": "component.templates-pages",
+      "target": "component.organisms-sections",
+      "type": "depends-on",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.project-fork-reads-current",
+      "source": "process.project-fork",
+      "target": "state.current",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.project-fork-creates-output",
+      "source": "process.project-fork",
+      "target": "output.project-fork",
+      "type": "creates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.project-output-depends-context",
+      "source": "output.project-fork",
+      "target": "input.project-context",
+      "type": "depends-on",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.duplicate-figma-reads-registry",
+      "source": "process.duplicate-figma-file",
+      "target": "source.component-registry",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.duplicate-figma-reads-adapters",
+      "source": "process.duplicate-figma-file",
+      "target": "source.figma-adapters",
+      "type": "reads",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.duplicate-figma-creates-output",
+      "source": "process.duplicate-figma-file",
+      "target": "output.figma",
+      "type": "creates",
+      "architectureState": "current"
+    },
+    {
+      "id": "edge.graph-reads-current",
+      "source": "target.architecture-graph",
+      "target": "state.current",
+      "type": "reads",
+      "architectureState": "target"
+    },
+    {
+      "id": "edge.graph-defines-target",
+      "source": "target.architecture-graph",
+      "target": "state.target",
+      "type": "writes",
+      "architectureState": "target"
+    },
+    {
+      "id": "edge.generator-reads-graph",
+      "source": "target.view-generator",
+      "target": "target.architecture-graph",
+      "type": "reads",
+      "architectureState": "target"
+    },
+    {
+      "id": "edge.generator-generates-d2",
+      "source": "target.view-generator",
+      "target": "artifact.d2-views",
+      "type": "generates",
+      "architectureState": "target"
+    },
+    {
+      "id": "edge.architecture-audit-validates-graph",
+      "source": "validator.architecture",
+      "target": "target.architecture-graph",
+      "type": "validates",
+      "architectureState": "target"
+    },
+    {
+      "id": "edge.tracer-reads-graph",
+      "source": "target.workflow-tracer",
+      "target": "target.architecture-graph",
+      "type": "reads",
+      "architectureState": "target"
+    },
+    {
+      "id": "edge.tracer-reads-registry",
+      "source": "target.workflow-tracer",
+      "target": "source.component-registry",
+      "type": "reads",
+      "architectureState": "target"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "workflow.use-ready-button",
+      "title": "Use an Existing Ready Button",
+      "mode": "fast-reuse",
+      "architectureState": "current",
+      "contextCost": "low",
+      "description": "Resolve Button through focused lookup, read its actual API, import it, run a targeted structural check, and stop without loading brand-expression context.",
+      "steps": [
+        {
+          "id": "step.button.prompt",
+          "title": "Receive the Button reuse prompt",
+          "kind": "input",
+          "nodeIds": ["prompt.user-request"]
+        },
+        {
+          "id": "step.button.route",
+          "title": "Classify as Fast Reuse",
+          "kind": "route",
+          "nodeIds": ["router.agentic-rules", "gate.scope", "gate.reuse"],
+          "files": ["AGENTIC-RULES.json"]
+        },
+        {
+          "id": "step.button.lookup",
+          "title": "Resolve the ready Button record and source",
+          "kind": "read",
+          "nodeIds": ["process.lookup", "source.component-registry", "source.astro-components"],
+          "files": ["src/data/design-system/componentArchitecture.json", "src/components/atoms/actions/Button.astro"]
+        },
+        {
+          "id": "step.button.edit",
+          "title": "Import and compose Button in the target Astro file",
+          "kind": "write",
+          "nodeIds": ["process.compose", "output.astro"],
+          "files": ["<target Astro file>"]
+        },
+        {
+          "id": "step.button.tool",
+          "title": "Use repository discovery and patch tools",
+          "kind": "tool-call",
+          "nodeIds": ["external.terminal"],
+          "metadata": {
+            "calls": ["rg", "sed", "apply_patch"]
+          }
+        },
+        {
+          "id": "step.button.validate",
+          "title": "Run a targeted Astro check or build when imports changed",
+          "kind": "validate",
+          "nodeIds": ["validator.build"],
+          "condition": "Imports or Astro syntax changed."
+        },
+        {
+          "id": "step.button.output",
+          "title": "Report the reused component and validation result",
+          "kind": "output",
+          "nodeIds": ["output.terminal", "output.astro"],
+          "terminalOutput": "Target file, Button API used, and targeted validation result."
+        }
+      ],
+      "validators": [
+        {
+          "nodeId": "validator.build",
+          "when": "An Astro import, prop, or syntax boundary changed.",
+          "reason": "The edit must compile; unrelated family and brand audits are unnecessary."
+        }
+      ],
+      "toolCalls": ["rg", "sed", "apply_patch", "npm run check or npm run build when warranted"],
+      "humanApprovals": [],
+      "duplicatedChecks": [
+        "Button readiness can be checked in both the component registry and roadmap; Fast Reuse should prefer the registry and avoid reading the full roadmap."
+      ],
+      "terminalOutputs": ["Changed target file", "Reused Button source and props", "Targeted validation result"],
+      "mustSkipNodeIds": ["source.art-direction", "source.brand-contract", "input.brand-references", "process.visual-calibration"],
+      "metadata": {
+        "brandPolicy": "Fast Reuse must not load the full Brand Expression system."
+      }
+    },
+    {
+      "id": "workflow.compose-page-from-ready-sections",
+      "title": "Build a Page from Ready Sections or Templates",
+      "mode": "guided-composition",
+      "architectureState": "current",
+      "contextCost": "medium",
+      "description": "Use project context and the ready section catalog to compose a page. Current state has no page-template catalog, so page templates cannot be assumed.",
+      "steps": [
+        {
+          "id": "step.page.prompt",
+          "title": "Receive the page-composition prompt",
+          "kind": "input",
+          "nodeIds": ["prompt.user-request"]
+        },
+        {
+          "id": "step.page.route",
+          "title": "Classify as Guided Composition",
+          "kind": "route",
+          "nodeIds": ["router.agentic-rules", "gate.scope", "gate.reuse"],
+          "files": ["AGENTIC-RULES.json", "project-context/README.md"]
+        },
+        {
+          "id": "step.page.context",
+          "title": "Read populated project context or report the input gap",
+          "kind": "gate",
+          "nodeIds": ["input.project-context"],
+          "files": ["project-context/README.md", "<relevant populated project-context files>"],
+          "condition": "Page composition requires audience, content, offer, or IA input; do not infer it."
+        },
+        {
+          "id": "step.page.lookup",
+          "title": "Resolve only relevant ready sections",
+          "kind": "read",
+          "nodeIds": ["process.lookup", "source.component-registry", "component.organisms-sections", "component.templates-pages"],
+          "files": ["src/data/design-system/componentArchitecture.json", ".agentic-rules/components/sections.md", "<selected section sources>"]
+        },
+        {
+          "id": "step.page.compose",
+          "title": "Compose the page route with canonical sections",
+          "kind": "write",
+          "nodeIds": ["process.compose", "source.astro-components"],
+          "files": ["src/pages/<project-route>.astro"]
+        },
+        {
+          "id": "step.page.validate",
+          "title": "Validate Astro and inspect the page in the browser",
+          "kind": "validate",
+          "nodeIds": ["validator.build", "process.browser-validation", "external.browser"]
+        },
+        {
+          "id": "step.page.output",
+          "title": "Report page composition, gaps, and validation",
+          "kind": "output",
+          "nodeIds": ["output.astro", "output.terminal"],
+          "terminalOutput": "Page route, selected section identities, explicit content gaps, and build/browser result."
+        }
+      ],
+      "validators": [
+        {
+          "nodeId": "validator.build",
+          "when": "A page route or Astro import is created or changed.",
+          "reason": "The composed page must compile."
+        }
+      ],
+      "toolCalls": ["rg", "sed", "apply_patch", "npm run build", "browser inspection"],
+      "humanApprovals": [],
+      "duplicatedChecks": [
+        "Section readiness appears in the component registry, roadmap, website-section adapter, and website-section audit. Focused selection should read the registry first and the roadmap only for target/checkpoint state."
+      ],
+      "terminalOutputs": ["Created or changed page route", "Selected ready sections", "Missing project input", "Build and browser result"],
+      "mustSkipNodeIds": ["process.figma-sync"],
+      "metadata": {
+        "currentStateGap": "No ready page-template catalog exists; SwiperStarter is not a page template.",
+        "brandPolicy": "Load Brand Expression only when the requested page composition is brand-sensitive."
+      }
+    },
+    {
+      "id": "workflow.build-new-section",
+      "title": "Build a New Section from Existing Components",
+      "mode": "guided-composition",
+      "architectureState": "current",
+      "contextCost": "high",
+      "description": "Establish a reusable section role, compose ready child components, update registry/docs/roadmap, validate, and synchronize only after Astro acceptance.",
+      "steps": [
+        {
+          "id": "step.section.prompt",
+          "title": "Receive the reusable section prompt",
+          "kind": "input",
+          "nodeIds": ["prompt.user-request"]
+        },
+        {
+          "id": "step.section.route",
+          "title": "Route layout, component, project-context, and section rules",
+          "kind": "route",
+          "nodeIds": ["router.agentic-rules", "gate.scope", "gate.reuse"],
+          "files": ["AGENTIC-RULES.json", ".agentic-rules/04-layout.md", ".agentic-rules/05-components.md", ".agentic-rules/components/sections.md", "Figma2Astro Agentic Rules/22-website-sections.md"]
+        },
+        {
+          "id": "step.section.gap",
+          "title": "Confirm a reusable section-role gap",
+          "kind": "gate",
+          "nodeIds": ["gate.architecture-freeze", "gate.component-gap", "source.component-registry", "source.roadmap"],
+          "files": ["src/data/design-system/componentArchitecture.json", "src/data/design-system-roadmap.json"]
+        },
+        {
+          "id": "step.section.read",
+          "title": "Read selected child component APIs and relevant project context",
+          "kind": "read",
+          "nodeIds": ["source.astro-components", "input.project-context"],
+          "files": ["<selected child component sources>", "<relevant populated project-context files>"]
+        },
+        {
+          "id": "step.section.write",
+          "title": "Create the section and update registry, docs, roadmap, and adapter",
+          "kind": "write",
+          "nodeIds": ["process.implement-astro", "process.document", "source.component-registry", "source.roadmap", "source.figma-adapters"],
+          "files": ["src/components/organisms/sections/<family>/<Section>.astro", "src/data/design-system/componentArchitecture.json", "src/pages/design-system/sections.astro", "src/data/design-system-roadmap.json", "Figma2Astro Agentic Rules/22-website-sections.md"]
+        },
+        {
+          "id": "step.section.validate",
+          "title": "Run component, website-section, roadmap, and build validation",
+          "kind": "validate",
+          "nodeIds": ["validator.component-architecture", "validator.family", "validator.roadmap", "validator.build", "process.browser-validation"]
+        },
+        {
+          "id": "step.section.output",
+          "title": "Report section contract and validation state",
+          "kind": "output",
+          "nodeIds": ["output.astro", "output.terminal"],
+          "terminalOutput": "Section role, child dependencies, files written, checks run, browser evidence, and remaining Figma checkpoint."
+        }
+      ],
+      "validators": [
+        {
+          "nodeId": "validator.component-architecture",
+          "when": "A public component or registry record is added.",
+          "reason": "Public source and registry identity must remain one-to-one."
+        },
+        {
+          "nodeId": "validator.family",
+          "when": "A website section or its documentation/adapter changes.",
+          "reason": "The section family contract must remain valid."
+        },
+        {
+          "nodeId": "validator.roadmap",
+          "when": "Roadmap scope, dependencies, evidence, or status changes.",
+          "reason": "Roadmap truth must match implementation evidence."
+        },
+        {
+          "nodeId": "validator.build",
+          "when": "Astro source, imports, or documentation routes change.",
+          "reason": "The structural batch must compile."
+        }
+      ],
+      "toolCalls": ["rg", "sed", "apply_patch", "npm family audits", "npm run build", "browser inspection"],
+      "humanApprovals": ["Family checkpoint after the eventual Figma representation"],
+      "duplicatedChecks": [
+        "Registry/file parity is checked by component architecture and website-section audits.",
+        "Roadmap evidence and section readiness are checked by both roadmap and website-section audits."
+      ],
+      "terminalOutputs": ["New section contract", "Dependency list", "Changed files", "Validation matrix", "Figma checkpoint status"],
+      "mustSkipNodeIds": [],
+      "metadata": {
+        "brandPolicy": "If the section introduces brand-sensitive visual direction, branch through the approved Brand Expression gate before implementation."
+      }
+    },
+    {
+      "id": "workflow.create-missing-component",
+      "title": "Create a Genuinely Missing Component",
+      "mode": "creative-creation",
+      "architectureState": "current",
+      "contextCost": "high",
+      "description": "Prove a reusable gap, establish atomic layer and family ownership, implement code-first, document, validate, and defer Figma until Astro acceptance.",
+      "steps": [
+        {
+          "id": "step.missing.prompt",
+          "title": "Receive the new-component prompt",
+          "kind": "input",
+          "nodeIds": ["prompt.user-request"]
+        },
+        {
+          "id": "step.missing.route",
+          "title": "Route framework, component, family, and mapping rules",
+          "kind": "route",
+          "nodeIds": ["router.agentic-rules", "gate.scope", "gate.reuse"],
+          "files": ["AGENTIC-RULES.json", "AGENTIC-RULES.md", "DESIGN-SYSTEM-FRAMEWORK.md", ".agentic-rules/00-framework.md", ".agentic-rules/05-components.md", "<family rule>", "<Figma family adapter>"]
+        },
+        {
+          "id": "step.missing.gates",
+          "title": "Prove reuse gap and evaluate brand sensitivity",
+          "kind": "gate",
+          "nodeIds": ["gate.architecture-freeze", "gate.component-gap", "gate.brand-sensitive", "gate.brand-contract", "source.component-registry"],
+          "condition": "Creation is deferred while the architecture freeze is active; brand-sensitive creation also requires an approved contract."
+        },
+        {
+          "id": "step.missing.write",
+          "title": "Implement source, tokens only if justified, registry, docs, roadmap, and adapter",
+          "kind": "write",
+          "nodeIds": ["process.implement-astro", "source.css-variables", "source.component-registry", "process.document", "source.roadmap", "source.figma-adapters"],
+          "files": ["src/components/<layer>/<family>/<Component>.astro", "src/data/design-system/componentArchitecture.json", "<documentation route>", "src/data/design-system-roadmap.json", "<Figma family adapter>"]
+        },
+        {
+          "id": "step.missing.browser",
+          "title": "Validate behavior and responsive states in the browser",
+          "kind": "validate",
+          "nodeIds": ["process.browser-validation", "external.browser"]
+        },
+        {
+          "id": "step.missing.audits",
+          "title": "Run only affected architecture, family, foundation, roadmap, and build checks",
+          "kind": "validate",
+          "nodeIds": ["validator.component-architecture", "validator.family", "validator.foundations", "validator.roadmap", "validator.build"]
+        },
+        {
+          "id": "step.missing.output",
+          "title": "Report component acceptance and remaining parity work",
+          "kind": "output",
+          "nodeIds": ["output.astro", "output.terminal"],
+          "terminalOutput": "Gap evidence, public API, ownership, writes, validators, browser result, and Figma synchronization status."
+        }
+      ],
+      "validators": [
+        {
+          "nodeId": "validator.component-architecture",
+          "when": "A public source and registry record are added.",
+          "reason": "Identity and baseline invariants must remain valid."
+        },
+        {
+          "nodeId": "validator.family",
+          "when": "The affected family has a dedicated audit.",
+          "reason": "Family contracts must be tested without running unrelated family audits."
+        },
+        {
+          "nodeId": "validator.foundations",
+          "when": "Foundation tokens, styles, documentation, or mappings changed.",
+          "reason": "Do not run the foundation audit for a component-only change."
+        },
+        {
+          "nodeId": "validator.roadmap",
+          "when": "Scope, dependencies, evidence, or status changed.",
+          "reason": "Roadmap state must match the new component lifecycle."
+        },
+        {
+          "nodeId": "validator.build",
+          "when": "Structural Astro or documentation changes were made.",
+          "reason": "The new public API must compile."
+        }
+      ],
+      "toolCalls": ["rg", "sed", "apply_patch", "npm targeted audits", "npm run build", "browser inspection"],
+      "humanApprovals": ["Visual calibration approval when brand-sensitive", "Figma family checkpoint after synchronization"],
+      "duplicatedChecks": [
+        "Public source presence and sourcePath uniqueness recur across component, family, and roadmap audits.",
+        "Documentation evidence recurs across family and roadmap audits."
+      ],
+      "terminalOutputs": ["Gap justification", "Component owner and public API", "Changed files", "Targeted validator results", "Remaining approval/parity work"],
+      "mustSkipNodeIds": [],
+      "metadata": {
+        "brandPolicy": "Creative Creation must activate and respect approved brand rules whenever the result is brand-sensitive."
+      }
+    },
+    {
+      "id": "workflow.extend-component-for-brand",
+      "title": "Redesign or Extend an Existing Component for a New Brand",
+      "mode": "creative-creation",
+      "architectureState": "current",
+      "contextCost": "very-high",
+      "description": "Activate the complete brand-expression gate, calibrate a bounded representative component set, obtain human approval, and propagate only within the approved scope.",
+      "steps": [
+        {
+          "id": "step.brand.prompt",
+          "title": "Receive the brand-sensitive redesign prompt",
+          "kind": "input",
+          "nodeIds": ["prompt.user-request"]
+        },
+        {
+          "id": "step.brand.route",
+          "title": "Route framework, component, art-direction, brand, and family rules",
+          "kind": "route",
+          "nodeIds": ["router.agentic-rules", "gate.scope", "gate.brand-sensitive"],
+          "files": ["AGENTIC-RULES.json", "AGENTIC-RULES.md", "DESIGN-SYSTEM-FRAMEWORK.md", "project-context/README.md", "art-direction/README.md", ".agentic-rules/08-brand-expression.md", "<component and family rules>"]
+        },
+        {
+          "id": "step.brand.contract",
+          "title": "Validate approved contract, references, boundaries, and propagation scope",
+          "kind": "gate",
+          "nodeIds": ["gate.brand-contract", "source.brand-contract", "input.brand-references", "validator.brand-expression"],
+          "files": ["project-context/brand-foundations/brand-expression/contract.md", "project-context/brand-foundations/brand-expression/reference-manifest.json", "project-context/brand-foundations/brand-expression/component-signatures.md"]
+        },
+        {
+          "id": "step.brand.calibrate",
+          "title": "Create a bounded browser or Figma calibration pilot",
+          "kind": "process",
+          "nodeIds": ["process.visual-calibration", "source.art-direction", "process.browser-validation"]
+        },
+        {
+          "id": "step.brand.approve",
+          "title": "Obtain human visual approval",
+          "kind": "approval",
+          "nodeIds": ["approval.visual"],
+          "condition": "Required before production propagation."
+        },
+        {
+          "id": "step.brand.propagate",
+          "title": "Update approved tokens, Astro components, docs, and mapping contract",
+          "kind": "write",
+          "nodeIds": ["source.css-variables", "source.astro-components", "process.document", "source.figma-adapters"],
+          "files": ["<approved token files>", "<affected component sources>", "<documentation>", "<family adapter>"]
+        },
+        {
+          "id": "step.brand.validate",
+          "title": "Run brand, affected foundation/family, browser, and build checks",
+          "kind": "validate",
+          "nodeIds": ["validator.brand-expression", "validator.foundations", "validator.family", "validator.build", "process.browser-validation"]
+        },
+        {
+          "id": "step.brand.output",
+          "title": "Report approval evidence and bounded propagation",
+          "kind": "output",
+          "nodeIds": ["output.astro", "output.terminal"],
+          "terminalOutput": "Contract status, reference evidence, pilot result, human approval, propagation scope, files changed, and validation."
+        }
+      ],
+      "validators": [
+        {
+          "nodeId": "validator.brand-expression",
+          "when": "Any brand-expression artifact or brand-sensitive production direction is involved.",
+          "reason": "The activation state and evidence contract must be valid."
+        },
+        {
+          "nodeId": "validator.foundations",
+          "when": "Approved shared values or foundation mappings changed.",
+          "reason": "Token truth must match docs and mappings."
+        },
+        {
+          "nodeId": "validator.family",
+          "when": "An affected component family changed.",
+          "reason": "Family API and representation contracts must remain valid."
+        },
+        {
+          "nodeId": "validator.build",
+          "when": "Astro or documentation source changed.",
+          "reason": "Accepted propagation must compile."
+        }
+      ],
+      "toolCalls": ["rg", "sed", "apply_patch", "browser inspection", "optional Figma MCP pilot", "npm targeted audits", "npm run build"],
+      "humanApprovals": ["Brand Expression Contract approval", "Representative calibration-set visual approval", "Figma family checkpoint when synchronized"],
+      "duplicatedChecks": [
+        "Brand activation and router linkage are checked by both brand-expression and agentic-rules audits.",
+        "Token mapping evidence can be checked by foundation, family, and roadmap audits."
+      ],
+      "terminalOutputs": ["Brand input status", "Approved evidence and boundaries", "Calibration evidence", "Approval decision", "Propagation scope", "Validation matrix"],
+      "mustSkipNodeIds": [],
+      "metadata": {
+        "brandPolicy": "This workflow must never bypass the approved contract or human visual-quality gate."
+      }
+    },
+    {
+      "id": "workflow.sync-accepted-astro-to-figma",
+      "title": "Synchronize an Accepted Astro Component to Figma",
+      "mode": "synchronization",
+      "architectureState": "current",
+      "contextCost": "very-high",
+      "description": "Read code-first identity and API, inspect the exact Figma target, update idempotently, validate parity, record evidence, and stop at the family checkpoint.",
+      "steps": [
+        {
+          "id": "step.sync.prompt",
+          "title": "Receive the synchronization prompt",
+          "kind": "input",
+          "nodeIds": ["prompt.user-request"]
+        },
+        {
+          "id": "step.sync.route",
+          "title": "Route Figma2Astro and family rules",
+          "kind": "route",
+          "nodeIds": ["router.agentic-rules", "gate.scope"],
+          "files": ["AGENTIC-RULES.json", "Figma2Astro Agentic Rules/README.md", "Figma2Astro Agentic Rules/07-component-library-roadmap.md", "<numbered family adapter>"]
+        },
+        {
+          "id": "step.sync.read",
+          "title": "Read roadmap, registry identity, source API, tokens, and adapter",
+          "kind": "read",
+          "nodeIds": ["source.roadmap", "source.component-registry", "source.astro-components", "source.css-variables", "source.figma-adapters"],
+          "files": ["src/data/design-system-roadmap.json", "src/data/design-system/componentArchitecture.json", "<component source>", "<token sources>", "<family adapter>"]
+        },
+        {
+          "id": "step.sync.inspect",
+          "title": "Inspect exact Figma page, master, variables, properties, and plugin-data identity",
+          "kind": "tool-call",
+          "nodeIds": ["external.figma"],
+          "metadata": {
+            "calls": ["Figma design-context inspection", "Figma screenshot", "Figma variables/styles inspection", "use_figma when required"]
+          }
+        },
+        {
+          "id": "step.sync.write",
+          "title": "Create or repair the Figma representation idempotently",
+          "kind": "write",
+          "nodeIds": ["process.figma-sync", "external.figma", "output.figma"]
+        },
+        {
+          "id": "step.sync.validate",
+          "title": "Validate properties, bindings, nested instances, parity, and roadmap evidence",
+          "kind": "validate",
+          "nodeIds": ["validator.family", "validator.roadmap", "gate.roadmap-checkpoint"]
+        },
+        {
+          "id": "step.sync.approve",
+          "title": "Present one family checkpoint for acceptance",
+          "kind": "approval",
+          "nodeIds": ["approval.family"]
+        },
+        {
+          "id": "step.sync.output",
+          "title": "Report node IDs, intentional differences, checks, and checkpoint status",
+          "kind": "output",
+          "nodeIds": ["output.figma", "output.terminal"],
+          "terminalOutput": "Figma file/page/master IDs, mapping evidence, intentional differences, parity result, roadmap write, and human checkpoint."
+        }
+      ],
+      "validators": [
+        {
+          "nodeId": "validator.family",
+          "when": "A Figma master, property, binding, adapter, or family evidence changes.",
+          "reason": "The exact family contract and parity requirements must pass."
+        },
+        {
+          "nodeId": "validator.roadmap",
+          "when": "Figma node IDs, evidence, checks, or status change.",
+          "reason": "Roadmap release truth must match the accepted representation."
+        }
+      ],
+      "toolCalls": ["Figma design context", "Figma screenshot", "Figma variables/styles", "use_figma", "apply_patch for adapter/roadmap", "npm targeted audits"],
+      "humanApprovals": ["One family checkpoint after structural validation"],
+      "duplicatedChecks": [
+        "Master identity and parity evidence can be repeated in the family adapter, roadmap, and family audit.",
+        "Registry name/source identity and roadmap component identity overlap but own different concerns."
+      ],
+      "terminalOutputs": ["Figma master identity", "Mapping and intentional differences", "Parity validation", "Roadmap evidence", "Family approval status"],
+      "mustSkipNodeIds": [],
+      "metadata": {
+        "sourceOfTruthPolicy": "Figma is the editable representation; Astro source remains executable API truth."
+      }
+    }
+  ],
+  "views": [
+    {
+      "id": "view.framework-context-current",
+      "title": "Framework Context (L0) — Current",
+      "level": "L0",
+      "architectureStates": ["current"],
+      "description": "Current actors, routing, concern-specific authorities, implementation surfaces, validation, and outputs.",
+      "nodeIds": ["actor.user", "actor.ai-agent", "prompt.user-request", "router.agentic-rules", "gate.scope", "gate.reuse", "process.lookup", "source.component-registry", "source.astro-components", "source.css-variables", "source.roadmap", "source.brand-contract", "source.figma-adapters", "artifact.documentation", "external.browser", "external.figma", "validator.agentic-rules", "output.astro", "output.figma", "output.terminal"],
+      "edgeIds": ["edge.user-creates-prompt", "edge.prompt-routes-router", "edge.router-selects-scope", "edge.reuse-routes-lookup", "edge.lookup-reads-registry", "edge.lookup-reads-astro", "edge.astro-maps-adapters", "edge.registry-maps-figma", "edge.agentic-audit-validates-router"],
+      "direction": "right"
+    },
+    {
+      "id": "view.framework-context-target",
+      "title": "Framework Context (L0) — Target Control Layer",
+      "level": "L0",
+      "architectureStates": ["current", "target"],
+      "description": "Proposed architecture graph, focused tracer, deterministic audit, and generated D2 projections layered over the frozen current state.",
+      "nodeIds": ["state.current", "state.target", "gate.architecture-freeze", "process.implement-astro", "source.component-registry", "target.architecture-graph", "target.view-generator", "target.workflow-tracer", "validator.architecture", "artifact.d2-views"],
+      "edgeIds": ["edge.freeze-blocks-implementation", "edge.graph-reads-current", "edge.graph-defines-target", "edge.generator-reads-graph", "edge.generator-generates-d2", "edge.architecture-audit-validates-graph", "edge.tracer-reads-graph", "edge.tracer-reads-registry"],
+      "direction": "right"
+    },
+    {
+      "id": "view.input-to-output",
+      "title": "Input-to-Output Pipeline (L1)",
+      "level": "L1",
+      "architectureStates": ["current"],
+      "description": "Primary decision path from prompt through reuse or creation, conditional brand calibration, code, browser, Figma, and terminal outputs.",
+      "nodeIds": ["prompt.user-request", "router.agentic-rules", "gate.scope", "gate.reuse", "process.lookup", "process.compose", "gate.component-gap", "process.implement-astro", "gate.brand-sensitive", "gate.brand-contract", "process.visual-calibration", "approval.visual", "process.browser-validation", "process.figma-sync", "output.astro", "output.figma", "output.terminal"],
+      "edgeIds": ["edge.prompt-routes-router", "edge.router-selects-scope", "edge.scope-routes-reuse", "edge.scope-routes-brand", "edge.reuse-routes-lookup", "edge.reuse-selects-compose", "edge.reuse-selects-gap", "edge.gap-routes-implement", "edge.compose-creates-output", "edge.implement-routes-browser", "edge.brand-routes-contract", "edge.brand-contract-blocks-calibration", "edge.visual-approves-calibration", "edge.figma-sync-creates-output"],
+      "direction": "right"
+    },
+    {
+      "id": "view.prompt-to-astro-page-section",
+      "title": "Prompt → Astro Page or Section",
+      "level": "L1",
+      "architectureStates": ["current"],
+      "description": "Current prompt-to-Astro routing for page composition and reusable sections, including project-context gaps, focused component discovery, the conditional Brand Expression path, the architecture-phase creation freeze, validation, rework, and terminal handoff.",
+      "nodeIds": ["prompt.user-request", "actor.ai-agent", "router.agentic-rules", "gate.scope", "gate.project-context", "input.project-context", "process.lookup", "source.component-registry", "source.astro-components", "gate.reuse", "gate.component-gap", "gate.architecture-freeze", "gate.brand-sensitive", "gate.brand-contract", "source.brand-contract", "source.art-direction", "process.visual-calibration", "approval.visual", "process.compose", "source.css-variables", "validator.build", "process.browser-validation", "external.browser", "output.astro", "output.terminal", "output.project-input-gap", "output.component-creation-deferred", "output.brand-input-gap"],
+      "edgeIds": ["edge.prompt-routes-agent", "edge.agent-reads-router", "edge.router-selects-scope", "edge.scope-routes-project-context", "edge.project-context-reads-input", "edge.project-context-routes-lookup", "edge.project-context-blocks-output", "edge.lookup-reads-registry", "edge.lookup-reads-astro", "edge.lookup-routes-reuse", "edge.reuse-routes-brand", "edge.reuse-selects-gap", "edge.gap-routes-freeze", "edge.freeze-blocks-output", "edge.brand-routes-compose", "edge.brand-routes-contract", "edge.brand-contract-reads-source", "edge.brand-contract-routes-calibration", "edge.brand-contract-blocks-output", "edge.calibration-reads-knowledge", "edge.calibration-routes-approval", "edge.approval-routes-compose", "edge.compose-reads-astro", "edge.compose-reads-tokens", "edge.compose-routes-build", "edge.build-routes-browser", "edge.browser-reads-runtime", "edge.browser-routes-rework", "edge.browser-validates-astro-output", "edge.astro-output-generates-terminal"],
+      "direction": "down",
+      "metadata": {
+        "renderer": "prompt-to-astro-page-section",
+        "examplePrompt": "Create a slider section using SectionHeader, Swiper, and Blog Cards.",
+        "contextCost": "Low for ready reuse, medium for page composition, high for a reusable section, and very high only when approved brand calibration is activated.",
+        "scopeBoundary": "Figma synchronization is a separate downstream workflow and is intentionally not part of this Astro acceptance view."
+      }
+    },
+    {
+      "id": "view.fast-reuse",
+      "title": "Fast Reuse Mode",
+      "level": "workflow",
+      "architectureStates": ["current"],
+      "description": "Focused ready-Button trace with explicit Brand Expression exclusions.",
+      "nodeIds": [],
+      "edgeIds": [],
+      "workflowId": "workflow.use-ready-button",
+      "direction": "right"
+    },
+    {
+      "id": "view.guided-composition",
+      "title": "Guided Composition Mode",
+      "level": "workflow",
+      "architectureStates": ["current"],
+      "description": "Page composition from ready sections with project-context gating and the current page-template gap.",
+      "nodeIds": [],
+      "edgeIds": [],
+      "workflowId": "workflow.compose-page-from-ready-sections",
+      "direction": "right"
+    },
+    {
+      "id": "view.creative-creation-extension",
+      "title": "Creative Creation and Extension Mode",
+      "level": "workflow",
+      "architectureStates": ["current"],
+      "description": "Genuine component creation with conditional brand activation and code-first acceptance.",
+      "nodeIds": [],
+      "edgeIds": [],
+      "workflowId": "workflow.create-missing-component",
+      "direction": "right"
+    },
+    {
+      "id": "view.existing-component-repair",
+      "title": "Existing Component Repair",
+      "level": "L2",
+      "architectureStates": ["current"],
+      "description": "Repair path that resolves code truth, updates mirrored artifacts, validates runtime, and synchronizes accepted changes.",
+      "nodeIds": ["router.agentic-rules", "gate.reuse", "process.lookup", "source.component-registry", "source.astro-components", "source.css-variables", "process.implement-astro", "process.document", "process.browser-validation", "validator.component-architecture", "validator.family", "validator.build", "process.figma-sync", "external.figma", "output.astro", "output.figma"],
+      "edgeIds": ["edge.reuse-routes-lookup", "edge.lookup-reads-registry", "edge.lookup-reads-astro", "edge.implement-writes-astro", "edge.implement-depends-tokens", "edge.implement-routes-docs", "edge.implement-routes-browser", "edge.component-audit-validates-registry", "edge.component-audit-validates-astro", "edge.build-validates-output", "edge.figma-sync-reads-astro", "edge.figma-sync-writes-figma"],
+      "direction": "right"
+    },
+    {
+      "id": "view.component-lifecycle-release",
+      "title": "Component Lifecycle and Release",
+      "level": "L2",
+      "architectureStates": ["current"],
+      "description": "Discovery, implementation, documentation, browser evidence, Figma parity, human checkpoint, roadmap, and release.",
+      "nodeIds": ["gate.component-gap", "process.implement-astro", "process.document", "process.browser-validation", "process.figma-sync", "external.figma", "validator.component-architecture", "validator.family", "validator.roadmap", "validator.build", "approval.family", "gate.roadmap-checkpoint", "process.release", "source.roadmap", "output.astro", "output.figma"],
+      "edgeIds": ["edge.gap-routes-implement", "edge.implement-routes-docs", "edge.implement-routes-browser", "edge.figma-sync-creates-output", "edge.family-validates-figma", "edge.family-approval-approves-output", "edge.release-reads-roadmap", "edge.release-publishes-astro"],
+      "direction": "right"
+    },
+    {
+      "id": "view.astro-figma-identity",
+      "title": "Astro ↔ Figma Identity and Mapping",
+      "level": "L2",
+      "architectureStates": ["current"],
+      "description": "Code-first identity, registry indexing, adapters, editable Figma representation, parity validation, and accepted output.",
+      "nodeIds": ["source.astro-components", "source.component-registry", "source.css-variables", "source.figma-adapters", "process.figma-sync", "external.figma", "validator.family", "approval.family", "output.figma"],
+      "edgeIds": ["edge.astro-maps-adapters", "edge.registry-maps-figma", "edge.figma-sync-reads-astro", "edge.figma-sync-reads-adapters", "edge.figma-sync-writes-figma", "edge.family-validates-figma", "edge.family-approval-approves-output"],
+      "direction": "right"
+    },
+    {
+      "id": "view.new-project-fork",
+      "title": "New Project Fork and Duplicated Figma File Flow",
+      "level": "L2",
+      "architectureStates": ["current"],
+      "description": "A project fork supplies its own context and brand contract while preserving stable framework identities and creating a project-owned Figma representation.",
+      "nodeIds": ["state.current", "process.project-fork", "output.project-fork", "input.project-context", "input.brand-references", "source.brand-contract", "gate.brand-contract", "source.component-registry", "source.astro-components", "source.figma-adapters", "process.duplicate-figma-file", "external.figma", "output.astro", "output.figma"],
+      "edgeIds": ["edge.project-fork-reads-current", "edge.project-fork-creates-output", "edge.project-output-depends-context", "edge.brand-contract-reads-source", "edge.astro-maps-adapters", "edge.registry-maps-figma", "edge.duplicate-figma-reads-registry", "edge.duplicate-figma-reads-adapters", "edge.duplicate-figma-creates-output"],
+      "direction": "right",
+      "metadata": {
+        "currentEvidenceLimit": "The repository documents new-project brand calibration and Figma mapping, but no executable duplicated-Figma-file automation was found."
+      }
+    },
+    {
+      "id": "view.brand-expression-calibration",
+      "title": "Brand Expression and Art Direction Calibration",
+      "level": "L2",
+      "architectureStates": ["current"],
+      "description": "Conditional evidence, approval, calibration, implementation, and propagation path.",
+      "nodeIds": ["gate.brand-sensitive", "gate.brand-contract", "source.brand-contract", "input.brand-references", "source.art-direction", "process.visual-calibration", "approval.visual", "source.css-variables", "source.astro-components", "process.browser-validation", "process.figma-sync"],
+      "edgeIds": ["edge.brand-routes-contract", "edge.brand-contract-reads-source", "edge.brand-contract-blocks-calibration", "edge.calibration-reads-knowledge", "edge.calibration-reads-references", "edge.visual-approves-calibration", "edge.calibration-writes-astro"],
+      "direction": "right"
+    },
+    {
+      "id": "view.sources-of-truth",
+      "title": "Sources of Truth by Concern",
+      "level": "L1",
+      "architectureStates": ["current", "target"],
+      "description": "Non-competing concern ownership: registry for discovery/identity, Astro for API/runtime, CSS for values, contract for visual intent, roadmap for status, adapters for representation differences, Figma for editable representation, and the graph for architecture indexing.",
+      "nodeIds": ["state.current", "source.component-registry", "source.astro-components", "source.css-variables", "source.roadmap", "source.brand-contract", "source.art-direction", "source.figma-adapters", "external.figma", "target.architecture-graph"],
+      "edgeIds": ["edge.astro-maps-adapters", "edge.registry-maps-figma", "edge.graph-reads-current"],
+      "direction": "down"
+    },
+    {
+      "id": "view.atomic-design-dependencies",
+      "title": "Atomic Design Dependency View",
+      "level": "L1",
+      "architectureStates": ["current"],
+      "description": "Foundation-to-page dependency order with explicit current inventory counts and the missing page-template catalog.",
+      "nodeIds": ["foundation.tokens", "component.atoms", "component.molecules", "component.family-parts", "component.cards", "component.organisms-sections", "component.templates-pages"],
+      "edgeIds": ["edge.tokens-to-atoms", "edge.molecules-to-atoms", "edge.parts-to-molecules", "edge.cards-to-parts", "edge.organisms-to-cards", "edge.templates-to-organisms"],
+      "direction": "right"
+    },
+    {
+      "id": "view.brand-extension-workflow",
+      "title": "Brand-Sensitive Component Extension",
+      "level": "workflow",
+      "architectureStates": ["current"],
+      "description": "Complete creative calibration trace including contract and human approval gates.",
+      "nodeIds": [],
+      "edgeIds": [],
+      "workflowId": "workflow.extend-component-for-brand",
+      "direction": "right"
+    },
+    {
+      "id": "view.astro-to-figma-workflow",
+      "title": "Accepted Astro to Figma Synchronization",
+      "level": "workflow",
+      "architectureStates": ["current"],
+      "description": "Code-first synchronization trace with tool calls, parity checks, roadmap evidence, and family acceptance.",
+      "nodeIds": [],
+      "edgeIds": [],
+      "workflowId": "workflow.sync-accepted-astro-to-figma",
+      "direction": "right"
+    }
+  ]
+}

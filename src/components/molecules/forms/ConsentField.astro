@@ -1,0 +1,127 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Checkbox from "../../atoms/forms/Checkbox.astro";
+
+type ConsentState = "default" | "invalid";
+
+type Props = {
+  id: string;
+  name?: string;
+  label: string;
+  description?: string;
+  details?: string;
+  error?: string;
+  checked?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  state?: ConsentState;
+  componentSize?: "small" | "medium" | "large";
+  componentName?: string;
+  class?: string;
+} & Omit<
+  HTMLAttributes<"input">,
+  "class" | "type" | "size" | "id" | "name" | "checked" | "required" | "disabled"
+>;
+
+const {
+  id,
+  name = id,
+  label,
+  description,
+  details,
+  error,
+  checked,
+  required = false,
+  disabled = false,
+  state = "default",
+  componentSize = "medium",
+  componentName = "ConsentField",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const hasDetails = Boolean(details || Astro.slots.has("details"));
+const detailsId = hasDetails ? `${id}-details` : undefined;
+const errorId = error ? `${id}-error` : undefined;
+const checkboxDescriptionId = description ? `${id}-description` : undefined;
+const describedBy =
+  [checkboxDescriptionId, detailsId, errorId]
+    .filter(Boolean)
+    .join(" ") || undefined;
+const resolvedState = disabled ? "disabled" : state;
+---
+
+<div
+  class:list={["consent-field", className]}
+  data-component-name={componentName}
+  data-component-family="forms"
+  data-consent-state={resolvedState}
+  data-preview-target
+>
+  <Checkbox
+    id={id}
+    name={name}
+    label={label}
+    description={description}
+    checked={checked}
+    required={required}
+    disabled={disabled}
+    componentSize={componentSize}
+    aria-invalid={state === "invalid" ? "true" : undefined}
+    aria-describedby={describedBy}
+    {...attributes}
+  />
+  {hasDetails && (
+    <div id={detailsId} class="consent-field__details">
+      <slot name="details">{details}</slot>
+    </div>
+  )}
+  {error && (
+    <p
+      id={errorId}
+      class="consent-field__error"
+      data-consent-error
+      role={state === "invalid" ? "alert" : undefined}
+      hidden={state !== "invalid"}
+    >
+      {error}
+    </p>
+  )}
+</div>
+
+<style>
+  .consent-field {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-small);
+  }
+
+  .consent-field__details {
+    color: var(--input-helper-default);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+    padding-inline-start: calc(var(--component-icon-size) + var(--component-gap));
+  }
+
+  .consent-field__details :global(a) {
+    color: var(--color-text-accent);
+  }
+
+  .consent-field__error {
+    margin: 0;
+    color: var(--input-helper-invalid);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+    padding-inline-start: calc(var(--component-icon-size) + var(--component-gap));
+  }
+
+  .consent-field[data-preview-state="invalid"] .consent-field__error {
+    display: block;
+  }
+
+  .consent-field[data-consent-state="disabled"],
+  .consent-field[data-preview-state="disabled"] {
+    cursor: not-allowed;
+    opacity: 0.64;
+  }
+</style>

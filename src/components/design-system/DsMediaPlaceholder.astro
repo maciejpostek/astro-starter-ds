@@ -1,0 +1,251 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MediaRatio from "../atoms/media/MediaRatio.astro";
+import {
+  mediaPlaceholderByVariant,
+  type MediaPlaceholderVariant,
+} from "../../data/design-system/mediaPlaceholderCatalog";
+
+type Props = {
+  variant: MediaPlaceholderVariant;
+  label?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"div">, "class" | "role" | "aria-label">;
+
+const {
+  variant,
+  label,
+  componentName = "DsMediaPlaceholder",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const definition = mediaPlaceholderByVariant[variant];
+if (!definition) {
+  throw new Error(
+    `DsMediaPlaceholder received unsupported variant "${String(variant)}".`,
+  );
+}
+
+const accessibleLabel = (label ?? definition.label).trim();
+if (!accessibleLabel) {
+  throw new Error("DsMediaPlaceholder label must be non-empty when provided.");
+}
+if (!componentName.trim()) {
+  throw new Error("DsMediaPlaceholder componentName must be non-empty.");
+}
+---
+
+<div
+  class:list={["ds-media-placeholder", className]}
+  data-component-name={componentName.trim()}
+  data-component-family="documentation"
+  data-media-placeholder-variant={variant}
+  data-fixture-only="true"
+  data-preview-target
+  role="img"
+  aria-label={accessibleLabel}
+  {...attributes}
+>
+  <MediaRatio
+    ratio={definition.ratio}
+    componentName={`DsMediaPlaceholder.Ratio.${variant}`}
+  >
+    {
+      variant === "image" && (
+        <span class="ds-media-placeholder__image" aria-hidden="true">
+          <span data-panel="primary"></span>
+          <span data-panel="secondary"></span>
+          <span data-panel="accent"></span>
+          <span data-panel="footer"></span>
+        </span>
+      )
+    }
+
+    {
+      variant === "video" && (
+        <span class="ds-media-placeholder__video" aria-hidden="true">
+          <span data-line="top"></span>
+          <span data-line="middle"></span>
+          <span data-line="bottom"></span>
+          <span data-play></span>
+        </span>
+      )
+    }
+
+    {
+      variant === "productPreview" && (
+        <span class="ds-media-placeholder__product" aria-hidden="true">
+          <span data-chrome>
+            <i></i>
+            <i></i>
+            <i></i>
+          </span>
+          <span data-sidebar>
+            <i></i>
+            <i></i>
+            <i></i>
+          </span>
+          <span data-content>
+            <i data-wide></i>
+            <i></i>
+            <i></i>
+            <i data-accent></i>
+          </span>
+        </span>
+      )
+    }
+  </MediaRatio>
+</div>
+
+<style>
+  .ds-media-placeholder {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+  }
+
+  .ds-media-placeholder :global(.media-ratio) {
+    min-height: var(--size-160);
+    color: var(--color-text-secondary);
+    background: var(--color-background-subtle);
+  }
+
+  .ds-media-placeholder__image,
+  .ds-media-placeholder__video,
+  .ds-media-placeholder__product {
+    position: absolute;
+    inset: 0;
+    display: grid;
+  }
+
+  .ds-media-placeholder__image {
+    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-rows: 1fr 0.72fr;
+    gap: var(--gap-small);
+    padding: var(--component-padding-large);
+  }
+
+  .ds-media-placeholder__image span {
+    display: block;
+    background: var(--color-background-muted);
+  }
+
+  .ds-media-placeholder__image [data-panel="primary"] {
+    grid-row: 1 / -1;
+  }
+
+  .ds-media-placeholder__image [data-panel="accent"] {
+    width: var(--size-48);
+    justify-self: end;
+    background: var(--color-background-accent);
+  }
+
+  .ds-media-placeholder__image [data-panel="footer"] {
+    grid-column: 1 / -1;
+    height: var(--size-12);
+    align-self: end;
+    background: var(--color-background-surface);
+  }
+
+  .ds-media-placeholder__video {
+    place-items: center;
+    padding: var(--component-padding-large);
+  }
+
+  .ds-media-placeholder__video [data-line] {
+    position: absolute;
+    left: var(--component-padding-large);
+    display: block;
+    height: var(--size-12);
+    background: var(--color-background-muted);
+  }
+
+  .ds-media-placeholder__video [data-line="top"] {
+    top: var(--component-padding-large);
+    width: 42%;
+  }
+
+  .ds-media-placeholder__video [data-line="middle"] {
+    top: 50%;
+    width: 72%;
+  }
+
+  .ds-media-placeholder__video [data-line="bottom"] {
+    bottom: var(--component-padding-large);
+    width: 56%;
+  }
+
+  .ds-media-placeholder__video [data-play] {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 0;
+    height: 0;
+    border-block: var(--size-24) solid transparent;
+    border-left: var(--size-40) solid var(--color-icon-accent);
+  }
+
+  .ds-media-placeholder__product {
+    grid-template-columns: minmax(var(--size-48), 0.28fr) 1fr;
+    grid-template-rows: var(--size-40) 1fr;
+    background: var(--color-background-canvas);
+  }
+
+  .ds-media-placeholder__product [data-chrome] {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: var(--gap-tiny);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    padding-inline: var(--component-padding-small);
+    background: var(--color-background-surface);
+  }
+
+  .ds-media-placeholder__product [data-chrome] i {
+    display: block;
+    width: var(--size-8);
+    height: var(--size-8);
+    background: var(--color-icon-tertiary);
+  }
+
+  .ds-media-placeholder__product [data-sidebar] {
+    display: grid;
+    align-content: start;
+    gap: var(--gap-small);
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-medium);
+    background: var(--color-background-subtle);
+  }
+
+  .ds-media-placeholder__product [data-sidebar] i,
+  .ds-media-placeholder__product [data-content] i {
+    display: block;
+    height: var(--size-12);
+    background: var(--color-background-muted);
+  }
+
+  .ds-media-placeholder__product [data-content] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: var(--gap-regular);
+    padding: var(--component-padding-large);
+  }
+
+  .ds-media-placeholder__product [data-content] i {
+    min-height: var(--size-48);
+  }
+
+  .ds-media-placeholder__product [data-content] [data-wide] {
+    grid-column: 1 / -1;
+    min-height: var(--size-80);
+  }
+
+  .ds-media-placeholder__product [data-content] [data-accent] {
+    background: var(--color-background-accent);
+  }
+</style>

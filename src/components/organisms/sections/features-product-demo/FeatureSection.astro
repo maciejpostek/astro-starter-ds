@@ -1,0 +1,619 @@
+---
+import { CircleCheck } from "@lucide/astro";
+import type { HTMLAttributes } from "astro/types";
+import FeatureCard from "../../../molecules/cards/FeatureCard.astro";
+import Tabs from "../../disclosure/Tabs.astro";
+import type { TabsOrientation } from "../../disclosure/Tabs.astro";
+import ComparisonTable from "../../data-display/ComparisonTable.astro";
+
+export type FeatureSectionVariant = "grid" | "list" | "alternating" | "bento" | "tabs" | "comparison";
+
+export interface FeatureSectionItem {
+  id: string;
+  title: string;
+  description: string;
+  eyebrow?: string;
+  actionLabel?: string;
+  actionHref?: string;
+  mediaSrc?: string;
+  mediaAlt?: string;
+  disabled?: boolean;
+}
+
+export interface FeatureSectionComparisonColumn {
+  key: string;
+  label: string;
+  highlighted?: boolean;
+}
+
+export interface FeatureSectionComparisonRow {
+  label: string;
+  values: Record<string, string | boolean>;
+}
+
+export interface FeatureSectionComparison {
+  caption: string;
+  columns: FeatureSectionComparisonColumn[];
+  rows: FeatureSectionComparisonRow[];
+}
+
+export interface FeatureSectionContent {
+  title: string;
+  description?: string;
+  items?: FeatureSectionItem[];
+  comparison?: FeatureSectionComparison;
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: FeatureSectionContent;
+  variant: FeatureSectionVariant;
+  headingLevel?: HeadingLevel;
+  tabsOrientation?: TabsOrientation;
+  selectedItemId?: string;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  tabsOrientation = "horizontal",
+  selectedItemId,
+  ariaLabel,
+  componentName = "FeatureSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const supportedVariants: FeatureSectionVariant[] = [
+  "grid",
+  "list",
+  "alternating",
+  "bento",
+  "tabs",
+  "comparison",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const supportedTabsOrientations: TabsOrientation[] = [
+  "horizontal",
+  "vertical",
+];
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+const isRealHref = (value: string | undefined) => {
+  const resolved = value?.trim();
+  return Boolean(
+    resolved &&
+      resolved !== "#" &&
+      !/^javascript:/i.test(resolved) &&
+      !/^data:/i.test(resolved),
+  );
+};
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "FeatureSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("FeatureSection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("FeatureSection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "FeatureSection description must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `FeatureSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `FeatureSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (!supportedTabsOrientations.includes(tabsOrientation)) {
+  throw new Error(
+    `FeatureSection received unsupported tabsOrientation "${String(tabsOrientation)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "FeatureSection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error("FeatureSection requires a non-empty componentName.");
+}
+if (variant !== "tabs" && tabsOrientation !== "horizontal") {
+  throw new Error(
+    "FeatureSection tabsOrientation is supported only by Tabs.",
+  );
+}
+if (variant !== "tabs" && selectedItemId !== undefined) {
+  throw new Error(
+    "FeatureSection selectedItemId is supported only by Tabs.",
+  );
+}
+
+const items = content.items ?? [];
+const comparison = content.comparison;
+
+if (variant === "comparison") {
+  if (items.length > 0) {
+    throw new Error(
+      "FeatureSection Comparison must not define feature items.",
+    );
+  }
+  if (!comparison || typeof comparison !== "object") {
+    throw new Error(
+      "FeatureSection Comparison requires comparison content.",
+    );
+  }
+} else {
+  if (!Array.isArray(content.items) || items.length < 2) {
+    throw new Error(
+      "FeatureSection non-comparison variants require at least two feature items.",
+    );
+  }
+  if (comparison !== undefined) {
+    throw new Error(
+      "FeatureSection comparison content is supported only by Comparison.",
+    );
+  }
+}
+
+const itemIds = new Set<string>();
+items.forEach((item, index) => {
+  const itemId = item.id?.trim();
+  const title = item.title?.trim();
+  const description = item.description?.trim();
+  const eyebrow = item.eyebrow?.trim();
+  const actionLabel = item.actionLabel?.trim();
+  const actionHref = item.actionHref?.trim();
+  const mediaSrc = item.mediaSrc?.trim();
+  const mediaAlt = item.mediaAlt?.trim();
+
+  if (!itemId || !selectorSafeIdPattern.test(itemId)) {
+    throw new Error(
+      `FeatureSection item ${index + 1} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(
+      `FeatureSection contains duplicate item id "${itemId}".`,
+    );
+  }
+  itemIds.add(itemId);
+  if (!title || !description) {
+    throw new Error(
+      `FeatureSection item "${itemId}" requires non-empty title and description values.`,
+    );
+  }
+  if (item.eyebrow !== undefined && !eyebrow) {
+    throw new Error(
+      `FeatureSection item "${itemId}" eyebrow must be non-empty when provided.`,
+    );
+  }
+  if (Boolean(actionLabel) !== Boolean(actionHref)) {
+    throw new Error(
+      `FeatureSection item "${itemId}" actionLabel and actionHref must be provided together.`,
+    );
+  }
+  if (actionHref && !isRealHref(actionHref)) {
+    throw new Error(
+      `FeatureSection item "${itemId}" requires a real non-placeholder actionHref.`,
+    );
+  }
+  if ((item.mediaSrc === undefined) !== (item.mediaAlt === undefined)) {
+    throw new Error(
+      `FeatureSection item "${itemId}" mediaSrc and mediaAlt must be provided together.`,
+    );
+  }
+  if (
+    item.mediaSrc !== undefined &&
+    (!mediaSrc || !mediaAlt)
+  ) {
+    throw new Error(
+      `FeatureSection item "${itemId}" mediaSrc and mediaAlt must be non-empty when provided.`,
+    );
+  }
+  if (
+    (item.mediaSrc !== undefined || item.mediaAlt !== undefined) &&
+    variant !== "alternating" &&
+    variant !== "bento"
+  ) {
+    throw new Error(
+      `FeatureSection item "${itemId}" media is supported only by Alternating and Bento.`,
+    );
+  }
+  if (
+    variant === "tabs" &&
+    (
+      item.eyebrow !== undefined ||
+      item.actionLabel !== undefined ||
+      item.actionHref !== undefined ||
+      item.mediaSrc !== undefined ||
+      item.mediaAlt !== undefined
+    )
+  ) {
+    throw new Error(
+      `FeatureSection Tabs item "${itemId}" supports only id, title, description, and disabled.`,
+    );
+  }
+  if (variant !== "tabs" && item.disabled !== undefined) {
+    throw new Error(
+      `FeatureSection item "${itemId}" disabled is supported only by Tabs.`,
+    );
+  }
+});
+
+if (variant === "tabs" && items.every((item) => item.disabled)) {
+  throw new Error("FeatureSection Tabs requires at least one enabled item.");
+}
+if (
+  selectedItemId !== undefined &&
+  !items.some(
+    (item) =>
+      item.id.trim() === selectedItemId.trim() &&
+      !item.disabled,
+  )
+) {
+  throw new Error(
+    "FeatureSection selectedItemId must reference an enabled Tabs item.",
+  );
+}
+
+if (comparison) {
+  const caption = comparison.caption?.trim();
+  if (!caption) {
+    throw new Error(
+      "FeatureSection Comparison requires a non-empty caption.",
+    );
+  }
+  if (!Array.isArray(comparison.columns) || comparison.columns.length < 2) {
+    throw new Error(
+      "FeatureSection Comparison requires at least two columns.",
+    );
+  }
+  if (!Array.isArray(comparison.rows) || comparison.rows.length < 1) {
+    throw new Error(
+      "FeatureSection Comparison requires at least one row.",
+    );
+  }
+  const columnKeys = new Set<string>();
+  comparison.columns.forEach((column, index) => {
+    const key = column.key?.trim();
+    const label = column.label?.trim();
+    if (!key || !selectorSafeIdPattern.test(key)) {
+      throw new Error(
+        `FeatureSection Comparison column ${index + 1} requires a selector-safe key that starts with a letter.`,
+      );
+    }
+    if (columnKeys.has(key)) {
+      throw new Error(
+        `FeatureSection Comparison contains duplicate column key "${key}".`,
+      );
+    }
+    columnKeys.add(key);
+    if (!label) {
+      throw new Error(
+        `FeatureSection Comparison column "${key}" requires a non-empty label.`,
+      );
+    }
+  });
+  comparison.rows.forEach((row, index) => {
+    if (!row.label?.trim()) {
+      throw new Error(
+        `FeatureSection Comparison row ${index + 1} requires a non-empty label.`,
+      );
+    }
+    for (const key of columnKeys) {
+      const value = row.values?.[key];
+      if (typeof value !== "string" && typeof value !== "boolean") {
+        throw new Error(
+          `FeatureSection Comparison row "${row.label.trim()}" requires a string or boolean value for "${key}".`,
+        );
+      }
+      if (typeof value === "string" && !value.trim()) {
+        throw new Error(
+          `FeatureSection Comparison row "${row.label.trim()}" value for "${key}" must be non-empty.`,
+        );
+      }
+    }
+  });
+}
+
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const cardHeadingLevel = (headingLevel + 1) as 3 | 4;
+const normalizedSelectedItemId = selectedItemId?.trim();
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "feature-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="features-product-demo"
+  data-section-type="features"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container feature-section__container" data-container="main">
+    <header class="feature-section__header">
+      <Heading>{normalizedTitle}</Heading>
+      {normalizedDescription && <p>{normalizedDescription}</p>}
+    </header>
+
+    {
+      variant === "tabs" && (
+        <Tabs
+          id={`${normalizedId}-tabs`}
+          label={`${normalizedTitle} feature groups`}
+          items={items.map((item) => ({
+            id: item.id.trim(),
+            label: item.title.trim(),
+            content: item.description.trim(),
+            disabled: item.disabled,
+          }))}
+          orientation={tabsOrientation}
+          selectedId={normalizedSelectedItemId}
+          componentName={`${normalizedComponentName}.Tabs`}
+          class="feature-section__tabs"
+        />
+      )
+    }
+
+    {
+      variant === "comparison" && comparison && (
+        <ComparisonTable
+          caption={comparison.caption.trim()}
+          columns={comparison.columns.map((column) => ({
+            ...column,
+            key: column.key.trim(),
+            label: column.label.trim(),
+          }))}
+          rows={comparison.rows.map((row) => ({
+            label: row.label.trim(),
+            values: Object.fromEntries(
+              Object.entries(row.values).map(([key, value]) => [
+                key,
+                typeof value === "string" ? value.trim() : value,
+              ]),
+            ),
+          }))}
+          componentName={`${normalizedComponentName}.ComparisonTable`}
+        />
+      )
+    }
+
+    {
+      variant !== "tabs" && variant !== "comparison" && (
+        <ul class="feature-section__items">
+          {items.map((item, index) => {
+            const cardVariant =
+              variant === "list"
+                ? "numbered"
+                : variant === "alternating"
+                  ? "media"
+                  : variant === "bento" && item.mediaSrc
+                    ? "media"
+                    : "icon";
+            const cardProps = {
+              title: item.title.trim(),
+              description: item.description.trim(),
+              eyebrow: item.eyebrow?.trim(),
+              actionLabel: item.actionLabel?.trim(),
+              actionHref: item.actionHref?.trim(),
+              headingLevel: cardHeadingLevel,
+              variant: cardVariant,
+              componentName: `${normalizedComponentName}.FeatureCard`,
+              class: "feature-section__feature-card",
+              ...(cardVariant === "numbered"
+                ? { number: String(index + 1).padStart(2, "0") }
+                : {}),
+              ...(cardVariant === "media"
+                ? {
+                    visualLabel:
+                      item.mediaAlt?.trim() ??
+                      `${item.title.trim()} feature visual`,
+                  }
+                : {}),
+            } as const;
+
+            return (
+              <li data-feature-id={item.id.trim()}>
+                {cardVariant === "icon" ? (
+                  <FeatureCard {...cardProps}>
+                    <CircleCheck slot="visual" aria-hidden="true" />
+                  </FeatureCard>
+                ) : cardVariant === "media" && item.mediaSrc ? (
+                  <FeatureCard {...cardProps}>
+                    <img
+                      slot="visual"
+                      src={item.mediaSrc.trim()}
+                      alt={item.mediaAlt?.trim()}
+                      loading="lazy"
+                    />
+                  </FeatureCard>
+                ) : (
+                  <FeatureCard {...cardProps} />
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .feature-section,
+  .feature-section__container,
+  .feature-section__header,
+  .feature-section__items,
+  .feature-section__items > li {
+    min-width: 0;
+  }
+
+  .feature-section__container,
+  .feature-section__header {
+    display: grid;
+  }
+
+  .feature-section__container {
+    gap: var(--gap-extra-large);
+  }
+
+  .feature-section__header {
+    max-width: var(--content-max-width);
+    gap: var(--gap-small);
+  }
+
+  .feature-section__header :is(h2, h3),
+  .feature-section__header p {
+    margin: 0;
+  }
+
+  .feature-section__header p {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .feature-section__items {
+    display: grid;
+    gap: var(--gap-large);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .feature-section[data-section-variant="grid"]
+    .feature-section__items {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .feature-section[data-section-variant="list"]
+    .feature-section__items {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-section[data-section-variant="alternating"]
+    .feature-section__items {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-section[data-section-variant="alternating"]
+    .feature-section__items > li
+    :global(.feature-card) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .feature-section[data-section-variant="alternating"]
+    .feature-section__items > li:nth-child(even)
+    :global(.feature-card__media) {
+    order: 2;
+  }
+
+  .feature-section[data-section-variant="bento"]
+    .feature-section__items {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .feature-section[data-section-variant="bento"]
+    .feature-section__items > li {
+    grid-column: span 4;
+  }
+
+  .feature-section[data-section-variant="bento"]
+    .feature-section__items > li:first-child {
+    grid-column: span 8;
+  }
+
+  .feature-section[data-section-variant="bento"]
+    .feature-section__items > li:nth-child(4n) {
+    grid-column: span 8;
+  }
+
+  :global(.feature-section__tabs),
+  .feature-section :global(.comparison-table) {
+    min-width: 0;
+  }
+
+  @media (width < 64rem) {
+    .feature-section[data-section-variant="grid"]
+      .feature-section__items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .feature-section[data-section-variant="bento"]
+      .feature-section__items > li,
+    .feature-section[data-section-variant="bento"]
+      .feature-section__items > li:first-child,
+    .feature-section[data-section-variant="bento"]
+      .feature-section__items > li:nth-child(4n) {
+      grid-column: span 6;
+    }
+  }
+
+  @media (width < 48rem) {
+    .feature-section[data-section-variant="alternating"]
+      .feature-section__items > li
+      :global(.feature-card) {
+      display: flex;
+    }
+
+    .feature-section[data-section-variant="alternating"]
+      .feature-section__items > li:nth-child(even)
+      :global(.feature-card__media) {
+      order: 0;
+    }
+  }
+
+  @media (width < 40rem) {
+    .feature-section__container {
+      gap: var(--gap-large);
+    }
+
+    .feature-section[data-section-variant="grid"]
+      .feature-section__items {
+      grid-template-columns: 1fr;
+    }
+
+    .feature-section[data-section-variant="bento"]
+      .feature-section__items {
+      grid-template-columns: 1fr;
+    }
+
+    .feature-section[data-section-variant="bento"]
+      .feature-section__items > li,
+    .feature-section[data-section-variant="bento"]
+      .feature-section__items > li:first-child,
+    .feature-section[data-section-variant="bento"]
+      .feature-section__items > li:nth-child(4n) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

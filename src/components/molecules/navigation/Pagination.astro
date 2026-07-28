@@ -1,0 +1,241 @@
+---
+import { ChevronLeft, ChevronRight } from "@lucide/astro";
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath?: string;
+  maxVisiblePages?: number;
+  label?: string;
+  componentName?: string;
+}
+
+type PageEntry = number | "ellipsis-start" | "ellipsis-end";
+
+const {
+  currentPage,
+  totalPages,
+  basePath = "?page=",
+  maxVisiblePages = 7,
+  label = "Pagination",
+  componentName = "Pagination"
+} = Astro.props;
+
+const resolvedBasePath = basePath.trim();
+const resolvedLabel = label.trim();
+const resolvedComponentName = componentName.trim();
+
+if (!Number.isSafeInteger(totalPages) || totalPages < 1) {
+  throw new Error("Pagination totalPages must be a positive safe integer.");
+}
+
+if (
+  !Number.isSafeInteger(currentPage) ||
+  currentPage < 1 ||
+  currentPage > totalPages
+) {
+  throw new Error(
+    "Pagination currentPage must be a safe integer within totalPages."
+  );
+}
+
+if (
+  !Number.isSafeInteger(maxVisiblePages) ||
+  maxVisiblePages < 5 ||
+  maxVisiblePages % 2 === 0
+) {
+  throw new Error(
+    "Pagination maxVisiblePages must be an odd safe integer of at least 5."
+  );
+}
+
+if (!resolvedBasePath || resolvedBasePath === "#") {
+  throw new Error("Pagination requires a real non-placeholder basePath.");
+}
+
+if (!resolvedLabel || !resolvedComponentName) {
+  throw new Error(
+    "Pagination requires non-empty label and componentName values."
+  );
+}
+
+const allPages = Array.from({ length: totalPages }, (_, index) => index + 1);
+let visiblePages: PageEntry[];
+
+if (totalPages <= maxVisiblePages) {
+  visiblePages = allPages;
+} else if (currentPage <= maxVisiblePages - 3) {
+  visiblePages = [
+    ...allPages.slice(0, maxVisiblePages - 2),
+    "ellipsis-end",
+    totalPages
+  ];
+} else if (currentPage >= totalPages - (maxVisiblePages - 4)) {
+  visiblePages = [
+    1,
+    "ellipsis-start",
+    ...allPages.slice(-(maxVisiblePages - 2))
+  ];
+} else {
+  const sideCount = (maxVisiblePages - 5) / 2;
+  visiblePages = [
+    1,
+    "ellipsis-start",
+    ...allPages.slice(
+      currentPage - sideCount - 1,
+      currentPage + sideCount
+    ),
+    "ellipsis-end",
+    totalPages
+  ];
+}
+
+const hrefFor = (page: number) => `${resolvedBasePath}${page}`;
+const hasPrevious = currentPage > 1;
+const hasNext = currentPage < totalPages;
+---
+
+<nav
+  class="pagination"
+  aria-label={resolvedLabel}
+  data-component-name={resolvedComponentName}
+  data-component-family="navigation"
+  data-pagination-state="default"
+  data-preview-target
+>
+  {
+    hasPrevious ? (
+      <a
+        class="pagination__item pagination__control"
+        href={hrefFor(currentPage - 1)}
+        aria-label="Previous page"
+        rel="prev"
+      >
+        <ChevronLeft size="var(--size-16)" aria-hidden="true" />
+      </a>
+    ) : (
+      <span
+        class="pagination__item pagination__control"
+        role="link"
+        aria-disabled="true"
+        aria-label="Previous page unavailable"
+      >
+        <ChevronLeft size="var(--size-16)" aria-hidden="true" />
+      </span>
+    )
+  }
+
+  <ol>
+    {
+      visiblePages.map((entry) => (
+        <li>
+          {typeof entry === "number" ? (
+            <a
+              class="pagination__item"
+              href={hrefFor(entry)}
+              aria-label={`Page ${entry}`}
+              aria-current={entry === currentPage ? "page" : undefined}
+            >
+              {entry}
+            </a>
+          ) : (
+            <span
+              class="pagination__ellipsis"
+              aria-hidden="true"
+              data-pagination-ellipsis={entry}
+            >
+              …
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+
+  {
+    hasNext ? (
+      <a
+        class="pagination__item pagination__control"
+        href={hrefFor(currentPage + 1)}
+        aria-label="Next page"
+        rel="next"
+      >
+        <ChevronRight size="var(--size-16)" aria-hidden="true" />
+      </a>
+    ) : (
+      <span
+        class="pagination__item pagination__control"
+        role="link"
+        aria-disabled="true"
+        aria-label="Next page unavailable"
+      >
+        <ChevronRight size="var(--size-16)" aria-hidden="true" />
+      </span>
+    )
+  }
+</nav>
+
+<style>
+  .pagination,
+  .pagination ol {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--gap-tiny);
+  }
+
+  .pagination {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .pagination ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pagination__item,
+  .pagination__ellipsis {
+    display: inline-flex;
+    min-width: var(--component-size-small-min-height);
+    min-height: var(--component-size-small-min-height);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pagination__item {
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    color: var(--color-text-secondary);
+    background: var(--color-background-canvas);
+    font-size: var(--font-size-body-tiny);
+    text-decoration: none;
+  }
+
+  a.pagination__item:hover {
+    border-color: var(--color-border-default);
+    background: var(--color-background-subtle);
+    color: var(--color-text-primary);
+  }
+
+  a.pagination__item:focus-visible {
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: var(--size-2);
+  }
+
+  a.pagination__item[aria-current="page"] {
+    border-color: var(--color-border-accent);
+    background: var(--color-background-accent);
+    color: var(--color-text-on-accent);
+  }
+
+  .pagination__item[aria-disabled="true"] {
+    color: var(--color-state-disabled-text);
+    background: var(--color-state-disabled-background);
+  }
+
+  .pagination__ellipsis {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+  }
+</style>

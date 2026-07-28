@@ -1,0 +1,136 @@
+---
+import MediaRatio from "../../atoms/media/MediaRatio.astro";
+import type { MediaRatioValue } from "../../atoms/media/types";
+
+interface Props {
+  src: string;
+  poster?: string;
+  title: string;
+  ratio?: MediaRatioValue;
+  autoplay?: boolean;
+  muted?: boolean;
+  loop?: boolean;
+  controls?: boolean;
+  componentName?: string;
+}
+
+const {
+  src,
+  poster,
+  title,
+  ratio = "16:9",
+  autoplay = false,
+  muted = false,
+  loop = false,
+  controls = true,
+  componentName = "VideoPlayer"
+} = Astro.props;
+---
+
+<figure
+  class="video-player"
+  data-component-name={componentName}
+  data-component-family="media"
+  data-player-state="idle"
+  data-video-player
+  data-preview-target
+>
+  <MediaRatio ratio={ratio}>
+    <video
+      src={src}
+      poster={poster}
+      aria-label={title}
+      autoplay={autoplay}
+      muted={muted}
+      loop={loop}
+      controls={controls}
+      playsinline
+      preload="metadata"
+    ></video>
+  </MediaRatio>
+  <figcaption>{title}</figcaption>
+</figure>
+
+<script>
+  type VideoPlayerWindow = Window & {
+    __astroDsVideoPlayerReady?: boolean;
+  };
+
+  const videoPlayerWindow = window as VideoPlayerWindow;
+
+  if (!videoPlayerWindow.__astroDsVideoPlayerReady) {
+    videoPlayerWindow.__astroDsVideoPlayerReady = true;
+
+    for (const [eventName, state] of [
+      ["play", "playing"],
+      ["pause", "paused"],
+      ["ended", "ended"],
+      ["error", "error"]
+    ] as const) {
+      document.addEventListener(
+        eventName,
+        (event) => {
+          const video =
+            event.target instanceof HTMLVideoElement ? event.target : null;
+          const root = video?.closest<HTMLElement>("[data-video-player]");
+          if (root) root.dataset.playerState = state;
+        },
+        true
+      );
+    }
+  }
+</script>
+
+<style>
+  .video-player {
+    display: grid;
+    width: 100%;
+    gap: var(--gap-small);
+    margin: 0;
+  }
+
+  .video-player figcaption {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-tiny-font-family);
+    font-size: var(--text-style-body-tiny-font-size);
+    font-weight: var(--text-style-body-tiny-font-weight);
+    font-style: var(--text-style-body-tiny-font-style);
+    line-height: var(--text-style-body-tiny-line-height);
+    letter-spacing: var(--text-style-body-tiny-letter-spacing);
+    text-transform: var(--text-style-body-tiny-text-transform);
+    text-wrap: var(--text-style-body-tiny-text-wrap);
+    overflow-wrap: var(--text-style-body-tiny-overflow-wrap);
+    word-break: var(--text-style-body-tiny-word-break);
+    white-space: var(--text-style-body-tiny-white-space);
+  }
+
+  .video-player[data-player-state="idle"] figcaption::after {
+    content: " · idle";
+  }
+
+  .video-player[data-player-state="playing"] figcaption::after,
+  .video-player[data-preview-state="playing"] figcaption::after {
+    content: " · playing";
+  }
+
+  .video-player[data-player-state="paused"] figcaption::after,
+  .video-player[data-preview-state="paused"] figcaption::after {
+    content: " · paused";
+  }
+
+  .video-player[data-player-state="ended"] figcaption::after,
+  .video-player[data-preview-state="ended"] figcaption::after {
+    content: " · ended";
+  }
+
+  .video-player[data-player-state="error"],
+  .video-player[data-preview-state="error"] {
+    outline: var(--border-width-strong) solid var(--color-status-error-border);
+    outline-offset: var(--size-2);
+  }
+
+  .video-player[data-player-state="error"] figcaption::after,
+  .video-player[data-preview-state="error"] figcaption::after {
+    content: " · error";
+  }
+</style>

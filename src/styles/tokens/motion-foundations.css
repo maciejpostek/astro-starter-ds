@@ -1,0 +1,57 @@
+:root {
+  /* Easing foundations
+   * Shared motion curves used by navigation, overlays and staged UI reveals.
+   */
+  --motion-ease-standard: ease-out;
+  --motion-ease-premium-in: cubic-bezier(0.64, 0, 0.78, 0);
+  --motion-ease-premium-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Global transitions
+   * Default micro-interaction timing for hover, color and layout state changes.
+   */
+  --motion-duration-fast: 180ms;
+  --motion-duration-surface-enter: 360ms;
+  --motion-duration-disclosure: 600ms;
+  --motion-transition: var(--motion-duration-fast) var(--motion-ease-standard);
+
+  /* Mobile menu reveal
+   * Premium stagger sequence: shell opens first, nav links follow top-to-bottom,
+   * and the footer action enters last from the bottom.
+   */
+  --motion-duration-mobile-menu-reveal: 420ms;
+  --motion-duration-mobile-menu-close: 260ms;
+  --motion-duration-mobile-menu-link: 340ms;
+  --motion-duration-mobile-menu-footer: 370ms;
+  --motion-delay-mobile-menu-link-1: 290ms;
+  --motion-delay-mobile-menu-link-2: 340ms;
+  --motion-delay-mobile-menu-link-3: 390ms;
+  --motion-delay-mobile-menu-link-4: 440ms;
+  --motion-delay-mobile-menu-link-5: 490ms;
+  --motion-delay-mobile-menu-link-6: 550ms;
+  --motion-delay-mobile-menu-footer: 680ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    /*
+     * Reduced Motion is a first-class mode of the motion contract. Components
+     * may still remove transforms or keyframes when their movement would remain
+     * disorienting, but reusable durations and delays always collapse here.
+     */
+    --motion-duration-fast: 0ms;
+    --motion-duration-surface-enter: 0ms;
+    --motion-duration-disclosure: 0ms;
+    --motion-transition: 0ms var(--motion-ease-standard);
+    --motion-duration-mobile-menu-reveal: 0ms;
+    --motion-duration-mobile-menu-close: 0ms;
+    --motion-duration-mobile-menu-link: 0ms;
+    --motion-duration-mobile-menu-footer: 0ms;
+    --motion-delay-mobile-menu-link-1: 0ms;
+    --motion-delay-mobile-menu-link-2: 0ms;
+    --motion-delay-mobile-menu-link-3: 0ms;
+    --motion-delay-mobile-menu-link-4: 0ms;
+    --motion-delay-mobile-menu-link-5: 0ms;
+    --motion-delay-mobile-menu-link-6: 0ms;
+    --motion-delay-mobile-menu-footer: 0ms;
+  }
+}

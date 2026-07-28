@@ -1,0 +1,102 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DsCodeSnippet from "../../components/design-system/DsCodeSnippet.astro";
+import DsDocSection from "../../components/design-system/DsDocSection.astro";
+import DsMotionTokenGroups from "../../components/design-system/DsMotionTokenGroups.astro";
+import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
+import {
+  motionAgenticRules,
+  motionComponentGroups,
+  motionFoundationGroups,
+  motionSemanticGroups,
+} from "../../data/design-system/motionTokens";
+---
+
+<BaseLayout title="Motion - Astro Design System">
+  <div class="page">
+    <SectionHeader eyebrow="Field 5" title="Motion" variant="hero" />
+
+    <DsDocSection
+      id="motion-foundation-tokens"
+      title="Motion Foundations"
+      description="Motion foundations define reusable easing curves. Code and CSS Variables remain the source of truth; Figma records the same values as a representational two-mode collection."
+    >
+      <DsMotionTokenGroups groups={motionFoundationGroups} label="foundation tokens" />
+    </DsDocSection>
+
+    <DsDocSection
+      id="motion-semantic-tokens"
+      title="Motion Semantic"
+      description="Semantic motion variables describe repeated interaction intent. They are the preferred component-facing contract."
+    >
+      <DsMotionTokenGroups groups={motionSemanticGroups} label="semantic tokens" />
+    </DsDocSection>
+
+    <DsDocSection
+      id="motion-component-tokens"
+      title="Motion Component Tokens"
+      description="Component timing is allowed when a coordinated sequence belongs to one reusable family and cannot be described by a shared semantic role."
+    >
+      <DsMotionTokenGroups groups={motionComponentGroups} label="component tokens" />
+    </DsDocSection>
+
+    <DsDocSection
+      id="motion-reduced-mode"
+      title="Reduced Motion"
+      description="The Reduced Motion mode is controlled by the browser preference. Reusable durations and delays collapse to zero; components remove remaining transform or keyframe movement when necessary."
+    >
+      <DsCodeSnippet
+        label="Reduced Motion contract"
+        code={`@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-disclosure: 0ms;
+    --motion-transition: 0ms var(--motion-ease-standard);
+  }
+}`}
+      />
+    </DsDocSection>
+
+    <DsDocSection
+      id="motion-agentic-rules"
+      title="Agentic Rules"
+      description="Operational rules for selecting, extending, and synchronizing motion contracts."
+    >
+      <ol class="ds-motion-rules">
+        {motionAgenticRules.map((rule) => (
+          <li>
+            <strong>{rule.title}</strong>
+            <span>{rule.text}</span>
+          </li>
+        ))}
+      </ol>
+    </DsDocSection>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    display: grid;
+    min-width: 0;
+  }
+
+  .ds-motion-rules {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    gap: var(--gap-regular);
+    list-style: none;
+  }
+
+  .ds-motion-rules li {
+    display: grid;
+    gap: var(--gap-tiny);
+    border-left: var(--border-width-emphasis) solid var(--color-border-accent);
+    padding: var(--component-padding-medium);
+    background: var(--color-background-surface);
+  }
+
+  .ds-motion-rules span {
+    color: var(--color-text-secondary);
+  }
+</style>

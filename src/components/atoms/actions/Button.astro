@@ -1,0 +1,293 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { ArrowDownRight } from "@lucide/astro";
+
+type Variant = "primary" | "secondary" | "link";
+type ComponentSize = "small" | "medium" | "large";
+
+type Props = {
+  variant?: Variant;
+  size?: ComponentSize;
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  full?: boolean;
+  showIcon?: boolean;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"a">, "class" | "href"> &
+  Omit<HTMLAttributes<"button">, "class" | "type">;
+
+const {
+  variant = "primary",
+  size = "large",
+  href,
+  type = "button",
+  full = false,
+  showIcon,
+  componentName,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const formatName = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+const resolvedComponentName = componentName ?? `Button.${formatName(variant)}`;
+const resolvedShowIcon = showIcon ?? true;
+const hasCustomIcon = Astro.slots.has("icon");
+
+const classes = [
+  "button",
+  `button--${variant}`,
+  { "button--full": full },
+  className
+];
+---
+
+{
+  href ? (
+    <a
+      class:list={classes}
+      data-component-name={resolvedComponentName}
+      data-component-family="actions"
+      data-component-size={size}
+      href={href}
+      {...attributes}
+    >
+      <span class="button__label"><slot /></span>
+      {resolvedShowIcon && <span class="button__icon" aria-hidden="true">{hasCustomIcon ? <slot name="icon" /> : <ArrowDownRight />}</span>}
+    </a>
+  ) : (
+    <button
+      class:list={classes}
+      data-component-name={resolvedComponentName}
+      data-component-family="actions"
+      data-component-size={size}
+      type={type}
+      {...attributes}
+    >
+      <span class="button__label"><slot /></span>
+      {resolvedShowIcon && <span class="button__icon" aria-hidden="true">{hasCustomIcon ? <slot name="icon" /> : <ArrowDownRight />}</span>}
+    </button>
+  )
+}
+
+<style>
+  .button {
+    display: inline-flex;
+    inline-size: auto;
+    min-height: var(--component-min-height);
+    align-items: center;
+    justify-content: center;
+    gap: var(--component-gap);
+    border: var(--border-width-default) solid;
+    border-radius: var(--radius-button);
+    padding:
+      var(--component-padding-block)
+      var(--component-padding-inline);
+    cursor: pointer;
+    font-family: var(--font-family-mono);
+    font-size: var(--component-font-size);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing-none);
+    line-height: var(--line-height-compact);
+    text-transform: uppercase;
+    transition:
+      background var(--motion-transition),
+      border-color var(--motion-transition),
+      color var(--motion-transition);
+  }
+
+  .button:disabled,
+  .button[aria-disabled="true"],
+  .button[data-preview-state="disabled"] {
+    cursor: not-allowed;
+  }
+
+  .button[aria-disabled="true"] {
+    pointer-events: none;
+  }
+
+  .button:focus-visible,
+  .button[data-preview-state="focus"] {
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: var(--size-2);
+  }
+
+  .button--primary {
+    border-color: var(--button-primary-border-default);
+    color: var(--button-primary-text-default);
+    background: var(--button-primary-background-default);
+  }
+
+  .button--primary:hover,
+  .button--primary[data-preview-state="hover"] {
+    border-color: var(--button-primary-border-hover);
+    color: var(--button-primary-text-hover);
+    background: var(--button-primary-background-hover);
+  }
+
+  .button--primary:active,
+  .button--primary[data-preview-state="pressed"] {
+    border-color: var(--button-primary-border-pressed);
+    color: var(--button-primary-text-pressed);
+    background: var(--button-primary-background-pressed);
+  }
+
+  .button--primary:disabled,
+  .button--primary[aria-disabled="true"],
+  .button--primary[data-preview-state="disabled"] {
+    border-color: var(--button-primary-border-disabled);
+    color: var(--button-primary-text-disabled);
+    background: var(--button-primary-background-disabled);
+  }
+
+  .button--secondary {
+    border-color: var(--button-secondary-border-default);
+    color: var(--button-secondary-text-default);
+    background: var(--button-secondary-background-default);
+  }
+
+  .button--secondary:hover,
+  .button--secondary[data-preview-state="hover"] {
+    border-color: var(--button-secondary-border-hover);
+    color: var(--button-secondary-text-hover);
+    background: var(--button-secondary-background-hover);
+  }
+
+  .button--secondary:active,
+  .button--secondary[data-preview-state="pressed"] {
+    border-color: var(--button-secondary-border-pressed);
+    color: var(--button-secondary-text-pressed);
+    background: var(--button-secondary-background-pressed);
+  }
+
+  .button--secondary:disabled,
+  .button--secondary[aria-disabled="true"],
+  .button--secondary[data-preview-state="disabled"] {
+    border-color: var(--button-secondary-border-disabled);
+    color: var(--button-secondary-text-disabled);
+    background: var(--button-secondary-background-disabled);
+  }
+
+  .button--link {
+    min-height: auto;
+    justify-content: flex-start;
+    border: 0;
+    border-color: var(--button-link-border-default);
+    background: var(--button-link-background-default);
+    padding: 0;
+    color: var(--button-link-text-default);
+    font-size: var(--component-font-size);
+    text-decoration: none;
+  }
+
+  .button--link:hover,
+  .button--link[data-preview-state="hover"] {
+    border-color: var(--button-link-border-hover);
+    color: var(--button-link-text-hover);
+    background: var(--button-link-background-hover);
+  }
+
+  .button--link:active,
+  .button--link[data-preview-state="pressed"] {
+    border-color: var(--button-link-border-pressed);
+    color: var(--button-link-text-pressed);
+    background: var(--button-link-background-pressed);
+  }
+
+  .button--link:disabled,
+  .button--link[aria-disabled="true"],
+  .button--link[data-preview-state="disabled"] {
+    border-color: var(--button-link-border-disabled);
+    color: var(--button-link-text-disabled);
+    background: var(--button-link-background-disabled);
+  }
+
+  .button--full {
+    width: 100%;
+    inline-size: 100%;
+    justify-content: space-between;
+  }
+
+  .button__label,
+  .button__icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .button__label {
+    white-space: nowrap;
+  }
+
+  .button__icon {
+    flex: 0 0 var(--component-icon-size);
+    justify-content: center;
+    width: var(--component-icon-size);
+    height: var(--component-icon-size);
+    transition: color var(--motion-transition);
+  }
+
+  .button--primary .button__icon {
+    color: var(--button-primary-icon-default);
+  }
+
+  .button--primary:hover .button__icon,
+  .button--primary[data-preview-state="hover"] .button__icon {
+    color: var(--button-primary-icon-hover);
+  }
+
+  .button--primary:active .button__icon,
+  .button--primary[data-preview-state="pressed"] .button__icon {
+    color: var(--button-primary-icon-pressed);
+  }
+
+  .button--primary:disabled .button__icon,
+  .button--primary[aria-disabled="true"] .button__icon,
+  .button--primary[data-preview-state="disabled"] .button__icon {
+    color: var(--button-primary-icon-disabled);
+  }
+
+  .button--secondary .button__icon {
+    color: var(--button-secondary-icon-default);
+  }
+
+  .button--secondary:hover .button__icon,
+  .button--secondary[data-preview-state="hover"] .button__icon {
+    color: var(--button-secondary-icon-hover);
+  }
+
+  .button--secondary:active .button__icon,
+  .button--secondary[data-preview-state="pressed"] .button__icon {
+    color: var(--button-secondary-icon-pressed);
+  }
+
+  .button--secondary:disabled .button__icon,
+  .button--secondary[aria-disabled="true"] .button__icon,
+  .button--secondary[data-preview-state="disabled"] .button__icon {
+    color: var(--button-secondary-icon-disabled);
+  }
+
+  .button--link .button__icon {
+    color: var(--button-link-icon-default);
+  }
+
+  .button--link:hover .button__icon,
+  .button--link[data-preview-state="hover"] .button__icon {
+    color: var(--button-link-icon-hover);
+  }
+
+  .button--link:active .button__icon,
+  .button--link[data-preview-state="pressed"] .button__icon {
+    color: var(--button-link-icon-pressed);
+  }
+
+  .button--link:disabled .button__icon,
+  .button--link[aria-disabled="true"] .button__icon,
+  .button--link[data-preview-state="disabled"] .button__icon {
+    color: var(--button-link-icon-disabled);
+  }
+
+  .button__icon :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+</style>

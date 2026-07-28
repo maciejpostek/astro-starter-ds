@@ -1,0 +1,24 @@
+---
+interface Props {
+  calLink: string;
+  title?: string;
+  height?: string;
+  componentName?: string;
+}
+
+const { calLink, title = "Schedule a meeting", height = "42rem", componentName = "CalComEmbed" } = Astro.props;
+const normalizedCalLink = calLink
+  .trim()
+  .replace(/^https?:\/\/(www\.)?cal\.com\//, "")
+  .replace(/^\/+|\/+$/g, "");
+const embedUrl = `https://cal.com/${encodeURI(normalizedCalLink)}?embed=true`;
+---
+
+<section class="cal-com-embed" data-component-name={componentName} data-component-family="forms" aria-label={title}>
+  <iframe class="cal-com-embed__frame" title={title} src={embedUrl} style={`min-height: ${height};`} loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</section>
+
+<style>
+  .cal-com-embed { overflow: hidden; border: var(--border-width-default) solid var(--color-border-subtle); border-radius: var(--radius-embed); background: var(--color-background-surface); }
+  .cal-com-embed__frame { display: block; inline-size: 100%; border: 0; background: var(--color-background-canvas); }
+</style>

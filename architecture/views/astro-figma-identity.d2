@@ -1,0 +1,91 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.astro-figma-identity
+direction: right
+
+title: "Astro ↔ Figma Identity and Mapping" {
+  shape: text
+  near: top-center
+  style.font-size: 28
+  style.bold: true
+}
+
+source_astro_components: "Astro Component Source\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_component_registry: "Component Registry\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_css_variables: "CSS Variable Foundations\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_figma_adapters: "Figma2Astro Mapping Adapters\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_figma_sync: "Synchronize Accepted Astro to Figma\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+external_figma: "Figma Editable Representation\nexternal-system · external · current" {
+  shape: cloud
+  style.fill: "#475569"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+validator_family: "Family and Parity Audits\nvalidator · active · current" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+approval_family: "Family Checkpoint Acceptance\nhuman-approval · required · current" {
+  shape: diamond
+  style.fill: "#ea580c"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_figma: "Accepted Figma Representation\noutput · external · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_astro_components -> source_figma_adapters: "maps-to"
+source_component_registry -> external_figma: "maps-to"
+process_figma_sync -> source_astro_components: "reads"
+process_figma_sync -> source_figma_adapters: "reads"
+process_figma_sync -> external_figma: "writes"
+validator_family -> external_figma: "validates"
+approval_family -> output_figma: "approves"

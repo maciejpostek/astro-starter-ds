@@ -1,0 +1,373 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import UseCaseCard from "../../../molecules/cards/UseCaseCard.astro";
+import Tabs from "../../disclosure/Tabs.astro";
+import type { TabsOrientation } from "../../disclosure/Tabs.astro";
+
+export type UseCasesSectionVariant = "role-based" | "industry" | "scenario-tabs";
+
+export interface UseCasesSectionItem {
+  id: string;
+  context: string;
+  title: string;
+  description: string;
+  actionLabel?: string;
+  actionHref?: string;
+  disabled?: boolean;
+}
+
+export interface UseCasesSectionContent {
+  title: string;
+  description?: string;
+  items: UseCasesSectionItem[];
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: UseCasesSectionContent;
+  variant: UseCasesSectionVariant;
+  headingLevel?: HeadingLevel;
+  tabsOrientation?: TabsOrientation;
+  selectedItemId?: string;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  tabsOrientation,
+  selectedItemId,
+  ariaLabel,
+  componentName = "UseCasesSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const supportedVariants: UseCasesSectionVariant[] = [
+  "role-based",
+  "industry",
+  "scenario-tabs",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const supportedTabsOrientations: TabsOrientation[] = [
+  "horizontal",
+  "vertical",
+];
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+const normalizedSelectedItemId = selectedItemId?.trim();
+const resolvedTabsOrientation = tabsOrientation ?? "vertical";
+const isRealHref = (value: string | undefined) => {
+  const resolved = value?.trim();
+  return Boolean(
+    resolved &&
+      resolved !== "#" &&
+      !/^javascript:/i.test(resolved) &&
+      !/^data:/i.test(resolved),
+  );
+};
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "UseCasesSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("UseCasesSection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("UseCasesSection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "UseCasesSection description must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `UseCasesSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `UseCasesSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (
+  tabsOrientation !== undefined &&
+  !supportedTabsOrientations.includes(tabsOrientation)
+) {
+  throw new Error(
+    `UseCasesSection received unsupported tabsOrientation "${String(tabsOrientation)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error("UseCasesSection ariaLabel must be non-empty when provided.");
+}
+if (!normalizedComponentName) {
+  throw new Error("UseCasesSection requires a non-empty componentName.");
+}
+if (!Array.isArray(content.items) || content.items.length < 2) {
+  throw new Error("UseCasesSection requires at least two use-case items.");
+}
+if (content.items.length > 6) {
+  throw new Error("UseCasesSection supports at most six use-case items.");
+}
+if (variant !== "scenario-tabs" && tabsOrientation !== undefined) {
+  throw new Error(
+    "UseCasesSection tabsOrientation is supported only by Scenario Tabs.",
+  );
+}
+if (variant !== "scenario-tabs" && selectedItemId !== undefined) {
+  throw new Error(
+    "UseCasesSection selectedItemId is supported only by Scenario Tabs.",
+  );
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("UseCasesSection does not expose public slots.");
+}
+
+const itemIds = new Set<string>();
+const normalizedItems = content.items.map((item, index) => {
+  const itemId = item?.id?.trim();
+  const context = item?.context?.trim();
+  const title = item?.title?.trim();
+  const description = item?.description?.trim();
+  const actionLabel = item?.actionLabel?.trim();
+  const actionHref = item?.actionHref?.trim();
+
+  if (!itemId || !selectorSafeIdPattern.test(itemId)) {
+    throw new Error(
+      `UseCasesSection item ${index + 1} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(`UseCasesSection contains duplicate item id "${itemId}".`);
+  }
+  if (!context || !title || !description) {
+    throw new Error(
+      `UseCasesSection item "${itemId}" requires non-empty context, title, and description values.`,
+    );
+  }
+  if (Boolean(actionLabel) !== Boolean(actionHref)) {
+    throw new Error(
+      `UseCasesSection item "${itemId}" actionLabel and actionHref must be provided together.`,
+    );
+  }
+  if (actionHref && !isRealHref(actionHref)) {
+    throw new Error(
+      `UseCasesSection item "${itemId}" requires a real non-placeholder actionHref.`,
+    );
+  }
+  if (variant !== "scenario-tabs" && item.disabled !== undefined) {
+    throw new Error(
+      `UseCasesSection item "${itemId}" disabled is supported only by Scenario Tabs.`,
+    );
+  }
+  if (
+    variant === "scenario-tabs" &&
+    (item.actionLabel !== undefined || item.actionHref !== undefined)
+  ) {
+    throw new Error(
+      `UseCasesSection Scenario Tabs item "${itemId}" does not support item actions.`,
+    );
+  }
+
+  itemIds.add(itemId);
+  return {
+    id: itemId,
+    context,
+    title,
+    description,
+    actionLabel,
+    actionHref,
+    disabled: item.disabled,
+  };
+});
+
+if (
+  variant === "scenario-tabs" &&
+  normalizedItems.every((item) => item.disabled)
+) {
+  throw new Error(
+    "UseCasesSection Scenario Tabs requires at least one enabled item.",
+  );
+}
+if (selectedItemId !== undefined && !normalizedSelectedItemId) {
+  throw new Error(
+    "UseCasesSection selectedItemId must be non-empty when provided.",
+  );
+}
+if (
+  normalizedSelectedItemId &&
+  !normalizedItems.some(
+    (item) => item.id === normalizedSelectedItemId && !item.disabled,
+  )
+) {
+  throw new Error(
+    "UseCasesSection selectedItemId must reference an enabled Scenario Tabs item.",
+  );
+}
+
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const cardHeadingLevel = (headingLevel + 1) as 3 | 4;
+const cardVariant =
+  variant === "role-based"
+    ? "role"
+    : variant === "industry"
+      ? "industry"
+      : "scenario";
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "use-cases-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="how-it-works-use-cases"
+  data-section-type="use-cases"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container use-cases-section__container" data-container="main">
+    <header class="use-cases-section__header">
+      <Heading>{normalizedTitle}</Heading>
+      {normalizedDescription && <p>{normalizedDescription}</p>}
+    </header>
+
+    {
+      variant === "scenario-tabs" ? (
+        <Tabs
+          id={`${normalizedId}-tabs`}
+          label={`${normalizedTitle} scenarios`}
+          items={normalizedItems.map((item) => ({
+            id: item.id,
+            label: item.context,
+            content: `${item.title}. ${item.description}`,
+            disabled: item.disabled,
+          }))}
+          orientation={resolvedTabsOrientation}
+          selectedId={normalizedSelectedItemId}
+          componentName={`${normalizedComponentName}.Tabs`}
+          class="use-cases-section__tabs"
+        />
+      ) : (
+        <ul class="use-cases-section__grid">
+          {
+            normalizedItems.map((item) => (
+              <li data-use-case-item={item.id}>
+                <UseCaseCard
+                  context={item.context}
+                  title={item.title}
+                  description={item.description}
+                  variant={cardVariant}
+                  actionLabel={item.actionLabel}
+                  actionHref={item.actionHref}
+                  headingLevel={cardHeadingLevel}
+                  componentName={`${normalizedComponentName}.Item`}
+                />
+              </li>
+            ))
+          }
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .use-cases-section,
+  .use-cases-section__container,
+  .use-cases-section__header,
+  .use-cases-section__grid,
+  .use-cases-section__grid > li,
+  .use-cases-section__tabs {
+    min-width: 0;
+  }
+
+  .use-cases-section__container,
+  .use-cases-section__header {
+    display: grid;
+  }
+
+  .use-cases-section__container {
+    gap: var(--gap-extra-large);
+  }
+
+  .use-cases-section__header {
+    max-width: var(--content-max-width);
+    gap: var(--gap-small);
+  }
+
+  .use-cases-section__header :is(h2, h3),
+  .use-cases-section__header p {
+    margin: 0;
+  }
+
+  .use-cases-section__header p {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .use-cases-section__grid {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: var(--gap-large);
+  }
+
+  .use-cases-section__grid > li {
+    display: grid;
+  }
+
+  .use-cases-section[data-section-variant="role-based"] .use-cases-section__grid {
+    grid-template-columns:
+      repeat(auto-fit, minmax(min(100%, var(--size-256)), 1fr));
+  }
+
+  .use-cases-section[data-section-variant="industry"] .use-cases-section__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .use-cases-section__tabs {
+    width: 100%;
+  }
+
+  @media (width < 64rem) {
+    .use-cases-section[data-section-variant="role-based"] .use-cases-section__grid,
+    .use-cases-section[data-section-variant="industry"] .use-cases-section__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width < 40rem) {
+    .use-cases-section__container {
+      gap: var(--gap-large);
+    }
+
+    .use-cases-section[data-section-variant="role-based"] .use-cases-section__grid,
+    .use-cases-section[data-section-variant="industry"] .use-cases-section__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

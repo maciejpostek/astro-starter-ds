@@ -1,0 +1,43 @@
+---
+import Label from "../../atoms/forms/Label.astro";
+
+interface Props {
+  for: string;
+  label: string;
+  hint?: string;
+  message?: string;
+  state?: "default" | "invalid" | "valid";
+  componentName?: string;
+}
+
+const { for: htmlFor, label, hint, message, state = "default", componentName = "FormField" } = Astro.props;
+---
+
+<div class="form-field" data-component-name={componentName} data-component-family="forms" data-field-state={state} data-preview-target>
+  <Label variant="field" for={htmlFor}>{label}</Label>
+  <slot />
+  {hint && <span class="form-field__hint">{hint}</span>}
+  {message && <span class="form-field__message" data-field-message aria-live={state === "invalid" ? "polite" : undefined}>{message}</span>}
+</div>
+
+<style>
+  .form-field {
+    display: grid;
+    gap: var(--gap-small);
+  }
+
+  .form-field__hint,
+  .form-field__message {
+    color: var(--input-helper-default);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+  }
+
+  .form-field[data-field-state="invalid"] .form-field__message {
+    color: var(--input-helper-invalid);
+  }
+
+  .form-field[data-field-state="valid"] .form-field__message {
+    color: var(--input-helper-valid);
+  }
+</style>

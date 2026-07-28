@@ -1,0 +1,363 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Tab from "../../atoms/disclosure/Tab.astro";
+
+export type TabsOrientation = "horizontal" | "vertical";
+
+export interface TabsItem {
+  id: string;
+  label: string;
+  content?: string;
+  disabled?: boolean;
+}
+
+type Props = {
+  id: string;
+  label: string;
+  items: TabsItem[];
+  orientation?: TabsOrientation;
+  selectedId?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"div">, "class" | "id">;
+
+const {
+  id,
+  label,
+  items,
+  orientation = "horizontal",
+  selectedId,
+  componentName = "Tabs",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const supportedOrientations: TabsOrientation[] = ["horizontal", "vertical"];
+const resolvedId = id?.trim();
+const resolvedLabel = label?.trim();
+const resolvedComponentName = componentName?.trim();
+
+if (!resolvedId || !selectorSafeIdPattern.test(resolvedId)) {
+  throw new Error("Tabs id must be selector-safe and start with a letter.");
+}
+if (!resolvedLabel) {
+  throw new Error("Tabs requires a non-empty label.");
+}
+if (!Array.isArray(items) || items.length < 2) {
+  throw new Error("Tabs requires at least two tab items.");
+}
+if (!supportedOrientations.includes(orientation)) {
+  throw new Error(
+    `Tabs received unsupported orientation "${String(orientation)}".`,
+  );
+}
+if (!resolvedComponentName) {
+  throw new Error("Tabs requires a non-empty componentName.");
+}
+
+const normalizedItems = await Promise.all(items.map(async (item, index) => {
+  const itemId = item.id?.trim();
+  const itemLabel = item.label?.trim();
+  const itemContent = item.content?.trim();
+  const hasPanelSlot = Boolean(itemId && Astro.slots.has(itemId));
+  const panelHtml =
+    itemId && hasPanelSlot ? await Astro.slots.render(itemId) : undefined;
+
+  if (!itemId || !selectorSafeIdPattern.test(itemId)) {
+    throw new Error(
+      `Tabs item ${index + 1} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (!itemLabel) {
+    throw new Error(
+      `Tabs item "${itemId}" requires a non-empty label.`,
+    );
+  }
+  if (item.content !== undefined && !itemContent) {
+    throw new Error(
+      `Tabs item "${itemId}" content must be non-empty when provided.`,
+    );
+  }
+  if (!itemContent && !hasPanelSlot) {
+    throw new Error(
+      `Tabs item "${itemId}" requires content or a matching named panel slot.`,
+    );
+  }
+  if (itemContent && hasPanelSlot) {
+    throw new Error(
+      `Tabs item "${itemId}" must use content or a named panel slot, not both.`,
+    );
+  }
+
+  return {
+    ...item,
+    id: itemId,
+    label: itemLabel,
+    content: itemContent,
+    hasPanelSlot,
+    panelHtml,
+  };
+}));
+
+const itemIds = normalizedItems.map((item) => item.id);
+if (new Set(itemIds).size !== itemIds.length) {
+  throw new Error("Tabs item ids must be unique.");
+}
+if (normalizedItems.every((item) => item.disabled)) {
+  throw new Error("Tabs requires at least one enabled item.");
+}
+
+const resolvedSelectedId = selectedId?.trim();
+if (selectedId !== undefined && !resolvedSelectedId) {
+  throw new Error("Tabs selectedId must be non-empty when provided.");
+}
+if (
+  resolvedSelectedId &&
+  !normalizedItems.some((item) => item.id === resolvedSelectedId)
+) {
+  throw new Error(
+    `Tabs selectedId "${resolvedSelectedId}" does not match an item.`,
+  );
+}
+if (
+  resolvedSelectedId &&
+  normalizedItems.find((item) => item.id === resolvedSelectedId)?.disabled
+) {
+  throw new Error("Tabs selectedId must reference an enabled item.");
+}
+
+const initialSelectedId =
+  resolvedSelectedId ??
+  normalizedItems.find((item) => !item.disabled)?.id;
+---
+
+<div
+  {...attributes}
+  id={resolvedId}
+  class:list={["tabs", className]}
+  data-component-name={resolvedComponentName}
+  data-component-family="disclosure"
+  data-tabs
+  data-tabs-orientation={orientation}
+  data-tabs-selected={initialSelectedId}
+  data-preview-target
+>
+  <div
+    class="tabs__list"
+    role="tablist"
+    aria-label={resolvedLabel}
+    aria-orientation={orientation}
+  >
+    {
+      normalizedItems.map((item) => {
+        const selected = item.id === initialSelectedId;
+        const tabId = `${resolvedId}-${item.id}-tab`;
+        const panelId = `${resolvedId}-${item.id}-panel`;
+
+        return (
+          <Tab
+            id={tabId}
+            selected={selected}
+            disabled={item.disabled}
+            aria-controls={panelId}
+            tabindex={selected ? 0 : -1}
+            data-tabs-trigger
+            data-tabs-item-id={item.id}
+            componentName={`${resolvedComponentName}.Tab`}
+          >
+            {item.label}
+          </Tab>
+        );
+      })
+    }
+  </div>
+
+  <div class="tabs__panels">
+    {
+      normalizedItems.map((item) => {
+        const selected = item.id === initialSelectedId;
+        const tabId = `${resolvedId}-${item.id}-tab`;
+        const panelId = `${resolvedId}-${item.id}-panel`;
+
+        return (
+          <section
+            id={panelId}
+            class="tabs__panel"
+            role="tabpanel"
+            aria-labelledby={tabId}
+            aria-hidden={!selected}
+            tabindex={selected ? 0 : -1}
+            hidden={!selected}
+            data-tabs-panel
+            data-tabs-item-id={item.id}
+          >
+            {
+              item.hasPanelSlot ? (
+                <Fragment set:html={item.panelHtml} />
+              ) : (
+                <p>{item.content}</p>
+              )
+            }
+          </section>
+        );
+      })
+    }
+  </div>
+</div>
+
+<script>
+  const initializeTabs = (root: HTMLElement) => {
+    if (root.dataset.tabsReady === "true") return;
+    root.dataset.tabsReady = "true";
+
+    const orientation = root.dataset.tabsOrientation;
+    const triggers = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-tabs-trigger]"),
+    );
+    const panels = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-tabs-panel]"),
+    );
+
+    const enabledTriggers = () =>
+      triggers.filter((trigger) => !trigger.disabled);
+
+    const activate = (next: HTMLButtonElement, moveFocus = false) => {
+      const itemId = next.dataset.tabsItemId;
+      if (!itemId || next.disabled) return;
+
+      triggers.forEach((trigger) => {
+        const selected = trigger === next;
+        trigger.setAttribute("aria-selected", String(selected));
+        trigger.tabIndex = selected ? 0 : -1;
+        trigger.dataset.tabState = selected ? "selected" : "default";
+      });
+
+      panels.forEach((panel) => {
+        const selected = panel.dataset.tabsItemId === itemId;
+        panel.hidden = !selected;
+        panel.setAttribute("aria-hidden", String(!selected));
+        panel.tabIndex = selected ? 0 : -1;
+      });
+
+      root.dataset.tabsSelected = itemId;
+      if (moveFocus) next.focus();
+    };
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => activate(trigger));
+      trigger.addEventListener("keydown", (event) => {
+        const enabled = enabledTriggers();
+        const currentIndex = enabled.indexOf(trigger);
+        if (currentIndex < 0) return;
+
+        const previousKey =
+          orientation === "vertical" ? "ArrowUp" : "ArrowLeft";
+        const nextKey =
+          orientation === "vertical" ? "ArrowDown" : "ArrowRight";
+        let nextIndex: number | undefined;
+
+        if (event.key === previousKey) {
+          nextIndex = (currentIndex - 1 + enabled.length) % enabled.length;
+        } else if (event.key === nextKey) {
+          nextIndex = (currentIndex + 1) % enabled.length;
+        } else if (event.key === "Home") {
+          nextIndex = 0;
+        } else if (event.key === "End") {
+          nextIndex = enabled.length - 1;
+        }
+
+        if (nextIndex === undefined) return;
+        event.preventDefault();
+        activate(enabled[nextIndex], true);
+      });
+    });
+  };
+
+  const initializeAllTabs = () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-tabs]")
+      .forEach(initializeTabs);
+  };
+
+  initializeAllTabs();
+  document.addEventListener("astro:page-load", initializeAllTabs);
+</script>
+
+<style>
+  .tabs {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-large);
+  }
+
+  .tabs__list {
+    display: flex;
+    min-width: 0;
+    gap: var(--gap-small);
+    overflow-x: auto;
+    padding: var(--size-2);
+  }
+
+  .tabs__panels,
+  .tabs__panel {
+    min-width: 0;
+  }
+
+  .tabs__panel {
+    border: var(--border-width-default) solid var(--color-border-default);
+    padding: var(--component-padding-large);
+    background: var(--color-background-surface);
+  }
+
+  .tabs__panel[hidden] {
+    display: none;
+  }
+
+  .tabs__panel > :global(:first-child) {
+    margin-top: 0;
+  }
+
+  .tabs__panel > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .tabs[data-tabs-orientation="vertical"] {
+    grid-template-columns: minmax(12rem, 0.35fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .tabs[data-tabs-orientation="vertical"] .tabs__list {
+    align-items: stretch;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .tabs[data-tabs-orientation="vertical"] .tabs__list :global(.tab) {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  @media (width < 48rem) {
+    .tabs[data-tabs-orientation="vertical"] {
+      grid-template-columns: 1fr;
+    }
+
+    .tabs[data-tabs-orientation="vertical"] .tabs__list {
+      align-items: flex-start;
+      flex-direction: row;
+      overflow-x: auto;
+    }
+
+    .tabs[data-tabs-orientation="vertical"] .tabs__list :global(.tab) {
+      width: auto;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .tabs__panel {
+      padding: var(--component-padding-medium);
+    }
+  }
+</style>

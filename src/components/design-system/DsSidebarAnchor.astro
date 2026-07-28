@@ -1,0 +1,112 @@
+---
+import type { DsNavigationStatus } from "../../data/designSystemNavigation";
+
+interface Props {
+  label: string;
+  href: string;
+  status?: DsNavigationStatus;
+  level?: 1 | 2;
+  variant?: "default" | "overview";
+}
+
+const {
+  label,
+  href,
+  status,
+  level = 1,
+  variant = "default",
+} = Astro.props as Props;
+const isPlaceholder = status === "placeholder";
+const state = isPlaceholder ? "placeholder" : "default";
+---
+
+<a
+  aria-disabled={isPlaceholder ? "true" : undefined}
+  class:list={["ds-sidebar-anchor", isPlaceholder && "is-placeholder"]}
+  data-component-name="DsSidebarAnchor"
+  data-sidebar-anchor-level={level}
+  data-sidebar-anchor-state={state}
+  data-sidebar-anchor-variant={variant}
+  href={href}
+>
+  <span class="ds-sidebar-anchor__label">{label}</span>
+  {isPlaceholder && <span class="ds-sidebar-anchor__status">soon</span>}
+</a>
+
+<style>
+  .ds-sidebar-anchor {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: var(--ds-sidebar-anchor-row-size, var(--size-32));
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+    padding-inline: var(--size-12) var(--size-8);
+    text-decoration: none;
+  }
+
+  .ds-sidebar-anchor__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ds-sidebar-anchor::before {
+    position: absolute;
+    inset: var(--size-6) auto var(--size-6) 0;
+    width: var(--border-width-default);
+    background: transparent;
+    content: "";
+  }
+
+  .ds-sidebar-anchor[data-sidebar-anchor-level="2"] {
+    padding-inline: var(--size-32) var(--size-8);
+  }
+
+  .ds-sidebar-anchor[data-sidebar-anchor-level="2"]::before {
+    left: var(--size-20);
+  }
+
+  .ds-sidebar-anchor[data-sidebar-anchor-variant="overview"] {
+    color: var(--color-text-tertiary);
+  }
+
+  .ds-sidebar-anchor:hover {
+    color: var(--color-text-accent);
+  }
+
+  .ds-sidebar-anchor[data-active="true"] {
+    color: var(--color-text-accent);
+    background: color-mix(in srgb, var(--color-background-accent) 10%, transparent);
+  }
+
+  .ds-sidebar-anchor[data-search-match="true"] {
+    color: var(--color-text-primary);
+    background: color-mix(in srgb, var(--color-background-accent) 8%, transparent);
+  }
+
+  .ds-sidebar-anchor__label :global(mark) {
+    color: var(--color-text-accent);
+    background: color-mix(in srgb, var(--color-background-accent) 16%, transparent);
+  }
+
+  .ds-sidebar-anchor[data-active="true"]::before {
+    background: var(--color-background-accent);
+  }
+
+  .ds-sidebar-anchor.is-placeholder {
+    color: var(--color-text-tertiary);
+  }
+
+  .ds-sidebar-anchor__status {
+    color: var(--color-text-accent);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-none);
+    text-transform: uppercase;
+  }
+</style>

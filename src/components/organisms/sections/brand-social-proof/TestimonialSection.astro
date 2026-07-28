@@ -1,0 +1,457 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import TestimonialCard from "../../../molecules/cards/TestimonialCard.astro";
+import StatCard from "../../../molecules/cards/StatCard.astro";
+import Carousel from "../../media/Carousel.astro";
+
+export type TestimonialSectionVariant =
+  "single" | "grid" | "carousel" | "customer-results";
+
+export interface TestimonialSectionItem {
+  id: string;
+  quote: string;
+  client: string;
+  person: string;
+  role: string;
+  avatarSrc?: string;
+  avatarAlt?: string;
+}
+
+export interface TestimonialSectionResult {
+  id: string;
+  label: string;
+  value: string;
+  change?: string;
+  changeDirection?: "up" | "down" | "neutral";
+  changeLabel?: string;
+  description?: string;
+}
+
+export interface TestimonialSectionContent {
+  title: string;
+  description?: string;
+  items: TestimonialSectionItem[];
+  results?: TestimonialSectionResult[];
+}
+
+type HeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+type Props = {
+  id: string;
+  content: TestimonialSectionContent;
+  variant: TestimonialSectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "TestimonialSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const normalizedId = id?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+const supportedVariants: TestimonialSectionVariant[] = [
+  "single",
+  "grid",
+  "carousel",
+  "customer-results",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3, 4, 5, 6];
+const supportedDirections = ["up", "down", "neutral"] as const;
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "TestimonialSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("TestimonialSection requires a structured content object.");
+}
+if (!content.title?.trim()) {
+  throw new Error("TestimonialSection requires a non-empty title.");
+}
+if (
+  content.description !== undefined &&
+  !content.description.trim()
+) {
+  throw new Error(
+    "TestimonialSection description must be non-empty when provided.",
+  );
+}
+if (!Array.isArray(content.items) || content.items.length === 0) {
+  throw new Error("TestimonialSection requires at least one testimonial item.");
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `TestimonialSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `TestimonialSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "TestimonialSection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error(
+    "TestimonialSection requires a non-empty componentName value.",
+  );
+}
+
+if (
+  (variant === "single" || variant === "customer-results") &&
+  content.items.length !== 1
+) {
+  throw new Error(
+    `TestimonialSection ${variant} requires exactly one testimonial item.`,
+  );
+}
+if (
+  (variant === "grid" || variant === "carousel") &&
+  content.items.length < 2
+) {
+  throw new Error(
+    `TestimonialSection ${variant} requires at least two testimonial items.`,
+  );
+}
+if (variant === "customer-results") {
+  if (
+    !Array.isArray(content.results) ||
+    content.results.length < 2 ||
+    content.results.length > 4
+  ) {
+    throw new Error(
+      "TestimonialSection customer-results requires two to four verified results.",
+    );
+  }
+} else if (content.results !== undefined) {
+  throw new Error(
+    `TestimonialSection ${variant} must not define customer results.`,
+  );
+}
+
+const itemIds = new Set<string>();
+content.items.forEach((item, index) => {
+  const itemNumber = index + 1;
+  const itemId = item.id?.trim();
+
+  if (!itemId || !selectorSafeIdPattern.test(itemId)) {
+    throw new Error(
+      `TestimonialSection item ${itemNumber} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(
+      `TestimonialSection contains duplicate item id "${itemId}".`,
+    );
+  }
+  itemIds.add(itemId);
+  if (
+    !item.quote?.trim() ||
+    !item.client?.trim() ||
+    !item.person?.trim() ||
+    !item.role?.trim()
+  ) {
+    throw new Error(
+      `TestimonialSection item "${itemId}" requires non-empty quote, client, person, and role values.`,
+    );
+  }
+  if (item.avatarSrc !== undefined && !item.avatarSrc.trim()) {
+    throw new Error(
+      `TestimonialSection item "${itemId}" avatarSrc must be non-empty when provided.`,
+    );
+  }
+  if (
+    variant === "carousel" &&
+    (item.avatarSrc !== undefined || item.avatarAlt !== undefined)
+  ) {
+    throw new Error(
+      `TestimonialSection carousel item "${itemId}" must not define avatar data because canonical Carousel does not render TestimonialCard.`,
+    );
+  }
+});
+
+const resultIds = new Set<string>();
+content.results?.forEach((result, index) => {
+  const resultNumber = index + 1;
+  const resultId = result.id?.trim();
+  const direction = result.changeDirection ?? "neutral";
+
+  if (!resultId || !selectorSafeIdPattern.test(resultId)) {
+    throw new Error(
+      `TestimonialSection result ${resultNumber} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (resultIds.has(resultId)) {
+    throw new Error(
+      `TestimonialSection contains duplicate result id "${resultId}".`,
+    );
+  }
+  resultIds.add(resultId);
+  if (!result.label?.trim() || !result.value?.trim()) {
+    throw new Error(
+      `TestimonialSection result "${resultId}" requires non-empty label and value.`,
+    );
+  }
+  if (!supportedDirections.includes(direction)) {
+    throw new Error(
+      `TestimonialSection result "${resultId}" received an unsupported changeDirection.`,
+    );
+  }
+  if (result.change !== undefined && !result.change.trim()) {
+    throw new Error(
+      `TestimonialSection result "${resultId}" change must be non-empty when provided.`,
+    );
+  }
+  if (!result.change && direction !== "neutral") {
+    throw new Error(
+      `TestimonialSection result "${resultId}" requires change when direction is ${direction}.`,
+    );
+  }
+  if (
+    result.changeLabel !== undefined &&
+    !result.changeLabel.trim()
+  ) {
+    throw new Error(
+      `TestimonialSection result "${resultId}" changeLabel must be non-empty when provided.`,
+    );
+  }
+  if (
+    result.description !== undefined &&
+    !result.description.trim()
+  ) {
+    throw new Error(
+      `TestimonialSection result "${resultId}" description must be non-empty when provided.`,
+    );
+  }
+});
+
+const Heading = `h${headingLevel}` as
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6";
+const normalizedTitle = content.title.trim();
+const carouselItems = content.items.map((item) => ({
+  id: item.id.trim(),
+  title: `${item.person.trim()} — ${item.role.trim()}, ${item.client.trim()}`,
+  description: item.quote.trim(),
+}));
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "testimonial-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="brand-social-proof"
+  data-section-type="testimonials"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container testimonial-section__container" data-container="main">
+    {
+      variant === "carousel" ? (
+        <>
+          {content.description && (
+            <p class="testimonial-section__carousel-intro">
+              {content.description.trim()}
+            </p>
+          )}
+          <Carousel
+            id={`${normalizedId}-carousel`}
+            label={normalizedTitle}
+            items={carouselItems}
+            variant="multi-item"
+            headingLevel={headingLevel}
+            componentName={`${normalizedComponentName}.Carousel`}
+          />
+        </>
+      ) : (
+        <>
+          <header class="testimonial-section__header">
+            <Heading>{normalizedTitle}</Heading>
+            {content.description && <p>{content.description.trim()}</p>}
+          </header>
+
+          {variant === "single" ? (
+            <div class="testimonial-section__single">
+              {content.items.map((item) => (
+                <TestimonialCard
+                  quote={item.quote.trim()}
+                  client={item.client.trim()}
+                  person={item.person.trim()}
+                  role={item.role.trim()}
+                  avatarSrc={item.avatarSrc?.trim()}
+                  avatarAlt={item.avatarAlt?.trim()}
+                  componentName={`${normalizedComponentName}.TestimonialCard`}
+                />
+              ))}
+            </div>
+          ) : variant === "grid" ? (
+            <ul class="testimonial-section__grid">
+              {content.items.map((item) => (
+                <li>
+                  <TestimonialCard
+                    quote={item.quote.trim()}
+                    client={item.client.trim()}
+                    person={item.person.trim()}
+                    role={item.role.trim()}
+                    avatarSrc={item.avatarSrc?.trim()}
+                    avatarAlt={item.avatarAlt?.trim()}
+                    componentName={`${normalizedComponentName}.TestimonialCard`}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div class="testimonial-section__results-layout">
+              <TestimonialCard
+                quote={content.items[0].quote.trim()}
+                client={content.items[0].client.trim()}
+                person={content.items[0].person.trim()}
+                role={content.items[0].role.trim()}
+                avatarSrc={content.items[0].avatarSrc?.trim()}
+                avatarAlt={content.items[0].avatarAlt?.trim()}
+                componentName={`${normalizedComponentName}.TestimonialCard`}
+              />
+              <ul class="testimonial-section__results">
+                {content.results?.map((result) => (
+                  <li>
+                    <StatCard
+                      label={result.label.trim()}
+                      value={result.value.trim()}
+                      change={result.change?.trim()}
+                      changeDirection={result.changeDirection}
+                      changeLabel={result.changeLabel?.trim()}
+                      description={result.description?.trim()}
+                      componentName={`${normalizedComponentName}.StatCard`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .testimonial-section,
+  .testimonial-section__container,
+  .testimonial-section__header,
+  .testimonial-section__single,
+  .testimonial-section__grid,
+  .testimonial-section__grid > li,
+  .testimonial-section__results-layout,
+  .testimonial-section__results,
+  .testimonial-section__results > li {
+    min-width: 0;
+  }
+
+  .testimonial-section__container,
+  .testimonial-section__header {
+    display: grid;
+  }
+
+  .testimonial-section__container {
+    gap: var(--gap-large);
+  }
+
+  .testimonial-section__header {
+    max-width: var(--container-small-max);
+    gap: var(--gap-regular);
+  }
+
+  .testimonial-section__header :is(h2, h3, h4, h5, h6),
+  .testimonial-section__header p,
+  .testimonial-section__carousel-intro {
+    margin: 0;
+  }
+
+  .testimonial-section__header :is(h2, h3, h4, h5, h6) {
+    font-family: var(--text-style-heading-h3-font-family);
+    font-size: var(--text-style-heading-h3-font-size);
+    font-weight: var(--text-style-heading-h3-font-weight);
+    line-height: var(--text-style-heading-h3-line-height);
+    letter-spacing: var(--text-style-heading-h3-letter-spacing);
+  }
+
+  .testimonial-section__header p,
+  .testimonial-section__carousel-intro {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .testimonial-section__carousel-intro {
+    max-width: var(--container-small-max);
+  }
+
+  .testimonial-section__single {
+    max-width: var(--container-small-max);
+  }
+
+  .testimonial-section__grid,
+  .testimonial-section__results {
+    display: grid;
+    gap: var(--gap-large);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .testimonial-section__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .testimonial-section__grid > li,
+  .testimonial-section__results > li {
+    display: grid;
+  }
+
+  .testimonial-section__results-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    gap: var(--gap-large);
+  }
+
+  .testimonial-section__results {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (width < 64rem) {
+    .testimonial-section__results-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (width < 40rem) {
+    .testimonial-section__grid,
+    .testimonial-section__results {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

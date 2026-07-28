@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../art-direction/schemas/reference-manifest.schema.json",
+  "version": "1.0.0",
+  "status": "not-configured",
+  "projectId": null,
+  "references": []
+}

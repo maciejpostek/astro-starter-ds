@@ -1,0 +1,125 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type ComponentSize = "small" | "medium" | "large";
+type InputState = "default" | "invalid" | "valid";
+
+type Props = {
+  multiline?: boolean;
+  componentSize?: ComponentSize;
+  state?: InputState;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"input">, "class" | "size"> &
+  Omit<HTMLAttributes<"textarea">, "class">;
+
+const {
+  multiline = false,
+  componentSize = "medium",
+  state = "default",
+  componentName,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const resolvedComponentName = componentName ?? (multiline ? "Input.Textarea" : "Input.Control");
+---
+
+{
+  multiline ? (
+    <textarea
+      class:list={["input", "input--textarea", className]}
+      data-component-name={resolvedComponentName}
+      data-component-family="forms"
+      data-component-size={componentSize}
+      data-input-state={state}
+      data-preview-target
+      aria-invalid={state === "invalid" ? "true" : undefined}
+      {...attributes}
+    />
+  ) : (
+    <input
+      class:list={["input", className]}
+      data-component-name={resolvedComponentName}
+      data-component-family="forms"
+      data-component-size={componentSize}
+      data-input-state={state}
+      data-preview-target
+      aria-invalid={state === "invalid" ? "true" : undefined}
+      {...attributes}
+    />
+  )
+}
+
+<style>
+  .input {
+    width: 100%;
+    min-height: var(--component-min-height);
+    border: var(--border-width-default) solid var(--input-border-default);
+    border-radius: var(--radius-input);
+    color: var(--input-text-default);
+    background: var(--input-background-default);
+    padding:
+      var(--component-padding-block)
+      var(--component-padding-inline);
+    font-family: var(--font-family-body);
+    font-size: var(--component-font-size);
+    line-height: var(--component-line-height);
+    transition:
+      border-color var(--motion-transition),
+      background var(--motion-transition);
+  }
+
+  .input--textarea {
+    min-height: var(--size-128);
+    resize: vertical;
+    line-height: var(--line-height-normal);
+  }
+
+  .input:focus {
+    border-color: var(--input-border-focus);
+    background: var(--input-background-focus);
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: var(--size-2);
+  }
+
+  .input:hover:not(:disabled) {
+    border-color: var(--input-border-hover);
+    background: var(--input-background-hover);
+  }
+
+  .input[data-preview-state="hover"]:not(:disabled) {
+    border-color: var(--input-border-hover);
+    background: var(--input-background-hover);
+  }
+
+  .input[data-preview-state="focus"]:not(:disabled) {
+    border-color: var(--input-border-focus);
+    background: var(--input-background-focus);
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: var(--size-2);
+  }
+
+  .input:disabled {
+    border-color: var(--input-border-disabled);
+    color: var(--input-text-disabled);
+    background: var(--input-background-disabled);
+    cursor: not-allowed;
+  }
+
+  .input:disabled::placeholder {
+    color: var(--input-placeholder-disabled);
+  }
+
+  .input[data-input-state="invalid"] {
+    border-color: var(--input-border-invalid);
+  }
+
+  .input[data-input-state="valid"] {
+    border-color: var(--input-border-valid);
+  }
+
+  .input::placeholder {
+    color: var(--input-placeholder-default);
+  }
+</style>

@@ -1,0 +1,222 @@
+/*
+ * Design system typography foundations.
+ * Heading, body and utility font families remain separate so each role can
+ * change independently on an exploration branch.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap");
+
+:root {
+  /* Font families
+   * All primary text roles resolve to Inter loaded through @fontsource/inter.
+   */
+  --font-family-heading: "Inter", Arial, sans-serif;
+  --font-family-body: "Inter", Arial, sans-serif;
+  --font-family-mono: "Roboto Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* Font weights
+   * Universal role names allow the underlying numeric values to change.
+   */
+  --font-weight-normal: 400;
+  --font-weight-emphasis: 500;
+  --font-weight-strong: 600;
+
+  /* Heading sizes
+   * H1 through H6 scale fluidly between mobile and desktop limits.
+   * Min/max tokens are editable control points; final tokens interpolate
+   * between them using the shared layout fluid viewport range.
+   */
+  --font-size-h1-min: 2.5rem;
+  --font-size-h1-max: 3.5rem;
+  --font-size-h1:
+    clamp(
+      var(--font-size-h1-min),
+      calc(
+        var(--font-size-h1-min) +
+        (var(--font-size-h1-max) - var(--font-size-h1-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-h1-max)
+    );
+  --font-size-h2-min: 2.25rem;
+  --font-size-h2-max: 3rem;
+  --font-size-h2:
+    clamp(
+      var(--font-size-h2-min),
+      calc(
+        var(--font-size-h2-min) +
+        (var(--font-size-h2-max) - var(--font-size-h2-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-h2-max)
+    );
+  --font-size-h3-min: 2rem;
+  --font-size-h3-max: 2.5rem;
+  --font-size-h3:
+    clamp(
+      var(--font-size-h3-min),
+      calc(
+        var(--font-size-h3-min) +
+        (var(--font-size-h3-max) - var(--font-size-h3-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-h3-max)
+    );
+  --font-size-h4-min: 1.75rem;
+  --font-size-h4-max: 2rem;
+  --font-size-h4:
+    clamp(
+      var(--font-size-h4-min),
+      calc(
+        var(--font-size-h4-min) +
+        (var(--font-size-h4-max) - var(--font-size-h4-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-h4-max)
+    );
+  --font-size-h5-min: 1.5rem;
+  --font-size-h5-max: 1.75rem;
+  --font-size-h5:
+    clamp(
+      var(--font-size-h5-min),
+      calc(
+        var(--font-size-h5-min) +
+        (var(--font-size-h5-max) - var(--font-size-h5-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-h5-max)
+    );
+  --font-size-h6-min: 1.25rem;
+  --font-size-h6-max: 1.5rem;
+  --font-size-h6:
+    clamp(
+      var(--font-size-h6-min),
+      calc(
+        var(--font-size-h6-min) +
+        (var(--font-size-h6-max) - var(--font-size-h6-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-h6-max)
+    );
+
+  /* Body sizes
+   * Reading sizes use the same min/max control-point model as headings.
+   * Some roles keep identical min/max values to stay fixed by default.
+   */
+  --font-size-body-large-min: 1.125rem;
+  --font-size-body-large-max: 1.25rem;
+  --font-size-body-large:
+    clamp(
+      var(--font-size-body-large-min),
+      calc(
+        var(--font-size-body-large-min) +
+        (var(--font-size-body-large-max) - var(--font-size-body-large-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-body-large-max)
+    );
+  --font-size-body-medium-min: 1.0625rem;
+  --font-size-body-medium-max: 1.125rem;
+  --font-size-body-medium:
+    clamp(
+      var(--font-size-body-medium-min),
+      calc(
+        var(--font-size-body-medium-min) +
+        (var(--font-size-body-medium-max) - var(--font-size-body-medium-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-body-medium-max)
+    );
+  --font-size-body-base-min: 1rem;
+  --font-size-body-base-max: 1rem;
+  --font-size-body-base:
+    clamp(
+      var(--font-size-body-base-min),
+      calc(
+        var(--font-size-body-base-min) +
+        (var(--font-size-body-base-max) - var(--font-size-body-base-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-body-base-max)
+    );
+  --font-size-body-small-min: 0.875rem;
+  --font-size-body-small-max: 0.875rem;
+  --font-size-body-small:
+    clamp(
+      var(--font-size-body-small-min),
+      calc(
+        var(--font-size-body-small-min) +
+        (var(--font-size-body-small-max) - var(--font-size-body-small-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-body-small-max)
+    );
+  --font-size-body-tiny-min: 0.75rem;
+  --font-size-body-tiny-max: 0.75rem;
+  --font-size-body-tiny:
+    clamp(
+      var(--font-size-body-tiny-min),
+      calc(
+        var(--font-size-body-tiny-min) +
+        (var(--font-size-body-tiny-max) - var(--font-size-body-tiny-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-body-tiny-max)
+    );
+
+  /* Line heights
+   * Reusable vertical rhythm independent of a specific text style.
+   */
+  --line-height-none: 1;
+  --line-height-tight: 1.1;
+  --line-height-compact: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+
+  /* Letter spacing
+   * Universal negative tracking scale from 0% to -4%.
+   */
+  --letter-spacing-none: 0;
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-tighter: -0.02em;
+  --letter-spacing-tightest: -0.03em;
+  --letter-spacing-ultra-tight: -0.04em;
+
+  /* Font styles
+   * Reusable font-style values for semantic text styles.
+   */
+  --font-style-normal: normal;
+  --font-style-italic: italic;
+
+  /* Text transforms
+   * Reusable casing values for compact utility and metadata text.
+   */
+  --text-transform-none: none;
+  --text-transform-uppercase: uppercase;
+  --text-transform-lowercase: lowercase;
+  --text-transform-capitalize: capitalize;
+  --text-transform-full-width: full-width;
+  --text-transform-full-size-kana: full-size-kana;
+
+  /* Text wrap
+   * Reusable text breaking and wrapping values for headings and body text.
+   */
+  --text-wrap-wrap: wrap;
+  --text-wrap-nowrap: nowrap;
+  --text-wrap-balance: balance;
+  --text-wrap-pretty: pretty;
+
+  --overflow-wrap-normal: normal;
+  --overflow-wrap-break-word: break-word;
+  --overflow-wrap-anywhere: anywhere;
+
+  --word-break-normal: normal;
+  --word-break-break-all: break-all;
+  --word-break-keep-all: keep-all;
+
+  --white-space-normal: normal;
+  --white-space-nowrap: nowrap;
+  --white-space-pre-wrap: pre-wrap;
+  --white-space-pre-line: pre-line;
+  --white-space-break-spaces: break-spaces;
+}

@@ -1,0 +1,148 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.component-lifecycle-release
+direction: right
+
+title: "Component Lifecycle and Release" {
+  shape: text
+  near: top-center
+  style.font-size: 28
+  style.bold: true
+}
+
+gate_component_gap: "Genuine Component Gap Gate\ndecision-gate · active · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_implement_astro: "Implement or Repair Astro\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_document: "Update Operational Documentation\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_browser_validation: "Browser Validation\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_figma_sync: "Synchronize Accepted Astro to Figma\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+external_figma: "Figma Editable Representation\nexternal-system · external · current" {
+  shape: cloud
+  style.fill: "#475569"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+validator_component_architecture: "Component Architecture Audit\nvalidator · active · current" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+validator_family: "Family and Parity Audits\nvalidator · active · current" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+validator_roadmap: "Roadmap Audit\nvalidator · active · current" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+validator_build: "Astro Check and Build\nvalidator · active · current" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+approval_family: "Family Checkpoint Acceptance\nhuman-approval · required · current" {
+  shape: diamond
+  style.fill: "#ea580c"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_roadmap_checkpoint: "Roadmap Checkpoint Gate\ndecision-gate · active · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_release: "Lifecycle and Release\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_roadmap: "Design System Roadmap\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_astro: "Accepted Astro Output\noutput · active · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_figma: "Accepted Figma Representation\noutput · external · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_component_gap -> process_implement_astro: "routes-to · A genuinely reusable component or API gap is evidenced."
+process_implement_astro -> process_document: "routes-to"
+process_implement_astro -> process_browser_validation: "routes-to"
+process_figma_sync -> output_figma: "creates"
+validator_family -> external_figma: "validates"
+approval_family -> output_figma: "approves"
+process_release -> source_roadmap: "reads"
+process_release -> output_astro: "publishes"

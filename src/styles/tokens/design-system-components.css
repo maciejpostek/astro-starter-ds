@@ -1,0 +1,87 @@
+/*
+ * Design system documentation component contracts.
+ * These tokens normalize internal documentation UI such as variable/style rows,
+ * table headers and future component inventory tables.
+ */
+
+:root {
+  /* Documentation table row - tiny profile
+   * Compact rows for token/value documentation tables.
+   */
+  --ds-doc-table-row-tiny-min-height:
+    clamp(var(--size-24), 1.3571rem + 0.7143vw, var(--size-32));
+  --ds-doc-table-row-tiny-padding-inline: var(--size-12);
+  --ds-doc-table-row-tiny-padding-block: var(--size-0);
+  --ds-doc-table-row-tiny-font-family: var(--font-family-mono);
+  --ds-doc-table-row-tiny-font-size: var(--font-size-body-tiny);
+  --ds-doc-table-row-tiny-font-weight: var(--font-weight-normal);
+  --ds-doc-table-row-tiny-line-height: var(--line-height-none);
+  --ds-doc-table-row-tiny-letter-spacing: var(--letter-spacing-none);
+  --ds-doc-table-row-tiny-sample-track-min-height: var(--size-16);
+  --ds-doc-table-row-tiny-sample-height: var(--size-8);
+  --ds-doc-table-tiny-min-width: 62rem;
+  --ds-doc-table-tiny-grid-template-columns:
+    minmax(12rem, 0.22fr)
+    minmax(20rem, 0.34fr)
+    minmax(22rem, 0.34fr)
+    minmax(8rem, 0.1fr);
+
+  /* Documentation table column title - tiny profile
+   * Header cells for token/value documentation tables.
+   */
+  --ds-doc-table-column-title-tiny-min-height:
+    var(--ds-doc-table-row-tiny-min-height);
+  --ds-doc-table-column-title-tiny-padding-inline: var(--size-12);
+  --ds-doc-table-column-title-tiny-padding-block: var(--size-0);
+  --ds-doc-table-column-title-tiny-font-family: var(--font-family-body);
+  --ds-doc-table-column-title-tiny-font-size: var(--font-size-body-tiny);
+  --ds-doc-table-column-title-tiny-font-weight: var(--font-weight-strong);
+  --ds-doc-table-column-title-tiny-line-height: var(--line-height-none);
+  --ds-doc-table-column-title-tiny-letter-spacing: var(--letter-spacing-none);
+}
+
+[data-ds-doc-table-size="tiny"] {
+  --ds-doc-table-row-min-height: var(--ds-doc-table-row-tiny-min-height);
+  --ds-doc-table-row-padding-inline: var(--ds-doc-table-row-tiny-padding-inline);
+  --ds-doc-table-row-padding-block: var(--ds-doc-table-row-tiny-padding-block);
+  --ds-doc-table-row-font-family: var(--ds-doc-table-row-tiny-font-family);
+  --ds-doc-table-row-font-size: var(--ds-doc-table-row-tiny-font-size);
+  --ds-doc-table-row-font-weight: var(--ds-doc-table-row-tiny-font-weight);
+  --ds-doc-table-row-line-height: var(--ds-doc-table-row-tiny-line-height);
+  --ds-doc-table-row-letter-spacing: var(--ds-doc-table-row-tiny-letter-spacing);
+  --ds-doc-table-row-sample-track-min-height:
+    var(--ds-doc-table-row-tiny-sample-track-min-height);
+  --ds-doc-table-row-sample-height: var(--ds-doc-table-row-tiny-sample-height);
+  --ds-doc-table-min-width: var(--ds-doc-table-tiny-min-width);
+  --ds-doc-table-grid-template-columns: var(--ds-doc-table-tiny-grid-template-columns);
+
+  --ds-doc-table-column-title-min-height:
+    var(--ds-doc-table-column-title-tiny-min-height);
+  --ds-doc-table-column-title-padding-inline:
+    var(--ds-doc-table-column-title-tiny-padding-inline);
+  --ds-doc-table-column-title-padding-block:
+    var(--ds-doc-table-column-title-tiny-padding-block);
+  --ds-doc-table-column-title-font-family:
+    var(--ds-doc-table-column-title-tiny-font-family);
+  --ds-doc-table-column-title-font-size:
+    var(--ds-doc-table-column-title-tiny-font-size);
+  --ds-doc-table-column-title-font-weight:
+    var(--ds-doc-table-column-title-tiny-font-weight);
+  --ds-doc-table-column-title-line-height:
+    var(--ds-doc-table-column-title-tiny-line-height);
+  --ds-doc-table-column-title-letter-spacing:
+    var(--ds-doc-table-column-title-tiny-letter-spacing);
+}
+
+@media (width < 48rem) {
+  :root {
+    --ds-doc-table-row-tiny-padding-inline: var(--size-8);
+    --ds-doc-table-column-title-tiny-padding-inline: var(--size-8);
+    --ds-doc-table-tiny-min-width: 46rem;
+    --ds-doc-table-tiny-grid-template-columns:
+      minmax(9rem, 0.24fr)
+      minmax(16rem, 0.34fr)
+      minmax(15rem, 0.3fr)
+      minmax(6rem, 0.12fr);
+  }
+}

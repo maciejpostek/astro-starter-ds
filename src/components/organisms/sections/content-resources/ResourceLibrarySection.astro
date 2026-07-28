@@ -1,0 +1,571 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { MediaRatioValue } from "../../../atoms/media/types";
+import ResourceCard from "../../../molecules/cards/ResourceCard.astro";
+import type {
+  ResourceCardHeadingLevel,
+  ResourceCardVariant,
+} from "../../../molecules/cards/ResourceCard.astro";
+import ContentBlock from "../../../molecules/content/ContentBlock.astro";
+import SearchInput from "../../../molecules/forms/SearchInput.astro";
+import Pagination from "../../../molecules/navigation/Pagination.astro";
+
+export type ResourceLibrarySectionVariant = "library" | "guides" | "ebooks";
+
+export interface ResourceLibrarySectionMedia {
+  src: string;
+  alt: string;
+}
+
+export interface ResourceLibrarySectionResource {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  kind: ResourceCardVariant;
+  metadata?: string;
+  actionLabel?: string;
+  visualLabel?: string;
+  visualRatio?: MediaRatioValue;
+  media?: ResourceLibrarySectionMedia;
+}
+
+export interface ResourceLibrarySectionSearch {
+  label: string;
+  placeholder: string;
+  emptyMessage: string;
+}
+
+export interface ResourceLibrarySectionPagination {
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+  label?: string;
+  maxVisiblePages?: number;
+}
+
+export interface ResourceLibrarySectionContent {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  resources: ResourceLibrarySectionResource[];
+  search?: ResourceLibrarySectionSearch;
+  pagination?: ResourceLibrarySectionPagination;
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: ResourceLibrarySectionContent;
+  variant: ResourceLibrarySectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "ResourceLibrarySection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafePattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const safeHrefPattern = /^(?:https?:\/\/|\/(?!\/))/i;
+const supportedVariants: ResourceLibrarySectionVariant[] = [
+  "library",
+  "guides",
+  "ebooks",
+];
+const supportedKinds: ResourceCardVariant[] = ["guide", "ebook", "webinar"];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const resourceLimits: Record<
+  ResourceLibrarySectionVariant,
+  { min: number; max: number }
+> = {
+  library: { min: 3, max: 18 },
+  guides: { min: 2, max: 12 },
+  ebooks: { min: 2, max: 12 },
+};
+
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedEyebrow = content?.eyebrow?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedId || !selectorSafePattern.test(normalizedId)) {
+  throw new Error(
+    "ResourceLibrarySection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error(
+    "ResourceLibrarySection requires a structured content object.",
+  );
+}
+if (!normalizedTitle || !normalizedDescription) {
+  throw new Error(
+    "ResourceLibrarySection requires non-empty title and description values.",
+  );
+}
+if (content.eyebrow !== undefined && !normalizedEyebrow) {
+  throw new Error(
+    "ResourceLibrarySection eyebrow must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `ResourceLibrarySection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `ResourceLibrarySection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "ResourceLibrarySection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error(
+    "ResourceLibrarySection requires a non-empty componentName.",
+  );
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("ResourceLibrarySection does not expose public slots.");
+}
+
+const limits = resourceLimits[variant];
+if (
+  !Array.isArray(content.resources) ||
+  content.resources.length < limits.min ||
+  content.resources.length > limits.max
+) {
+  throw new Error(
+    `ResourceLibrarySection ${variant} requires ${limits.min} to ${limits.max} resources.`,
+  );
+}
+
+const resourceIds = new Set<string>();
+const resourceDestinations = new Set<string>();
+const normalizedResources = content.resources.map((resource, resourceIndex) => {
+  const resourceId = resource?.id?.trim();
+  const title = resource?.title?.trim();
+  const description = resource?.description?.trim();
+  const href = resource?.href?.trim();
+  const metadata = resource?.metadata?.trim();
+  const actionLabel = resource?.actionLabel?.trim();
+  const visualLabel = resource?.visualLabel?.trim();
+  const mediaSrc = resource?.media?.src?.trim();
+  const mediaAlt = resource?.media?.alt?.trim();
+
+  if (
+    !resourceId ||
+    !selectorSafePattern.test(resourceId) ||
+    !title ||
+    !description ||
+    !supportedKinds.includes(resource.kind)
+  ) {
+    throw new Error(
+      `ResourceLibrarySection resource ${resourceIndex + 1} requires selector-safe identity, title, description, and supported kind.`,
+    );
+  }
+  if (!href || !safeHrefPattern.test(href)) {
+    throw new Error(
+      `ResourceLibrarySection resource "${resourceId}" requires a safe HTTPS or root-relative href.`,
+    );
+  }
+  if (resourceIds.has(resourceId)) {
+    throw new Error(
+      `ResourceLibrarySection contains duplicate resource id "${resourceId}".`,
+    );
+  }
+  if (resourceDestinations.has(href)) {
+    throw new Error(
+      `ResourceLibrarySection contains duplicate resource destination "${href}".`,
+    );
+  }
+  if (resource.metadata !== undefined && !metadata) {
+    throw new Error(
+      `ResourceLibrarySection resource "${resourceId}" metadata must be non-empty when provided.`,
+    );
+  }
+  if (resource.actionLabel !== undefined && !actionLabel) {
+    throw new Error(
+      `ResourceLibrarySection resource "${resourceId}" actionLabel must be non-empty when provided.`,
+    );
+  }
+  if (resource.visualLabel !== undefined && !visualLabel) {
+    throw new Error(
+      `ResourceLibrarySection resource "${resourceId}" visualLabel must be non-empty when provided.`,
+    );
+  }
+  if (
+    resource.media !== undefined &&
+    (!mediaSrc || !safeHrefPattern.test(mediaSrc) || !mediaAlt)
+  ) {
+    throw new Error(
+      `ResourceLibrarySection resource "${resourceId}" media requires a safe HTTPS or root-relative src and non-empty alt text.`,
+    );
+  }
+
+  resourceIds.add(resourceId);
+  resourceDestinations.add(href);
+  return {
+    id: resourceId,
+    title,
+    description,
+    href,
+    kind: resource.kind,
+    metadata,
+    actionLabel,
+    visualLabel,
+    visualRatio: resource.visualRatio,
+    media:
+      mediaSrc && mediaAlt
+        ? {
+            src: mediaSrc,
+            alt: mediaAlt,
+          }
+        : undefined,
+  };
+});
+
+if (
+  variant === "guides" &&
+  normalizedResources.some((resource) => resource.kind !== "guide")
+) {
+  throw new Error(
+    "ResourceLibrarySection Guides accepts only guide resources.",
+  );
+}
+if (
+  variant === "ebooks" &&
+  normalizedResources.some((resource) => resource.kind !== "ebook")
+) {
+  throw new Error(
+    "ResourceLibrarySection Ebooks accepts only ebook resources.",
+  );
+}
+
+const normalizedSearch = content.search
+  ? {
+      label: content.search.label?.trim(),
+      placeholder: content.search.placeholder?.trim(),
+      emptyMessage: content.search.emptyMessage?.trim(),
+    }
+  : undefined;
+if (
+  variant === "library" &&
+  (!normalizedSearch?.label ||
+    !normalizedSearch.placeholder ||
+    !normalizedSearch.emptyMessage)
+) {
+  throw new Error(
+    "ResourceLibrarySection Library requires non-empty search label, placeholder, and emptyMessage values.",
+  );
+}
+if (variant !== "library" && content.search !== undefined) {
+  throw new Error(
+    "ResourceLibrarySection search content is supported only by Library.",
+  );
+}
+
+const normalizedPagination = content.pagination
+  ? {
+      currentPage: content.pagination.currentPage,
+      totalPages: content.pagination.totalPages,
+      basePath: content.pagination.basePath?.trim(),
+      label: content.pagination.label?.trim(),
+      maxVisiblePages: content.pagination.maxVisiblePages,
+    }
+  : undefined;
+if (
+  normalizedPagination &&
+  (!Number.isSafeInteger(normalizedPagination.currentPage) ||
+    !Number.isSafeInteger(normalizedPagination.totalPages) ||
+    normalizedPagination.totalPages < 2 ||
+    normalizedPagination.currentPage < 1 ||
+    normalizedPagination.currentPage > normalizedPagination.totalPages ||
+    !normalizedPagination.basePath ||
+    !safeHrefPattern.test(normalizedPagination.basePath))
+) {
+  throw new Error(
+    "ResourceLibrarySection pagination requires a valid currentPage, totalPages of at least two, and safe basePath.",
+  );
+}
+if (
+  normalizedPagination?.label !== undefined &&
+  !normalizedPagination.label
+) {
+  throw new Error(
+    "ResourceLibrarySection pagination label must be non-empty when provided.",
+  );
+}
+if (
+  normalizedPagination?.maxVisiblePages !== undefined &&
+  (!Number.isSafeInteger(normalizedPagination.maxVisiblePages) ||
+    normalizedPagination.maxVisiblePages < 5 ||
+    normalizedPagination.maxVisiblePages % 2 === 0)
+) {
+  throw new Error(
+    "ResourceLibrarySection pagination maxVisiblePages must be an odd safe integer of at least five.",
+  );
+}
+if (variant === "library" && content.pagination !== undefined) {
+  throw new Error(
+    "ResourceLibrarySection pagination is supported only by Guides and Ebooks.",
+  );
+}
+
+const cardHeadingLevel = (headingLevel + 1) as ResourceCardHeadingLevel;
+const resourceSearchValue = (
+  resource: (typeof normalizedResources)[number],
+) =>
+  `${resource.title} ${resource.description} ${resource.kind} ${resource.metadata ?? ""}`
+    .toLocaleLowerCase()
+    .trim();
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "resource-library-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="content-resources"
+  data-section-type="resource-library"
+  data-section-variant={variant}
+  data-resource-library-resources={normalizedResources.length}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div
+    class="l-container resource-library-section__container"
+    data-container="main"
+    data-resource-library-directory={variant === "library" ? "" : undefined}
+  >
+    <ContentBlock
+      eyebrow={normalizedEyebrow}
+      title={normalizedTitle}
+      body={normalizedDescription}
+      headingLevel={headingLevel}
+      componentName={`${normalizedComponentName}.Header`}
+    />
+
+    {
+      variant === "library" && normalizedSearch && (
+        <div class="resource-library-section__search">
+          <SearchInput
+            id={`${normalizedId}-search`}
+            name="resource-query"
+            label={normalizedSearch.label}
+            placeholder={normalizedSearch.placeholder}
+            componentName={`${normalizedComponentName}.Search`}
+          />
+          <p
+            class="resource-library-section__empty"
+            data-resource-library-empty
+            aria-live="polite"
+            hidden
+          >
+            {normalizedSearch.emptyMessage}
+          </p>
+        </div>
+      )
+    }
+
+    <ul class="resource-library-section__resources">
+      {
+        normalizedResources.map((resource) => (
+          <li
+            data-resource-library-resource={resource.id}
+            data-resource-kind={resource.kind}
+            data-resource-library-search-value={resourceSearchValue(resource)}
+          >
+            <ResourceCard
+              title={resource.title}
+              description={resource.description}
+              href={resource.href}
+              variant={resource.kind}
+              metadata={resource.metadata}
+              actionLabel={resource.actionLabel}
+              visualLabel={resource.visualLabel}
+              visualRatio={resource.visualRatio}
+              headingLevel={cardHeadingLevel}
+              componentName={`${normalizedComponentName}.Resource`}
+            >
+              {
+                resource.media && (
+                  <img
+                    slot="media"
+                    class="resource-library-section__image"
+                    src={resource.media.src}
+                    alt={resource.media.alt}
+                    loading="lazy"
+                  />
+                )
+              }
+            </ResourceCard>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      normalizedPagination && (
+        <div class="resource-library-section__pagination">
+          <Pagination
+            currentPage={normalizedPagination.currentPage}
+            totalPages={normalizedPagination.totalPages}
+            basePath={normalizedPagination.basePath}
+            label={normalizedPagination.label ?? `${normalizedTitle} pages`}
+            maxVisiblePages={normalizedPagination.maxVisiblePages}
+            componentName={`${normalizedComponentName}.Pagination`}
+          />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  type ResourceLibraryWindow = Window & {
+    __astroDsResourceLibraryReady?: boolean;
+  };
+  const resourceLibraryWindow = window as ResourceLibraryWindow;
+
+  if (!resourceLibraryWindow.__astroDsResourceLibraryReady) {
+    resourceLibraryWindow.__astroDsResourceLibraryReady = true;
+    document.addEventListener("input", (event) => {
+      const input =
+        event.target instanceof HTMLInputElement &&
+        event.target.type === "search"
+          ? event.target
+          : null;
+      const directory = input?.closest<HTMLElement>(
+        "[data-resource-library-directory]",
+      );
+      if (!input || !directory) return;
+
+      const query = input.value.trim().toLocaleLowerCase();
+      const resources = Array.from(
+        directory.querySelectorAll<HTMLElement>(
+          "[data-resource-library-resource]",
+        ),
+      );
+      let visibleCount = 0;
+
+      resources.forEach((resource) => {
+        const isVisible =
+          !query ||
+          (resource.dataset.resourceLibrarySearchValue ?? "").includes(query);
+        resource.hidden = !isVisible;
+        if (isVisible) visibleCount += 1;
+      });
+
+      const emptyMessage = directory.querySelector<HTMLElement>(
+        "[data-resource-library-empty]",
+      );
+      if (emptyMessage) emptyMessage.hidden = visibleCount > 0;
+    });
+  }
+</script>
+
+<style>
+  .resource-library-section,
+  .resource-library-section__container,
+  .resource-library-section__resources,
+  .resource-library-section__resources > li,
+  .resource-library-section__search,
+  .resource-library-section__pagination {
+    min-width: 0;
+  }
+
+  .resource-library-section {
+    background: var(--color-background-canvas);
+  }
+
+  .resource-library-section__container,
+  .resource-library-section__resources,
+  .resource-library-section__search {
+    display: grid;
+  }
+
+  .resource-library-section__container {
+    gap: var(--gap-xlarge);
+  }
+
+  .resource-library-section__search {
+    max-width: var(--content-width-small);
+    gap: var(--gap-small);
+  }
+
+  .resource-library-section__empty {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-small-font-family);
+    font-size: var(--text-style-body-small-font-size);
+    line-height: var(--text-style-body-small-line-height);
+  }
+
+  .resource-library-section__resources {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: var(--gap-large);
+  }
+
+  .resource-library-section__resources > li {
+    height: 100%;
+  }
+
+  .resource-library-section__resources
+    > li[data-resource-kind="ebook"] {
+    grid-column: 1 / -1;
+  }
+
+  .resource-library-section__pagination {
+    display: flex;
+    justify-content: center;
+  }
+
+  .resource-library-section__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (width < 64rem) {
+    .resource-library-section__resources {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .resource-library-section__resources
+      > li[data-resource-kind="ebook"] {
+      grid-column: auto;
+    }
+  }
+
+  @media (width < 40rem) {
+    .resource-library-section__container {
+      gap: var(--gap-large);
+    }
+  }
+</style>

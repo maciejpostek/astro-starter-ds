@@ -1,0 +1,15 @@
+---
+import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "@lucide/astro";
+import IconButton from "../../atoms/actions/IconButton.astro";
+interface Props { title:string; description?:string; variant?:"alert"|"notification"|"toast"; tone?:"info"|"success"|"warning"|"error"; dismissible?:boolean; componentName?:string; }
+const {title,description,variant="alert",tone="info",dismissible=false,componentName="Alert"}=Astro.props;const icons={info:Info,success:CircleCheck,warning:TriangleAlert,error:CircleAlert};const Icon=icons[tone];
+---
+<aside class="alert" data-component-name={componentName} data-component-family="data-display" data-alert-variant={variant} data-alert-tone={tone} data-alert data-preview-target role={tone==="error"?"alert":"status"}>
+  <Icon class="alert__icon" aria-hidden="true"/><div><strong>{title}</strong>{description&&<p>{description}</p>}<slot /></div>{dismissible&&<IconButton type="button" label="Dismiss" data-dismiss-alert><X /></IconButton>}
+</aside>
+<script>
+  type AlertWindow=Window&{__astroDsAlertReady?:boolean};const alertWindow=window as AlertWindow;if(!alertWindow.__astroDsAlertReady){alertWindow.__astroDsAlertReady=true;document.addEventListener("click",event=>{const button=event.target instanceof Element?event.target.closest("[data-dismiss-alert]"):null;const alert=button?.closest<HTMLElement>("[data-alert]");if(alert){alert.hidden=true;alert.dispatchEvent(new CustomEvent("alert-dismiss",{bubbles:true}));}})}
+</script>
+<style>
+  .alert{display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:var(--gap-medium);border:var(--border-width-default) solid var(--color-border-default);border-left-width:var(--border-width-emphasis);border-radius:var(--radius-alert);background:var(--color-background-surface);padding:var(--component-padding-small);color:var(--color-text-primary)}.alert__icon{width:var(--size-20);height:var(--size-20)}.alert strong{display:block}.alert p{margin-top:var(--gap-tiny);color:var(--color-text-secondary);font-size:var(--font-size-body-small)}.alert[data-alert-tone="info"]{border-left-color:var(--color-border-accent)}.alert[data-alert-tone="success"]{border-left-color:var(--input-border-valid)}.alert[data-alert-tone="warning"]{border-left-color:var(--color-status-warning-border)}.alert[data-alert-tone="error"]{border-left-color:var(--input-border-invalid)}.alert[data-alert-variant="notification"]{box-shadow:var(--elevation-alert-notification)}.alert[data-alert-variant="toast"]{max-width:24rem;border-left-width:var(--border-width-default);border-radius:var(--radius-alert);box-shadow:var(--elevation-alert-toast)}
+</style>

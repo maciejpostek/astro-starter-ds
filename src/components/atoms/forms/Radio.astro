@@ -1,0 +1,44 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = {
+  id: string;
+  name: string;
+  label: string;
+  description?: string;
+  componentSize?: "small" | "medium" | "large";
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"input">, "class" | "type" | "size">;
+
+const { label, description, componentSize = "medium", componentName = "Radio", class: className, id, disabled, ...attributes } = Astro.props;
+const inputId = id;
+const descriptionId = description ? `${inputId}-description` : undefined;
+---
+
+<label class:list={["radio", className]} data-component-name={componentName} data-component-family="forms" data-component-size={componentSize} data-state={disabled ? "disabled" : "default"} data-preview-target>
+  <input id={inputId} class="radio__control" type="radio" disabled={disabled} aria-describedby={descriptionId} {...attributes} />
+  <span class="radio__indicator" aria-hidden="true"></span>
+  <span class="radio__copy"><span class="radio__label">{label}</span>{description && <span id={descriptionId} class="radio__description">{description}</span>}</span>
+</label>
+
+<style>
+  .radio { display: inline-grid; grid-template-columns: var(--component-icon-size) 1fr; align-items: start; gap: var(--component-gap); color: var(--input-text-default); cursor: pointer; }
+  .radio__control { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .radio__indicator { display: grid; inline-size: var(--component-icon-size); block-size: var(--component-icon-size); place-items: center; margin-block-start: 0.125rem; border: var(--border-width-default) solid var(--input-border-default); border-radius: 50%; background: var(--input-background-default); }
+  .radio__indicator::after { inline-size: calc(var(--component-icon-size) * 0.45); block-size: calc(var(--component-icon-size) * 0.45); border-radius: 50%; background: var(--color-text-on-accent); content: ""; opacity: 0; }
+  .radio__copy { display: grid; gap: var(--gap-small); }
+  .radio__label { font-size: var(--component-font-size); font-weight: var(--font-weight-emphasis); line-height: var(--line-height-normal); }
+  .radio__description { color: var(--input-helper-default); font-size: var(--font-size-body-small); line-height: var(--line-height-normal); }
+  .radio:hover .radio__indicator { border-color: var(--input-border-hover); background: var(--input-background-hover); }
+  .radio[data-preview-state="hover"] .radio__indicator { border-color: var(--input-border-hover); background: var(--input-background-hover); }
+  .radio:active .radio__indicator,
+  .radio[data-preview-state="active"] .radio__indicator { border-color: var(--input-border-hover); background: var(--input-background-hover); transform: scale(0.94); }
+  .radio__control:checked + .radio__indicator { border-color: var(--button-primary-border-default); background: var(--button-primary-background-default); }
+  .radio__control:checked + .radio__indicator::after { opacity: 1; }
+  .radio__control:focus-visible + .radio__indicator { outline: var(--border-width-strong) solid var(--component-focus-ring); outline-offset: var(--size-2); }
+  .radio[data-preview-state="focus"] .radio__indicator { outline: var(--border-width-strong) solid var(--component-focus-ring); outline-offset: var(--size-2); }
+  .radio[data-state="disabled"] { color: var(--input-text-disabled); cursor: not-allowed; }
+  .radio[data-state="disabled"] .radio__indicator { border-color: var(--input-border-disabled); background: var(--input-background-disabled); }
+  .radio__control:disabled ~ .radio__copy { color: var(--input-text-disabled); }
+</style>

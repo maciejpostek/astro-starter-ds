@@ -1,0 +1,55 @@
+---
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+import DsSectionHeaderLevel3 from "../design-system-documentation/DsSectionHeaderLevel3.astro";
+import type { MotionTokenGroup } from "../../data/design-system/motionTokens";
+
+interface Props {
+  groups: MotionTokenGroup[];
+  label: string;
+}
+
+const { groups, label } = Astro.props as Props;
+---
+
+{
+  groups.map((group) => (
+    <section id={group.id} class="ds-motion-topic" aria-labelledby={`${group.id}-title`}>
+      <DsSectionHeaderLevel3
+        id={`${group.id}-title`}
+        title={group.title}
+        description={group.description}
+      />
+      <DsTableFrame
+        label={`${group.title} ${label}`}
+        minWidth="76rem"
+        columns="minmax(20rem, 0.24fr) minmax(16rem, 0.18fr) minmax(16rem, 0.18fr) minmax(30rem, 0.4fr)"
+        size="tiny"
+      >
+        <DsTableRow variant="header">
+          <DsTableCell role="columnheader" variant="header">Token</DsTableCell>
+          <DsTableCell role="columnheader" variant="header">Default</DsTableCell>
+          <DsTableCell role="columnheader" variant="header">Reduced Motion</DsTableCell>
+          <DsTableCell role="columnheader" variant="header">Role</DsTableCell>
+        </DsTableRow>
+        {group.rows.map((row) => (
+          <DsTableRow>
+            <DsTableCopyCell role="cell" value={row.token} />
+            <DsTableCell role="cell" tone="secondary"><code>{row.defaultValue}</code></DsTableCell>
+            <DsTableCell role="cell" tone="secondary"><code>{row.reducedValue}</code></DsTableCell>
+            <DsTableCell role="cell" tone="secondary"><span>{row.role}</span></DsTableCell>
+          </DsTableRow>
+        ))}
+      </DsTableFrame>
+    </section>
+  ))
+}
+
+<style>
+  .ds-motion-topic {
+    display: grid;
+    gap: var(--gap-medium);
+  }
+</style>

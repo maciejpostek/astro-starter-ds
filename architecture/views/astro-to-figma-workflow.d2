@@ -1,0 +1,91 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.astro-to-figma-workflow
+# Workflow: workflow.sync-accepted-astro-to-figma
+# Context cost: very-high
+direction: right
+
+title: "Accepted Astro to Figma Synchronization" {
+  shape: text
+  near: top-center
+  style.font-size: 28
+  style.bold: true
+}
+
+step_01: "1. Receive the synchronization prompt\ninput" {
+  shape: parallelogram
+  style.fill: "#0891b2"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_02: "2. Route Figma2Astro and family rules\nroute\nAGENTIC-RULES.json, README.md, 07-component-library-roadmap.md, <numbered family adapter>" {
+  shape: hexagon
+  style.fill: "#7c3aed"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_01 -> step_02: "next"
+
+step_03: "3. Read roadmap, registry identity, source API, tokens, and adapter\nread\ndesign-system-roadmap.json, componentArchitecture.json, <component source>, <token sources>, <family adapter>" {
+  shape: page
+  style.fill: "#0d9488"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_02 -> step_03: "next"
+
+step_04: "4. Inspect exact Figma page, master, variables, properties, and plugin-data identity\ntool-call" {
+  shape: cloud
+  style.fill: "#475569"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_03 -> step_04: "next"
+
+step_05: "5. Create or repair the Figma representation idempotently\nwrite" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_04 -> step_05: "next"
+
+step_06: "6. Validate properties, bindings, nested instances, parity, and roadmap evidence\nvalidate" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_05 -> step_06: "next"
+
+step_07: "7. Present one family checkpoint for acceptance\napproval" {
+  shape: diamond
+  style.fill: "#ea580c"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_06 -> step_07: "next"
+
+step_08: "8. Report node IDs, intentional differences, checks, and checkpoint status\noutput" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_07 -> step_08: "next"

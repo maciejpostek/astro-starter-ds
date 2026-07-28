@@ -1,0 +1,82 @@
+---
+import Eyebrow from "../../atoms/text/Eyebrow.astro";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+}
+
+const { eyebrow, title, description } = Astro.props;
+---
+
+<header
+  class="page-header"
+  data-component-name="PageHeader"
+  data-component-family="text"
+>
+  <div>
+    <Eyebrow text={eyebrow} />
+    <h1>{title}</h1>
+  </div>
+  <div class="page-header__support">
+    <p>{description}</p>
+    <slot />
+  </div>
+</header>
+
+<style>
+  .page-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(21.25rem, 0.55fr);
+    gap: var(--gap-huge);
+    align-items: end;
+    padding: var(--component-padding-large) 0;
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .page-header h1 {
+    max-width: 53.125rem;
+    margin-top: var(--space-large);
+    font-family: var(--text-style-heading-h3-font-family);
+    font-size: var(--text-style-heading-h3-font-size);
+    font-weight: var(--text-style-heading-h3-font-weight);
+    font-style: var(--text-style-heading-h3-font-style);
+    line-height: var(--text-style-heading-h3-line-height);
+    letter-spacing: var(--text-style-heading-h3-letter-spacing);
+    text-transform: var(--text-style-heading-h3-text-transform);
+    text-wrap: var(--text-style-heading-h3-text-wrap);
+    overflow-wrap: var(--text-style-heading-h3-overflow-wrap);
+    word-break: var(--text-style-heading-h3-word-break);
+    white-space: var(--text-style-heading-h3-white-space);
+  }
+
+  .page-header__support {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-medium);
+  }
+
+  .page-header__support p {
+    max-width: 30rem;
+    color: var(--color-text-tertiary);
+    font-family: var(--text-style-body-small-font-family);
+    font-size: var(--text-style-body-small-font-size);
+    font-weight: var(--text-style-body-small-font-weight);
+    font-style: var(--text-style-body-small-font-style);
+    line-height: var(--text-style-body-small-line-height);
+    letter-spacing: var(--text-style-body-small-letter-spacing);
+    text-transform: var(--text-style-body-small-text-transform);
+    text-wrap: var(--text-style-body-small-text-wrap);
+    overflow-wrap: var(--text-style-body-small-overflow-wrap);
+    word-break: var(--text-style-body-small-word-break);
+    white-space: var(--text-style-body-small-white-space);
+  }
+
+  @media (width < 64rem) {
+    .page-header {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

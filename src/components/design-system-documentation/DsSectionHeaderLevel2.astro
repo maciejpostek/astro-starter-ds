@@ -1,0 +1,45 @@
+---
+interface Props {
+  title: string;
+  id?: string;
+  description?: string;
+}
+
+const { title, id, description } = Astro.props;
+---
+
+<header class="ds-section-header-level-2" data-component-name="DsDocumentation.SectionHeaderLevel2">
+  <div class="ds-section-header-level-2__copy">
+    <h2 id={id}>{title}</h2>
+    {description && <p>{description}</p>}
+  </div>
+</header>
+
+<style>
+  .ds-section-header-level-2 {
+    margin-block: 0 var(--space-section-header-bottom);
+  }
+
+  .ds-section-header-level-2__copy {
+    display: grid;
+    max-width: 48rem;
+    gap: var(--gap-small);
+  }
+
+  .ds-section-header-level-2 h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-family: var(--text-style-heading-h2-font-family);
+    font-size: var(--text-style-heading-h2-font-size);
+    font-weight: var(--text-style-heading-h2-font-weight);
+    line-height: var(--text-style-heading-h2-line-height);
+    letter-spacing: var(--text-style-heading-h2-letter-spacing);
+  }
+
+  .ds-section-header-level-2 p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-normal);
+  }
+</style>

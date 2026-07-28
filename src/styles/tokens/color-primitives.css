@@ -1,0 +1,103 @@
+/*
+ * Design system color reference tokens.
+ * Raw values only. Do not use directly in component CSS.
+ */
+
+:root {
+  /* Base
+   * Non-color utility values shared by semantic tokens.
+   */
+  --color-transparent: transparent;
+
+  /* Neutral palette
+   * Achromatic scale from pure white to near black.
+   */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a1a1a1;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  /* Accent palette
+   * Brand and interaction emphasis scale.
+   */
+  --color-accent-50: #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bedbff;
+  --color-accent-300: #8ec5ff;
+  --color-accent-400: #51a2ff;
+  --color-accent-500: #2b7fff;
+  --color-accent-600: #155dfc;
+  --color-accent-700: #1447e6;
+  --color-accent-800: #193cb8;
+  --color-accent-900: #1c398e;
+  --color-accent-950: #162456;
+  --color-on-accent: var(--color-neutral-0);
+
+  /* Success palette
+   * Positive status and validation scale.
+   */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #b9f8cf;
+  --color-success-300: #7bf1a8;
+  --color-success-400: #05df72;
+  --color-success-500: #00c950;
+  --color-success-600: #00a63e;
+  --color-success-700: #008236;
+  --color-success-800: #016630;
+  --color-success-900: #0d542b;
+  --color-success-950: #032e15;
+
+  /* Warning palette
+   * Caution and attention status scale.
+   */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c6;
+  --color-warning-200: #fee685;
+  --color-warning-300: #ffd230;
+  --color-warning-400: #ffb900;
+  --color-warning-500: #fe9a00;
+  --color-warning-600: #e17100;
+  --color-warning-700: #bb4d00;
+  --color-warning-800: #973c00;
+  --color-warning-900: #7b3306;
+  --color-warning-950: #461901;
+
+  /* Error palette
+   * Destructive action and invalid-state scale.
+   */
+  --color-error-50: #fef2f2;
+  --color-error-100: #ffe2e2;
+  --color-error-200: #ffc9c9;
+  --color-error-300: #ffa2a2;
+  --color-error-400: #ff6467;
+  --color-error-500: #fb2c36;
+  --color-error-600: #e7000b;
+  --color-error-700: #c10007;
+  --color-error-800: #9f0712;
+  --color-error-900: #82181a;
+  --color-error-950: #460809;
+
+  /* Info palette
+   * Informational and neutral-notice status scale.
+   */
+  --color-info-50: #f0f9ff;
+  --color-info-100: #dff2fe;
+  --color-info-200: #b8e6fe;
+  --color-info-300: #74d4ff;
+  --color-info-400: #00bcff;
+  --color-info-500: #00a6f4;
+  --color-info-600: #0084d1;
+  --color-info-700: #0069a8;
+  --color-info-800: #00598a;
+  --color-info-900: #024a70;
+  --color-info-950: #052f4a;
+}

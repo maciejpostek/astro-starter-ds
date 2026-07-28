@@ -1,0 +1,32 @@
+---
+import { CalendarDays, ChevronRight } from "@lucide/astro";
+import type { TimelineStageData } from "./types";
+
+interface Props {
+  stage: Pick<TimelineStageData, "id" | "number" | "name" | "startWeek" | "durationWeeks" | "active" | "ctaLabel" | "ctaHref">;
+  totalWeeks: number;
+  active?: boolean;
+  showStartCta?: boolean;
+  ctaLabel?: string;
+  ctaHref?: string;
+  modalId: string;
+}
+
+const {
+  stage,
+  totalWeeks,
+  active = stage.active ?? false,
+  showStartCta = active,
+  ctaLabel = stage.ctaLabel ?? "Open next step",
+  ctaHref = stage.ctaHref ?? "#",
+  modalId
+} = Astro.props;
+const left = ((stage.startWeek - 1) / totalWeeks) * 100;
+const width = (stage.durationWeeks / totalWeeks) * 100;
+---
+<div class:list={["timeline-row", active && "has-start-cta"]} data-component-name="TimelineField" data-timeline-state={active ? "active" : "planned"}>
+  <button class:list={["timeline-stage", active ? "timeline-stage--active" : "timeline-stage--planned"]} style={`left:${left}%;width:${width}%`} type="button" data-open-timeline-stage={stage.id} data-timeline-modal-target={modalId} aria-haspopup="dialog" aria-controls={modalId}>
+    <span class="timeline-stage__number">{stage.number}</span><strong>{stage.name}</strong><ChevronRight />
+  </button>
+  {showStartCta && <a class="timeline-start-cta" style={`left:${left}%`} href={ctaHref}><CalendarDays />{ctaLabel}</a>}
+</div>

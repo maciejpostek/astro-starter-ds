@@ -1,0 +1,20 @@
+---
+const { componentName = "DivideBlock" }: { componentName?: string } = Astro.props;
+---
+
+<span
+  class="divide-block"
+  data-component-name={componentName}
+  data-component-family="text"
+  aria-hidden="true"
+></span>
+
+<style>
+  .divide-block {
+    display: inline-block;
+    width: var(--size-8);
+    height: var(--size-4);
+    flex: 0 0 auto;
+    background: var(--color-background-accent);
+  }
+</style>

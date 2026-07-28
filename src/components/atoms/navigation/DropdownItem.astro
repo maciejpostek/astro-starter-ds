@@ -1,0 +1,106 @@
+---
+import { Check } from "@lucide/astro";
+import type { HTMLAttributes } from "astro/types";
+
+type Props = {
+  selected?: boolean;
+  value?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<
+  HTMLAttributes<"button">,
+  | "class"
+  | "type"
+  | "role"
+  | "aria-checked"
+  | "aria-disabled"
+  | "tabindex"
+>;
+
+const {
+  selected = false,
+  value,
+  componentName = "DropdownItem",
+  class: className,
+  disabled,
+  ...attributes
+} = Astro.props;
+---
+
+<button
+  class:list={["dropdown-item", className]}
+  type="button"
+  role="menuitemradio"
+  aria-checked={selected}
+  aria-disabled={disabled ? "true" : undefined}
+  disabled={disabled}
+  tabindex="-1"
+  data-component-name={componentName}
+  data-component-family="navigation"
+  data-dropdown-item-state={disabled ? "disabled" : selected ? "selected" : "default"}
+  data-dropdown-item-value={value}
+  data-preview-target
+  {...attributes}
+>
+  <span><slot /></span>
+  <Check aria-hidden="true" />
+</button>
+
+<style>
+  .dropdown-item {
+    display: flex;
+    width: 100%;
+    min-height: var(--component-size-small-min-height);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+    border: 0;
+    background: transparent;
+    color: var(--color-text-primary);
+    padding: 0 var(--component-padding-small);
+    cursor: pointer;
+    text-align: left;
+    font-size: var(--font-size-body-small);
+  }
+
+  .dropdown-item :global(svg) {
+    width: var(--size-16);
+    height: var(--size-16);
+    flex: none;
+    opacity: 0;
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item[data-preview-state="hover"] {
+    background: var(--color-background-subtle);
+  }
+
+  .dropdown-item:active,
+  .dropdown-item[data-preview-state="pressed"] {
+    background: var(--color-background-muted);
+  }
+
+  .dropdown-item:focus-visible,
+  .dropdown-item[data-preview-state="focused"] {
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: calc(var(--border-width-strong) * -1);
+  }
+
+  .dropdown-item[aria-checked="true"],
+  .dropdown-item[data-preview-state="selected"] {
+    color: var(--color-text-on-accent);
+    background: var(--color-background-accent);
+  }
+
+  .dropdown-item[aria-checked="true"] :global(svg),
+  .dropdown-item[data-preview-state="selected"] :global(svg) {
+    opacity: 1;
+  }
+
+  .dropdown-item:disabled,
+  .dropdown-item[data-preview-state="disabled"] {
+    color: var(--color-state-disabled-text);
+    cursor: not-allowed;
+    background: transparent;
+  }
+</style>

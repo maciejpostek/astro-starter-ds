@@ -1,0 +1,16 @@
+---
+interface Item { label: string; href: string; }
+interface Props { title?: string; items: Item[]; }
+const { title = "On this page", items } = Astro.props;
+---
+<nav class="ds-table-of-contents" data-component-name="DsTableOfContents" aria-label={title}>
+  <strong>{title}</strong>
+  <ol>{items.map((item) => <li><a href={item.href}>{item.label}</a></li>)}</ol>
+</nav>
+<style>
+  .ds-table-of-contents { border: var(--border-width-default) solid var(--color-border-subtle); background: var(--color-background-surface); padding: var(--component-padding-medium); }
+  strong { font-size: var(--font-size-body-small); font-weight: var(--font-weight-emphasis); }
+  ol { display: grid; gap: var(--gap-small); margin-top: var(--space-medium); padding-left: var(--component-padding-medium); }
+  a { color: var(--color-text-secondary); font-size: var(--font-size-body-small); text-decoration: none; }
+  a:hover, a:focus-visible { color: var(--color-text-accent); }
+</style>

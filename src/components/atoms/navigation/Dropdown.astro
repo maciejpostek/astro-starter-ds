@@ -1,0 +1,406 @@
+---
+import { ChevronDown } from "@lucide/astro";
+import type { HTMLAttributes } from "astro/types";
+
+type Props = {
+  id: string;
+  label: string;
+  value?: string;
+  open?: boolean;
+  componentName?: string;
+  class?: string;
+  triggerClass?: string;
+} & Omit<
+  HTMLAttributes<"button">,
+  | "id"
+  | "class"
+  | "type"
+  | "aria-haspopup"
+  | "aria-expanded"
+  | "aria-controls"
+>;
+
+const {
+  id,
+  label,
+  value,
+  open = false,
+  componentName = "Dropdown",
+  class: className,
+  triggerClass,
+  disabled,
+  ...attributes
+} = Astro.props;
+
+if (!id.trim()) {
+  throw new Error("Dropdown requires a non-empty id.");
+}
+
+if (!Astro.slots.has("default")) {
+  throw new Error(`Dropdown "${id}" requires at least one DropdownItem.`);
+}
+
+const menuId = `${id}-menu`;
+---
+
+<div
+  class:list={["dropdown", className]}
+  data-component-name={componentName}
+  data-component-family="navigation"
+  data-dropdown-state={disabled ? "disabled" : open ? "open" : "closed"}
+  data-dropdown-value={value}
+  data-dropdown-root
+  data-preview-target
+>
+  <button
+    id={id}
+    class:list={["dropdown__trigger", triggerClass]}
+    type="button"
+    aria-haspopup="menu"
+    aria-expanded={open}
+    aria-controls={menuId}
+    disabled={disabled}
+    data-dropdown-trigger
+    {...attributes}
+  >
+    <span>
+      <small>{label}</small>
+      <strong data-dropdown-value-label>{value ?? label}</strong>
+    </span>
+    <ChevronDown size="var(--size-18)" aria-hidden="true" />
+  </button>
+  <div
+    id={menuId}
+    class="dropdown__menu"
+    role="menu"
+    aria-labelledby={id}
+    hidden={!open}
+  >
+    <slot />
+  </div>
+</div>
+
+<script>
+  type DropdownWindow = Window & {
+    __astroDsDropdownReady?: boolean;
+  };
+
+  const getDropdownTrigger = (root: HTMLElement) =>
+    root.querySelector<HTMLButtonElement>("[data-dropdown-trigger]");
+
+  const getDropdownMenu = (root: HTMLElement) =>
+    root.querySelector<HTMLElement>('[role="menu"]');
+
+  const getDropdownItems = (root: HTMLElement) =>
+    Array.from(
+      root.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]')
+    );
+
+  const getEnabledDropdownItems = (root: HTMLElement) =>
+    getDropdownItems(root).filter((item) => !item.disabled);
+
+  const syncDropdownItemState = (item: HTMLButtonElement) => {
+    item.dataset.dropdownItemState = item.disabled
+      ? "disabled"
+      : item.getAttribute("aria-checked") === "true"
+        ? "selected"
+        : "default";
+  };
+
+  const closeDropdown = (
+    root: HTMLElement,
+    restoreTriggerFocus = false
+  ) => {
+    const trigger = getDropdownTrigger(root);
+    root.dataset.dropdownState = trigger?.disabled ? "disabled" : "closed";
+    getDropdownMenu(root)?.setAttribute("hidden", "");
+    trigger?.setAttribute("aria-expanded", "false");
+    if (restoreTriggerFocus) trigger?.focus();
+  };
+
+  const closeAllDropdowns = (
+    except?: HTMLElement,
+    restoreTriggerFocus = false
+  ) => {
+    document
+      .querySelectorAll<HTMLElement>("[data-dropdown-root]")
+      .forEach((root) => {
+        if (root !== except) closeDropdown(root, restoreTriggerFocus);
+      });
+  };
+
+  const openDropdown = (
+    root: HTMLElement,
+    focusTarget: "first" | "last" | "selected" = "selected"
+  ) => {
+    const trigger = getDropdownTrigger(root);
+    if (!trigger || trigger.disabled) return;
+
+    closeAllDropdowns(root);
+    root.dataset.dropdownState = "open";
+    getDropdownMenu(root)?.removeAttribute("hidden");
+    trigger.setAttribute("aria-expanded", "true");
+
+    const enabledItems = getEnabledDropdownItems(root);
+    const selectedItem = enabledItems.find(
+      (item) => item.getAttribute("aria-checked") === "true"
+    );
+    const target =
+      focusTarget === "first"
+        ? enabledItems[0]
+        : focusTarget === "last"
+          ? enabledItems.at(-1)
+          : selectedItem ?? enabledItems[0];
+    target?.focus();
+  };
+
+  const selectDropdownItem = (item: HTMLButtonElement) => {
+    if (item.disabled) return;
+    const root = item.closest<HTMLElement>("[data-dropdown-root]");
+    if (!root) return;
+
+    getDropdownItems(root).forEach((candidate) => {
+      candidate.setAttribute(
+        "aria-checked",
+        String(candidate === item)
+      );
+      syncDropdownItemState(candidate);
+    });
+
+    const label = item.textContent?.trim() ?? "";
+    const value = item.dataset.dropdownItemValue ?? label;
+    root.dataset.dropdownValue = value;
+    const valueLabel = root.querySelector<HTMLElement>(
+      "[data-dropdown-value-label]"
+    );
+    if (valueLabel) valueLabel.textContent = label;
+
+    root.dispatchEvent(
+      new CustomEvent("dropdown-change", {
+        bubbles: true,
+        detail: { value, label }
+      })
+    );
+    closeDropdown(root, true);
+  };
+
+  const setupDropdowns = () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-dropdown-root]")
+      .forEach((root) => {
+        const trigger = getDropdownTrigger(root);
+        const items = getDropdownItems(root);
+        const selectedItems = items.filter(
+          (item) => item.getAttribute("aria-checked") === "true"
+        );
+
+        selectedItems.slice(1).forEach((item) => {
+          item.setAttribute("aria-checked", "false");
+        });
+        const selectedItem = selectedItems[0];
+        if (selectedItem) {
+          const selectedLabel = selectedItem.textContent?.trim() ?? "";
+          root.dataset.dropdownValue =
+            selectedItem.dataset.dropdownItemValue ?? selectedLabel;
+          const valueLabel = root.querySelector<HTMLElement>(
+            "[data-dropdown-value-label]"
+          );
+          if (valueLabel) valueLabel.textContent = selectedLabel;
+        }
+        items.forEach((item) => {
+          item.tabIndex = -1;
+          syncDropdownItemState(item);
+        });
+
+        const isOpen =
+          !trigger?.disabled && root.dataset.dropdownState === "open";
+        getDropdownMenu(root)?.toggleAttribute("hidden", !isOpen);
+        trigger?.setAttribute("aria-expanded", String(isOpen));
+        if (trigger?.disabled) root.dataset.dropdownState = "disabled";
+      });
+  };
+
+  const dropdownWindow = window as DropdownWindow;
+
+  if (!dropdownWindow.__astroDsDropdownReady) {
+    dropdownWindow.__astroDsDropdownReady = true;
+
+    document.addEventListener("click", (event) => {
+      const element = event.target instanceof Element ? event.target : null;
+      if (element?.closest("[data-component-spec-control]")) return;
+
+      const trigger =
+        element?.closest<HTMLButtonElement>("[data-dropdown-trigger]");
+      if (trigger) {
+        const root = trigger.closest<HTMLElement>("[data-dropdown-root]");
+        if (!root || trigger.disabled) return;
+        if (root.dataset.dropdownState === "open") {
+          closeDropdown(root);
+        } else {
+          openDropdown(root);
+        }
+        return;
+      }
+
+      const item =
+        element?.closest<HTMLButtonElement>('[role="menuitemradio"]');
+      if (item) {
+        selectDropdownItem(item);
+        return;
+      }
+
+      closeAllDropdowns();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      const element = event.target instanceof Element ? event.target : null;
+      const trigger =
+        element?.closest<HTMLButtonElement>("[data-dropdown-trigger]");
+
+      if (
+        trigger &&
+        ["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)
+      ) {
+        event.preventDefault();
+        const root = trigger.closest<HTMLElement>("[data-dropdown-root]");
+        if (!root) return;
+        openDropdown(
+          root,
+          event.key === "ArrowUp" ? "last" : event.key === "ArrowDown" ? "first" : "selected"
+        );
+        return;
+      }
+
+      const item =
+        element?.closest<HTMLButtonElement>('[role="menuitemradio"]');
+      const root = item?.closest<HTMLElement>("[data-dropdown-root]");
+      if (!item || !root) return;
+
+      const enabledItems = getEnabledDropdownItems(root);
+      const currentIndex = enabledItems.indexOf(item);
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeDropdown(root, true);
+        return;
+      }
+      if (event.key === "Tab") {
+        closeDropdown(root);
+        return;
+      }
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectDropdownItem(item);
+        return;
+      }
+      if (
+        !["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key) ||
+        enabledItems.length === 0
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      const nextIndex =
+        event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? enabledItems.length - 1
+            : event.key === "ArrowDown"
+              ? (currentIndex + 1) % enabledItems.length
+              : (currentIndex - 1 + enabledItems.length) %
+                enabledItems.length;
+      enabledItems[nextIndex]?.focus();
+    });
+  }
+
+  setupDropdowns();
+  document.addEventListener("astro:page-load", setupDropdowns);
+</script>
+
+<style>
+  .dropdown {
+    position: relative;
+    display: inline-grid;
+    min-width: 14rem;
+  }
+
+  .dropdown__trigger {
+    display: flex;
+    min-height: var(--component-size-medium-min-height);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-medium);
+    border: var(--border-width-default) solid var(--input-border-default);
+    background: var(--input-background-default);
+    color: var(--input-text-default);
+    padding: var(--component-padding-small);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .dropdown__trigger span {
+    display: grid;
+    gap: var(--gap-tiny);
+  }
+
+  .dropdown__trigger small {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+  }
+
+  .dropdown__trigger strong {
+    font-size: var(--font-size-body-small);
+  }
+
+  .dropdown__trigger :global(svg) {
+    transition: transform var(--motion-transition);
+  }
+
+  .dropdown__trigger:hover,
+  .dropdown[data-preview-state="hover"] .dropdown__trigger {
+    border-color: var(--input-border-hover);
+    background: var(--input-background-hover);
+  }
+
+  .dropdown__trigger:focus-visible,
+  .dropdown[data-preview-state="focused"] .dropdown__trigger {
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: var(--size-2);
+  }
+
+  .dropdown[data-dropdown-state="open"] .dropdown__trigger,
+  .dropdown[data-preview-state="open"] .dropdown__trigger {
+    border-color: var(--input-border-focus);
+  }
+
+  .dropdown[data-dropdown-state="open"] .dropdown__trigger :global(svg),
+  .dropdown[data-preview-state="open"] .dropdown__trigger :global(svg) {
+    transform: rotate(180deg);
+  }
+
+  .dropdown__menu {
+    position: absolute;
+    z-index: 30;
+    inset: calc(100% + var(--gap-tiny)) 0 auto;
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-canvas);
+    box-shadow: var(--elevation-dropdown-menu);
+    padding: var(--size-4);
+  }
+
+  .dropdown[data-preview-state="open"] .dropdown__menu {
+    display: block;
+  }
+
+  .dropdown:has(.dropdown__trigger:disabled),
+  .dropdown[data-preview-state="disabled"] {
+    opacity: 0.64;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dropdown__trigger :global(svg) {
+      transition: none;
+    }
+  }
+</style>

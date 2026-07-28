@@ -1,0 +1,188 @@
+---
+import type { AstroComponent as IconComponent } from "@lucide/astro";
+
+interface Props {
+  href?: string;
+  label: string;
+  icon?: IconComponent;
+  isCurrent?: boolean;
+  disabled?: boolean;
+  badge?: string;
+  class?: string;
+}
+
+const {
+  href,
+  label,
+  icon: Icon,
+  isCurrent = false,
+  disabled = false,
+  badge,
+  class: className
+} = Astro.props;
+const navIconSize = "var(--size-20)";
+const navigationState = disabled ? "disabled" : isCurrent ? "current" : "default";
+const resolvedHref = href?.trim();
+const resolvedLabel = label.trim();
+
+if (!resolvedLabel) {
+  throw new Error("NavItemLink requires a non-empty label.");
+}
+
+if (!disabled && (!resolvedHref || resolvedHref === "#")) {
+  throw new Error("NavItemLink requires a real non-placeholder href when enabled.");
+}
+---
+
+{
+  disabled ? (
+    <span
+      class:list={["nav-item-link", className]}
+      data-component-name="NavItemLink"
+      data-component-family="navigation"
+      data-component-size="small"
+      data-navigation-state={navigationState}
+      data-nav-tooltip
+      data-nav-tooltip-label={resolvedLabel}
+      aria-label={resolvedLabel}
+      aria-disabled="true"
+    >
+      <span class="nav-item-link__content">
+        {Icon && <span class="nav-item-link__icon" aria-hidden="true"><Icon size={navIconSize} /></span>}
+        <span class="nav-item-link__label">{resolvedLabel}</span>
+      </span>
+      {badge && <span class="nav-item-link__badge">{badge}</span>}
+    </span>
+  ) : (
+    <a
+      class:list={["nav-item-link", className]}
+      data-component-name="NavItemLink"
+      data-component-family="navigation"
+      data-component-size="small"
+      data-navigation-state={navigationState}
+      data-nav-tooltip
+      data-nav-tooltip-label={resolvedLabel}
+      href={resolvedHref}
+      aria-label={resolvedLabel}
+      aria-current={isCurrent ? "page" : undefined}
+    >
+      <span class="nav-item-link__content">
+        {Icon && <span class="nav-item-link__icon" aria-hidden="true"><Icon size={navIconSize} /></span>}
+        <span class="nav-item-link__label">{resolvedLabel}</span>
+      </span>
+      {badge && <span class="nav-item-link__badge">{badge}</span>}
+    </a>
+  )
+}
+
+<style>
+  .nav-item-link {
+    position: relative;
+    display: flex;
+    width: var(--sidebar-icon-column);
+    min-height: var(--sidebar-icon-column);
+    height: var(--sidebar-icon-column);
+    flex: 0 0 var(--sidebar-icon-column);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--component-gap);
+    border: 0;
+    border-bottom: var(--nav-item-link-border-bottom, var(--border-width-default) solid var(--color-border-subtle));
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: var(--font-size-body-small);
+    line-height: var(--component-line-height);
+    text-align: left;
+    text-decoration: none;
+    transition:
+      color var(--motion-transition),
+      background var(--motion-transition),
+      border-color var(--motion-transition);
+  }
+
+  .nav-item-link:not([data-navigation-state="disabled"]):hover,
+  .nav-item-link[data-preview-state="hover"] {
+    color: var(--color-text-primary);
+    background: var(--color-background-surface);
+  }
+
+  .nav-item-link[data-navigation-state="current"],
+  .nav-item-link[data-preview-state="current"] {
+    color: var(--color-text-primary);
+    background: var(--color-background-subtle);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  .nav-item-link[data-navigation-state="current"]::before,
+  .nav-item-link[data-preview-state="current"]::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--size-4);
+    background: var(--color-background-accent);
+    content: "";
+  }
+
+  .nav-item-link[data-navigation-state="current"] .nav-item-link__icon,
+  .nav-item-link[data-preview-state="current"] .nav-item-link__icon {
+    border-right-color:
+      color-mix(
+        in oklab,
+        var(--color-border-default) 72%,
+        var(--color-background-canvas)
+      );
+  }
+
+  .nav-item-link[data-navigation-state="disabled"],
+  .nav-item-link[data-preview-state="disabled"] {
+    color: var(--color-text-tertiary);
+    cursor: default;
+    opacity: 0.56;
+  }
+
+  .nav-item-link:focus-visible,
+  .nav-item-link[data-preview-state="focus"] {
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: calc(var(--border-width-strong) * -1);
+  }
+
+  .nav-item-link__label {
+    display: none;
+  }
+
+  .nav-item-link__content {
+    display: grid;
+    width: var(--sidebar-icon-column);
+    height: 100%;
+    min-width: 0;
+    grid-template-columns: var(--sidebar-icon-column);
+    align-items: center;
+    gap: 0;
+  }
+
+  .nav-item-link__icon {
+    display: inline-flex;
+    width: var(--sidebar-icon-column);
+    height: 100%;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+    color: currentColor;
+    justify-self: center;
+  }
+
+  .nav-item-link__badge {
+    position: absolute;
+    inset: 50% var(--size-8) auto auto;
+    flex: 0 0 auto;
+    transform: translateY(-50%);
+    color: var(--color-text-accent);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-none);
+    text-transform: uppercase;
+  }
+</style>

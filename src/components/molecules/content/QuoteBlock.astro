@@ -1,0 +1,211 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Avatar from "../../atoms/media/Avatar.astro";
+
+export type QuoteBlockVariant = "simple" | "featured";
+
+type Props = {
+  quote: string;
+  authorName: string;
+  authorRole?: string;
+  organization?: string;
+  avatarSrc?: string;
+  avatarAlt?: string;
+  sourceUrl?: string;
+  variant?: QuoteBlockVariant;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"figure">, "class">;
+
+const {
+  quote,
+  authorName,
+  authorRole,
+  organization,
+  avatarSrc,
+  avatarAlt,
+  sourceUrl,
+  variant = "simple",
+  componentName = "QuoteBlock",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const variants: QuoteBlockVariant[] = ["simple", "featured"];
+const normalizedQuote = quote.trim();
+const normalizedAuthorName = authorName.trim();
+const normalizedAuthorRole = authorRole?.trim();
+const normalizedOrganization = organization?.trim();
+const normalizedAvatarSrc = avatarSrc?.trim();
+const normalizedAvatarAlt = avatarAlt?.trim();
+const normalizedSourceUrl = sourceUrl?.trim();
+const normalizedComponentName = componentName.trim();
+const placeholderHrefPattern =
+  /^(?:#|javascript:|https?:\/\/(?:www\.)?example\.(?:com|org|net)(?:\/|$))/i;
+
+if (!normalizedQuote) {
+  throw new Error("QuoteBlock requires a non-empty quote.");
+}
+if (!normalizedAuthorName) {
+  throw new Error("QuoteBlock requires a non-empty authorName.");
+}
+if (!variants.includes(variant)) {
+  throw new Error(
+    `QuoteBlock received unsupported variant "${String(variant)}".`,
+  );
+}
+if (authorRole !== undefined && !normalizedAuthorRole) {
+  throw new Error("QuoteBlock authorRole must be non-empty when provided.");
+}
+if (organization !== undefined && !normalizedOrganization) {
+  throw new Error("QuoteBlock organization must be non-empty when provided.");
+}
+if (avatarSrc !== undefined && !normalizedAvatarSrc) {
+  throw new Error("QuoteBlock avatarSrc must be non-empty when provided.");
+}
+if (avatarAlt !== undefined && !normalizedAvatarSrc) {
+  throw new Error("QuoteBlock avatarAlt requires avatarSrc.");
+}
+if (sourceUrl !== undefined) {
+  if (!normalizedSourceUrl) {
+    throw new Error("QuoteBlock sourceUrl must be non-empty when provided.");
+  }
+  if (placeholderHrefPattern.test(normalizedSourceUrl)) {
+    throw new Error("QuoteBlock sourceUrl must be a real non-placeholder URL.");
+  }
+}
+if (!normalizedComponentName) {
+  throw new Error("QuoteBlock requires a non-empty componentName.");
+}
+
+const attributionMeta = [normalizedAuthorRole, normalizedOrganization]
+  .filter(Boolean)
+  .join(" · ");
+---
+
+<figure
+  {...attributes}
+  class:list={["quote-block", className]}
+  data-component-name={normalizedComponentName}
+  data-component-family="content"
+  data-quote-variant={variant}
+  data-preview-target
+>
+  <blockquote cite={normalizedSourceUrl}>
+    <p>{normalizedQuote}</p>
+  </blockquote>
+  <figcaption>
+    {
+      normalizedAvatarSrc && (
+        <Avatar
+          src={normalizedAvatarSrc}
+          alt={normalizedAvatarAlt ?? ""}
+          name={normalizedAuthorName}
+          size={variant === "featured" ? "medium" : "small"}
+          shape="circle"
+        />
+      )
+    }
+    <span class="quote-block__attribution">
+      <strong>{normalizedAuthorName}</strong>
+      {attributionMeta && <span>{attributionMeta}</span>}
+    </span>
+  </figcaption>
+</figure>
+
+<style>
+  .quote-block {
+    display: grid;
+    width: 100%;
+    max-width: 52rem;
+    min-width: 0;
+    gap: var(--gap-large);
+    margin: 0;
+    border-inline-start: var(--border-width-emphasis) solid
+      var(--color-border-accent);
+    padding-inline-start: var(--component-padding-medium);
+  }
+
+  .quote-block[data-quote-variant="featured"] {
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-inline-start-width: var(--border-width-emphasis);
+    border-inline-start-color: var(--color-border-accent);
+    padding: var(--component-padding-xlarge);
+    background: var(--color-background-surface);
+  }
+
+  blockquote,
+  blockquote > p {
+    margin: 0;
+  }
+
+  blockquote > p {
+    color: var(--color-text-primary);
+    font-family: var(--text-style-body-large-font-family);
+    font-size: var(--text-style-body-large-font-size);
+    font-weight: var(--text-style-body-large-font-weight);
+    font-style: var(--text-style-body-large-font-style);
+    line-height: var(--text-style-body-large-line-height);
+    letter-spacing: var(--text-style-body-large-letter-spacing);
+    text-transform: var(--text-style-body-large-text-transform);
+    text-wrap: var(--text-style-body-large-text-wrap);
+    overflow-wrap: var(--text-style-body-large-overflow-wrap);
+    word-break: var(--text-style-body-large-word-break);
+    white-space: var(--text-style-body-large-white-space);
+  }
+
+  .quote-block[data-quote-variant="featured"] blockquote > p {
+    font-family: var(--text-style-heading-h4-font-family);
+    font-size: var(--text-style-heading-h4-font-size);
+    font-weight: var(--text-style-heading-h4-font-weight);
+    font-style: var(--text-style-heading-h4-font-style);
+    line-height: var(--text-style-heading-h4-line-height);
+    letter-spacing: var(--text-style-heading-h4-letter-spacing);
+    text-transform: var(--text-style-heading-h4-text-transform);
+    text-wrap: var(--text-style-heading-h4-text-wrap);
+    overflow-wrap: var(--text-style-heading-h4-overflow-wrap);
+    word-break: var(--text-style-heading-h4-word-break);
+    white-space: var(--text-style-heading-h4-white-space);
+  }
+
+  figcaption {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--gap-medium);
+  }
+
+  .quote-block__attribution,
+  .quote-block__attribution > strong,
+  .quote-block__attribution > span {
+    display: block;
+    min-width: 0;
+  }
+
+  .quote-block__attribution {
+    overflow-wrap: anywhere;
+  }
+
+  .quote-block__attribution > strong {
+    color: var(--color-text-primary);
+    font-family: var(--text-style-body-small-font-family);
+    font-size: var(--text-style-body-small-font-size);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--text-style-body-small-line-height);
+  }
+
+  .quote-block__attribution > span {
+    margin-top: var(--space-tiny);
+    color: var(--color-text-tertiary);
+    font-family: var(--text-style-body-tiny-font-family);
+    font-size: var(--text-style-body-tiny-font-size);
+    font-weight: var(--text-style-body-tiny-font-weight);
+    line-height: var(--text-style-body-tiny-line-height);
+  }
+
+  @media (width < 48rem) {
+    .quote-block[data-quote-variant="featured"] {
+      padding: var(--component-padding-medium);
+    }
+  }
+</style>

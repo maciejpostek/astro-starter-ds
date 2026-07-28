@@ -1,0 +1,35 @@
+---
+interface Props {
+  columns?: 1 | 2 | 3;
+}
+
+const { columns = 2 } = Astro.props;
+---
+
+<div
+  class="ds-doc-grid"
+  data-component-name="DsDocGrid"
+  style={`--ds-doc-grid-columns: ${columns};`}
+>
+  <slot />
+</div>
+
+<style>
+  .ds-doc-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--ds-doc-grid-columns), minmax(0, 1fr));
+    border-top: var(--size-1) solid var(--color-border-subtle);
+    border-left: var(--size-1) solid var(--color-border-subtle);
+  }
+
+  .ds-doc-grid :global(.ds-doc-card) {
+    border-top: 0;
+    border-left: 0;
+  }
+
+  @media (width < 64rem) {
+    .ds-doc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,246 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DsDocSection from "../../components/design-system/DsDocSection.astro";
+import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
+import promptToAstroDiagramUrl from "../../../architecture/generated/prompt-to-astro-page-section.svg?url";
+---
+
+<BaseLayout title="System Architecture Map - Astro Design System">
+  <div class="page">
+    <SectionHeader
+      eyebrow="Architecture"
+      title="System Architecture Map"
+      variant="hero"
+    />
+
+    <DsDocSection
+      id="system-architecture-prompt-to-astro"
+      title="Prompt → Astro Page or Section"
+      description="Current-state routing from a user prompt through focused rule selection, project context, reusable asset discovery, conditional brand activation, Astro composition, validation, and terminal handoff."
+    >
+      <figure
+        class="ds-architecture-diagram"
+        aria-labelledby="prompt-to-astro-diagram-caption"
+      >
+        <div class="ds-architecture-diagram__header">
+          <figcaption id="prompt-to-astro-diagram-caption">
+            <span class="caption">Current architecture · L1 workflow</span>
+            <p>
+              Ready reuse stays focused. Missing project inputs, unapproved brand
+              direction, and the current component freeze end in explicit blocked
+              outputs. Failed browser validation returns to Astro composition.
+            </p>
+          </figcaption>
+
+          <a
+            class="ds-architecture-diagram__full-size-link"
+            href={promptToAstroDiagramUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open full-size SVG
+          </a>
+        </div>
+
+        <ul
+          class="ds-architecture-diagram__legend"
+          aria-label="Architecture node type legend"
+        >
+          <li data-node-type="prompt"><span aria-hidden="true"></span>Prompt / input</li>
+          <li data-node-type="actor"><span aria-hidden="true"></span>Actor</li>
+          <li data-node-type="router"><span aria-hidden="true"></span>Router</li>
+          <li data-node-type="decision"><span aria-hidden="true"></span>Decision gate</li>
+          <li data-node-type="process"><span aria-hidden="true"></span>Process</li>
+          <li data-node-type="source"><span aria-hidden="true"></span>Source of Truth</li>
+          <li data-node-type="validator"><span aria-hidden="true"></span>Validator</li>
+          <li data-node-type="approval"><span aria-hidden="true"></span>Human approval</li>
+          <li data-node-type="output"><span aria-hidden="true"></span>Output</li>
+        </ul>
+
+        <div class="ds-architecture-diagram__viewport">
+          <a
+            href={promptToAstroDiagramUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open the Prompt to Astro Page or Section architecture diagram at full size"
+          >
+            <img
+              src={promptToAstroDiagramUrl}
+              width="1427"
+              height="9113"
+              alt="Flowchart showing a prompt routed by the AI agent and Agentic Rules through project-context, reuse, component-gap, brand-sensitivity, Astro composition, validation, repair-loop, blocked-state, and accepted-output paths."
+              loading="eager"
+              decoding="async"
+            />
+          </a>
+        </div>
+      </figure>
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-figma-mcp-to-astro"
+      title="Figma MCP → Astro"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-component-lifecycle"
+      title="Component Creation and Repair Lifecycle"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-brand-activation"
+      title="Brand Expression and Art Direction Activation"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-astro-figma-sync"
+      title="Astro ↔ Figma Synchronization"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-sources-of-truth"
+      title="Sources of Truth"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-atomic-dependencies"
+      title="Atomic Design Dependencies"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-project-fork"
+      title="Project Fork and Duplicated Figma File"
+    >
+    </DsDocSection>
+  </div>
+</BaseLayout>
+
+<style>
+  .ds-architecture-diagram {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-medium);
+    margin: 0;
+  }
+
+  .ds-architecture-diagram__header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--gap-medium);
+  }
+
+  .ds-architecture-diagram figcaption {
+    display: grid;
+    max-width: var(--container-small);
+    gap: var(--gap-small);
+  }
+
+  .ds-architecture-diagram figcaption p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-normal);
+  }
+
+  .ds-architecture-diagram__full-size-link {
+    flex: none;
+    padding-block: var(--component-padding-tiny);
+    border-bottom: var(--border-width-default) solid var(--color-border-accent);
+    color: var(--color-text-accent);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  .ds-architecture-diagram__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-small) var(--gap-medium);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+    list-style: none;
+  }
+
+  .ds-architecture-diagram__legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-tiny);
+  }
+
+  .ds-architecture-diagram__legend span {
+    display: inline-block;
+    width: var(--size-16);
+    height: var(--size-12);
+    border: var(--border-width-default) solid var(--color-border-strong);
+    background: var(--color-background-subtle);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="prompt"] span,
+  .ds-architecture-diagram__legend [data-node-type="output"] span {
+    clip-path: polygon(16% 0, 100% 0, 84% 100%, 0 100%);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="actor"] span {
+    border-radius: var(--radius-full) var(--radius-full) var(--radius-small) var(--radius-small);
+    background: var(--color-status-info-background);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="router"] span,
+  .ds-architecture-diagram__legend [data-node-type="validator"] span {
+    clip-path: polygon(22% 0, 78% 0, 100% 50%, 78% 100%, 22% 100%, 0 50%);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="decision"] span,
+  .ds-architecture-diagram__legend [data-node-type="approval"] span {
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    background: var(--color-status-warning-background);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="process"] span {
+    border-radius: var(--radius-small);
+    background: var(--color-background-accent);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="source"] span {
+    border-radius: 50%;
+    background: var(--color-status-success-background);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="output"] span {
+    background: var(--color-status-success-background);
+  }
+
+  .ds-architecture-diagram__viewport {
+    position: relative;
+    z-index: 26;
+    min-width: 0;
+    overflow-x: auto;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-neutral-0);
+    overscroll-behavior-inline: contain;
+  }
+
+  .ds-architecture-diagram__viewport a {
+    display: block;
+    width: 100%;
+  }
+
+  .ds-architecture-diagram__viewport img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (width < 48rem) {
+    .ds-architecture-diagram__header {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+</style>

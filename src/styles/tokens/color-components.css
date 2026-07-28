@@ -1,0 +1,175 @@
+/*
+ * Component color tokens.
+ * UI component CSS should consume this layer.
+ *
+ * Every theme scope redeclares the complete component contract. This allows
+ * local light or dark sections to resolve their own semantic color tokens.
+ */
+
+:root,
+[data-theme="light"],
+[data-theme="dark"] {
+  /* Primary button
+   * High-emphasis action using the accent surface.
+   */
+  --button-primary-background-default: var(--color-background-accent);
+  --button-primary-background-hover: var(--color-accent-700);
+  --button-primary-background-pressed: var(--color-accent-800);
+  --button-primary-background-disabled:
+    var(--color-state-disabled-background);
+  --button-primary-border-default: var(--color-border-accent);
+  --button-primary-border-hover: var(--color-accent-700);
+  --button-primary-border-pressed: var(--color-accent-800);
+  --button-primary-border-disabled: var(--color-state-disabled-border);
+  --button-primary-text-default: var(--color-text-on-accent);
+  --button-primary-text-hover: var(--color-text-on-accent);
+  --button-primary-text-pressed: var(--color-text-on-accent);
+  --button-primary-text-disabled: var(--color-state-disabled-text);
+  --button-primary-icon-default: var(--color-icon-on-accent);
+  --button-primary-icon-hover: var(--color-icon-on-accent);
+  --button-primary-icon-pressed: var(--color-icon-on-accent);
+  --button-primary-icon-disabled: var(--color-state-disabled-icon);
+
+  /* Secondary button
+   * Medium-emphasis action using a neutral surface.
+   */
+  --button-secondary-background-default: var(--color-background-subtle);
+  --button-secondary-background-hover: var(--color-background-muted);
+  --button-secondary-background-pressed: var(--color-background-muted);
+  --button-secondary-background-disabled:
+    var(--color-state-disabled-background);
+  --button-secondary-border-default: var(--color-background-subtle);
+  --button-secondary-border-hover: var(--color-background-muted);
+  --button-secondary-border-pressed: var(--color-background-muted);
+  --button-secondary-border-disabled: var(--color-state-disabled-border);
+  --button-secondary-text-default: var(--color-text-primary);
+  --button-secondary-text-hover: var(--color-text-primary);
+  --button-secondary-text-pressed: var(--color-text-primary);
+  --button-secondary-text-disabled: var(--color-state-disabled-text);
+  --button-secondary-icon-default: var(--color-icon-primary);
+  --button-secondary-icon-hover: var(--color-icon-primary);
+  --button-secondary-icon-pressed: var(--color-icon-primary);
+  --button-secondary-icon-disabled: var(--color-state-disabled-icon);
+
+  /* Link button
+   * Low-emphasis action without a persistent container.
+   */
+  --button-link-background-default: var(--color-transparent);
+  --button-link-background-hover: var(--color-transparent);
+  --button-link-background-pressed: var(--color-transparent);
+  --button-link-background-disabled: var(--color-transparent);
+  --button-link-border-default: var(--color-transparent);
+  --button-link-border-hover: var(--color-transparent);
+  --button-link-border-pressed: var(--color-transparent);
+  --button-link-border-disabled: var(--color-transparent);
+  --button-link-text-default: var(--color-text-accent);
+  --button-link-text-hover: var(--color-accent-500);
+  --button-link-text-pressed: var(--color-accent-900);
+  --button-link-text-disabled: var(--color-state-disabled-text);
+  --button-link-icon-default: var(--color-icon-accent);
+  --button-link-icon-hover: var(--color-accent-500);
+  --button-link-icon-pressed: var(--color-accent-900);
+  --button-link-icon-disabled: var(--color-state-disabled-icon);
+
+  /* Input
+   * Shared field colors for default, validation, focus and disabled states.
+   */
+  --input-background-default: var(--color-background-canvas);
+  --input-background-hover: var(--color-background-surface);
+  --input-background-focus: var(--color-background-canvas);
+  --input-background-disabled: var(--color-state-disabled-background);
+  --input-border-default: var(--color-border-default);
+  --input-border-hover: var(--color-border-strong);
+  --input-border-focus: var(--color-border-accent);
+  --input-border-invalid: var(--color-status-error-border);
+  --input-border-valid: var(--color-status-success-border);
+  --input-border-disabled: var(--color-state-disabled-border);
+  --input-text-default: var(--color-text-primary);
+  --input-text-disabled: var(--color-state-disabled-text);
+  --input-placeholder-default: var(--color-text-tertiary);
+  --input-placeholder-disabled: var(--color-state-disabled-text);
+  --input-icon-default: var(--color-icon-secondary);
+  --input-icon-disabled: var(--color-state-disabled-icon);
+  --input-label-default: var(--color-text-primary);
+  --input-label-disabled: var(--color-state-disabled-text);
+  --input-helper-default: var(--color-text-secondary);
+  --input-helper-invalid: var(--color-status-error-text);
+  --input-helper-valid: var(--color-status-success-text);
+
+  /* Tab
+   * Navigation choice using selected as the persistent current state.
+   */
+  --tab-background-default: var(--color-transparent);
+  --tab-background-hover: var(--color-background-subtle);
+  --tab-background-selected: var(--color-background-inverse);
+  --tab-background-disabled: var(--color-transparent);
+  --tab-border-default: var(--color-transparent);
+  --tab-border-hover: var(--color-border-subtle);
+  --tab-border-selected: var(--color-background-inverse);
+  --tab-border-disabled: var(--color-transparent);
+  --tab-text-default: var(--color-text-secondary);
+  --tab-text-hover: var(--color-text-primary);
+  --tab-text-selected: var(--color-text-inverse);
+  --tab-text-disabled: var(--color-state-disabled-text);
+  --tab-icon-default: var(--color-icon-secondary);
+  --tab-icon-hover: var(--color-icon-primary);
+  --tab-icon-selected: var(--color-icon-inverse);
+  --tab-icon-disabled: var(--color-state-disabled-icon);
+
+  /* Link
+   * Inline or standalone text action with an optional underline.
+   */
+  --link-text-default: var(--color-text-accent);
+  --link-text-hover: var(--color-accent-800);
+  --link-text-visited: var(--color-accent-900);
+  --link-underline-default: var(--color-border-accent);
+  --link-underline-hover: var(--color-accent-800);
+
+  /* Eyebrow
+   * Repeated section eyebrow treatment with accent text and marker.
+   */
+  --eyebrow-text-default: var(--color-text-accent);
+  --eyebrow-marker-default: var(--color-border-accent);
+
+  /* Label
+   * Compact metadata and field-label text contracts.
+   */
+  --label-metric-text-default: var(--color-text-tertiary);
+  --label-field-text-default: var(--color-text-secondary);
+
+  /* Card
+   * Reusable content surface with hover and selected emphasis.
+   */
+  --card-background-default: var(--color-background-surface);
+  --card-background-hover: var(--color-background-subtle);
+  --card-background-selected: var(--color-background-surface);
+  --card-border-default: var(--color-border-subtle);
+  --card-border-hover: var(--color-border-default);
+  --card-border-selected: var(--color-border-accent);
+
+  /* Shared focus treatment
+   * Consistent keyboard focus ring used by interactive components.
+   */
+  --component-focus-ring: var(--color-state-focus-ring);
+  --image-effect-overlay-background: color-mix(in oklab, var(--color-background-accent) 60%, transparent);
+}
+
+/* Dark-theme interaction adjustments
+ * Only direct primitive references differ here. All semantic aliases above are
+ * redeclared on the dark scope and therefore resolve against dark semantics.
+ */
+[data-theme="dark"] {
+  --button-primary-background-hover: var(--color-accent-400);
+  --button-primary-background-pressed: var(--color-accent-300);
+  --button-primary-border-hover: var(--color-accent-400);
+  --button-primary-border-pressed: var(--color-accent-300);
+
+  --button-link-text-hover: var(--color-accent-400);
+  --button-link-text-pressed: var(--color-accent-100);
+  --button-link-icon-hover: var(--color-accent-400);
+  --button-link-icon-pressed: var(--color-accent-100);
+
+  --link-text-hover: var(--color-accent-200);
+  --link-text-visited: var(--color-accent-300);
+  --link-underline-hover: var(--color-accent-200);
+}

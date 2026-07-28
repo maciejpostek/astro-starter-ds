@@ -1,0 +1,91 @@
+---
+import { Award, BadgeCheck, ShieldCheck } from "@lucide/astro";
+import type { HTMLAttributes } from "astro/types";
+
+type TrustBadgeVariant = "security" | "compliance" | "award";
+type ComponentSize = "small" | "medium" | "large";
+
+type Props = {
+  variant?: TrustBadgeVariant;
+  size?: ComponentSize;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"span">, "class">;
+
+const {
+  variant = "security",
+  size = "small",
+  componentName = "TrustBadge",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const icons = {
+  security: ShieldCheck,
+  compliance: BadgeCheck,
+  award: Award
+};
+const Icon = icons[variant];
+---
+
+<span
+  class:list={["trust-badge", `trust-badge--${variant}`, className]}
+  data-component-name={componentName}
+  data-component-family="data-display"
+  data-component-size={size}
+  data-trust-badge-variant={variant}
+  data-preview-target
+  {...attributes}
+>
+  <Icon aria-hidden="true" />
+  <span class="trust-badge__label"><slot /></span>
+</span>
+
+<style>
+  .trust-badge {
+    display: inline-flex;
+    width: fit-content;
+    min-height: var(--component-min-height);
+    align-items: center;
+    gap: var(--component-gap);
+    border: var(--border-width-default) solid var(--color-status-info-border);
+    border-radius: var(--radius-tag);
+    background: var(--color-status-info-background);
+    color: var(--color-status-info-text);
+    padding:
+      var(--component-padding-block)
+      var(--component-padding-inline);
+    font-family: var(--font-family-mono);
+    font-size: var(--component-font-size);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--component-line-height);
+    letter-spacing: var(--letter-spacing-none);
+    text-transform: var(--text-transform-uppercase);
+  }
+
+  .trust-badge :global(svg) {
+    width: var(--component-icon-size);
+    height: var(--component-icon-size);
+    flex: 0 0 var(--component-icon-size);
+    color: var(--color-icon-primary);
+    stroke-width: 1.75;
+  }
+
+  .trust-badge__label {
+    min-width: 0;
+  }
+
+  .trust-badge--compliance,
+  .trust-badge[data-trust-badge-variant="compliance"] {
+    border-color: var(--color-status-success-border);
+    background: var(--color-status-success-background);
+    color: var(--color-status-success-text);
+  }
+
+  .trust-badge--award,
+  .trust-badge[data-trust-badge-variant="award"] {
+    border-color: var(--color-accent-200);
+    background: var(--color-accent-50);
+    color: var(--color-accent-700);
+  }
+</style>

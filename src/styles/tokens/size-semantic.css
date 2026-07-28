@@ -1,0 +1,119 @@
+/*
+ * Global size semantics.
+ * Primitive size tokens define values. Semantic tokens define intent.
+ */
+
+:root {
+  /* Section padding
+   * Vertical padding applied to page sections and major content zones.
+   * These tokens control the inner top/bottom rhythm of sections, not gaps
+   * between children and not margins on individual components.
+   */
+  --section-padding-small:
+    clamp(var(--size-32), 1.7143rem + 1.4286vw, var(--size-48));
+  --section-padding-medium:
+    clamp(var(--size-48), 2.1429rem + 4.2857vw, var(--size-96));
+  --section-padding-large:
+    clamp(var(--size-64), 3.1429rem + 3.5714vw, var(--size-112));
+  --section-padding-hero-top:
+    clamp(var(--size-72), 2.9286rem + 7.8571vw, var(--size-160));
+
+  /* Component padding
+   * Inner spacing inside cards, panels, controls and composed UI components.
+   * Use these for padding, not for gap or external margins.
+   */
+  --component-padding-none: var(--size-0);
+  --component-padding-tiny: var(--size-4);
+  --component-padding-xsmall: var(--size-8);
+  --component-padding-small: var(--size-12);
+  --component-padding-medium:
+    clamp(var(--size-16), 0.8571rem + 0.7143vw, var(--size-24));
+  --component-padding-large:
+    clamp(var(--size-24), 1.2143rem + 1.4286vw, var(--size-40));
+  --component-padding-xlarge:
+    clamp(var(--size-32), 1.4286rem + 2.8571vw, var(--size-56));
+
+  /* Global gaps
+   * Generic spacing between children in flex, grid and inline groups.
+   * Names describe size only and are not tied to a component.
+   */
+  --gap-none: var(--size-0);
+  --gap-tiny: var(--size-4);
+  --gap-small: var(--size-8);
+  --gap-regular: var(--size-12);
+  --gap-medium: var(--size-16);
+  --gap-large:
+    clamp(var(--size-24), 1.3571rem + 0.7143vw, var(--size-32));
+  --gap-xlarge: var(--size-48);
+  --gap-huge: var(--size-80);
+
+  /* Component-based gaps
+   * Reusable gap contracts for common child groups. These tokens are set on
+   * the parent container through CSS gap, not as margins on children.
+   */
+  --gap-button-group: var(--gap-regular);
+  --gap-tag-group: var(--gap-small);
+  --gap-form-group: var(--gap-medium);
+  --gap-input-group: var(--gap-regular);
+
+  /* Global spaces
+   * Generic margin/flow distances used between blocks. Names describe size
+   * only and are not tied to a component.
+   */
+  --space-none: var(--size-0);
+  --space-tiny: var(--size-4);
+  --space-small: var(--size-8);
+  --space-regular: var(--size-12);
+  --space-medium: var(--size-24);
+  --space-large: var(--size-32);
+  --space-xlarge: var(--size-48);
+  --space-huge: var(--size-72);
+
+  /* Component-based spaces
+   * Margin contracts for important repeated vertical relationships.
+   */
+  --space-eyebrow-bottom: var(--space-medium);
+  --space-heading-content: var(--space-regular);
+  --space-section-header-bottom: var(--space-xlarge);
+  --space-media-content: var(--space-medium);
+
+  /* Global radius
+   * Shared corner treatments independent of component type.
+   */
+  --radius-none: var(--size-0);
+  --radius-sharp: var(--size-0);
+  --radius-small: var(--size-4);
+  --radius-medium: var(--size-8);
+  --radius-large: var(--size-16);
+  --radius-xlarge: var(--size-24);
+  --radius-xxlarge: var(--size-32);
+  --radius-full: 999rem;
+
+  /* Component-based radius
+   * Surface shape contracts for repeated components.
+   */
+  --radius-button: var(--radius-none);
+  --radius-input: var(--radius-none);
+  --radius-checkbox: var(--radius-none);
+  --radius-tab: var(--radius-none);
+  --radius-tag: var(--radius-none);
+  --radius-label: var(--radius-none);
+  --radius-alert: var(--radius-none);
+  --radius-avatar: var(--radius-none);
+  --radius-embed: var(--radius-none);
+
+  /* Border width
+   * Default is the regular stroke, strong is primarily for focus, and
+   * emphasis is a deliberate structural accent such as an Alert edge.
+   */
+  --border-width-default: var(--size-1);
+  --border-width-strong: var(--size-2);
+  --border-width-emphasis: var(--size-4);
+}
+
+@media (width < 48rem) {
+  :root {
+    /* Composed surfaces use a tighter medium padding on narrow screens. */
+    --component-padding-medium: var(--size-16);
+  }
+}

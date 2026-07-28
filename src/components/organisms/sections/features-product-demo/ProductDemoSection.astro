@@ -1,0 +1,369 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MediaRatio from "../../../atoms/media/MediaRatio.astro";
+import type { MediaRatioValue } from "../../../atoms/media/types";
+import VideoPlayer from "../../../molecules/media/VideoPlayer.astro";
+import BeforeAfterSlider from "../../media/BeforeAfterSlider.astro";
+
+export type ProductDemoSectionVariant = "screenshot" | "interactive" | "video" | "before-after";
+
+export interface ProductDemoScreenshot {
+  src: string;
+  alt: string;
+}
+
+export interface ProductDemoInteractive {
+  label: string;
+}
+
+export interface ProductDemoVideo {
+  src: string;
+  poster?: string;
+  title: string;
+  autoplay?: boolean;
+  muted?: boolean;
+  loop?: boolean;
+  controls?: boolean;
+}
+
+export interface ProductDemoComparison {
+  beforeSrc: string;
+  beforeAlt: string;
+  afterSrc: string;
+  afterAlt: string;
+  initial?: number;
+}
+
+export interface ProductDemoSectionContent {
+  title: string;
+  description?: string;
+  screenshot?: ProductDemoScreenshot;
+  interactive?: ProductDemoInteractive;
+  video?: ProductDemoVideo;
+  comparison?: ProductDemoComparison;
+}
+
+type HeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+type Props = {
+  id: string;
+  content: ProductDemoSectionContent;
+  variant: ProductDemoSectionVariant;
+  ratio?: MediaRatioValue;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  ratio = "16:9",
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "ProductDemoSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const supportedVariants: ProductDemoSectionVariant[] = [
+  "screenshot",
+  "interactive",
+  "video",
+  "before-after",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3, 4, 5, 6];
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+const hasMediaSlot = Astro.slots.has("media");
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "ProductDemoSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("ProductDemoSection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("ProductDemoSection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "ProductDemoSection description must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `ProductDemoSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `ProductDemoSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "ProductDemoSection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error("ProductDemoSection requires a non-empty componentName.");
+}
+if (variant !== "interactive" && hasMediaSlot) {
+  throw new Error(
+    "ProductDemoSection media slot is supported only by Interactive.",
+  );
+}
+if (variant === "interactive" && !hasMediaSlot) {
+  throw new Error("ProductDemoSection Interactive requires the media slot.");
+}
+
+const variantContentKeys = [
+  "screenshot",
+  "interactive",
+  "video",
+  "comparison",
+] as const;
+const requiredContentKey =
+  variant === "before-after" ? "comparison" : variant;
+
+for (const key of variantContentKeys) {
+  const value = content[key];
+  if (key === requiredContentKey && (!value || typeof value !== "object")) {
+    throw new Error(
+      `ProductDemoSection ${variant} requires content.${requiredContentKey}.`,
+    );
+  }
+  if (key !== requiredContentKey && value !== undefined) {
+    throw new Error(
+      `ProductDemoSection ${variant} must not define content.${key}.`,
+    );
+  }
+}
+
+if (content.screenshot) {
+  if (!content.screenshot.src?.trim() || !content.screenshot.alt?.trim()) {
+    throw new Error(
+      "ProductDemoSection Screenshot requires non-empty src and alt values.",
+    );
+  }
+}
+
+if (content.interactive && !content.interactive.label?.trim()) {
+  throw new Error(
+    "ProductDemoSection Interactive requires a non-empty accessible label.",
+  );
+}
+
+if (content.video) {
+  if (!content.video.src?.trim() || !content.video.title?.trim()) {
+    throw new Error(
+      "ProductDemoSection Video requires non-empty src and title values.",
+    );
+  }
+  if (content.video.poster !== undefined && !content.video.poster.trim()) {
+    throw new Error(
+      "ProductDemoSection Video poster must be non-empty when provided.",
+    );
+  }
+  if (content.video.autoplay && !content.video.muted) {
+    throw new Error(
+      "ProductDemoSection Video autoplay requires muted=true.",
+    );
+  }
+}
+
+if (content.comparison) {
+  const comparisonValues = [
+    content.comparison.beforeSrc,
+    content.comparison.beforeAlt,
+    content.comparison.afterSrc,
+    content.comparison.afterAlt,
+  ];
+  if (comparisonValues.some((value) => !value?.trim())) {
+    throw new Error(
+      "ProductDemoSection Before After requires non-empty sources and alternative text.",
+    );
+  }
+  if (
+    content.comparison.initial !== undefined &&
+    !Number.isFinite(content.comparison.initial)
+  ) {
+    throw new Error(
+      "ProductDemoSection Before After initial must be finite when provided.",
+    );
+  }
+}
+
+const Heading = `h${headingLevel}` as
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6";
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "product-demo-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="features-product-demo"
+  data-section-type="product-demo"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container product-demo-section__container" data-container="main">
+    <header class="product-demo-section__header">
+      <Heading>{normalizedTitle}</Heading>
+      {normalizedDescription && <p>{normalizedDescription}</p>}
+    </header>
+
+    <div class="product-demo-section__media">
+      {
+        variant === "screenshot" && content.screenshot && (
+          <MediaRatio
+            ratio={ratio}
+            label={`${normalizedTitle} screenshot`}
+            componentName={`${normalizedComponentName}.MediaRatio`}
+          >
+            <img
+              src={content.screenshot.src.trim()}
+              alt={content.screenshot.alt.trim()}
+              loading="lazy"
+            />
+          </MediaRatio>
+        )
+      }
+      {
+        variant === "interactive" && content.interactive && (
+          <MediaRatio
+            ratio={ratio}
+            label={content.interactive.label.trim()}
+            componentName={`${normalizedComponentName}.MediaRatio`}
+          >
+            <div
+              class="product-demo-section__interactive"
+              role="group"
+              aria-label={content.interactive.label.trim()}
+            >
+              <slot name="media" />
+            </div>
+          </MediaRatio>
+        )
+      }
+      {
+        variant === "video" && content.video && (
+          <VideoPlayer
+            src={content.video.src.trim()}
+            poster={content.video.poster?.trim()}
+            title={content.video.title.trim()}
+            ratio={ratio}
+            autoplay={content.video.autoplay}
+            muted={content.video.muted}
+            loop={content.video.loop}
+            controls={content.video.controls}
+            componentName={`${normalizedComponentName}.VideoPlayer`}
+          />
+        )
+      }
+      {
+        variant === "before-after" && content.comparison && (
+          <BeforeAfterSlider
+            id={`${normalizedId}-comparison`}
+            beforeSrc={content.comparison.beforeSrc.trim()}
+            beforeAlt={content.comparison.beforeAlt.trim()}
+            afterSrc={content.comparison.afterSrc.trim()}
+            afterAlt={content.comparison.afterAlt.trim()}
+            ratio={ratio}
+            initial={content.comparison.initial}
+            componentName={`${normalizedComponentName}.BeforeAfterSlider`}
+          />
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .product-demo-section,
+  .product-demo-section__container,
+  .product-demo-section__header,
+  .product-demo-section__media,
+  .product-demo-section__interactive {
+    min-width: 0;
+  }
+
+  .product-demo-section__container,
+  .product-demo-section__header,
+  .product-demo-section__media,
+  .product-demo-section__interactive {
+    display: grid;
+  }
+
+  .product-demo-section__container {
+    gap: var(--gap-extra-large);
+  }
+
+  .product-demo-section__header {
+    max-width: var(--content-max-width);
+    gap: var(--gap-small);
+  }
+
+  .product-demo-section__header :is(h2, h3, h4, h5, h6),
+  .product-demo-section__header p {
+    margin: 0;
+  }
+
+  .product-demo-section__header p {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .product-demo-section__media {
+    width: 100%;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+  }
+
+  .product-demo-section__media :global(.video-player),
+  .product-demo-section__media :global(.before-after) {
+    min-width: 0;
+  }
+
+  .product-demo-section__interactive {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    overflow: auto;
+    padding: var(--component-padding-large);
+    color: var(--color-text-primary);
+    background: var(--color-background-surface);
+  }
+
+  @media (width < 40rem) {
+    .product-demo-section__container {
+      gap: var(--gap-large);
+    }
+
+    .product-demo-section__interactive {
+      padding: var(--component-padding-medium);
+    }
+  }
+</style>

@@ -1,0 +1,172 @@
+---
+import { X } from "@lucide/astro";
+import IconButton from "../../atoms/actions/IconButton.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  href?: string;
+  actionLabel?: string;
+  dismissible?: boolean;
+  tone?: "neutral" | "accent";
+  componentName?: string;
+}
+
+const {
+  title,
+  description,
+  href,
+  actionLabel = "Learn more",
+  dismissible = true,
+  tone = "accent",
+  componentName = "NavBanner"
+} = Astro.props;
+
+const resolvedTitle = title.trim();
+const resolvedDescription = description?.trim();
+const resolvedHref = href?.trim();
+const resolvedActionLabel = actionLabel.trim();
+const resolvedComponentName = componentName.trim();
+
+if (!resolvedTitle || !resolvedComponentName) {
+  throw new Error("NavBanner requires non-empty title and componentName values.");
+}
+
+if (href !== undefined && (!resolvedHref || resolvedHref === "#")) {
+  throw new Error("NavBanner href must be a real non-placeholder URL.");
+}
+
+if (resolvedHref && !resolvedActionLabel) {
+  throw new Error("NavBanner requires a non-empty actionLabel when href is set.");
+}
+---
+
+<aside
+  class="nav-banner"
+  data-component-name={resolvedComponentName}
+  data-component-family="navigation"
+  data-banner-tone={tone}
+  data-banner-state="visible"
+  data-nav-banner
+  data-preview-target
+  role="status"
+>
+  <div class="nav-banner__content">
+    <strong>{resolvedTitle}</strong>
+    {resolvedDescription && <span>{resolvedDescription}</span>}
+  </div>
+  {
+    resolvedHref && (
+      <a href={resolvedHref}>{resolvedActionLabel}</a>
+    )
+  }
+  {
+    dismissible && (
+      <IconButton
+        type="button"
+        data-dismiss-nav-banner
+        label="Dismiss banner"
+      >
+        <X size="var(--size-16)" aria-hidden="true" />
+      </IconButton>
+    )
+  }
+</aside>
+
+<script>
+  interface NavBannerRuntime {
+    abortController: AbortController;
+  }
+
+  const navBannerWindow = window as Window & {
+    __astroDsNavBannerRuntime?: NavBannerRuntime;
+  };
+  navBannerWindow.__astroDsNavBannerRuntime?.abortController.abort();
+  const navBannerAbortController = new AbortController();
+  navBannerWindow.__astroDsNavBannerRuntime = {
+    abortController: navBannerAbortController
+  };
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      const button =
+        event.target instanceof Element
+          ? event.target.closest("[data-dismiss-nav-banner]")
+          : null;
+      const banner = button?.closest<HTMLElement>("[data-nav-banner]");
+      if (!banner) return;
+
+      banner.dataset.bannerState = "dismissed";
+      banner.hidden = true;
+      banner.dispatchEvent(
+        new CustomEvent("nav-banner-dismiss", {
+          bubbles: true
+        })
+      );
+    },
+    { signal: navBannerAbortController.signal }
+  );
+</script>
+
+<style>
+  .nav-banner {
+    display: flex;
+    width: 100%;
+    min-height: var(--size-56);
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-large);
+    border-bottom: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-subtle);
+    color: var(--color-text-primary);
+    padding: var(--component-padding-small) var(--component-padding-medium);
+  }
+
+  .nav-banner[data-banner-tone="accent"] {
+    border-color: var(--color-border-accent);
+    background: var(--color-background-accent);
+    color: var(--color-text-on-accent);
+  }
+
+  .nav-banner__content {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: var(--gap-small);
+    align-items: center;
+  }
+
+  .nav-banner strong,
+  .nav-banner span {
+    overflow-wrap: anywhere;
+  }
+
+  .nav-banner strong {
+    font-size: var(--font-size-body-small);
+  }
+
+  .nav-banner span {
+    font-size: var(--font-size-body-tiny);
+    opacity: 0.86;
+  }
+
+  .nav-banner a {
+    color: currentColor;
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  .nav-banner a:focus-visible {
+    outline: var(--border-width-strong) solid currentColor;
+    outline-offset: var(--size-2);
+  }
+
+  @media (width < 40rem) {
+    .nav-banner {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+  }
+</style>

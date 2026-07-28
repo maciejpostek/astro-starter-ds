@@ -1,0 +1,21 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props as Props;
+---
+
+<div class:list={["ds-table-row-group", className]} data-component-name="DsTableRowGroup" role="rowgroup">
+  <slot />
+</div>
+
+<style>
+  .ds-table-row-group {
+    display: grid;
+    width: max(100%, var(--ds-table-min-width, var(--ds-doc-table-min-width)));
+    grid-template-columns:
+      var(--ds-table-grid-template-columns, var(--ds-doc-table-grid-template-columns));
+    min-width: var(--ds-table-min-width, var(--ds-doc-table-min-width));
+  }
+</style>

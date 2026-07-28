@@ -1,0 +1,81 @@
+---
+import ComponentInfoLayer from "../dev/ComponentInfoLayer.astro";
+
+interface Props {
+  title: string;
+  componentName?: string;
+  label?: string;
+}
+
+const {
+  title,
+  componentName = `DsComponentPreview.${title}`,
+  label = title
+} = Astro.props;
+---
+
+<figure class="ds-component-preview" data-component-name={componentName}>
+  <div class="ds-component-preview__canvas">
+    <ComponentInfoLayer label={label} mode="static" />
+    <slot />
+  </div>
+</figure>
+
+<style>
+  .ds-component-preview {
+    --component-preview-purple-border: #8b5cf6;
+
+    display: grid;
+    overflow: hidden;
+    margin: 0;
+    border: var(--border-width-default) solid var(--component-preview-purple-border);
+    background: var(--color-background-canvas);
+  }
+
+  .ds-component-preview__canvas {
+    --component-info-static-inset: var(--component-padding-medium);
+    --component-preview-dash-size: var(--size-8);
+    --component-preview-dash-gap: var(--size-8);
+
+    position: relative;
+    display: flex;
+    min-height: 44rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--gap-medium);
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        var(--component-preview-purple-border) 0 var(--component-preview-dash-size),
+        transparent var(--component-preview-dash-size) calc(var(--component-preview-dash-size) + var(--component-preview-dash-gap))
+      ),
+      repeating-linear-gradient(
+        90deg,
+        var(--component-preview-purple-border) 0 var(--component-preview-dash-size),
+        transparent var(--component-preview-dash-size) calc(var(--component-preview-dash-size) + var(--component-preview-dash-gap))
+      ),
+      repeating-linear-gradient(
+        180deg,
+        var(--component-preview-purple-border) 0 var(--component-preview-dash-size),
+        transparent var(--component-preview-dash-size) calc(var(--component-preview-dash-size) + var(--component-preview-dash-gap))
+      ),
+      repeating-linear-gradient(
+        180deg,
+        var(--component-preview-purple-border) 0 var(--component-preview-dash-size),
+        transparent var(--component-preview-dash-size) calc(var(--component-preview-dash-size) + var(--component-preview-dash-gap))
+      );
+    background-position:
+      top left,
+      bottom left,
+      top left,
+      top right;
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size:
+      calc(var(--component-preview-dash-size) + var(--component-preview-dash-gap)) var(--border-width-default),
+      calc(var(--component-preview-dash-size) + var(--component-preview-dash-gap)) var(--border-width-default),
+      var(--border-width-default) calc(var(--component-preview-dash-size) + var(--component-preview-dash-gap)),
+      var(--border-width-default) calc(var(--component-preview-dash-size) + var(--component-preview-dash-gap));
+    padding: var(--component-padding-large);
+  }
+</style>

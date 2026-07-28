@@ -1,0 +1,17 @@
+---
+import { Search, X } from "@lucide/astro";
+interface Props { id:string; name?:string; label?:string; placeholder?:string; value?:string; disabled?:boolean; componentSize?:"small"|"medium"|"large"; componentName?:string; }
+const {id,name="query",label="Search",placeholder="Search",value,disabled=false,componentSize="medium",componentName="SearchInput"}=Astro.props;
+---
+<search class="search-input" data-component-name={componentName} data-component-family="forms" data-component-size={componentSize} data-search-state={disabled?"disabled":value?"filled":"empty"} data-search-input data-preview-target>
+  <label for={id} class="visually-hidden">{label}</label><Search aria-hidden="true" />
+  <input id={id} name={name} type="search" placeholder={placeholder} value={value} disabled={disabled} />
+  <button type="button" aria-label="Clear search" data-clear-search disabled={disabled}><X aria-hidden="true" /></button>
+</search>
+<script>
+  type SearchInputWindow=Window&{__astroDsSearchInputReady?:boolean};const searchInputWindow=window as SearchInputWindow;
+  if(!searchInputWindow.__astroDsSearchInputReady){searchInputWindow.__astroDsSearchInputReady=true;document.addEventListener("input",event=>{const input=event.target instanceof HTMLInputElement&&event.target.type==="search"?event.target:null;const root=input?.closest<HTMLElement>("[data-search-input]");if(root&&input)root.dataset.searchState=input.value?"filled":"empty";});document.addEventListener("click",event=>{const button=event.target instanceof Element?event.target.closest<HTMLButtonElement>("[data-clear-search]"):null;const root=button?.closest<HTMLElement>("[data-search-input]");const input=root?.querySelector<HTMLInputElement>('input[type="search"]');if(input){input.value="";root!.dataset.searchState="empty";input.focus();input.dispatchEvent(new Event("input",{bubbles:true}));}})}
+</script>
+<style>
+  .search-input{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--gap-small);min-height:var(--component-min-height);border:var(--border-width-default) solid var(--input-border-default);border-radius:var(--radius-input);background:var(--input-background-default);padding-inline:var(--component-padding-inline)}.search-input>svg,.search-input button svg{width:var(--component-icon-size);height:var(--component-icon-size)}.search-input input{min-width:0;border:0;outline:0;background:transparent;color:var(--input-text-default);font:inherit;font-size:var(--component-font-size)}.search-input button{display:grid;place-items:center;border:0;background:transparent;color:var(--color-text-secondary);cursor:pointer}.search-input[data-search-state="empty"] button{visibility:hidden}.search-input:hover,.search-input[data-preview-state="hover"]{border-color:var(--input-border-hover);background:var(--input-background-hover)}.search-input:focus-within,.search-input[data-preview-state="focused"]{border-color:var(--input-border-focus);outline:var(--border-width-strong) solid var(--component-focus-ring);outline-offset:var(--size-2)}.search-input:has(input:disabled),.search-input[data-preview-state="disabled"]{opacity:.64}.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+</style>

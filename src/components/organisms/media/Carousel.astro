@@ -1,0 +1,582 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { ChevronLeft, ChevronRight } from "@lucide/astro";
+import IconButton from "../../atoms/actions/IconButton.astro";
+import Logo from "../../atoms/media/Logo.astro";
+import MediaRatio from "../../atoms/media/MediaRatio.astro";
+import type { MediaRatioValue } from "../../atoms/media/types";
+
+export type CarouselVariant = "single" | "multi-item" | "logos";
+
+export interface CarouselItem {
+  id: string;
+  title: string;
+  description?: string;
+  image?: string;
+  alt?: string;
+  href?: string;
+}
+
+type Props = {
+  id: string;
+  label: string;
+  items: CarouselItem[];
+  variant?: CarouselVariant;
+  ratio?: MediaRatioValue;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  label,
+  items,
+  variant = "single",
+  ratio = "16:9",
+  headingLevel = 2,
+  componentName = "Carousel",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const supportedVariants: CarouselVariant[] = [
+  "single",
+  "multi-item",
+  "logos",
+];
+const normalizedId = id.trim();
+const normalizedLabel = label.trim();
+const normalizedComponentName = componentName.trim();
+const placeholderHrefPattern =
+  /^(?:#|javascript:|https?:\/\/(?:www\.)?example\.(?:com|org|net)(?:\/|$))/i;
+
+if (!normalizedId) {
+  throw new Error("Carousel requires a non-empty id.");
+}
+if (!normalizedLabel) {
+  throw new Error(`Carousel "${normalizedId}" requires a non-empty label.`);
+}
+if (!normalizedComponentName) {
+  throw new Error(`Carousel "${normalizedId}" requires a non-empty componentName.`);
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `Carousel "${normalizedId}" received unsupported variant "${String(variant)}".`,
+  );
+}
+if (items.length < 2) {
+  throw new Error(
+    `Carousel "${normalizedId}" requires at least two items; use static content for one item.`,
+  );
+}
+
+const itemIds = new Set<string>();
+items.forEach((item, index) => {
+  const itemNumber = index + 1;
+  const itemId = item.id.trim();
+  const itemTitle = item.title.trim();
+
+  if (!itemId) {
+    throw new Error(`Carousel "${normalizedId}" item ${itemNumber} requires an id.`);
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(
+      `Carousel "${normalizedId}" contains duplicate item id "${itemId}".`,
+    );
+  }
+  itemIds.add(itemId);
+  if (!itemTitle) {
+    throw new Error(
+      `Carousel "${normalizedId}" item "${itemId}" requires a title.`,
+    );
+  }
+  if (item.description !== undefined && !item.description.trim()) {
+    throw new Error(
+      `Carousel "${normalizedId}" item "${itemId}" has an empty description.`,
+    );
+  }
+  if (item.image !== undefined && !item.image.trim()) {
+    throw new Error(
+      `Carousel "${normalizedId}" item "${itemId}" has an empty image source.`,
+    );
+  }
+  if (
+    variant !== "logos" &&
+    item.image &&
+    item.alt === undefined
+  ) {
+    throw new Error(
+      `Carousel "${normalizedId}" item "${itemId}" requires explicit alt text, including alt="", for its image.`,
+    );
+  }
+  if (variant === "logos" && !item.image) {
+    throw new Error(
+      `Carousel "${normalizedId}" logo item "${itemId}" requires approved image artwork.`,
+    );
+  }
+  if (
+    item.href !== undefined &&
+    (!item.href.trim() || placeholderHrefPattern.test(item.href.trim()))
+  ) {
+    throw new Error(
+      `Carousel "${normalizedId}" item "${itemId}" requires a real non-placeholder href.`,
+    );
+  }
+});
+
+const Heading = `h${headingLevel}` as
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6";
+const ItemHeading = `h${Math.min(6, headingLevel + 1)}` as
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6";
+---
+
+<section
+  id={normalizedId}
+  class:list={["carousel", className]}
+  aria-label={normalizedLabel}
+  aria-roledescription="carousel"
+  data-component-name={normalizedComponentName}
+  data-component-family="media"
+  data-carousel-variant={variant}
+  data-carousel-ratio={ratio}
+  data-carousel-state="first"
+  data-carousel-index="0"
+  data-carousel
+  data-preview-target
+  {...attributes}
+>
+  <header class="carousel__header">
+    <Heading>{normalizedLabel}</Heading>
+    <div class="carousel__controls">
+      <IconButton
+        type="button"
+        label={`Previous item in ${normalizedLabel}`}
+        data-carousel-previous
+        disabled
+      >
+        <ChevronLeft />
+      </IconButton>
+      <IconButton
+        type="button"
+        label={`Next item in ${normalizedLabel}`}
+        data-carousel-next
+      >
+        <ChevronRight />
+      </IconButton>
+    </div>
+  </header>
+
+  <div
+    class="carousel__viewport"
+    tabindex="0"
+    aria-label={`${normalizedLabel} items`}
+    data-carousel-viewport
+  >
+    <div class="carousel__track" data-carousel-track>
+      {
+        items.map((item, index) => (
+          <article
+            class="carousel__item"
+            id={`${normalizedId}-${item.id.trim()}`}
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${index + 1} of ${items.length}: ${item.title.trim()}`}
+            aria-current={index === 0 ? "true" : undefined}
+            data-carousel-item
+          >
+            {variant === "logos" ? (
+              item.href ? (
+                <a href={item.href.trim()} class="carousel__logo-link">
+                  <Logo label={item.title.trim()}>
+                    <img src={item.image} alt="" loading="lazy" />
+                  </Logo>
+                </a>
+              ) : (
+                <Logo label={item.title.trim()}>
+                  <img src={item.image} alt="" loading="lazy" />
+                </Logo>
+              )
+            ) : (
+              <>
+                {item.image && (
+                  <MediaRatio ratio={ratio}>
+                    <img
+                      src={item.image}
+                      alt={item.alt ?? ""}
+                      loading="lazy"
+                    />
+                  </MediaRatio>
+                )}
+                <div class="carousel__item-copy">
+                  <ItemHeading>{item.title.trim()}</ItemHeading>
+                  {item.description && <p>{item.description.trim()}</p>}
+                  {item.href && <a href={item.href.trim()}>View details</a>}
+                </div>
+              </>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+
+  <p class="carousel__status" aria-live="polite" data-carousel-status>
+    Item 1 of {items.length}
+  </p>
+</section>
+
+<script>
+  type CarouselWindow = Window & {
+    __astroDsCarouselReady?: boolean;
+  };
+
+  const carouselWindow = window as CarouselWindow;
+
+  const updateCarousel = (root: HTMLElement, index: number) => {
+    const items = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-carousel-item]"),
+    );
+    if (items.length === 0) return;
+
+    const boundedIndex = Math.max(0, Math.min(items.length - 1, index));
+    root.dataset.carouselIndex = String(boundedIndex);
+    root.dataset.carouselState =
+      boundedIndex === 0
+        ? "first"
+        : boundedIndex === items.length - 1
+          ? "last"
+          : "middle";
+
+    root
+      .querySelector<HTMLButtonElement>("[data-carousel-previous]")
+      ?.toggleAttribute("disabled", boundedIndex === 0);
+    root
+      .querySelector<HTMLButtonElement>("[data-carousel-next]")
+      ?.toggleAttribute("disabled", boundedIndex === items.length - 1);
+
+    const status = root.querySelector<HTMLElement>("[data-carousel-status]");
+    if (status) status.textContent = `Item ${boundedIndex + 1} of ${items.length}`;
+
+    items.forEach((item, itemIndex) => {
+      if (itemIndex === boundedIndex) {
+        item.setAttribute("aria-current", "true");
+      } else {
+        item.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  const currentCarouselIndex = (root: HTMLElement) => {
+    const viewport = root.querySelector<HTMLElement>("[data-carousel-viewport]");
+    const items = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-carousel-item]"),
+    );
+    if (!viewport || items.length === 0) return 0;
+
+    const viewportLeft = viewport.getBoundingClientRect().left;
+    return items.reduce(
+      (closest, item, index) => {
+        const distance = Math.abs(item.getBoundingClientRect().left - viewportLeft);
+        return distance < closest.distance ? { index, distance } : closest;
+      },
+      { index: 0, distance: Number.POSITIVE_INFINITY },
+    ).index;
+  };
+
+  const moveCarousel = (root: HTMLElement, direction: -1 | 1) => {
+    const viewport = root.querySelector<HTMLElement>("[data-carousel-viewport]");
+    const track = root.querySelector<HTMLElement>("[data-carousel-track]");
+    const items = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-carousel-item]"),
+    );
+    if (!viewport || !track || items.length === 0) return;
+
+    const currentIndex = Number(root.dataset.carouselIndex ?? 0);
+    const nextIndex = Math.max(
+      0,
+      Math.min(items.length - 1, currentIndex + direction),
+    );
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    viewport.scrollTo({
+      left: (items[nextIndex]?.offsetLeft ?? 0) - track.offsetLeft,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+    updateCarousel(root, nextIndex);
+  };
+
+  const initializeCarousels = () => {
+    document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((root) => {
+      if (root.dataset.carouselReady === "true") return;
+      root.dataset.carouselReady = "true";
+      const viewport =
+        root.querySelector<HTMLElement>("[data-carousel-viewport]");
+      let frame = 0;
+      let resizeFrame = 0;
+
+      viewport?.addEventListener(
+        "scroll",
+        () => {
+          if (root.dataset.carouselResizing === "true") return;
+          window.cancelAnimationFrame(frame);
+          frame = window.requestAnimationFrame(() => {
+            updateCarousel(root, currentCarouselIndex(root));
+          });
+        },
+        { passive: true },
+      );
+
+      if (viewport && "ResizeObserver" in window) {
+        const resizeObserver = new ResizeObserver(() => {
+          window.cancelAnimationFrame(resizeFrame);
+          root.dataset.carouselResizing = "true";
+          resizeFrame = window.requestAnimationFrame(() => {
+            resizeFrame = window.requestAnimationFrame(() => {
+              const items = Array.from(
+                root.querySelectorAll<HTMLElement>("[data-carousel-item]"),
+              );
+              const currentIndex = Number(root.dataset.carouselIndex ?? 0);
+              const currentItem = items[currentIndex];
+              const track =
+                root.querySelector<HTMLElement>("[data-carousel-track]");
+              if (!currentItem || !track) {
+                delete root.dataset.carouselResizing;
+                return;
+              }
+              viewport.scrollTo({
+                left: currentItem.offsetLeft - track.offsetLeft,
+                behavior: "auto",
+              });
+              updateCarousel(root, currentIndex);
+              window.requestAnimationFrame(() => {
+                delete root.dataset.carouselResizing;
+              });
+            });
+          });
+        });
+        resizeObserver.observe(viewport);
+      }
+
+      updateCarousel(root, 0);
+    });
+  };
+
+  if (!carouselWindow.__astroDsCarouselReady) {
+    carouselWindow.__astroDsCarouselReady = true;
+
+    document.addEventListener("click", (event) => {
+      const button =
+        event.target instanceof Element
+          ? event.target.closest<HTMLButtonElement>(
+              "[data-carousel-previous],[data-carousel-next]",
+            )
+          : null;
+      const root = button?.closest<HTMLElement>("[data-carousel]");
+      if (!button || !root) return;
+      moveCarousel(root, button.hasAttribute("data-carousel-next") ? 1 : -1);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      const viewport =
+        event.target instanceof Element
+          ? event.target.closest<HTMLElement>("[data-carousel-viewport]")
+          : null;
+      const root = viewport?.closest<HTMLElement>("[data-carousel]");
+      if (!viewport || !root || !["ArrowLeft", "ArrowRight"].includes(event.key)) {
+        return;
+      }
+      event.preventDefault();
+      moveCarousel(root, event.key === "ArrowRight" ? 1 : -1);
+    });
+
+    document.addEventListener("astro:page-load", initializeCarousels);
+  }
+
+  initializeCarousels();
+</script>
+
+<style>
+  .carousel {
+    --carousel-items-per-view: 1;
+
+    display: grid;
+    min-width: 0;
+    width: 100%;
+    gap: var(--gap-medium);
+  }
+
+  .carousel[data-carousel-variant="multi-item"] {
+    --carousel-items-per-view: 3;
+  }
+
+  .carousel[data-carousel-variant="logos"] {
+    --carousel-items-per-view: 5;
+  }
+
+  .carousel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-medium);
+  }
+
+  .carousel__header :is(h2, h3, h4, h5, h6),
+  .carousel__item :is(h3, h4, h5, h6),
+  .carousel__item p,
+  .carousel__status {
+    margin: 0;
+  }
+
+  .carousel__header :is(h2, h3, h4, h5, h6) {
+    font-family: var(--text-style-heading-h5-font-family);
+    font-size: var(--text-style-heading-h5-font-size);
+    font-weight: var(--text-style-heading-h5-font-weight);
+    line-height: var(--text-style-heading-h5-line-height);
+    letter-spacing: var(--text-style-heading-h5-letter-spacing);
+  }
+
+  .carousel__controls {
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--gap-tiny);
+  }
+
+  .carousel__viewport {
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-behavior: smooth;
+    scroll-snap-type: inline mandatory;
+    scrollbar-width: none;
+  }
+
+  .carousel__viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel__viewport:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .carousel__track {
+    display: grid;
+    grid-auto-columns:
+      calc(
+        (
+            100% -
+              (var(--carousel-items-per-view) - 1) * var(--gap-large)
+          ) /
+          var(--carousel-items-per-view)
+      );
+    grid-auto-flow: column;
+    gap: var(--gap-large);
+  }
+
+  .carousel__item {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: var(--gap-regular);
+    scroll-snap-align: start;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-medium);
+    background: var(--color-background-surface);
+  }
+
+  .carousel__item-copy {
+    display: grid;
+    gap: var(--gap-small);
+  }
+
+  .carousel__item :is(h3, h4, h5, h6) {
+    font-family: var(--text-style-heading-h6-font-family);
+    font-size: var(--text-style-heading-h6-font-size);
+    font-weight: var(--text-style-heading-h6-font-weight);
+    line-height: var(--text-style-heading-h6-line-height);
+    letter-spacing: var(--text-style-heading-h6-letter-spacing);
+  }
+
+  .carousel__item p,
+  .carousel__status,
+  .carousel__item a {
+    font-family: var(--text-style-body-small-font-family);
+    font-size: var(--text-style-body-small-font-size);
+    line-height: var(--text-style-body-small-line-height);
+  }
+
+  .carousel__item p,
+  .carousel__status {
+    color: var(--color-text-secondary);
+  }
+
+  .carousel__item a {
+    color: var(--color-text-link);
+  }
+
+  .carousel__item :global(.media-ratio) {
+    min-height: 0;
+  }
+
+  .carousel__logo-link,
+  .carousel[data-carousel-variant="logos"] .carousel__item {
+    min-height: var(--size-128);
+  }
+
+  .carousel[data-carousel-variant="logos"] .carousel__item {
+    place-items: center;
+  }
+
+  .carousel__logo-link {
+    display: grid;
+    width: 100%;
+    place-items: center;
+  }
+
+  .carousel[data-carousel-variant="logos"] :global([data-logo-variant]) {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .carousel[data-carousel-variant="logos"] :global([data-logo-variant] img) {
+    width: 100%;
+    max-width: var(--size-160);
+    max-height: var(--size-64);
+    object-fit: contain;
+  }
+
+  @media (width < 64rem) {
+    .carousel[data-carousel-variant="multi-item"] {
+      --carousel-items-per-view: 2;
+    }
+
+    .carousel[data-carousel-variant="logos"] {
+      --carousel-items-per-view: 3;
+    }
+  }
+
+  @media (width < 48rem) {
+    .carousel[data-carousel-variant="multi-item"] {
+      --carousel-items-per-view: 1;
+    }
+
+    .carousel[data-carousel-variant="logos"] {
+      --carousel-items-per-view: 2;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel__viewport {
+      scroll-behavior: auto;
+    }
+  }
+</style>

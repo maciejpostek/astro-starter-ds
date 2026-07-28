@@ -1,0 +1,40 @@
+---
+interface Props {
+  text: string;
+  componentName?: string;
+}
+
+const { text, componentName = "Eyebrow" } = Astro.props;
+---
+
+<span
+  class="eyebrow"
+  data-component-name={componentName}
+  data-component-family="text"
+>
+  <span class="eyebrow__line"></span>
+  {text}
+</span>
+
+<style>
+  .eyebrow {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: var(--gap-small);
+    margin-bottom: var(--space-eyebrow-bottom);
+    color: var(--eyebrow-text-default);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-compact);
+    letter-spacing: var(--letter-spacing-none);
+    text-transform: var(--text-transform-uppercase);
+  }
+
+  .eyebrow__line {
+    width: var(--size-4);
+    height: var(--size-16);
+    background: var(--eyebrow-marker-default);
+  }
+</style>

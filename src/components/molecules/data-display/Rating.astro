@@ -1,0 +1,142 @@
+---
+import { Star } from "@lucide/astro";
+import type { HTMLAttributes } from "astro/types";
+
+type RatingVariant = "stars" | "score";
+
+type Props = {
+  value: number;
+  variant?: RatingVariant;
+  label?: string;
+  supportingText?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"div">, "class" | "role" | "aria-label">;
+
+const {
+  value,
+  variant = "stars",
+  label = "Rating",
+  supportingText,
+  componentName = "Rating",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const normalizedValue = Math.min(5, Math.max(0, Number.isFinite(value) ? value : 0));
+const formattedValue = Number.isInteger(normalizedValue)
+  ? String(normalizedValue)
+  : normalizedValue.toFixed(1);
+const stars = Array.from({ length: 5 }, (_, index) => {
+  const fill = Math.min(1, Math.max(0, normalizedValue - index));
+  return Math.round(fill * 100);
+});
+const accessibleLabel = `${label}: ${formattedValue} out of 5${
+  supportingText ? `. ${supportingText}` : ""
+}`;
+---
+
+<div
+  class:list={["rating", `rating--${variant}`, className]}
+  data-component-name={componentName}
+  data-component-family="data-display"
+  data-rating-variant={variant}
+  data-rating-value={formattedValue}
+  data-preview-target
+  role="img"
+  aria-label={accessibleLabel}
+  {...attributes}
+>
+  {
+    variant === "stars" && (
+      <span class="rating__stars" aria-hidden="true">
+        {stars.map((fill) => (
+          <span class="rating__star" style={`--rating-star-fill:${fill}%`}>
+            <Star class="rating__star-outline" />
+            <span class="rating__star-fill">
+              <Star fill="currentColor" />
+            </span>
+          </span>
+        ))}
+      </span>
+    )
+  }
+  <span class="rating__value">{formattedValue}<span aria-hidden="true"> / 5</span></span>
+  {supportingText && <span class="rating__supporting">{supportingText}</span>}
+</div>
+
+<style>
+  .rating {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-compact);
+  }
+
+  .rating__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-2);
+    color: var(--color-icon-accent);
+  }
+
+  .rating__star {
+    position: relative;
+    display: inline-grid;
+    width: var(--size-18);
+    height: var(--size-18);
+  }
+
+  .rating__star :global(svg) {
+    width: var(--size-18);
+    height: var(--size-18);
+    grid-area: 1 / 1;
+    stroke-width: 1.75;
+  }
+
+  .rating__star-outline {
+    color: var(--color-border-default);
+  }
+
+  .rating__star-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--rating-star-fill);
+    overflow: hidden;
+    color: var(--color-icon-accent);
+  }
+
+  .rating__value {
+    font-family: var(--font-family-mono);
+    font-weight: var(--font-weight-emphasis);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .rating__supporting {
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  .rating--score,
+  .rating[data-rating-variant="score"] {
+    min-height: var(--size-48);
+    border: var(--border-width-default) solid var(--color-border-accent);
+    border-radius: var(--radius-tag);
+    background:
+      color-mix(
+        in oklab,
+        var(--color-background-accent) 8%,
+        var(--color-background-canvas)
+      );
+    padding: var(--size-12) var(--size-16);
+    color: var(--color-text-accent);
+  }
+
+  .rating[data-rating-variant="score"] .rating__stars {
+    display: none;
+  }
+</style>

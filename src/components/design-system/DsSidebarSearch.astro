@@ -1,0 +1,67 @@
+---
+import { Search } from "@lucide/astro";
+---
+
+<div class="ds-sidebar-search" data-component-name="DsSidebarSearch">
+  <span class="ds-sidebar-search__icon" aria-hidden="true">
+    <Search size={14} stroke-width={2} />
+  </span>
+  <input
+    aria-label="Search design system navigation"
+    class="ds-sidebar-search__input"
+    data-ds-sidebar-search-input
+    placeholder="Search"
+    type="search"
+  />
+  <span class="ds-sidebar-search__status" data-ds-sidebar-search-status aria-live="polite"></span>
+</div>
+
+<style>
+  .ds-sidebar-search {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--gap-tiny);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    background: color-mix(in srgb, var(--color-background-canvas) 96%, transparent);
+    padding:
+      var(--component-padding-small)
+      var(--component-padding-medium);
+  }
+
+  .ds-sidebar-search__icon {
+    display: inline-flex;
+    color: var(--color-icon-secondary);
+  }
+
+  .ds-sidebar-search__input {
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text-primary);
+    font: inherit;
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+    outline: 0;
+  }
+
+  .ds-sidebar-search__input::placeholder {
+    color: var(--color-text-tertiary);
+  }
+
+  .ds-sidebar-search:focus-within {
+    border-bottom-color: var(--color-border-accent);
+  }
+
+  .ds-sidebar-search__status {
+    position: absolute;
+    width: var(--size-1);
+    height: var(--size-1);
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

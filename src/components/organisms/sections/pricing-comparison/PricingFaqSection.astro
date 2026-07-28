@@ -1,0 +1,205 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Accordion from "../../../molecules/disclosure/Accordion.astro";
+
+export interface PricingFaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  initiallyOpen?: boolean;
+}
+
+export interface PricingFaqSectionContent {
+  title: string;
+  description?: string;
+  items: PricingFaqItem[];
+  note?: string;
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: PricingFaqSectionContent;
+  closeSiblings?: boolean;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  closeSiblings = true,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "PricingFaqSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedNote = content?.note?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "PricingFaqSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("PricingFaqSection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("PricingFaqSection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "PricingFaqSection description must be non-empty when provided.",
+  );
+}
+if (content.note !== undefined && !normalizedNote) {
+  throw new Error("PricingFaqSection note must be non-empty when provided.");
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `PricingFaqSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error("PricingFaqSection ariaLabel must be non-empty when provided.");
+}
+if (!normalizedComponentName) {
+  throw new Error("PricingFaqSection requires a non-empty componentName.");
+}
+if (!Array.isArray(content.items) || content.items.length < 2) {
+  throw new Error("PricingFaqSection requires at least two FAQ items.");
+}
+if (content.items.length > 8) {
+  throw new Error("PricingFaqSection supports at most eight FAQ items.");
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("PricingFaqSection does not expose public slots.");
+}
+
+const itemIds = new Set<string>();
+const normalizedItems = content.items.map((item, index) => {
+  const itemId = item?.id?.trim();
+  const question = item?.question?.trim();
+  const answer = item?.answer?.trim();
+
+  if (!itemId || !selectorSafeIdPattern.test(itemId)) {
+    throw new Error(
+      `PricingFaqSection item ${index + 1} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(`PricingFaqSection contains duplicate item id "${itemId}".`);
+  }
+  if (!question || !answer) {
+    throw new Error(
+      `PricingFaqSection item "${itemId}" requires non-empty question and answer strings.`,
+    );
+  }
+
+  itemIds.add(itemId);
+  return {
+    id: `${normalizedId}-${itemId}`,
+    title: question,
+    content: answer,
+    initiallyOpen: item.initiallyOpen ?? false,
+  };
+});
+
+if (
+  closeSiblings &&
+  normalizedItems.filter((item) => item.initiallyOpen).length > 1
+) {
+  throw new Error(
+    "PricingFaqSection with closeSiblings=true supports at most one initially open item.",
+  );
+}
+
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const accordionHeadingLevel = `h${headingLevel + 1}` as "h3" | "h4";
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "pricing-faq-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="pricing-comparison"
+  data-section-type="pricing-faq"
+  data-section-variant="accordion"
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container pricing-faq-section__container" data-container="main">
+    <header class="pricing-faq-section__header">
+      <Heading>{normalizedTitle}</Heading>
+      {normalizedDescription && <p>{normalizedDescription}</p>}
+    </header>
+
+    <Accordion
+      id={`${normalizedId}-accordion`}
+      items={normalizedItems}
+      closeSiblings={closeSiblings}
+      headingLevel={accordionHeadingLevel}
+    />
+
+    {normalizedNote && <p class="pricing-faq-section__note">{normalizedNote}</p>}
+  </div>
+</section>
+
+<style>
+  .pricing-faq-section,
+  .pricing-faq-section__container,
+  .pricing-faq-section__header {
+    min-width: 0;
+  }
+
+  .pricing-faq-section {
+    background: var(--color-background-canvas);
+  }
+
+  .pricing-faq-section__container {
+    display: grid;
+    max-width: var(--content-width-large);
+    gap: var(--gap-large);
+  }
+
+  .pricing-faq-section__header {
+    display: grid;
+    max-width: var(--content-width-medium);
+    gap: var(--gap-small);
+  }
+
+  .pricing-faq-section__header :is(h2, h3),
+  .pricing-faq-section__header p,
+  .pricing-faq-section__note {
+    margin: 0;
+  }
+
+  .pricing-faq-section__header p,
+  .pricing-faq-section__note {
+    color: var(--color-text-secondary);
+  }
+
+  .pricing-faq-section__note {
+    max-width: var(--content-width-medium);
+    font-size: var(--font-size-body-small);
+  }
+</style>

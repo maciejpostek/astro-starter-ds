@@ -1,0 +1,95 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.sources-of-truth
+direction: down
+
+title: "Sources of Truth by Concern" {
+  shape: text
+  near: top-center
+  style.font-size: 28
+  style.bold: true
+}
+
+state_current: "Current Architecture\nstate · frozen-for-audit · current" {
+  shape: oval
+  style.fill: "#64748b"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_component_registry: "Component Registry\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_astro_components: "Astro Component Source\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_css_variables: "CSS Variable Foundations\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_roadmap: "Design System Roadmap\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_brand_contract: "Approved Brand Expression Contract\nsource-of-truth · not-configured · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_art_direction: "Universal Art Direction Knowledge\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_figma_adapters: "Figma2Astro Mapping Adapters\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+external_figma: "Figma Editable Representation\nexternal-system · external · current" {
+  shape: cloud
+  style.fill: "#475569"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+target_architecture_graph: "Canonical Semantic Architecture Graph\nsource-of-truth · review · target" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_astro_components -> source_figma_adapters: "maps-to"
+source_component_registry -> external_figma: "maps-to"
+target_architecture_graph -> state_current: "reads"

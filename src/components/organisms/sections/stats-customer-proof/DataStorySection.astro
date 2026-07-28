@@ -1,0 +1,563 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import StatCard from "../../../molecules/cards/StatCard.astro";
+import ComparisonTable from "../../data-display/ComparisonTable.astro";
+
+export type DataStorySectionVariant =
+  "benchmark" | "data-story" | "customer-results" | "roi-result";
+
+export interface DataStoryMetric {
+  id: string;
+  label: string;
+  value: string;
+  change?: string;
+  changeDirection?: "up" | "down" | "neutral";
+  changeLabel?: string;
+  description?: string;
+}
+
+export interface DataStoryNarrative {
+  title: string;
+  body: string;
+}
+
+export interface DataStoryComparisonColumn {
+  key: string;
+  label: string;
+  highlighted?: boolean;
+}
+
+export interface DataStoryComparisonRow {
+  id: string;
+  label: string;
+  values: Record<string, string | boolean>;
+}
+
+export interface DataStoryComparison {
+  caption: string;
+  columns: DataStoryComparisonColumn[];
+  rows: DataStoryComparisonRow[];
+}
+
+export interface DataStorySectionContent {
+  title: string;
+  description?: string;
+  narrative?: DataStoryNarrative;
+  metrics?: DataStoryMetric[];
+  comparison?: DataStoryComparison;
+  evidenceNote?: string;
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: DataStorySectionContent;
+  variant: DataStorySectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "DataStorySection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const comparisonKeyPattern = /^[a-z][a-z0-9-]*$/;
+const supportedVariants: DataStorySectionVariant[] = [
+  "benchmark",
+  "data-story",
+  "customer-results",
+  "roi-result",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const supportedDirections = ["up", "down", "neutral"] as const;
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedEvidenceNote = content?.evidenceNote?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+const requiresNarrative = variant !== "benchmark";
+const requiresEvidence =
+  variant === "benchmark" ||
+  variant === "customer-results" ||
+  variant === "roi-result";
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "DataStorySection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("DataStorySection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("DataStorySection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "DataStorySection description must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `DataStorySection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `DataStorySection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "DataStorySection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error("DataStorySection requires a non-empty componentName.");
+}
+if (content.evidenceNote !== undefined && !normalizedEvidenceNote) {
+  throw new Error(
+    "DataStorySection evidenceNote must be non-empty when provided.",
+  );
+}
+if (requiresEvidence && !normalizedEvidenceNote) {
+  throw new Error(
+    `DataStorySection ${variant} requires a visible evidenceNote.`,
+  );
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("DataStorySection does not expose public slots.");
+}
+
+const normalizedNarrative = content.narrative
+  ? {
+      title: content.narrative.title?.trim(),
+      body: content.narrative.body?.trim(),
+    }
+  : undefined;
+
+if (
+  content.narrative &&
+  (!normalizedNarrative?.title || !normalizedNarrative.body)
+) {
+  throw new Error(
+    "DataStorySection narrative requires non-empty title and body strings.",
+  );
+}
+if (requiresNarrative && !normalizedNarrative) {
+  throw new Error(`DataStorySection ${variant} requires narrative content.`);
+}
+if (variant === "benchmark" && content.narrative !== undefined) {
+  throw new Error("DataStorySection Benchmark does not accept narrative.");
+}
+
+const normalizeMetrics = () => {
+  if (!Array.isArray(content.metrics) || content.metrics.length < 2) {
+    throw new Error(
+      `DataStorySection ${variant} requires at least two metric items.`,
+    );
+  }
+  if (content.metrics.length > 4) {
+    throw new Error("DataStorySection supports at most four metric items.");
+  }
+
+  const ids = new Set<string>();
+  return content.metrics.map((metric, index) => {
+    const metricId = metric?.id?.trim();
+    const label = metric?.label?.trim();
+    const value = metric?.value?.trim();
+    const change = metric?.change?.trim();
+    const changeLabel = metric?.changeLabel?.trim();
+    const description = metric?.description?.trim();
+    const changeDirection = metric?.changeDirection ?? "neutral";
+
+    if (!metricId || !selectorSafeIdPattern.test(metricId)) {
+      throw new Error(
+        `DataStorySection metric ${index + 1} requires a selector-safe id that starts with a letter.`,
+      );
+    }
+    if (ids.has(metricId)) {
+      throw new Error(
+        `DataStorySection contains duplicate metric id "${metricId}".`,
+      );
+    }
+    if (!label || !value) {
+      throw new Error(
+        `DataStorySection metric "${metricId}" requires non-empty label and value strings.`,
+      );
+    }
+    if (metric.change !== undefined && !change) {
+      throw new Error(
+        `DataStorySection metric "${metricId}" change must be non-empty when provided.`,
+      );
+    }
+    if (!supportedDirections.includes(changeDirection)) {
+      throw new Error(
+        `DataStorySection metric "${metricId}" received an unsupported changeDirection.`,
+      );
+    }
+    if (!change && changeDirection !== "neutral") {
+      throw new Error(
+        `DataStorySection metric "${metricId}" requires change when changeDirection is up or down.`,
+      );
+    }
+    if (metric.changeLabel !== undefined && !changeLabel) {
+      throw new Error(
+        `DataStorySection metric "${metricId}" changeLabel must be non-empty when provided.`,
+      );
+    }
+    if (!change && metric.changeLabel !== undefined) {
+      throw new Error(
+        `DataStorySection metric "${metricId}" changeLabel requires change.`,
+      );
+    }
+    if (metric.description !== undefined && !description) {
+      throw new Error(
+        `DataStorySection metric "${metricId}" description must be non-empty when provided.`,
+      );
+    }
+
+    ids.add(metricId);
+    return {
+      id: metricId,
+      label,
+      value,
+      change,
+      changeDirection,
+      changeLabel,
+      description,
+    };
+  });
+};
+
+const normalizeComparison = () => {
+  const comparison = content.comparison;
+  const caption = comparison?.caption?.trim();
+
+  if (!comparison || !caption) {
+    throw new Error(
+      "DataStorySection Benchmark requires a comparison with a non-empty caption.",
+    );
+  }
+  if (
+    !Array.isArray(comparison.columns) ||
+    comparison.columns.length < 2 ||
+    comparison.columns.length > 4
+  ) {
+    throw new Error(
+      "DataStorySection Benchmark requires two to four comparison columns.",
+    );
+  }
+  if (
+    !Array.isArray(comparison.rows) ||
+    comparison.rows.length < 1 ||
+    comparison.rows.length > 8
+  ) {
+    throw new Error(
+      "DataStorySection Benchmark requires one to eight comparison rows.",
+    );
+  }
+
+  const columnKeys = new Set<string>();
+  const columns = comparison.columns.map((column, index) => {
+    const key = column?.key?.trim();
+    const label = column?.label?.trim();
+    if (!key || !comparisonKeyPattern.test(key) || !label) {
+      throw new Error(
+        `DataStorySection comparison column ${index + 1} requires a lowercase selector-safe key and non-empty label.`,
+      );
+    }
+    if (columnKeys.has(key)) {
+      throw new Error(
+        `DataStorySection contains duplicate comparison column key "${key}".`,
+      );
+    }
+    columnKeys.add(key);
+    return { key, label, highlighted: column.highlighted };
+  });
+
+  if (columns.filter((column) => column.highlighted).length > 1) {
+    throw new Error(
+      "DataStorySection Benchmark supports at most one highlighted comparison column.",
+    );
+  }
+
+  const rowIds = new Set<string>();
+  const rows = comparison.rows.map((row, index) => {
+    const rowId = row?.id?.trim();
+    const label = row?.label?.trim();
+    if (!rowId || !selectorSafeIdPattern.test(rowId) || !label) {
+      throw new Error(
+        `DataStorySection comparison row ${index + 1} requires a selector-safe id and non-empty label.`,
+      );
+    }
+    if (rowIds.has(rowId)) {
+      throw new Error(
+        `DataStorySection contains duplicate comparison row id "${rowId}".`,
+      );
+    }
+
+    const valueKeys = Object.keys(row.values ?? {});
+    if (
+      valueKeys.length !== columns.length ||
+      valueKeys.some((key) => !columnKeys.has(key))
+    ) {
+      throw new Error(
+        `DataStorySection comparison row "${rowId}" must define exactly one value for every comparison column.`,
+      );
+    }
+    const values = Object.fromEntries(
+      columns.map(({ key }) => {
+        const value = row.values[key];
+        if (
+          (typeof value !== "boolean" && typeof value !== "string") ||
+          (typeof value === "string" && !value.trim())
+        ) {
+          throw new Error(
+            `DataStorySection comparison row "${rowId}" contains an invalid value for "${key}".`,
+          );
+        }
+        return [key, typeof value === "string" ? value.trim() : value];
+      }),
+    );
+
+    rowIds.add(rowId);
+    return { id: rowId, label, values };
+  });
+
+  return { caption, columns, rows };
+};
+
+const normalizedComparison =
+  variant === "benchmark" ? normalizeComparison() : undefined;
+const normalizedMetrics =
+  variant === "benchmark" ? undefined : normalizeMetrics();
+
+if (variant === "benchmark" && content.metrics !== undefined) {
+  throw new Error("DataStorySection Benchmark does not accept metrics.");
+}
+if (variant !== "benchmark" && content.comparison !== undefined) {
+  throw new Error(
+    `DataStorySection ${variant} does not accept comparison content.`,
+  );
+}
+
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const NarrativeHeading = `h${headingLevel + 1}` as "h3" | "h4";
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "data-story-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="stats-customer-proof"
+  data-section-type="data-story"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container data-story-section__container" data-container="main">
+    <header class="data-story-section__header">
+      <Heading>{normalizedTitle}</Heading>
+      {normalizedDescription && <p>{normalizedDescription}</p>}
+    </header>
+
+    {
+      variant === "benchmark" && normalizedComparison ? (
+        <div class="data-story-section__comparison">
+          <ComparisonTable
+            caption={normalizedComparison.caption}
+            columns={normalizedComparison.columns}
+            rows={normalizedComparison.rows.map(({ label, values }) => ({
+              label,
+              values,
+            }))}
+          />
+        </div>
+      ) : (
+        <div class="data-story-section__story">
+          {normalizedNarrative && (
+            <article class="data-story-section__narrative">
+              <NarrativeHeading>{normalizedNarrative.title}</NarrativeHeading>
+              <p>{normalizedNarrative.body}</p>
+            </article>
+          )}
+          {normalizedMetrics && (
+            <ul class="data-story-section__metrics">
+              {normalizedMetrics.map((metric) => (
+                <li data-data-story-metric={metric.id}>
+                  <StatCard
+                    label={metric.label}
+                    value={metric.value}
+                    change={metric.change}
+                    changeDirection={metric.changeDirection}
+                    changeLabel={metric.changeLabel}
+                    description={metric.description}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )
+    }
+
+    {
+      normalizedEvidenceNote && (
+        <p class="data-story-section__evidence-note">
+          {normalizedEvidenceNote}
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .data-story-section,
+  .data-story-section__container,
+  .data-story-section__header,
+  .data-story-section__comparison,
+  .data-story-section__story,
+  .data-story-section__narrative,
+  .data-story-section__metrics,
+  .data-story-section__metrics > li {
+    min-width: 0;
+  }
+
+  .data-story-section__container,
+  .data-story-section__header,
+  .data-story-section__story,
+  .data-story-section__narrative {
+    display: grid;
+  }
+
+  .data-story-section__container {
+    gap: var(--gap-extra-large);
+  }
+
+  .data-story-section__header {
+    max-width: var(--content-max-width);
+    gap: var(--gap-small);
+  }
+
+  .data-story-section__header :is(h2, h3),
+  .data-story-section__header p,
+  .data-story-section__narrative :is(h3, h4),
+  .data-story-section__narrative p,
+  .data-story-section__evidence-note {
+    margin: 0;
+  }
+
+  .data-story-section__header p,
+  .data-story-section__narrative p {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .data-story-section__comparison {
+    overflow: hidden;
+  }
+
+  .data-story-section__story {
+    gap: var(--gap-large);
+  }
+
+  .data-story-section__narrative {
+    align-content: start;
+    gap: var(--gap-small);
+    border-inline-start: var(--border-width-strong) solid
+      var(--color-border-accent);
+    padding-inline-start: var(--component-padding-large);
+  }
+
+  .data-story-section__metrics {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: var(--gap-large);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .data-story-section__metrics > li {
+    display: grid;
+  }
+
+  .data-story-section[data-section-variant="data-story"]
+    .data-story-section__story {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+
+  .data-story-section[data-section-variant="customer-results"]
+    .data-story-section__metrics,
+  .data-story-section[data-section-variant="roi-result"]
+    .data-story-section__metrics {
+    grid-template-columns:
+      repeat(auto-fit, minmax(min(100%, var(--size-256)), 1fr));
+  }
+
+  .data-story-section[data-section-variant="roi-result"]
+    .data-story-section__story {
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-subtle);
+    padding: var(--component-padding-large);
+  }
+
+  .data-story-section__evidence-note {
+    border-block-start: var(--border-width-default) solid
+      var(--color-border-subtle);
+    padding-block-start: var(--component-padding-medium);
+    color: var(--color-text-tertiary);
+    font-family: var(--text-style-body-tiny-font-family);
+    font-size: var(--text-style-body-tiny-font-size);
+    line-height: var(--text-style-body-tiny-line-height);
+    overflow-wrap: anywhere;
+  }
+
+  @media (width < 64rem) {
+    .data-story-section[data-section-variant="data-story"]
+      .data-story-section__story {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (width < 40rem) {
+    .data-story-section__container {
+      gap: var(--gap-large);
+    }
+
+    .data-story-section__metrics,
+    .data-story-section[data-section-variant="customer-results"]
+      .data-story-section__metrics,
+    .data-story-section[data-section-variant="roi-result"]
+      .data-story-section__metrics {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .data-story-section[data-section-variant="roi-result"]
+      .data-story-section__story {
+      padding: var(--component-padding-medium);
+    }
+  }
+</style>

@@ -1,0 +1,252 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ContentBlock from "../content/ContentBlock.astro";
+import MediaRatio from "../../atoms/media/MediaRatio.astro";
+import type { MediaRatioValue } from "../../atoms/media/types";
+
+export type FeatureCardVariant = "icon" | "media" | "numbered";
+export type FeatureCardHeadingLevel = 2 | 3 | 4;
+
+type Props = {
+  title: string;
+  description: string;
+  variant?: FeatureCardVariant;
+  eyebrow?: string;
+  number?: string;
+  actionLabel?: string;
+  actionHref?: string;
+  visualLabel?: string;
+  visualRatio?: MediaRatioValue;
+  headingLevel?: FeatureCardHeadingLevel;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"article">, "class">;
+
+const {
+  title,
+  description,
+  variant = "icon",
+  eyebrow,
+  number,
+  actionLabel,
+  actionHref,
+  visualLabel,
+  visualRatio = "16:9",
+  headingLevel = 3,
+  componentName = "FeatureCard",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const supportedVariants: FeatureCardVariant[] = ["icon", "media", "numbered"];
+const supportedHeadingLevels: FeatureCardHeadingLevel[] = [2, 3, 4];
+const resolvedTitle = title?.trim();
+const resolvedDescription = description?.trim();
+const resolvedEyebrow = eyebrow?.trim();
+const resolvedNumber = number?.trim();
+const resolvedActionLabel = actionLabel?.trim();
+const resolvedActionHref = actionHref?.trim();
+const resolvedVisualLabel =
+  visualLabel?.trim() || `${resolvedTitle || "Feature"} visual`;
+const resolvedComponentName = componentName?.trim();
+const hasVisual = Astro.slots.has("visual");
+const hasAction = Boolean(resolvedActionLabel && resolvedActionHref);
+
+if (!resolvedTitle || !resolvedDescription) {
+  throw new Error(
+    "FeatureCard requires non-empty title and description values.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `FeatureCard received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `FeatureCard received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (!resolvedComponentName) {
+  throw new Error("FeatureCard requires a non-empty componentName.");
+}
+if (eyebrow !== undefined && !resolvedEyebrow) {
+  throw new Error("FeatureCard eyebrow must be non-empty when provided.");
+}
+if (Boolean(resolvedActionLabel) !== Boolean(resolvedActionHref)) {
+  throw new Error(
+    "FeatureCard actionLabel and actionHref must be provided together.",
+  );
+}
+if (
+  resolvedActionHref &&
+  (
+    resolvedActionHref === "#" ||
+    /^javascript:/i.test(resolvedActionHref) ||
+    /^data:/i.test(resolvedActionHref)
+  )
+) {
+  throw new Error("FeatureCard requires a real non-placeholder actionHref.");
+}
+if (actionLabel !== undefined && !resolvedActionLabel) {
+  throw new Error("FeatureCard actionLabel must be non-empty when provided.");
+}
+if (visualLabel !== undefined && !visualLabel.trim()) {
+  throw new Error(
+    "FeatureCard visualLabel must be non-empty when provided.",
+  );
+}
+if (variant === "icon" && !hasVisual) {
+  throw new Error("FeatureCard Icon requires the visual slot.");
+}
+if (variant === "numbered" && !resolvedNumber) {
+  throw new Error("FeatureCard Numbered requires a non-empty number.");
+}
+if (variant !== "numbered" && number !== undefined) {
+  throw new Error("FeatureCard number is supported only by Numbered.");
+}
+if (variant === "numbered" && hasVisual) {
+  throw new Error("FeatureCard Numbered does not accept the visual slot.");
+}
+if (variant !== "media" && visualLabel !== undefined) {
+  throw new Error("FeatureCard visualLabel is supported only by Media.");
+}
+---
+
+<article
+  {...attributes}
+  class:list={["feature-card", className]}
+  data-component-name={resolvedComponentName}
+  data-component-family="cards"
+  data-card-state={hasAction ? "actionable" : "static"}
+  data-card-variant={variant}
+  data-preview-target
+>
+  {
+    variant === "media" && (
+      <div class="feature-card__media">
+        {
+          hasVisual ? (
+            <MediaRatio
+              ratio={visualRatio}
+              label={resolvedVisualLabel}
+              componentName={`${resolvedComponentName}.Media`}
+            >
+              <slot name="visual" />
+            </MediaRatio>
+          ) : (
+            <MediaRatio
+              ratio={visualRatio}
+              label={resolvedVisualLabel}
+              componentName={`${resolvedComponentName}.Media`}
+            />
+          )
+        }
+      </div>
+    )
+  }
+
+  <div class="feature-card__body">
+    {
+      variant === "icon" && (
+        <div class="feature-card__icon" aria-hidden="true">
+          <slot name="visual" />
+        </div>
+      )
+    }
+    {
+      variant === "numbered" && (
+        <span class="feature-card__number" aria-hidden="true">
+          {resolvedNumber}
+        </span>
+      )
+    }
+    <ContentBlock
+      title={resolvedTitle}
+      body={resolvedDescription}
+      eyebrow={resolvedEyebrow}
+      headingLevel={headingLevel}
+      actionLabel={resolvedActionLabel}
+      actionHref={resolvedActionHref}
+      componentName={`${resolvedComponentName}.Content`}
+    />
+  </div>
+</article>
+
+<style>
+  .feature-card {
+    display: flex;
+    min-width: 0;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+  }
+
+  .feature-card__body {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-large);
+    padding: var(--component-padding-large);
+  }
+
+  .feature-card__media {
+    display: grid;
+    min-width: 0;
+  }
+
+  .feature-card__icon {
+    display: grid;
+    width: var(--size-56);
+    height: var(--size-56);
+    flex: 0 0 auto;
+    place-items: center;
+    color: var(--color-text-accent);
+    background: var(--color-background-subtle);
+  }
+
+  .feature-card__icon :global(svg) {
+    width: var(--size-24);
+    height: var(--size-24);
+    stroke-width: var(--border-width-strong);
+  }
+
+  .feature-card__number {
+    color: var(--color-text-accent);
+    font-family: var(--text-style-heading-h2-font-family);
+    font-size: var(--text-style-heading-h2-font-size);
+    font-weight: var(--text-style-heading-h2-font-weight);
+    line-height: var(--text-style-heading-h2-line-height);
+    letter-spacing: var(--text-style-heading-h2-letter-spacing);
+  }
+
+  .feature-card__body :global(.content-block) {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .feature-card__body :global(.content-block__title),
+  .feature-card__body :global(.content-block__body) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .feature-card__body :global(.content-block .button) {
+    margin-top: auto;
+  }
+
+  @media (width < 40rem) {
+    .feature-card__body {
+      gap: var(--gap-medium);
+      padding: var(--component-padding-medium);
+    }
+  }
+</style>

@@ -1,0 +1,43 @@
+---
+interface Props {
+  variant?: "header" | "body";
+  role?: "row" | "rowgroup";
+  state?: string;
+  class?: string;
+}
+
+const {
+  variant = "body",
+  role = "row",
+  state,
+  class: className,
+} = Astro.props as Props;
+---
+
+<div
+  class:list={["ds-table-row", className]}
+  data-component-name="DsTableRow"
+  data-component-style-state={state}
+  data-ds-table-row-variant={variant}
+  role={role}
+>
+  <slot />
+</div>
+
+<style>
+  .ds-table-row {
+    display: grid;
+    width: max(100%, var(--ds-table-min-width, var(--ds-doc-table-min-width)));
+    grid-template-columns:
+      var(--ds-table-grid-template-columns, var(--ds-doc-table-grid-template-columns));
+    min-width: var(--ds-table-min-width, var(--ds-doc-table-min-width));
+  }
+
+  .ds-table-row[data-ds-table-row-variant="header"] {
+    min-height: var(--ds-doc-table-column-title-min-height);
+  }
+
+  .ds-table-row[data-ds-table-row-variant="body"] {
+    min-height: var(--ds-doc-table-row-min-height);
+  }
+</style>

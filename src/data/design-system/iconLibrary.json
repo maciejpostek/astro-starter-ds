@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "package": {
+    "name": "@lucide/astro",
+    "version": "1.21.0",
+    "license": "ISC",
+    "licensePath": "node_modules/@lucide/astro/LICENSE",
+    "repository": "https://github.com/lucide-icons/lucide"
+  },
+  "figma": {
+    "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
+    "pageId": "184:2",
+    "documentationFrameId": "184:3",
+    "namingPattern": "Icon/<LucidePascalName>",
+    "opticalCanvas": 24
+  },
+  "icons": [
+    {
+      "importName": "ArrowDownRight",
+      "figmaName": "Icon/ArrowDownRight",
+      "figmaNodeId": "184:9",
+      "requiredBySource": true
+    },
+    {
+      "importName": "ArrowLeft",
+      "figmaName": "Icon/ArrowLeft",
+      "figmaNodeId": "184:15",
+      "requiredBySource": true
+    },
+    {
+      "importName": "ArrowRight",
+      "figmaName": "Icon/ArrowRight",
+      "figmaNodeId": "184:21",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Award",
+      "figmaName": "Icon/Award",
+      "figmaNodeId": "520:39",
+      "requiredBySource": true
+    },
+    {
+      "importName": "BadgeCheck",
+      "figmaName": "Icon/BadgeCheck",
+      "figmaNodeId": "520:30",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Braces",
+      "figmaName": "Icon/Braces",
+      "figmaNodeId": "185:3",
+      "requiredBySource": false
+    },
+    {
+      "importName": "CalendarDays",
+      "figmaName": "Icon/CalendarDays",
+      "figmaNodeId": "184:27",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Check",
+      "figmaName": "Icon/Check",
+      "figmaNodeId": "184:41",
+      "requiredBySource": true
+    },
+    {
+      "importName": "ChevronDown",
+      "figmaName": "Icon/ChevronDown",
+      "figmaNodeId": "184:46",
+      "requiredBySource": true
+    },
+    {
+      "importName": "ChevronLeft",
+      "figmaName": "Icon/ChevronLeft",
+      "figmaNodeId": "184:51",
+      "requiredBySource": true
+    },
+    {
+      "importName": "ChevronRight",
+      "figmaName": "Icon/ChevronRight",
+      "figmaNodeId": "184:56",
+      "requiredBySource": true
+    },
+    {
+      "importName": "ChevronUp",
+      "figmaName": "Icon/ChevronUp",
+      "figmaNodeId": "184:61",
+      "requiredBySource": true
+    },
+    {
+      "importName": "CircleAlert",
+      "figmaName": "Icon/CircleAlert",
+      "figmaNodeId": "184:66",
+      "requiredBySource": true
+    },
+    {
+      "importName": "CircleCheck",
+      "figmaName": "Icon/CircleCheck",
+      "figmaNodeId": "184:73",
+      "requiredBySource": true
+    },
+    {
+      "importName": "CircleMinus",
+      "figmaName": "Icon/CircleMinus",
+      "figmaNodeId": "185:9",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Component",
+      "figmaName": "Icon/Component",
+      "figmaNodeId": "565:8",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Copy",
+      "figmaName": "Icon/Copy",
+      "figmaNodeId": "184:79",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Ellipsis",
+      "figmaName": "Icon/Ellipsis",
+      "figmaNodeId": "185:15",
+      "requiredBySource": true
+    },
+    {
+      "importName": "ExternalLink",
+      "figmaName": "Icon/ExternalLink",
+      "figmaNodeId": "184:85",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Eye",
+      "figmaName": "Icon/Eye",
+      "figmaNodeId": "184:92",
+      "requiredBySource": true
+    },
+    {
+      "importName": "FileText",
+      "figmaName": "Icon/FileText",
+      "figmaNodeId": "185:22",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Folder",
+      "figmaName": "Icon/Folder",
+      "figmaNodeId": "185:31",
+      "requiredBySource": false
+    },
+    {
+      "importName": "Grid3x3",
+      "figmaName": "Icon/Grid3x3",
+      "figmaNodeId": "185:36",
+      "requiredBySource": true
+    },
+    {
+      "importName": "House",
+      "figmaName": "Icon/House",
+      "figmaNodeId": "565:20",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Info",
+      "figmaName": "Icon/Info",
+      "figmaNodeId": "184:98",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Layers",
+      "figmaName": "Icon/Layers",
+      "figmaNodeId": "185:45",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Link2",
+      "figmaName": "Icon/Link2",
+      "figmaNodeId": "185:52",
+      "requiredBySource": true
+    },
+    {
+      "importName": "MapPin",
+      "figmaName": "Icon/MapPin",
+      "figmaNodeId": "185:59",
+      "requiredBySource": false
+    },
+    {
+      "importName": "Menu",
+      "figmaName": "Icon/Menu",
+      "figmaNodeId": "184:105",
+      "requiredBySource": true
+    },
+    {
+      "importName": "MessageCircle",
+      "figmaName": "Icon/MessageCircle",
+      "figmaNodeId": "184:112",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Minus",
+      "figmaName": "Icon/Minus",
+      "figmaNodeId": "185:65",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Moon",
+      "figmaName": "Icon/Moon",
+      "figmaNodeId": "185:70",
+      "requiredBySource": true
+    },
+    {
+      "importName": "PanelsTopLeft",
+      "figmaName": "Icon/PanelsTopLeft",
+      "figmaNodeId": "185:75",
+      "requiredBySource": true
+    },
+    {
+      "importName": "RotateCcw",
+      "figmaName": "Icon/RotateCcw",
+      "figmaNodeId": "185:82",
+      "requiredBySource": false
+    },
+    {
+      "importName": "Ruler",
+      "figmaName": "Icon/Ruler",
+      "figmaNodeId": "565:30",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Search",
+      "figmaName": "Icon/Search",
+      "figmaNodeId": "184:117",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Send",
+      "figmaName": "Icon/Send",
+      "figmaNodeId": "184:123",
+      "requiredBySource": true
+    },
+    {
+      "importName": "ShieldCheck",
+      "figmaName": "Icon/ShieldCheck",
+      "figmaNodeId": "520:21",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Sparkles",
+      "figmaName": "Icon/Sparkles",
+      "figmaNodeId": "185:88",
+      "requiredBySource": false
+    },
+    {
+      "importName": "SquareCheck",
+      "figmaName": "Icon/SquareCheck",
+      "figmaNodeId": "185:96",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Star",
+      "figmaName": "Icon/Star",
+      "figmaNodeId": "524:3",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Sun",
+      "figmaName": "Icon/Sun",
+      "figmaNodeId": "185:102",
+      "requiredBySource": true
+    },
+    {
+      "importName": "SwatchBook",
+      "figmaName": "Icon/SwatchBook",
+      "figmaNodeId": "565:43",
+      "requiredBySource": true
+    },
+    {
+      "importName": "TrendingDown",
+      "figmaName": "Icon/TrendingDown",
+      "figmaNodeId": "185:115",
+      "requiredBySource": true
+    },
+    {
+      "importName": "TrendingUp",
+      "figmaName": "Icon/TrendingUp",
+      "figmaNodeId": "185:121",
+      "requiredBySource": true
+    },
+    {
+      "importName": "TriangleAlert",
+      "figmaName": "Icon/TriangleAlert",
+      "figmaNodeId": "184:129",
+      "requiredBySource": true
+    },
+    {
+      "importName": "Upload",
+      "figmaName": "Icon/Upload",
+      "figmaNodeId": "184:136",
+      "requiredBySource": true
+    },
+    {
+      "importName": "UserRound",
+      "figmaName": "Icon/UserRound",
+      "figmaNodeId": "185:127",
+      "requiredBySource": false
+    },
+    {
+      "importName": "Users",
+      "figmaName": "Icon/Users",
+      "figmaNodeId": "185:133",
+      "requiredBySource": false
+    },
+    {
+      "importName": "Workflow",
+      "figmaName": "Icon/Workflow",
+      "figmaNodeId": "185:141",
+      "requiredBySource": false
+    },
+    {
+      "importName": "X",
+      "figmaName": "Icon/X",
+      "figmaNodeId": "184:143",
+      "requiredBySource": true
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+---
+import TimelineField from "../../molecules/timeline/TimelineField.astro";
+import type { TimelineStageData } from "../../molecules/timeline/types";
+import TimelineLayoutWrapper from "./TimelineLayoutWrapper.astro";
+import TimelineModal from "./TimelineModal.astro";
+
+interface Props {
+  id: string;
+  stages: TimelineStageData[];
+  totalWeeks?: number;
+  activeStageId?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  preview?: boolean;
+}
+
+const {
+  id,
+  stages,
+  totalWeeks = 8,
+  activeStageId = stages.find((stage) => stage.active)?.id,
+  ctaLabel,
+  ctaHref,
+  preview = false
+} = Astro.props;
+const modalId = `${id}-stage-modal`;
+---
+<TimelineLayoutWrapper>
+  <div class="timeline-canvas" data-component-name="Timeline" data-timeline-id={id}>
+    <div class="timeline-grid-lines" style={`--timeline-week-count:${totalWeeks}`}>{Array.from({ length: totalWeeks }).map(() => <div></div>)}</div>
+    <div class="timeline-rows">{stages.map((stage) => <TimelineField stage={stage} totalWeeks={totalWeeks} active={stage.id === activeStageId} ctaLabel={ctaLabel} ctaHref={ctaHref} modalId={modalId} />)}</div>
+    <div class="timeline-weeks" style={`--timeline-week-count:${totalWeeks}`}>{Array.from({ length: totalWeeks }).map((_, index) => <div><span>Week {index + 1}</span></div>)}</div>
+  </div>
+</TimelineLayoutWrapper>
+<TimelineModal id={modalId} stages={stages} preview={preview} />

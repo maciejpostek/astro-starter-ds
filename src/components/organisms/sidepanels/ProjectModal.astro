@@ -1,0 +1,44 @@
+---
+import { X } from "@lucide/astro";
+import IconButton from "../../atoms/actions/IconButton.astro";
+interface Props { id: string; title: string; preview?: boolean; componentName?: string; }
+const { id, title, preview = false, componentName = "ProjectModal" } = Astro.props;
+---
+<dialog id={id} class:list={["project-modal", preview && "project-modal--preview"]} data-component-name={componentName} data-project-modal={id} data-sidepanel-state={preview ? "open" : "closed"} open={preview || undefined} aria-labelledby={`${id}-title`}>
+  <header><h2 id={`${id}-title`}>{title}</h2><IconButton type="button" data-close-project-modal label="Close modal"><X /></IconButton></header>
+  <div class="project-modal__content"><slot /></div>
+  {Astro.slots.has("footer") && <footer><slot name="footer" /></footer>}
+</dialog>
+{!preview && <script>
+  type ProjectModalWindow = Window & { __astroDsProjectModalReady?: boolean };
+  const projectModalWindow = window as ProjectModalWindow;
+  if (!projectModalWindow.__astroDsProjectModalReady) {
+    projectModalWindow.__astroDsProjectModalReady = true;
+    document.addEventListener("click", (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const openId = target?.closest<HTMLElement>("[data-open-project-modal]")?.dataset.openProjectModal;
+      if (openId) {
+        const dialog = document.querySelector<HTMLDialogElement>(`[data-project-modal="${CSS.escape(openId)}"]`);
+        if (dialog && !dialog.open) dialog.showModal();
+        if (dialog) dialog.dataset.sidepanelState = "open";
+      }
+      const close = target?.closest("[data-close-project-modal]");
+      close?.closest<HTMLDialogElement>("dialog[data-project-modal]")?.close();
+    });
+    document.addEventListener("close", (event) => {
+      const dialog = event.target;
+      if (dialog instanceof HTMLDialogElement && dialog.matches("[data-project-modal]")) {
+        dialog.dataset.sidepanelState = "closed";
+      }
+    }, true);
+  }
+</script>}
+<style>
+  .project-modal { width: min(calc(100% - 2 * var(--site-padding-inline)), 48rem); max-height: calc(100dvh - 2 * var(--site-padding-inline)); border: var(--border-width-default) solid var(--color-border-subtle); border-radius: var(--radius-small); background: var(--color-background-canvas); color: var(--color-text-primary); padding: 0; }
+  .project-modal::backdrop { background: var(--color-background-overlay); backdrop-filter: blur(var(--size-4)); }
+  .project-modal--preview { position: relative; inset: auto; margin: 0; }
+  header, footer { display: flex; min-height: var(--size-56); align-items: center; justify-content: space-between; gap: var(--gap-medium); border-bottom: var(--border-width-default) solid var(--color-border-subtle); padding: var(--component-padding-medium); }
+  header h2 { font-size: var(--font-size-h6); font-weight: var(--font-weight-emphasis); }
+  .project-modal__content { padding: var(--component-padding-large); }
+  footer { border-top: var(--border-width-default) solid var(--color-border-subtle); border-bottom: 0; }
+</style>

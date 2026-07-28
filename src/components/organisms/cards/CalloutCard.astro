@@ -1,0 +1,188 @@
+---
+import Button from "../../atoms/actions/Button.astro";
+import Eyebrow from "../../atoms/text/Eyebrow.astro";
+import MediaRatio from "../../atoms/media/MediaRatio.astro";
+import type { MediaRatioValue } from "../../atoms/media/types";
+import PanelPatternVisualSystem from "../visual/PanelPatternVisualSystem.astro";
+import type { PanelPatternVariant } from "../../../data/panel-patterns";
+
+type HeadingLevel = "h2" | "h3" | "h4" | "h5" | "h6";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  action: string;
+  href: string;
+  visualLabel?: string;
+  visualRatio?: MediaRatioValue;
+  visualVariant?: PanelPatternVariant;
+  headingLevel?: HeadingLevel;
+  componentName?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  action,
+  href,
+  visualLabel,
+  visualRatio = "2.39:1",
+  visualVariant = "heroPrimary",
+  headingLevel = "h2",
+  componentName = "CalloutCard"
+} = Astro.props;
+
+const resolvedEyebrow = eyebrow.trim();
+const resolvedTitle = title.trim();
+const resolvedAction = action.trim();
+const resolvedHref = href.trim();
+const resolvedComponentName = componentName.trim();
+const resolvedVisualLabel =
+  visualLabel?.trim() || `${resolvedTitle} modular panel pattern`;
+const HeadingTag = headingLevel;
+
+if (!resolvedEyebrow || !resolvedTitle || !resolvedAction) {
+  throw new Error("CalloutCard requires non-empty eyebrow, title, and action values.");
+}
+
+if (!resolvedHref || resolvedHref === "#") {
+  throw new Error("CalloutCard requires a real non-placeholder href.");
+}
+
+if (!resolvedComponentName) {
+  throw new Error("CalloutCard requires a non-empty componentName.");
+}
+---
+
+<section
+  class="callout-card"
+  data-component-name={resolvedComponentName}
+  data-component-family="cards"
+  data-card-state="default"
+  data-preview-target
+>
+  <div class="callout-card__content">
+    <div class="callout-card__heading">
+      <Eyebrow text={resolvedEyebrow} />
+      <HeadingTag class="callout-card__title">{resolvedTitle}</HeadingTag>
+    </div>
+    <Button href={resolvedHref}>{resolvedAction}</Button>
+  </div>
+  <div class="callout-card__visual">
+    <MediaRatio
+      ratio={visualRatio}
+      label={resolvedVisualLabel}
+      componentName="CalloutCard.Visual"
+    >
+      <PanelPatternVisualSystem
+        variant={visualVariant}
+        label={resolvedVisualLabel}
+        componentName={`PanelPatternVisual.${visualVariant}`}
+      />
+    </MediaRatio>
+  </div>
+</section>
+
+<style>
+  .callout-card {
+    --callout-content-max-width:
+      calc(var(--size-320) + var(--size-320) + var(--size-40));
+    --callout-visual-max-width:
+      calc(var(--size-320) + var(--size-320) + var(--size-96) + var(--size-4));
+    --callout-visual-min-height:
+      clamp(
+        var(--size-320),
+        24vw,
+        calc(var(--size-320) + var(--size-80) + var(--size-8))
+      );
+    --callout-visual-min-height-mobile:
+      clamp(
+        var(--size-160),
+        33vw,
+        calc(var(--size-256) + var(--size-32))
+      );
+
+    display: flex;
+    min-width: 0;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: var(--gap-xlarge);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-small);
+    background: var(--color-background-surface);
+  }
+
+  .callout-card__content {
+    display: flex;
+    flex: 0 1 var(--callout-content-max-width);
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+    justify-content: space-between;
+    gap: var(--gap-medium);
+    width: 100%;
+    max-width: var(--callout-content-max-width);
+    min-height: var(--callout-visual-min-height);
+    padding: var(--component-padding-medium);
+  }
+
+  .callout-card__content :global(.button) {
+    align-self: flex-start;
+  }
+
+  .callout-card__heading {
+    display: grid;
+    gap: 0;
+  }
+
+  .callout-card__visual {
+    flex: 1 1 var(--callout-visual-max-width);
+    width: 100%;
+    max-width: var(--callout-visual-max-width);
+    min-height: var(--callout-visual-min-height);
+  }
+
+  .callout-card__title {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-family: var(--text-style-heading-h5-font-family);
+    font-size: var(--text-style-heading-h5-font-size);
+    font-weight: var(--text-style-heading-h5-font-weight);
+    line-height: var(--text-style-heading-h5-line-height);
+    letter-spacing: var(--text-style-heading-h5-letter-spacing);
+  }
+
+  .callout-card :global(.media-ratio) {
+    height: 100%;
+    min-height: inherit;
+    aspect-ratio: auto;
+    background: var(--color-background-canvas);
+    color: var(--color-text-primary);
+  }
+
+  .callout-card :global(.panel-pattern-visual-system) {
+    width: 100%;
+  }
+
+  @media (width < 64rem) {
+    .callout-card {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .callout-card__content,
+    .callout-card__visual {
+      flex: none;
+      max-width: none;
+      width: 100%;
+    }
+
+    .callout-card__content {
+      min-height: auto;
+    }
+
+    .callout-card__visual {
+      min-height: var(--callout-visual-min-height-mobile);
+    }
+  }
+</style>

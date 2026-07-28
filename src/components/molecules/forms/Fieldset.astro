@@ -1,0 +1,107 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type FieldsetState = "default" | "invalid";
+
+type Props = {
+  id: string;
+  legend: string;
+  description?: string;
+  message?: string;
+  state?: FieldsetState;
+  disabled?: boolean;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"fieldset">, "class" | "id" | "disabled">;
+
+const {
+  id,
+  legend,
+  description,
+  message,
+  state = "default",
+  disabled = false,
+  componentName = "Fieldset",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const descriptionId = description ? `${id}-description` : undefined;
+const messageId = message ? `${id}-message` : undefined;
+const describedBy = [descriptionId, messageId].filter(Boolean).join(" ") || undefined;
+const resolvedState = disabled ? "disabled" : state;
+---
+
+<fieldset
+  id={id}
+  class:list={["fieldset", className]}
+  data-component-name={componentName}
+  data-component-family="forms"
+  data-fieldset-state={resolvedState}
+  data-preview-target
+  disabled={disabled}
+  aria-invalid={state === "invalid" ? "true" : undefined}
+  aria-describedby={describedBy}
+  {...attributes}
+>
+  <legend>{legend}</legend>
+  {description && <p id={descriptionId} class="fieldset__description">{description}</p>}
+  <div class="fieldset__options">
+    <slot />
+  </div>
+  {message && (
+    <p
+      id={messageId}
+      class="fieldset__message"
+      data-fieldset-message
+      aria-live={state === "invalid" ? "polite" : undefined}
+    >
+      {message}
+    </p>
+  )}
+</fieldset>
+
+<style>
+  .fieldset {
+    display: grid;
+    min-inline-size: 0;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    gap: var(--gap-small);
+  }
+
+  .fieldset legend {
+    margin: 0;
+    padding: 0;
+    color: var(--label-field-text-default);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+  }
+
+  .fieldset__description,
+  .fieldset__message {
+    margin: 0;
+    color: var(--input-helper-default);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+  }
+
+  .fieldset__options {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-input-group);
+  }
+
+  .fieldset[data-fieldset-state="invalid"] .fieldset__message,
+  .fieldset[data-preview-state="invalid"] .fieldset__message {
+    color: var(--input-helper-invalid);
+  }
+
+  .fieldset:disabled,
+  .fieldset[data-preview-state="disabled"] {
+    cursor: not-allowed;
+    opacity: 0.64;
+  }
+</style>

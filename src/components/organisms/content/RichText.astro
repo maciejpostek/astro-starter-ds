@@ -1,0 +1,260 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type RichTextVariant = "article" | "legal";
+
+type Props = {
+  variant?: RichTextVariant;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"div">, "class">;
+
+const {
+  variant = "article",
+  componentName = "RichText",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const variants: RichTextVariant[] = ["article", "legal"];
+const normalizedComponentName = componentName.trim();
+
+if (!variants.includes(variant)) {
+  throw new Error(
+    `RichText received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error("RichText requires a non-empty componentName.");
+}
+if (!Astro.slots.has("default")) {
+  throw new Error(
+    "RichText requires default slot content; do not pass raw HTML strings.",
+  );
+}
+---
+
+<div
+  {...attributes}
+  class:list={["rich-text", className]}
+  data-component-name={normalizedComponentName}
+  data-component-family="content"
+  data-rich-text-variant={variant}
+  data-preview-target
+>
+  <slot />
+</div>
+
+<style>
+  .rich-text {
+    width: 100%;
+    max-width: 48rem;
+    min-width: 0;
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    font-weight: var(--text-style-body-base-font-weight);
+    font-style: var(--text-style-body-base-font-style);
+    line-height: var(--text-style-body-base-line-height);
+    letter-spacing: var(--text-style-body-base-letter-spacing);
+    text-transform: var(--text-style-body-base-text-transform);
+    text-wrap: var(--text-style-body-base-text-wrap);
+    overflow-wrap: var(--text-style-body-base-overflow-wrap);
+    word-break: var(--text-style-body-base-word-break);
+    white-space: var(--text-style-body-base-white-space);
+  }
+
+  .rich-text[data-rich-text-variant="legal"] {
+    max-width: 56rem;
+    font-family: var(--text-style-body-small-font-family);
+    font-size: var(--text-style-body-small-font-size);
+    font-weight: var(--text-style-body-small-font-weight);
+    font-style: var(--text-style-body-small-font-style);
+    line-height: var(--text-style-body-small-line-height);
+    letter-spacing: var(--text-style-body-small-letter-spacing);
+    text-transform: var(--text-style-body-small-text-transform);
+    text-wrap: var(--text-style-body-small-text-wrap);
+    overflow-wrap: var(--text-style-body-small-overflow-wrap);
+    word-break: var(--text-style-body-small-word-break);
+    white-space: var(--text-style-body-small-white-space);
+  }
+
+  .rich-text > :global(*) {
+    margin-block: 0;
+  }
+
+  .rich-text > :global(* + *) {
+    margin-block-start: var(--space-medium);
+  }
+
+  .rich-text > :global(h2),
+  .rich-text > :global(h3),
+  .rich-text > :global(h4),
+  .rich-text > :global(h5),
+  .rich-text > :global(h6) {
+    color: var(--color-text-primary);
+  }
+
+  .rich-text > :global(h2) {
+    font-family: var(--text-style-heading-h3-font-family);
+    font-size: var(--text-style-heading-h3-font-size);
+    font-weight: var(--text-style-heading-h3-font-weight);
+    font-style: var(--text-style-heading-h3-font-style);
+    line-height: var(--text-style-heading-h3-line-height);
+    letter-spacing: var(--text-style-heading-h3-letter-spacing);
+    text-transform: var(--text-style-heading-h3-text-transform);
+    text-wrap: var(--text-style-heading-h3-text-wrap);
+  }
+
+  .rich-text > :global(h3) {
+    font-family: var(--text-style-heading-h4-font-family);
+    font-size: var(--text-style-heading-h4-font-size);
+    font-weight: var(--text-style-heading-h4-font-weight);
+    font-style: var(--text-style-heading-h4-font-style);
+    line-height: var(--text-style-heading-h4-line-height);
+    letter-spacing: var(--text-style-heading-h4-letter-spacing);
+    text-transform: var(--text-style-heading-h4-text-transform);
+    text-wrap: var(--text-style-heading-h4-text-wrap);
+  }
+
+  .rich-text > :global(h4) {
+    font-family: var(--text-style-heading-h5-font-family);
+    font-size: var(--text-style-heading-h5-font-size);
+    font-weight: var(--text-style-heading-h5-font-weight);
+    font-style: var(--text-style-heading-h5-font-style);
+    line-height: var(--text-style-heading-h5-line-height);
+    letter-spacing: var(--text-style-heading-h5-letter-spacing);
+    text-transform: var(--text-style-heading-h5-text-transform);
+    text-wrap: var(--text-style-heading-h5-text-wrap);
+  }
+
+  .rich-text > :global(h5),
+  .rich-text > :global(h6) {
+    font-family: var(--text-style-heading-h6-font-family);
+    font-size: var(--text-style-heading-h6-font-size);
+    font-weight: var(--text-style-heading-h6-font-weight);
+    font-style: var(--text-style-heading-h6-font-style);
+    line-height: var(--text-style-heading-h6-line-height);
+    letter-spacing: var(--text-style-heading-h6-letter-spacing);
+    text-transform: var(--text-style-heading-h6-text-transform);
+    text-wrap: var(--text-style-heading-h6-text-wrap);
+  }
+
+  .rich-text[data-rich-text-variant="legal"] > :global(h2) {
+    font-family: var(--text-style-heading-h4-font-family);
+    font-size: var(--text-style-heading-h4-font-size);
+    font-weight: var(--text-style-heading-h4-font-weight);
+    line-height: var(--text-style-heading-h4-line-height);
+    letter-spacing: var(--text-style-heading-h4-letter-spacing);
+  }
+
+  .rich-text[data-rich-text-variant="legal"] > :global(h3) {
+    font-family: var(--text-style-heading-h5-font-family);
+    font-size: var(--text-style-heading-h5-font-size);
+    font-weight: var(--text-style-heading-h5-font-weight);
+    line-height: var(--text-style-heading-h5-line-height);
+    letter-spacing: var(--text-style-heading-h5-letter-spacing);
+  }
+
+  .rich-text > :global(ul),
+  .rich-text > :global(ol) {
+    display: grid;
+    gap: var(--gap-regular);
+    padding-inline-start: var(--component-padding-medium);
+  }
+
+  .rich-text > :global(ul) {
+    list-style: disc;
+  }
+
+  .rich-text > :global(ol) {
+    list-style: decimal;
+  }
+
+  .rich-text :global(li::marker) {
+    color: var(--color-text-accent);
+  }
+
+  .rich-text > :global(blockquote) {
+    border-inline-start: var(--border-width-emphasis) solid
+      var(--color-border-accent);
+    padding-inline-start: var(--component-padding-medium);
+    color: var(--color-text-primary);
+    font-family: var(--text-style-body-large-font-family);
+    font-size: var(--text-style-body-large-font-size);
+    line-height: var(--text-style-body-large-line-height);
+  }
+
+  .rich-text :global(a) {
+    color: var(--color-text-accent);
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--border-width-default);
+    text-underline-offset: var(--size-4);
+  }
+
+  .rich-text :global(a:focus-visible) {
+    outline: var(--border-width-strong) solid var(--color-state-focus-ring);
+    outline-offset: var(--size-4);
+  }
+
+  .rich-text :global(strong) {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  .rich-text :global(code) {
+    font-family: var(--font-family-mono);
+    font-size: 0.9em;
+  }
+
+  .rich-text > :global(pre) {
+    max-width: 100%;
+    overflow-x: auto;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-medium);
+    background: var(--color-background-subtle);
+  }
+
+  .rich-text > :global(figure) {
+    display: grid;
+    gap: var(--gap-regular);
+  }
+
+  .rich-text > :global(figure img),
+  .rich-text > :global(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .rich-text > :global(figure figcaption) {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-style-body-tiny-font-size);
+  }
+
+  .rich-text > :global(table) {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+
+  .rich-text > :global(table th),
+  .rich-text > :global(table td) {
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-small);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  .rich-text > :global(table th) {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  .rich-text > :global(hr) {
+    border: 0;
+    border-top: var(--border-width-default) solid var(--color-border-subtle);
+  }
+</style>

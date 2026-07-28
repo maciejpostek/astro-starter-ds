@@ -1,0 +1,77 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Footer from "../../navigation/Footer.astro";
+import type {
+  FooterContent,
+  FooterVariant,
+} from "../../navigation/Footer.astro";
+
+export interface FooterSectionContent extends FooterContent {}
+
+type Props = {
+  content: FooterSectionContent;
+  variant?: FooterVariant;
+  sectionId?: string;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"footer">, "class" | "id" | "aria-label">;
+
+const {
+  content,
+  variant = "columns",
+  sectionId,
+  ariaLabel = "Site footer",
+  componentName = "FooterSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const variants: FooterVariant[] = ["simple", "columns", "cta", "legal"];
+const normalizedSectionId = sectionId?.trim();
+const normalizedAriaLabel = ariaLabel.trim();
+const normalizedComponentName = componentName.trim();
+const hasBrandArtwork = Astro.slots.has("brand");
+
+if (!variants.includes(variant)) {
+  throw new Error(
+    `FooterSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("FooterSection requires a structured content object.");
+}
+if (!normalizedAriaLabel || !normalizedComponentName) {
+  throw new Error(
+    "FooterSection requires non-empty ariaLabel and componentName values.",
+  );
+}
+if (sectionId !== undefined && !normalizedSectionId) {
+  throw new Error("FooterSection sectionId must be non-empty when provided.");
+}
+
+const footerProps = {
+  ...attributes,
+  id: normalizedSectionId,
+  "aria-label": normalizedAriaLabel,
+  class: className,
+  content,
+  variant,
+  componentName: normalizedComponentName,
+  "data-section-family": "global-shell",
+  "data-section-type": "footer",
+  "data-section-variant": variant,
+};
+---
+
+{
+  hasBrandArtwork ? (
+    <Footer {...footerProps}>
+      <Fragment slot="brand">
+        <slot name="brand" />
+      </Fragment>
+    </Footer>
+  ) : (
+    <Footer {...footerProps} />
+  )
+}

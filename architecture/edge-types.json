@@ -1,0 +1,62 @@
+{
+  "version": "0.1.0",
+  "description": "Canonical relationship ontology for the Astro Design System architecture graph.",
+  "types": [
+    {
+      "id": "reads",
+      "description": "The source consumes the target without changing it."
+    },
+    {
+      "id": "writes",
+      "description": "The source changes the target."
+    },
+    {
+      "id": "creates",
+      "description": "The source produces a new target."
+    },
+    {
+      "id": "selects",
+      "description": "The source chooses the target from alternatives."
+    },
+    {
+      "id": "routes-to",
+      "description": "The source transfers control or context to the target."
+    },
+    {
+      "id": "validates",
+      "description": "The source checks the target against an explicit contract."
+    },
+    {
+      "id": "blocks",
+      "description": "The source prevents progress to the target when its condition is unmet."
+    },
+    {
+      "id": "generates",
+      "description": "The source deterministically renders or derives the target."
+    },
+    {
+      "id": "depends-on",
+      "description": "The source requires the target to exist or be ready first."
+    },
+    {
+      "id": "inherits-from",
+      "description": "The source receives behavior, values, or constraints from the target."
+    },
+    {
+      "id": "maps-to",
+      "description": "The source has an explicit identity or representation mapping to the target."
+    },
+    {
+      "id": "synchronizes-with",
+      "description": "The source and target are reconciled while preserving declared ownership."
+    },
+    {
+      "id": "approves",
+      "description": "The source explicitly accepts the target for a declared propagation scope."
+    },
+    {
+      "id": "publishes",
+      "description": "The source makes the target available to its intended consumers."
+    }
+  ]
+}

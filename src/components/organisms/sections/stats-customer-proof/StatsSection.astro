@@ -1,0 +1,349 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import StatCard from "../../../molecules/cards/StatCard.astro";
+
+export type StatsSectionVariant =
+  "kpi-band" | "grid" | "metric-cards" | "milestones";
+
+export interface StatsSectionMetric {
+  id: string;
+  label: string;
+  value: string;
+  change?: string;
+  changeDirection?: "up" | "down" | "neutral";
+  changeLabel?: string;
+  description?: string;
+}
+
+export interface StatsSectionContent {
+  title: string;
+  description?: string;
+  metrics: StatsSectionMetric[];
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: StatsSectionContent;
+  variant: StatsSectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "StatsSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const supportedVariants: StatsSectionVariant[] = [
+  "kpi-band",
+  "grid",
+  "metric-cards",
+  "milestones",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const supportedDirections = ["up", "down", "neutral"] as const;
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "StatsSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("StatsSection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("StatsSection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "StatsSection description must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `StatsSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `StatsSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error("StatsSection ariaLabel must be non-empty when provided.");
+}
+if (!normalizedComponentName) {
+  throw new Error("StatsSection requires a non-empty componentName.");
+}
+if (!Array.isArray(content.metrics) || content.metrics.length < 2) {
+  throw new Error("StatsSection requires at least two metric items.");
+}
+if (content.metrics.length > 6) {
+  throw new Error("StatsSection supports at most six metric items.");
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("StatsSection does not expose public slots.");
+}
+
+const metricIds = new Set<string>();
+const normalizedMetrics = content.metrics.map((metric, index) => {
+  const metricId = metric?.id?.trim();
+  const label = metric?.label?.trim();
+  const value = metric?.value?.trim();
+  const change = metric?.change?.trim();
+  const changeLabel = metric?.changeLabel?.trim();
+  const description = metric?.description?.trim();
+  const changeDirection = metric?.changeDirection ?? "neutral";
+
+  if (!metricId || !selectorSafeIdPattern.test(metricId)) {
+    throw new Error(
+      `StatsSection metric ${index + 1} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (metricIds.has(metricId)) {
+    throw new Error(`StatsSection contains duplicate metric id "${metricId}".`);
+  }
+  if (!label || !value) {
+    throw new Error(
+      `StatsSection metric "${metricId}" requires non-empty label and value strings.`,
+    );
+  }
+  if (metric.change !== undefined && !change) {
+    throw new Error(
+      `StatsSection metric "${metricId}" change must be non-empty when provided.`,
+    );
+  }
+  if (!supportedDirections.includes(changeDirection)) {
+    throw new Error(
+      `StatsSection metric "${metricId}" received an unsupported changeDirection.`,
+    );
+  }
+  if (!change && changeDirection !== "neutral") {
+    throw new Error(
+      `StatsSection metric "${metricId}" requires change when changeDirection is up or down.`,
+    );
+  }
+  if (metric.changeLabel !== undefined && !changeLabel) {
+    throw new Error(
+      `StatsSection metric "${metricId}" changeLabel must be non-empty when provided.`,
+    );
+  }
+  if (!change && metric.changeLabel !== undefined) {
+    throw new Error(
+      `StatsSection metric "${metricId}" changeLabel requires change.`,
+    );
+  }
+  if (metric.description !== undefined && !description) {
+    throw new Error(
+      `StatsSection metric "${metricId}" description must be non-empty when provided.`,
+    );
+  }
+
+  metricIds.add(metricId);
+  return {
+    id: metricId,
+    label,
+    value,
+    change,
+    changeDirection,
+    changeLabel,
+    description,
+  };
+});
+
+const Heading = `h${headingLevel}` as "h2" | "h3";
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "stats-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="stats-customer-proof"
+  data-section-type="stats"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container stats-section__container" data-container="main">
+    <header class="stats-section__header">
+      <Heading>{normalizedTitle}</Heading>
+      {normalizedDescription && <p>{normalizedDescription}</p>}
+    </header>
+
+    {
+      variant === "milestones" ? (
+        <ol class="stats-section__metrics">
+          {normalizedMetrics.map((metric) => (
+            <li data-stat-metric={metric.id}>
+              <StatCard
+                label={metric.label}
+                value={metric.value}
+                change={metric.change}
+                changeDirection={metric.changeDirection}
+                changeLabel={metric.changeLabel}
+                description={metric.description}
+              />
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <ul class="stats-section__metrics">
+          {normalizedMetrics.map((metric) => (
+            <li data-stat-metric={metric.id}>
+              <StatCard
+                label={metric.label}
+                value={metric.value}
+                change={metric.change}
+                changeDirection={metric.changeDirection}
+                changeLabel={metric.changeLabel}
+                description={metric.description}
+              />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .stats-section,
+  .stats-section__container,
+  .stats-section__header,
+  .stats-section__metrics,
+  .stats-section__metrics > li {
+    min-width: 0;
+  }
+
+  .stats-section__container,
+  .stats-section__header {
+    display: grid;
+  }
+
+  .stats-section__container {
+    gap: var(--gap-extra-large);
+  }
+
+  .stats-section__header {
+    max-width: var(--content-max-width);
+    gap: var(--gap-small);
+  }
+
+  .stats-section__header :is(h2, h3),
+  .stats-section__header p {
+    margin: 0;
+  }
+
+  .stats-section__header p {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .stats-section__metrics {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: var(--gap-large);
+  }
+
+  .stats-section__metrics > li {
+    display: grid;
+  }
+
+  .stats-section[data-section-variant="kpi-band"] .stats-section__metrics {
+    grid-template-columns:
+      repeat(auto-fit, minmax(min(100%, var(--size-192)), 1fr));
+  }
+
+  .stats-section[data-section-variant="grid"] .stats-section__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats-section[data-section-variant="metric-cards"] .stats-section__metrics {
+    grid-template-columns:
+      repeat(auto-fit, minmax(min(100%, var(--size-256)), 1fr));
+  }
+
+  .stats-section[data-section-variant="milestones"] .stats-section__metrics {
+    counter-reset: milestone;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stats-section[data-section-variant="milestones"]
+    .stats-section__metrics
+    > li {
+    counter-increment: milestone;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: var(--gap-medium);
+  }
+
+  .stats-section[data-section-variant="milestones"]
+    .stats-section__metrics
+    > li::before {
+    display: grid;
+    width: var(--size-32);
+    height: var(--size-32);
+    place-items: center;
+    border: var(--border-width-default) solid var(--color-border-accent);
+    border-radius: var(--radius-full);
+    color: var(--color-text-accent);
+    content: counter(milestone);
+    font-family: var(--text-style-body-small-font-family);
+    font-size: var(--text-style-body-small-font-size);
+    font-weight: var(--text-style-body-small-font-weight);
+    line-height: 1;
+  }
+
+  @media (width < 64rem) {
+    .stats-section[data-section-variant="kpi-band"] .stats-section__metrics,
+    .stats-section[data-section-variant="grid"] .stats-section__metrics,
+    .stats-section[data-section-variant="metric-cards"] .stats-section__metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width < 40rem) {
+    .stats-section__container {
+      gap: var(--gap-large);
+    }
+
+    .stats-section[data-section-variant="kpi-band"] .stats-section__metrics,
+    .stats-section[data-section-variant="grid"] .stats-section__metrics,
+    .stats-section[data-section-variant="metric-cards"] .stats-section__metrics {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .stats-section[data-section-variant="milestones"]
+      .stats-section__metrics
+      > li {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

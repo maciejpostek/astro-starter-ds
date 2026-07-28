@@ -1,0 +1,349 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "../../../atoms/actions/Button.astro";
+import CaseStudyCard from "../../../molecules/cards/CaseStudyCard.astro";
+import type {
+  CaseStudyCardHeadingLevel,
+  CaseStudyCardMetric,
+} from "../../../molecules/cards/CaseStudyCard.astro";
+import type { MediaRatioValue } from "../../../atoms/media/types";
+
+export type CaseStudySectionVariant = "highlight" | "grid";
+
+export interface CaseStudySectionItem {
+  id: string;
+  title: string;
+  summary: string;
+  client: string;
+  href: string;
+  actionLabel?: string;
+  tags?: string[];
+  visualLabel?: string;
+  visualRatio?: MediaRatioValue;
+  mediaSrc?: string;
+  mediaAlt?: string;
+  metric?: CaseStudyCardMetric;
+}
+
+export interface CaseStudySectionContent {
+  title: string;
+  description?: string;
+  items: CaseStudySectionItem[];
+  action?: {
+    label: string;
+    href: string;
+  };
+}
+
+type HeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+type Props = {
+  id: string;
+  content: CaseStudySectionContent;
+  variant: CaseStudySectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "CaseStudySection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const supportedVariants: CaseStudySectionVariant[] = ["highlight", "grid"];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3, 4, 5, 6];
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+const isRealHref = (value: string | undefined) => {
+  const resolved = value?.trim();
+  return Boolean(
+    resolved &&
+      resolved !== "#" &&
+      !/^javascript:/i.test(resolved) &&
+      !/^data:/i.test(resolved),
+  );
+};
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "CaseStudySection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("CaseStudySection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("CaseStudySection requires a non-empty title.");
+}
+if (
+  content.description !== undefined &&
+  !content.description.trim()
+) {
+  throw new Error(
+    "CaseStudySection description must be non-empty when provided.",
+  );
+}
+if (!Array.isArray(content.items) || content.items.length === 0) {
+  throw new Error("CaseStudySection requires at least one case-study item.");
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `CaseStudySection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `CaseStudySection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "CaseStudySection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error(
+    "CaseStudySection requires a non-empty componentName value.",
+  );
+}
+if (variant === "highlight" && content.items.length !== 1) {
+  throw new Error(
+    "CaseStudySection highlight requires exactly one case-study item.",
+  );
+}
+if (variant === "grid" && content.items.length < 2) {
+  throw new Error(
+    "CaseStudySection grid requires at least two case-study items.",
+  );
+}
+if (
+  content.action &&
+  (!content.action.label?.trim() || !isRealHref(content.action.href))
+) {
+  throw new Error(
+    "CaseStudySection action requires a non-empty label and real non-placeholder href.",
+  );
+}
+
+const itemIds = new Set<string>();
+content.items.forEach((item, index) => {
+  const itemId = item.id?.trim();
+  if (!itemId || !selectorSafeIdPattern.test(itemId)) {
+    throw new Error(
+      `CaseStudySection item ${index + 1} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(
+      `CaseStudySection contains duplicate item id "${itemId}".`,
+    );
+  }
+  itemIds.add(itemId);
+  if (
+    !item.title?.trim() ||
+    !item.summary?.trim() ||
+    !item.client?.trim() ||
+    !isRealHref(item.href)
+  ) {
+    throw new Error(
+      `CaseStudySection item "${itemId}" requires non-empty title, summary, client, and a real href.`,
+    );
+  }
+  if (
+    (item.mediaSrc === undefined) !==
+    (item.mediaAlt === undefined)
+  ) {
+    throw new Error(
+      `CaseStudySection item "${itemId}" mediaSrc and mediaAlt must be provided together.`,
+    );
+  }
+  if (
+    item.mediaSrc !== undefined &&
+    (!item.mediaSrc.trim() || !item.mediaAlt?.trim())
+  ) {
+    throw new Error(
+      `CaseStudySection item "${itemId}" mediaSrc and mediaAlt must be non-empty when provided.`,
+    );
+  }
+});
+
+const Heading = `h${headingLevel}` as
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6";
+const cardHeadingLevel = `h${Math.min(headingLevel + 1, 6)}` as
+  CaseStudyCardHeadingLevel;
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "case-study-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="brand-social-proof"
+  data-section-type="case-studies"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container case-study-section__container" data-container="main">
+    <header class="case-study-section__header">
+      <div class="case-study-section__heading">
+        <Heading>{normalizedTitle}</Heading>
+        {content.description && <p>{content.description.trim()}</p>}
+      </div>
+      {
+        content.action && (
+          <Button
+            variant="secondary"
+            href={content.action.href.trim()}
+            componentName={`${normalizedComponentName}.Action`}
+          >
+            {content.action.label.trim()}
+          </Button>
+        )
+      }
+    </header>
+
+    <ul class="case-study-section__items">
+      {
+        content.items.map((item) => {
+          const cardProps = {
+            title: item.title.trim(),
+            summary: item.summary.trim(),
+            client: item.client.trim(),
+            href: item.href.trim(),
+            actionLabel: item.actionLabel?.trim(),
+            tags: item.tags,
+            visualLabel: item.visualLabel?.trim(),
+            visualRatio: item.visualRatio,
+            metric: item.metric,
+            variant: variant === "highlight" ? "highlight" : "standard",
+            headingLevel: cardHeadingLevel,
+            componentName: `${normalizedComponentName}.CaseStudyCard`,
+          } as const;
+
+          return (
+            <li data-case-study-id={item.id.trim()}>
+              {
+                item.mediaSrc ? (
+                  <CaseStudyCard {...cardProps}>
+                    <img
+                      slot="media"
+                      src={item.mediaSrc.trim()}
+                      alt={item.mediaAlt?.trim()}
+                      loading="lazy"
+                    />
+                  </CaseStudyCard>
+                ) : (
+                  <CaseStudyCard {...cardProps} />
+                )
+              }
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .case-study-section__container,
+  .case-study-section__heading {
+    display: grid;
+    min-width: 0;
+  }
+
+  .case-study-section__container {
+    gap: var(--gap-extra-large);
+  }
+
+  .case-study-section__header {
+    display: flex;
+    min-width: 0;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--gap-large);
+  }
+
+  .case-study-section__heading {
+    max-width: var(--content-max-width);
+    gap: var(--gap-small);
+  }
+
+  .case-study-section__heading :global(h2),
+  .case-study-section__heading :global(h3),
+  .case-study-section__heading :global(h4),
+  .case-study-section__heading :global(h5),
+  .case-study-section__heading :global(h6),
+  .case-study-section__heading p {
+    margin: 0;
+  }
+
+  .case-study-section__heading p {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .case-study-section__items {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-large);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .case-study-section[data-section-variant="grid"]
+    .case-study-section__items {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .case-study-section__items > li {
+    min-width: 0;
+  }
+
+  .case-study-section__items :global(.case-study-card) {
+    height: 100%;
+  }
+
+  @media (width < 64rem) {
+    .case-study-section__header {
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .case-study-section[data-section-variant="grid"]
+      .case-study-section__items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width < 40rem) {
+    .case-study-section[data-section-variant="grid"]
+      .case-study-section__items {
+      grid-template-columns: 1fr;
+    }
+
+    .case-study-section__header :global(.button) {
+      width: 100%;
+    }
+  }
+</style>

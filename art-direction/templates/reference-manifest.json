@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/reference-manifest.schema.json",
+  "version": "1.0.0",
+  "status": "draft",
+  "projectId": "replace-with-project-id",
+  "references": [
+    {
+      "id": "reference-001",
+      "title": "Replace with a descriptive title",
+      "kind": "figma-node",
+      "source": "replace-with-stable-source",
+      "appliesTo": [
+        "buttons",
+        "cards"
+      ],
+      "adopt": [
+        "Describe the exact relationship or trait to adopt"
+      ],
+      "avoid": [
+        "Describe brand-specific or irrelevant traits not to reproduce"
+      ],
+      "notes": "Explain why the reference is relevant.",
+      "rights": "Record source and permitted internal use.",
+      "approval": "candidate"
+    }
+  ]
+}

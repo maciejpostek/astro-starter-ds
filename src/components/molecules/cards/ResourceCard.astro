@@ -1,0 +1,283 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MediaRatio from "../../atoms/media/MediaRatio.astro";
+import type { MediaRatioValue } from "../../atoms/media/types";
+import Tag from "../../atoms/data-display/Tag.astro";
+
+export type ResourceCardVariant = "guide" | "ebook" | "webinar";
+export type ResourceCardHeadingLevel = 2 | 3 | 4 | 5;
+
+type Props = {
+  title: string;
+  description: string;
+  href: string;
+  variant: ResourceCardVariant;
+  metadata?: string;
+  actionLabel?: string;
+  visualLabel?: string;
+  visualRatio?: MediaRatioValue;
+  headingLevel?: ResourceCardHeadingLevel;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"article">, "class">;
+
+const {
+  title,
+  description,
+  href,
+  variant,
+  metadata,
+  actionLabel,
+  visualLabel,
+  visualRatio,
+  headingLevel = 3,
+  componentName = "ResourceCard",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const supportedVariants: ResourceCardVariant[] = [
+  "guide",
+  "ebook",
+  "webinar",
+];
+const supportedHeadingLevels: ResourceCardHeadingLevel[] = [2, 3, 4, 5];
+const safeHrefPattern = /^(?:https?:\/\/|\/(?!\/))/i;
+const formatLabels: Record<ResourceCardVariant, string> = {
+  guide: "Guide",
+  ebook: "Ebook",
+  webinar: "Webinar",
+};
+const defaultActionLabels: Record<ResourceCardVariant, string> = {
+  guide: "Open guide",
+  ebook: "Open ebook",
+  webinar: "Open webinar",
+};
+const defaultRatios: Record<ResourceCardVariant, MediaRatioValue> = {
+  guide: "16:9",
+  ebook: "3:4",
+  webinar: "16:9",
+};
+
+const normalizedTitle = title?.trim();
+const normalizedDescription = description?.trim();
+const normalizedHref = href?.trim();
+const normalizedMetadata = metadata?.trim();
+const normalizedActionLabel =
+  actionLabel?.trim() ||
+  (supportedVariants.includes(variant)
+    ? defaultActionLabels[variant]
+    : undefined);
+const normalizedVisualLabel =
+  visualLabel?.trim() || `${normalizedTitle || "Resource"} visual`;
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedTitle || !normalizedDescription) {
+  throw new Error(
+    "ResourceCard requires non-empty title and description values.",
+  );
+}
+if (!normalizedHref || !safeHrefPattern.test(normalizedHref)) {
+  throw new Error(
+    "ResourceCard requires a safe HTTPS or root-relative href.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `ResourceCard received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `ResourceCard received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (metadata !== undefined && !normalizedMetadata) {
+  throw new Error(
+    "ResourceCard metadata must be non-empty when provided.",
+  );
+}
+if (!normalizedActionLabel) {
+  throw new Error("ResourceCard requires a non-empty actionLabel.");
+}
+if (visualLabel !== undefined && !visualLabel.trim()) {
+  throw new Error(
+    "ResourceCard visualLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error("ResourceCard requires a non-empty componentName.");
+}
+if (Astro.slots.has("default")) {
+  throw new Error("ResourceCard does not expose a default slot.");
+}
+
+const Heading = `h${headingLevel}` as "h2" | "h3" | "h4" | "h5";
+const resolvedRatio = visualRatio ?? defaultRatios[variant];
+const hasMedia = Astro.slots.has("media");
+---
+
+<article
+  {...attributes}
+  class:list={["resource-card", className]}
+  data-component-name={normalizedComponentName}
+  data-component-family="cards"
+  data-card-state="actionable"
+  data-card-variant={variant}
+  data-resource-kind={variant}
+  data-preview-target
+>
+  <a
+    class="resource-card__link"
+    href={normalizedHref}
+    aria-label={`${normalizedActionLabel}: ${normalizedTitle}`}
+  >
+    <div class="resource-card__media">
+      {
+        hasMedia ? (
+          <MediaRatio
+            ratio={resolvedRatio}
+            label={normalizedVisualLabel}
+            componentName={`${normalizedComponentName}.Media`}
+          >
+            <slot name="media" />
+          </MediaRatio>
+        ) : (
+          <MediaRatio
+            ratio={resolvedRatio}
+            label={normalizedVisualLabel}
+            componentName={`${normalizedComponentName}.Media`}
+          />
+        )
+      }
+    </div>
+
+    <div class="resource-card__content">
+      <div class="resource-card__meta">
+        <Tag componentName={`${normalizedComponentName}.Format`}>
+          {formatLabels[variant]}
+        </Tag>
+        {
+          normalizedMetadata && (
+            <span class="resource-card__metadata">
+              {normalizedMetadata}
+            </span>
+          )
+        }
+      </div>
+      <Heading class="resource-card__title">{normalizedTitle}</Heading>
+      <p class="resource-card__description">{normalizedDescription}</p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .resource-card,
+  .resource-card__link,
+  .resource-card__media,
+  .resource-card__content,
+  .resource-card__meta {
+    min-width: 0;
+  }
+
+  .resource-card {
+    height: 100%;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--color-border-default);
+    border-radius: var(--radius-medium);
+    background: var(--color-background-surface);
+  }
+
+  .resource-card__link {
+    display: grid;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .resource-card[data-card-variant="guide"] .resource-card__link,
+  .resource-card[data-card-variant="webinar"] .resource-card__link {
+    grid-template-rows: auto 1fr;
+  }
+
+  .resource-card[data-card-variant="ebook"] .resource-card__link {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+
+  .resource-card__media {
+    display: grid;
+  }
+
+  .resource-card__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-medium);
+    padding: var(--component-padding-large);
+  }
+
+  .resource-card__meta {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+  }
+
+  .resource-card__metadata {
+    color: var(--color-text-tertiary);
+    font-family: var(--text-style-body-tiny-font-family);
+    font-size: var(--text-style-body-tiny-font-size);
+    line-height: var(--text-style-body-tiny-line-height);
+  }
+
+  .resource-card__title,
+  .resource-card__description {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .resource-card__title {
+    color: var(--color-text-primary);
+    font-family: var(--text-style-heading-h5-font-family);
+    font-size: var(--text-style-heading-h5-font-size);
+    font-weight: var(--text-style-heading-h5-font-weight);
+    line-height: var(--text-style-heading-h5-line-height);
+    letter-spacing: var(--text-style-heading-h5-letter-spacing);
+  }
+
+  .resource-card__description {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-base-font-family);
+    font-size: var(--text-style-body-base-font-size);
+    line-height: var(--text-style-body-base-line-height);
+  }
+
+  .resource-card__link:hover .resource-card__title {
+    color: var(--color-text-accent);
+  }
+
+  .resource-card__link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: calc(var(--focus-ring-width) * -1);
+  }
+
+  @media (width < 64rem) {
+    .resource-card[data-card-variant="ebook"] .resource-card__link {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+    }
+  }
+
+  @media (width < 40rem) {
+    .resource-card__content {
+      padding: var(--component-padding-medium);
+    }
+
+    .resource-card__meta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

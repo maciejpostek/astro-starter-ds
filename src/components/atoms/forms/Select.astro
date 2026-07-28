@@ -1,0 +1,14 @@
+---
+import { ChevronDown } from "@lucide/astro";
+import type { HTMLAttributes } from "astro/types";
+interface Option { label:string; value:string; disabled?:boolean; }
+type Props={options:Option[];componentSize?:"small"|"medium"|"large";state?:"default"|"invalid"|"valid";placeholder?:string;componentName?:string}&Omit<HTMLAttributes<"select">,"size">;
+const {options,componentSize="medium",state="default",placeholder,componentName="Select",...attributes}=Astro.props;
+---
+<span class="select" data-component-name={componentName} data-component-family="forms" data-component-size={componentSize} data-select-state={state} data-preview-target>
+  <select aria-invalid={state==="invalid"?"true":undefined} {...attributes}>{placeholder&&<option value="" selected disabled>{placeholder}</option>}{options.map(option=><option value={option.value} disabled={option.disabled}>{option.label}</option>)}</select><ChevronDown aria-hidden="true" />
+</span>
+<style>
+  .select{position:relative;display:block}.select select{width:100%;min-height:var(--component-min-height);appearance:none;border:var(--border-width-default) solid var(--input-border-default);border-radius:var(--radius-input);background:var(--input-background-default);color:var(--input-text-default);padding:var(--component-padding-block) calc(var(--component-padding-inline) + var(--component-icon-size) + var(--gap-small)) var(--component-padding-block) var(--component-padding-inline);font:inherit;font-size:var(--component-font-size);cursor:pointer}.select svg{position:absolute;right:var(--component-padding-inline);top:50%;width:var(--component-icon-size);transform:translateY(-50%);pointer-events:none}
+  .select select:hover,.select[data-preview-state="hover"] select{border-color:var(--input-border-hover);background:var(--input-background-hover)}.select select:focus-visible,.select[data-preview-state="focused"] select{border-color:var(--input-border-focus);outline:var(--border-width-strong) solid var(--component-focus-ring);outline-offset:var(--size-2)}.select[data-select-state="invalid"] select,.select[data-preview-state="invalid"] select{border-color:var(--input-border-invalid)}.select[data-select-state="valid"] select,.select[data-preview-state="valid"] select{border-color:var(--input-border-valid)}.select:has(select:disabled),.select[data-preview-state="disabled"]{opacity:.64}.select select:disabled{cursor:not-allowed}
+</style>

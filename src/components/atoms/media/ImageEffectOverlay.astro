@@ -1,0 +1,30 @@
+---
+interface Props {
+  class?: string;
+  componentName?: string;
+}
+
+const {
+  class: className,
+  componentName = "ImageEffectOverlay"
+} = Astro.props;
+---
+
+<span
+  class:list={["image-effect-overlay", className]}
+  data-component-name={componentName}
+  data-component-family="media"
+  aria-hidden="true"
+></span>
+
+<style>
+  .image-effect-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.6;
+    background: var(--image-effect-overlay-background);
+    mix-blend-mode: screen;
+  }
+</style>

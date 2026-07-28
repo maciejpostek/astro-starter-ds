@@ -1,0 +1,13 @@
+---
+import { X } from "@lucide/astro";
+import IconButton from "../../atoms/actions/IconButton.astro";
+interface Props { id:string; title:string; description?:string; open?:boolean; preview?:boolean; componentName?:string; }
+const {id,title,description,open=false,preview=false,componentName="Popup"}=Astro.props;
+---
+<dialog id={id} class="popup" data-component-name={componentName} data-sidepanel-state={open||preview?"open":"closed"} data-popup data-preview-target open={open||preview}><article><header><div><h2>{title}</h2>{description&&<p>{description}</p>}</div><IconButton type="button" label="Close popup" data-close-popup><X /></IconButton></header><div class="popup__content"><slot /></div><footer><slot name="actions" /></footer></article></dialog>
+<script>
+  type PopupWindow=Window&{__astroDsPopupReady?:boolean};const popupWindow=window as PopupWindow;if(!popupWindow.__astroDsPopupReady){popupWindow.__astroDsPopupReady=true;document.addEventListener("click",event=>{const element=event.target instanceof Element?event.target:null;const opener=element?.closest<HTMLElement>("[data-popup-open]");if(opener){const dialog=document.getElementById(opener.dataset.popupOpen??"");if(dialog instanceof HTMLDialogElement){if(!dialog.open)dialog.showModal();dialog.dataset.sidepanelState="open";}return;}const close=element?.closest("[data-close-popup]");const dialog=close?.closest<HTMLDialogElement>("dialog[data-popup]");dialog?.close();});document.addEventListener("close",event=>{const dialog=event.target;if(dialog instanceof HTMLDialogElement&&dialog.matches("[data-popup]"))dialog.dataset.sidepanelState="closed";},true);}
+</script>
+<style>
+  .popup{width:min(36rem,calc(100% - var(--site-padding-inline)*2));max-height:calc(100dvh - var(--site-padding-inline)*2);border:var(--border-width-default) solid var(--color-border-default);background:var(--color-background-canvas);color:var(--color-text-primary);padding:0}.popup::backdrop{background:color-mix(in oklab,var(--color-text-primary) 48%,transparent)}.popup>article{display:grid;gap:var(--gap-large);padding:var(--component-padding-medium)}.popup header{display:flex;align-items:start;justify-content:space-between;gap:var(--gap-medium)}.popup header>div{display:grid;gap:var(--gap-small)}.popup h2{font-size:var(--font-size-h5)}.popup p{color:var(--color-text-secondary)}.popup__content{overflow:auto}.popup footer{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:var(--gap-small)}.popup[data-preview-state="closed"]{display:none}.popup[data-preview-state="open"]{display:block;position:relative;inset:auto;margin:0}
+</style>

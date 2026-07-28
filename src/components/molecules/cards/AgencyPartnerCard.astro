@@ -1,0 +1,76 @@
+---
+import Tag from "../../atoms/data-display/Tag.astro";
+
+interface Props {
+  name: string;
+  index: number;
+  current?: boolean;
+  currentLabel?: string;
+  componentName?: string;
+}
+
+const {
+  name,
+  index,
+  current = false,
+  currentLabel = "Current",
+  componentName = "AgencyPartnerCard"
+} = Astro.props;
+
+const resolvedName = name.trim();
+const resolvedCurrentLabel = currentLabel.trim();
+const resolvedComponentName = componentName.trim();
+
+if (!resolvedName) {
+  throw new Error("AgencyPartnerCard requires a non-empty name.");
+}
+
+if (!Number.isSafeInteger(index) || index < 0) {
+  throw new Error("AgencyPartnerCard index must be a non-negative safe integer.");
+}
+
+if (current && !resolvedCurrentLabel) {
+  throw new Error("AgencyPartnerCard requires a non-empty currentLabel when current.");
+}
+
+if (!resolvedComponentName) {
+  throw new Error("AgencyPartnerCard requires a non-empty componentName.");
+}
+---
+
+<article
+  class="agency-partner-card"
+  data-component-name={resolvedComponentName}
+  data-component-family="cards"
+  data-card-state={current ? "current" : "default"}
+  data-partner-state={current ? "current" : "default"}
+  data-preview-target
+>
+  <span class="agency-partner-card__index">{String(index + 1).padStart(2, "0")}</span>
+  <strong>{resolvedName}</strong>
+  {current && <Tag variant="accent">{resolvedCurrentLabel}</Tag>}
+</article>
+
+<style>
+  .agency-partner-card {
+    display: grid;
+    min-width: 0;
+    min-height: var(--size-56);
+    grid-template-columns: var(--size-40) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--gap-small);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .agency-partner-card__index {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+  }
+
+  strong {
+    min-width: 0;
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+    overflow-wrap: anywhere;
+  }
+</style>

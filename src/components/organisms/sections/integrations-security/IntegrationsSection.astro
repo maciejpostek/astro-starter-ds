@@ -1,0 +1,632 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Logo from "../../../atoms/media/Logo.astro";
+import IntegrationCard from "../../../molecules/cards/IntegrationCard.astro";
+import SearchInput from "../../../molecules/forms/SearchInput.astro";
+
+export type IntegrationsSectionVariant =
+  "grid" | "directory" | "detail" | "ecosystem";
+
+export interface IntegrationsSectionLogo {
+  src: string;
+  label: string;
+}
+
+export interface IntegrationsSectionItem {
+  id: string;
+  name: string;
+  category: string;
+  href: string;
+  logo: IntegrationsSectionLogo;
+  description?: string;
+  status?: string;
+}
+
+export interface IntegrationsSectionSearch {
+  label: string;
+  placeholder: string;
+  emptyMessage: string;
+}
+
+export interface IntegrationsSectionEcosystem {
+  label: string;
+  logo: IntegrationsSectionLogo;
+}
+
+export interface IntegrationsSectionContent {
+  title: string;
+  description?: string;
+  items: IntegrationsSectionItem[];
+  search?: IntegrationsSectionSearch;
+  featuredIntegrationId?: string;
+  ecosystem?: IntegrationsSectionEcosystem;
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: IntegrationsSectionContent;
+  variant: IntegrationsSectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "IntegrationsSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const safeHrefPattern = /^(?:https?:\/\/|\/(?!\/)|#|mailto:|tel:)/i;
+const safeImageSourcePattern = /^(?:https?:\/\/|\/(?!\/))/i;
+const supportedVariants: IntegrationsSectionVariant[] = [
+  "grid",
+  "directory",
+  "detail",
+  "ecosystem",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedId || !selectorSafeIdPattern.test(normalizedId)) {
+  throw new Error(
+    "IntegrationsSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("IntegrationsSection requires a structured content object.");
+}
+if (!normalizedTitle) {
+  throw new Error("IntegrationsSection requires a non-empty title.");
+}
+if (content.description !== undefined && !normalizedDescription) {
+  throw new Error(
+    "IntegrationsSection description must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `IntegrationsSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `IntegrationsSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "IntegrationsSection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error("IntegrationsSection requires a non-empty componentName.");
+}
+if (!Array.isArray(content.items) || content.items.length < 2) {
+  throw new Error("IntegrationsSection requires at least two integration items.");
+}
+if (content.items.length > 12) {
+  throw new Error("IntegrationsSection supports at most twelve integration items.");
+}
+if (variant === "directory" && content.items.length < 3) {
+  throw new Error("IntegrationsSection Directory requires at least three items.");
+}
+if (variant === "ecosystem" && content.items.length < 3) {
+  throw new Error("IntegrationsSection Ecosystem requires at least three items.");
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("IntegrationsSection does not expose public slots.");
+}
+
+const itemIds = new Set<string>();
+const itemDestinations = new Set<string>();
+const normalizedItems = content.items.map((item, index) => {
+  const itemId = item?.id?.trim();
+  const name = item?.name?.trim();
+  const category = item?.category?.trim();
+  const href = item?.href?.trim();
+  const logoSrc = item?.logo?.src?.trim();
+  const logoLabel = item?.logo?.label?.trim();
+  const description = item?.description?.trim();
+  const status = item?.status?.trim();
+
+  if (!itemId || !selectorSafeIdPattern.test(itemId)) {
+    throw new Error(
+      `IntegrationsSection item ${index + 1} requires a selector-safe id that starts with a letter.`,
+    );
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(`IntegrationsSection contains duplicate item id "${itemId}".`);
+  }
+  if (!name || !category || !href || !logoSrc || !logoLabel) {
+    throw new Error(
+      `IntegrationsSection item "${itemId}" requires non-empty name, category, href, logo src, and logo label values.`,
+    );
+  }
+  if (!safeHrefPattern.test(href)) {
+    throw new Error(
+      `IntegrationsSection item "${itemId}" requires a safe supplied href.`,
+    );
+  }
+  if (itemDestinations.has(href)) {
+    throw new Error(
+      `IntegrationsSection contains duplicate item destination "${href}".`,
+    );
+  }
+  if (!safeImageSourcePattern.test(logoSrc)) {
+    throw new Error(
+      `IntegrationsSection item "${itemId}" requires a safe supplied logo src.`,
+    );
+  }
+  if (item.description !== undefined && !description) {
+    throw new Error(
+      `IntegrationsSection item "${itemId}" description must be non-empty when provided.`,
+    );
+  }
+  if (item.status !== undefined && !status) {
+    throw new Error(
+      `IntegrationsSection item "${itemId}" status must be non-empty when provided.`,
+    );
+  }
+
+  itemIds.add(itemId);
+  itemDestinations.add(href);
+  return {
+    id: itemId,
+    name,
+    category,
+    href,
+    logo: { src: logoSrc, label: logoLabel },
+    description,
+    status,
+  };
+});
+
+const normalizedSearch = content.search
+  ? {
+      label: content.search.label?.trim(),
+      placeholder: content.search.placeholder?.trim(),
+      emptyMessage: content.search.emptyMessage?.trim(),
+    }
+  : undefined;
+if (
+  variant === "directory" &&
+  (!normalizedSearch?.label ||
+    !normalizedSearch.placeholder ||
+    !normalizedSearch.emptyMessage)
+) {
+  throw new Error(
+    "IntegrationsSection Directory requires non-empty search label, placeholder, and emptyMessage values.",
+  );
+}
+if (variant !== "directory" && content.search !== undefined) {
+  throw new Error(
+    "IntegrationsSection search content is supported only by Directory.",
+  );
+}
+
+const normalizedFeaturedIntegrationId = content.featuredIntegrationId?.trim();
+if (variant === "detail" && !normalizedFeaturedIntegrationId) {
+  throw new Error(
+    "IntegrationsSection Detail requires featuredIntegrationId.",
+  );
+}
+if (
+  variant === "detail" &&
+  !normalizedItems.some((item) => item.id === normalizedFeaturedIntegrationId)
+) {
+  throw new Error(
+    "IntegrationsSection featuredIntegrationId must reference an existing item.",
+  );
+}
+if (variant !== "detail" && content.featuredIntegrationId !== undefined) {
+  throw new Error(
+    "IntegrationsSection featuredIntegrationId is supported only by Detail.",
+  );
+}
+
+const normalizedEcosystem = content.ecosystem
+  ? {
+      label: content.ecosystem.label?.trim(),
+      logo: {
+        src: content.ecosystem.logo?.src?.trim(),
+        label: content.ecosystem.logo?.label?.trim(),
+      },
+    }
+  : undefined;
+if (
+  variant === "ecosystem" &&
+  (!normalizedEcosystem?.label ||
+    !normalizedEcosystem.logo.src ||
+    !normalizedEcosystem.logo.label)
+) {
+  throw new Error(
+    "IntegrationsSection Ecosystem requires a non-empty ecosystem label, logo src, and logo label.",
+  );
+}
+if (
+  normalizedEcosystem?.logo.src &&
+  !safeImageSourcePattern.test(normalizedEcosystem.logo.src)
+) {
+  throw new Error(
+    "IntegrationsSection Ecosystem requires a safe supplied logo src.",
+  );
+}
+if (variant !== "ecosystem" && content.ecosystem !== undefined) {
+  throw new Error(
+    "IntegrationsSection ecosystem content is supported only by Ecosystem.",
+  );
+}
+
+if (
+  variant === "grid" &&
+  normalizedItems.some((item) => !item.description)
+) {
+  throw new Error(
+    "IntegrationsSection Grid requires a description for every item.",
+  );
+}
+if (
+  (variant === "directory" || variant === "ecosystem") &&
+  normalizedItems.some((item) => item.description)
+) {
+  throw new Error(
+    `IntegrationsSection ${variant} does not accept item descriptions.`,
+  );
+}
+if (variant === "detail") {
+  const featuredItem = normalizedItems.find(
+    (item) => item.id === normalizedFeaturedIntegrationId,
+  );
+  if (!featuredItem?.description) {
+    throw new Error(
+      "IntegrationsSection Detail requires a description for the featured item.",
+    );
+  }
+  if (
+    normalizedItems.some(
+      (item) =>
+        item.id !== normalizedFeaturedIntegrationId && item.description,
+    )
+  ) {
+    throw new Error(
+      "IntegrationsSection Detail accepts description only on the featured item.",
+    );
+  }
+}
+
+const displayItems =
+  variant === "detail"
+    ? [
+        ...normalizedItems.filter(
+          (item) => item.id === normalizedFeaturedIntegrationId,
+        ),
+        ...normalizedItems.filter(
+          (item) => item.id !== normalizedFeaturedIntegrationId,
+        ),
+      ]
+    : normalizedItems;
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const cardHeadingLevel = (headingLevel + 1) as 3 | 4;
+const searchInputId = `${normalizedId}-search`;
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "integrations-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="integrations-security"
+  data-section-type="integrations"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div
+    class="l-container integrations-section__container"
+    data-container="main"
+    data-integrations-directory={variant === "directory" ? "" : undefined}
+  >
+    <header class="integrations-section__header">
+      <Heading>{normalizedTitle}</Heading>
+      {normalizedDescription && <p>{normalizedDescription}</p>}
+    </header>
+
+    {
+      variant === "directory" && normalizedSearch && (
+        <div class="integrations-section__search">
+          <SearchInput
+            id={searchInputId}
+            name="integration-query"
+            label={normalizedSearch.label}
+            placeholder={normalizedSearch.placeholder}
+            componentName={`${normalizedComponentName}.Search`}
+          />
+          <p
+            class="visually-hidden"
+            aria-live="polite"
+            data-integrations-results-status
+          >
+            {normalizedItems.length} integrations shown.
+          </p>
+        </div>
+      )
+    }
+
+    {
+      variant === "ecosystem" && normalizedEcosystem && (
+        <div class="integrations-section__ecosystem">
+          <Logo label={normalizedEcosystem.logo.label}>
+            <img
+              src={normalizedEcosystem.logo.src}
+              alt=""
+              width="64"
+              height="64"
+              loading="lazy"
+            />
+          </Logo>
+          <span>{normalizedEcosystem.label}</span>
+        </div>
+      )
+    }
+
+    <ul
+      class:list={[
+        "integrations-section__items",
+        `integrations-section__items--${variant}`,
+      ]}
+      data-integrations-list
+    >
+      {
+        displayItems.map((item) => {
+          const isFeatured =
+            variant === "detail" && item.id === normalizedFeaturedIntegrationId;
+          const cardVariant =
+            variant === "grid" || isFeatured ? "detailed" : "compact";
+          return (
+            <li
+              data-integration-item={item.id}
+              data-integration-role={isFeatured ? "featured" : "standard"}
+              data-search-value={`${item.name} ${item.category} ${item.status ?? ""}`.toLocaleLowerCase()}
+            >
+              <IntegrationCard
+                name={item.name}
+                category={item.category}
+                href={item.href}
+                logoLabel={item.logo.label}
+                variant={cardVariant}
+                description={
+                  cardVariant === "detailed" ? item.description : undefined
+                }
+                status={item.status}
+                headingLevel={cardHeadingLevel}
+                componentName={`${normalizedComponentName}.Card`}
+              >
+                <img
+                  slot="logo"
+                  src={item.logo.src}
+                  alt=""
+                  width="40"
+                  height="40"
+                  loading="lazy"
+                />
+              </IntegrationCard>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    {
+      variant === "directory" && normalizedSearch && (
+        <p class="integrations-section__empty" hidden data-integrations-empty>
+          {normalizedSearch.emptyMessage}
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  type IntegrationsSectionWindow = Window & {
+    __astroDsIntegrationsSectionReady?: boolean;
+  };
+  const integrationsSectionWindow = window as IntegrationsSectionWindow;
+
+  if (!integrationsSectionWindow.__astroDsIntegrationsSectionReady) {
+    integrationsSectionWindow.__astroDsIntegrationsSectionReady = true;
+    document.addEventListener("input", (event) => {
+      const input =
+        event.target instanceof HTMLInputElement &&
+        event.target.type === "search"
+          ? event.target
+          : null;
+      const root = input?.closest<HTMLElement>("[data-integrations-directory]");
+      if (!input || !root) return;
+
+      const query = input.value.trim().toLocaleLowerCase();
+      const items = Array.from(
+        root.querySelectorAll<HTMLElement>("[data-integration-item]"),
+      );
+      let visibleCount = 0;
+
+      for (const item of items) {
+        const matches =
+          !query || (item.dataset.searchValue ?? "").includes(query);
+        item.hidden = !matches;
+        if (matches) visibleCount += 1;
+      }
+
+      const empty = root.querySelector<HTMLElement>(
+        "[data-integrations-empty]",
+      );
+      const status = root.querySelector<HTMLElement>(
+        "[data-integrations-results-status]",
+      );
+      if (empty) empty.hidden = visibleCount !== 0;
+      if (status) {
+        status.textContent =
+          visibleCount === 1
+            ? "1 integration shown."
+            : `${visibleCount} integrations shown.`;
+      }
+      root.dataset.integrationsResults =
+        visibleCount === 0 ? "empty" : "available";
+    });
+  }
+</script>
+
+<style>
+  .integrations-section,
+  .integrations-section__container,
+  .integrations-section__header,
+  .integrations-section__items,
+  .integrations-section__items > li {
+    min-width: 0;
+  }
+
+  .integrations-section__container,
+  .integrations-section__header {
+    display: grid;
+  }
+
+  .integrations-section__container {
+    gap: var(--gap-extra-large);
+  }
+
+  .integrations-section__header {
+    max-width: var(--content-max-width);
+    gap: var(--gap-regular);
+  }
+
+  .integrations-section__header :is(h2, h3),
+  .integrations-section__header p,
+  .integrations-section__empty {
+    margin: 0;
+  }
+
+  .integrations-section__header p,
+  .integrations-section__empty {
+    color: var(--color-text-secondary);
+  }
+
+  .integrations-section__search {
+    width: min(100%, var(--size-320));
+  }
+
+  .integrations-section__items {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    gap: var(--gap-large);
+    list-style: none;
+  }
+
+  .integrations-section__items > li {
+    height: 100%;
+  }
+
+  .integrations-section__items--grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .integrations-section__items--directory,
+  .integrations-section__items--ecosystem {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .integrations-section__items--detail {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .integrations-section__items--detail
+    > li[data-integration-role="featured"] {
+    grid-row: span 2;
+  }
+
+  .integrations-section__ecosystem {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    align-items: center;
+    gap: var(--gap-regular);
+    border: var(--border-width-default) solid var(--color-border-accent);
+    background: var(--color-background-subtle);
+    padding: var(--component-padding-medium);
+  }
+
+  .integrations-section__ecosystem :global(.logo) {
+    width: var(--size-64);
+    height: var(--size-64);
+    justify-content: center;
+  }
+
+  .integrations-section__ecosystem span {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-strong);
+    overflow-wrap: anywhere;
+  }
+
+  .integrations-section__empty {
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-large);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  @media (width < 64rem) {
+    .integrations-section__items--grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .integrations-section__items--detail {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .integrations-section__items--detail
+      > li[data-integration-role="featured"] {
+      grid-row: auto;
+    }
+  }
+
+  @media (width < 40rem) {
+    .integrations-section__container {
+      gap: var(--gap-xlarge);
+    }
+
+    .integrations-section__items--grid,
+    .integrations-section__items--directory,
+    .integrations-section__items--ecosystem {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .integrations-section__ecosystem {
+      align-items: flex-start;
+    }
+  }
+</style>

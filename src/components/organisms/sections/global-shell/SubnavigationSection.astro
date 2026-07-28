@@ -1,0 +1,85 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Subnavigation from "../../../molecules/navigation/Subnavigation.astro";
+import type {
+  SubnavigationItem,
+  SubnavigationVariant,
+} from "../../../molecules/navigation/Subnavigation.astro";
+
+export interface SubnavigationSectionContent {
+  id: string;
+  items: SubnavigationItem[];
+  label?: string;
+}
+
+type Props = {
+  content: SubnavigationSectionContent;
+  variant?: SubnavigationVariant;
+  sectionId?: string;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "class" | "id" | "aria-label">;
+
+const {
+  content,
+  variant = "underline",
+  sectionId,
+  ariaLabel = "Subnavigation",
+  componentName = "SubnavigationSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const variants: SubnavigationVariant[] = ["underline", "pills"];
+const normalizedSectionId = sectionId?.trim();
+const normalizedAriaLabel = ariaLabel.trim();
+const normalizedComponentName = componentName.trim();
+
+if (!variants.includes(variant)) {
+  throw new Error(
+    `SubnavigationSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("SubnavigationSection requires a structured content object.");
+}
+if (!normalizedAriaLabel || !normalizedComponentName) {
+  throw new Error(
+    "SubnavigationSection requires non-empty ariaLabel and componentName values.",
+  );
+}
+if (sectionId !== undefined && !normalizedSectionId) {
+  throw new Error(
+    "SubnavigationSection sectionId must be non-empty when provided.",
+  );
+}
+---
+
+<section
+  {...attributes}
+  id={normalizedSectionId}
+  class:list={["l-section", "subnavigation-section", className]}
+  data-padding="none"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="global-shell"
+  data-section-type="subnavigation"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel}
+>
+  <Subnavigation
+    id={content.id}
+    items={content.items}
+    label={content.label}
+    variant={variant}
+    componentName={`${normalizedComponentName}.Navigation`}
+  />
+</section>
+
+<style>
+  .subnavigation-section {
+    min-width: 0;
+  }
+</style>

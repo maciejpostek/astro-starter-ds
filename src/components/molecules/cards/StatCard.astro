@@ -1,0 +1,233 @@
+---
+import { Minus, TrendingDown, TrendingUp } from "@lucide/astro";
+
+type ChangeDirection = "up" | "down" | "neutral";
+
+interface Props {
+  label: string;
+  value: string;
+  change?: string;
+  changeDirection?: ChangeDirection;
+  changeLabel?: string;
+  description?: string;
+  componentName?: string;
+}
+
+const {
+  label,
+  value,
+  change,
+  changeDirection = "neutral",
+  changeLabel,
+  description,
+  componentName = "StatCard"
+} = Astro.props;
+
+const directions: ChangeDirection[] = ["up", "down", "neutral"];
+const defaultDirectionLabels = {
+  up: "Increase",
+  down: "Decrease",
+  neutral: "No change"
+};
+
+const resolvedLabel = label.trim();
+const resolvedValue = value.trim();
+const resolvedChange = change?.trim();
+const resolvedDescription = description?.trim();
+const resolvedComponentName = componentName.trim();
+
+if (!resolvedLabel || !resolvedValue) {
+  throw new Error("StatCard requires non-empty label and value strings.");
+}
+
+if (!directions.includes(changeDirection)) {
+  throw new Error("StatCard changeDirection must be up, down, or neutral.");
+}
+
+if (change !== undefined && !resolvedChange) {
+  throw new Error("StatCard change must be non-empty when provided.");
+}
+
+if (!resolvedChange && changeDirection !== "neutral") {
+  throw new Error("StatCard requires change when changeDirection is up or down.");
+}
+
+if (description !== undefined && !resolvedDescription) {
+  throw new Error("StatCard description must be non-empty when provided.");
+}
+
+const resolvedChangeLabel = (
+  changeLabel ?? defaultDirectionLabels[changeDirection]
+).trim();
+
+if (resolvedChange && !resolvedChangeLabel) {
+  throw new Error("StatCard requires a non-empty changeLabel when change is shown.");
+}
+
+if (!resolvedComponentName) {
+  throw new Error("StatCard requires a non-empty componentName.");
+}
+
+const directionOptions = [
+  {
+    value: "neutral",
+    Icon: Minus,
+    label:
+      changeDirection === "neutral"
+        ? resolvedChangeLabel
+        : defaultDirectionLabels.neutral
+  },
+  {
+    value: "up",
+    Icon: TrendingUp,
+    label:
+      changeDirection === "up"
+        ? resolvedChangeLabel
+        : defaultDirectionLabels.up
+  },
+  {
+    value: "down",
+    Icon: TrendingDown,
+    label:
+      changeDirection === "down"
+        ? resolvedChangeLabel
+        : defaultDirectionLabels.down
+  }
+] as const;
+---
+
+<article
+  class="stat-card"
+  aria-label={resolvedLabel}
+  data-component-name={resolvedComponentName}
+  data-component-family="cards"
+  data-card-state={resolvedChange ? "with-change" : "without-change"}
+  data-change-direction={changeDirection}
+  data-preview-target
+>
+  <span class="stat-card__label">{resolvedLabel}</span>
+  <strong>{resolvedValue}</strong>
+  {
+    resolvedChange && (
+      <small>
+        {
+          directionOptions.map(({ value: direction, Icon, label: directionLabel }) => (
+            <>
+              <span
+                class="stat-card__direction-icon"
+                data-direction={direction}
+                aria-hidden="true"
+              >
+                <Icon />
+              </span>
+              <span
+                class="visually-hidden stat-card__direction-label"
+                data-direction={direction}
+              >
+                {directionLabel}:{" "}
+              </span>
+            </>
+          ))
+        }
+        {resolvedChange}
+      </small>
+    )
+  }
+  {resolvedDescription && <p>{resolvedDescription}</p>}
+</article>
+
+<style>
+  .stat-card {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-small);
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+    padding: var(--component-padding-medium);
+  }
+
+  .stat-card__label,
+  .stat-card p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-small-font-family);
+    font-size: var(--text-style-body-small-font-size);
+    font-weight: var(--text-style-body-small-font-weight);
+    line-height: var(--text-style-body-small-line-height);
+    letter-spacing: var(--text-style-body-small-letter-spacing);
+    overflow-wrap: anywhere;
+  }
+
+  .stat-card strong {
+    color: var(--color-text-primary);
+    font-family: var(--text-style-heading-h3-font-family);
+    font-size: var(--text-style-heading-h3-font-size);
+    font-weight: var(--text-style-heading-h3-font-weight);
+    line-height: var(--text-style-heading-h3-line-height);
+    letter-spacing: var(--text-style-heading-h3-letter-spacing);
+    overflow-wrap: anywhere;
+  }
+
+  .stat-card small {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--gap-tiny);
+    color: var(--color-text-tertiary);
+    font-family: var(--text-style-body-tiny-font-family);
+    font-size: var(--text-style-body-tiny-font-size);
+    font-weight: var(--text-style-body-tiny-font-weight);
+    line-height: var(--text-style-body-tiny-line-height);
+    letter-spacing: var(--text-style-body-tiny-letter-spacing);
+    overflow-wrap: anywhere;
+  }
+
+  .stat-card__direction-icon,
+  .stat-card__direction-label {
+    display: none;
+  }
+
+  .stat-card__direction-icon {
+    align-items: center;
+  }
+
+  .stat-card__direction-icon :global(svg) {
+    width: var(--size-16);
+    height: var(--size-16);
+    flex: none;
+  }
+
+  .stat-card[data-change-direction="neutral"]
+    .stat-card__direction-icon[data-direction="neutral"],
+  .stat-card[data-change-direction="up"]
+    .stat-card__direction-icon[data-direction="up"],
+  .stat-card[data-change-direction="down"]
+    .stat-card__direction-icon[data-direction="down"] {
+    display: inline-flex;
+  }
+
+  .stat-card[data-change-direction="neutral"]
+    .stat-card__direction-label[data-direction="neutral"],
+  .stat-card[data-change-direction="up"]
+    .stat-card__direction-label[data-direction="up"],
+  .stat-card[data-change-direction="down"]
+    .stat-card__direction-label[data-direction="down"] {
+    display: inline;
+  }
+
+  .stat-card[data-change-direction="up"] small {
+    color: var(--color-status-success-text);
+  }
+
+  .stat-card[data-change-direction="down"] small {
+    color: var(--color-status-error-text);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+</style>

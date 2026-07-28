@@ -1,0 +1,218 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DsCodeSnippet from "../../components/design-system/DsCodeSnippet.astro";
+import DsDocCard from "../../components/design-system/DsDocCard.astro";
+import DsDocGrid from "../../components/design-system/DsDocGrid.astro";
+import DsDocSection from "../../components/design-system/DsDocSection.astro";
+import DsMediaPlaceholder from "../../components/design-system/DsMediaPlaceholder.astro";
+import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
+import { mediaPlaceholderCatalog } from "../../data/design-system/mediaPlaceholderCatalog";
+
+const deliveryRules = [
+  {
+    title: "Fixture-only",
+    text: "These assets preserve geometry in documentation. They are not acceptable production content and do not satisfy evidence, identity, or editorial requirements.",
+  },
+  {
+    title: "Code-owned",
+    text: "The Astro documentation renderer and catalog define variants, ratios, labels, and selection guidance. CSS Variables define appearance.",
+  },
+  {
+    title: "Composition-safe",
+    text: "The renderer composes MediaRatio rather than repeating ratio or clipping behavior. Figma maps the same three fixture roles as asset variants.",
+  },
+];
+
+const agenticRules = [
+  "Use a fixture only when project media is intentionally unavailable during system documentation.",
+  "Select image for crop and image-layout examples, video for poster geometry, and productPreview for a schematic product-media boundary.",
+  "Replace the fixture with project-owned media before release whenever the content carries meaning, proof, identity, or instruction.",
+  "Do not infer a client brand, product interface, metric, screenshot, person, certification, or customer result.",
+  "Do not pass fixture labels through as production image alternative text.",
+  "Keep all geometry deterministic and all visible styling token-backed.",
+];
+---
+
+<BaseLayout title="Media Placeholders - Astro Design System">
+  <div class="page">
+    <SectionHeader eyebrow="Assets" title="Media Placeholders" variant="hero" />
+
+    <DsDocSection
+      id="media-placeholder-contract"
+      title="Delivery Contract"
+      description="Neutral fixtures preserve layout while a reusable system is being documented. They never replace meaningful project media."
+    >
+      <DsDocGrid columns={3}>
+        {
+          deliveryRules.map((item) => (
+            <DsDocCard title={item.title} text={item.text} />
+          ))
+        }
+      </DsDocGrid>
+    </DsDocSection>
+
+    <DsDocSection
+      id="media-placeholder-gallery"
+      title="Fixture Gallery"
+      description="The gallery renders the real documentation asset in all three supported variants."
+    >
+      <div class="media-placeholder-gallery">
+        {
+          mediaPlaceholderCatalog.map((item) => (
+            <article class="media-placeholder-example">
+              <header>
+                <h3>{item.title}</h3>
+                <code>{item.variant} · {item.ratio}</code>
+              </header>
+              <DsMediaPlaceholder variant={item.variant} />
+              <dl>
+                <div>
+                  <dt>Role</dt>
+                  <dd>{item.role}</dd>
+                </div>
+                <div>
+                  <dt>Use when</dt>
+                  <dd>{item.useWhen}</dd>
+                </div>
+                <div>
+                  <dt>Avoid when</dt>
+                  <dd>{item.avoidWhen}</dd>
+                </div>
+              </dl>
+            </article>
+          ))
+        }
+      </div>
+    </DsDocSection>
+
+    <DsDocSection
+      id="media-placeholder-boundaries"
+      title="Replacement Boundaries"
+      description="A fixture communicates reserved geometry only. Real assets remain subject to project context, rights, alternative text, captions, and content review."
+    >
+      <div class="media-placeholder-boundary">
+        <p>
+          Replace a fixture before release when media proves a feature, identifies
+          a person or organization, presents data, teaches a workflow, or carries
+          a brand promise. The final media must receive its own accessible name
+          or intentionally empty alternative text based on context.
+        </p>
+      </div>
+    </DsDocSection>
+
+    <DsDocSection
+      id="media-placeholder-agentic-rules"
+      title="Agentic Rules"
+      description="Rules for selecting, composing, and retiring documentation fixtures."
+    >
+      <ol class="media-placeholder-rules">
+        {agenticRules.map((rule) => <li>{rule}</li>)}
+      </ol>
+      <DsCodeSnippet
+        label="Documentation-only API"
+        code={`<DsMediaPlaceholder
+  variant="productPreview"
+  label="Neutral product preview fixture"
+/>`}
+      />
+    </DsDocSection>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    display: grid;
+    min-width: 0;
+  }
+
+  .media-placeholder-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-large);
+  }
+
+  .media-placeholder-example {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: var(--gap-regular);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-large);
+    background: var(--color-background-surface);
+  }
+
+  .media-placeholder-example header {
+    display: grid;
+    gap: var(--gap-tiny);
+  }
+
+  .media-placeholder-example h3,
+  .media-placeholder-example dl,
+  .media-placeholder-example dd,
+  .media-placeholder-boundary p {
+    margin: 0;
+  }
+
+  .media-placeholder-example code,
+  .media-placeholder-example dt {
+    color: var(--color-text-tertiary);
+  }
+
+  .media-placeholder-example dl,
+  .media-placeholder-example dl div {
+    display: grid;
+    gap: var(--gap-small);
+  }
+
+  .media-placeholder-example dl {
+    gap: var(--gap-regular);
+  }
+
+  .media-placeholder-example dt {
+    font-family: var(--text-style-body-tiny-font-family);
+    font-size: var(--text-style-body-tiny-font-size);
+    line-height: var(--text-style-body-tiny-line-height);
+    text-transform: uppercase;
+  }
+
+  .media-placeholder-example dd,
+  .media-placeholder-boundary p {
+    color: var(--color-text-secondary);
+  }
+
+  .media-placeholder-boundary {
+    border-left: var(--border-width-emphasis) solid var(--color-border-accent);
+    padding: var(--component-padding-large);
+    background: var(--color-background-subtle);
+  }
+
+  .media-placeholder-rules {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    gap: var(--gap-regular);
+    list-style: none;
+    counter-reset: fixture-rule;
+  }
+
+  .media-placeholder-rules li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--gap-regular);
+    padding: var(--component-padding-medium);
+    background: var(--color-background-surface);
+    counter-increment: fixture-rule;
+  }
+
+  .media-placeholder-rules li::before {
+    content: counter(fixture-rule, decimal-leading-zero);
+    color: var(--color-text-accent);
+    font-family: var(--text-style-code-font-family);
+  }
+
+  @media (width < 64rem) {
+    .media-placeholder-gallery {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

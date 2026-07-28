@@ -1,0 +1,93 @@
+---
+interface Props {
+  label?: string;
+  code: string;
+}
+
+const { label = "Code", code } = Astro.props;
+---
+
+<figure class="ds-code-snippet" data-component-name="DsCodeSnippet">
+  <figcaption class="ds-code-snippet__header">
+    <span>{label}</span>
+    <button class="ds-code-snippet__copy" data-copy-code={code} type="button">
+      Copy
+    </button>
+  </figcaption>
+  <pre><code>{code}</code></pre>
+</figure>
+
+<script>
+  document.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const button = target.closest("[data-copy-code]");
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const code = button.getAttribute("data-copy-code");
+    if (!code) return;
+
+    await navigator.clipboard?.writeText(code);
+    button.textContent = "Copied";
+    window.setTimeout(() => {
+      button.textContent = "Copy";
+    }, 1200);
+  });
+</script>
+
+<style>
+  .ds-code-snippet {
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+    border: var(--size-1) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+  }
+
+  .ds-code-snippet__header {
+    display: flex;
+    min-height: var(--component-size-small-min-height);
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: var(--size-1) solid var(--color-border-subtle);
+    background: var(--color-background-subtle);
+    padding: 0 var(--component-padding-small);
+  }
+
+  .ds-code-snippet__header span,
+  .ds-code-snippet__copy {
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-none);
+  }
+
+  .ds-code-snippet__copy {
+    border: 0;
+    background: transparent;
+    color: var(--color-text-accent);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .ds-code-snippet__copy:hover {
+    color: var(--color-text-primary);
+  }
+
+  pre {
+    overflow: auto;
+    margin: 0;
+    background: var(--color-background-surface);
+    padding: var(--component-padding-large);
+  }
+
+  code {
+    color: var(--color-text-primary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: 1.8;
+    white-space: pre;
+  }
+</style>

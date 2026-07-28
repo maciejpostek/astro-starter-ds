@@ -1,0 +1,83 @@
+---
+import DsTableCell from "./DsTableCell.astro";
+
+interface Props {
+  label: string;
+  sampleValue: string;
+  samplePercent?: string;
+  sampleLabel?: string;
+  sampleType?: "size" | "radius" | "border";
+}
+
+const {
+  label,
+  sampleValue,
+  samplePercent = "100%",
+  sampleLabel = "",
+  sampleType = "size",
+} = Astro.props as Props;
+---
+
+<DsTableCell class="ds-table-sample-cell" role="cell">
+  <span class="ds-table-sample-cell__track" aria-label={label}>
+    <span
+      class="ds-table-sample-cell__sample"
+      data-sample-type={sampleType}
+      style={`--ds-table-sample-size: ${sampleValue}; --ds-table-sample-percent: ${samplePercent};`}
+    >
+      {sampleLabel && <span>{sampleLabel}</span>}
+    </span>
+  </span>
+</DsTableCell>
+
+<style>
+  .ds-table-sample-cell__track {
+    display: flex;
+    width: 100%;
+    min-height: var(--ds-doc-table-row-sample-track-min-height);
+    align-items: center;
+  }
+
+  .ds-table-sample-cell__sample {
+    display: flex;
+    width: max(var(--size-1), var(--ds-table-sample-percent));
+    min-width: var(--size-2);
+    height: var(--ds-doc-table-row-sample-height);
+    max-width: 100%;
+    align-items: center;
+    aspect-ratio: auto;
+    justify-content: flex-end;
+    background: var(--color-background-accent);
+    color: var(--color-text-on-accent);
+  }
+
+  .ds-table-sample-cell__sample span {
+    overflow: hidden;
+    padding: 0 var(--space-tiny);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-none);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ds-table-sample-cell__sample[data-sample-type="radius"] {
+    width: var(--size-48);
+    min-width: 0;
+    height: var(--size-20);
+    aspect-ratio: auto;
+    border: var(--size-1) solid var(--color-border-accent);
+    border-radius: var(--ds-table-sample-size);
+    background: var(--color-background-accent);
+  }
+
+  .ds-table-sample-cell__sample[data-sample-type="border"] {
+    width: min(var(--size-128), 100%);
+    min-width: var(--size-64);
+    height: 0;
+    max-width: 100%;
+    aspect-ratio: auto;
+    border-top: var(--ds-table-sample-size) solid var(--color-border-accent);
+    background: transparent;
+  }
+</style>

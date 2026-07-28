@@ -1,0 +1,96 @@
+---
+import NavSidebar from "./NavSidebar.astro";
+import TopNavbar from "./TopNavbar.astro";
+
+interface Props {
+  activePath: string;
+  preview?: boolean;
+  brandLabel?: string;
+  homeHref?: string;
+  availabilityLabel?: string;
+  locationLabel?: string;
+  timeZone?: string;
+  workspaceLabel?: string;
+  contactLabel?: string;
+  contactHref?: string;
+  profileName?: string;
+  profileLabel?: string;
+  profileDescription?: string;
+  profileHref?: string;
+  designSystemLabel?: string;
+  designSystemHref?: string;
+}
+
+const {
+  activePath,
+  preview = false,
+  brandLabel,
+  homeHref,
+  availabilityLabel,
+  locationLabel,
+  timeZone,
+  workspaceLabel,
+  contactLabel,
+  contactHref,
+  profileName,
+  profileLabel,
+  profileDescription,
+  profileHref,
+  designSystemLabel,
+  designSystemHref
+} = Astro.props;
+---
+
+<div
+  class:list={["global-header", preview && "global-header--preview"]}
+  data-component-name="GlobalHeader"
+  data-component-family="navigation"
+  data-component-size="large"
+  data-navigation-state={preview ? "preview" : "default"}
+>
+  <NavSidebar
+    activePath={activePath}
+    preview={preview}
+    brandLabel={brandLabel}
+    homeHref={homeHref}
+    profileName={profileName}
+    profileLabel={profileLabel}
+    profileDescription={profileDescription}
+    profileHref={profileHref}
+    designSystemLabel={designSystemLabel}
+    designSystemHref={designSystemHref}
+  />
+  <div class="global-header__workspace">
+    <TopNavbar
+      activePath={activePath}
+      preview={preview}
+      brandLabel={brandLabel}
+      availabilityLabel={availabilityLabel}
+      locationLabel={locationLabel}
+      timeZone={timeZone}
+      workspaceLabel={workspaceLabel}
+      contactLabel={contactLabel}
+      contactHref={contactHref}
+    />
+  </div>
+</div>
+
+<style>
+  .global-header {
+    display: contents;
+  }
+
+  .global-header--preview {
+    display: grid;
+    width: min(100%, 56rem);
+    min-height: calc(var(--sidebar-icon-column) * 9);
+    grid-template-columns: var(--app-sidebar-width) minmax(0, 1fr);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+    overflow: hidden;
+  }
+
+  .global-header__workspace {
+    min-width: 0;
+  }
+</style>

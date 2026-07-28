@@ -1,0 +1,652 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "../../../atoms/actions/Button.astro";
+import Input from "../../../atoms/forms/Input.astro";
+import Eyebrow from "../../../atoms/text/Eyebrow.astro";
+import ButtonGroup from "../../../molecules/actions/ButtonGroup.astro";
+import ConsentField from "../../../molecules/forms/ConsentField.astro";
+import FormField from "../../../molecules/forms/FormField.astro";
+import CalComEmbed from "../../forms/CalComEmbed.astro";
+import Form from "../../forms/Form.astro";
+
+export type LeadCaptureSectionVariant = "newsletter" | "lead-form" | "contact-form" | "demo-booking" | "waitlist" | "app-download";
+
+type FieldType = "text" | "email" | "tel" | "url" | "textarea";
+type AutocompleteValue = "name" | "given-name" | "family-name" | "email" | "tel" | "organization" | "url" | "off";
+
+export interface LeadCaptureSectionField {
+  id: string;
+  name?: string;
+  label: string;
+  type: FieldType;
+  placeholder?: string;
+  hint?: string;
+  autocomplete?: AutocompleteValue;
+  required?: boolean;
+}
+
+export interface LeadCaptureSectionConsent {
+  id: string;
+  name?: string;
+  label: string;
+  description?: string;
+  details?: string;
+  required?: boolean;
+}
+
+export interface LeadCaptureSectionForm {
+  action: string;
+  method?: "get" | "post";
+  fields: LeadCaptureSectionField[];
+  submitLabel: string;
+  consent?: LeadCaptureSectionConsent;
+}
+
+export interface LeadCaptureSectionScheduling {
+  calLink: string;
+  title?: string;
+}
+
+export interface LeadCaptureSectionDownloadAction {
+  label: string;
+  href: string;
+}
+
+export interface LeadCaptureSectionContent {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  form?: LeadCaptureSectionForm;
+  scheduling?: LeadCaptureSectionScheduling;
+  downloadActions?: LeadCaptureSectionDownloadAction[];
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: LeadCaptureSectionContent;
+  variant: LeadCaptureSectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "LeadCaptureSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafePattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const safeActionPattern = /^(?:https:\/\/|\/(?!\/))/i;
+const safeDestinationPattern =
+  /^(?:https?:\/\/|\/(?!\/)|mailto:|tel:)/i;
+const calLinkPattern =
+  /^(?:https:\/\/(?:www\.)?cal\.com\/)?[A-Za-z0-9._~-]+(?:\/[A-Za-z0-9._~-]+)*\/?$/i;
+const supportedVariants: LeadCaptureSectionVariant[] = [
+  "newsletter",
+  "lead-form",
+  "contact-form",
+  "demo-booking",
+  "waitlist",
+  "app-download",
+];
+const formVariants: LeadCaptureSectionVariant[] = [
+  "newsletter",
+  "lead-form",
+  "contact-form",
+  "waitlist",
+];
+const supportedFieldTypes: FieldType[] = [
+  "text",
+  "email",
+  "tel",
+  "url",
+  "textarea",
+];
+const supportedAutocompleteValues: AutocompleteValue[] = [
+  "name",
+  "given-name",
+  "family-name",
+  "email",
+  "tel",
+  "organization",
+  "url",
+  "off",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedEyebrow = content?.eyebrow?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedId || !selectorSafePattern.test(normalizedId)) {
+  throw new Error(
+    "LeadCaptureSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error(
+    "LeadCaptureSection requires a structured content object.",
+  );
+}
+if (!normalizedTitle || !normalizedDescription) {
+  throw new Error(
+    "LeadCaptureSection requires non-empty title and description values.",
+  );
+}
+if (content.eyebrow !== undefined && !normalizedEyebrow) {
+  throw new Error(
+    "LeadCaptureSection eyebrow must be non-empty when provided.",
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `LeadCaptureSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `LeadCaptureSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "LeadCaptureSection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error(
+    "LeadCaptureSection requires a non-empty componentName.",
+  );
+}
+if (
+  Astro.slots.has("form") ||
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("LeadCaptureSection does not expose public slots.");
+}
+
+const usesForm = formVariants.includes(variant);
+const usesScheduling = variant === "demo-booking";
+const usesDownloadActions = variant === "app-download";
+
+if (usesForm) {
+  if (!content.form) {
+    throw new Error(
+      "LeadCaptureSection form variants require structured form content.",
+    );
+  }
+  if (content.scheduling !== undefined || content.downloadActions !== undefined) {
+    throw new Error(
+      "LeadCaptureSection form variants reject scheduling and download content.",
+    );
+  }
+} else if (content.form !== undefined) {
+  throw new Error(
+    "LeadCaptureSection Demo Booking and App Download reject form content.",
+  );
+}
+
+if (usesScheduling) {
+  if (!content.scheduling) {
+    throw new Error(
+      "LeadCaptureSection Demo Booking requires scheduling content.",
+    );
+  }
+  if (content.downloadActions !== undefined) {
+    throw new Error(
+      "LeadCaptureSection Demo Booking rejects download content.",
+    );
+  }
+} else if (content.scheduling !== undefined) {
+  throw new Error(
+    "LeadCaptureSection scheduling content is supported only by Demo Booking.",
+  );
+}
+
+if (usesDownloadActions) {
+  if (
+    !Array.isArray(content.downloadActions) ||
+    content.downloadActions.length < 1 ||
+    content.downloadActions.length > 2
+  ) {
+    throw new Error(
+      "LeadCaptureSection App Download requires one or two download actions.",
+    );
+  }
+} else if (content.downloadActions !== undefined) {
+  throw new Error(
+    "LeadCaptureSection download content is supported only by App Download.",
+  );
+}
+
+const formLimits: Partial<
+  Record<LeadCaptureSectionVariant, { min: number; max: number }>
+> = {
+  newsletter: { min: 1, max: 1 },
+  "lead-form": { min: 2, max: 5 },
+  "contact-form": { min: 2, max: 6 },
+  waitlist: { min: 1, max: 3 },
+};
+
+const normalizedForm = usesForm
+  ? (() => {
+      const form = content.form!;
+      const action = form.action?.trim();
+      const submitLabel = form.submitLabel?.trim();
+      const method = form.method ?? "post";
+      const limits = formLimits[variant]!;
+      if (!action || !safeActionPattern.test(action)) {
+        throw new Error(
+          "LeadCaptureSection form action must be a supplied HTTPS or root-relative URL.",
+        );
+      }
+      if (!submitLabel) {
+        throw new Error(
+          "LeadCaptureSection form requires a non-empty submitLabel.",
+        );
+      }
+      if (
+        !Array.isArray(form.fields) ||
+        form.fields.length < limits.min ||
+        form.fields.length > limits.max
+      ) {
+        throw new Error(
+          `LeadCaptureSection ${variant} requires ${limits.min} to ${limits.max} fields.`,
+        );
+      }
+
+      const fieldIds = new Set<string>();
+      const fieldNames = new Set<string>();
+      const fields = form.fields.map((field, index) => {
+        const fieldId = field?.id?.trim();
+        const name = (field?.name ?? fieldId)?.trim();
+        const label = field?.label?.trim();
+        const placeholder = field?.placeholder?.trim();
+        const hint = field?.hint?.trim();
+        if (
+          !fieldId ||
+          !name ||
+          !selectorSafePattern.test(fieldId) ||
+          !selectorSafePattern.test(name)
+        ) {
+          throw new Error(
+            `LeadCaptureSection field ${index + 1} requires selector-safe id and name values.`,
+          );
+        }
+        if (fieldIds.has(fieldId) || fieldNames.has(name)) {
+          throw new Error(
+            "LeadCaptureSection form field ids and names must be unique.",
+          );
+        }
+        if (!label || !supportedFieldTypes.includes(field.type)) {
+          throw new Error(
+            `LeadCaptureSection field ${index + 1} requires a label and supported type.`,
+          );
+        }
+        if (field.placeholder !== undefined && !placeholder) {
+          throw new Error(
+            `LeadCaptureSection field ${index + 1} placeholder must be non-empty when provided.`,
+          );
+        }
+        if (field.hint !== undefined && !hint) {
+          throw new Error(
+            `LeadCaptureSection field ${index + 1} hint must be non-empty when provided.`,
+          );
+        }
+        if (
+          field.autocomplete !== undefined &&
+          !supportedAutocompleteValues.includes(field.autocomplete)
+        ) {
+          throw new Error(
+            `LeadCaptureSection field ${index + 1} received unsupported autocomplete.`,
+          );
+        }
+        fieldIds.add(fieldId);
+        fieldNames.add(name);
+        return {
+          ...field,
+          id: fieldId,
+          name,
+          label,
+          placeholder,
+          hint,
+        };
+      });
+
+      const emailFields = fields.filter((field) => field.type === "email");
+      if (emailFields.length !== 1) {
+        throw new Error(
+          "LeadCaptureSection form variants require exactly one email field.",
+        );
+      }
+      if (variant === "newsletter" && fields[0].type !== "email") {
+        throw new Error(
+          "LeadCaptureSection Newsletter requires one email field.",
+        );
+      }
+      if (
+        variant === "contact-form" &&
+        !fields.some((field) => field.type === "textarea")
+      ) {
+        throw new Error(
+          "LeadCaptureSection Contact Form requires one textarea field.",
+        );
+      }
+
+      let consent:
+        | (LeadCaptureSectionConsent & {
+            id: string;
+            name: string;
+            label: string;
+            description?: string;
+            details?: string;
+          })
+        | undefined;
+      if (form.consent) {
+        const consentId = form.consent.id?.trim();
+        const consentName = (form.consent.name ?? consentId)?.trim();
+        const consentLabel = form.consent.label?.trim();
+        const consentDescription = form.consent.description?.trim();
+        const consentDetails = form.consent.details?.trim();
+        if (
+          !consentId ||
+          !consentName ||
+          !selectorSafePattern.test(consentId) ||
+          !selectorSafePattern.test(consentName) ||
+          !consentLabel
+        ) {
+          throw new Error(
+            "LeadCaptureSection consent requires selector-safe identity and a non-empty label.",
+          );
+        }
+        if (
+          fieldIds.has(consentId) ||
+          fieldNames.has(consentName)
+        ) {
+          throw new Error(
+            "LeadCaptureSection consent identity must not duplicate a form field.",
+          );
+        }
+        if (
+          form.consent.description !== undefined &&
+          !consentDescription
+        ) {
+          throw new Error(
+            "LeadCaptureSection consent description must be non-empty when provided.",
+          );
+        }
+        if (form.consent.details !== undefined && !consentDetails) {
+          throw new Error(
+            "LeadCaptureSection consent details must be non-empty when provided.",
+          );
+        }
+        consent = {
+          ...form.consent,
+          id: consentId,
+          name: consentName,
+          label: consentLabel,
+          description: consentDescription,
+          details: consentDetails,
+        };
+      }
+
+      return {
+        action,
+        method,
+        submitLabel,
+        fields,
+        consent,
+      };
+    })()
+  : undefined;
+
+const normalizedScheduling = usesScheduling
+  ? (() => {
+      const calLink = content.scheduling!.calLink?.trim();
+      const title = content.scheduling!.title?.trim();
+      if (!calLink || !calLinkPattern.test(calLink)) {
+        throw new Error(
+          "LeadCaptureSection Demo Booking requires a valid supplied Cal.com link.",
+        );
+      }
+      if (content.scheduling!.title !== undefined && !title) {
+        throw new Error(
+          "LeadCaptureSection scheduling title must be non-empty when provided.",
+        );
+      }
+      return { calLink, title };
+    })()
+  : undefined;
+
+const normalizedDownloadActions = usesDownloadActions
+  ? (() => {
+      const destinations = new Set<string>();
+      return content.downloadActions!.map((action, index) => {
+        const label = action?.label?.trim();
+        const href = action?.href?.trim();
+        if (!label || !href || !safeDestinationPattern.test(href)) {
+          throw new Error(
+            `LeadCaptureSection download action ${index + 1} requires a non-empty label and safe supplied href.`,
+          );
+        }
+        if (destinations.has(href)) {
+          throw new Error(
+            `LeadCaptureSection contains duplicate download destination "${href}".`,
+          );
+        }
+        destinations.add(href);
+        return { label, href };
+      });
+    })()
+  : undefined;
+
+const Heading = `h${headingLevel}` as "h2" | "h3";
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "lead-capture-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="conversion"
+  data-section-type="lead-capture"
+  data-section-variant={variant}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div class="l-container lead-capture-section__container" data-container="main">
+    <div class="lead-capture-section__content">
+      <header class="lead-capture-section__header">
+        {normalizedEyebrow && <Eyebrow text={normalizedEyebrow} />}
+        <Heading>{normalizedTitle}</Heading>
+        <p>{normalizedDescription}</p>
+      </header>
+
+      <div class="lead-capture-section__body">
+        {
+          normalizedForm && (
+            <Form
+              action={normalizedForm.action}
+              method={normalizedForm.method}
+              aria-label={normalizedAriaLabel ?? normalizedTitle}
+              componentName={`${normalizedComponentName}.Form`}
+            >
+              {normalizedForm.fields.map((field) => {
+                const fieldId = `${normalizedId}-${field.id}`;
+                return (
+                  <FormField
+                    for={fieldId}
+                    label={field.label}
+                    hint={field.hint}
+                    componentName={`${normalizedComponentName}.FormField`}
+                  >
+                    <Input
+                      id={fieldId}
+                      name={field.name}
+                      type={field.type === "textarea" ? undefined : field.type}
+                      multiline={field.type === "textarea"}
+                      placeholder={field.placeholder}
+                      autocomplete={field.autocomplete}
+                      required={field.required}
+                      componentName={`${normalizedComponentName}.Input`}
+                    />
+                  </FormField>
+                );
+              })}
+              {normalizedForm.consent && (
+                <ConsentField
+                  id={`${normalizedId}-${normalizedForm.consent.id}`}
+                  name={normalizedForm.consent.name}
+                  label={normalizedForm.consent.label}
+                  description={normalizedForm.consent.description}
+                  details={normalizedForm.consent.details}
+                  required={normalizedForm.consent.required}
+                  componentName={`${normalizedComponentName}.ConsentField`}
+                />
+              )}
+              <Button type="submit" full componentName={`${normalizedComponentName}.Submit`}>
+                {normalizedForm.submitLabel}
+              </Button>
+            </Form>
+          )
+        }
+
+        {
+          normalizedScheduling && (
+            <CalComEmbed
+              calLink={normalizedScheduling.calLink}
+              title={normalizedScheduling.title ?? normalizedTitle}
+              componentName={`${normalizedComponentName}.CalComEmbed`}
+            />
+          )
+        }
+
+        {
+          normalizedDownloadActions && (
+            <ButtonGroup data-lead-capture-actions>
+              {normalizedDownloadActions.map((action, index) => (
+                <Button
+                  href={action.href}
+                  variant={index === 0 ? "primary" : "secondary"}
+                >
+                  {action.label}
+                </Button>
+              ))}
+            </ButtonGroup>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lead-capture-section,
+  .lead-capture-section__container,
+  .lead-capture-section__content,
+  .lead-capture-section__header,
+  .lead-capture-section__body {
+    min-width: 0;
+  }
+
+  .lead-capture-section__content,
+  .lead-capture-section__header {
+    display: grid;
+  }
+
+  .lead-capture-section__content {
+    grid-template-columns: minmax(0, 0.82fr) minmax(20rem, 1fr);
+    align-items: start;
+    gap: var(--gap-xlarge);
+  }
+
+  .lead-capture-section__header {
+    gap: var(--gap-medium);
+  }
+
+  .lead-capture-section__header :is(h2, h3),
+  .lead-capture-section__header p {
+    margin: 0;
+  }
+
+  .lead-capture-section__header p {
+    color: var(--color-text-secondary);
+  }
+
+  .lead-capture-section__body {
+    width: 100%;
+  }
+
+  .lead-capture-section__body :global(.form) {
+    padding: var(--component-padding-large);
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+  }
+
+  .lead-capture-section__body :global(.cal-com-embed) {
+    width: 100%;
+  }
+
+  .lead-capture-section[data-section-variant="newsletter"]
+    .lead-capture-section__content,
+  .lead-capture-section[data-section-variant="waitlist"]
+    .lead-capture-section__content,
+  .lead-capture-section[data-section-variant="app-download"]
+    .lead-capture-section__content {
+    grid-template-columns: minmax(0, 42rem);
+    justify-content: center;
+    text-align: center;
+  }
+
+  .lead-capture-section[data-section-variant="newsletter"]
+    .lead-capture-section__header,
+  .lead-capture-section[data-section-variant="waitlist"]
+    .lead-capture-section__header,
+  .lead-capture-section[data-section-variant="app-download"]
+    .lead-capture-section__header {
+    justify-items: center;
+  }
+
+  .lead-capture-section[data-section-variant="app-download"]
+    :global(.button-group) {
+    justify-content: center;
+  }
+
+  @media (width < 64rem) {
+    .lead-capture-section__content {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (width < 40rem) {
+    .lead-capture-section__body :global(.form) {
+      padding: var(--component-padding-medium);
+    }
+
+    .lead-capture-section[data-section-variant="app-download"]
+      :global(.button-group) {
+      align-items: stretch;
+    }
+
+    .lead-capture-section[data-section-variant="app-download"]
+      :global(.button) {
+      width: 100%;
+    }
+  }
+</style>

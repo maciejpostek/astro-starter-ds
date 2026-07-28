@@ -1,0 +1,161 @@
+---
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+import {
+  resolveTypographyTokenValue,
+  type SemanticTypographyRow,
+} from "../../data/design-system/typographyTokens";
+
+interface Props {
+  rows: SemanticTypographyRow[];
+}
+
+const { rows } = Astro.props as Props;
+
+const getProperties = (row: SemanticTypographyRow) => [
+  { name: "Name", value: row.name, resolvedValue: "" },
+  { name: "Class", value: `.${row.className}`, resolvedValue: "CSS selector", copy: true },
+  { name: "Font family", value: row.family, resolvedValue: resolveTypographyTokenValue(row.family) },
+  { name: "Size", value: row.size, resolvedValue: resolveTypographyTokenValue(row.size) },
+  { name: "Weight", value: row.weight, resolvedValue: resolveTypographyTokenValue(row.weight) },
+  { name: "Line height", value: row.lineHeight, resolvedValue: resolveTypographyTokenValue(row.lineHeight) },
+  { name: "Letter spacing", value: row.letterSpacing, resolvedValue: resolveTypographyTokenValue(row.letterSpacing) },
+  { name: "Font style", value: row.fontStyle, resolvedValue: resolveTypographyTokenValue(row.fontStyle) },
+  { name: "Transform", value: row.transform, resolvedValue: resolveTypographyTokenValue(row.transform) },
+  { name: "Text wrap", value: row.textWrap, resolvedValue: resolveTypographyTokenValue(row.textWrap) },
+  { name: "Overflow wrap", value: row.overflowWrap, resolvedValue: resolveTypographyTokenValue(row.overflowWrap) },
+  { name: "Word break", value: row.wordBreak, resolvedValue: resolveTypographyTokenValue(row.wordBreak) },
+  { name: "White space", value: row.whiteSpace, resolvedValue: resolveTypographyTokenValue(row.whiteSpace) },
+];
+---
+
+<section
+  class="ds-semantic-typography-block"
+  data-component-name="DsSemanticTypographyBlock"
+>
+  {
+    rows.map((row) => {
+      const properties = getProperties(row);
+
+      return (
+        <article class="ds-semantic-typography-profile" data-component-name="DsSemanticTypographyProfile">
+          <DsTableFrame
+            label={`${row.name} typography profile`}
+            minWidth="100%"
+            columns="minmax(12rem, 0.2fr) minmax(20rem, 0.38fr) minmax(20rem, 0.42fr)"
+          >
+            {properties.map((property) => (
+              <DsTableRow class={property.name === "Name" ? "ds-semantic-typography-profile__name-row" : undefined}>
+                <DsTableCell
+                  class={property.name === "Name" ? "ds-semantic-typography-profile__name-label" : undefined}
+                  role="rowheader"
+                  variant="header"
+                >
+                  <span>{property.name}</span>
+                </DsTableCell>
+                {property.copy ? (
+                  <DsTableCopyCell role="cell" value={property.value} />
+                ) : (
+                  <DsTableCell
+                    class={property.name === "Name" ? "ds-semantic-typography-profile__name-value" : undefined}
+                    role="cell"
+                    tone="secondary"
+                  >
+                    <code>{property.value}</code>
+                  </DsTableCell>
+                )}
+                <DsTableCell
+                  class={property.name === "Name" ? "ds-semantic-typography-profile__name-value" : undefined}
+                  role="cell"
+                  tone="secondary"
+                >
+                  <code>{property.resolvedValue}</code>
+                </DsTableCell>
+              </DsTableRow>
+            ))}
+
+            <DsTableRow variant="header">
+              <DsTableCell
+                gridColumn="1 / -1"
+                role="columnheader"
+                variant="header"
+              >
+                Sample
+              </DsTableCell>
+            </DsTableRow>
+
+            <DsTableRow>
+              <DsTableCell
+                class="ds-semantic-typography-profile__sample-cell"
+                gridColumn="1 / -1"
+                role="cell"
+              >
+                <span
+                  class:list={["ds-semantic-typography-profile__sample", row.className]}
+                  style={`
+                    font-family: var(--text-style-${row.className}-font-family);
+                    font-size: var(--text-style-${row.className}-font-size);
+                    font-weight: var(--text-style-${row.className}-font-weight);
+                    font-style: var(--text-style-${row.className}-font-style);
+                    line-height: var(--text-style-${row.className}-line-height);
+                    letter-spacing: var(--text-style-${row.className}-letter-spacing);
+                    text-transform: var(--text-style-${row.className}-text-transform);
+                    text-wrap: var(--text-style-${row.className}-text-wrap);
+                    overflow-wrap: var(--text-style-${row.className}-overflow-wrap);
+                    word-break: var(--text-style-${row.className}-word-break);
+                    white-space: var(--text-style-${row.className}-white-space);
+                  `}
+                >
+                  {row.sample}
+                </span>
+              </DsTableCell>
+            </DsTableRow>
+          </DsTableFrame>
+        </article>
+      );
+    })
+  }
+</section>
+
+<style>
+  .ds-semantic-typography-block {
+    display: grid;
+    gap: var(--gap-xlarge);
+  }
+
+  :global(.ds-semantic-typography-profile__name-row .ds-table-cell) {
+    background: var(--color-background-accent);
+    color: var(--color-text-on-accent);
+  }
+
+  :global(.ds-semantic-typography-profile__name-row .ds-table-cell code),
+  :global(.ds-semantic-typography-profile__name-row .ds-table-cell span) {
+    color: inherit;
+  }
+
+  :global(.ds-semantic-typography-profile__name-value.ds-table-cell code) {
+    color: var(--color-neutral-0) !important;
+  }
+
+  :global(.ds-semantic-typography-profile__sample-cell.ds-table-cell) {
+    overflow: visible;
+    align-items: flex-start;
+    padding: var(--size-32) !important;
+  }
+
+  :global(.ds-table-cell .ds-semantic-typography-profile__sample) {
+    display: block;
+    width: 100%;
+    overflow: visible;
+    color: var(--color-text-primary);
+    text-overflow: clip;
+  }
+
+  @media (max-width: 64rem) {
+    :global(.ds-semantic-typography-profile__sample-cell.ds-table-cell) {
+      padding: var(--size-32) !important;
+    }
+  }
+</style>

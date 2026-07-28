@@ -1,0 +1,81 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.creative-creation-extension
+# Workflow: workflow.create-missing-component
+# Context cost: high
+direction: right
+
+title: "Creative Creation and Extension Mode" {
+  shape: text
+  near: top-center
+  style.font-size: 28
+  style.bold: true
+}
+
+step_01: "1. Receive the new-component prompt\ninput" {
+  shape: parallelogram
+  style.fill: "#0891b2"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_02: "2. Route framework, component, family, and mapping rules\nroute\nAGENTIC-RULES.json, AGENTIC-RULES.md, DESIGN-SYSTEM-FRAMEWORK.md, 00-framework.md, 05-components.md, <family rule>, <Figma family adapter>" {
+  shape: hexagon
+  style.fill: "#7c3aed"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_01 -> step_02: "next"
+
+step_03: "3. Prove reuse gap and evaluate brand sensitivity\ngate" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_02 -> step_03: "next · Creation is deferred while the architecture freeze is active; brand-sensitive creation also requires an approved contract."
+
+step_04: "4. Implement source, tokens only if justified, registry, docs, roadmap, and adapter\nwrite\n<Component>.astro, componentArchitecture.json, <documentation route>, design-system-roadmap.json, <Figma family adapter>" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_03 -> step_04: "next"
+
+step_05: "5. Validate behavior and responsive states in the browser\nvalidate" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_04 -> step_05: "next"
+
+step_06: "6. Run only affected architecture, family, foundation, roadmap, and build checks\nvalidate" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_05 -> step_06: "next"
+
+step_07: "7. Report component acceptance and remaining parity work\noutput" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+step_06 -> step_07: "next"

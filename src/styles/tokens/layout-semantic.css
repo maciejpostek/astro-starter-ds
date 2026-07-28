@@ -1,0 +1,52 @@
+/*
+ * Global layout semantics.
+ */
+
+:root {
+  /* Site padding
+   * Fluid horizontal page padding between mobile and desktop limits.
+   */
+  --site-padding-inline:
+    clamp(
+      var(--site-padding-inline-min),
+      0.5714rem + 2.1429vw,
+      var(--site-padding-inline-max)
+    );
+
+  /* Containers
+   * Main application canvas, reading boundary and full-width boundary.
+   */
+  --container-main: calc(100% - 2 * var(--site-padding-inline));
+  --container-small:
+    min(
+      calc(100% - 2 * var(--site-padding-inline)),
+      var(--container-small-max)
+    );
+  --container-full: 100%;
+
+  /* Composition grid
+   * Shared column count, gap and auto-fit minimum width presets.
+   */
+  --site-grid-columns: 12;
+  --site-grid-column-gap:
+    clamp(var(--size-16), 0.9286rem + 0.3571vw, var(--size-20));
+  --grid-auto-min-width-small: 14rem;
+  --grid-auto-min-width-card: 18rem;
+  --grid-auto-min-width-panel: 24rem;
+  --grid-auto-min-width-wide: 32rem;
+  --grid-auto-min-width: var(--grid-auto-min-width-card);
+}
+
+@media (width < 64rem) {
+  :root {
+    /* Tablet composition grid. */
+    --site-grid-columns: 8;
+  }
+}
+
+@media (width < 48rem) {
+  :root {
+    /* Mobile composition grid. */
+    --site-grid-columns: 4;
+  }
+}

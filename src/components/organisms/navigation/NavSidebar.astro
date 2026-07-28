@@ -1,0 +1,386 @@
+---
+import NavItemLink from "../../molecules/navigation/NavItemLink.astro";
+import Avatar from "../../atoms/media/Avatar.astro";
+import { Grid3x3 as Grid, Moon, PanelsTopLeft as DesignSystem, Sun } from "@lucide/astro";
+import { isCurrentPath, publicNavigation } from "../../../data/navigation";
+
+interface Props {
+  activePath: string;
+  preview?: boolean;
+  brandLabel?: string;
+  homeHref?: string;
+  profileName?: string;
+  profileLabel?: string;
+  profileDescription?: string;
+  profileHref?: string;
+  designSystemLabel?: string;
+  designSystemHref?: string;
+}
+
+const {
+  activePath,
+  preview = false,
+  brandLabel = "Home",
+  homeHref = "/",
+  profileName = "Project",
+  profileLabel = "Project context",
+  profileDescription = "Ready to configure",
+  profileHref = "/",
+  designSystemLabel = "Design System",
+  designSystemHref = "/design-system"
+} = Astro.props;
+
+const resolvedActivePath = activePath.trim();
+const resolvedBrandLabel = brandLabel.trim();
+const resolvedHomeHref = homeHref.trim();
+const resolvedProfileName = profileName.trim();
+const resolvedProfileLabel = profileLabel.trim();
+const resolvedProfileDescription = profileDescription.trim();
+const resolvedProfileHref = profileHref.trim();
+const resolvedDesignSystemLabel = designSystemLabel.trim();
+const resolvedDesignSystemHref = designSystemHref.trim();
+
+if (!resolvedActivePath.startsWith("/")) {
+  throw new Error("NavSidebar requires activePath to be an absolute pathname.");
+}
+
+for (const [name, value] of [
+  ["brandLabel", resolvedBrandLabel],
+  ["profileName", resolvedProfileName],
+  ["profileLabel", resolvedProfileLabel],
+  ["profileDescription", resolvedProfileDescription],
+  ["designSystemLabel", resolvedDesignSystemLabel]
+]) {
+  if (!value) throw new Error(`NavSidebar requires a non-empty ${name}.`);
+}
+
+for (const [name, value] of [
+  ["homeHref", resolvedHomeHref],
+  ["profileHref", resolvedProfileHref],
+  ["designSystemHref", resolvedDesignSystemHref]
+]) {
+  if (!value || value === "#") {
+    throw new Error(`NavSidebar requires a real non-placeholder ${name}.`);
+  }
+}
+---
+
+<aside
+  class:list={["sidebar", preview && "sidebar--preview"]}
+  data-component-name="NavSidebar"
+  data-component-family="navigation"
+  data-component-size="large"
+  data-navigation-state="default"
+  data-grid-state="visible"
+  data-theme-state="light"
+  data-nav-sidebar={preview ? undefined : true}
+>
+  <div class="sidebar__brand-row">
+    <a class="brand" href={resolvedHomeHref} aria-label={resolvedBrandLabel}>
+      <span class="brand__mark" aria-hidden="true">
+        <i></i>
+        <i></i>
+        <i></i>
+      </span>
+    </a>
+  </div>
+
+  <nav class="sidebar__nav" aria-label="Public navigation">
+    {
+      publicNavigation.map((item) => (
+        <NavItemLink
+          href={item.href}
+          label={item.label}
+          icon={item.icon}
+          isCurrent={isCurrentPath(resolvedActivePath, item.href)}
+        />
+      ))
+    }
+  </nav>
+
+  <div class="sidebar-profile">
+    <a class="sidebar-profile__link" href={resolvedProfileHref} aria-label={resolvedProfileLabel} data-navigation-part="profile">
+      <Avatar name={resolvedProfileName} size="large" />
+      <span class="sidebar-profile__copy">
+        <strong>{resolvedProfileLabel}</strong>
+        <small>{resolvedProfileDescription}</small>
+      </span>
+    </a>
+  </div>
+
+  <div class="sidebar-design-system" aria-label="Design system">
+    <NavItemLink
+      href={resolvedDesignSystemHref}
+      label={resolvedDesignSystemLabel}
+      icon={DesignSystem}
+      isCurrent={isCurrentPath(resolvedActivePath, resolvedDesignSystemHref)}
+    />
+  </div>
+
+  <div class="sidebar-utilities" aria-label="Display controls">
+    <button
+      class="sidebar-control"
+      data-component-name="SidebarControl.Grid"
+      type="button"
+      data-grid-toggle={preview ? undefined : true}
+      data-nav-tooltip={preview ? undefined : true}
+      data-nav-tooltip-label={preview ? undefined : "Guides on"}
+      aria-label="Hide composition grid"
+      aria-pressed="true"
+      disabled={preview}
+    >
+      <span class="sidebar-control__icon" aria-hidden="true">
+        <Grid size="var(--size-20)" />
+      </span>
+      <span class="sidebar-control__label">
+        <span class="sidebar-control__state sidebar-control__state--grid-on">Guides on</span>
+        <span class="sidebar-control__state sidebar-control__state--grid-off">Guides off</span>
+      </span>
+    </button>
+    <button
+      class="sidebar-control"
+      data-component-name="SidebarControl.Theme"
+      type="button"
+      data-theme-toggle={preview ? undefined : true}
+      data-nav-tooltip={preview ? undefined : true}
+      data-nav-tooltip-label={preview ? undefined : "Mode light"}
+      aria-label="Switch color mode"
+      aria-pressed="false"
+      disabled={preview}
+    >
+      <span class="sidebar-control__icon" aria-hidden="true">
+        <Moon class="theme-icon theme-icon--moon" size="var(--size-20)" />
+        <Sun class="theme-icon theme-icon--sun" size="var(--size-20)" />
+      </span>
+      <span class="sidebar-control__label">
+        <span class="sidebar-control__state sidebar-control__state--theme-light">Mode light</span>
+        <span class="sidebar-control__state sidebar-control__state--theme-dark">Mode dark</span>
+      </span>
+    </button>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    display: flex;
+    width: var(--app-sidebar-width);
+    min-height: 100vh;
+    flex-direction: column;
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+    overflow: visible;
+  }
+
+  .sidebar--preview {
+    position: relative;
+    inset: auto;
+    min-height: calc(var(--sidebar-icon-column) * 9);
+  }
+
+  .sidebar__brand-row {
+    position: relative;
+    display: block;
+    height: var(--sidebar-icon-column);
+    border: 0;
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    background: transparent;
+  }
+
+  .sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+  }
+
+  .sidebar-profile {
+    margin-top: auto;
+    border-top: var(--border-width-default) solid var(--color-border-subtle);
+    padding: 0;
+    transition: background var(--motion-transition);
+  }
+
+  .sidebar-profile:hover {
+    background: var(--color-background-surface);
+  }
+
+  .sidebar-profile__link {
+    position: relative;
+    display: grid;
+    width: var(--sidebar-icon-column);
+    min-height: var(--sidebar-icon-column);
+    grid-template-columns: var(--sidebar-icon-column);
+    align-items: center;
+    color: var(--color-text-primary);
+  }
+
+  .sidebar-profile__link :global(.avatar) {
+    --component-min-height: var(--sidebar-icon-column);
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .sidebar-profile__copy {
+    position: absolute;
+    inset: 0 auto auto 100%;
+    display: flex;
+    width: max-content;
+    max-width: calc(100vw - var(--app-sidebar-width) - var(--size-24));
+    min-height: var(--sidebar-icon-column);
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-left: 0;
+    background: var(--color-background-canvas);
+    padding: 0 var(--sidebar-row-padding);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(calc(var(--size-12) * -1));
+    transition: opacity var(--motion-transition), transform var(--motion-transition);
+    visibility: hidden;
+    z-index: 2;
+  }
+
+  .sidebar-profile__link:hover .sidebar-profile__copy,
+  .sidebar-profile__link:focus-visible .sidebar-profile__copy {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .sidebar-profile__copy strong,
+  .sidebar-profile__copy small {
+    display: block;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .sidebar-profile__copy strong {
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  .sidebar-profile__copy small {
+    margin-top: calc(var(--space-small) / 2);
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-tiny);
+  }
+
+  .sidebar-design-system {
+    border-top: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .sidebar-design-system :global(.nav-item-link) {
+    --nav-item-link-border-bottom: 0;
+  }
+
+  .sidebar-utilities {
+    display: flex;
+    flex-direction: column;
+    border-top: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .sidebar-control {
+    position: relative;
+    display: grid;
+    width: 100%;
+    min-height: var(--sidebar-icon-column);
+    height: var(--sidebar-icon-column);
+    flex: 0 0 var(--sidebar-icon-column);
+    grid-template-columns: var(--sidebar-icon-column);
+    align-items: center;
+    border: 0;
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition:
+      color var(--motion-transition),
+      background var(--motion-transition);
+  }
+
+  .sidebar-control:hover {
+    color: var(--color-text-primary);
+    background: var(--color-background-surface);
+  }
+
+  .sidebar-control::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--size-4);
+    background: var(--color-background-accent);
+    content: "";
+    opacity: 0;
+  }
+
+  :global(html[data-grid="visible"]) [data-grid-toggle].sidebar-control {
+    color: var(--color-text-primary);
+    background: var(--color-background-subtle);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  :global(html[data-grid="visible"]) [data-grid-toggle].sidebar-control .sidebar-control__icon {
+    border-right-color:
+      color-mix(
+        in oklab,
+        var(--color-border-default) 72%,
+        var(--color-background-canvas)
+      );
+  }
+
+  :global(html[data-grid="visible"]) [data-grid-toggle].sidebar-control::before {
+    opacity: 1;
+  }
+
+  :global(html[data-grid="hidden"]) [data-grid-toggle].sidebar-control {
+    color: var(--color-text-tertiary);
+  }
+
+  .sidebar-control__icon {
+    display: inline-flex;
+    width: var(--sidebar-icon-column);
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+    color: currentColor;
+  }
+
+  .sidebar-control__label {
+    display: none;
+  }
+
+  .sidebar-control__state {
+    display: none;
+  }
+
+  :global(html[data-grid="visible"]) .sidebar-control__state--grid-on,
+  :global(html[data-grid="hidden"]) .sidebar-control__state--grid-off,
+  :global(html[data-theme="light"]) .sidebar-control__state--theme-light,
+  :global(html[data-theme="dark"]) .sidebar-control__state--theme-dark {
+    display: inline;
+  }
+
+  .sidebar-control__icon :global(svg.theme-icon.theme-icon--sun) {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) .sidebar-control__icon :global(svg.theme-icon.theme-icon--moon) {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) .sidebar-control__icon :global(svg.theme-icon.theme-icon--sun) {
+    display: block;
+  }
+
+  @media (width < 64rem) {
+    .sidebar:not(.sidebar--preview) {
+      display: none;
+    }
+  }
+</style>

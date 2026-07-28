@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title description">
+  <title id="title">Abstract design system placeholder</title>
+  <desc id="description">A neutral modular grid with one accent panel.</desc>
+  <rect width="1200" height="800" fill="#f5f5f5"/>
+  <g fill="#e5e5e5">
+    <rect x="80" y="80" width="400" height="160"/>
+    <rect x="500" y="80" width="620" height="160"/>
+    <rect x="80" y="260" width="260" height="220"/>
+    <rect x="360" y="260" width="760" height="220"/>
+    <rect x="80" y="500" width="700" height="220"/>
+  </g>
+  <rect x="800" y="500" width="320" height="220" fill="#2563eb"/>
+</svg>

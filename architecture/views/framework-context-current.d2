@@ -1,0 +1,181 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.framework-context-current
+direction: right
+
+title: "Framework Context (L0) — Current" {
+  shape: text
+  near: top-center
+  style.font-size: 28
+  style.bold: true
+}
+
+actor_user: "User\nactor · active · current" {
+  shape: person
+  style.fill: "#2563eb"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+actor_ai_agent: "AI Agent\nactor · active · current" {
+  shape: person
+  style.fill: "#2563eb"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+prompt_user_request: "User Prompt\nprompt · active · current" {
+  shape: parallelogram
+  style.fill: "#0284c7"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+router_agentic_rules: "Agentic Rules Router\nrouter · active · current" {
+  shape: hexagon
+  style.fill: "#7c3aed"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_scope: "Scope and Mode Gate\ndecision-gate · documented · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_reuse: "Existing Asset Reuse Gate\ndecision-gate · active · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_lookup: "Focused Architecture and Component Lookup\nprocess · partially-manual · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_component_registry: "Component Registry\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_astro_components: "Astro Component Source\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_css_variables: "CSS Variable Foundations\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_roadmap: "Design System Roadmap\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_brand_contract: "Approved Brand Expression Contract\nsource-of-truth · not-configured · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_figma_adapters: "Figma2Astro Mapping Adapters\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+artifact_documentation: "Design System Documentation\nartifact · active · current" {
+  shape: page
+  style.fill: "#0d9488"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+external_browser: "Browser Runtime\nexternal-system · available · current" {
+  shape: cloud
+  style.fill: "#475569"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+external_figma: "Figma Editable Representation\nexternal-system · external · current" {
+  shape: cloud
+  style.fill: "#475569"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+validator_agentic_rules: "Agentic Rules Audit\nvalidator · active · current" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_astro: "Accepted Astro Output\noutput · active · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_figma: "Accepted Figma Representation\noutput · external · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_terminal: "Terminal Result and Handoff\noutput · active · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+actor_user -> prompt_user_request: "creates"
+prompt_user_request -> router_agentic_rules: "routes-to"
+router_agentic_rules -> gate_scope: "selects"
+gate_reuse -> process_lookup: "routes-to"
+process_lookup -> source_component_registry: "reads"
+process_lookup -> source_astro_components: "reads"
+source_astro_components -> source_figma_adapters: "maps-to"
+source_component_registry -> external_figma: "maps-to"
+validator_agentic_rules -> router_agentic_rules: "validates"

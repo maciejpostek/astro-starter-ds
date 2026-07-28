@@ -1,0 +1,31 @@
+/*
+ * Design system layout foundations.
+ * Media query literals mirror the custom properties because CSS custom
+ * properties cannot be used directly in media query conditions.
+ */
+
+:root {
+  /* Fluid range
+   * Viewport limits used when deriving responsive layout values.
+   */
+  --fluid-viewport-min: 20rem;
+  --fluid-viewport-max: 90rem;
+
+  /* Breakpoints
+   * Reference values mirrored by literal media query conditions.
+   */
+  --breakpoint-medium: 64rem;
+  --breakpoint-small: 48rem;
+
+  /* Site padding limits
+   * Minimum and maximum horizontal distance from viewport edges.
+   */
+  --site-padding-inline-min: var(--size-16);
+  --site-padding-inline-max: var(--size-40);
+
+  /* Container limits
+   * Reading content can use the smaller semantic container when a local
+   * line-length limit is needed.
+   */
+  --container-small-max: 50rem;
+}

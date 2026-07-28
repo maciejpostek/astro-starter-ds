@@ -1,0 +1,261 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Carousel from "./Carousel.astro";
+import MediaRatio from "../../atoms/media/MediaRatio.astro";
+import type { MediaRatioValue } from "../../atoms/media/types";
+
+export type MediaGalleryVariant = "grid" | "carousel";
+
+export interface MediaGalleryItem {
+  id: string;
+  src: string;
+  alt: string;
+  title: string;
+  caption?: string;
+}
+
+type Props = {
+  id: string;
+  label: string;
+  items: MediaGalleryItem[];
+  variant?: MediaGalleryVariant;
+  ratio?: MediaRatioValue;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label" | "aria-labelledby">;
+
+const {
+  id,
+  label,
+  items,
+  variant = "grid",
+  ratio = "4:3",
+  headingLevel = 2,
+  componentName = "MediaGallery",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const supportedVariants: MediaGalleryVariant[] = ["grid", "carousel"];
+const normalizedId = id.trim();
+const normalizedLabel = label.trim();
+const normalizedComponentName = componentName.trim();
+
+if (!normalizedId) {
+  throw new Error("MediaGallery requires a non-empty id.");
+}
+if (!normalizedLabel) {
+  throw new Error(`MediaGallery "${normalizedId}" requires a non-empty label.`);
+}
+if (!normalizedComponentName) {
+  throw new Error(
+    `MediaGallery "${normalizedId}" requires a non-empty componentName.`,
+  );
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `MediaGallery "${normalizedId}" received unsupported variant "${String(variant)}".`,
+  );
+}
+if (items.length < 2) {
+  throw new Error(
+    `MediaGallery "${normalizedId}" requires at least two items; use MediaRatio for one item.`,
+  );
+}
+
+const itemIds = new Set<string>();
+const normalizedItems = items.map((item, index) => {
+  const itemNumber = index + 1;
+  const itemId = item.id.trim();
+  const src = item.src.trim();
+  const title = item.title.trim();
+
+  if (!itemId) {
+    throw new Error(
+      `MediaGallery "${normalizedId}" item ${itemNumber} requires an id.`,
+    );
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(
+      `MediaGallery "${normalizedId}" contains duplicate item id "${itemId}".`,
+    );
+  }
+  itemIds.add(itemId);
+  if (!src) {
+    throw new Error(
+      `MediaGallery "${normalizedId}" item "${itemId}" requires a source.`,
+    );
+  }
+  if (!title) {
+    throw new Error(
+      `MediaGallery "${normalizedId}" item "${itemId}" requires a title.`,
+    );
+  }
+  if (typeof item.alt !== "string") {
+    throw new Error(
+      `MediaGallery "${normalizedId}" item "${itemId}" requires explicit alt text, including alt="", for decorative media.`,
+    );
+  }
+  if (item.caption !== undefined && !item.caption.trim()) {
+    throw new Error(
+      `MediaGallery "${normalizedId}" item "${itemId}" has an empty caption.`,
+    );
+  }
+
+  return {
+    id: itemId,
+    src,
+    alt: item.alt,
+    title,
+    caption: item.caption?.trim(),
+  };
+});
+
+const Heading = `h${headingLevel}` as
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6";
+const ItemHeading = `h${Math.min(6, headingLevel + 1)}` as
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6";
+const carouselItems = normalizedItems.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.caption,
+  image: item.src,
+  alt: item.alt,
+}));
+---
+
+{
+  variant === "carousel" ? (
+    <Carousel
+      id={normalizedId}
+      label={normalizedLabel}
+      items={carouselItems}
+      variant="single"
+      ratio={ratio}
+      headingLevel={headingLevel}
+      componentName={normalizedComponentName}
+      class={className}
+      data-media-gallery
+      data-gallery-variant="carousel"
+      data-gallery-ratio={ratio}
+      {...attributes}
+    />
+  ) : (
+    <section
+      id={normalizedId}
+      class:list={["media-gallery", className]}
+      aria-labelledby={`${normalizedId}-title`}
+      data-component-name={normalizedComponentName}
+      data-component-family="media"
+      data-media-gallery
+      data-gallery-variant="grid"
+      data-gallery-ratio={ratio}
+      data-preview-target
+      {...attributes}
+    >
+      <Heading id={`${normalizedId}-title`}>{normalizedLabel}</Heading>
+      <ul class="media-gallery__grid" role="list">
+        {normalizedItems.map((item) => (
+          <li>
+            <figure class="media-gallery__item">
+              <MediaRatio ratio={ratio}>
+                <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+              </MediaRatio>
+              <figcaption class="media-gallery__caption">
+                <ItemHeading>{item.title}</ItemHeading>
+                {item.caption && <p>{item.caption}</p>}
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .media-gallery {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-large);
+  }
+
+  .media-gallery > :is(h2, h3, h4, h5, h6),
+  .media-gallery__caption :is(h3, h4, h5, h6),
+  .media-gallery__caption p,
+  .media-gallery__item {
+    margin: 0;
+  }
+
+  .media-gallery > :is(h2, h3, h4, h5, h6) {
+    font-family: var(--text-style-heading-h5-font-family);
+    font-size: var(--text-style-heading-h5-font-size);
+    font-weight: var(--text-style-heading-h5-font-weight);
+    line-height: var(--text-style-heading-h5-line-height);
+    letter-spacing: var(--text-style-heading-h5-letter-spacing);
+  }
+
+  .media-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap-large);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .media-gallery__grid > li,
+  .media-gallery__item {
+    min-width: 0;
+  }
+
+  .media-gallery__item {
+    display: grid;
+    height: 100%;
+    align-content: start;
+    gap: var(--gap-regular);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-medium);
+    background: var(--color-background-surface);
+  }
+
+  .media-gallery__caption {
+    display: grid;
+    gap: var(--gap-small);
+  }
+
+  .media-gallery__caption :is(h3, h4, h5, h6) {
+    font-family: var(--text-style-heading-h6-font-family);
+    font-size: var(--text-style-heading-h6-font-size);
+    font-weight: var(--text-style-heading-h6-font-weight);
+    line-height: var(--text-style-heading-h6-line-height);
+    letter-spacing: var(--text-style-heading-h6-letter-spacing);
+  }
+
+  .media-gallery__caption p {
+    color: var(--color-text-secondary);
+    font-family: var(--text-style-body-small-font-family);
+    font-size: var(--text-style-body-small-font-size);
+    line-height: var(--text-style-body-small-line-height);
+  }
+
+  @media (width < 64rem) {
+    .media-gallery__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width < 48rem) {
+    .media-gallery__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

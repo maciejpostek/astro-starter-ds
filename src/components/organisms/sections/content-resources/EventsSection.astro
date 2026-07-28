@@ -1,0 +1,363 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { MediaRatioValue } from "../../../atoms/media/types";
+import ResourceCard from "../../../molecules/cards/ResourceCard.astro";
+import type { ResourceCardHeadingLevel } from "../../../molecules/cards/ResourceCard.astro";
+import ContentBlock from "../../../molecules/content/ContentBlock.astro";
+import Carousel from "../../media/Carousel.astro";
+import type { CarouselItem } from "../../media/Carousel.astro";
+
+export type EventsSectionVariant = "webinars" | "events" | "podcast";
+
+export interface EventsSectionMedia {
+  src: string;
+  alt: string;
+}
+
+export interface EventsSectionItem {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  metadata: string;
+  actionLabel?: string;
+  visualLabel?: string;
+  media?: EventsSectionMedia;
+}
+
+export interface EventsSectionContent {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  collectionLabel?: string;
+  visualRatio?: MediaRatioValue;
+  items: EventsSectionItem[];
+}
+
+type HeadingLevel = 2 | 3;
+
+type Props = {
+  id: string;
+  content: EventsSectionContent;
+  variant: EventsSectionVariant;
+  headingLevel?: HeadingLevel;
+  ariaLabel?: string;
+  componentName?: string;
+  class?: string;
+} & Omit<HTMLAttributes<"section">, "id" | "class" | "aria-label">;
+
+const {
+  id,
+  content,
+  variant,
+  headingLevel = 2,
+  ariaLabel,
+  componentName = "EventsSection",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const selectorSafePattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const safeHrefPattern = /^(?:https?:\/\/|\/(?!\/))/i;
+const supportedVariants: EventsSectionVariant[] = [
+  "webinars",
+  "events",
+  "podcast",
+];
+const supportedHeadingLevels: HeadingLevel[] = [2, 3];
+const itemLimits: Record<
+  EventsSectionVariant,
+  { min: number; max: number }
+> = {
+  webinars: { min: 2, max: 12 },
+  events: { min: 2, max: 8 },
+  podcast: { min: 2, max: 12 },
+};
+const defaultRatios: Record<EventsSectionVariant, MediaRatioValue> = {
+  webinars: "16:9",
+  events: "16:9",
+  podcast: "1:1",
+};
+
+const normalizedId = id?.trim();
+const normalizedTitle = content?.title?.trim();
+const normalizedDescription = content?.description?.trim();
+const normalizedEyebrow = content?.eyebrow?.trim();
+const normalizedCollectionLabel = content?.collectionLabel?.trim();
+const normalizedAriaLabel = ariaLabel?.trim();
+const normalizedComponentName = componentName?.trim();
+
+if (!normalizedId || !selectorSafePattern.test(normalizedId)) {
+  throw new Error(
+    "EventsSection id must be selector-safe and start with a letter.",
+  );
+}
+if (!content || typeof content !== "object") {
+  throw new Error("EventsSection requires a structured content object.");
+}
+if (!normalizedTitle || !normalizedDescription) {
+  throw new Error(
+    "EventsSection requires non-empty title and description values.",
+  );
+}
+if (content.eyebrow !== undefined && !normalizedEyebrow) {
+  throw new Error("EventsSection eyebrow must be non-empty when provided.");
+}
+if (!supportedVariants.includes(variant)) {
+  throw new Error(
+    `EventsSection received unsupported variant "${String(variant)}".`,
+  );
+}
+if (!supportedHeadingLevels.includes(headingLevel)) {
+  throw new Error(
+    `EventsSection received unsupported headingLevel "${String(headingLevel)}".`,
+  );
+}
+if (ariaLabel !== undefined && !normalizedAriaLabel) {
+  throw new Error(
+    "EventsSection ariaLabel must be non-empty when provided.",
+  );
+}
+if (!normalizedComponentName) {
+  throw new Error("EventsSection requires a non-empty componentName.");
+}
+if (
+  Astro.slots.has("actions") ||
+  Astro.slots.has("media") ||
+  Astro.slots.has("default")
+) {
+  throw new Error("EventsSection does not expose public slots.");
+}
+if (variant === "webinars" && content.collectionLabel !== undefined) {
+  throw new Error(
+    "EventsSection Webinars does not accept collectionLabel.",
+  );
+}
+if (variant !== "webinars" && !normalizedCollectionLabel) {
+  throw new Error(
+    "EventsSection Events and Podcast require a non-empty collectionLabel.",
+  );
+}
+
+const limits = itemLimits[variant];
+if (
+  !Array.isArray(content.items) ||
+  content.items.length < limits.min ||
+  content.items.length > limits.max
+) {
+  throw new Error(
+    `EventsSection ${variant} requires ${limits.min} to ${limits.max} items.`,
+  );
+}
+
+const itemIds = new Set<string>();
+const itemDestinations = new Set<string>();
+const normalizedItems = content.items.map((item, itemIndex) => {
+  const itemId = item?.id?.trim();
+  const title = item?.title?.trim();
+  const description = item?.description?.trim();
+  const href = item?.href?.trim();
+  const metadata = item?.metadata?.trim();
+  const actionLabel = item?.actionLabel?.trim();
+  const visualLabel = item?.visualLabel?.trim();
+  const mediaSrc = item?.media?.src?.trim();
+  const mediaAlt = item?.media?.alt?.trim();
+
+  if (
+    !itemId ||
+    !selectorSafePattern.test(itemId) ||
+    !title ||
+    !description ||
+    !metadata
+  ) {
+    throw new Error(
+      `EventsSection item ${itemIndex + 1} requires selector-safe identity, title, description, and metadata.`,
+    );
+  }
+  if (!href || !safeHrefPattern.test(href)) {
+    throw new Error(
+      `EventsSection item "${itemId}" requires a safe HTTPS or root-relative href.`,
+    );
+  }
+  if (itemIds.has(itemId)) {
+    throw new Error(`EventsSection contains duplicate item id "${itemId}".`);
+  }
+  if (itemDestinations.has(href)) {
+    throw new Error(
+      `EventsSection contains duplicate item destination "${href}".`,
+    );
+  }
+  if (item.actionLabel !== undefined && !actionLabel) {
+    throw new Error(
+      `EventsSection item "${itemId}" actionLabel must be non-empty when provided.`,
+    );
+  }
+  if (item.visualLabel !== undefined && !visualLabel) {
+    throw new Error(
+      `EventsSection item "${itemId}" visualLabel must be non-empty when provided.`,
+    );
+  }
+  if (
+    item.media !== undefined &&
+    (!mediaSrc || !safeHrefPattern.test(mediaSrc) || !mediaAlt)
+  ) {
+    throw new Error(
+      `EventsSection item "${itemId}" media requires a safe HTTPS or root-relative src and non-empty alt text.`,
+    );
+  }
+
+  itemIds.add(itemId);
+  itemDestinations.add(href);
+  return {
+    id: itemId,
+    title,
+    description,
+    href,
+    metadata,
+    actionLabel,
+    visualLabel,
+    media:
+      mediaSrc && mediaAlt
+        ? {
+            src: mediaSrc,
+            alt: mediaAlt,
+          }
+        : undefined,
+  };
+});
+
+const cardHeadingLevel = (headingLevel + 1) as ResourceCardHeadingLevel;
+const carouselHeadingLevel = (headingLevel + 1) as 3 | 4;
+const resolvedRatio = content.visualRatio ?? defaultRatios[variant];
+const carouselItems: CarouselItem[] = normalizedItems.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: `${item.metadata}. ${item.description}`,
+  href: item.href,
+  image: item.media?.src,
+  alt: item.media?.alt,
+}));
+---
+
+<section
+  {...attributes}
+  id={normalizedId}
+  class:list={["l-section", "events-section", className]}
+  data-padding="medium"
+  data-component-name={normalizedComponentName}
+  data-component-family="sections"
+  data-section-family="content-resources"
+  data-section-type="events"
+  data-section-variant={variant}
+  data-events-items={normalizedItems.length}
+  data-preview-target
+  aria-label={normalizedAriaLabel ?? normalizedTitle}
+>
+  <div
+    class="l-container events-section__container"
+    data-container="main"
+  >
+    <ContentBlock
+      eyebrow={normalizedEyebrow}
+      title={normalizedTitle}
+      body={normalizedDescription}
+      headingLevel={headingLevel}
+      componentName={`${normalizedComponentName}.Header`}
+    />
+
+    {
+      variant === "webinars" ? (
+        <ul class="events-section__webinars">
+          {normalizedItems.map((item) => (
+            <li data-events-item={item.id}>
+              <ResourceCard
+                title={item.title}
+                description={item.description}
+                href={item.href}
+                variant="webinar"
+                metadata={item.metadata}
+                actionLabel={item.actionLabel}
+                visualLabel={item.visualLabel}
+                visualRatio={resolvedRatio}
+                headingLevel={cardHeadingLevel}
+                componentName={`${normalizedComponentName}.Webinar`}
+              >
+                {item.media && (
+                  <img
+                    slot="media"
+                    class="events-section__image"
+                    src={item.media.src}
+                    alt={item.media.alt}
+                    loading="lazy"
+                  />
+                )}
+              </ResourceCard>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <Carousel
+          id={`${normalizedId}-collection`}
+          label={normalizedCollectionLabel!}
+          items={carouselItems}
+          variant={variant === "events" ? "multi-item" : "single"}
+          ratio={resolvedRatio}
+          headingLevel={carouselHeadingLevel}
+          componentName={`${normalizedComponentName}.Carousel`}
+        />
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .events-section,
+  .events-section__container,
+  .events-section__webinars,
+  .events-section__webinars > li {
+    min-width: 0;
+  }
+
+  .events-section {
+    background: var(--color-background-canvas);
+  }
+
+  .events-section__container,
+  .events-section__webinars {
+    display: grid;
+  }
+
+  .events-section__container {
+    gap: var(--gap-xlarge);
+  }
+
+  .events-section__webinars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: var(--gap-large);
+  }
+
+  .events-section__webinars > li {
+    height: 100%;
+  }
+
+  .events-section__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (width < 48rem) {
+    .events-section__webinars {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (width < 40rem) {
+    .events-section__container {
+      gap: var(--gap-large);
+    }
+  }
+</style>

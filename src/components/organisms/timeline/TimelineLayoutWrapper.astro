@@ -1,0 +1,10 @@
+---
+import Label from "../../atoms/forms/Label.astro";
+interface Props { eyebrow?: string; title?: string; }
+const { eyebrow = "Reference project timeline", title = "Ideal system build" } = Astro.props;
+---
+<section class="timeline-shell" data-component-name="TimelineLayoutWrapper">
+  <header class="timeline-shell__header"><div><Label>{eyebrow}</Label><strong>{title}</strong></div><div class="timeline-legend"><span><i class="legend-dot legend-dot--active"></i> Start here</span><span><i class="legend-dot"></i> Next stages</span></div></header>
+  <div class="timeline-scroll"><slot /></div>
+  <footer class="timeline-help"><span>Scroll horizontally to explore the complete project</span><span>Review the stage sequence and delivery focus</span></footer>
+</section>

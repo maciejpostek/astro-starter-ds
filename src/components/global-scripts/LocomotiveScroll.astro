@@ -1,0 +1,163 @@
+---
+const stylesheetHref =
+  "https://cdn.jsdelivr.net/npm/locomotive-scroll/bundled/locomotive-scroll.css";
+const scriptSrc =
+  "https://cdn.jsdelivr.net/npm/locomotive-scroll/bundled/locomotive-scroll.min.js";
+---
+
+<!--
+  LocomotiveScroll
+
+  Optional global smooth-scroll controller for project pages. The component loads the
+  Locomotive Scroll browser bundle, initializes one shared instance, and exposes
+  a small controller on window.astroDsLocomotiveScroll.
+
+  Important attributes:
+  - data-scroll: enables viewport detection on an element.
+  - data-scroll-speed="0.1": subtle parallax; negative values reverse motion.
+  - data-scroll-offset="25%, 50%": shifts enter/leave trigger points.
+  - data-lenis-prevent: use on nested scroll areas such as modals/drawers.
+
+  Important options kept in one place below:
+  - autoStart: true means RAF starts immediately after init.
+  - lenisOptions.lerp: lower = smoother/slower interpolation.
+  - lenisOptions.duration: fallback scroll animation duration.
+  - lenisOptions.easing: easing curve used by Lenis.
+  - lenisOptions.smoothWheel / smoothTouch: wheel and touch smoothing.
+  - lenisOptions.wheelMultiplier / touchMultiplier: input sensitivity.
+  - triggerRootMargin: IntersectionObserver root margin for data-scroll.
+  - rafRootMargin: root margin for progress/parallax RAF-driven elements.
+
+  Runtime helpers:
+  - window.astroDsLocomotiveScroll.start()
+  - window.astroDsLocomotiveScroll.stop()
+  - window.astroDsLocomotiveScroll.resize()
+  - window.astroDsLocomotiveScroll.scrollTo(target, options)
+  - window.astroDsLocomotiveScroll.destroy()
+-->
+
+<script is:inline define:vars={{ stylesheetHref, scriptSrc }}>
+  (() => {
+    if (window.__astroDsLocomotiveScrollInitialized) return;
+    window.__astroDsLocomotiveScrollInitialized = true;
+
+    const root = document.documentElement;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const stylesheetId = "astro-ds-locomotive-scroll-css";
+
+    const options = {
+      autoStart: true,
+      triggerRootMargin: "-1px -1px -1px -1px",
+      rafRootMargin: "100% 100% 100% 100%",
+      lenisOptions: {
+        lerp: 0.1,
+        duration: 1.2,
+        orientation: "vertical",
+        gestureOrientation: "vertical",
+        smoothWheel: true,
+        smoothTouch: false,
+        wheelMultiplier: 1,
+        touchMultiplier: 2,
+        normalizeWheel: true,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+      }
+    };
+
+    const injectStylesheet = () => {
+      if (document.getElementById(stylesheetId)) return;
+
+      const link = document.createElement("link");
+      link.id = stylesheetId;
+      link.rel = "stylesheet";
+      link.href = stylesheetHref;
+      document.head.appendChild(link);
+    };
+
+    const loadScript = (src) =>
+      new Promise((resolve) => {
+        const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing) {
+          if (existing.dataset.loaded === "true") resolve();
+          else existing.addEventListener("load", resolve, { once: true });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = false;
+        script.onload = () => {
+          script.dataset.loaded = "true";
+          resolve();
+        };
+        script.onerror = resolve;
+        document.head.appendChild(script);
+      });
+
+    const whenReady = (callback) => {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", callback, { once: true });
+        return;
+      }
+
+      callback();
+    };
+
+    const createController = (instance) => ({
+      getInstance: () => instance,
+      start: () => instance?.start?.(),
+      stop: () => instance?.stop?.(),
+      resize: () => instance?.resize?.(),
+      scrollTo: (target, scrollOptions = {}) => instance?.scrollTo?.(target, scrollOptions),
+      addScrollElements: (container) => instance?.addScrollElements?.(container),
+      removeScrollElements: (container) => instance?.removeScrollElements?.(container),
+      destroy: () => {
+        instance?.destroy?.();
+        window.__astroDsLocomotiveScroll = null;
+        window.astroDsLocomotiveScroll = null;
+        root.dataset.locomotiveScroll = "destroyed";
+      }
+    });
+
+    const refreshScroll = () => {
+      window.astroDsLocomotiveScroll?.resize?.();
+    };
+
+    const initLocomotiveScroll = async () => {
+      injectStylesheet();
+
+      if (prefersReducedMotion.matches) {
+        root.dataset.locomotiveScroll = "reduced-motion";
+        return;
+      }
+
+      await loadScript(scriptSrc);
+
+      if (typeof window.LocomotiveScroll !== "function") {
+        root.dataset.locomotiveScroll = "unavailable";
+        return;
+      }
+
+      const locomotiveScroll = new window.LocomotiveScroll(options);
+
+      window.__astroDsLocomotiveScroll = locomotiveScroll;
+      window.astroDsLocomotiveScroll = createController(locomotiveScroll);
+      root.dataset.locomotiveScroll = "ready";
+
+      window.dispatchEvent(
+        new CustomEvent("astro-ds:locomotive-ready", { detail: { locomotiveScroll } })
+      );
+
+      window.requestAnimationFrame(refreshScroll);
+    };
+
+    whenReady(() => {
+      initLocomotiveScroll();
+    });
+
+    window.addEventListener("load", refreshScroll);
+    window.addEventListener("pageshow", refreshScroll);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) refreshScroll();
+    });
+  })();
+</script>

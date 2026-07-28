@@ -1,0 +1,162 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.input-to-output
+direction: right
+
+title: "Input-to-Output Pipeline (L1)" {
+  shape: text
+  near: top-center
+  style.font-size: 28
+  style.bold: true
+}
+
+prompt_user_request: "User Prompt\nprompt · active · current" {
+  shape: parallelogram
+  style.fill: "#0284c7"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+router_agentic_rules: "Agentic Rules Router\nrouter · active · current" {
+  shape: hexagon
+  style.fill: "#7c3aed"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_scope: "Scope and Mode Gate\ndecision-gate · documented · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_reuse: "Existing Asset Reuse Gate\ndecision-gate · active · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_lookup: "Focused Architecture and Component Lookup\nprocess · partially-manual · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_compose: "Compose Existing Components\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_component_gap: "Genuine Component Gap Gate\ndecision-gate · active · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_implement_astro: "Implement or Repair Astro\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_brand_sensitive: "Brand Sensitivity Gate\ndecision-gate · active · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_brand_contract: "Approved Brand Contract Gate\ndecision-gate · blocked · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_visual_calibration: "Brand Visual Calibration\nprocess · blocked-without-approved-contract · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+approval_visual: "Human Visual Approval\nhuman-approval · required-when-brand-sensitive · current" {
+  shape: diamond
+  style.fill: "#ea580c"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_browser_validation: "Browser Validation\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_figma_sync: "Synchronize Accepted Astro to Figma\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_astro: "Accepted Astro Output\noutput · active · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_figma: "Accepted Figma Representation\noutput · external · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+output_terminal: "Terminal Result and Handoff\noutput · active · current" {
+  shape: parallelogram
+  style.fill: "#15803d"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+prompt_user_request -> router_agentic_rules: "routes-to"
+router_agentic_rules -> gate_scope: "selects"
+gate_scope -> gate_reuse: "routes-to · Any UI or component task."
+gate_scope -> gate_brand_sensitive: "routes-to · Visual direction, redesign, polish, reference-driven work, or brand-sensitive composition."
+gate_reuse -> process_lookup: "routes-to"
+gate_reuse -> process_compose: "selects · A ready component or section already satisfies the required role."
+gate_reuse -> gate_component_gap: "selects · No ready component satisfies the reusable role."
+gate_component_gap -> process_implement_astro: "routes-to · A genuinely reusable component or API gap is evidenced."
+process_compose -> output_astro: "creates"
+process_implement_astro -> process_browser_validation: "routes-to"
+gate_brand_sensitive -> gate_brand_contract: "routes-to · The task is brand-sensitive."
+gate_brand_contract -> process_visual_calibration: "blocks · Contract status is not-configured, draft, deprecated, or otherwise outside permitted scope."
+approval_visual -> process_visual_calibration: "approves"
+process_figma_sync -> output_figma: "creates"

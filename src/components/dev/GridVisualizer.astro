@@ -1,0 +1,14 @@
+---
+const columns = Array.from({ length: 12 }, (_, index) => index + 1);
+const { preview = false }: { preview?: boolean } = Astro.props;
+---
+
+<div class:list={["grid-visualizer", preview && "grid-visualizer--preview"]} data-component-name="GridVisualizer" data-dev-tool-state={preview ? "preview" : "active"} aria-hidden="true">
+  <div class="grid-visualizer__layout">
+    {columns.map((column) => <span data-grid-column={column}></span>)}
+  </div>
+</div>
+
+<style>
+  .grid-visualizer--preview { position: relative; inset: auto; display: block; width: 100%; min-height: 16rem; opacity: 1; }
+</style>

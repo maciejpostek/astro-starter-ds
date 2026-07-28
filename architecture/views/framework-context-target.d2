@@ -1,0 +1,100 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.framework-context-target
+direction: right
+
+title: "Framework Context (L0) — Target Control Layer" {
+  shape: text
+  near: top-center
+  style.font-size: 28
+  style.bold: true
+}
+
+state_current: "Current Architecture\nstate · frozen-for-audit · current" {
+  shape: oval
+  style.fill: "#64748b"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+state_target: "Target Architecture\nstate · proposed · target" {
+  shape: oval
+  style.fill: "#64748b"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_architecture_freeze: "Architecture Phase Component Freeze\ndecision-gate · active · current" {
+  shape: diamond
+  style.fill: "#c026d3"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+process_implement_astro: "Implement or Repair Astro\nprocess · active · current" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+source_component_registry: "Component Registry\nsource-of-truth · active · current" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+target_architecture_graph: "Canonical Semantic Architecture Graph\nsource-of-truth · review · target" {
+  shape: cylinder
+  style.fill: "#059669"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+target_view_generator: "Architecture View Generator\nprocess · review · target" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+target_workflow_tracer: "Focused Workflow and Component Tracer\nprocess · review · target" {
+  shape: rectangle
+  style.fill: "#4f46e5"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+validator_architecture: "System Architecture Audit\nvalidator · review · target" {
+  shape: hexagon
+  style.fill: "#d97706"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+artifact_d2_views: "Generated D2 Views\nartifact · generated · target" {
+  shape: page
+  style.fill: "#0d9488"
+  style.stroke: "#0f172a"
+  style.font-color: "#ffffff"
+  style.border-radius: 6
+}
+
+gate_architecture_freeze -> process_implement_astro: "blocks · New component development remains frozen during the architecture inventory and schema-review phase."
+target_architecture_graph -> state_current: "reads"
+target_architecture_graph -> state_target: "writes"
+target_view_generator -> target_architecture_graph: "reads"
+target_view_generator -> artifact_d2_views: "generates"
+validator_architecture -> target_architecture_graph: "validates"
+target_workflow_tracer -> target_architecture_graph: "reads"
+target_workflow_tracer -> source_component_registry: "reads"
