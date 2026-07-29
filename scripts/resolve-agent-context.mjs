@@ -15,6 +15,10 @@ const value = (name) =>
   args
     .find((argument) => argument.startsWith(`--${name}=`))
     ?.slice(name.length + 3);
+const values = (name) =>
+  args
+    .filter((argument) => argument.startsWith(`--${name}=`))
+    .map((argument) => argument.slice(name.length + 3));
 const projectRoot = resolve(value("root") ?? ".");
 let prompt = value("prompt") ?? "";
 let intent;
@@ -42,13 +46,23 @@ const task = routeAgentRequest({
   prompt,
   explicitComponentIds,
   explicitTokenIds,
+  explicitTargets: values("target").map((entry) => {
+    const [kind, id, role = "primary"] = entry.split(":");
+    return { kind, id, role };
+  }),
+  targetFile: value("file"),
   intentOverride: intent,
   projectRoot
 });
 
 if (command === "brand") {
   task.targets.push(
-    ...positional.map((id) => ({ kind: "scope", id, exists: true }))
+    ...positional.map((id) => ({
+      kind: "scope",
+      id,
+      exists: true,
+      role: "context"
+    }))
   );
   task.brandMode = "required";
 }

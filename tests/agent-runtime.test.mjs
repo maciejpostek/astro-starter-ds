@@ -76,7 +76,7 @@ test("open-ended page composition requires approved brand context without enabli
   assert.equal(task.allowNewComponents, false);
   assert.equal(task.brandMode, "required");
   assert.deepEqual(task.targets, [
-    { kind: "scope", id: "page", exists: true }
+    { kind: "scope", id: "page", exists: true, role: "context" }
   ]);
 
   const context = resolveAgentContext({ task, projectRoot });
@@ -113,6 +113,88 @@ test("an existing component cannot be created again", () => {
   });
   assert.equal(task.status, "blocked");
   assert.match(task.blockedReason, /already exists/u);
+});
+
+test("create grammar keeps a new primary separate from props and dependencies", () => {
+  const task = routeAgentRequest({
+    prompt:
+      "Stwórz nowy publiczny komponent design-system `Keycap` z propem `label`, korzystający z `Avatar`.",
+    explicitTargets: [
+      { kind: "component", id: "Avatar", role: "dependency" }
+    ],
+    projectRoot
+  });
+
+  assert.equal(task.status, "ready");
+  assert.equal(task.intent, "create");
+  assert.deepEqual(
+    task.targets.filter((target) => target.kind === "component"),
+    [
+      { kind: "component", id: "Avatar", exists: true, role: "dependency" },
+      { kind: "component", id: "Keycap", exists: false, role: "primary" }
+    ]
+  );
+  assert.equal(
+    task.targets.some((target) => target.id === "Label"),
+    false
+  );
+});
+
+test("negated component creation becomes a constraint, not a missing target", () => {
+  for (const prompt of [
+    "Skomponuj sekcję z SectionHeader i ArticleCard; nie twórz BlogSection.",
+    "Compose a section with SectionHeader and ArticleCard; do not create BlogSection."
+  ]) {
+    const task = routeAgentRequest({ prompt, projectRoot });
+    assert.equal(task.status, "ready");
+    assert.equal(task.intent, "compose");
+    assert.deepEqual(task.constraints.prohibitedCreations, ["BlogSection"]);
+    assert.equal(
+      task.targets.some((target) => target.id === "BlogSection"),
+      false
+    );
+  }
+});
+
+test("targetFile is validated as an existing repository-relative file", () => {
+  const task = routeAgentRequest({
+    prompt: "Add ArticleCard.Compact to this page.",
+    targetFile: "src/pages/index.astro",
+    projectRoot
+  });
+  assert.equal(task.status, "ready");
+  assert.equal(task.targetFile, "src/pages/index.astro");
+  assert.ok(
+    task.targets.some(
+      (target) =>
+        target.kind === "file" &&
+        target.id === "src/pages/index.astro" &&
+        target.role === "context"
+    )
+  );
+
+  const invalid = routeAgentRequest({
+    prompt: "Add ArticleCard.Compact to this page.",
+    targetFile: "../outside.astro",
+    projectRoot
+  });
+  assert.equal(invalid.status, "blocked");
+  assert.match(invalid.blockedReason, /repository-relative/u);
+});
+
+test("V1.0 contracts remain accepted during migration", () => {
+  const task = routeAgentRequest({
+    prompt: "Add Button.Primary.",
+    projectRoot
+  });
+  const legacy = {
+    ...task,
+    version: "1.0.0",
+    targets: task.targets.map(({ role: _role, ...target }) => target)
+  };
+  delete legacy.targetFile;
+  delete legacy.constraints;
+  assert.deepEqual(validateTaskContract(legacy), []);
 });
 
 test("explicit creation resolves a gap without treating the missing target as an error", () => {

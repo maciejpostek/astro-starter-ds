@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://astro-design-system.local/architecture/agent-task.schema.json",
-  "title": "AI-Native Design System V1.0 Task Contract",
+  "title": "AI-Native Design System V1.1 Task Contract",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -18,7 +18,7 @@
   ],
   "properties": {
     "version": {
-      "const": "1.0.0"
+      "enum": ["1.0.0", "1.1.0"]
     },
     "status": {
       "enum": ["ready", "blocked"]
@@ -49,6 +49,31 @@
           },
           "exists": {
             "type": "boolean"
+          },
+          "role": {
+            "enum": ["primary", "dependency", "context"]
+          }
+        }
+      }
+    },
+    "targetFile": {
+      "type": ["string", "null"],
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?/).+$"
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prohibitNewComponents", "prohibitedCreations"],
+      "properties": {
+        "prohibitNewComponents": {
+          "type": "boolean"
+        },
+        "prohibitedCreations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
           }
         }
       }
@@ -99,6 +124,25 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "version": {
+            "const": "1.1.0"
+          }
+        }
+      },
+      "then": {
+        "required": ["targetFile", "constraints"],
+        "properties": {
+          "targets": {
+            "items": {
+              "required": ["kind", "id", "exists", "role"]
+            }
+          }
+        }
+      }
+    },
     {
       "if": {
         "properties": {

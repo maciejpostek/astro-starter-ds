@@ -10,12 +10,18 @@ const values = (name) =>
     .filter((argument) => argument.startsWith(`--${name}=`))
     .map((argument) => argument.slice(name.length + 3));
 const value = (name) => values(name).at(-1);
+const explicitTargets = values("target").map((entry) => {
+  const [kind, id, role = "primary"] = entry.split(":");
+  return { kind, id, role };
+});
 const projectRoot = resolve(value("root") ?? ".");
 const prompt = value("prompt") ?? "";
 const task = routeAgentRequest({
   prompt,
   explicitComponentIds: values("component"),
   explicitTokenIds: values("token"),
+  explicitTargets,
+  targetFile: value("file"),
   intentOverride: value("intent"),
   projectRoot
 });

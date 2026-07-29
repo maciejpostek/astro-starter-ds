@@ -1,17 +1,34 @@
 import {
   existsSync,
   readFileSync,
-  readdirSync
+  readdirSync,
+  statSync
 } from "node:fs";
-import { join, relative, resolve, sep } from "node:path";
+import {
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep
+} from "node:path";
 
-export const taskContractVersion = "1.0.0";
+export const taskContractVersion = "1.1.0";
+export const compatibleTaskContractVersions = ["1.0.0", "1.1.0"];
 
 export const contextBudgetBytes = {
   tiny: 4 * 1024,
   small: 12 * 1024,
   medium: 40 * 1024,
   large: 100 * 1024
+};
+
+export const sourceBudgetBytes = {
+  "exact-edit": 16 * 1024,
+  reuse: 64 * 1024,
+  compose: 256 * 1024,
+  repair: 192 * 1024,
+  extend: 512 * 1024,
+  create: 768 * 1024
 };
 
 const intentPolicy = {
@@ -132,15 +149,116 @@ const extractPromptTokenIds = (prompt) =>
   unique(prompt.match(/--[a-z0-9][a-z0-9-]*/giu) ?? []);
 
 const componentCandidatePattern =
-  /\b[A-Z][A-Za-z0-9]*(?:Section|Card|Button|Header|Input|Slider|Carousel|Navigation|Footer|Form|Table|Modal|Drawer|Tooltip|Tabs|Accordion|Tag|Label|Avatar|Gallery|Player|Block|Divider|Menu|Pagination)\b/g;
+  /\b[A-Z][A-Za-z0-9]*(?:\.[A-Za-z][A-Za-z0-9-]*)?\b/gu;
+const componentCandidateStopWords = new Set([
+  "Add",
+  "Approved",
+  "Astro",
+  "Build",
+  "Change",
+  "Compose",
+  "Create",
+  "Design",
+  "Do",
+  "Extend",
+  "Fix",
+  "Guides",
+  "Inspect",
+  "News",
+  "Repair",
+  "Reuse",
+  "Runtime",
+  "Task",
+  "Use"
+]);
+const likelyUnknownComponentPattern =
+  /(?:Section|Card|Button|Header|Input|Slider|Carousel|Navigation|Footer|Form|Table|Modal|Drawer|Tooltip|Tabs|Accordion|Tag|Label|Avatar|Gallery|Player|Block|Divider|Menu|Pagination)$/u;
+const creationActionPattern =
+  /\b(?:create|build|add|stw[oó]rz|utw[oó]rz|dodaj)\b/iu;
+const creationNamePatterns = [
+  /\b(?:component|komponent(?:u|em|owi)?)\s+(?:named\s+|o\s+nazwie\s+)?`([A-Z][A-Za-z0-9]*)`/gu,
+  /\b(?:component|komponent(?:u|em|owi)?)\s+(?:named\s+|o\s+nazwie\s+)?([A-Z][A-Za-z0-9]*)\b/gu
+];
+const prohibitedCreationPatterns = [
+  /\b(?:do\s+not|don't)\s+(?:create|add)\s+`?([A-Z][A-Za-z0-9]*)`?/giu,
+  /\bwithout\s+creating\s+`?([A-Z][A-Za-z0-9]*)`?/giu,
+  /\bnie\s+(?:tw[oó]rz|tworzy[ćc]|dodawaj)\s+`?([A-Z][A-Za-z0-9]*)`?/giu,
+  /\bbez\s+tworzenia\s+`?([A-Z][A-Za-z0-9]*)`?/giu
+];
+const prohibitAnyNewComponentPatterns = [
+  /\bdo\s+not\s+(?:create|add)\s+(?:a\s+)?new\s+(?:public\s+)?component/iu,
+  /\bwithout\s+(?:a\s+)?new\s+(?:public\s+)?component/iu,
+  /\bnie\s+(?:tw[oó]rz|dodawaj)\s+(?:nowego\s+|publicznego\s+)?komponent/iu,
+  /\bbez\s+(?:nowego\s+|publicznego\s+)?komponent/iu
+];
 
-const extractComponentCandidates = (prompt) =>
-  unique(prompt.match(componentCandidatePattern) ?? []);
+const indexedMatches = (source, pattern, valueGroup = 0) =>
+  [...source.matchAll(pattern)].map((match) => ({
+    id: match[valueGroup],
+    index: match.index ?? 0
+  }));
+
+const extractCodeComponentCandidates = (prompt) =>
+  indexedMatches(prompt, /`([A-Z][A-Za-z0-9]*(?:\.[A-Za-z0-9-]+)?)`/gu, 1);
+
+const extractPascalComponentCandidates = (prompt) =>
+  indexedMatches(prompt, componentCandidatePattern)
+    .filter(
+      ({ id }) =>
+        !componentCandidateStopWords.has(id) &&
+        likelyUnknownComponentPattern.test(id.split(".")[0])
+    );
+
+const extractCreationPrimary = (
+  prompt,
+  componentMentions,
+  explicitTargets
+) => {
+  const explicitPrimary = explicitTargets.find(
+    (target) => target.kind === "component" && target.role === "primary"
+  );
+  if (explicitPrimary) return explicitPrimary.id;
+
+  for (const pattern of creationNamePatterns) {
+    const matches = indexedMatches(prompt, pattern, 1);
+    if (matches.length > 0) return matches[0].id;
+  }
+
+  const firstCreationAction = prompt.search(creationActionPattern);
+  return componentMentions
+    .filter(({ index }) => firstCreationAction < 0 || index > firstCreationAction)
+    .at(0)?.id ?? null;
+};
+
+const extractCreationConstraints = (prompt) => ({
+  prohibitNewComponents: prohibitAnyNewComponentPatterns.some((pattern) =>
+    pattern.test(prompt)
+  ),
+  prohibitedCreations: unique(
+    prohibitedCreationPatterns.flatMap((pattern) =>
+      indexedMatches(prompt, pattern, 1).map(({ id }) => id)
+    )
+  )
+});
+
+const isProhibitedCreation = (id, constraints) =>
+  constraints.prohibitedCreations.some(
+    (candidate) => normalize(candidate) === normalize(id)
+  );
 
 const hasAny = (value, patterns) => patterns.some((pattern) => pattern.test(value));
 
 const hasExplicitCreationIntent = (prompt) => {
-  const normalizedPrompt = prompt.toLowerCase();
+  const normalizedPrompt = prompt
+    .replace(
+      /\b(?:do\s+not|don't|without)\s+(?:create|creating|add)[^.!?;\n]*/giu,
+      ""
+    )
+    .replace(
+      /\b(?:nie\s+(?:tw[oó]rz|tworzy[ćc]|dodawaj)|bez\s+tworzenia)[^.!?;\n]*/giu,
+      ""
+    )
+    .toLowerCase();
   const hasAction = hasAny(normalizedPrompt, [
     /\bcreate\b/u,
     /\bbuild\b/u,
@@ -242,10 +360,76 @@ const hasBrandSensitiveIntent = (prompt) =>
     /\bkierunek wizualny\b/u
   ]);
 
+const normalizeTargetRole = (role) =>
+  ["primary", "dependency", "context"].includes(role) ? role : "primary";
+
+const normalizeExplicitTargets = ({
+  explicitTargets,
+  explicitComponentIds,
+  explicitTokenIds
+}) => [
+  ...explicitTargets.map((target) => ({
+    kind: target.kind,
+    id: target.id,
+    role: normalizeTargetRole(target.role)
+  })),
+  ...explicitComponentIds.map((id) => ({
+    kind: "component",
+    id,
+    role: "primary"
+  })),
+  ...explicitTokenIds.map((id, index) => ({
+    kind: "token",
+    id,
+    role: index === 0 ? "primary" : "dependency"
+  }))
+];
+
+const inspectTargetFile = (targetFile, projectRoot) => {
+  if (targetFile === undefined || targetFile === null || targetFile === "") {
+    return { path: null, exists: false, error: null };
+  }
+  const normalizedPath = String(targetFile).replaceAll("\\", "/");
+  const segments = normalizedPath.split("/");
+  if (
+    isAbsolute(normalizedPath) ||
+    segments.includes("..") ||
+    segments.includes(".") ||
+    normalizedPath.startsWith("/")
+  ) {
+    return {
+      path: normalizedPath,
+      exists: false,
+      error: "targetFile must be a normalized repository-relative path."
+    };
+  }
+  const absoluteRoot = resolve(projectRoot);
+  const absolutePath = resolve(absoluteRoot, normalizedPath);
+  const relativePath = projectPath(absoluteRoot, absolutePath);
+  if (
+    relativePath === ".." ||
+    relativePath.startsWith("../") ||
+    !existsSync(absolutePath) ||
+    !statSync(absolutePath).isFile()
+  ) {
+    return {
+      path: normalizedPath,
+      exists: false,
+      error: `targetFile does not resolve to an existing repository file: ${normalizedPath}.`
+    };
+  }
+  return { path: relativePath, exists: true, error: null };
+};
+
 const buildContract = ({
   intent,
   targets,
   brandMode,
+  targetFile = null,
+  constraints = {
+    prohibitNewComponents: false,
+    prohibitedCreations: []
+  },
   status = "ready",
   blockedReason = null,
   suggestedPrompt = null
@@ -256,6 +440,8 @@ const buildContract = ({
     status,
     intent,
     targets,
+    targetFile,
+    constraints,
     allowNewComponents: intent === "create",
     brandMode: brandMode ?? policy.brandMode,
     contextBudget: policy.contextBudget,
@@ -271,63 +457,124 @@ export const routeAgentRequest = ({
   prompt = "",
   explicitComponentIds = [],
   explicitTokenIds = [],
+  explicitTargets = [],
+  targetFile,
   intentOverride,
   projectRoot = "."
 }) => {
+  const normalizedExplicitTargets = normalizeExplicitTargets({
+    explicitTargets,
+    explicitComponentIds,
+    explicitTokenIds
+  });
+  const explicitComponentTargets = normalizedExplicitTargets.filter(
+    (target) => target.kind === "component"
+  );
+  const explicitTokenTargets = normalizedExplicitTargets.filter(
+    (target) => target.kind === "token"
+  );
+  const constraints = extractCreationConstraints(prompt);
+  const inspectedTargetFile = inspectTargetFile(targetFile, projectRoot);
   const tokenIds = unique([
-    ...explicitTokenIds,
+    ...explicitTokenTargets.map((target) => target.id),
     ...extractPromptTokenIds(prompt)
   ]);
   const explicitCreation = hasExplicitCreationIntent(prompt);
 
   if (
     tokenIds.length > 0 &&
-    explicitComponentIds.length === 0 &&
+    explicitComponentTargets.length === 0 &&
     !explicitCreation &&
     !intentOverride
   ) {
-    const tokenTargets = tokenIds.map((id) => ({
-      kind: "token",
-      id,
-      exists: resolveTokenContext(id, projectRoot).found
-    }));
+    const tokenTargets = tokenIds.map((id, index) => {
+      const explicitTarget = explicitTokenTargets.find(
+        (target) => normalize(target.id) === normalize(id)
+      );
+      return {
+        kind: "token",
+        id,
+        exists: resolveTokenContext(id, projectRoot).found,
+        role:
+          explicitTarget?.role ??
+          (index === 0 ? "primary" : "dependency")
+      };
+    });
     const missingTokens = tokenTargets.filter((target) => !target.exists);
+    const fileTargets = inspectedTargetFile.path
+      ? [
+          {
+            kind: "file",
+            id: inspectedTargetFile.path,
+            exists: inspectedTargetFile.exists,
+            role: "context"
+          }
+        ]
+      : [];
     return buildContract({
       intent: "exact-edit",
-      targets: tokenTargets,
-      status: missingTokens.length > 0 ? "blocked" : "ready",
+      targets: [...tokenTargets, ...fileTargets],
+      targetFile: inspectedTargetFile.path,
+      constraints,
+      status:
+        missingTokens.length > 0 || inspectedTargetFile.error
+          ? "blocked"
+          : "ready",
       blockedReason:
-        missingTokens.length > 0
+        inspectedTargetFile.error ??
+        (missingTokens.length > 0
           ? `Missing token${missingTokens.length === 1 ? "" : "s"}: ${missingTokens
               .map((target) => target.id)
               .join(", ")}.`
-          : null
+          : null)
     });
   }
 
   const registry = readComponentRegistry(projectRoot);
   const records = registry.components ?? [];
-  const promptMatches = records.flatMap((record) => {
+  const registryMentions = records.flatMap((record) => {
     const matches = componentAliases(record)
-      .filter((alias) =>
-        new RegExp(`\\b${escapeRegExp(alias)}\\b`, "iu").test(prompt)
+      .flatMap((alias) =>
+        indexedMatches(
+          prompt,
+          new RegExp(`\\b${escapeRegExp(alias)}\\b`, "gu")
+        )
       )
-      .sort((left, right) => right.length - left.length);
+      .sort(
+        (left, right) =>
+          left.index - right.index || right.id.length - left.id.length
+      );
     return matches.length > 0 ? [matches[0]] : [];
   });
-  const candidates = unique([
-    ...explicitComponentIds,
-    ...promptMatches,
-    ...extractComponentCandidates(prompt)
+  const codeMentions = extractCodeComponentCandidates(prompt);
+  const unknownMentions = extractPascalComponentCandidates(prompt);
+  const orderedPromptMentions = [
+    ...registryMentions,
+    ...codeMentions,
+    ...unknownMentions
+  ]
+    .filter(({ id }) => !isProhibitedCreation(id, constraints))
+    .sort((left, right) => left.index - right.index);
+  const creationPrimary = explicitCreation
+    ? extractCreationPrimary(
+        prompt,
+        [...codeMentions, ...orderedPromptMentions].sort(
+          (left, right) => left.index - right.index
+        ),
+        normalizedExplicitTargets
+      )
+    : null;
+  const candidateIds = unique([
+    ...explicitComponentTargets.map((target) => target.id),
+    ...(creationPrimary ? [creationPrimary] : []),
+    ...orderedPromptMentions.map(({ id }) => id)
   ]);
   const resolvedComponents = [];
   const missingComponents = [];
 
-  for (const id of candidates) {
+  for (const id of candidateIds) {
     const record = resolveComponentRecord(id, records);
-    if (record) {
-      resolvedComponents.push({ requestedId: id, record });
-    }
+    if (record) resolvedComponents.push({ requestedId: id, record });
     else missingComponents.push(id);
   }
 
@@ -344,15 +591,52 @@ export const routeAgentRequest = ({
       );
     }
   }
-  const resolvedTargets = [...resolvedByRecordName.values()];
-  const componentIds = resolvedTargets.map(({ requestedId }) => requestedId);
+  const componentIds = unique([
+    ...[...resolvedByRecordName.values()].map(
+      ({ requestedId }) => requestedId
+    ),
+    ...missingComponents
+  ]);
   const intent = inferIntent({
     prompt,
-    componentIds: unique([...componentIds, ...missingComponents]),
+    componentIds,
     tokenIds,
     explicitCreation,
     intentOverride
   });
+  const primaryComponentId =
+    intent === "create"
+      ? creationPrimary ??
+        explicitComponentTargets.find((target) => target.role === "primary")
+          ?.id ??
+        componentIds[0] ??
+        null
+      : explicitComponentTargets.find((target) => target.role === "primary")
+          ?.id ??
+        componentIds[0] ??
+        null;
+  const roleForComponent = (id) => {
+    const explicitTarget = explicitComponentTargets.find(
+      (target) => normalize(target.id) === normalize(id)
+    );
+    if (explicitTarget) return explicitTarget.role;
+    if (intent === "compose") return "primary";
+    return normalize(id) === normalize(primaryComponentId ?? "")
+      ? "primary"
+      : "dependency";
+  };
+  const componentTargets = componentIds.map((id) => ({
+    kind: "component",
+    id,
+    exists: Boolean(resolveComponentRecord(id, records)),
+    role: roleForComponent(id)
+  }));
+  const tokenTargets = tokenIds.map((id, index) => ({
+    kind: "token",
+    id,
+    exists: resolveTokenContext(id, projectRoot).found,
+    role: index === 0 ? "primary" : "dependency"
+  }));
   const compositionScopes =
     intent === "compose"
       ? unique([
@@ -363,73 +647,116 @@ export const routeAgentRequest = ({
         ])
       : [];
   const targets = [
-    ...tokenIds.map((id) => ({ kind: "token", id, exists: true })),
-    ...componentIds.map((id) => ({ kind: "component", id, exists: true })),
-    ...missingComponents.map((id) => ({
-      kind: "component",
+    ...tokenTargets,
+    ...componentTargets,
+    ...compositionScopes.map((id) => ({
+      kind: "scope",
       id,
-      exists: false
+      exists: true,
+      role: "context"
     })),
-    ...compositionScopes.map((id) => ({ kind: "scope", id, exists: true }))
+    ...(inspectedTargetFile.path
+      ? [
+          {
+            kind: "file",
+            id: inspectedTargetFile.path,
+            exists: inspectedTargetFile.exists,
+            role: "context"
+          }
+        ]
+      : [])
   ];
+  const primaryComponent = componentTargets.find(
+    (target) => target.role === "primary"
+  );
+  const missingComponentsWithRoles = componentTargets.filter(
+    (target) => !target.exists
+  );
+  const missingDependencies = missingComponentsWithRoles.filter(
+    (target) => target.role === "dependency"
+  );
 
-  if (intent === "create" && !explicitCreation) {
-    return buildContract({
+  const blocked = (blockedReason, suggestedPrompt = null) =>
+    buildContract({
       intent,
       targets,
+      targetFile: inspectedTargetFile.path,
+      constraints,
       status: "blocked",
-      blockedReason:
-        "Creating a public component requires an explicit request for a new reusable or design-system component.",
-      suggestedPrompt:
-        missingComponents.length === 1
-          ? `Create a new reusable ${missingComponents[0]} design-system component.`
-          : "Request a new reusable design-system component explicitly."
+      blockedReason,
+      suggestedPrompt
     });
+
+  if (inspectedTargetFile.error) return blocked(inspectedTargetFile.error);
+
+  if (
+    intent === "create" &&
+    (!explicitCreation || constraints.prohibitNewComponents)
+  ) {
+    return blocked(
+      "Creating a public component requires an explicit request for a new reusable or design-system component.",
+      "Request one new reusable design-system component explicitly."
+    );
   }
 
-  if (intent === "create" && componentIds.length > 0) {
-    return buildContract({
-      intent,
-      targets,
-      status: "blocked",
-      blockedReason: `The requested component already exists: ${resolvedTargets
-        .map(({ record }) => record.name)
-        .join(", ")}. Reuse or explicitly extend the existing component instead.`
-    });
+  if (intent === "create" && !primaryComponent) {
+    return blocked(
+      "Creating a public component requires one explicit approved component name.",
+      "Name the new reusable design-system component explicitly."
+    );
   }
 
-  if (missingComponents.length > 0 && intent !== "create") {
-    return buildContract({
-      intent,
-      targets,
-      status: "blocked",
-      blockedReason: `Missing reusable component${
-        missingComponents.length === 1 ? "" : "s"
-      }: ${missingComponents.join(", ")}. No new component was authorized.`,
-      suggestedPrompt:
-        missingComponents.length === 1
-          ? `Create a new reusable ${missingComponents[0]} design-system component.`
-          : "Request each missing reusable design-system component explicitly."
-    });
+  if (intent === "create" && primaryComponent.exists) {
+    const record = resolveComponentRecord(primaryComponent.id, records);
+    return blocked(
+      `The requested component already exists: ${
+        record?.name ?? primaryComponent.id
+      }. Reuse or explicitly extend the existing component instead.`
+    );
+  }
+
+  if (intent === "create" && missingDependencies.length > 0) {
+    return blocked(
+      `Missing reusable dependenc${
+        missingDependencies.length === 1 ? "y" : "ies"
+      }: ${missingDependencies.map((target) => target.id).join(", ")}.`,
+      "Reuse an existing dependency or authorize each missing reusable component separately."
+    );
+  }
+
+  if (missingComponentsWithRoles.length > 0 && intent !== "create") {
+    return blocked(
+      `Missing reusable component${
+        missingComponentsWithRoles.length === 1 ? "" : "s"
+      }: ${missingComponentsWithRoles
+        .map((target) => target.id)
+        .join(", ")}. No new component was authorized.`,
+      missingComponentsWithRoles.length === 1
+        ? `Create a new reusable ${missingComponentsWithRoles[0].id} design-system component.`
+        : "Request each missing reusable design-system component explicitly."
+    );
   }
 
   if (targets.length === 0) {
-    return buildContract({
-      intent,
-      targets,
-      status: "blocked",
-      blockedReason:
-        "The request does not identify a resolvable component, token, file, or composition scope."
-    });
+    return blocked(
+      "The request does not identify a resolvable component, token, file, or composition scope."
+    );
   }
 
-  const openEndedComposition = intent === "compose" && componentIds.length === 0;
+  const openEndedComposition =
+    intent === "compose" && componentTargets.length === 0;
   const brandMode =
     intent === "create" || openEndedComposition || hasBrandSensitiveIntent(prompt)
       ? "required"
       : intentPolicy[intent].brandMode;
 
-  return buildContract({ intent, targets, brandMode });
+  return buildContract({
+    intent,
+    targets,
+    brandMode,
+    targetFile: inspectedTargetFile.path,
+    constraints
+  });
 };
 
 const levenshtein = (left, right) => {
@@ -711,8 +1038,10 @@ export const resolveAgentContext = ({
 
 export const validateTaskContract = (task) => {
   const errors = [];
-  if (task.version !== taskContractVersion) {
-    errors.push(`version must equal ${taskContractVersion}`);
+  if (!compatibleTaskContractVersions.includes(task.version)) {
+    errors.push(
+      `version must be one of: ${compatibleTaskContractVersions.join(", ")}`
+    );
   }
   if (!Object.hasOwn(intentPolicy, task.intent)) {
     errors.push(`unknown intent: ${task.intent}`);
@@ -733,6 +1062,49 @@ export const validateTaskContract = (task) => {
   }
   if (task.status === "blocked" && !task.blockedReason) {
     errors.push("blocked tasks require blockedReason");
+  }
+  if (!Array.isArray(task.targets)) {
+    errors.push("targets must be an array");
+  } else {
+    for (const [index, target] of task.targets.entries()) {
+      if (!["component", "token", "file", "scope"].includes(target.kind)) {
+        errors.push(`targets[${index}].kind is invalid`);
+      }
+      if (typeof target.id !== "string" || target.id.length === 0) {
+        errors.push(`targets[${index}].id must be a non-empty string`);
+      }
+      if (typeof target.exists !== "boolean") {
+        errors.push(`targets[${index}].exists must be boolean`);
+      }
+      if (
+        task.version === taskContractVersion &&
+        !["primary", "dependency", "context"].includes(target.role)
+      ) {
+        errors.push(`targets[${index}].role is invalid`);
+      }
+    }
+  }
+  if (
+    task.targetFile !== undefined &&
+    task.targetFile !== null &&
+    (typeof task.targetFile !== "string" ||
+      isAbsolute(task.targetFile) ||
+      task.targetFile.split("/").some((part) => part === "." || part === ".."))
+  ) {
+    errors.push("targetFile must be a normalized repository-relative path");
+  }
+  if (task.version === taskContractVersion) {
+    if (
+      typeof task.constraints !== "object" ||
+      task.constraints === null ||
+      typeof task.constraints.prohibitNewComponents !== "boolean" ||
+      !Array.isArray(task.constraints.prohibitedCreations) ||
+      task.constraints.prohibitedCreations.some(
+        (value) => typeof value !== "string"
+      )
+    ) {
+      errors.push("constraints must contain prohibitNewComponents and prohibitedCreations");
+    }
   }
   return errors;
 };
