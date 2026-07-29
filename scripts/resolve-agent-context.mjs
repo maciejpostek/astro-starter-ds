@@ -74,7 +74,16 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-const context = resolveAgentContext({ task, projectRoot });
+const creationDraft =
+  value("layer") || value("family") || value("source") || value("docs")
+    ? {
+        layer: value("layer"),
+        family: value("family"),
+        sourcePath: value("source"),
+        docsPath: value("docs")
+      }
+    : undefined;
+const context = resolveAgentContext({ task, projectRoot, creationDraft });
 console.log(JSON.stringify({ task, context }, null, 2));
 
 if (context.status === "blocked") process.exitCode = 2;

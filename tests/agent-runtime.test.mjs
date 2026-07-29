@@ -25,6 +25,12 @@ test("exact token edits use the tiny path without component context", () => {
   assert.equal(context.status, "ready");
   assert.deepEqual(context.components, []);
   assert.ok(context.tokens[0].found);
+  assert.deepEqual(
+    context.readPlan.map(({ reason }) => reason),
+    ["token-definition", "referenced-token-alias"]
+  );
+  assert.equal(context.declaredSourceBytes, 9204);
+  assert.equal(context.sourceLimitBytes, 16 * 1024);
   assert.ok(context.contextBytes <= context.contextLimitBytes);
 });
 
@@ -43,7 +49,26 @@ test("a canonical component name from Guides routes to reuse", () => {
   assert.deepEqual(context.requiredReads, [
     "src/components/atoms/actions/Button.astro"
   ]);
+  assert.equal(context.readPlan[0].reason, "component-source-and-api");
   assert.ok(context.skippedContexts.includes("family-rules"));
+});
+
+test("reuse includes targetFile without loading dependency sources", () => {
+  const task = routeAgentRequest({
+    prompt: "Add ArticleCard.Compact to this page.",
+    targetFile: "src/pages/index.astro",
+    projectRoot
+  });
+  const context = resolveAgentContext({ task, projectRoot });
+  assert.deepEqual(context.requiredReads, [
+    "src/components/molecules/cards/ArticleCard.astro",
+    "src/pages/index.astro"
+  ]);
+  assert.deepEqual(context.dependencies, []);
+  assert.equal(
+    context.requiredReads.some((path) => path.includes(".agentic-rules")),
+    false
+  );
 });
 
 test("named section composition resolves only selected components and dependencies", () => {
@@ -62,6 +87,9 @@ test("named section composition resolves only selected components and dependenci
     ["ArticleCard", "SectionHeader", "SwiperStarter"]
   );
   assert.ok(context.dependencies.length > 0);
+  assert.ok(
+    context.readPlan.some((read) => read.reason === "direct-dependency-source")
+  );
   assert.equal(context.brandRules.length, 0);
   assert.ok(context.contextBytes <= context.contextLimitBytes);
 });
@@ -219,8 +247,78 @@ test("explicit creation resolves a gap without treating the missing target as an
 
   assert.equal(context.status, "ready");
   assert.equal(context.allowNewComponents, true);
+  assert.equal(context.phase, "create-planning");
+  assert.match(context.nextStep, /creationDraft/u);
+  assert.equal(context.brandStatus, "approved");
   assert.deepEqual(context.missing, []);
   assert.ok(context.alternatives.length > 0);
+});
+
+test("create family resolution narrows reads to the family and projections", () => {
+  const task = routeAgentRequest({
+    prompt: "Create a new reusable design-system component `Keycap`.",
+    projectRoot
+  });
+  const context = resolveAgentContext({
+    task,
+    projectRoot,
+    contractOverride: {
+      version: "1.0.0",
+      status: "approved",
+      projectId: "runtime-test",
+      owner: "Runtime test",
+      approvedAt: "2026-07-28",
+      rules: []
+    },
+    creationDraft: {
+      layer: "atom",
+      family: "text",
+      sourcePath: "src/components/atoms/text/Keycap.astro",
+      docsPath: "src/pages/design-system/components.astro"
+    }
+  });
+
+  assert.equal(context.status, "ready");
+  assert.equal(context.phase, "create-family-resolution");
+  assert.deepEqual(
+    context.readPlan.map(({ reason }) => reason),
+    ["creation-family-rule", "registry-projection", "guides-projection"]
+  );
+  assert.equal(
+    context.requiredReads.includes(".agentic-rules/00-framework.md"),
+    false
+  );
+});
+
+test("repair and extend use distinct context projections", () => {
+  const repairTask = routeAgentRequest({
+    prompt: "Repair ArticleCard without changing its API.",
+    projectRoot
+  });
+  const repair = resolveAgentContext({ task: repairTask, projectRoot });
+  assert.ok(
+    repair.readPlan.some((read) => read.reason === "direct-dependency-source")
+  );
+  assert.ok(
+    repair.readPlan.some((read) => read.reason === "component-family-rule")
+  );
+  assert.equal(
+    repair.readPlan.some((read) => read.reason === "registry-projection"),
+    false
+  );
+
+  const extendTask = routeAgentRequest({
+    prompt: "Extend ArticleCard props API.",
+    projectRoot
+  });
+  const extend = resolveAgentContext({ task: extendTask, projectRoot });
+  assert.ok(
+    extend.readPlan.some((read) => read.reason === "registry-projection")
+  );
+  assert.ok(
+    extend.readPlan.some((read) => read.reason === "guides-projection")
+  );
+  assert.equal(extend.declaredSourceBytes <= extend.sourceLimitBytes, true);
 });
 
 test("an unscoped ambiguous request is blocked", () => {

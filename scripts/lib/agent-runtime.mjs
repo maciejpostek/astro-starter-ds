@@ -901,43 +901,159 @@ const enforceBudget = (contextPack, budget) => {
   };
 };
 
+const normalizeContractTargets = (task) => {
+  let primaryComponentSeen = false;
+  let primaryTokenSeen = false;
+  return (task.targets ?? []).map((target) => {
+    if (target.role) return target;
+    if (["file", "scope"].includes(target.kind)) {
+      return { ...target, role: "context" };
+    }
+    if (target.kind === "component") {
+      const role = primaryComponentSeen ? "dependency" : "primary";
+      primaryComponentSeen = true;
+      return { ...target, role };
+    }
+    const role = primaryTokenSeen ? "dependency" : "primary";
+    primaryTokenSeen = true;
+    return { ...target, role };
+  });
+};
+
+const validatePlannedPath = (path, projectRoot, { mustExist = false } = {}) => {
+  if (!path || typeof path !== "string") {
+    return { path: null, error: "A repository-relative path is required." };
+  }
+  const normalizedPath = path.replaceAll("\\", "/");
+  if (
+    isAbsolute(normalizedPath) ||
+    normalizedPath.split("/").some((part) => part === "." || part === "..")
+  ) {
+    return {
+      path: normalizedPath,
+      error: "Path must be normalized and repository-relative."
+    };
+  }
+  const absoluteRoot = resolve(projectRoot);
+  const absolutePath = resolve(absoluteRoot, normalizedPath);
+  const relativePath = projectPath(absoluteRoot, absolutePath);
+  if (relativePath === ".." || relativePath.startsWith("../")) {
+    return { path: normalizedPath, error: "Path resolves outside the repository." };
+  }
+  if (
+    mustExist &&
+    (!existsSync(absolutePath) || !statSync(absolutePath).isFile())
+  ) {
+    return {
+      path: relativePath,
+      error: `Repository file does not exist: ${relativePath}.`
+    };
+  }
+  return { path: relativePath, absolutePath, error: null };
+};
+
+const resolveCreationDraft = (draft, records, projectRoot) => {
+  if (!draft) return { draft: null, familyRule: null, errors: [] };
+  const errors = [];
+  if (!["atom", "molecule", "organism", "template"].includes(draft.layer)) {
+    errors.push(`Unknown creation layer: ${draft.layer ?? "(missing)"}.`);
+  }
+  const matchingFamilyRecords = records.filter(
+    (record) => normalize(record.family) === normalize(draft.family ?? "")
+  );
+  if (matchingFamilyRecords.length === 0) {
+    errors.push(`Unknown creation family: ${draft.family ?? "(missing)"}.`);
+  }
+  const source = validatePlannedPath(draft.sourcePath, projectRoot);
+  const docs = validatePlannedPath(draft.docsPath, projectRoot, {
+    mustExist: true
+  });
+  if (source.error) errors.push(`creationDraft.sourcePath: ${source.error}`);
+  if (
+    source.absolutePath &&
+    existsSync(source.absolutePath)
+  ) {
+    errors.push(`creationDraft.sourcePath already exists: ${source.path}.`);
+  }
+  if (docs.error) errors.push(`creationDraft.docsPath: ${docs.error}`);
+  const familyRule = matchingFamilyRecords
+    .map((record) => record.agenticRule)
+    .find(Boolean);
+  if (matchingFamilyRecords.length > 0 && !familyRule) {
+    errors.push(`No family rule is registered for ${draft.family}.`);
+  }
+  return {
+    draft: {
+      layer: draft.layer,
+      family: draft.family,
+      sourcePath: source.path,
+      docsPath: docs.path
+    },
+    familyRule,
+    errors
+  };
+};
+
 export const resolveAgentContext = ({
   task,
   projectRoot = ".",
-  contractOverride
+  contractOverride,
+  creationDraft
 }) => {
   const absoluteRoot = resolve(projectRoot);
   const registry =
     task.intent === "exact-edit" ? null : readComponentRegistry(absoluteRoot);
   const records = registry?.components ?? [];
-  const componentTargets = task.targets.filter(
+  const targets = normalizeContractTargets(task);
+  const componentTargets = targets.filter(
     (target) => target.kind === "component"
   );
-  const tokenTargets = task.targets.filter((target) => target.kind === "token");
+  const tokenTargets = targets.filter((target) => target.kind === "token");
   const components = componentTargets
     .map((target) => ({
       target,
       record: resolveComponentRecord(target.id, records)
     }))
     .filter(({ record }) => Boolean(record))
-    .map(({ target, record }) => projectComponent(record, target.id));
+    .map(({ target, record }) => ({
+      ...projectComponent(record, target.id),
+      role: target.role
+    }));
   const dependencyNames = unique(
-    components.flatMap((component) => component.dependencies)
+    components
+      .filter((component) => component.role !== "context")
+      .flatMap((component) => component.dependencies)
   );
-  const dependencies =
-    task.intent === "compose"
-      ? dependencyNames
-          .map((name) => resolveComponentRecord(name, records))
-          .filter(Boolean)
-          .map((record) => ({
-            name: record.name,
-            sourcePath: record.sourcePath,
-            status: record.status
-          }))
-      : [];
-  const tokens = tokenTargets.map((target) =>
-    resolveTokenContext(target.id, absoluteRoot)
-  );
+  const includeDirectDependencies = ["compose", "repair"].includes(task.intent);
+  const dependencies = unique([
+    ...(includeDirectDependencies ? dependencyNames : []),
+    ...(task.intent === "create"
+      ? componentTargets
+          .filter((target) => target.role === "dependency" && target.exists)
+          .map((target) => target.id)
+      : [])
+  ])
+    .map((name) => resolveComponentRecord(name, records))
+    .filter(Boolean)
+    .map((record) => ({
+      name: record.name,
+      sourcePath: record.sourcePath,
+      status: record.status
+    }));
+  const tokenQueue = [...tokenTargets.map((target) => target.id)];
+  const tokens = [];
+  const seenTokens = new Set();
+  while (tokenQueue.length > 0) {
+    const tokenId = tokenQueue.shift();
+    if (!tokenId || seenTokens.has(tokenId)) continue;
+    seenTokens.add(tokenId);
+    const token = resolveTokenContext(tokenId, absoluteRoot);
+    tokens.push(token);
+    for (const definition of token.definitions) {
+      const aliases = definition.value.match(/--[a-z0-9][a-z0-9-]*/giu) ?? [];
+      tokenQueue.push(...aliases);
+    }
+  }
   const missing = [];
 
   for (const target of componentTargets.filter(
@@ -949,47 +1065,160 @@ export const resolveAgentContext = ({
     missing.push(`Missing token: ${token.id}`);
   }
 
-  const requiredReads = unique([
-    ...components.map((component) => component.sourcePath),
-    ...dependencies.map((dependency) => dependency.sourcePath),
-    ...tokens.flatMap((token) =>
-      token.definitions.map((definition) => definition.sourcePath)
-    )
-  ]);
+  const readPlan = [];
+  const addRead = (path, reason, target = null) => {
+    if (!path || readPlan.some((read) => read.path === path)) return;
+    const inspected = validatePlannedPath(path, absoluteRoot, {
+      mustExist: true
+    });
+    if (inspected.error) {
+      missing.push(inspected.error);
+      return;
+    }
+    readPlan.push({
+      path: inspected.path,
+      reason,
+      target,
+      bytes: statSync(inspected.absolutePath).size
+    });
+  };
+  const addComponentSources = (selected, reason) => {
+    for (const component of selected) {
+      addRead(component.sourcePath, reason, component.requestedIdentity);
+    }
+  };
+  const addDependencySources = () => {
+    for (const dependency of dependencies) {
+      addRead(dependency.sourcePath, "direct-dependency-source", dependency.name);
+    }
+  };
 
-  if (["repair", "extend"].includes(task.intent)) {
-    requiredReads.push(
-      ...unique(components.map((component) => component.agenticRule))
+  if (task.intent === "exact-edit") {
+    for (const token of tokens) {
+      for (const definition of token.definitions) {
+        addRead(
+          definition.sourcePath,
+          tokenTargets.some((target) => target.id === token.id)
+            ? "token-definition"
+            : "referenced-token-alias",
+          token.id
+        );
+      }
+    }
+  } else if (task.intent === "reuse") {
+    addComponentSources(
+      components.filter((component) => component.role === "primary"),
+      "component-source-and-api"
     );
+    if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
+  } else if (task.intent === "compose") {
+    addComponentSources(components, "named-component-source");
+    addDependencySources();
+    if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
+  } else if (task.intent === "repair") {
+    addComponentSources(
+      components.filter((component) => component.role === "primary"),
+      "component-repair-source"
+    );
+    addDependencySources();
+    for (const rule of unique(
+      components
+        .filter((component) => component.role === "primary")
+        .map((component) => component.agenticRule)
+    )) {
+      addRead(rule, "component-family-rule");
+    }
+  } else if (task.intent === "extend") {
+    addComponentSources(
+      components.filter((component) => component.role === "primary"),
+      "component-source-and-api"
+    );
+    for (const rule of unique(
+      components
+        .filter((component) => component.role === "primary")
+        .map((component) => component.agenticRule)
+    )) {
+      addRead(rule, "component-family-rule");
+    }
+    addRead(".agentic-rules/05-components.md", "component-category-rule");
+    addRead(
+      "src/data/design-system/componentArchitecture.json",
+      "registry-projection"
+    );
+    addRead(
+      "src/pages/design-system/components.astro",
+      "guides-projection"
+    );
+    if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
   }
-  if (["extend", "create"].includes(task.intent)) {
-    requiredReads.push(
-      ".agentic-rules/00-framework.md",
-      ".agentic-rules/05-components.md"
+
+  const draftResolution =
+    task.intent === "create"
+      ? resolveCreationDraft(creationDraft, records, absoluteRoot)
+      : { draft: null, familyRule: null, errors: [] };
+  missing.push(...draftResolution.errors);
+  const phase =
+    task.intent !== "create"
+      ? "normal"
+      : draftResolution.draft
+        ? "create-family-resolution"
+        : "create-planning";
+  if (task.intent === "create" && phase === "create-planning") {
+    addRead(
+      "src/data/design-system/componentArchitecture.json",
+      "component-gap-evidence"
+    );
+    addRead(".agentic-rules/00-framework.md", "creation-framework-rule");
+    addRead(".agentic-rules/05-components.md", "component-creation-rule");
+    addRead("DESIGN-SYSTEM-FRAMEWORK.md", "public-api-framework");
+    addDependencySources();
+  } else if (task.intent === "create") {
+    addRead(draftResolution.familyRule, "creation-family-rule");
+    addRead(
+      "src/data/design-system/componentArchitecture.json",
+      "registry-projection"
+    );
+    addRead(
+      draftResolution.draft?.docsPath,
+      "guides-projection",
+      componentTargets.find((target) => target.role === "primary")?.id ?? null
     );
   }
 
   let brandRules = [];
+  let brandStatus = "skipped";
   if (task.brandMode !== "skip") {
     const contractPath = join(
       absoluteRoot,
       "project-context/brand-foundations/brand-expression/contract.json"
     );
     const contract = contractOverride ?? readJson(contractPath);
-    const scopes = task.targets
+    brandStatus = contract.status;
+    const scopes = targets
       .filter((target) => target.kind === "scope")
       .map((target) => target.id);
-    const resolvedBrand = resolveBrandRules(contract, {
-      scopes,
-      components: components.map((component) => component.name)
-    });
+    const resolvedBrand =
+      task.intent === "create"
+        ? {
+            status: contract.status,
+            rules: [],
+            missing:
+              contract.status === "approved"
+                ? null
+                : "No approved Brand/Composition Contract is available for this project."
+          }
+        : resolveBrandRules(contract, {
+            scopes,
+            components: components.map((component) => component.name)
+          });
     brandRules = resolvedBrand.rules;
     if (task.brandMode === "required" && resolvedBrand.missing) {
       missing.push(resolvedBrand.missing);
     }
     if (brandRules.length > 0) {
-      requiredReads.push(
-        "project-context/brand-foundations/brand-expression/contract.json"
+      addRead(
+        "project-context/brand-foundations/brand-expression/contract.json",
+        "matching-approved-brand-rules"
       );
     }
   }
@@ -1002,15 +1231,43 @@ export const resolveAgentContext = ({
         ...candidate
       }))
     );
+  const declaredSourceBytes = readPlan.reduce(
+    (total, read) => total + read.bytes,
+    0
+  );
+  const sourceLimitBytes = sourceBudgetBytes[task.intent];
+  let cumulativeBytes = 0;
+  const overflowRead = readPlan.find((read) => {
+    cumulativeBytes += read.bytes;
+    return cumulativeBytes > sourceLimitBytes;
+  });
+  if (overflowRead) {
+    missing.push(
+      `Materialized source budget exceeded at ${overflowRead.path}: ` +
+        `${declaredSourceBytes} bytes > ${sourceLimitBytes} bytes.`
+    );
+  }
   const contextPack = {
-    version: "1.0.0",
+    version: "1.1.0",
     status:
       task.status === "blocked" || missing.length > 0 ? "blocked" : "ready",
     route: task.intent,
+    phase,
+    nextStep:
+      phase === "create-planning" && missing.length === 0
+        ? "Provide creationDraft with layer, family, sourcePath, and docsPath."
+        : null,
     allowNewComponents: task.allowNewComponents,
+    targetFile: task.targetFile ?? null,
+    constraints: task.constraints ?? {
+      prohibitNewComponents: false,
+      prohibitedCreations: []
+    },
+    creationDraft: draftResolution.draft,
     components,
     dependencies,
     tokens,
+    brandStatus,
     brandRules,
     compositionContract:
       task.intent === "compose"
@@ -1023,7 +1280,10 @@ export const resolveAgentContext = ({
             ]
           }
         : null,
-    requiredReads: unique(requiredReads),
+    requiredReads: readPlan.map((read) => read.path),
+    readPlan,
+    declaredSourceBytes,
+    sourceLimitBytes,
     skippedContexts: task.excludedContexts,
     validators: [task.validationScope],
     alternatives,
