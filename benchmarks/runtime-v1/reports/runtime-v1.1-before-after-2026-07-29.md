@@ -3,6 +3,7 @@
 Data: 2026-07-29  
 Snapshot before: `951b188` na `codex/before-1.1`  
 Implementacja: `codex/runtime-1.1`  
+Checkpoint implementacji i gate: `d076be3`
 Zakres release gate: routing i Context Pack, bez porównywania modeli  
 Figma: poza zakresem wykonawczym
 
@@ -190,3 +191,18 @@ zgadywania tokenizacji dostawcy.
 
 Żadna rekomendacja P1/P2 nie została automatycznie wdrożona jako osobna zmiana
 architektury.
+
+## Finalna walidacja
+
+Na checkpoincie `d076be3` przeszły:
+
+- `test:agent-runtime`: 17/17;
+- `audit:agent-runtime`;
+- `test:runtime-benchmark`: 14/14;
+- `benchmark:runtime:validate`: 18 core + 12 controls;
+- `benchmark:runtime:validate-fixtures`: 30 fixture’ów, 37 operacji;
+- `audit:agentic-rules`;
+- `audit:architecture`;
+- `audit:runtime:v1.1`: 30/30;
+- `build`: 243 pliki sprawdzone, 0 errors, 0 warnings, 15 stron
+  zbudowanych.
