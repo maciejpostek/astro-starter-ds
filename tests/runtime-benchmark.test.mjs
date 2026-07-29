@@ -35,7 +35,11 @@ test("scenario specification covers all core profiles, complexities, languages, 
   );
   assert.equal(
     scenarios.filter((scenario) => scenario.kind === "control").length,
-    8
+    12
+  );
+  assert.equal(
+    scenarios.filter((scenario) => scenario.deterministicOnly).length,
+    4
   );
   for (const scenario of scenarios.filter(
     (candidate) => candidate.kind === "core"
@@ -74,6 +78,14 @@ test("scenario specification covers all core profiles, complexities, languages, 
       (target) =>
         !registry.components.some((component) => component.name === target)
     )
+  );
+  assert.ok(
+    scenarios
+      .filter((scenario) => scenario.profile === "create")
+      .every(
+        (scenario) =>
+          scenario.creationTarget.layer && scenario.creationTarget.family
+      )
   );
 });
 
@@ -358,7 +370,7 @@ test("declarative fixtures mutate only the isolated workspace", async () => {
 test("every catalog fixture applies cleanly to the current snapshot", async () => {
   const scenarios = await loadBenchmarkScenarios(projectRoot);
   const results = await validateFixtureCatalog({ projectRoot, scenarios });
-  assert.equal(results.length, 26);
+  assert.equal(results.length, 30);
   assert.ok(results.every((result) => result.status === "passed"));
 });
 

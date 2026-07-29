@@ -52,8 +52,8 @@ for (const key of [
 ]) {
   if (!(key in model)) addError(`Model is missing required key: ${key}`);
 }
-if (model.modelVersion !== "1.0.0" || model.status !== "active") {
-  addError("The implemented architecture model must be active V1.0.0.");
+if (model.modelVersion !== "1.1.0" || model.status !== "active") {
+  addError("The implemented architecture model must be active V1.1.0.");
 }
 
 for (const [label, values] of [
@@ -98,7 +98,7 @@ for (const node of model.nodes) {
   }
   if (node.status !== "current" || node.architectureState !== "current") {
     addError(
-      `Active V1.0 node ${node.id} must describe current implemented state.`
+      `Active V1.1 node ${node.id} must describe current implemented state.`
     );
   }
   if (!node.metadata?.problem) {
@@ -131,7 +131,12 @@ for (const node of model.nodes) {
     }
     if (
       node.metadata?.pathKind === "directory" &&
-      !statSync(absolutePath).isDirectory()
+      !statSync(absolutePath).isDirectory() &&
+      !(
+        sourcePath === ".git" &&
+        statSync(absolutePath).isFile() &&
+        readFileSync(absolutePath, "utf8").startsWith("gitdir:")
+      )
     ) {
       addError(`Node ${node.id} expects a directory: ${sourcePath}`);
     }
@@ -309,7 +314,7 @@ const presentation = model.views.find(
   (view) => view.id === "view.ai-native-target-architecture"
 )?.presentation;
 if (!presentation) {
-  addError("The V1.0 runtime view is missing its presentation.");
+  addError("The V1.1 runtime view is missing its presentation.");
 } else {
   const expectedStageNumbers = [
     "01",
@@ -325,13 +330,13 @@ if (!presentation) {
   const actualStageNumbers = presentation.stages.map((stage) => stage.number);
   if (JSON.stringify(actualStageNumbers) !== JSON.stringify(expectedStageNumbers)) {
     addError(
-      `V1.0 stages must be ${expectedStageNumbers.join(", ")}; received ${actualStageNumbers.join(", ")}.`
+      `V1.1 stages must be ${expectedStageNumbers.join(", ")}; received ${actualStageNumbers.join(", ")}.`
     );
   }
   if (
     presentation.stages.filter((stage) => stage.kind === "core").length !== 5
   ) {
-    addError("V1.0 must expose exactly five core runtime stages.");
+    addError("V1.1 must expose exactly five core runtime stages.");
   }
 
   for (const [label, items] of [
@@ -539,5 +544,5 @@ if (errors.length) {
 console.log(
   `System architecture audit passed: ${model.nodes.length} current nodes, ` +
     `${model.edges.length} current edges, ${model.workflows.length} workflows, ` +
-    `${model.views.length} views, and five core V1.0 runtime stages.`
+    `${model.views.length} views, and five core V1.1 runtime stages.`
 );

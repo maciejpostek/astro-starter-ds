@@ -44,7 +44,22 @@
     "route_status": "ready",
     "brand_mode": "skip",
     "allow_new_components": false,
-    "contract_errors": []
+    "contract_errors": [],
+    "router_intent": "reuse",
+    "blocked_reason": null,
+    "targets": [
+      {
+        "kind": "component",
+        "id": "ArticleCard.Compact",
+        "exists": true,
+        "role": "primary"
+      }
+    ],
+    "constraints": {
+      "prohibitNewComponents": false,
+      "prohibitedCreations": []
+    },
+    "target_file": "src/pages/index.astro"
   },
   "timing_ms": {
     "wall_clock": 250000,
@@ -65,12 +80,30 @@
     "oracle_validation": 18000
   },
   "usage": {
-    "input_tokens": { "value": 12000, "source": "measured" },
-    "output_tokens": { "value": 2200, "source": "measured" },
-    "cached_tokens": { "value": 3000, "source": "measured" },
-    "cache_write_tokens": { "value": null, "source": "unavailable" },
-    "reasoning_tokens": { "value": null, "source": "unavailable" },
-    "total_tokens": { "value": 14200, "source": "measured" }
+    "input_tokens": {
+      "value": 12000,
+      "source": "measured"
+    },
+    "output_tokens": {
+      "value": 2200,
+      "source": "measured"
+    },
+    "cached_tokens": {
+      "value": 3000,
+      "source": "measured"
+    },
+    "cache_write_tokens": {
+      "value": null,
+      "source": "unavailable"
+    },
+    "reasoning_tokens": {
+      "value": null,
+      "source": "unavailable"
+    },
+    "total_tokens": {
+      "value": 14200,
+      "source": "measured"
+    }
   },
   "cost": {
     "currency": "USD",
@@ -84,7 +117,10 @@
     "declared_read_files": 4,
     "declared_source_bytes": 18000,
     "actual_read_files": 4,
-    "actual_model_read_bytes": { "value": 22000, "source": "measured" },
+    "actual_model_read_bytes": {
+      "value": 22000,
+      "source": "measured"
+    },
     "instruction_overhead_bytes": 4800,
     "instruction_overhead_ratio": 0.2182,
     "materialized_limit_bytes": 65536,
@@ -100,7 +136,30 @@
         "classification": "required",
         "bytes": 7200
       }
-    ]
+    ],
+    "phase": "normal",
+    "next_step": null,
+    "required_reads": [
+      "src/components/molecules/cards/ArticleCard.astro",
+      "src/pages/index.astro"
+    ],
+    "read_plan": [
+      {
+        "path": "src/components/molecules/cards/ArticleCard.astro",
+        "reason": "component-source-and-api",
+        "target": "ArticleCard.Compact",
+        "bytes": 7200
+      },
+      {
+        "path": "src/pages/index.astro",
+        "reason": "target-file",
+        "target": "src/pages/index.astro",
+        "bytes": 10800
+      }
+    ],
+    "dependencies": [],
+    "missing": [],
+    "source_limit_bytes": 65536
   },
   "tools": {
     "calls": 7,

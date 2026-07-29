@@ -1,7 +1,7 @@
 {
-  "version": "1.0.0",
-  "name": "AI-Native Design System Reuse-First Router",
-  "description": "Compact operational router for one agent. Classify once, resolve bounded context, reuse by default, validate the affected scope, and return an accepted or blocked result.",
+  "version": "1.1.0",
+  "name": "AI-Native Design System V1.1 Role-Aware Router",
+  "description": "Compact role-aware router. Classify once, preserve constraints, resolve a flow-specific bounded Context Pack, reuse by default, validate the affected scope, and return an accepted or blocked result.",
   "taskContractSchema": "architecture/agent-task.schema.json",
   "runtime": {
     "routeCommand": "npm run agent:route -- --prompt=<request>",
@@ -15,7 +15,8 @@
       "result"
     ],
     "singleAgent": true,
-    "additionalModelRouter": false
+    "additionalModelRouter": false,
+    "deterministicGateCommand": "npm run audit:runtime:v1.1"
   },
   "sources": {
     "componentIndex": "src/data/design-system/componentArchitecture.json",
@@ -44,7 +45,10 @@
     "requires": "An explicit request for a new reusable or design-system component.",
     "pageOrSectionCreationIsNotComponentAuthorization": true,
     "existingComponentOutcome": "reuse-or-explicit-extend",
-    "missingComponentOutcome": "blocked-with-alternatives-and-suggested-prompt"
+    "missingComponentOutcome": "blocked-with-alternatives-and-suggested-prompt",
+    "primaryTargetOnly": true,
+    "dependenciesDoNotBlockWhenPresent": true,
+    "approvedNameRequired": true
   },
   "contextBudgets": {
     "tiny": 4096,
@@ -56,7 +60,8 @@
     "exact-edit": {
       "budget": "tiny",
       "reads": [
-        "exact target definition"
+        "exact target definitions",
+        "referenced aliases"
       ],
       "skips": [
         "component registry",
@@ -91,7 +96,8 @@
         "named component records",
         "direct dependencies",
         "compact layout contract",
-        "matching approved brand rules when applicable"
+        "matching approved brand rules when applicable",
+        "target file"
       ],
       "skips": [
         "full component registry",
@@ -133,10 +139,8 @@
     "create": {
       "budget": "large",
       "reads": [
-        "component gap evidence",
-        "framework and component rules",
-        "matching family rules",
-        "approved brand rules when visual"
+        "phase 1: gap evidence, creation rules, dependencies, Brand Contract status",
+        "phase 2: selected family rule and declared registry/Guides projections"
       ],
       "skips": [
         "Figma unless explicitly requested"
@@ -200,5 +204,37 @@
       "missingInput"
     ],
     "trackedRunHistory": false
+  },
+  "targetSemantics": {
+    "roles": [
+      "primary",
+      "dependency",
+      "context"
+    ],
+    "negations": "constraints.prohibitedCreations",
+    "targetFile": "validated repository-relative existing file"
+  },
+  "materializedSourceBudgets": {
+    "exact-edit": 16384,
+    "reuse": 65536,
+    "compose": 262144,
+    "repair": 196608,
+    "extend": 524288,
+    "create": 786432
+  },
+  "contextPack": {
+    "version": "1.1.0",
+    "fields": [
+      "requiredReads",
+      "readPlan",
+      "declaredSourceBytes",
+      "sourceLimitBytes",
+      "phase",
+      "nextStep"
+    ],
+    "createPhases": [
+      "create-planning",
+      "create-family-resolution"
+    ]
   }
 }

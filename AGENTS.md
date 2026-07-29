@@ -1,6 +1,7 @@
 # Astro Design System Agent Instructions
 
-This repository uses the AI-Native Design System V1.0 reuse-first runtime.
+This repository uses the AI-Native Design System V1.1 role-aware, reuse-first
+runtime.
 
 Before UI, design-system, component, layout, style, token, or documentation
 work:
@@ -11,6 +12,11 @@ work:
 3. Resolve the smallest context pack with `npm run agent:context`.
 4. Reuse existing tokens and components by default.
 5. Run only the validators selected for the affected scope.
+
+Treat targets as `primary`, `dependency`, or `context`. Keep negated creation
+requests in `constraints.prohibitedCreations`; they are not missing targets.
+When the destination is known, pass it as a validated repository-relative
+`targetFile`.
 
 Public component creation is default-deny. A page or section composition does
 not authorize a new design-system component, token, registry record, or public
@@ -26,10 +32,16 @@ For composition, resolve only the named components, their direct dependencies,
 the compact layout contract, and applicable approved Brand/Composition rules.
 Do not read the full sections rule or the full component registry.
 
-For `repair`, `extend`, and `create`, read the relevant category and family
-rule. For cross-category or public API changes, also read
+For `repair`, read the selected component, direct dependencies, and its family
+rule. For `extend`, also read the component category rule and affected registry
+and Guides projections. For cross-category or public API changes, read
 `AGENTIC-RULES.md`, `DESIGN-SYSTEM-FRAMEWORK.md`, and
 `.agentic-rules/00-framework.md`.
+
+Resolve `create` in two phases. Planning reads gap evidence, creation rules,
+existing dependencies, and Brand Contract status. After an approved
+`creationDraft`, family resolution reads only the selected family rule and the
+declared registry and Guides projections.
 
 For open-ended or brand-sensitive composition, use only approved rules from
 `project-context/brand-foundations/brand-expression/contract.json`. A missing

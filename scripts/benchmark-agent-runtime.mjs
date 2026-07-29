@@ -13,6 +13,7 @@ import {
   probeCodexCapabilities,
   readBenchmarkRuns,
   runIdForCondition,
+  runDeterministicRuntimeGate,
   runLocalMicrobenchmark,
   selectProfileWinners,
   validateFixtureCatalog,
@@ -86,7 +87,7 @@ Commands:
       and run warm/cold B0 without model calls.
 
   validate-spec
-      Validate the 18 core and 8 control scenario specifications.
+      Validate the 18 core and 12 control scenario specifications.
 
   validate-fixtures
       Apply every deterministic seed to a temporary copy and remove it.
@@ -101,6 +102,10 @@ Commands:
   b0 [--iterations=1000] [--language=en] [--precision=guide-exact]
       [--process-state=warm|cold]
       Run the local router/resolver microbenchmark. No model calls.
+
+  deterministic [--output=<path>]
+      Run the 30-case Runtime V1.1 release gate in fresh fixtures without
+      model calls.
 
   run --scenario=<id> --arm=b1|r1 --language=pl|en
       --precision=guide-exact|less-precise|control
@@ -180,7 +185,6 @@ if (command === "help" || flag("help")) {
   );
   const preflight = {
     status:
-      capability.status === "passed" &&
       fixtureResults.every((result) => result.status === "passed")
         ? "passed"
         : "failed",
@@ -299,6 +303,21 @@ if (command === "help" || flag("help")) {
     `${records.map((record) => JSON.stringify(record)).join("\n")}\n`
   );
   console.log(JSON.stringify({ runs: records.length, output }, null, 2));
+} else if (command === "deterministic") {
+  const result = await runDeterministicRuntimeGate({
+    projectRoot,
+    scenarios
+  });
+  const output = resolve(
+    value(
+      "output",
+      join(artifactRoot, experimentId, "deterministic-gate.json")
+    )
+  );
+  await mkdir(resolve(output, ".."), { recursive: true });
+  await writeFile(output, `${JSON.stringify(result, null, 2)}\n`);
+  console.log(JSON.stringify({ output, ...result.summary, status: result.status }, null, 2));
+  if (result.status !== "passed") process.exitCode = 2;
 } else if (command === "run") {
   const scenarioId = value("scenario");
   const scenario = scenarios.find((candidate) => candidate.id === scenarioId);

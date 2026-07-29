@@ -20,13 +20,13 @@ const requiredPaths = [
 
 for (const path of requiredPaths) {
   if (!existsSync(join(projectRoot, path))) {
-    errors.push(`Missing V1.0 runtime file: ${path}`);
+    errors.push(`Missing V1.1 runtime file: ${path}`);
   }
 }
 
 const routerSource = read("AGENTIC-RULES.json");
 if (Buffer.byteLength(routerSource, "utf8") > 8 * 1024) {
-  errors.push("AGENTIC-RULES.json exceeds the 8 KB V1.0 router budget.");
+  errors.push("AGENTIC-RULES.json exceeds the 8 KB V1.1 router budget.");
 }
 
 const operationalSources = [
@@ -90,6 +90,9 @@ for (const scenario of scenarios) {
   const context = resolveAgentContext({ task, projectRoot });
   if (context.contextBytes > contextBudgetBytes[task.contextBudget]) {
     errors.push(`${scenario.expectedIntent} exceeded its context budget.`);
+  }
+  if (context.declaredSourceBytes > context.sourceLimitBytes) {
+    errors.push(`${scenario.expectedIntent} exceeded its materialized source budget.`);
   }
 }
 

@@ -41,6 +41,7 @@
     "benchmark:runtime:validate-fixtures": "node scripts/benchmark-agent-runtime.mjs validate-fixtures",
     "benchmark:runtime:snapshot": "node scripts/benchmark-agent-runtime.mjs snapshot",
     "benchmark:runtime:b0": "node scripts/benchmark-agent-runtime.mjs b0",
+    "audit:runtime:v1.1": "node scripts/benchmark-agent-runtime.mjs deterministic --experiment=runtime-v1.1-final",
     "brand:generate": "node scripts/generate-brand-contract-doc.mjs .",
     "brand:check": "node scripts/generate-brand-contract-doc.mjs . --check",
     "test:agent-runtime": "node --test tests/agent-runtime.test.mjs",

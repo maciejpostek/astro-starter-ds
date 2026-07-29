@@ -112,16 +112,47 @@
       "additionalProperties": false,
       "required": [
         "expected_intent",
+        "router_intent",
         "actual_intent",
         "route_status",
+        "blocked_reason",
+        "targets",
+        "constraints",
+        "target_file",
         "brand_mode",
         "allow_new_components",
         "contract_errors"
       ],
       "properties": {
         "expected_intent": { "type": ["string", "null"] },
+        "router_intent": { "type": ["string", "null"] },
         "actual_intent": { "type": ["string", "null"] },
         "route_status": { "enum": ["ready", "blocked", "unavailable"] },
+        "blocked_reason": { "type": ["string", "null"] },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "id", "exists", "role"],
+            "properties": {
+              "kind": { "enum": ["component", "token", "file", "scope"] },
+              "id": { "type": "string" },
+              "exists": { "type": "boolean" },
+              "role": { "enum": ["primary", "dependency", "context"] }
+            }
+          }
+        },
+        "constraints": {
+          "type": ["object", "null"],
+          "properties": {
+            "prohibitNewComponents": { "type": "boolean" },
+            "prohibitedCreations": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "target_file": { "type": ["string", "null"] },
         "brand_mode": { "type": ["string", "null"] },
         "allow_new_components": { "type": ["boolean", "null"] },
         "contract_errors": {
@@ -173,8 +204,15 @@
       "required": [
         "descriptor_bytes",
         "limit_bytes",
+        "phase",
+        "next_step",
+        "required_reads",
+        "read_plan",
+        "dependencies",
+        "missing",
         "declared_read_files",
         "declared_source_bytes",
+        "source_limit_bytes",
         "actual_read_files",
         "actual_model_read_bytes",
         "instruction_overhead_bytes",
@@ -190,8 +228,35 @@
       "properties": {
         "descriptor_bytes": { "type": ["integer", "null"], "minimum": 0 },
         "limit_bytes": { "type": ["integer", "null"], "minimum": 0 },
+        "phase": {
+          "enum": ["normal", "create-planning", "create-family-resolution", null]
+        },
+        "next_step": { "type": ["string", "null"] },
+        "required_reads": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "read_plan": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "reason", "target", "bytes"],
+            "properties": {
+              "path": { "type": "string" },
+              "reason": { "type": "string" },
+              "target": { "type": ["string", "null"] },
+              "bytes": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "dependencies": { "type": "array" },
+        "missing": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
         "declared_read_files": { "type": "integer", "minimum": 0 },
         "declared_source_bytes": { "type": "integer", "minimum": 0 },
+        "source_limit_bytes": { "type": ["integer", "null"], "minimum": 0 },
         "actual_read_files": { "type": "integer", "minimum": 0 },
         "actual_model_read_bytes": { "$ref": "#/$defs/measurement" },
         "instruction_overhead_bytes": { "type": "integer", "minimum": 0 },

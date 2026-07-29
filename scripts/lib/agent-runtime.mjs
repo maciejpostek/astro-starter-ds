@@ -145,6 +145,13 @@ const resolveComponentRecord = (id, records) => {
   return prefixMatches.length === 1 ? prefixMatches[0] : undefined;
 };
 
+const resolveExactComponentRecord = (id, records) => {
+  const normalizedId = normalize(id);
+  return records.find((record) =>
+    componentAliases(record).some((alias) => normalize(alias) === normalizedId)
+  );
+};
+
 const extractPromptTokenIds = (prompt) =>
   unique(prompt.match(/--[a-z0-9][a-z0-9-]*/giu) ?? []);
 
@@ -180,16 +187,16 @@ const creationNamePatterns = [
   /\b(?:component|komponent(?:u|em|owi)?)\s+(?:named\s+|o\s+nazwie\s+)?([A-Z][A-Za-z0-9]*)\b/gu
 ];
 const prohibitedCreationPatterns = [
-  /\b(?:do\s+not|don't)\s+(?:create|add)\s+`?([A-Z][A-Za-z0-9]*)`?/giu,
-  /\bwithout\s+creating\s+`?([A-Z][A-Za-z0-9]*)`?/giu,
-  /\bnie\s+(?:tw[oó]rz|tworzy[ćc]|dodawaj)\s+`?([A-Z][A-Za-z0-9]*)`?/giu,
-  /\bbez\s+tworzenia\s+`?([A-Z][A-Za-z0-9]*)`?/giu
+  /\b(?:[Dd]o\s+not|[Dd]on't)\s+(?:create|add)\s+`?([A-Z][A-Za-z0-9]*)`?/gu,
+  /\b[Ww]ithout\s+creating\s+`?([A-Z][A-Za-z0-9]*)`?/gu,
+  /\b[Nn]ie\s+(?:tw[oó]rz|tworzy[ćc]|dodawaj)\s+`?([A-Z][A-Za-z0-9]*)`?/gu,
+  /\b[Bb]ez\s+tworzenia\s+`?([A-Z][A-Za-z0-9]*)`?/gu
 ];
 const prohibitAnyNewComponentPatterns = [
-  /\bdo\s+not\s+(?:create|add)\s+(?:a\s+)?new\s+(?:public\s+)?component/iu,
+  /\bdo\s+not\s+(?:create|add)\s+(?:a\s+)?(?:new\s+)?(?:public\s+)?component/iu,
   /\bwithout\s+(?:a\s+)?new\s+(?:public\s+)?component/iu,
-  /\bnie\s+(?:tw[oó]rz|dodawaj)\s+(?:nowego\s+|publicznego\s+)?komponent/iu,
-  /\bbez\s+(?:nowego\s+|publicznego\s+)?komponent/iu
+  /\bnie\s+(?:tw[oó]rz|dodawaj)\s+(?:(?:nowego|publicznego)\s+)*komponent/iu,
+  /\bbez\s+(?:(?:nowego|publicznego)\s+)*komponent/iu
 ];
 
 const indexedMatches = (source, pattern, valueGroup = 0) =>
@@ -248,17 +255,19 @@ const isProhibitedCreation = (id, constraints) =>
 
 const hasAny = (value, patterns) => patterns.some((pattern) => pattern.test(value));
 
+const stripNegatedActions = (prompt) =>
+  prompt
+    .replace(
+      /\b(?:do\s+not|don't|without)\b[^.!?;\n]*/giu,
+      ""
+    )
+    .replace(
+      /\b(?:nie|bez)\b[^.!?;\n]*/giu,
+      ""
+    );
+
 const hasExplicitCreationIntent = (prompt) => {
-  const normalizedPrompt = prompt
-    .replace(
-      /\b(?:do\s+not|don't|without)\s+(?:create|creating|add)[^.!?;\n]*/giu,
-      ""
-    )
-    .replace(
-      /\b(?:nie\s+(?:tw[oó]rz|tworzy[ćc]|dodawaj)|bez\s+tworzenia)[^.!?;\n]*/giu,
-      ""
-    )
-    .toLowerCase();
+  const normalizedPrompt = stripNegatedActions(prompt).toLowerCase();
   const hasAction = hasAny(normalizedPrompt, [
     /\bcreate\b/u,
     /\bbuild\b/u,
@@ -296,7 +305,7 @@ const inferIntent = ({
   explicitCreation,
   intentOverride
 }) => {
-  const value = prompt.toLowerCase();
+  const value = stripNegatedActions(prompt).toLowerCase();
   if (intentOverride) return intentOverride;
   if (explicitCreation) return "create";
   if (
@@ -326,6 +335,7 @@ const inferIntent = ({
     /\bbuild\b/u,
     /\bcreate\b/u,
     /\bstw[oó]rz/u,
+    /\butw[oó]rz/u,
     /\bzbuduj/u,
     /\bu[łl][oó][żz]/u,
     /\bskomponuj/u
@@ -333,6 +343,7 @@ const inferIntent = ({
   const hasCompositionTarget = hasAny(value, [
     /\bpage\b/u,
     /\bsection\b/u,
+    /\bhero\b/u,
     /\blayout\b/u,
     /\bstron/u,
     /\bsekcj/u,
@@ -573,7 +584,12 @@ export const routeAgentRequest = ({
   const missingComponents = [];
 
   for (const id of candidateIds) {
-    const record = resolveComponentRecord(id, records);
+    const record =
+      explicitCreation &&
+      creationPrimary &&
+      normalize(id) === normalize(creationPrimary)
+        ? resolveExactComponentRecord(id, records)
+        : resolveComponentRecord(id, records);
     if (record) resolvedComponents.push({ requestedId: id, record });
     else missingComponents.push(id);
   }
@@ -628,7 +644,13 @@ export const routeAgentRequest = ({
   const componentTargets = componentIds.map((id) => ({
     kind: "component",
     id,
-    exists: Boolean(resolveComponentRecord(id, records)),
+    exists: Boolean(
+      intent === "create" &&
+        creationPrimary &&
+        normalize(id) === normalize(creationPrimary)
+        ? resolveExactComponentRecord(id, records)
+        : resolveComponentRecord(id, records)
+    ),
     role: roleForComponent(id)
   }));
   const tokenTargets = tokenIds.map((id, index) => ({
@@ -1012,7 +1034,10 @@ export const resolveAgentContext = ({
   const components = componentTargets
     .map((target) => ({
       target,
-      record: resolveComponentRecord(target.id, records)
+      record:
+        task.intent === "create" && target.role === "primary"
+          ? resolveExactComponentRecord(target.id, records)
+          : resolveComponentRecord(target.id, records)
     }))
     .filter(({ record }) => Boolean(record))
     .map(({ target, record }) => ({
@@ -1066,7 +1091,7 @@ export const resolveAgentContext = ({
   }
 
   const readPlan = [];
-  const addRead = (path, reason, target = null) => {
+  const addRead = (path, reason, target = null, bytes = null) => {
     if (!path || readPlan.some((read) => read.path === path)) return;
     const inspected = validatePlannedPath(path, absoluteRoot, {
       mustExist: true
@@ -1079,7 +1104,7 @@ export const resolveAgentContext = ({
       path: inspected.path,
       reason,
       target,
-      bytes: statSync(inspected.absolutePath).size
+      bytes: bytes ?? statSync(inspected.absolutePath).size
     });
   };
   const addComponentSources = (selected, reason) => {
@@ -1094,16 +1119,31 @@ export const resolveAgentContext = ({
   };
 
   if (task.intent === "exact-edit") {
+    const tokenReads = new Map();
     for (const token of tokens) {
+      const primary = tokenTargets.some((target) => target.id === token.id);
       for (const definition of token.definitions) {
-        addRead(
-          definition.sourcePath,
-          tokenTargets.some((target) => target.id === token.id)
-            ? "token-definition"
-            : "referenced-token-alias",
-          token.id
+        const existing = tokenReads.get(definition.sourcePath) ?? {
+          reason: "referenced-token-alias",
+          targets: [],
+          bytes: 0
+        };
+        if (primary) existing.reason = "token-definition";
+        existing.targets.push(token.id);
+        existing.bytes += Buffer.byteLength(
+          `${definition.id}: ${definition.value};\n`,
+          "utf8"
         );
+        tokenReads.set(definition.sourcePath, existing);
       }
+    }
+    for (const [path, read] of tokenReads) {
+      addRead(
+        path,
+        read.reason,
+        unique(read.targets).join(", "),
+        read.bytes
+      );
     }
   } else if (task.intent === "reuse") {
     addComponentSources(

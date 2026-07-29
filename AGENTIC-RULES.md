@@ -1,4 +1,4 @@
-# AI-Native Design System V1.0 Operational Model
+# AI-Native Design System V1.1 Operational Model
 
 This document explains the implemented reuse-first runtime for people. The
 machine-readable router is `AGENTIC-RULES.json`.
@@ -31,6 +31,12 @@ Every request is classified as:
 The result is a Task Contract validated against
 `architecture/agent-task.schema.json`.
 
+Task Contract V1.1 assigns every target a `primary`, `dependency`, or
+`context` role. Negated creation phrases are preserved separately as
+constraints. A validated repository-relative `targetFile` can be supplied
+without exposing its path in the natural prompt. The validator continues to
+accept V1.0 contracts and normalizes their missing roles.
+
 Component creation is default-deny. Creating a page or section does not grant
 permission to create a public component, token, registry record, or API. A
 missing asset returns a blocked result with existing alternatives.
@@ -47,7 +53,10 @@ npm run agent:context -- brand hero
 ```
 
 The resolver returns selected records, direct dependencies, required file
-paths, skipped contexts, validators, alternatives, and missing inputs.
+paths, a byte-counted `readPlan`, skipped contexts, validators, alternatives,
+and missing inputs. `declaredSourceBytes` measures materialized source content;
+for exact token work this is the selected definitions and referenced aliases,
+not the entire token library.
 
 It does not return the complete component registry or token library. Context
 budgets are enforced in bytes:
@@ -57,6 +66,17 @@ tiny    4 KB
 small  12 KB
 medium 40 KB
 large 100 KB
+```
+
+Materialized source limits are independent from descriptor limits:
+
+```text
+exact-edit  16 KB
+reuse       64 KB
+compose    256 KB
+repair     192 KB
+extend     512 KB
+create     768 KB
 ```
 
 ## 3. Execute
@@ -86,14 +106,28 @@ compact layout contract:
 Use props and data attributes for finite variants. Compose mode cannot create
 or extend a public component.
 
-### Repair, extend, and create
+### Repair and extend
 
-Read the relevant category and family rules. Cross-category and public API
-changes also require `.agentic-rules/00-framework.md`,
-`.agentic-rules/05-components.md`, and `DESIGN-SYSTEM-FRAMEWORK.md`.
+Repair reads the component source, direct dependencies, and its family rule.
+Extend reads the component source/API, family and component-category rules,
+and only the affected registry and Guides projections.
 
-`create` requires explicit reusable-component intent and proof that the
-registry contains no suitable existing component.
+### Create
+
+`create` requires explicit reusable-component intent, one approved primary
+name, and proof that the registry contains no suitable existing component.
+Existing supporting components are dependencies and do not block the new
+primary target.
+
+Creation is resolved in two phases:
+
+1. `create-planning` reads gap evidence, creation rules, dependencies, and
+   Brand Contract status, then returns `nextStep`.
+2. `create-family-resolution` accepts a `creationDraft` and reads only the
+   selected family rule plus declared registry and Guides projections.
+
+A source-budget overrun returns a controlled blocked result naming the read
+that crossed the limit.
 
 ## 4. Brand and Composition Activation
 
@@ -156,3 +190,13 @@ Missing input
 Run history is not stored in tracked architecture files. Git owns source
 history. The Component Readiness projection stores only the current
 implementation, visual, and validation state.
+
+The deterministic release gate is:
+
+```bash
+npm run audit:runtime:v1.1
+```
+
+It runs 30 sequential fresh-fixture routing and Context Pack checks. Model,
+reasoning, and provider token telemetry are optional diagnostics, not release
+criteria.

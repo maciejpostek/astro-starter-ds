@@ -1,4 +1,21 @@
-# AI-Native Design System Runtime V1.0 Benchmark
+# AI-Native Design System Runtime V1.1 Harness
+
+Runtime V1.1 is released through a deterministic, model-independent gate:
+
+```bash
+npm run audit:runtime:v1.1
+```
+
+The command runs 18 core flows, 8 safety controls, and 4 regressions
+sequentially in 30 fresh fixtures. It checks router intent, ready/blocked
+status, target roles, negation constraints, `targetFile`, exact required reads,
+descriptor and materialized-source budgets, forbidden reads, and warm/cold
+latency. The generated record keeps model token telemetry explicitly
+`unavailable`; provider model comparisons are optional diagnostics and are not
+part of the V1.1 release gate.
+
+The legacy model execution commands below remain available for later smoke
+tests and historical comparisons.
 
 This benchmark measures the cost and quality of `exact-edit`, `reuse`,
 `compose`, `repair`, `extend`, and `create` tasks without adding latency to the
@@ -16,7 +33,7 @@ The CLI serializes the service-tier identifier as lowercase `standard`.
 
 ## Research protocol
 
-The benchmark asks whether Runtime V1.0 reduces time, tokens, and unnecessary
+The optional model benchmark asks whether Runtime V1.1 reduces time, tokens, and unnecessary
 reads per correct terminal task without weakening routing, reuse, creation,
 brand, Figma, API, token, accessibility, or validation quality.
 
@@ -332,7 +349,7 @@ therefore separate from model-active and routing spans.
 
 After the pilot, first fix telemetry or fixture nondeterminism, then
 recalibrate SLOs and sample sizes. Only after a stable full run should a
-separate proposal alter Runtime V1.0. The harness must remain an orchestration
+separate proposal alter Runtime V1.1. The harness must remain an orchestration
 and telemetry layer; it must not duplicate the router, registry, or design
 system sources of truth.
 

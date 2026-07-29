@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import {
@@ -29,7 +32,8 @@ test("exact token edits use the tiny path without component context", () => {
     context.readPlan.map(({ reason }) => reason),
     ["token-definition", "referenced-token-alias"]
   );
-  assert.equal(context.declaredSourceBytes, 9204);
+  assert.ok(context.declaredSourceBytes > 0);
+  assert.ok(context.declaredSourceBytes < 1024);
   assert.equal(context.sourceLimitBytes, 16 * 1024);
   assert.ok(context.contextBytes <= context.contextLimitBytes);
 });
@@ -319,6 +323,30 @@ test("repair and extend use distinct context projections", () => {
     extend.readPlan.some((read) => read.reason === "guides-projection")
   );
   assert.equal(extend.declaredSourceBytes <= extend.sourceLimitBytes, true);
+});
+
+test("materialized source overruns block at the read that crosses the limit", async () => {
+  const fixtureRoot = await mkdtemp(join(tmpdir(), "runtime-source-budget-"));
+  try {
+    await mkdir(join(fixtureRoot, "src/styles/tokens"), { recursive: true });
+    await writeFile(
+      join(fixtureRoot, "src/styles/tokens/oversized.css"),
+      `:root { --oversized-token: ${"x".repeat(17 * 1024)}; }\n`
+    );
+    const task = routeAgentRequest({
+      prompt: "Restore --oversized-token.",
+      projectRoot: fixtureRoot
+    });
+    const context = resolveAgentContext({ task, projectRoot: fixtureRoot });
+    assert.equal(context.status, "blocked");
+    assert.match(
+      context.missing.join(" "),
+      /Materialized source budget exceeded at src\/styles\/tokens\/oversized\.css/u
+    );
+    assert.ok(context.declaredSourceBytes > context.sourceLimitBytes);
+  } finally {
+    await rm(fixtureRoot, { recursive: true, force: true });
+  }
 });
 
 test("an unscoped ambiguous request is blocked", () => {

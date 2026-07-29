@@ -1,11 +1,11 @@
 {
   "$schema": "./system-map.schema.json",
   "schemaVersion": "0.1.0",
-  "modelVersion": "1.0.0",
-  "title": "AI-Native Design System V1.0 Architecture",
+  "modelVersion": "1.1.0",
+  "title": "AI-Native Design System V1.1 Architecture",
   "status": "active",
-  "capturedAt": "2026-07-28",
-  "description": "Canonical graph of the implemented reuse-first runtime. Architecture documentation is excluded from normal prompt execution.",
+  "capturedAt": "2026-07-29",
+  "description": "Canonical graph of the implemented role-aware reuse-first runtime with flow-specific Context Packs. Architecture documentation is excluded from normal prompt execution.",
   "languagePolicy": {
     "artifacts": "en",
     "conversation": "pl"
@@ -13,7 +13,7 @@
   "architectureStates": [
     {
       "id": "current",
-      "title": "Implemented V1.0",
+      "title": "Implemented V1.1",
       "status": "active",
       "description": "Mechanisms present in repository code and operational rules."
     },
@@ -111,7 +111,7 @@
         "contextCost": "low"
       },
       "metadata": {
-        "problem": "Requests need a small explicit profile without a second model call.",
+        "problem": "Requests need role-aware target extraction and explicit constraints without a second model call.",
         "primaryFor": [
           "request-routing"
         ]
@@ -148,6 +148,20 @@
         "problem": "Execution needs an auditable intent, permission, budget, and validation scope.",
         "primaryFor": [
           "task-contract"
+        ],
+        "contractVersion": "1.1.0",
+        "targetRoles": [
+          "primary",
+          "dependency",
+          "context"
+        ],
+        "constraintFields": [
+          "prohibitNewComponents",
+          "prohibitedCreations"
+        ],
+        "compatibleVersions": [
+          "1.0.0",
+          "1.1.0"
         ]
       }
     },
@@ -214,12 +228,28 @@
         "contextCost": "medium"
       },
       "metadata": {
-        "problem": "Execution needs an explicit list of reads, skips, validators, and missing input.",
+        "problem": "Execution needs an explicit byte-counted read plan, flow phase, skips, validators, and missing input.",
         "budgetsBytes": [
           4096,
           12288,
           40960,
           102400
+        ],
+        "materializedSourceBudgetsBytes": {
+          "exact-edit": 16384,
+          "reuse": 65536,
+          "compose": 262144,
+          "repair": 196608,
+          "extend": 524288,
+          "create": 786432
+        },
+        "fields": [
+          "requiredReads",
+          "readPlan",
+          "declaredSourceBytes",
+          "sourceLimitBytes",
+          "phase",
+          "nextStep"
         ]
       }
     },
@@ -585,7 +615,12 @@
         "contextCost": "high"
       },
       "metadata": {
-        "problem": "A genuinely missing reusable asset may be created only after explicit permission and gap proof."
+        "problem": "A genuinely missing reusable asset may be created only after explicit permission and gap proof.",
+        "phases": [
+          "create-planning",
+          "create-family-resolution"
+        ],
+        "primaryTargetOnly": true
       }
     },
     {
@@ -2175,12 +2210,12 @@
   "views": [
     {
       "id": "view.ai-native-target-architecture",
-      "title": "AI-Native Design System V1.0 Runtime",
+      "title": "AI-Native Design System V1.1 Runtime",
       "level": "L0/L1",
       "architectureStates": [
         "current"
       ],
-      "description": "Implemented reuse-first runtime with bounded context, default-deny creation, scoped validation, explicit-only Figma, and offline eval feedback.",
+      "description": "Implemented role-aware reuse-first runtime with byte-counted Context Packs, two-phase creation, default-deny public API changes, scoped validation, explicit-only Figma, and an offline deterministic release gate.",
       "nodeIds": [
         "prompt.user-request",
         "input.guide-identity",

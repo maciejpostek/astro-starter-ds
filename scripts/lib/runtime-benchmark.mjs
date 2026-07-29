@@ -417,11 +417,13 @@ export const validateBenchmarkScenarios = (scenarios) => {
     if (scenario.profile === "create") {
       if (
         !scenario.creationTarget?.component ||
+        !scenario.creationTarget?.layer ||
+        !scenario.creationTarget?.family ||
         !scenario.creationTarget?.sourcePath ||
         !scenario.creationTarget?.docsPath
       ) {
         errors.push(
-          `${scenario.id}: create scenarios require a component, sourcePath, and docsPath creationTarget.`
+          `${scenario.id}: create scenarios require component, layer, family, sourcePath, and docsPath creationTarget fields.`
         );
       }
     }
@@ -481,8 +483,8 @@ export const validateBenchmarkScenarios = (scenarios) => {
     (scenario) => scenario.kind === "control"
   ).length;
   if (coreCount !== 18) errors.push(`Expected 18 core scenarios, found ${coreCount}.`);
-  if (controlCount !== 8) {
-    errors.push(`Expected 8 control scenarios, found ${controlCount}.`);
+  if (controlCount !== 12) {
+    errors.push(`Expected 12 control scenarios, found ${controlCount}.`);
   }
   return errors;
 };
@@ -1443,6 +1445,34 @@ const workspaceChangedFiles = (workspaceRoot) => {
   ).toSorted();
 };
 
+const workspaceDiff = (workspaceRoot, changedFiles) => {
+  const tracked = gitOutput(
+    workspaceRoot,
+    ["diff", "--binary", "--no-ext-diff"],
+    { allowFailure: true }
+  );
+  const untracked = new Set(
+    gitOutput(
+      workspaceRoot,
+      ["ls-files", "--others", "--exclude-standard", "-z"],
+      { allowFailure: true }
+    )
+      .split("\0")
+      .filter(Boolean)
+      .map(normalizePath)
+  );
+  const additions = changedFiles
+    .filter((path) => untracked.has(path))
+    .map((path) =>
+      gitOutput(
+        workspaceRoot,
+        ["diff", "--no-index", "--binary", "--", "/dev/null", path],
+        { allowFailure: true }
+      )
+    );
+  return [tracked, ...additions].filter(Boolean).join("\n");
+};
+
 const readRegistryProjection = async (workspaceRoot) => {
   try {
     const registry = JSON.parse(
@@ -1809,7 +1839,9 @@ export const buildBenchmarkMatrix = (
     conditions.push(condition);
   };
   const core = scenarios.filter((scenario) => scenario.kind === "core");
-  const controls = scenarios.filter((scenario) => scenario.kind === "control");
+  const controls = scenarios.filter(
+    (scenario) => scenario.kind === "control" && !scenario.deterministicOnly
+  );
   const balancedArms = (index) =>
     index % 2 === 0 ? ["b1", "r1"] : ["r1", "b1"];
 
@@ -1910,7 +1942,9 @@ export const buildAuditPilotMatrix = (scenarios) => {
   const medium = scenarios.filter(
     (scenario) => scenario.kind === "core" && scenario.complexity === "medium"
   );
-  const controls = scenarios.filter((scenario) => scenario.kind === "control");
+  const controls = scenarios.filter(
+    (scenario) => scenario.kind === "control" && !scenario.deterministicOnly
+  );
   const conditions = [];
   medium.forEach((scenario, index) => {
     const common = {
@@ -1988,7 +2022,9 @@ export const buildAdaptiveStageMatrix = (
   { stage, winners = [] } = {}
 ) => {
   const core = scenarios.filter((scenario) => scenario.kind === "core");
-  const controls = scenarios.filter((scenario) => scenario.kind === "control");
+  const controls = scenarios.filter(
+    (scenario) => scenario.kind === "control" && !scenario.deterministicOnly
+  );
   const conditions = [];
   if (stage === "anchor") {
     core.forEach((scenario, index) => {
@@ -2153,7 +2189,8 @@ export const evaluatePilotGate = (runs) => {
       ? 0
       : routeEligible.filter(
           (run) =>
-            run.routing.actual_intent === run.routing.expected_intent
+            (run.routing.router_intent ?? run.routing.actual_intent) ===
+            run.routing.expected_intent
         ).length / routeEligible.length;
   const harnessFailures = runs.filter((run) =>
     ["error", "unavailable"].includes(run.outcome?.actual_terminal)
@@ -2272,6 +2309,7 @@ export const executeBenchmarkCondition = async ({
         condition.language,
         condition.precision
       ),
+      targetFile: scenario.fixture.targetFile,
       projectRoot: workspace.workspaceRoot
     });
     contractErrors = validateTaskContract(task);
@@ -2285,7 +2323,9 @@ export const executeBenchmarkCondition = async ({
     await emit("context_resolve_start", "resolver", {});
     context = resolveAgentContext({
       task,
-      projectRoot: workspace.workspaceRoot
+      projectRoot: workspace.workspaceRoot,
+      creationDraft:
+        task.intent === "create" ? scenario.creationTarget : undefined
     });
     contextMs = performance.now() - contextStarted;
     await emit("context_resolve_end", "resolver", {
@@ -2423,11 +2463,7 @@ export const executeBenchmarkCondition = async ({
     registryBefore,
     registryAfter
   );
-  const diff = gitOutput(
-    workspace.workspaceRoot,
-    ["diff", "--binary", "--no-ext-diff"],
-    { allowFailure: true }
-  );
+  const diff = workspaceDiff(workspace.workspaceRoot, changedFiles);
   await writeFile(diffPath, diff);
 
   const requiredReads = context.requiredReads ?? [];
@@ -2491,12 +2527,13 @@ export const executeBenchmarkCondition = async ({
   const modelWall = modelEnded - modelStarted;
   const setupMs = modelStarted - runStart;
   const totalWall = performance.now() - runStart;
-  const materializedLimit = materializedReadLimits[scenario.profile];
+  const materializedLimit =
+    context.sourceLimitBytes ?? materializedReadLimits[scenario.profile];
   const instructionOverheadBytes = readClassification
     .filter((read) => read.classification === "mandatory-bootstrap")
     .reduce((sum, read) => sum + read.bytes, 0);
   const runEndedAt = nowIso();
-  const routeActualIntent = terminal?.intent ?? task.intent ?? null;
+  const terminalIntent = terminal?.intent ?? null;
   const failureClassification = grade.taskSuccess
     ? null
     : grade.criticalFailures[0] ??
@@ -2555,8 +2592,13 @@ export const executeBenchmarkCondition = async ({
     },
     routing: {
       expected_intent: oracle.intent,
-      actual_intent: routeActualIntent,
+      router_intent: task.intent ?? null,
+      actual_intent: terminalIntent,
       route_status: task.status ?? "unavailable",
+      blocked_reason: task.blockedReason ?? null,
+      targets: task.targets ?? [],
+      constraints: task.constraints ?? null,
+      target_file: task.targetFile ?? null,
       brand_mode: task.brandMode ?? null,
       allow_new_components: task.allowNewComponents ?? null,
       contract_errors: contractErrors
@@ -2587,11 +2629,17 @@ export const executeBenchmarkCondition = async ({
     context: {
       descriptor_bytes: context.contextBytes ?? null,
       limit_bytes: context.contextLimitBytes ?? null,
+      phase: context.phase ?? null,
+      next_step: context.nextStep ?? null,
+      required_reads: requiredReads,
+      read_plan: context.readPlan ?? [],
+      dependencies: context.dependencies ?? [],
+      missing: context.missing ?? [],
       declared_read_files: requiredReads.length,
-      declared_source_bytes: await declaredSourceBytes(
-        workspace.workspaceRoot,
-        requiredReads
-      ),
+      declared_source_bytes:
+        context.declaredSourceBytes ??
+        (await declaredSourceBytes(workspace.workspaceRoot, requiredReads)),
+      source_limit_bytes: context.sourceLimitBytes ?? materializedLimit,
       actual_read_files: readClassification.length,
       actual_model_read_bytes: measurement(
         eventMetrics.visibleReadBytes,
@@ -2926,6 +2974,370 @@ export const runLocalMicrobenchmark = async ({
     });
   }
   return records;
+};
+
+const deterministicPromptSelection = (scenario, index) => {
+  const precision = scenario.kind === "core" ? "guide-exact" : "control";
+  const language =
+    scenario.id === "regression-negation-pl"
+      ? "pl"
+      : scenario.id === "regression-negation-en"
+        ? "en"
+        : index % 2 === 0
+          ? "pl"
+          : "en";
+  return {
+    precision,
+    language,
+    prompt: promptForCondition(scenario, language, precision)
+  };
+};
+
+const deterministicContextErrors = ({
+  task,
+  context,
+  familyContext,
+  scenario
+}) => {
+  const errors = [];
+  const paths = context.requiredReads ?? [];
+  const reasons = new Set((context.readPlan ?? []).map((read) => read.reason));
+  const forbidden = paths.filter(
+    (path) =>
+      path.startsWith("Figma2Astro Agentic Rules/") ||
+      path.startsWith("art-direction/")
+  );
+  if (forbidden.length > 0) {
+    errors.push(`forbidden reads: ${forbidden.join(", ")}`);
+  }
+  if (
+    context.contextBytes > context.contextLimitBytes ||
+    context.declaredSourceBytes > context.sourceLimitBytes
+  ) {
+    errors.push("context or materialized source budget exceeded");
+  }
+  if (task.targetFile && ["reuse", "compose"].includes(task.intent)) {
+    if (!paths.includes(task.targetFile)) errors.push("targetFile is not in read plan");
+  }
+  if (task.intent === "exact-edit") {
+    if (
+      paths.some(
+        (path) =>
+          !path.startsWith("src/styles/tokens/") || !path.endsWith(".css")
+      )
+    ) {
+      errors.push("exact-edit escaped foundations-only context");
+    }
+    if (
+      reasons.has("component-family-rule") ||
+      reasons.has("matching-approved-brand-rules")
+    ) {
+      errors.push("exact-edit loaded family or brand context");
+    }
+  } else if (task.intent === "reuse") {
+    if (
+      paths.some(
+        (path) =>
+          path.startsWith(".agentic-rules/components/") ||
+          path.startsWith(
+            "project-context/brand-foundations/brand-expression/"
+          )
+      )
+    ) {
+      errors.push("reuse loaded family or brand context");
+    }
+    if ((context.dependencies ?? []).length > 0) {
+      errors.push("reuse materialized dependency sources");
+    }
+  } else if (task.intent === "compose") {
+    if (paths.includes(".agentic-rules/components/sections.md")) {
+      errors.push("compose loaded the full sections family rule");
+    }
+    if (
+      (context.components ?? []).some(
+        (component) => (component.dependencies ?? []).length > 0
+      ) &&
+      !reasons.has("direct-dependency-source")
+    ) {
+      errors.push("compose omitted direct dependency sources");
+    }
+  } else if (task.intent === "repair") {
+    if (
+      !reasons.has("component-repair-source") ||
+      !reasons.has("component-family-rule")
+    ) {
+      errors.push("repair omitted source or family rule");
+    }
+    if (reasons.has("registry-projection")) {
+      errors.push("repair loaded registry projections");
+    }
+  } else if (task.intent === "extend") {
+    for (const requiredReason of [
+      "component-source-and-api",
+      "component-family-rule",
+      "component-category-rule",
+      "registry-projection",
+      "guides-projection"
+    ]) {
+      if (!reasons.has(requiredReason)) {
+        errors.push(`extend omitted ${requiredReason}`);
+      }
+    }
+  } else if (task.intent === "create" && task.status === "ready") {
+    for (const requiredReason of [
+      "component-gap-evidence",
+      "creation-framework-rule",
+      "component-creation-rule",
+      "public-api-framework"
+    ]) {
+      if (!reasons.has(requiredReason)) {
+        errors.push(`create planning omitted ${requiredReason}`);
+      }
+    }
+    if (context.phase !== "create-planning" || !context.nextStep) {
+      errors.push("create planning phase or nextStep is missing");
+    }
+    if (!familyContext || familyContext.status !== "ready") {
+      errors.push("create family resolution is not ready");
+    } else {
+      const familyReasons = familyContext.readPlan.map((read) => read.reason);
+      if (
+        familyContext.phase !== "create-family-resolution" ||
+        familyReasons.join("|") !==
+          "creation-family-rule|registry-projection|guides-projection"
+      ) {
+        errors.push("create family phase is not narrowed to family and projections");
+      }
+    }
+  }
+  if (
+    scenario.control?.prohibitedCreation &&
+    !task.constraints?.prohibitedCreations.includes(
+      scenario.control.prohibitedCreation
+    )
+  ) {
+    errors.push("negated creation was not captured as a constraint");
+  }
+  return errors;
+};
+
+export const runDeterministicRuntimeGate = async ({
+  projectRoot = ".",
+  scenarios
+}) => {
+  const absoluteRoot = resolve(projectRoot);
+  const visibleManifest = await collectSnapshotManifest(absoluteRoot, {
+    agentVisible: true
+  });
+  const records = [];
+  const routeAndContextDurations = [];
+
+  for (const [index, scenario] of scenarios.entries()) {
+    const fixtureRoot = await mkdtemp(join(tmpdir(), "runtime-v11-gate-"));
+    const started = performance.now();
+    try {
+      await copyManifest(visibleManifest, fixtureRoot);
+      await applyFixtureOperations(
+        fixtureRoot,
+        scenario.fixture.operations,
+        absoluteRoot
+      );
+      const selected = deterministicPromptSelection(scenario, index);
+      const oracle = oracleForCondition(scenario, selected.precision);
+      const routeStarted = performance.now();
+      const task = routeAgentRequest({
+        prompt: selected.prompt,
+        targetFile: scenario.fixture.targetFile,
+        projectRoot: fixtureRoot
+      });
+      const routeMs = performance.now() - routeStarted;
+      const contractErrors = validateTaskContract(task);
+      const contextStarted = performance.now();
+      const context = resolveAgentContext({
+        task,
+        projectRoot: fixtureRoot
+      });
+      const contextMs = performance.now() - contextStarted;
+      routeAndContextDurations.push(routeMs + contextMs);
+      let familyContext = null;
+      if (task.intent === "create" && task.status === "ready") {
+        familyContext = resolveAgentContext({
+          task,
+          projectRoot: fixtureRoot,
+          creationDraft: scenario.creationTarget
+        });
+      }
+      const actualTerminal =
+        task.status === "blocked" || context.status === "blocked"
+          ? "blocked"
+          : "accepted";
+      const expectedIntentMatches =
+        oracle.intent === null || task.intent === oracle.intent;
+      const expectedTerminalMatches = actualTerminal === oracle.terminal;
+      const rolesValid = (task.targets ?? []).every((target) =>
+        ["primary", "dependency", "context"].includes(target.role)
+      );
+      const primaryTargets = (task.targets ?? []).filter(
+        (target) => target.role === "primary"
+      );
+      const semanticErrors = deterministicContextErrors({
+        task,
+        context,
+        familyContext,
+        scenario
+      });
+      if (task.intent === "create" && task.status === "ready") {
+        const componentPrimary = primaryTargets.filter(
+          (target) => target.kind === "component"
+        );
+        if (
+          componentPrimary.length !== 1 ||
+          componentPrimary[0].exists !== false
+        ) {
+          semanticErrors.push("create requires exactly one missing primary component");
+        }
+        if (
+          task.targets
+            .filter(
+              (target) =>
+                target.kind === "component" && target.role === "dependency"
+            )
+            .some((target) => !target.exists)
+        ) {
+          semanticErrors.push("create has a missing dependency");
+        }
+      }
+      if (
+        scenario.id === "create-small" &&
+        task.targets.some((target) => target.id === "Label")
+      ) {
+        semanticErrors.push("lowercase label prop matched Label component");
+      }
+      const errors = [
+        ...contractErrors,
+        ...(expectedIntentMatches
+          ? []
+          : [`intent ${task.intent} != ${oracle.intent}`]),
+        ...(expectedTerminalMatches
+          ? []
+          : [`terminal ${actualTerminal} != ${oracle.terminal}`]),
+        ...(rolesValid ? [] : ["invalid target role"]),
+        ...semanticErrors
+      ];
+      records.push({
+        run_id: `D${String(index + 1).padStart(2, "0")}`,
+        scenario_id: scenario.id,
+        fixture_id: scenario.fixture.id,
+        language: selected.language,
+        expected_intent: oracle.intent,
+        router_intent: task.intent,
+        expected_terminal: oracle.terminal,
+        terminal_status: actualTerminal,
+        route_status: task.status,
+        blocked_reason: task.blockedReason,
+        targets: task.targets,
+        constraints: task.constraints,
+        target_file: task.targetFile,
+        allow_new_components: task.allowNewComponents,
+        brand_mode: task.brandMode,
+        dependencies: context.dependencies,
+        missing: context.missing,
+        phase: context.phase,
+        next_step: context.nextStep,
+        descriptor_bytes: context.contextBytes,
+        descriptor_limit_bytes: context.contextLimitBytes,
+        required_reads: context.requiredReads,
+        read_plan: context.readPlan,
+        declared_source_bytes: context.declaredSourceBytes,
+        source_limit_bytes: context.sourceLimitBytes,
+        family_phase:
+          familyContext === null
+            ? null
+            : {
+                status: familyContext.status,
+                phase: familyContext.phase,
+                required_reads: familyContext.requiredReads,
+                read_plan: familyContext.readPlan,
+                declared_source_bytes: familyContext.declaredSourceBytes,
+                source_limit_bytes: familyContext.sourceLimitBytes
+              },
+        timing_ms: {
+          route: routeMs,
+          context: contextMs,
+          wall: performance.now() - started
+        },
+        changed_files: [],
+        diff_size_bytes: 0,
+        registry_delta: 0,
+        tool_calls: 0,
+        validator_calls: 0,
+        usage: {
+          input_tokens: { value: null, source: "unavailable" },
+          output_tokens: { value: null, source: "unavailable" },
+          cached_tokens: { value: null, source: "unavailable" },
+          reasoning_tokens: { value: null, source: "unavailable" }
+        },
+        quality_score: errors.length === 0 ? 100 : 0,
+        status: errors.length === 0 ? "passed" : "failed",
+        errors
+      });
+    } finally {
+      await rm(fixtureRoot, { recursive: true, force: true });
+    }
+  }
+
+  const cold = await runLocalMicrobenchmark({
+    projectRoot: absoluteRoot,
+    scenarios,
+    iterations: 1,
+    language: "en",
+    precision: "guide-exact",
+    processState: "cold"
+  });
+  const warmP95 = percentile(routeAndContextDurations, 0.95);
+  const coldP95 = percentile(
+    cold.map((record) => record.process_ms.p95),
+    0.95
+  );
+  const failed = records.filter((record) => record.status === "failed");
+  const falseReady = records.filter(
+    (record) =>
+      record.terminal_status === "accepted" &&
+      record.expected_terminal === "blocked"
+  );
+  const falseBlocked = records.filter(
+    (record) =>
+      record.terminal_status === "blocked" &&
+      record.expected_terminal === "accepted"
+  );
+  return {
+    version: "1.1.0",
+    generated_at: nowIso(),
+    status:
+      failed.length === 0 && warmP95 < 50 && coldP95 < 250
+        ? "passed"
+        : "failed",
+    summary: {
+      runs: records.length,
+      passed: records.length - failed.length,
+      failed: failed.length,
+      false_ready: falseReady.length,
+      false_blocked: falseBlocked.length,
+      forbidden_reads: records.reduce(
+        (total, record) =>
+          total +
+          record.required_reads.filter(
+            (path) =>
+              path.startsWith("Figma2Astro Agentic Rules/") ||
+              path.startsWith("art-direction/")
+          ).length,
+        0
+      ),
+      warm_route_context_p95_ms: warmP95,
+      cold_process_p95_ms: coldP95
+    },
+    records
+  };
 };
 
 export const readBenchmarkRuns = async (path) => loadJsonLines(path);
