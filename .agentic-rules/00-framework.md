@@ -15,9 +15,9 @@ Source references:
 - `CSS-NAMING-CONVENTIONS.md`
 - `WORKFLOW.md`
 - `art-direction/README.md`
-- `project-context/brand-foundations/brand-expression/contract.md`
+- `project-context/brand-foundations/brand-expression/contract.json`
 - `.agentic-rules/08-brand-expression.md`
-- `src/data/design-system-roadmap.json`
+- `src/data/design-system/componentArchitecture.json`
 
 ## Purpose
 
@@ -61,7 +61,8 @@ Rules:
 - Tokens live in CSS variable files.
 - Components consume tokens.
 - Documentation mirrors the code.
-- Roadmap status mirrors actual implementation progress.
+- Registry readiness records current implementation, visual, and validation
+  state without storing history.
 - Do not let documentation describe a token, component or rule that does not
   exist in code.
 - Do not create hidden local systems in page CSS when the token/component layer
@@ -72,14 +73,15 @@ documentation in the same work batch.
 
 Use the more precise source-of-truth split when visual direction is involved:
 
-- Roadmap JSON owns target scope, priority, and delivery status.
+- The component registry owns discovery and current readiness.
 - CSS Variables own design values.
 - Astro components own executable APIs and behavior.
 - `art-direction/` owns reusable visual-design knowledge and calibration
   methods.
 - An approved project Brand Expression Contract owns project-specific visual
   intent.
-- Figma owns the editable design representation, not the production API.
+- Figma owns an optional editable design representation when an explicit Figma
+  operation is requested, not the production API.
 - Stable IDs, registry records, and adapters own Astro ↔ Figma identity.
 
 Figma page names, spaces, icons, and hierarchy may improve human navigation,
@@ -247,26 +249,25 @@ replace it.
 
 ## Design-System Work Order
 
-For each category, work in this order:
+For structural component or token work, use this order:
 
 ```txt
-1. Read the roadmap and current implementation evidence
-2. Read the universal art-direction knowledge when visual composition matters
-3. Read the approved project Brand Expression Contract, if one exists
-4. Select or extend Variables and Styles
-5. Select or extend the existing component family
-6. Implement and document in Astro
-7. Validate structure, behavior and responsive states in the browser
-8. Calibrate visual intent against approved evidence
-9. Represent the accepted result in Figma
-10. Verify Astro ↔ Figma parity and update roadmap evidence
+1. Classify the task and resolve the smallest context pack
+2. Verify that an existing token or component cannot solve the request
+3. Read category and family rules only for repair, extension, or creation
+4. Read matching approved Brand/Composition rules when visual decisions change
+5. Select or extend Variables and Styles
+6. Select, extend, or explicitly create the component family
+7. Implement and document in Astro
+8. Validate structure, behavior, and responsive states
+9. Record current registry readiness
+10. Project to Figma only after an explicit Figma request
 ```
 
 Rules:
 
 - Do not start broad component usage before variables are stable.
 - Do not document styles that do not exist in code.
-- Do not mark roadmap items done until code and documentation match.
 - When a category changes, update the matching documentation page.
 - Do not treat a draft or `not-configured` Brand Expression Contract as
   production direction.
@@ -306,20 +307,17 @@ Rules:
 - If a tooltip explains when to use a token, treat that text as operational
   AI context.
 
-## Roadmap Rules
+## Component Readiness Rules
 
-Use `src/data/design-system-roadmap.json` as the progress map.
+Use `src/data/design-system/componentArchitecture.json` to record only current
+component state:
 
-Update roadmap status when:
+- `status` owns implementation lifecycle;
+- `readiness.visual` owns starter, modified, review, or approved state;
+- `readiness.validation` owns not-run, partial, passed, or failed state.
 
-- a variable group becomes implemented and documented,
-- a style group is intentionally created or intentionally skipped,
-- agentic rules are drafted or finalized,
-- a component/token category changes scope,
-- a category moves from draft/in-progress to done.
-
-Do not update roadmap status for tiny copy-only edits unless the status itself
-changes.
+Do not store release history, completed checkpoints, or archived evidence in
+the registry. Git owns history.
 
 ## Hardcoded Value Policy
 
@@ -357,7 +355,7 @@ For structural changes:
 - read the router and relevant rules,
 - inspect existing components/tokens,
 - update code and documentation together,
-- update roadmap status if needed,
+- update current component readiness when its state changes,
 - run `npm run build`.
 
 ## Agent Decision Checklist
@@ -370,7 +368,7 @@ Before changing UI or design-system code, answer:
 4. Should this be a class, prop, `data-*` attribute or CSS variable?
 5. Does this change belong globally or locally?
 6. Does documentation need to change?
-7. Does roadmap status need to change?
+7. Does current component readiness need to change?
 8. Is a build required?
 
 ## Preferred Implementation Pattern
@@ -426,5 +424,5 @@ A framework-level change is done when:
 - documentation reflects the code,
 - naming and token responsibility match these rules,
 - no obsolete exploratory system remains,
-- roadmap status is current when applicable,
+- component readiness is current when applicable,
 - build passes for structural changes.

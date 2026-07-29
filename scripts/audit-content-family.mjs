@@ -297,12 +297,6 @@ for (const contract of [
   requireContract(figmaRule, contract, figmaRulePath);
 }
 
-const globalRulesPath = "AGENTIC-RULES.json";
-const globalRules = read(globalRulesPath);
-for (const name of Object.keys(sources)) {
-  requireContract(globalRules, `"${name}"`, globalRulesPath);
-}
-
 const polishPattern =
   /[ąćęłńóśźż]|\b(?:oraz|dla|jest|należy|brakuje|istnieje|użyj|kiedy|komponentów|stron|systemu|kolorów|gotowy)\b/iu;
 for (const path of [agenticRulePath, figmaRulePath]) {

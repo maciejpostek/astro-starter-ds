@@ -3,6 +3,10 @@
 This directory contains operational rules for AI agents that reconcile Figma
 with the Astro design system through Figma MCP.
 
+These rules activate only after an explicit user request for a Figma
+operation. Normal Astro edits, component reuse, page composition, validation,
+and release do not read Figma or require parity.
+
 The rules document intentional differences between design-tool
 representations and production code. Their purpose is an unambiguous mapping
 without guessing, duplication, or value drift.
@@ -29,18 +33,18 @@ Figma page names, indentation, spaces, icons, and order are navigation
 metadata. Machine mapping must use stable node/component IDs, registry
 identity, and the adapters in this directory.
 
-## Required code-first workflow
+## Explicit Figma operation workflow
 
 ```text
-Roadmap JSON
+explicit Figma request
+→ selected component registry context
 → existing-state audit
 → approved visual intent, when brand-sensitive
 → Astro implementation
 → Astro documentation and browser validation
 → human visual calibration
 → Figma representation
-→ parity validation
-→ release
+→ scoped reconciliation result
 ```
 
 When reconciling an existing Figma node:
@@ -199,8 +203,8 @@ Every new operational adapter should document:
 - `.agentic-rules/07-elevation.md`
 - `.agentic-rules/08-brand-expression.md`
 - `art-direction/README.md`
-- `project-context/brand-foundations/brand-expression/contract.md`
-- `src/data/design-system-roadmap.json`
+- `project-context/brand-foundations/brand-expression/contract.json`
+- `src/data/design-system/componentArchitecture.json`
 - `src/styles/tokens/component-sizes.css`
 - `src/styles/tokens/motion-foundations.css`
 - `src/styles/tokens/elevation-foundations.css`

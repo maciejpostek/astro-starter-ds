@@ -138,23 +138,6 @@ for (const contract of [
   requireContract(figmaRule, contract, figmaRulePath);
 }
 
-const roadmap = JSON.parse(read("src/data/design-system-roadmap.json") || "{}");
-const roadmapItem = roadmap.items?.find((item) => item.id === "asset.brand-marks");
-if (!roadmapItem) {
-  errors.push("Roadmap is missing asset.brand-marks.");
-} else if (!roadmapItem.evidence?.sourcePaths?.includes(contractPath)) {
-  errors.push("Brand mark roadmap evidence is missing the canonical contract.");
-} else {
-  if (roadmapItem.status !== "ready") {
-    errors.push("Brand mark roadmap item must be ready after parity validation.");
-  }
-  for (const nodeId of ["587:2", "587:3", "587:50", "587:63", "571:218"]) {
-    if (!roadmapItem.evidence?.figmaNodeIds?.includes(nodeId)) {
-      errors.push(`Brand mark roadmap evidence is missing Figma node ${nodeId}.`);
-    }
-  }
-}
-
 const authoredFiles = [contractPath, docsPath, agenticRulePath, figmaRulePath];
 const polishPattern =
   /[ąćęłńóśźż]|\b(?:oraz|dla|jest|należy|brakuje|istnieje|użyj|kiedy|komponentów|stron|systemu|kolorów|gotowy)\b/iu;

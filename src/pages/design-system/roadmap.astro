@@ -3,73 +3,61 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
 import DsDocCard from "../../components/design-system/DsDocCard.astro";
 import DsDocGrid from "../../components/design-system/DsDocGrid.astro";
-import DsDocSectionHeader from "../../components/design-system/DsDocSectionHeader.astro";
-import DsRoadmapBlock, {
-  type RoadmapItem
-} from "../../components/design-system/DsRoadmapBlock.astro";
-import roadmap from "../../data/design-system-roadmap.json";
-import { createPublicRoadmap } from "../../data/design-system/roadmapProjection.mjs";
+import DsDocSection from "../../components/design-system/DsDocSection.astro";
+import DsComponentReadiness from "../../components/design-system/DsComponentReadiness.astro";
+import componentArchitecture from "../../data/design-system/componentArchitecture.json";
 
-const roadmapItems = createPublicRoadmap(roadmap) as RoadmapItem[];
-const flattenItems = (items: RoadmapItem[]): RoadmapItem[] =>
-  items.flatMap((item) => [item, ...flattenItems(item.children ?? [])]);
-const allItems = flattenItems(roadmapItems);
-const doneCount = allItems.filter((item) => item.status === "done").length;
-const notStartedCount = allItems.filter((item) => item.status === "not-started").length;
-const criticalCount = allItems.filter((item) => item.priority === "critical").length;
-const activePhase = roadmap.phases.find((phase) => phase.status === "in-progress");
+const publicLayers = new Set(["atom", "molecule", "organism", "template"]);
+const records = componentArchitecture.components.filter((record) =>
+  publicLayers.has(record.layer)
+);
+const readyCount = records.filter((record) => record.status === "ready").length;
+const reviewedCount = records.filter(
+  (record) => record.readiness.visual === "approved"
+).length;
+const validatedCount = records.filter(
+  (record) => record.readiness.validation === "passed"
+).length;
 ---
 
-<BaseLayout title="Roadmap - Astro Design System">
+<BaseLayout title="Component Readiness - Astro Design System">
   <div class="page">
     <SectionHeader
-      eyebrow="Roadmap"
-      title="Code-first design system delivery from foundations to page templates."
+      eyebrow="Component Readiness"
+      title="Current implementation, visual review, and validation state."
       variant="hero"
     />
 
-    <section class="ds-roadmap-section" aria-labelledby="roadmap-overview-title">
-      <DsDocSectionHeader
-        number="01"
-        title="Roadmap overview"
-        id="roadmap-overview-title"
-        description="This public projection is generated from the roadmap v2 source. Internal evidence, repository paths and Figma node identifiers remain private."
-      />
-
+    <DsDocSection
+      id="component-readiness-overview"
+      title="Readiness overview"
+      description="This lightweight projection is generated from the component registry. It records current state only; Git owns history and completed planning checkpoints."
+    >
       <DsDocGrid columns={3}>
         <DsDocCard
-          eyebrow="Current phase"
-          title={activePhase?.title ?? "No active phase"}
-          text="Work follows the dependency order recorded in the roadmap rather than starting from page-level examples."
+          eyebrow="Implementation"
+          title={`${readyCount} / ${records.length} ready`}
+          text="Ready means the current Astro implementation and documented API are available for reuse."
         />
         <DsDocCard
-          eyebrow="Current status"
-          title={`${doneCount} done / ${notStartedCount} not started`}
-          text="Ready status requires completed code, documentation, validation and design-representation checks."
+          eyebrow="Visual review"
+          title={`${reviewedCount} approved`}
+          text="Starter, modified, review, and approved states distinguish system defaults from project visual approval."
         />
         <DsDocCard
-          eyebrow="Priority"
-          title={`${criticalCount} critical items`}
-          text={`${roadmap.inventory.existingPublicComponentCount} existing public components are preserved as the migration baseline.`}
+          eyebrow="Validation"
+          title={`${validatedCount} passed`}
+          text="Validation tracks the current result only and does not store release history."
         />
       </DsDocGrid>
-    </section>
+    </DsDocSection>
 
-    <section class="ds-roadmap-section" aria-labelledby="roadmap-items-title">
-      <DsDocSectionHeader
-        number="02"
-        title="Roadmap items"
-        id="roadmap-items-title"
-        description="Items are grouped by category and family while their implementation dependencies remain defined in the canonical JSON source."
-      />
-
-      <DsRoadmapBlock items={roadmapItems} />
-    </section>
+    <DsDocSection
+      id="component-readiness-inventory"
+      title="Component inventory"
+      description="Filter the reusable public inventory by family, implementation status, visual adaptation, or validation result."
+    >
+      <DsComponentReadiness records={records} />
+    </DsDocSection>
   </div>
 </BaseLayout>
-
-<style>
-  .ds-roadmap-section + .ds-roadmap-section {
-    margin-top: var(--space-huge);
-  }
-</style>

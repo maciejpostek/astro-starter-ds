@@ -1,202 +1,158 @@
-# Astro Design System Agentic Rules Architecture
+# AI-Native Design System V1.0 Operational Model
 
-This document describes the operational architecture for AI agents working with
-the Astro design system. The system is intentionally lightweight: agents
-start from one router, read only the rule packs needed for the touched category,
-and keep code, documentation and roadmap status aligned.
+This document explains the implemented reuse-first runtime for people. The
+machine-readable router is `AGENTIC-RULES.json`.
 
-## Entry Flow
+## Runtime
 
-```txt
-AI / Codex / Agent
-  |
-  v
-AGENTIC-RULES.json
-  |
-  |-- architecture.overview_path
-  |     -> AGENTIC-RULES.md
-  |
-  |-- architecture.framework_strategy_path
-  |     -> DESIGN-SYSTEM-FRAMEWORK.md
-  |
-  |-- architecture.figma_to_astro_rules_path
-  |     -> Figma2Astro Agentic Rules/README.md
-  |
-  |-- architecture.css_naming_path
-  |     -> CSS-NAMING-CONVENTIONS.md
-  |
-  |-- architecture.roadmap_path
-  |     -> src/data/design-system-roadmap.json
-  |
-  |-- architecture.project_context_path
-  |     -> project-context/README.md
-  |
-  |-- architecture.art_direction_knowledge_path
-  |     -> art-direction/README.md
-  |
-  |-- architecture.brand_expression_contract_path
-  |     -> project-context/brand-foundations/brand-expression/contract.md
-  |
-  v
-Touched category detection
-  |
-  |-- sizing change
-  |     -> .agentic-rules/01-sizing.md
-  |
-  |-- color change
-  |     -> .agentic-rules/02-colors.md
-  |
-  |-- typography change
-  |     -> .agentic-rules/03-typography.md
-  |
-  |-- layout change
-  |     -> .agentic-rules/04-layout.md
-  |
-  |-- reusable component/API change
-  |     -> .agentic-rules/05-components.md
-  |
-  |-- motion change
-  |     -> .agentic-rules/06-motion.md
-  |
-  |-- elevation change
-  |     -> .agentic-rules/07-elevation.md
-  |
-  |-- brand-sensitive visual change
-  |     -> .agentic-rules/08-brand-expression.md
-  |
-  v
-Implementation
-  |
-  |-- update tokens/components/styles
-  |-- update design-system documentation
-  |-- update roadmap status when needed
-  |-- run build after structural changes
+```text
+Prompt
+  -> Classify
+  -> Resolve Context
+  -> Execute
+  -> Validate
+  -> Accepted or Blocked
 ```
 
-## Rule Pack Structure
+The runtime uses one agent. Profiles scale context and validation; they are not
+separate agents or permanent workflows.
 
-```txt
-.agentic-rules/
-  00-framework.md      -> global AI-native framework rules
-  01-sizing.md         -> sizing variables, attributes and usage rules
-  02-colors.md         -> color variables, attributes and usage rules
-  03-typography.md     -> typography variables, text styles and usage rules
-  04-layout.md         -> layout, grid and section composition rules
-  05-components.md     -> component API, props, attributes and reuse rules
-  06-motion.md         -> durations, easings, transitions and Reduced Motion
-  07-elevation.md      -> raised, floating and overlay surface relationships
-  08-brand-expression.md -> approved art direction, evidence and visual QA
-  components/sections.md -> website-section taxonomy and composition rules
+## 1. Classify
 
-Figma2Astro Agentic Rules/
-  README.md                   -> router for Figma MCP to Astro translation
-  01-component-size.md        -> Component Size modes to data-component-size mapping
-  02-color-modes.md           -> semantic color groups and Light/Dark modes
-  03-responsive-clamp-modes.md -> Min/Max representation of responsive clamps
-  04-layout.md                -> layout collections, viewport modes and Astro adapters
-  05-typography.md            -> simplified Figma typography and Astro mapping
-  06-actions-components.md    -> icons, Button and IconButton mapping
-  07-component-library-roadmap.md -> public library inventory and SLOT policy
-  08-forms-components.md      -> Forms family adapter
-  09-data-display-components.md -> Data Display family adapter
-  10-text-components.md       -> Text family adapter
-  11-content-components.md    -> Content family adapter
-  12-disclosure-components.md -> Disclosure family adapter
-  13-media-components.md      -> Media family adapter
-  14-visual-components.md     -> Visual family adapter
-  15-navigation-components.md -> Navigation family adapter
-  16-cards-components.md      -> Cards family adapter
-  17-sidepanels-components.md -> Sidepanels family adapter
-  18-timeline-components.md   -> Timeline family adapter
-  22-website-sections.md      -> Website Sections and family-first Figma mapping
+Every request is classified as:
+
+- `exact-edit` — change a named token, value, property, or exact target;
+- `reuse` — use one named existing component;
+- `compose` — assemble a page or section from existing components;
+- `repair` — correct an existing implementation without changing its role;
+- `extend` — explicitly change an existing public component contract;
+- `create` — explicitly create a new reusable public component.
+
+The result is a Task Contract validated against
+`architecture/agent-task.schema.json`.
+
+Component creation is default-deny. Creating a page or section does not grant
+permission to create a public component, token, registry record, or API. A
+missing asset returns a blocked result with existing alternatives.
+
+## 2. Resolve Context
+
+Use `npm run agent:context` to retrieve bounded context:
+
+```bash
+npm run agent:context -- component Button.Primary
+npm run agent:context -- token --color-background-canvas
+npm run agent:context -- compose SectionHeader SwiperStarter ArticleCard
+npm run agent:context -- brand hero
 ```
 
-## Operating Model
+The resolver returns selected records, direct dependencies, required file
+paths, skipped contexts, validators, alternatives, and missing inputs.
 
-```txt
-class
-  = type / role
-  = what the thing is
-  = .button, .card, .tag, .l-section
+It does not return the complete component registry or token library. Context
+budgets are enforced in bytes:
 
-data-*
-  = variant / sizing / state / tone / status / mode
-  = how the thing changes
-  = data-variant, data-component-size, data-state, data-tone, data-status
-
-CSS variables
-  = values and design decisions
-  = primitive, semantic and component-based tokens
-
-Astro components
-  = primary authoring interface
-  = reusable props render stable classes, attributes and token-backed styles
+```text
+tiny    4 KB
+small  12 KB
+medium 40 KB
+large 100 KB
 ```
 
-## Reading Policy
+## 3. Execute
 
-Agents should not read every long rule file for every small task. The router
-keeps a short summary of all categories, and the full rule pack is required only
-when the task touches that category.
+### Exact edit
 
-Read only `AGENTIC-RULES.json` for:
+Read the exact definition and change only its owning file. Skip component,
+brand, Art Direction, Figma, and full-build context.
 
-- narrow copy changes,
-- simple documentation text edits,
-- micro visual fixes that do not change token/component contracts.
+### Reuse
 
-Read `AGENTIC-RULES.md` and `00-framework.md` for:
+Resolve one canonical component record, read its source and the target file,
+and use its documented API. Do not read its family rule unless the component
+contract is being changed.
 
-- new reusable components,
-- new global styling conventions,
-- changes to token architecture,
-- changes to documentation architecture,
-- changes that affect more than one category.
+### Compose
 
-Read category files for:
+Resolve only the named components and their direct dependencies. Use the
+compact layout contract:
 
-- sizing changes -> `01-sizing.md`,
-- color changes -> `02-colors.md`,
-- typography changes -> `03-typography.md`,
-- layout changes -> `04-layout.md`,
-- component API changes -> `05-components.md`.
-- motion changes -> `06-motion.md`.
-- elevation changes -> `07-elevation.md`.
-- brand expression, visual redesign, references or art direction ->
-  `08-brand-expression.md`.
-
-Read `Figma2Astro Agentic Rules/README.md` and the relevant numbered rule when
-the task generates, implements or reconciles a Figma design through Figma MCP.
-
-Read `project-context/README.md` and the relevant populated context folders
-before brand, content, information-architecture or page-composition work. Empty
-context is an explicit input gap: agents must not derive project-specific
-strategy from neutral component examples.
-
-Before brand-sensitive visual work, read `art-direction/README.md`, the
-project-specific Brand Expression Contract and `08-brand-expression.md`.
-Universal knowledge explains design mechanisms but never selects a project
-style. A contract that is not `approved` is an explicit input gap.
-
-## Design System Work Loop
-
-```txt
-1. Identify touched category.
-2. For brand-sensitive work, verify the project contract and reference status.
-3. Read the router summary and matching rule pack.
-4. Check existing tokens and components first.
-5. Calibrate a bounded visual pilot when the direction is new or changing.
-6. Obtain human visual approval before broad propagation.
-7. Encode approved shared decisions in tokens and components.
-8. Update design-system documentation to mirror code.
-9. Validate browser behavior and Figma parity.
-10. Update roadmap status when scope/status changes.
-11. Run the required audits and build for structural changes.
+```text
+.l-section
+  -> .l-container
+    -> .l-grid | .l-stack | .l-cluster
 ```
 
-## Principle
+Use props and data attributes for finite variants. Compose mode cannot create
+or extend a public component.
 
-This system exists to help AI work in an iterative, component-by-component and
-section-by-section workflow. It should reduce guessing, not become a heavy
-process. The goal is consistent reuse of the design system while keeping
-work fast enough for real project iteration.
+### Repair, extend, and create
+
+Read the relevant category and family rules. Cross-category and public API
+changes also require `.agentic-rules/00-framework.md`,
+`.agentic-rules/05-components.md`, and `DESIGN-SYSTEM-FRAMEWORK.md`.
+
+`create` requires explicit reusable-component intent and proof that the
+registry contains no suitable existing component.
+
+## 4. Brand and Composition Activation
+
+The canonical project visual contract is:
+
+```text
+project-context/brand-foundations/brand-expression/contract.json
+```
+
+Its generated Markdown projection is for human reading and must not be edited
+directly.
+
+Exact edits and named reuse skip the contract. Named composition reads only
+matching approved rules. Open-ended composition, new visual components, and
+new visual direction require an approved contract.
+
+Contract rules must map visual intent to real implementation mechanisms:
+
+- existing CSS Variables;
+- existing classes;
+- finite data attributes;
+- Astro components;
+- CSS declarations using tokens;
+- named runtime behaviors.
+
+An unapproved contract blocks creative interpretation but does not block
+mechanical reuse.
+
+## 5. Validate
+
+Run the smallest relevant validator:
+
+- token change — affected foundation audit;
+- component use — targeted API or Astro check;
+- page composition — Astro check/build and browser review when visual or
+  responsive behavior changed;
+- repair — matching family audit;
+- extend/create — registry, family, documentation, and build validation.
+
+Repair is bounded to one attempt for exact edits and reuse, and two attempts
+for compose, repair, extend, or create. Exhausted repair returns `blocked`.
+
+Figma is not a normal validator. Read Figma rules and use Figma tools only
+after an explicit user request for a Figma operation.
+
+## 6. Result
+
+Every run ends as `accepted` or `blocked` and reports:
+
+```text
+Status
+Intent
+Reused components
+Created components
+Changed files
+Validation
+Missing input
+```
+
+Run history is not stored in tracked architecture files. Git owns source
+history. The Component Readiness projection stores only the current
+implementation, visual, and validation state.

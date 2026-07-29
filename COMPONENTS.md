@@ -296,7 +296,10 @@ Usage rules:
 - Include once in `BaseLayout`.
 - It reads `data-component-name` from the closest hovered component root.
 - In Guides mode, clicking a component copies its `data-component-name` value
-  to the clipboard and shows `Copied to clipboard`.
+  to the clipboard and shows `copied!`.
+- While Guides are enabled, the document-level listener blocks normal click
+  actions. The Guides toggle remains interactive so the user can return to
+  normal page interaction.
 - It must use `pointer-events: none`; click interception belongs to the
   document-level listener, not to the floating visual layer itself.
 - Use it during live design reviews to reference exact component names.
@@ -1422,7 +1425,7 @@ Reusable implementation rules:
   release facts, issue summaries, categories, dates, ordering, destinations,
   media rights, pagination state, SEO, subscription, remote retrieval,
   analytics, ownership, and approval project- or application-owned. Its Astro
-  contract is in review until Figma parity can be completed.
+  contract currently has review-level visual readiness and partial validation.
 - Use `ProductComparisonSection` for reviewed option-by-capability data in a
   Comparison or Alternatives composition. Reuse ContentBlock,
   ComparisonTable, and optional Button; keep product identities, capabilities,

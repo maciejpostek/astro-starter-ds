@@ -2,7 +2,36 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DsDocSection from "../../components/design-system/DsDocSection.astro";
 import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
-import promptToAstroDiagramUrl from "../../../architecture/generated/prompt-to-astro-page-section.svg?url";
+import ArchitectureExplorer from "../../components/design-system/architecture/ArchitectureExplorer";
+import systemMap from "../../../architecture/system-map.json";
+
+const aiNativeTargetDiagramUrl =
+  "/architecture/generated/ai-native-target-architecture.svg?v=runtime-v1";
+const aiNativeTargetDataUrl =
+  "/architecture/views/ai-native-target-architecture.json";
+const promptToAstroDiagramUrl =
+  "/architecture/generated/prompt-to-astro-page-section.svg?v=prompt-flow-v1";
+const targetArchitectureView = systemMap.views.find(
+  (view) => view.id === "view.ai-native-target-architecture"
+);
+const targetStages =
+  targetArchitectureView &&
+  "presentation" in targetArchitectureView &&
+  targetArchitectureView.presentation
+    ? targetArchitectureView.presentation.stages
+    : [];
+
+const architectureLegend = [
+  { type: "prompt", label: "Prompt / input" },
+  { type: "actor", label: "Actor" },
+  { type: "router", label: "Router" },
+  { type: "decision", label: "Decision gate" },
+  { type: "process", label: "Process" },
+  { type: "source", label: "Source of Truth" },
+  { type: "validator", label: "Validator" },
+  { type: "approval", label: "Human approval" },
+  { type: "output", label: "Output" }
+];
 ---
 
 <BaseLayout title="System Architecture Map - Astro Design System">
@@ -14,9 +43,97 @@ import promptToAstroDiagramUrl from "../../../architecture/generated/prompt-to-a
     />
 
     <DsDocSection
+      id="system-architecture-ai-native-target"
+      title="AI-Native Runtime V1.0"
+      description="Implemented reuse-first runtime. Every normal request follows Classify → Resolve Context → Execute → Validate → Result, while component creation, brand interpretation, Figma, and evals remain conditional side mechanisms."
+    >
+      <figure
+        class="ds-architecture-diagram"
+        aria-labelledby="ai-native-target-diagram-caption"
+      >
+        <div class="ds-architecture-diagram__header">
+          <figcaption id="ai-native-target-diagram-caption">
+            <span class="caption">Implemented architecture · L0 system and agent flow</span>
+            <p>
+              The upper lane contains the five real runtime stages. The lower
+              lane contains mechanisms that activate only under a specific
+              condition or between runs: Creation Gate, Brand Activation,
+              Explicit Figma, and the Eval Harness.
+            </p>
+          </figcaption>
+
+          <a
+            class="ds-architecture-diagram__full-size-link"
+            href={aiNativeTargetDiagramUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open full-size SVG
+          </a>
+        </div>
+
+        <ul
+          class="ds-architecture-diagram__legend"
+          aria-label="Architecture node type legend"
+        >
+          {architectureLegend.map((item) => (
+            <li data-node-type={item.type}>
+              <span aria-hidden="true"></span>
+              {item.label}
+            </li>
+          ))}
+        </ul>
+
+        <ArchitectureExplorer
+          client:visible
+          dataUrl={aiNativeTargetDataUrl}
+          fallbackSvgUrl={aiNativeTargetDiagramUrl}
+        />
+
+        <noscript>
+          <ol class="ds-architecture-diagram__fallback-stages">
+            {targetStages.map((stage) => (
+              <li>
+                <strong>{stage.number} · {stage.title}</strong>
+                <span>{stage.description}</span>
+              </li>
+            ))}
+          </ol>
+          <div class="ds-architecture-diagram__viewport" data-layout="canvas">
+            <a
+              href={aiNativeTargetDiagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Open the AI-Native Design System V1.0 Runtime diagram at full size"
+            >
+              <img
+                src={aiNativeTargetDiagramUrl}
+                width="7686"
+                height="5547"
+                alt="Implemented AI-Native Design System V1.0 architecture showing five core runtime stages and conditional Creation Gate, Brand Activation, Explicit Figma, and Eval Harness mechanisms."
+                loading="eager"
+                decoding="async"
+              />
+            </a>
+          </div>
+        </noscript>
+
+        <p class="ds-architecture-diagram__references">
+          Reference basis:
+          <a href="https://developers.openai.com/api/docs/guides/agents/orchestration">OpenAI orchestration</a>,
+          <a href="https://developers.openai.com/api/docs/guides/agents/guardrails-approvals">guardrails and human review</a>,
+          <a href="https://developers.openai.com/api/docs/guides/agent-evals">agent evals</a>,
+          <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic effective agents</a>,
+          and
+          <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">context engineering</a>.
+        </p>
+      </figure>
+    </DsDocSection>
+
+    <DsDocSection
       id="system-architecture-prompt-to-astro"
       title="Prompt → Astro Page or Section"
-      description="Current-state routing from a user prompt through focused rule selection, project context, reusable asset discovery, conditional brand activation, Astro composition, validation, and terminal handoff."
+      description="Implemented reuse-first composition flow from a prompt through focused component lookup, optional approved brand rules, Astro composition, scoped validation, and an accepted or blocked result."
     >
       <figure
         class="ds-architecture-diagram"
@@ -24,11 +141,12 @@ import promptToAstroDiagramUrl from "../../../architecture/generated/prompt-to-a
       >
         <div class="ds-architecture-diagram__header">
           <figcaption id="prompt-to-astro-diagram-caption">
-            <span class="caption">Current architecture · L1 workflow</span>
+            <span class="caption">Implemented runtime · L1 composition flow</span>
             <p>
-              Ready reuse stays focused. Missing project inputs, unapproved brand
-              direction, and the current component freeze end in explicit blocked
-              outputs. Failed browser validation returns to Astro composition.
+              Named components are reused by default. Brand context activates
+              only when the composition requires a visual decision, and failed
+              validation enters a bounded repair loop before returning a
+              terminal result.
             </p>
           </figcaption>
 
@@ -46,15 +164,12 @@ import promptToAstroDiagramUrl from "../../../architecture/generated/prompt-to-a
           class="ds-architecture-diagram__legend"
           aria-label="Architecture node type legend"
         >
-          <li data-node-type="prompt"><span aria-hidden="true"></span>Prompt / input</li>
-          <li data-node-type="actor"><span aria-hidden="true"></span>Actor</li>
-          <li data-node-type="router"><span aria-hidden="true"></span>Router</li>
-          <li data-node-type="decision"><span aria-hidden="true"></span>Decision gate</li>
-          <li data-node-type="process"><span aria-hidden="true"></span>Process</li>
-          <li data-node-type="source"><span aria-hidden="true"></span>Source of Truth</li>
-          <li data-node-type="validator"><span aria-hidden="true"></span>Validator</li>
-          <li data-node-type="approval"><span aria-hidden="true"></span>Human approval</li>
-          <li data-node-type="output"><span aria-hidden="true"></span>Output</li>
+          {architectureLegend.map((item) => (
+            <li data-node-type={item.type}>
+              <span aria-hidden="true"></span>
+              {item.label}
+            </li>
+          ))}
         </ul>
 
         <div class="ds-architecture-diagram__viewport">
@@ -66,9 +181,9 @@ import promptToAstroDiagramUrl from "../../../architecture/generated/prompt-to-a
           >
             <img
               src={promptToAstroDiagramUrl}
-              width="1427"
-              height="9113"
-              alt="Flowchart showing a prompt routed by the AI agent and Agentic Rules through project-context, reuse, component-gap, brand-sensitivity, Astro composition, validation, repair-loop, blocked-state, and accepted-output paths."
+              width="5178"
+              height="923"
+              alt="Reuse-first flow from a prompt through classification, focused context, Astro composition, conditional brand activation, scoped validation, bounded repair, and accepted or blocked output."
               loading="eager"
               decoding="async"
             />
@@ -235,6 +350,43 @@ import promptToAstroDiagramUrl from "../../../architecture/generated/prompt-to-a
     display: block;
     width: 100%;
     height: auto;
+  }
+
+  .ds-architecture-diagram__viewport[data-layout="canvas"] a {
+    width: max(100%, 320rem);
+  }
+
+  .ds-architecture-diagram__references {
+    max-width: var(--container-small);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+  }
+
+  .ds-architecture-diagram__references a {
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    color: var(--color-text-accent);
+  }
+
+  .ds-architecture-diagram__fallback-stages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--size-256)), 1fr));
+    gap: var(--gap-small);
+    padding: 0;
+    list-style: none;
+  }
+
+  .ds-architecture-diagram__fallback-stages li {
+    display: grid;
+    gap: var(--gap-tiny);
+    padding: var(--component-padding-small);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .ds-architecture-diagram__fallback-stages span {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
   }
 
   @media (width < 48rem) {

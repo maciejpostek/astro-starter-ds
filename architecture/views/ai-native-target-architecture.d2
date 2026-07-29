@@ -1,0 +1,656 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.ai-native-target-architecture
+direction: down
+
+title: "AI-Native Design System V1.0 Runtime" {
+  shape: text
+  near: top-center
+  style.font-size: 30
+  style.bold: true
+  style.font-color: "#0f172a"
+}
+
+runtime: {
+  label: "CORE RUNTIME · EVERY NORMAL REQUEST"
+  direction: right
+  style.fill: "#f8fafc"
+  style.stroke: "#cbd5e1"
+  style.stroke-width: 1
+  style.border-radius: 16
+  stage_classify: {
+    label: "01 · Classify"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_intake_prompt: "1.1 · User Prompt\\nprompt\\nThe requested change, exact names, and target scope." {
+      shape: parallelogram
+      style.fill: "#dbeafe"
+      style.stroke: "#2563eb"
+      style.font-color: "#1e3a8a"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_intake_identity: "1.2 · Exact Guide Identity\\ninput\\nOptional copied component or token identity removes discovery ambiguity." {
+      shape: parallelogram
+      style.fill: "#cffafe"
+      style.stroke: "#0891b2"
+      style.font-color: "#164e63"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_classify_router: "1.3 · Classify\\nrouter\\nSelect exact-edit, reuse, compose, repair, extend, or create." {
+      shape: hexagon
+      style.fill: "#ede9fe"
+      style.stroke: "#7c3aed"
+      style.font-color: "#4c1d95"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_classify_contract: "1.4 · Task Contract\\nartifact\\nRecords targets, creation permission, brand mode, budget, and validation scope." {
+      shape: page
+      style.fill: "#ccfbf1"
+      style.stroke: "#0f766e"
+      style.font-color: "#134e4a"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+  stage_resolve: {
+    label: "02 · Resolve Context"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_context_resolver: "2.1 · Resolve Context\\nrouter\\nQuery only the records and files needed by the Task Contract." {
+      shape: hexagon
+      style.fill: "#ede9fe"
+      style.stroke: "#7c3aed"
+      style.font-color: "#4c1d95"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_context_registry: "2.2 · Component Registry\\nsource of truth\\nDiscovery identity and current readiness; one selected record at a time." {
+      shape: cylinder
+      style.fill: "#d1fae5"
+      style.stroke: "#059669"
+      style.font-color: "#064e3b"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_context_tokens: "2.3 · CSS Variables\\nsource of truth\\nValue truth for exact token and affected styling work." {
+      shape: cylinder
+      style.fill: "#d1fae5"
+      style.stroke: "#059669"
+      style.font-color: "#064e3b"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_context_astro: "2.4 · Astro Sources\\nsource of truth\\nExecutable component API, semantics, and runtime." {
+      shape: cylinder
+      style.fill: "#d1fae5"
+      style.stroke: "#059669"
+      style.font-color: "#064e3b"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_context_rules: "2.5 · Selected Rules\\nsource of truth\\nDetailed category guidance only for repair, extend, or create." {
+      shape: cylinder
+      style.fill: "#d1fae5"
+      style.stroke: "#059669"
+      style.font-color: "#064e3b"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_context_pack: "2.6 · Context Pack\\nartifact\\nRequired reads, skipped contexts, validators, alternatives, and missing inputs." {
+      shape: page
+      style.fill: "#ccfbf1"
+      style.stroke: "#0f766e"
+      style.font-color: "#134e4a"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+  stage_execute: {
+    label: "03 · Execute"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_execute_profile: "3.1 · Select Execution Profile\\nrouter\\nScale effort and permissions to the classified task." {
+      shape: hexagon
+      style.fill: "#ede9fe"
+      style.stroke: "#7c3aed"
+      style.font-color: "#4c1d95"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_execute_exact: "3.2 · Exact Edit\\nprocess\\nEdit one named value or property." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_execute_reuse: "3.3 · Named Reuse\\nprocess\\nImport and use an existing component." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_execute_compose: "3.4 · Compose\\nprocess\\nCombine named components into a page or local section." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_execute_repair: "3.5 · Repair\\nprocess\\nRestore an existing component contract." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_execute_extend: "3.6 · Extend\\nprocess\\nChange an existing API only after explicit intent." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_execute_create: "3.7 · Create\\nprocess\\nCreate a genuinely missing reusable component after the Creation Gate." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+  stage_validate: {
+    label: "04 · Validate"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_validate_scope: "4.1 · Scoped Validation\\nvalidator\\nRun the smallest validators selected for the affected change." {
+      shape: hexagon
+      style.fill: "#fef3c7"
+      style.stroke: "#d97706"
+      style.font-color: "#78350f"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_validate_repair: "4.2 · Bounded Repair\\nprocess\\nRetry once for exact/reuse and at most twice for other profiles." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+  stage_result: {
+    label: "05 · Result"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_result_accepted: "5.1 · Accepted\\noutput\\nReturn intent, reused assets, changed files, and validation." {
+      shape: parallelogram
+      style.fill: "#dcfce7"
+      style.stroke: "#15803d"
+      style.font-color: "#14532d"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_result_blocked: "5.2 · Blocked\\noutput\\nReturn missing input, alternatives, or exhausted repair." {
+      shape: parallelogram
+      style.fill: "#dcfce7"
+      style.stroke: "#15803d"
+      style.font-color: "#14532d"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+}
+
+conditional: {
+  label: "CONDITIONAL AND BETWEEN-RUN MECHANISMS"
+  direction: right
+  style.fill: "#faf5ff"
+  style.stroke: "#cbd5e1"
+  style.stroke-width: 1
+  style.border-radius: 16
+  stage_creation: {
+    label: "C1 · Creation Gate"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_creation_gate: "C1.1 · Explicit Creation Intent\\ndecision gate\\nA page or section request keeps allowNewComponents false." {
+      shape: diamond
+      style.fill: "#fce7f3"
+      style.stroke: "#be185d"
+      style.font-color: "#831843"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_creation_gap: "C1.2 · Gap Proof\\nprocess\\nCheck exact matches and reusable alternatives before creating." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+  stage_brand: {
+    label: "B1 · Brand Activation"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_brand_gate: "B1.1 · Brand Activation\\ndecision gate\\nSkip for exact edit and named reuse; activate for open visual choices." {
+      shape: diamond
+      style.fill: "#fce7f3"
+      style.stroke: "#be185d"
+      style.font-color: "#831843"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_brand_contract: "B1.2 · Approved Contract Rules\\nsource of truth\\nReturn only matching implementation-mapped rules." {
+      shape: cylinder
+      style.fill: "#d1fae5"
+      style.stroke: "#059669"
+      style.font-color: "#064e3b"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_brand_approval: "B1.3 · Human Visual Approval\\nhuman approval\\nApprove new visual direction or propagation scope." {
+      shape: diamond
+      style.fill: "#ffedd5"
+      style.stroke: "#ea580c"
+      style.font-color: "#7c2d12"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+  stage_figma: {
+    label: "F1 · Explicit Figma"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_figma_gate: "F1.1 · Explicit Figma Request\\ndecision gate\\nNormal Astro work bypasses this side path." {
+      shape: diamond
+      style.fill: "#fce7f3"
+      style.stroke: "#be185d"
+      style.font-color: "#831843"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_figma_operation: "F1.2 · Selected Figma Operation\\nprocess\\nLoad one adapter and synchronize only the selected scope." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_figma_repository: "F1.3 · Figma Visual Repository\\nexternal system\\nEditable visual projection for exploration and review." {
+      shape: cloud
+      style.fill: "#e2e8f0"
+      style.stroke: "#475569"
+      style.font-color: "#1e293b"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+  stage_evals: {
+    label: "E1 · Eval Harness"
+    direction: down
+    style.fill: "#ffffff"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    instance_eval_harness: "E1.1 · Representative Eval Cases\\nprocess\\nRun Polish and English prompts outside normal request latency." {
+      shape: rectangle
+      style.fill: "#eef2ff"
+      style.stroke: "#4f46e5"
+      style.font-color: "#312e81"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+    instance_eval_future: "E1.2 · Future Routing Improvement\\nstate\\nApply reviewed findings only to future requests." {
+      shape: oval
+      style.fill: "#f1f5f9"
+      style.stroke: "#64748b"
+      style.font-color: "#334155"
+      style.stroke-width: 2
+      style.border-radius: 8
+    }
+  }
+}
+
+runtime.stage_classify.instance_intake_prompt -> runtime.stage_classify.instance_intake_identity {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_classify.instance_intake_identity -> runtime.stage_classify.instance_classify_router {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_classify.instance_classify_router -> runtime.stage_classify.instance_classify_contract {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_classify.instance_classify_contract -> runtime.stage_resolve.instance_context_resolver {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_resolve.instance_context_resolver -> runtime.stage_resolve.instance_context_registry: "component lookup" {
+  style.stroke: "#0f766e"
+  style.font-color: "#0f766e"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+runtime.stage_resolve.instance_context_resolver -> runtime.stage_resolve.instance_context_tokens: "token lookup" {
+  style.stroke: "#0f766e"
+  style.font-color: "#0f766e"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+runtime.stage_resolve.instance_context_resolver -> runtime.stage_resolve.instance_context_astro: "selected sources" {
+  style.stroke: "#0f766e"
+  style.font-color: "#0f766e"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+runtime.stage_resolve.instance_context_resolver -> runtime.stage_resolve.instance_context_rules: "repair / extend / create" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_resolve.instance_context_registry -> runtime.stage_resolve.instance_context_pack {
+  style.stroke: "#0f766e"
+  style.font-color: "#0f766e"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+runtime.stage_resolve.instance_context_tokens -> runtime.stage_resolve.instance_context_pack {
+  style.stroke: "#0f766e"
+  style.font-color: "#0f766e"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+runtime.stage_resolve.instance_context_astro -> runtime.stage_resolve.instance_context_pack {
+  style.stroke: "#0f766e"
+  style.font-color: "#0f766e"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+runtime.stage_resolve.instance_context_rules -> runtime.stage_resolve.instance_context_pack {
+  style.stroke: "#0f766e"
+  style.font-color: "#0f766e"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+runtime.stage_resolve.instance_context_pack -> runtime.stage_execute.instance_execute_profile {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_execute.instance_execute_profile -> runtime.stage_execute.instance_execute_exact: "exact-edit" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_execute.instance_execute_profile -> runtime.stage_execute.instance_execute_reuse: "reuse" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_execute.instance_execute_profile -> runtime.stage_execute.instance_execute_compose: "compose" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_execute.instance_execute_profile -> runtime.stage_execute.instance_execute_repair: "repair" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_execute.instance_execute_profile -> runtime.stage_execute.instance_execute_extend: "extend" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_execute.instance_execute_profile -> conditional.stage_creation.instance_creation_gate: "create" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_creation.instance_creation_gate -> conditional.stage_creation.instance_creation_gap {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+conditional.stage_creation.instance_creation_gap -> runtime.stage_execute.instance_execute_create: "gap confirmed" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_creation.instance_creation_gate -> runtime.stage_result.instance_result_blocked: "not explicit" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_execute.instance_execute_profile -> conditional.stage_brand.instance_brand_gate: "brand-sensitive" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_brand.instance_brand_gate -> conditional.stage_brand.instance_brand_contract: "approved rules" {
+  style.stroke: "#0f766e"
+  style.font-color: "#0f766e"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+conditional.stage_brand.instance_brand_contract -> conditional.stage_brand.instance_brand_approval: "new direction" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_brand.instance_brand_contract -> runtime.stage_execute.instance_execute_compose: "existing approved rules" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_brand.instance_brand_approval -> runtime.stage_execute.instance_execute_create: "approved" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_brand.instance_brand_gate -> runtime.stage_result.instance_result_blocked: "required rules unavailable" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_execute.instance_execute_exact -> runtime.stage_validate.instance_validate_scope {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_execute.instance_execute_reuse -> runtime.stage_validate.instance_validate_scope {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_execute.instance_execute_compose -> runtime.stage_validate.instance_validate_scope {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_execute.instance_execute_repair -> runtime.stage_validate.instance_validate_scope {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_execute.instance_execute_extend -> runtime.stage_validate.instance_validate_scope {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_execute.instance_execute_create -> runtime.stage_validate.instance_validate_scope {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_validate.instance_validate_scope -> runtime.stage_result.instance_result_accepted: "pass" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+runtime.stage_validate.instance_validate_scope -> runtime.stage_validate.instance_validate_repair: "fail · attempts remain" {
+  style.stroke: "#dc2626"
+  style.font-color: "#dc2626"
+  style.stroke-width: 3
+}
+
+runtime.stage_validate.instance_validate_repair -> runtime.stage_validate.instance_validate_scope: "retry" {
+  style.stroke: "#dc2626"
+  style.font-color: "#dc2626"
+  style.stroke-width: 3
+}
+
+runtime.stage_validate.instance_validate_repair -> runtime.stage_result.instance_result_blocked: "limit reached" {
+  style.stroke: "#dc2626"
+  style.font-color: "#dc2626"
+  style.stroke-width: 3
+}
+
+runtime.stage_classify.instance_classify_router -> conditional.stage_figma.instance_figma_gate: "explicit Figma request" {
+  style.stroke: "#64748b"
+  style.font-color: "#64748b"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_figma.instance_figma_gate -> conditional.stage_figma.instance_figma_operation {
+  style.stroke: "#64748b"
+  style.font-color: "#64748b"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_figma.instance_figma_operation -> conditional.stage_figma.instance_figma_repository {
+  style.stroke: "#64748b"
+  style.font-color: "#64748b"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+conditional.stage_figma.instance_figma_repository -> runtime.stage_result.instance_result_accepted: "scoped result" {
+  style.stroke: "#64748b"
+  style.font-color: "#64748b"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+runtime.stage_result.instance_result_accepted -> conditional.stage_evals.instance_eval_harness: "explicit eval run" {
+  style.stroke: "#7c3aed"
+  style.font-color: "#7c3aed"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+runtime.stage_result.instance_result_blocked -> conditional.stage_evals.instance_eval_harness: "explicit eval run" {
+  style.stroke: "#7c3aed"
+  style.font-color: "#7c3aed"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+conditional.stage_evals.instance_eval_harness -> conditional.stage_evals.instance_eval_future {
+  style.stroke: "#7c3aed"
+  style.font-color: "#7c3aed"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}
+
+conditional.stage_evals.instance_eval_future -> runtime.stage_classify.instance_classify_router: "future runs only" {
+  style.stroke: "#7c3aed"
+  style.font-color: "#7c3aed"
+  style.stroke-width: 2
+  style.stroke-dash: 3
+}

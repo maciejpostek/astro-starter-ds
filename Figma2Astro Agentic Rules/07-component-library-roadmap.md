@@ -1,6 +1,6 @@
-# Figma2Astro: Component Library Roadmap
+# Figma2Astro: Component Library Projection
 
-Status: active.
+Status: active for explicit Figma operations.
 
 This rule defines the shared process for representing the public Astro
 component library in Figma. Astro remains the source of truth; Figma pages
@@ -23,35 +23,10 @@ not public Figma components. `Assets — Icons` is the exception: it represents
 curated named imports from `@lucide/astro`, not
 `LucideIconLibrary.astro`.
 
-Two inventory numbers serve different purposes:
-
-- **Immutable Phase 0 baseline:** 66 public files and 66 public registry
-  records. Roadmap migration tests preserve this exact baseline.
-- **Current public inventory:** 125 public files and 125 public registry records.
-  Fifty-nine additions extend Forms, Data Display, Content, Disclosure, Media,
-  Navigation, Cards, and Website Sections; they do not rewrite the migration
-  baseline.
-
-Current family pages:
-
-1. `Components — Actions` — 4;
-2. `Components — Forms` — 12;
-3. `Components — Data Display` — 7;
-4. `Components — Text` — 5;
-5. `Components — Content` — 4;
-6. `Components — Disclosure` — 4;
-7. `Components — Media` — 9;
-8. `Components — Visual` — 1;
-9. `Components — Navigation` — 16;
-10. `Components — Cards` — 19;
-11. `Components — Sidepanels` — 4;
-12. `Components — Timeline` — 4.
-
-The 12 component family pages contain 89 public masters. The active Website
-Sections family pages contain thirty-five ready public section masters plus one
-incomplete review set for ChangelogSection; that partial set is not released
-parity. Architecture, foundation, asset, and documentation pages are counted
-separately.
+The public inventory is derived at operation time from
+`src/data/design-system/componentArchitecture.json`. Do not copy component
+counts, props, dependencies, readiness, or historical checkpoints into this
+adapter.
 
 ## 2. Dependency order
 
@@ -73,8 +48,8 @@ Foundations
   -> App Patterns
 ```
 
-`Architecture — Components` and `src/data/design-system-roadmap.json` must
-communicate the same order and family state.
+`Architecture — Components` and the component registry must communicate the
+same dependency order. Current readiness comes from each registry record.
 
 ## 3. Figma property mapping
 
@@ -161,10 +136,10 @@ Auto Layout, blend mode, transform, state opacity, aspect ratio, images,
 media, scroll/drag behavior, motion, and browser mechanics remain native.
 Shadows use Effect Styles because Figma does not support them as Variables.
 
-## 6. Code-first family workflow
+## 6. Explicit component-library workflow
 
-1. Read roadmap `currentFocus`, registry records, source components, and the
-   family adapter.
+1. Resolve the selected registry records, source components, and family
+   adapter.
 2. Audit the current implementation and Figma page before changing either.
 3. Resolve source-of-truth conflicts in Astro.
 4. Implement only missing code/API/token gaps.
@@ -172,40 +147,17 @@ Shadows use Effect Styles because Figma does not support them as Variables.
 6. Validate semantics, interactions, and responsive behavior in a browser.
 7. Create or repair Figma masters in dependency order.
 8. Bind Variables, Text Styles, properties, Slots, and nested instances.
-9. Store stable Figma node IDs and evidence in the roadmap.
-10. Run architecture, family, language, and parity audits.
-11. Mark an item ready only when all mandatory checks are done.
+9. Return stable Figma node IDs in the scoped operation result.
+10. Run the selected family, language, and reconciliation checks.
+11. Update current registry readiness only when implementation, visual, or
+    validation state actually changes.
 
-## 7. Current family checkpoints
+## 7. Validation
 
-```text
-Architecture — Components       done
-Components — Actions            done
-Components — Forms              done
-Components — Data Display       done
-Components — Text               done
-Components — Content            done
-Components — Disclosure         done
-Components — Media              done
-Components — Visual             done
-Components — Navigation         done
-Components — Cards              done
-Components — Sidepanels         done
-Components — Timeline           done
-Sections — Global Shell         done
-Assets — Icons                  done
-```
-
-The roadmap JSON is the status source of truth. This summary must be updated
-when a family state changes.
-
-## 8. Validation
-
-- migration baseline remains exactly 66 public source paths;
-- current registry and current public files contain exactly 125 unique entries;
+- registry and public source files remain one-to-one;
 - no `sourcePath` is duplicated;
 - master name matches the Astro component;
-- each public component has exactly one Figma representation;
+- every selected public component has one intended Figma representation;
 - private helpers use `_Parts/`;
 - no hardcoded value replaces an available token;
 - Light/Dark and Component Size use modes;

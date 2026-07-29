@@ -35,8 +35,8 @@ const isOverlay = mode === "overlay";
     return target.closest<HTMLElement>("[data-component-name]");
   };
 
-  const isComponentSpecControl = (target: EventTarget | null) =>
-    target instanceof Element && Boolean(target.closest("[data-component-spec-control]"));
+  const isGuidesToggle = (target: EventTarget | null) =>
+    target instanceof Element && Boolean(target.closest("[data-grid-toggle]"));
 
   const getComponentName = (target: HTMLElement) => target.dataset.componentName ?? "Component";
 
@@ -120,7 +120,7 @@ const isOverlay = mode === "overlay";
   const copyComponentName = async (target: HTMLElement) => {
     try {
       await writeClipboardText(getComponentName(target));
-      showCopyFeedback(target, "Copied to clipboard");
+      showCopyFeedback(target, "copied!");
     } catch {
       showCopyFeedback(target, "Copy failed");
     }
@@ -166,15 +166,14 @@ const isOverlay = mode === "overlay";
     "click",
     (event) => {
       if (!canShowInfoLayer()) return;
-      if (isComponentSpecControl(event.target)) return;
-      if (!event.altKey) return;
-
-      const target = getComponentTarget(event.target);
-      if (!target) return;
+      if (isGuidesToggle(event.target)) return;
 
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
+
+      const target = getComponentTarget(event.target);
+      if (!target) return;
 
       showInfoLayer(target, event.clientX, event.clientY);
       void copyComponentName(target);

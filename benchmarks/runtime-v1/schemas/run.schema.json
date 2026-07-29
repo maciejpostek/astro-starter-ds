@@ -1,0 +1,353 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astro-design-system.local/benchmarks/runtime-v1/run.schema.json",
+  "title": "Runtime V1 Benchmark Run",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "experiment_id",
+    "run_id",
+    "snapshot",
+    "timestamps",
+    "execution",
+    "condition",
+    "routing",
+    "timing_ms",
+    "usage",
+    "cost",
+    "context",
+    "tools",
+    "validation",
+    "outcome",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "experiment_id": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["git_head", "content_manifest_sha256", "fixture_id"],
+      "properties": {
+        "git_head": { "type": ["string", "null"] },
+        "content_manifest_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+        "fixture_id": { "type": "string", "minLength": 1 },
+        "node_version": { "type": "string" },
+        "npm_version": { "type": ["string", "null"] },
+        "codex_version": { "type": ["string", "null"] }
+      }
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["started_at", "ended_at"],
+      "properties": {
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requested_model",
+        "effective_model",
+        "requested_reasoning",
+        "effective_reasoning",
+        "requested_speed",
+        "effective_service_tier",
+        "effective_configuration_source",
+        "credit_multiplier"
+      ],
+      "properties": {
+        "requested_model": { "type": "string", "minLength": 1 },
+        "effective_model": { "type": ["string", "null"] },
+        "requested_reasoning": { "type": "string", "minLength": 1 },
+        "effective_reasoning": { "type": ["string", "null"] },
+        "requested_speed": { "enum": ["standard", "fast"] },
+        "effective_service_tier": { "type": ["string", "null"] },
+        "effective_configuration_source": {
+          "enum": ["measured", "unavailable"]
+        },
+        "credit_multiplier": { "type": "number", "minimum": 1 }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scenario_id",
+        "arm",
+        "profile",
+        "complexity",
+        "precision",
+        "language",
+        "cache_state",
+        "model",
+        "reasoning_effort",
+        "service_tier",
+        "replicate"
+      ],
+      "properties": {
+        "scenario_id": { "type": "string", "minLength": 1 },
+        "arm": { "enum": ["b0", "b1", "r1"] },
+        "profile": {
+          "enum": ["exact-edit", "reuse", "compose", "repair", "extend", "create", "control"]
+        },
+        "complexity": { "enum": ["small", "medium", "large", "control"] },
+        "precision": { "enum": ["guide-exact", "less-precise", "control"] },
+        "language": { "enum": ["pl", "en"] },
+        "cache_state": { "enum": ["cold", "warm"] },
+        "model": { "type": "string", "minLength": 1 },
+        "reasoning_effort": { "type": "string", "minLength": 1 },
+        "service_tier": { "type": "string", "minLength": 1 },
+        "replicate": { "type": "integer", "minimum": 1 },
+        "provider_cache_observed": { "type": ["boolean", "null"] }
+      }
+    },
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_intent",
+        "actual_intent",
+        "route_status",
+        "brand_mode",
+        "allow_new_components",
+        "contract_errors"
+      ],
+      "properties": {
+        "expected_intent": { "type": ["string", "null"] },
+        "actual_intent": { "type": ["string", "null"] },
+        "route_status": { "enum": ["ready", "blocked", "unavailable"] },
+        "brand_mode": { "type": ["string", "null"] },
+        "allow_new_components": { "type": ["boolean", "null"] },
+        "contract_errors": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "timing_ms": {
+      "type": "object",
+      "additionalProperties": { "type": ["number", "null"] }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_tokens",
+        "output_tokens",
+        "cached_tokens",
+        "cache_write_tokens",
+        "reasoning_tokens",
+        "total_tokens"
+      ],
+      "properties": {
+        "input_tokens": { "$ref": "#/$defs/measurement" },
+        "output_tokens": { "$ref": "#/$defs/measurement" },
+        "cached_tokens": { "$ref": "#/$defs/measurement" },
+        "cache_write_tokens": { "$ref": "#/$defs/measurement" },
+        "reasoning_tokens": { "$ref": "#/$defs/measurement" },
+        "total_tokens": { "$ref": "#/$defs/measurement" }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "value", "source", "pricing_snapshot"],
+      "properties": {
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "value": { "type": ["number", "null"], "minimum": 0 },
+        "source": {
+          "enum": ["measured", "derived", "estimated", "unavailable"]
+        },
+        "pricing_snapshot": { "type": "string", "minLength": 1 }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "descriptor_bytes",
+        "limit_bytes",
+        "declared_read_files",
+        "declared_source_bytes",
+        "actual_read_files",
+        "actual_model_read_bytes",
+        "instruction_overhead_bytes",
+        "instruction_overhead_ratio",
+        "materialized_limit_bytes",
+        "materialized_budget_overrun",
+        "unnecessary_read_files",
+        "unnecessary_read_bytes",
+        "forbidden_read_files",
+        "forbidden_read_bytes",
+        "budget_overrun"
+      ],
+      "properties": {
+        "descriptor_bytes": { "type": ["integer", "null"], "minimum": 0 },
+        "limit_bytes": { "type": ["integer", "null"], "minimum": 0 },
+        "declared_read_files": { "type": "integer", "minimum": 0 },
+        "declared_source_bytes": { "type": "integer", "minimum": 0 },
+        "actual_read_files": { "type": "integer", "minimum": 0 },
+        "actual_model_read_bytes": { "$ref": "#/$defs/measurement" },
+        "instruction_overhead_bytes": { "type": "integer", "minimum": 0 },
+        "instruction_overhead_ratio": { "type": ["number", "null"], "minimum": 0 },
+        "materialized_limit_bytes": { "type": ["integer", "null"], "minimum": 0 },
+        "materialized_budget_overrun": { "type": "boolean" },
+        "unnecessary_read_files": { "type": "integer", "minimum": 0 },
+        "unnecessary_read_bytes": { "type": "integer", "minimum": 0 },
+        "forbidden_read_files": { "type": "integer", "minimum": 0 },
+        "forbidden_read_bytes": { "type": "integer", "minimum": 0 },
+        "budget_overrun": { "type": "boolean" },
+        "read_classification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "classification"],
+            "properties": {
+              "path": { "type": "string" },
+              "bytes": { "type": "integer", "minimum": 0 },
+              "classification": {
+                "enum": [
+                  "mandatory-bootstrap",
+                  "required",
+                  "justified-discovery",
+                  "unnecessary",
+                  "forbidden"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calls",
+        "validator_calls",
+        "duplicate_validator_calls",
+        "duplicate_reads",
+        "figma_calls"
+      ],
+      "properties": {
+        "calls": { "type": "integer", "minimum": 0 },
+        "validator_calls": { "type": "integer", "minimum": 0 },
+        "duplicate_validator_calls": { "type": "integer", "minimum": 0 },
+        "duplicate_reads": { "type": "integer", "minimum": 0 },
+        "figma_calls": { "type": "integer", "minimum": 0 },
+        "commands": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed", "checks"],
+      "properties": {
+        "passed": { "type": "boolean" },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["command", "status", "duration_ms"],
+            "properties": {
+              "command": { "type": "string" },
+              "status": { "enum": ["passed", "failed", "skipped"] },
+              "duration_ms": { "type": "number", "minimum": 0 },
+              "exit_code": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_terminal",
+        "actual_terminal",
+        "task_success",
+        "first_pass",
+        "repair_attempts",
+        "harness_retries",
+        "quality_score",
+        "critical_failures",
+        "failure_classification",
+        "changed_files",
+        "diff_size_bytes",
+        "registry_delta",
+        "registry_api_delta_count",
+        "registry_added",
+        "registry_removed",
+        "registry_changed"
+      ],
+      "properties": {
+        "expected_terminal": { "enum": ["accepted", "blocked"] },
+        "actual_terminal": { "enum": ["accepted", "blocked", "error", "unavailable"] },
+        "task_success": { "type": "boolean" },
+        "first_pass": { "type": "boolean" },
+        "repair_attempts": { "type": "integer", "minimum": 0 },
+        "harness_retries": { "type": "integer", "minimum": 0 },
+        "quality_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "critical_failures": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "failure_classification": { "type": ["string", "null"] },
+        "changed_files": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "diff_size_bytes": { "type": "integer", "minimum": 0 },
+        "registry_delta": { "type": "integer" },
+        "registry_api_delta_count": { "type": "integer", "minimum": 0 },
+        "registry_added": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "registry_removed": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "registry_changed": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "summary": { "type": ["string", "null"] }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events", "raw_model_events", "final_message", "diff", "log"],
+      "properties": {
+        "events": { "type": "string" },
+        "raw_model_events": { "type": "string" },
+        "final_message": { "type": "string" },
+        "diff": { "type": "string" },
+        "log": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": ["number", "null"], "minimum": 0 },
+        "source": {
+          "enum": ["measured", "derived", "estimated", "unavailable"]
+        }
+      }
+    }
+  }
+}

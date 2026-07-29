@@ -2589,8 +2589,8 @@ ProductComparisonSection uses one code-owned responsive contract:
 
 ## 40. Generation algorithm
 
-1. Read roadmap `currentFocus`, the section source, registry record, agentic
-   rule, and every child adapter.
+1. Resolve the selected section source, registry record, agentic rule, and
+   required child adapters.
 2. Confirm that all required child components are ready.
 3. Read the exact section master and all nested instance links.
 4. Translate only finite section axes to Astro props and `data-*`.
@@ -2600,8 +2600,8 @@ ProductComparisonSection uses one code-owned responsive contract:
 8. Validate default, short, long, and missing-optional-content fixtures.
 9. Validate semantics and behavior in desktop, intermediate, and mobile
    browser widths.
-10. Record node IDs and intentional representation differences in the
-    roadmap before release.
+10. Return node IDs and intentional representation differences in the scoped
+    Figma operation result.
 
 ## 41. Forbidden shortcuts
 

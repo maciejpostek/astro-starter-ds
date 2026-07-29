@@ -44,14 +44,30 @@ const publicFiles = publicLayers
   .sort();
 
 const errors = [];
+const implementationStatuses = new Set([
+  "planned",
+  "draft",
+  "review",
+  "ready",
+  "deprecated"
+]);
+const visualStatuses = new Set([
+  "starter",
+  "modified",
+  "review",
+  "approved"
+]);
+const validationStatuses = new Set([
+  "not-run",
+  "partial",
+  "passed",
+  "failed"
+]);
 const duplicates = (values) =>
   [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
 const registeredPaths = new Set(publicRecords.map((record) => record.sourcePath));
 const publicFileSet = new Set(publicFiles);
-
-if (registry.baseline?.publicComponentCount !== 66) {
-  errors.push("The immutable Phase 0 public-component baseline must remain 66.");
-}
+const publicRecordNames = new Set(publicRecords.map((record) => record.name));
 
 if (publicFiles.length !== publicRecords.length) {
   errors.push(
@@ -79,8 +95,40 @@ for (const record of publicRecords) {
 }
 
 for (const record of records) {
-  if (!existsSync(join(projectRoot, record.sourcePath))) {
+  const absoluteSourcePath = join(projectRoot, record.sourcePath);
+  if (!existsSync(absoluteSourcePath)) {
     errors.push(`Stale registry path for ${record.name}: ${record.sourcePath}`);
+    continue;
+  }
+  if (!implementationStatuses.has(record.status)) {
+    errors.push(`${record.name} has invalid implementation status ${record.status}.`);
+  }
+  if (!visualStatuses.has(record.readiness?.visual)) {
+    errors.push(
+      `${record.name} has invalid or missing readiness.visual status.`
+    );
+  }
+  if (!validationStatuses.has(record.readiness?.validation)) {
+    errors.push(
+      `${record.name} has invalid or missing readiness.validation status.`
+    );
+  }
+
+  if (publicRecordNames.has(record.name)) {
+    const source = readFileSync(absoluteSourcePath, "utf8");
+    if (
+      !source.includes("data-component-name") &&
+      !source.includes("componentName")
+    ) {
+      errors.push(
+        `${record.name} source does not expose or delegate data-component-name.`
+      );
+    }
+    if (!source.includes(record.name)) {
+      errors.push(
+        `${record.name} source does not contain its canonical component identity.`
+      );
+    }
   }
 }
 
@@ -89,5 +137,5 @@ if (errors.length) fail(errors);
 console.log(
   `Component architecture audit passed: ${publicFiles.length} public files, ` +
     `${publicRecords.length} public records, ${records.length} total records; ` +
-    `${registry.baseline.publicComponentCount} components in the immutable Phase 0 baseline.`
+    "all records expose current visual and validation readiness."
 );

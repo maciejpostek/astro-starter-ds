@@ -143,9 +143,6 @@ for (const contract of [
   requireContract(figmaRule, contract, figmaRulePath);
 }
 
-const globalRules = read("AGENTIC-RULES.json");
-requireContract(globalRules, '"PanelPatternVisualSystem"', "AGENTIC-RULES.json");
-
 const polishPattern =
   /[ąćęłńóśźż]|\b(?:oraz|dla|jest|należy|brakuje|istnieje|użyj|kiedy|komponentów|stron|systemu|kolorów|gotowy)\b/iu;
 for (const path of [agenticRulePath, figmaRulePath]) {

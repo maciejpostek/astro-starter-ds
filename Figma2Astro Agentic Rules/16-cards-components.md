@@ -411,7 +411,8 @@ neutral fixture content, not an API maximum.
     MediaRatio instances; one linked 3:4 MediaRatio instance; three linked
     format Tags; and code-owned destination, semantic, access, and responsive
     rules.
-15. Store the final Figma node ID and parity evidence in the roadmap.
+15. Return the final Figma node ID and scoped reconciliation evidence in the
+    explicit operation result.
 
 ## 7. Validation
 

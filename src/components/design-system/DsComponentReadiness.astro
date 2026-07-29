@@ -1,0 +1,359 @@
+---
+interface Readiness {
+  visual: string;
+  validation: string;
+}
+
+export interface ComponentReadinessRecord {
+  name: string;
+  layer: string;
+  family: string;
+  status: string;
+  sourcePath: string;
+  docsAnchor: string;
+  description: string;
+  readiness: Readiness;
+}
+
+interface Props {
+  records: ComponentReadinessRecord[];
+}
+
+const { records } = Astro.props;
+const families = [...new Set(records.map((record) => record.family))].sort();
+const statusLabel = (value: string) =>
+  value
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+---
+
+<div class="ds-component-readiness" data-component-readiness>
+  <form class="ds-component-readiness__filters" data-readiness-filters>
+    <label>
+      <span>Search</span>
+      <input
+        type="search"
+        name="search"
+        placeholder="Button, hero, cards..."
+        autocomplete="off"
+        data-readiness-search
+      />
+    </label>
+
+    <label>
+      <span>Family</span>
+      <select name="family" data-readiness-filter="family">
+        <option value="">All families</option>
+        {families.map((family) => <option value={family}>{statusLabel(family)}</option>)}
+      </select>
+    </label>
+
+    <label>
+      <span>Implementation</span>
+      <select name="implementation" data-readiness-filter="status">
+        <option value="">All statuses</option>
+        {["planned", "draft", "review", "ready", "deprecated"].map((status) => (
+          <option value={status}>{statusLabel(status)}</option>
+        ))}
+      </select>
+    </label>
+
+    <label>
+      <span>Visual</span>
+      <select name="visual" data-readiness-filter="visual">
+        <option value="">All visual states</option>
+        {["starter", "modified", "review", "approved"].map((status) => (
+          <option value={status}>{statusLabel(status)}</option>
+        ))}
+      </select>
+    </label>
+
+    <label>
+      <span>Validation</span>
+      <select name="validation" data-readiness-filter="validation">
+        <option value="">All validation states</option>
+        {["not-run", "partial", "passed", "failed"].map((status) => (
+          <option value={status}>{statusLabel(status)}</option>
+        ))}
+      </select>
+    </label>
+  </form>
+
+  <p class="ds-component-readiness__summary" aria-live="polite">
+    Showing <strong data-readiness-count>{records.length}</strong> of {records.length} components.
+  </p>
+
+  <div class="ds-component-readiness__table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Component</th>
+          <th scope="col">Family / layer</th>
+          <th scope="col">Implementation</th>
+          <th scope="col">Visual</th>
+          <th scope="col">Validation</th>
+          <th scope="col">Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          records.map((record) => (
+            <tr
+              data-readiness-row
+              data-name={record.name.toLowerCase()}
+              data-family={record.family}
+              data-status={record.status}
+              data-visual={record.readiness.visual}
+              data-validation={record.readiness.validation}
+            >
+              <th scope="row">
+                <a href={`/design-system/components#${record.docsAnchor}`}>
+                  {record.name}
+                </a>
+                <span>{record.description}</span>
+              </th>
+              <td>
+                <span>{statusLabel(record.family)}</span>
+                <small>{statusLabel(record.layer)}</small>
+              </td>
+              <td>
+                <span class="ds-component-readiness__status" data-status={record.status}>
+                  {statusLabel(record.status)}
+                </span>
+              </td>
+              <td>
+                <span
+                  class="ds-component-readiness__status"
+                  data-status={record.readiness.visual}
+                >
+                  {statusLabel(record.readiness.visual)}
+                </span>
+              </td>
+              <td>
+                <span
+                  class="ds-component-readiness__status"
+                  data-status={record.readiness.validation}
+                >
+                  {statusLabel(record.readiness.validation)}
+                </span>
+              </td>
+              <td><code>{record.sourcePath}</code></td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <p class="ds-component-readiness__empty" data-readiness-empty hidden>
+    No components match the selected filters.
+  </p>
+</div>
+
+<script>
+  const initializeComponentReadiness = () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-component-readiness]")
+      .forEach((root) => {
+        if (root.dataset.readinessReady === "true") return;
+        root.dataset.readinessReady = "true";
+
+        const search = root.querySelector<HTMLInputElement>("[data-readiness-search]");
+        const filters = [
+          ...root.querySelectorAll<HTMLSelectElement>("[data-readiness-filter]")
+        ];
+        const rows = [
+          ...root.querySelectorAll<HTMLTableRowElement>("[data-readiness-row]")
+        ];
+        const count = root.querySelector<HTMLElement>("[data-readiness-count]");
+        const empty = root.querySelector<HTMLElement>("[data-readiness-empty]");
+
+        const applyFilters = () => {
+          const query = search?.value.trim().toLowerCase() ?? "";
+          const activeFilters = Object.fromEntries(
+            filters.map((filter) => [filter.dataset.readinessFilter, filter.value])
+          );
+          let visibleCount = 0;
+
+          rows.forEach((row) => {
+            const matchesSearch =
+              !query ||
+              row.dataset.name?.includes(query) ||
+              row.dataset.family?.includes(query);
+            const matchesFilters = Object.entries(activeFilters).every(
+              ([key, value]) => !value || row.dataset[key] === value
+            );
+            const visible = Boolean(matchesSearch && matchesFilters);
+            row.hidden = !visible;
+            if (visible) visibleCount += 1;
+          });
+
+          if (count) count.textContent = String(visibleCount);
+          if (empty) empty.hidden = visibleCount !== 0;
+        };
+
+        search?.addEventListener("input", applyFilters);
+        filters.forEach((filter) => filter.addEventListener("change", applyFilters));
+      });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeComponentReadiness, {
+      once: true
+    });
+  } else {
+    initializeComponentReadiness();
+  }
+  document.addEventListener("astro:page-load", initializeComponentReadiness);
+</script>
+
+<style>
+  .ds-component-readiness {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-medium);
+  }
+
+  .ds-component-readiness__filters {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+    gap: var(--gap-small);
+  }
+
+  label {
+    display: grid;
+    gap: var(--gap-tiny);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  input,
+  select {
+    width: 100%;
+    min-height: var(--component-min-height);
+    border: var(--border-width-default) solid var(--color-border-default);
+    border-radius: var(--radius-small);
+    background: var(--color-background-surface);
+    color: var(--color-text-primary);
+    padding-inline: var(--component-padding-small);
+    font: inherit;
+    font-weight: var(--font-weight-normal);
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  a:focus-visible {
+    outline: var(--component-focus-ring);
+    outline-offset: var(--size-2);
+  }
+
+  .ds-component-readiness__summary,
+  .ds-component-readiness__empty {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+  }
+
+  .ds-component-readiness__table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  table {
+    width: 100%;
+    min-width: 70rem;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: var(--component-padding-small);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    vertical-align: top;
+  }
+
+  thead th {
+    color: var(--color-text-secondary);
+    background: var(--color-background-canvas);
+    font-size: var(--font-size-body-tiny);
+    text-transform: uppercase;
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  tbody th {
+    min-width: 16rem;
+    font-size: var(--font-size-body-small);
+  }
+
+  tbody th a,
+  tbody th span,
+  td > span,
+  td > small {
+    display: block;
+  }
+
+  tbody th span,
+  td > small {
+    margin-top: var(--gap-tiny);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-normal);
+  }
+
+  code {
+    font-size: var(--font-size-body-tiny);
+    overflow-wrap: anywhere;
+  }
+
+  .ds-component-readiness__status {
+    display: inline-flex;
+    width: fit-content;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-full);
+    padding: var(--size-4) var(--size-8);
+    color: var(--color-text-secondary);
+    background: var(--color-background-canvas);
+    font-size: var(--font-size-body-tiny);
+    white-space: nowrap;
+  }
+
+  .ds-component-readiness__status[data-status="ready"],
+  .ds-component-readiness__status[data-status="approved"],
+  .ds-component-readiness__status[data-status="passed"] {
+    border-color: var(--color-status-success-border);
+    color: var(--color-status-success-text);
+    background: var(--color-status-success-background);
+  }
+
+  .ds-component-readiness__status[data-status="review"],
+  .ds-component-readiness__status[data-status="modified"],
+  .ds-component-readiness__status[data-status="partial"] {
+    border-color: var(--color-status-warning-border);
+    color: var(--color-status-warning-text);
+    background: var(--color-status-warning-background);
+  }
+
+  .ds-component-readiness__status[data-status="failed"] {
+    border-color: var(--color-status-error-border);
+    color: var(--color-status-error-text);
+    background: var(--color-status-error-background);
+  }
+
+  [hidden] {
+    display: none;
+  }
+
+  @media (max-width: 42rem) {
+    .ds-component-readiness__filters {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

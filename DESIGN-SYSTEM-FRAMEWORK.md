@@ -184,7 +184,7 @@ No single artifact owns every concern:
 
 | Concern | Canonical source |
 | --- | --- |
-| Target scope, priority, and delivery status | `src/data/design-system-roadmap.json` |
+| Component discovery and current readiness | `src/data/design-system/componentArchitecture.json` |
 | Executable component API and behavior | Astro components |
 | Design values and responsive contracts | CSS Variables |
 | Reusable design theory and evaluation language | `art-direction/` |
@@ -228,7 +228,7 @@ The intended order of work is:
 3. Approved brand-expression constraints, when the work is brand-sensitive
 4. Agentic Rules
 5. Component and layout usage
-6. Browser and Figma visual calibration
+6. Browser validation and optional, explicitly requested Figma projection
 
 For each design-system category, such as Sizing, Colors, Typography, and Layout, the framework should move through these layers in order.
 

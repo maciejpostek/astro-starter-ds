@@ -12,7 +12,7 @@ new products, websites and experiments.
 - responsive min/max token contracts;
 - `small`, `medium` and `large` component-size profiles;
 - reusable Astro components organized by atomic layer and family;
-- component registry and design-system roadmap;
+- component registry with current implementation, visual, and validation readiness;
 - interactive documentation under `/design-system`;
 - an empty `project-context` scaffold for brand and business inputs;
 - an Art Direction knowledge base and project Brand Expression Contract;
@@ -31,7 +31,7 @@ truth for tokens, component APIs, `data-*` contracts and implementation rules.
 - `/design-system/typography` — typography foundations and semantic styles;
 - `/design-system/layout` — layout foundations and responsive contracts;
 - `/design-system/components` — reusable component library;
-- `/design-system/roadmap` — current design-system status.
+- `/design-system/roadmap` — current component readiness.
 
 ## Start locally
 
@@ -61,7 +61,7 @@ npm run validate
 7. Add project routes and content without changing design-system contracts
    unless the new project requires a deliberate system decision.
 8. Reuse components from `src/components` before creating new patterns.
-9. Keep component code, documentation, registry, roadmap and agentic rules in
+9. Keep component code, documentation, registry readiness and agentic rules in
    sync.
 
 ## Sources of truth
@@ -70,7 +70,6 @@ npm run validate
 - `src/components` — reusable implementation contracts;
 - `src/pages/design-system` — rendered documentation;
 - `src/data/design-system/componentArchitecture.json` — component registry;
-- `src/data/design-system-roadmap.json` — system status;
 - `project-context` — project-specific strategy, audiences, offer and content;
 - `art-direction/` — universal design knowledge and reusable visual-direction
   templates;

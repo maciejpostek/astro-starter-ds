@@ -32,6 +32,10 @@ export const designSystemNavigation: DsNavigationItem[] = [
     href: "/design-system/system-architecture-map",
     items: [
       {
+        label: "AI-Native Runtime V1.0",
+        href: "/design-system/system-architecture-map#system-architecture-ai-native-target-title"
+      },
+      {
         label: "Prompt → Astro Page or Section",
         href: "/design-system/system-architecture-map#system-architecture-prompt-to-astro-title"
       },
@@ -66,11 +70,11 @@ export const designSystemNavigation: DsNavigationItem[] = [
     ]
   },
   {
-    label: "Roadmap",
+    label: "Component Readiness",
     href: "/design-system/roadmap",
     items: [
-      { label: "Roadmap overview", href: "/design-system/roadmap#roadmap-overview-title" },
-      { label: "Roadmap items", href: "/design-system/roadmap#roadmap-items-title" }
+      { label: "Readiness overview", href: "/design-system/roadmap#component-readiness-overview" },
+      { label: "Component inventory", href: "/design-system/roadmap#component-readiness-inventory" }
     ]
   },
   {

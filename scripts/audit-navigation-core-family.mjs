@@ -351,11 +351,16 @@ for (const contract of [
 const componentInfoPath = "src/components/dev/ComponentInfoLayer.astro";
 const componentInfo = read(componentInfoPath);
 for (const contract of [
-  "if (!event.altKey) return;",
+  "if (isGuidesToggle(event.target)) return;",
+  "event.preventDefault()",
   "event.stopImmediatePropagation()",
-  "copyComponentName(target)"
+  "copyComponentName(target)",
+  'showCopyFeedback(target, "copied!")'
 ]) {
   requireContract(componentInfo, contract, componentInfoPath);
+}
+if (componentInfo.includes("event.altKey")) {
+  errors.push(`${componentInfoPath} must not require Alt-click while Guides are enabled.`);
 }
 
 const dropdownPath = navigationSources.Dropdown;

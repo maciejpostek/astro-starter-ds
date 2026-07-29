@@ -5,6 +5,7 @@ import {
   statSync
 } from "node:fs";
 import { extname, join, relative, resolve, sep } from "node:path";
+import { spawnSync } from "node:child_process";
 
 const projectRoot = resolve(process.argv[2] ?? ".");
 const errors = [];
@@ -74,6 +75,8 @@ const requiredFiles = [
   "art-direction/templates/visual-quality-scorecard.md",
   "art-direction/schemas/reference-manifest.schema.json",
   "project-context/brand-foundations/brand-expression/README.md",
+  "project-context/brand-foundations/brand-expression/contract.json",
+  "project-context/brand-foundations/brand-expression/contract.schema.json",
   "project-context/brand-foundations/brand-expression/contract.md",
   "project-context/brand-foundations/brand-expression/reference-manifest.json",
   "project-context/brand-foundations/brand-expression/component-signatures.md",
@@ -197,29 +200,140 @@ if (projectManifest.status === "not-configured") {
   }
 }
 
-const projectContractPath =
+const projectContractJsonPath =
+  "project-context/brand-foundations/brand-expression/contract.json";
+const projectContractMarkdownPath =
   "project-context/brand-foundations/brand-expression/contract.md";
-const projectContract = read(projectContractPath);
-if (!projectContract.includes("status: not-configured")) {
+const projectContract = readJson(projectContractJsonPath);
+readJson(
+  "project-context/brand-foundations/brand-expression/contract.schema.json"
+);
+const allowedContractStatuses = new Set([
+  "not-configured",
+  "draft",
+  "review",
+  "approved",
+  "deprecated"
+]);
+const allowedRuleStatuses = new Set([
+  "draft",
+  "review",
+  "approved",
+  "deprecated"
+]);
+const componentRegistry = readJson(
+  "src/data/design-system/componentArchitecture.json"
+);
+const componentNames = new Set(
+  (componentRegistry.components ?? []).map((component) => component.name)
+);
+const implementationSources = [
+  ...collectFiles("src/styles", new Set([".css"])),
+  ...collectFiles("src/components", new Set([".astro", ".css", ".ts", ".tsx"]))
+].map((path) => read(path));
+const implementationSource = implementationSources.join("\n");
+
+if (projectContract.version !== "1.0.0") {
+  errors.push(`${projectContractJsonPath} version must equal 1.0.0.`);
+}
+if (!allowedContractStatuses.has(projectContract.status)) {
+  errors.push(`${projectContractJsonPath} has an invalid status.`);
+}
+if (!Array.isArray(projectContract.rules)) {
+  errors.push(`${projectContractJsonPath} rules must be an array.`);
+} else {
+  const ruleIds = new Set();
+  for (const [index, rule] of projectContract.rules.entries()) {
+    const label = `${projectContractJsonPath} rules[${index}]`;
+    if (!/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/u.test(rule.id ?? "")) {
+      errors.push(`${label}.id must be a stable lowercase identifier.`);
+    } else if (ruleIds.has(rule.id)) {
+      errors.push(`${label}.id must be unique.`);
+    } else {
+      ruleIds.add(rule.id);
+    }
+    if (!allowedRuleStatuses.has(rule.status)) {
+      errors.push(`${label}.status is invalid.`);
+    }
+    if (typeof rule.purpose !== "string" || !rule.purpose.trim()) {
+      errors.push(`${label}.purpose must be non-empty.`);
+    }
+    for (const field of ["components", "scopes", "themes"]) {
+      if (!Array.isArray(rule.appliesTo?.[field])) {
+        errors.push(`${label}.appliesTo.${field} must be an array.`);
+      }
+    }
+    for (const componentName of rule.appliesTo?.components ?? []) {
+      if (!componentNames.has(componentName)) {
+        errors.push(`${label} references unknown component ${componentName}.`);
+      }
+    }
+    for (const token of rule.implementation?.tokens ?? []) {
+      if (!implementationSource.includes(`${token}:`)) {
+        errors.push(`${label} references unknown CSS token ${token}.`);
+      }
+    }
+    for (const className of rule.implementation?.classes ?? []) {
+      if (!implementationSource.includes(`.${className}`)) {
+        errors.push(`${label} references unknown CSS class ${className}.`);
+      }
+    }
+    for (const attribute of Object.keys(
+      rule.implementation?.attributes ?? {}
+    )) {
+      if (!implementationSource.includes(attribute)) {
+        errors.push(`${label} references unknown attribute ${attribute}.`);
+      }
+    }
+    for (const field of ["requires", "forbids", "validation"]) {
+      if (
+        !Array.isArray(rule[field]) ||
+        rule[field].some(
+          (entry) => typeof entry !== "string" || !entry.trim()
+        )
+      ) {
+        errors.push(`${label}.${field} must contain non-empty strings.`);
+      }
+    }
+  }
+}
+
+if (
+  projectContract.status === "not-configured" &&
+  projectContract.rules?.length !== 0
+) {
+  errors.push("A not-configured Brand/Composition Contract must have no rules.");
+}
+if (
+  projectContract.status === "approved" &&
+  (!projectContract.projectId ||
+    !projectContract.owner ||
+    !projectContract.approvedAt)
+) {
   errors.push(
-    `${projectContractPath} must remain not-configured until project evidence is approved.`
+    "An approved Brand/Composition Contract requires projectId, owner, and approvedAt."
   );
 }
-for (const heading of [
-  "## Creative Thesis",
-  "## Translation Matrix",
-  "## Hierarchy, Contrast, Balance, Rhythm, And Unity",
-  "## Composition And Grid",
-  "## Typography",
-  "## Color",
-  "## Spacing, Shape, And Surface",
-  "## UI Component DNA",
-  "## Responsive Expression",
-  "## Validation And Approval"
-]) {
-  if (!projectContract.includes(heading)) {
-    errors.push(`${projectContractPath} is missing ${heading}.`);
-  }
+
+const generatedContract = read(projectContractMarkdownPath);
+if (
+  !generatedContract.includes("generated-from: contract.json") ||
+  !generatedContract.includes(`status: ${projectContract.status}`)
+) {
+  errors.push(
+    `${projectContractMarkdownPath} is not a generated projection of contract.json.`
+  );
+}
+const generatedContractCheck = spawnSync(
+  process.execPath,
+  ["scripts/generate-brand-contract-doc.mjs", ".", "--check"],
+  { cwd: projectRoot, encoding: "utf8" }
+);
+if (generatedContractCheck.status !== 0) {
+  errors.push(
+    generatedContractCheck.stderr.trim() ||
+      "Generated Brand/Composition Contract Markdown is stale."
+  );
 }
 
 const agentRulePath = ".agentic-rules/08-brand-expression.md";
@@ -241,10 +355,10 @@ for (const contract of [
 
 const routerContracts = new Map([
   ["AGENTS.md", "brand-expression"],
-  ["AGENTIC-RULES.json", "brand_expression"],
-  ["AGENTIC-RULES.md", "Brand Expression"],
+  ["AGENTIC-RULES.json", "brandContract"],
+  ["AGENTIC-RULES.md", "Brand and Composition"],
   ["DESIGN-SYSTEM-FRAMEWORK.md", "Source Of Truth By Concern"],
-  ["WORKFLOW.md", "Brand-Sensitive Visual Protocol"],
+  ["WORKFLOW.md", "Brand and Composition"],
   ["README.md", "art-direction/"],
   ["project-context/README.md", "brand-expression"],
   ["Figma2Astro Agentic Rules/README.md", "Brand Expression Contract"]
@@ -265,5 +379,5 @@ if (errors.length > 0) {
 console.log(
   `Brand Expression audit passed: ${universalFiles.length} universal files, ` +
     `${projectFiles.length} project scaffold files, English-only artifacts, ` +
-    `and a not-configured starter contract.`
+    `and a valid ${projectContract.status} Brand/Composition Contract.`
 );

@@ -14,7 +14,6 @@ Source references:
 - `AGENTIC-RULES.json`
 - `COMPONENTS.md`
 - `src/data/design-system/componentArchitecture.json`
-- `src/data/design-system-roadmap.json`
 - `src/pages/design-system/components.astro`
 - `src/styles/tokens/component-sizes.css`
 - `src/styles/tokens/color-components.css`

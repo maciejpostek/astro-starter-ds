@@ -1,0 +1,66 @@
+import { resolve } from "node:path";
+import {
+  resolveAgentContext,
+  routeAgentRequest,
+  validateTaskContract
+} from "./lib/agent-runtime.mjs";
+
+const args = process.argv.slice(2);
+const command = args.find((argument) => !argument.startsWith("--")) ?? "task";
+const commandIndex = args.indexOf(command);
+const positional = args
+  .slice(commandIndex + 1)
+  .filter((argument) => !argument.startsWith("--"));
+const value = (name) =>
+  args
+    .find((argument) => argument.startsWith(`--${name}=`))
+    ?.slice(name.length + 3);
+const projectRoot = resolve(value("root") ?? ".");
+let prompt = value("prompt") ?? "";
+let intent;
+let explicitComponentIds = [];
+let explicitTokenIds = [];
+
+if (command === "component") {
+  intent = "reuse";
+  explicitComponentIds = positional;
+  prompt = `Reuse ${positional.join(" ")}`;
+} else if (command === "compose") {
+  intent = "compose";
+  explicitComponentIds = positional;
+  prompt = `Compose a page section with ${positional.join(" ")}`;
+} else if (command === "token") {
+  intent = "exact-edit";
+  explicitTokenIds = positional.length > 0 ? positional : [value("token")].filter(Boolean);
+  prompt = `Inspect ${explicitTokenIds.join(" ")}`;
+} else if (command === "brand") {
+  intent = "compose";
+  prompt = `Create a brand-sensitive composition for ${positional.join(" ")}`;
+}
+
+const task = routeAgentRequest({
+  prompt,
+  explicitComponentIds,
+  explicitTokenIds,
+  intentOverride: intent,
+  projectRoot
+});
+
+if (command === "brand") {
+  task.targets.push(
+    ...positional.map((id) => ({ kind: "scope", id, exists: true }))
+  );
+  task.brandMode = "required";
+}
+
+const errors = validateTaskContract(task);
+if (errors.length > 0) {
+  console.error("Agent task contract failed:");
+  errors.forEach((error) => console.error(`- ${error}`));
+  process.exit(1);
+}
+
+const context = resolveAgentContext({ task, projectRoot });
+console.log(JSON.stringify({ task, context }, null, 2));
+
+if (context.status === "blocked") process.exitCode = 2;

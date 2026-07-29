@@ -8,6 +8,7 @@ import { extname, join, relative, resolve, sep } from "node:path";
 
 const projectRoot = resolve(process.argv[2] ?? ".");
 const errors = [];
+
 const read = (relativePath) => {
   const absolutePath = join(projectRoot, relativePath);
   if (!existsSync(absolutePath)) {
@@ -16,6 +17,18 @@ const read = (relativePath) => {
   }
   return readFileSync(absolutePath, "utf8");
 };
+
+const readJson = (relativePath) => {
+  const source = read(relativePath);
+  if (!source) return {};
+  try {
+    return JSON.parse(source);
+  } catch (error) {
+    errors.push(`${relativePath} is not valid JSON: ${error.message}`);
+    return {};
+  }
+};
+
 const toProjectPath = (absolutePath) =>
   relative(projectRoot, absolutePath).split(sep).join("/");
 
@@ -49,7 +62,9 @@ const activeFigmaRules = figmaRuleFiles.filter(
     !path.endsWith("/19-align-ui-benchmark.md")
 );
 const operationalFiles = [
+  "AGENTS.md",
   "AGENTIC-RULES.md",
+  "WORKFLOW.md",
   "DESIGN-SYSTEM-FRAMEWORK.md",
   ...collectMarkdown(".agentic-rules"),
   ...activeFigmaRules
@@ -59,86 +74,109 @@ const polishPattern =
   /[ąćęłńóśźż]|\b(?:ponieważ|należy|istnieje|używaj|użyj|komponentów|komponentem|stron|systemu|kolorów|gotowy|figmie|właściwości|wartości|ramie|podpięte|źródłem|przepływ|zakazane|checklista)\b/iu;
 
 for (const path of operationalFiles) {
-  const source = read(path);
-  if (polishPattern.test(source)) {
+  if (polishPattern.test(read(path))) {
     errors.push(`${path} contains authored Polish.`);
   }
 }
 
-const roadmap = JSON.parse(read("src/data/design-system-roadmap.json") || "{}");
-const registry = JSON.parse(
-  read("src/data/design-system/componentArchitecture.json") || "{}"
+const agents = read("AGENTS.md");
+const router = readJson("AGENTIC-RULES.json");
+const routerSource = read("AGENTIC-RULES.json");
+const routerDocumentation = read("AGENTIC-RULES.md");
+const workflow = read("WORKFLOW.md");
+const registry = readJson(
+  "src/data/design-system/componentArchitecture.json"
 );
-const expectedLanguagePolicy = {
-  artifactLanguage: "en",
-  conversationLanguage: "pl",
-  identifiersLanguage: "en",
-  figmaNamingLanguage: "en",
-  publicDocumentationLanguage: "en"
-};
 
-for (const [key, value] of Object.entries(expectedLanguagePolicy)) {
-  if (roadmap.languagePolicy?.[key] !== value) {
-    errors.push(`Roadmap languagePolicy.${key} must equal "${value}".`);
+if (Buffer.byteLength(routerSource, "utf8") > 8 * 1024) {
+  errors.push("AGENTIC-RULES.json must remain within the 8 KB routing budget.");
+}
+
+for (const intent of [
+  "exact-edit",
+  "reuse",
+  "compose",
+  "repair",
+  "extend",
+  "create"
+]) {
+  if (!router.profiles?.[intent]) {
+    errors.push(`AGENTIC-RULES.json is missing profile ${intent}.`);
   }
 }
 
-const routerPath = `${figmaRuleDirectory}/README.md`;
-const router = read(routerPath);
-for (const path of activeFigmaRules.filter((path) => !path.endsWith("/README.md"))) {
-  const filename = path.split("/").at(-1);
-  if (!router.includes(`(./${filename})`)) {
-    errors.push(`${routerPath} does not route ${filename}.`);
+if (router.defaults?.allowNewComponents !== false) {
+  errors.push(
+    "AGENTIC-RULES.json must default allowNewComponents to false."
+  );
+}
+if (
+  router.sources?.componentIndex !==
+  "src/data/design-system/componentArchitecture.json"
+) {
+  errors.push("AGENTIC-RULES.json must route component lookup to the registry.");
+}
+if (
+  router.sources?.brandContract !==
+  "project-context/brand-foundations/brand-expression/contract.json"
+) {
+  errors.push("AGENTIC-RULES.json must route brand lookup to contract.json.");
+}
+if (routerSource.includes("design-system-roadmap.json")) {
+  errors.push("AGENTIC-RULES.json must not route through the retired roadmap.");
+}
+if (router.defaults?.figma !== "explicit-only") {
+  errors.push("AGENTIC-RULES.json must make Figma explicit-request-only.");
+}
+
+for (const contract of [
+  "Classify the request as",
+  "Reuse existing tokens and components by default",
+  "explicit request",
+  "Use Figma rules and tools only"
+]) {
+  if (!agents.includes(contract)) {
+    errors.push(`AGENTS.md is missing runtime contract: ${contract}`);
   }
 }
 
 for (const contract of [
-  "Astro code is the source of truth.",
-  "Roadmap JSON",
-  "Astro implementation",
-  "Figma representation",
-  "Reference reports are excluded from the operational-rule language gate."
+  "Prompt",
+  "Resolve Context",
+  "default-deny",
+  "Figma is not a normal validator"
 ]) {
-  if (!router.includes(contract)) {
-    errors.push(`${routerPath} is missing governance contract: ${contract}`);
+  if (!routerDocumentation.includes(contract)) {
+    errors.push(`AGENTIC-RULES.md is missing runtime contract: ${contract}`);
   }
 }
 
-const libraryRoadmapPath =
-  `${figmaRuleDirectory}/07-component-library-roadmap.md`;
-const libraryRoadmap = read(libraryRoadmapPath);
 for (const contract of [
-  "Immutable Phase 0 baseline:** 66 public files and 66 public registry",
-  "Current public inventory:** 125 public files and 125 public registry",
-  "Components — Forms` — 12",
-  "Components — Data Display` — 7",
-  "Assets — Icons                  done",
-  "migration baseline remains exactly 66",
-  "current registry and current public files contain exactly 125"
+  "Classify",
+  "Resolve Context",
+  "Reuse-First Creation Gate",
+  "contract.json",
+  "Figma is an optional"
 ]) {
-  if (!libraryRoadmap.includes(contract)) {
-    errors.push(`${libraryRoadmapPath} is missing inventory contract: ${contract}`);
+  if (!workflow.includes(contract)) {
+    errors.push(`WORKFLOW.md is missing runtime contract: ${contract}`);
   }
-}
-
-if (/ready for review/iu.test(libraryRoadmap)) {
-  errors.push(`${libraryRoadmapPath} contains a stale family checkpoint.`);
 }
 
 const publicLayers = new Set(["atom", "molecule", "organism", "template"]);
 const publicRecords = (registry.components ?? []).filter((record) =>
   publicLayers.has(record.layer)
 );
-if (registry.baseline?.publicComponentCount !== 66) {
-  errors.push("The immutable Phase 0 component baseline must remain 66.");
+if (publicRecords.length === 0) {
+  errors.push("The component registry must contain public component records.");
 }
-if (publicRecords.length !== 125) {
-  errors.push(
-    `Current public component inventory must equal 125; received ${publicRecords.length}.`
-  );
+for (const record of publicRecords) {
+  if (!record.readiness?.visual || !record.readiness?.validation) {
+    errors.push(`${record.name} is missing current readiness.`);
+  }
 }
 
-const requiredFamilyRules = [
+for (const family of [
   "button",
   "forms",
   "data-display",
@@ -152,8 +190,7 @@ const requiredFamilyRules = [
   "sidepanels",
   "timeline",
   "sections"
-];
-for (const family of requiredFamilyRules) {
+]) {
   const path = `.agentic-rules/components/${family}.md`;
   if (!operationalFiles.includes(path)) {
     errors.push(`Missing active family rule: ${path}`);
@@ -164,8 +201,8 @@ const brandExpressionRule = read(".agentic-rules/08-brand-expression.md");
 for (const contract of [
   "Source Of Truth By Concern",
   "Activation Gate",
-  "Subjective Language Rule",
-  "Human Visual Approval"
+  "Human Visual Approval",
+  "contract.json"
 ]) {
   if (!brandExpressionRule.includes(contract)) {
     errors.push(
@@ -174,25 +211,31 @@ for (const contract of [
   }
 }
 
-for (const [path, contract] of [
-  ["AGENTS.md", "brand-expression"],
-  ["AGENTIC-RULES.json", "brand_expression"],
-  ["AGENTIC-RULES.md", "Brand Expression"],
-  ["DESIGN-SYSTEM-FRAMEWORK.md", "Source Of Truth By Concern"],
-  ["WORKFLOW.md", "Brand-Sensitive Visual Protocol"],
-  [routerPath, "Brand Expression Contract"]
-]) {
-  if (!read(path).includes(contract)) {
-    errors.push(`${path} does not route the Brand Expression rules.`);
+const figmaRouterPath = `${figmaRuleDirectory}/README.md`;
+const figmaRouter = read(figmaRouterPath);
+for (const path of activeFigmaRules.filter(
+  (path) => !path.endsWith("/README.md")
+)) {
+  const filename = path.split("/").at(-1);
+  if (!figmaRouter.includes(`(./${filename})`)) {
+    errors.push(`${figmaRouterPath} does not route ${filename}.`);
   }
+}
+if (!figmaRouter.includes("explicit")) {
+  errors.push(`${figmaRouterPath} must describe explicit Figma activation.`);
 }
 
 const historicalBenchmark = `${figmaRuleDirectory}/19-align-ui-benchmark.md`;
 if (!figmaRuleFiles.includes(historicalBenchmark)) {
   errors.push(`Missing historical reference report: ${historicalBenchmark}`);
 }
-if (!router.includes("decision material, not") || !router.includes("active mapping rule")) {
-  errors.push("The router must distinguish the Align UI report from active rules.");
+if (
+  !figmaRouter.includes("decision material, not") ||
+  !figmaRouter.includes("active mapping rule")
+) {
+  errors.push(
+    "The Figma router must distinguish the Align UI report from active rules."
+  );
 }
 
 if (errors.length > 0) {
@@ -203,5 +246,6 @@ if (errors.length > 0) {
 
 console.log(
   `Agentic rules audit passed: ${operationalFiles.length} English operational files, ` +
-    `${activeFigmaRules.length - 1} active Figma adapters, immutable baseline 66, current public inventory 125.`
+    `${publicRecords.length} public registry records, compact reuse-first routing, ` +
+    "default-deny creation, and explicit-only Figma."
 );

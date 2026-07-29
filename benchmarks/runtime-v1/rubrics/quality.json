@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "acceptedThreshold": 85,
+  "dimensions": [
+    {
+      "id": "routing-and-scope",
+      "weight": 15,
+      "description": "Intent, terminal status, and changed-file scope match the scenario oracle."
+    },
+    {
+      "id": "reuse-and-creation-compliance",
+      "weight": 20,
+      "description": "Existing components are reused and public creation occurs only in explicit create scenarios."
+    },
+    {
+      "id": "api-and-token-compliance",
+      "weight": 20,
+      "description": "Props, slots, data attributes, and CSS Variables match the current Guides and source contracts."
+    },
+    {
+      "id": "semantics-accessibility-behavior",
+      "weight": 20,
+      "description": "The scenario-specific semantic, accessibility, and runtime assertions pass."
+    },
+    {
+      "id": "validation-and-first-pass",
+      "weight": 15,
+      "description": "Required validators pass and repair attempts stay within the Task Contract."
+    },
+    {
+      "id": "minimality-and-maintainability",
+      "weight": 10,
+      "description": "The patch stays within the allowlist and does not duplicate existing systems."
+    }
+  ],
+  "criticalFailures": [
+    "unauthorized-public-api",
+    "default-figma-activation",
+    "brand-gate-bypass",
+    "raw-value-drift",
+    "false-accepted",
+    "changed-file-outside-allowlist",
+    "repair-limit-exceeded"
+  ],
+  "blindReview": {
+    "profiles": ["compose", "extend", "create"],
+    "complexities": ["medium", "large"],
+    "sampleRate": 0.2
+  }
+}
+

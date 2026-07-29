@@ -144,34 +144,6 @@ if (publicRecord) {
   errors.push("DsMediaPlaceholder must remain outside the public component registry.");
 }
 
-const roadmap = JSON.parse(read("src/data/design-system-roadmap.json") || "{}");
-const roadmapItem = roadmap.items?.find(
-  (item) => item.id === "asset.media-placeholders",
-);
-if (!roadmapItem) {
-  errors.push("Roadmap is missing asset.media-placeholders.");
-} else if (
-  !roadmapItem.evidence?.sourcePaths?.includes(catalogPath)
-) {
-  errors.push("Media placeholder roadmap evidence is missing its canonical catalog.");
-} else {
-  if (roadmapItem.status !== "ready") {
-    errors.push("Media placeholder roadmap item must be ready after parity validation.");
-  }
-  for (const nodeId of [
-    "582:67",
-    "582:94",
-    "582:93",
-    "582:68",
-    "582:73",
-    "582:78",
-  ]) {
-    if (!roadmapItem.evidence?.figmaNodeIds?.includes(nodeId)) {
-      errors.push(`Media placeholder roadmap evidence is missing Figma node ${nodeId}.`);
-    }
-  }
-}
-
 const polishPattern =
   /[ąćęłńóśźż]|\b(?:oraz|dla|jest|należy|brakuje|istnieje|użyj|kiedy|komponentów|stron|systemu|kolorów|gotowy)\b/iu;
 for (const path of [

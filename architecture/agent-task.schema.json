@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astro-design-system.local/architecture/agent-task.schema.json",
+  "title": "AI-Native Design System V1.0 Task Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "intent",
+    "targets",
+    "allowNewComponents",
+    "brandMode",
+    "contextBudget",
+    "validationScope",
+    "maxRepairAttempts",
+    "excludedContexts"
+  ],
+  "properties": {
+    "version": {
+      "const": "1.0.0"
+    },
+    "status": {
+      "enum": ["ready", "blocked"]
+    },
+    "intent": {
+      "enum": [
+        "exact-edit",
+        "reuse",
+        "compose",
+        "repair",
+        "extend",
+        "create"
+      ]
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "id", "exists"],
+        "properties": {
+          "kind": {
+            "enum": ["component", "token", "file", "scope"]
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "exists": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "allowNewComponents": {
+      "type": "boolean"
+    },
+    "brandMode": {
+      "enum": ["skip", "approved-only", "required"]
+    },
+    "contextBudget": {
+      "enum": ["tiny", "small", "medium", "large"]
+    },
+    "validationScope": {
+      "enum": [
+        "token",
+        "component-use",
+        "page-composition",
+        "component-repair",
+        "component-contract",
+        "component-creation"
+      ]
+    },
+    "maxRepairAttempts": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "excludedContexts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "art-direction",
+          "brand-contract",
+          "component-registry",
+          "family-rules",
+          "figma",
+          "full-build"
+        ]
+      }
+    },
+    "blockedReason": {
+      "type": ["string", "null"]
+    },
+    "suggestedPrompt": {
+      "type": ["string", "null"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "intent": {
+            "const": "create"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "allowNewComponents": {
+            "const": true
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "allowNewComponents": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "required": ["blockedReason"]
+      }
+    }
+  ]
+}

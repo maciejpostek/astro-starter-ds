@@ -373,6 +373,7 @@ When changing layout:
 3. Update `/design-system/layout` if a new value, class, attribute or example
    is introduced.
 4. Update this file when the operational rule changes.
-5. Update `src/data/design-system-roadmap.json` status when a layer is done.
+5. Update affected component readiness when implementation, visual review, or
+   validation state changes.
 
 Code is the source of truth. Documentation mirrors code.

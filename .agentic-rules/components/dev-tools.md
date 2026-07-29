@@ -31,8 +31,11 @@ public page content.
 
 ## 6. Accessibility Pattern
 
-The grid overlay is aria-hidden and never intercepts interaction. Guide copy is
-normal readable content. Floating info UI remains pointer-events none.
+The grid overlay is aria-hidden and never intercepts interaction itself. While
+Guides are enabled, the document-level ComponentInfoLayer controller captures
+clicks to copy component identity instead of running page actions; the Guides
+toggle remains available to restore normal interaction. Guide copy is normal
+readable content. Floating info UI remains pointer-events none.
 
 ## 7. Content Pattern
 
@@ -55,8 +58,9 @@ production content. Sync docs, registry, roadmap and rules.
 
 ## 11. Do / Do Not
 
-Do keep tools non-blocking and preview-safe. Do not mount duplicate runtime
-controllers or make overlays intercept pointer events.
+Do keep visual overlays pointer-transparent and preview-safe. Do not mount
+duplicate runtime controllers or make the overlays themselves intercept pointer
+events.
 
 ## 12. Examples
 

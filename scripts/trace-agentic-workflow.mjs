@@ -186,6 +186,7 @@ if (componentQuery) {
     name: record.name,
     astroComponent: record.astroComponent,
     status: record.status,
+    readiness: record.readiness,
     layer: record.layer,
     family: record.family,
     sourcePath: record.sourcePath,
@@ -201,8 +202,8 @@ if (componentQuery) {
       "source.component-registry",
       "source.astro-components",
       "source.css-variables",
-      "source.roadmap",
-      "source.figma-adapters"
+      "source.category-rules",
+      "source.brand-contract"
     ]
   };
   if (asJson) {
@@ -210,7 +211,7 @@ if (componentQuery) {
   } else {
     console.log(`${result.name} (${result.sourcePath})`);
     console.log(
-      `Status: ${result.status}; layer: ${result.layer}; family: ${result.family}`
+      `Status: ${result.status}; visual: ${result.readiness.visual}; validation: ${result.readiness.validation}; layer: ${result.layer}; family: ${result.family}`
     );
     console.log(`Props: ${result.props.join(", ") || "none recorded"}`);
     console.log(

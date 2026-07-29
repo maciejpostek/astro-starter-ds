@@ -3,146 +3,204 @@
 # View: view.component-lifecycle-release
 direction: right
 
-title: "Component Lifecycle and Release" {
+title: "Component Creation and Repair Lifecycle" {
   shape: text
   near: top-center
-  style.font-size: 28
+  style.font-size: 30
   style.bold: true
+  style.font-color: "#0f172a"
 }
 
-gate_component_gap: "Genuine Component Gap Gate\ndecision-gate · active · current" {
+router_request_classifier: "Request Classifier\\nrouter\\nroute-agent-request.mjs, AGENTIC-RULES.json" {
+  shape: hexagon
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+router_execution_profile: "Execution Profile\\nrouter\\nAGENTIC-RULES.json" {
+  shape: hexagon
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+gate_creation_intent: "Creation Intent Gate\\ndecision gate\\nagent-runtime.mjs, AGENTIC-RULES.json" {
   shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#fce7f3"
+  style.stroke: "#be185d"
+  style.font-color: "#831843"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-process_implement_astro: "Implement or Repair Astro\nprocess · active · current" {
+process_gap_proof: "Registry Gap Proof\\nprocess\\ncomponentArchitecture.json" {
   shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-process_document: "Update Operational Documentation\nprocess · active · current" {
+process_repair: "Repair Existing Contract\\nprocess" {
   shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-process_browser_validation: "Browser Validation\nprocess · active · current" {
+process_extend: "Explicitly Extend API\\nprocess" {
   shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-process_figma_sync: "Synchronize Accepted Astro to Figma\nprocess · active · current" {
+process_create: "Create Reusable Component\\nprocess" {
   shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-external_figma: "Figma Editable Representation\nexternal-system · external · current" {
-  shape: cloud
-  style.fill: "#475569"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-validator_component_architecture: "Component Architecture Audit\nvalidator · active · current" {
-  shape: hexagon
-  style.fill: "#d97706"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-validator_family: "Family and Parity Audits\nvalidator · active · current" {
-  shape: hexagon
-  style.fill: "#d97706"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-validator_roadmap: "Roadmap Audit\nvalidator · active · current" {
-  shape: hexagon
-  style.fill: "#d97706"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-validator_build: "Astro Check and Build\nvalidator · active · current" {
-  shape: hexagon
-  style.fill: "#d97706"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-approval_family: "Family Checkpoint Acceptance\nhuman-approval · required · current" {
-  shape: diamond
-  style.fill: "#ea580c"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-gate_roadmap_checkpoint: "Roadmap Checkpoint Gate\ndecision-gate · active · current" {
-  shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_release: "Lifecycle and Release\nprocess · active · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_roadmap: "Design System Roadmap\nsource-of-truth · active · current" {
+source_component_registry: "Component Registry and Readiness\\nsource of truth\\ncomponentArchitecture.json" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-output_astro: "Accepted Astro Output\noutput · active · current" {
+source_astro_components: "Astro Component Sources\\nsource of truth\\ncomponents" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_scoped_validation: "Scoped Validation\\nvalidator\\nAGENTIC-RULES.json, scripts" {
+  shape: hexagon
+  style.fill: "#fef3c7"
+  style.stroke: "#d97706"
+  style.font-color: "#78350f"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+validator_agent_runtime: "Agent Runtime Audit\\nvalidator\\naudit-agent-runtime.mjs, agent-runtime.test.mjs" {
+  shape: hexagon
+  style.fill: "#fef3c7"
+  style.stroke: "#d97706"
+  style.font-color: "#78350f"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+validator_component_architecture: "Component Architecture Audit\\nvalidator\\naudit-component-architecture.mjs" {
+  shape: hexagon
+  style.fill: "#fef3c7"
+  style.stroke: "#d97706"
+  style.font-color: "#78350f"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+output_accepted: "Accepted Astro Result\\noutput" {
   shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#15803d"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-output_figma: "Accepted Figma Representation\noutput · external · current" {
+output_blocked: "Blocked Result\\noutput" {
   shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#15803d"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-gate_component_gap -> process_implement_astro: "routes-to · A genuinely reusable component or API gap is evidenced."
-process_implement_astro -> process_document: "routes-to"
-process_implement_astro -> process_browser_validation: "routes-to"
-process_figma_sync -> output_figma: "creates"
-validator_family -> external_figma: "validates"
-approval_family -> output_figma: "approves"
-process_release -> source_roadmap: "reads"
-process_release -> output_astro: "publishes"
+source_git_history: "Git History\\nsource of truth\\n.git" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+router_execution_profile -> gate_creation_intent: "intent create" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+gate_creation_intent -> process_gap_proof: "explicit reusable component request" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_gap_proof -> process_create: "no match or suitable alternative" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+gate_creation_intent -> output_blocked: "creation not explicit" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_repair -> process_scoped_validation: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+process_extend -> process_scoped_validation: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+process_create -> process_scoped_validation: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+process_scoped_validation -> output_accepted: "passed" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+source_git_history -> source_component_registry: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}

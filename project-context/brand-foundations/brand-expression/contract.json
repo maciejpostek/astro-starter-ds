@@ -1,0 +1,9 @@
+{
+  "$schema": "./contract.schema.json",
+  "version": "1.0.0",
+  "status": "not-configured",
+  "projectId": null,
+  "owner": null,
+  "approvedAt": null,
+  "rules": []
+}

@@ -217,36 +217,6 @@ for (const contract of [
   requireContract(visualRule, contract, visualRulePath);
 }
 
-const roadmap = JSON.parse(read("src/data/design-system-roadmap.json") || "{}");
-const roadmapItem = roadmap.items?.find(
-  (item) => item.id === "asset.illustration-system",
-);
-if (!roadmapItem) {
-  errors.push("Roadmap is missing asset.illustration-system.");
-} else if (
-  !roadmapItem.evidence?.sourcePaths?.includes(
-    "src/data/panel-patterns.ts",
-  )
-) {
-  errors.push("Illustration roadmap evidence is missing the canonical preset data.");
-} else {
-  if (roadmapItem.status !== "ready") {
-    errors.push("Illustration roadmap item must be ready after parity validation.");
-  }
-  for (const nodeId of [
-    "581:2",
-    "581:3",
-    "581:29",
-    "581:60",
-    "581:79",
-    "581:99",
-  ]) {
-    if (!roadmapItem.evidence?.figmaNodeIds?.includes(nodeId)) {
-      errors.push(`Illustration roadmap evidence is missing Figma node ${nodeId}.`);
-    }
-  }
-}
-
 const polishPattern =
   /[ąćęłńóśźż]|\b(?:oraz|dla|jest|należy|brakuje|istnieje|użyj|kiedy|komponentów|stron|systemu|kolorów|gotowy)\b/iu;
 for (const path of [
@@ -267,5 +237,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `Illustration system audit passed: ${presetKeys.length} deterministic presets, ${totalRows} rows, and ${totalVisibleSegments} token-ready visible segments align across code, documentation, AI rules, and roadmap evidence.`,
+  `Illustration system audit passed: ${presetKeys.length} deterministic presets, ${totalRows} rows, and ${totalVisibleSegments} token-ready visible segments align across code, documentation, AI rules, and the explicit Figma adapter.`,
 );

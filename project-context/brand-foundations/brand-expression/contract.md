@@ -3,83 +3,27 @@ status: not-configured
 project-id: null
 owner: null
 last-approved-at: null
+generated-from: contract.json
 ---
 
-# Brand Expression Contract
+# Brand and Composition Contract
 
-No project-specific Brand Expression Contract is approved.
+No project-specific Brand/Composition Contract is configured.
 
-Do not use the headings below as design input until the status is changed to
-`approved` and every decision links to validated project evidence.
+This generated file is not production visual direction. Populate and approve
+`contract.json` before asking AI to make open-ended brand-sensitive
+composition decisions. Exact token edits and reuse of named existing
+components do not require this contract.
 
-## Creative Thesis
+## Operational rules
 
-Not configured.
+- CSS Variables own reusable values.
+- Astro components own executable APIs and behavior.
+- Contract rules select existing tokens, classes, attributes, components, and
+  runtime behaviors for an approved project scope.
+- A contract rule cannot silently create a token or component.
+- Human approval is required before a new visual direction is propagated.
 
-## Brand Context
+## Rules
 
-Not configured.
-
-## Visual Metaphor
-
-Not configured.
-
-## Design Principles
-
-Not configured.
-
-## Translation Matrix
-
-Not configured.
-
-## Hierarchy, Contrast, Balance, Rhythm, And Unity
-
-Not configured.
-
-## Composition And Grid
-
-Not configured.
-
-## Typography
-
-Not configured.
-
-## Color
-
-Not configured.
-
-## Spacing, Shape, And Surface
-
-Not configured.
-
-## UI Component DNA
-
-Not configured.
-
-## Imagery, Illustration, Iconography, And Motion
-
-Not configured.
-
-## Responsive Expression
-
-Not configured.
-
-## Non-Negotiables
-
-Not configured.
-
-## Degrees Of Freedom
-
-Not configured.
-
-## Approved References
-
-None.
-
-## Calibration Set
-
-None.
-
-## Validation And Approval
-
-Not approved.
+No rules are configured.

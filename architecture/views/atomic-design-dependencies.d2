@@ -3,72 +3,94 @@
 # View: view.atomic-design-dependencies
 direction: right
 
-title: "Atomic Design Dependency View" {
+title: "Atomic Design Dependencies" {
   shape: text
   near: top-center
-  style.font-size: 28
+  style.font-size: 30
   style.bold: true
+  style.font-color: "#0f172a"
 }
 
-foundation_tokens: "Foundations\nfoundation · ready · current" {
+foundation_design_tokens: "Foundations and Tokens\\nfoundation\\ntokens" {
   shape: rectangle
-  style.fill: "#65a30d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#ecfccb"
+  style.stroke: "#65a30d"
+  style.font-color: "#365314"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-component_atoms: "Atoms (24 public)\ncomponent · ready · current" {
+component_atoms: "Atoms\\ncomponent\\natoms" {
   shape: rectangle
-  style.fill: "#16a34a"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-component_molecules: "Molecules (38 public)\ncomponent · ready · current" {
+component_molecules: "Molecules and Family Parts\\ncomponent\\nmolecules" {
   shape: rectangle
-  style.fill: "#16a34a"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-component_family_parts: "Private Family Parts\ncomponent · conditional · current" {
+component_cards: "Cards\\ncomponent\\ncards" {
   shape: rectangle
-  style.fill: "#16a34a"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-component_cards: "Cards (19 public)\ncomponent · ready · current" {
+component_organisms: "Organisms and Sections\\ncomponent\\norganisms" {
   shape: rectangle
-  style.fill: "#16a34a"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-component_organisms_sections: "Organisms and Sections (62 public; 35 sections ready)\ncomponent · ready-with-one-review-section · current" {
+component_templates: "Templates and Pages\\ncomponent\\ntemplates, pages" {
   shape: rectangle
-  style.fill: "#16a34a"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-component_templates_pages: "Templates and Pages\ncomponent · gap-no-page-template-catalog · current" {
-  shape: rectangle
-  style.fill: "#16a34a"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+foundation_design_tokens -> component_atoms: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
 }
 
-foundation_tokens -> component_atoms: "required by"
-component_atoms -> component_molecules: "required by"
-component_molecules -> component_family_parts: "required by · Only when a family needs private repeatable parts."
-component_family_parts -> component_cards: "required by"
-component_cards -> component_organisms_sections: "required by"
-component_organisms_sections -> component_templates_pages: "required by"
+component_atoms -> component_molecules: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+component_molecules -> component_cards: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+component_cards -> component_organisms: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+component_organisms -> component_templates: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}

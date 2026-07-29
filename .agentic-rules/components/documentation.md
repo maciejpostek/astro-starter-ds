@@ -6,7 +6,8 @@ Status: active.
 
 - Family: `documentation`.
 - Core components: `DsTableOfContents`, `DsSectionHeader`, `DsCodeSnippet`,
-  `DsTableFrame`, `DsColorRow`, `DsAutomatedTokenDocumentation`, `DsCallout`.
+  `DsTableFrame`, `DsColorRow`, `DsAutomatedTokenDocumentation`, `DsCallout`,
+  `ArchitectureExplorer`.
 - Sources remain in `src/components/design-system*` by architecture exception.
 
 ## 2. UX Role
@@ -56,6 +57,10 @@ The `Ds*` prefix identifies documentation infrastructure. Routes remain under
 the runtime DsSidebar singleton separate from in-page TOC previews.
 `DsCallout` lives in `src/components/design-system-documentation` and composes
 the public `CalloutCard`; it is not a public Sections-family component.
+`ArchitectureExplorer` is a read-only React island for internal architecture
+documentation. It reads generated view data derived from
+`architecture/system-map.json`; it must not become a second editable graph or a
+public product component.
 
 ## 11. Do / Do Not
 
@@ -69,4 +74,8 @@ one-off tables, fake anchors, duplicate sidebar controllers or pasted SVG icons.
 <DsCodeSnippet code={example} />
 <DsAutomatedTokenDocumentation source="size-semantic.css" prefix="--gap" />
 <DsCallout />
+<ArchitectureExplorer
+  dataUrl="/architecture/views/ai-native-target-architecture.json"
+  fallbackSvgUrl="/architecture/generated/ai-native-target-architecture.svg"
+/>
 ```
