@@ -2,7 +2,7 @@
 
 Status: active. Family checkpoint: `done`.
 
-The `Components — Sidepanels` page represents four public Astro dialog
+The `40.11 Sidepanels` page represents four public Astro dialog
 components. Figma documents their shells, states, and responsive structure.
 Dialog lifecycle, focus, Escape, backdrop, templates, and open/close behavior
 remain code-owned.

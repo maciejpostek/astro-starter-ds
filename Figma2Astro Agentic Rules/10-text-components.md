@@ -2,7 +2,7 @@
 
 Status: active.
 
-This rule maps the `Components — Text` Figma page to the five public Astro
+This rule maps the `40.4 Text` Figma page to the five public Astro
 components in the `text` family. Code remains the source of truth for HTML
 semantics, responsive behavior, and the public API.
 

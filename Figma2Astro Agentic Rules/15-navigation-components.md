@@ -11,7 +11,7 @@ accessibility behavior.
 ## 1. Canonical Scope
 
 ```text
-Components — Navigation
+40.9 Navigation
 ├── Atoms
 │   ├── DropdownItem
 │   └── Dropdown
@@ -510,7 +510,7 @@ GlobalHeader.
 - Every active border edge binds both its semantic color and
   `Sizing Semantic / border-width/{default|strong}`.
 - Typography uses existing Text Styles and Variables.
-- Icons are instances from `Assets — Icons`.
+- Icons are instances from `30.1 Icons`.
 - Button, IconButton, Logo, ContentBlock, MegaMenu, MobileNavigation,
   AvailableLabel, TimezoneLabel and Avatar remain nested instances of
   canonical masters.
@@ -548,7 +548,7 @@ GlobalHeader.
 
 ## 23. Validation Checklist
 
-- [ ] The page is named `Components — Navigation`.
+- [ ] The page is named `40.9 Navigation`.
 - [ ] Exactly 16 public masters and ten private `_Parts/*` masters exist.
 - [ ] Every public Astro root exposes `data-component-family="navigation"`.
 - [ ] DropdownItem has six State variants and canonical Check instances.

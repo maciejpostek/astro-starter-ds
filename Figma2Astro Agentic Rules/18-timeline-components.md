@@ -2,7 +2,7 @@
 
 Status: active. Family checkpoint: `done`.
 
-The `Components — Timeline` page represents four public components. Astro owns
+The `40.12 Timeline` page represents four public components. Astro owns
 stage data, `totalWeeks`, position and length calculations, templates, and
 modal runtime.
 

@@ -50,7 +50,9 @@ edits or reuse of named existing components.
 
 Use Figma rules and tools only when the user explicitly requests a Figma
 operation. Start from `Figma2Astro Agentic Rules/README.md` and the relevant
-numbered adapter. Figma parity is not part of normal Astro validation.
+numbered adapter. Read `Figma2Astro Agentic Rules/00-file-architecture.md`
+before resolving, creating, renaming, reordering, or validating Figma pages.
+Figma parity is not part of normal Astro validation.
 
 Project-specific content belongs in `project-context`, project routes, project
 data, and project assets. Do not infer a brand, audience, offer, or business

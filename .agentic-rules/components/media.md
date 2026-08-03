@@ -232,7 +232,7 @@ or synchronizing the Media family.
 - `Asset/MediaPlaceholder` node `582:93` maps to the internal
   `DsMediaPlaceholder` fixture renderer and remains outside the public Media
   family.
-- `Assets — Brand Marks` nodes `587:2` and `587:3` map the empty starter
+- `30.4 Brand Marks` nodes `587:2` and `587:3` map the empty starter
   registry and intake contract; instances `587:50` and `587:63` remain linked
   to the public Logo master.
 - Logo `Variant=Default|Monochrome` maps to

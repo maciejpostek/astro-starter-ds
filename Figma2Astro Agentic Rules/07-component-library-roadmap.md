@@ -6,6 +6,11 @@ This rule defines the shared process for representing the public Astro
 component library in Figma. Astro remains the source of truth; Figma pages
 represent public components, props, and attributes for design workflows.
 
+Resolve the containing page through `00-file-architecture.md` before using a
+family adapter. The `40.x` prefix is Figma navigation metadata only; it must
+never enter a master name, registry identifier, Astro source path, or public
+API.
+
 ## 1. Public scope and inventory semantics
 
 The Figma library represents public files under:
@@ -19,7 +24,7 @@ src/components/
 ```
 
 `Ds*`, design-system renderers, development helpers, and `global-scripts` are
-not public Figma components. `Assets — Icons` is the exception: it represents
+not public Figma components. `30.1 Icons` is the exception: it represents
 curated named imports from `@lucide/astro`, not
 `LucideIconLibrary.astro`.
 
@@ -48,7 +53,7 @@ Foundations
   -> App Patterns
 ```
 
-`Architecture — Components` and the component registry must communicate the
+`10.2 Component Model` and the component registry must communicate the
 same dependency order. Current readiness comes from each registry record.
 
 ## 3. Figma property mapping
@@ -154,6 +159,8 @@ Shadows use Effect Styles because Figma does not support them as Variables.
 
 ## 7. Validation
 
+- the containing page ID and `40.x` label match the page map in
+  `00-file-architecture.md`;
 - registry and public source files remain one-to-one;
 - no `sourcePath` is duplicated;
 - master name matches the Astro component;

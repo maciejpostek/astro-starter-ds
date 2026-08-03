@@ -428,7 +428,7 @@ clip path, handle transform and input events remain code-owned.
 
 ## 13. Documentation Fixture Asset
 
-`Assets — Media Placeholders` is a separate asset page. It does not increase
+`30.3 Media` is a separate asset page. It does not increase
 the eight-component public Media count.
 
 | Asset contract | Figma node | Astro source |
@@ -448,7 +448,7 @@ Permanent variant nodes are `582:68`, `582:73`, and `582:78`. They represent
 fixture geometry only and use semantic Variables for every visible paint.
 Variant dimensions are reference geometry, not a public size API. Astro
 composes `MediaRatio`; Figma keeps the fixture asset separate from
-`Components — Media`.
+`40.7 Media`.
 
 Do not use these fixtures as production content or derive final alternative
 text from their names. Replace them with project-owned media whenever the
@@ -456,7 +456,7 @@ content carries meaning, proof, identity, instruction, or brand.
 
 ## 14. Brand Mark Contract
 
-`Assets — Brand Marks` represents the intake contract without publishing
+`30.4 Brand Marks` represents the intake contract without publishing
 starter-specific artwork:
 
 | Contract | Figma node | Astro source |
@@ -523,11 +523,11 @@ recolor, crop, distort, outline, animate, or combine marks without approval.
 ## 17. Validation Checklist
 
 - [ ] Exactly nine public Media masters exist.
-- [ ] `Assets — Media Placeholders` contains one asset component set with
+- [ ] `30.3 Media` contains one asset component set with
       exactly Image, Video and Product Preview values.
-- [ ] The fixture asset remains outside `Components — Media` and the public
+- [ ] The fixture asset remains outside `40.7 Media` and the public
       Astro component registry.
-- [ ] `Assets — Brand Marks` contains two linked Logo instances, zero brand
+- [ ] `30.4 Brand Marks` contains two linked Logo instances, zero brand
       masters and zero registered project assets.
 - [ ] Logo has two variants and one shared Artwork SLOT.
 - [ ] Exactly one private `_Parts/SwiperStarter.Slide` exists.

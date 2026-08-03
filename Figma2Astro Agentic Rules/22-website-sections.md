@@ -21,26 +21,26 @@ real implemented section. Do not create empty pages merely to display the
 target taxonomy.
 
 ```text
-Sections — Global Shell
-Sections — Hero & Headers
-Sections — Brand & Social Proof
-Sections — Features & Product Demo
-Sections — How It Works & Use Cases
-Sections — Stats & Customer Proof
-Sections — Pricing & Comparison
-Sections — Integrations & Security
-Sections — Conversion
-Sections — Company
-Sections — Content & Resources
-Sections — Product Communication
+50.1 Global Shell
+50.2 Hero & Headers
+50.3 Brand & Social Proof
+50.4 Features & Product Demo
+50.5 How It Works & Use Cases
+50.6 Stats & Customer Proof
+50.7 Pricing & Comparison
+50.8 Integrations & Security
+50.9 Conversion
+50.10 Content & Resources
+50.11 Company
+50.12 Product Communication
 ```
 
-The first active page is `Sections — Global Shell` at `623:2`. Its
+The first active page is `50.1 Global Shell` at `623:2`. Its
 documentation root is `DSB/Sections/Global Shell` at `623:3`.
-`Sections — Hero & Headers` is `685:461`. `Sections — Brand & Social Proof`
+`50.2 Hero & Headers` is `685:461`. `50.3 Brand & Social Proof`
 is `694:2`, with documentation root
 `Sections / Brand & Social Proof / Library` at `694:3`.
-`Sections — Integrations & Security` is `795:2`, with documentation root
+`50.8 Integrations & Security` is `795:2`, with documentation root
 `DSB/Sections/Integrations & Security` at `795:254`.
 
 ## 2. Shared mapping
@@ -1027,7 +1027,7 @@ slots exist.
 
 ### Figma
 
-Page `Sections — How It Works & Use Cases` is `749:47`. Documentation root
+Page `50.5 How It Works & Use Cases` is `749:47`. Documentation root
 `761:97` contains Component Set `UseCasesSection` `762:202` with
 `Variant=Role Based|Industry|Scenario Tabs`.
 
@@ -1073,7 +1073,7 @@ claims, destinations and approval remain project-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Stats & Customer Proof` is `769:6`. Documentation root
+Page `50.6 Stats & Customer Proof` is `769:6`. Documentation root
 `770:171` contains Component Set `StatsSection` `770:170` with
 `Variant=KPI Band|Grid|Metric Cards|Milestones`.
 
@@ -1120,7 +1120,7 @@ exist.
 
 ### Figma
 
-Page `Sections — Stats & Customer Proof` is `769:6`. Documentation root
+Page `50.6 Stats & Customer Proof` is `769:6`. Documentation root
 `774:322` contains Component Set `DataStorySection` `774:321` with
 `Variant=Benchmark|Data Story|Customer Results|ROI Result`.
 
@@ -1168,7 +1168,7 @@ slots exist.
 
 ### Figma
 
-Page `Sections — Pricing & Comparison` is `779:62`. Documentation root
+Page `50.7 Pricing & Comparison` is `779:62`. Documentation root
 `779:63` contains Component Set `PricingSection` `780:4150` with
 `Variant=Tiers|Toggle|Usage Based`.
 
@@ -1214,7 +1214,7 @@ approval remain project-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Pricing & Comparison` is `779:62`. Documentation root
+Page `50.7 Pricing & Comparison` is `779:62`. Documentation root
 `782:267` contains Component Set `PricingComparisonSection` `783:4291` with
 `Variant=Feature Matrix|Add Ons|Enterprise CTA`.
 
@@ -1260,7 +1260,7 @@ project-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Pricing & Comparison` is `779:62`. Documentation root
+Page `50.7 Pricing & Comparison` is `779:62`. Documentation root
 `785:503` contains standalone Component `PricingFaqSection` `785:510`.
 
 The section has no visual variant axis. It contains linked canonical Accordion
@@ -1296,7 +1296,7 @@ visual section variants exist.
 
 ### Figma
 
-Page `Sections — Integrations & Security` is `795:2`. Documentation root
+Page `50.8 Integrations & Security` is `795:2`. Documentation root
 `795:254` contains public Component Set `IntegrationsSection` `795:253`:
 
 ```text
@@ -1357,7 +1357,7 @@ public section slots exist.
 
 ### Figma
 
-Page `Sections — Integrations & Security` is `795:2`. Documentation root
+Page `50.8 Integrations & Security` is `795:2`. Documentation root
 `795:254` contains public Component Set `DeveloperSection` `801:211`:
 
 ```text
@@ -1410,7 +1410,7 @@ project- or application-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Integrations & Security` is `795:2`. Documentation root
+Page `50.8 Integrations & Security` is `795:2`. Documentation root
 `795:254` contains public Component Set `TrustSection` `810:255`:
 
 ```text
@@ -1469,7 +1469,7 @@ project-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Conversion` is `816:2`. Documentation root `816:3` contains
+Page `50.9 Conversion` is `816:2`. Documentation root `816:3` contains
 public Component Set `CtaSection` `816:10`:
 
 ```text
@@ -1522,7 +1522,7 @@ application-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Conversion` is `816:2`. Documentation root `816:3` contains
+Page `50.9 Conversion` is `816:2`. Documentation root `816:3` contains
 public Component Set `LeadCaptureSection` `821:437`:
 
 ```text
@@ -1586,7 +1586,7 @@ application-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Company` is `826:308`. Documentation root
+Page `50.11 Company` is `826:308`. Documentation root
 `DSB/Sections/Company` is `826:309`. It contains family-private Component Set
 `_Parts/CompanyStoryItem` `846:110`:
 
@@ -1659,7 +1659,7 @@ approval remain project-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Company` is `826:308`. Documentation root
+Page `50.11 Company` is `826:308`. Documentation root
 `DSB/Sections/Company` is `826:309`.
 
 Public Component Set `TeamSection` is `866:5569`:
@@ -1724,7 +1724,7 @@ and approval remain project-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Company` is `826:308`. Documentation root
+Page `50.11 Company` is `826:308`. Documentation root
 `DSB/Sections/Company` is `826:309`.
 
 Public Component Set `CareersSection` is `877:228`:
@@ -1789,7 +1789,7 @@ approval remain project-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Company` is `826:308`. Documentation root
+Page `50.11 Company` is `826:308`. Documentation root
 `DSB/Sections/Company` is `826:309`. It contains family-private Component Set
 `_Parts/CompanyContactItem` `826:366`:
 
@@ -1858,7 +1858,7 @@ application-owned.
 
 ### Figma
 
-Page `Sections — Content & Resources` is `831:2`. Documentation root
+Page `50.10 Content & Resources` is `831:2`. Documentation root
 `DSB/Sections/Content & Resources` is `831:3`. Public Component Set
 `FaqSection` is `831:141`:
 
@@ -1909,7 +1909,7 @@ application-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Content & Resources` is `831:2`. Documentation root
+Page `50.10 Content & Resources` is `831:2`. Documentation root
 `DSB/Sections/Content & Resources` is `831:3`. It contains family-private
 Component `_Parts/ContentCategoryGroup` `884:119`. Its Category text property
 is `Category#884:0`; direct Category label `884:120` uses local Heading/H5 and
@@ -1990,7 +1990,7 @@ and approval remain project- or application-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Content & Resources` is `831:2`. Documentation root
+Page `50.10 Content & Resources` is `831:2`. Documentation root
 `DSB/Sections/Content & Resources` is `831:3`. Public Component Set
 `ResourceLibrarySection` is `896:5916`:
 
@@ -2058,7 +2058,7 @@ application-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Content & Resources` is `831:2`. Documentation root
+Page `50.10 Content & Resources` is `831:2`. Documentation root
 `DSB/Sections/Content & Resources` is `831:3`. Public Component Set
 `EventsSection` is `901:650`:
 
@@ -2122,7 +2122,7 @@ application-owned.
 
 ### Figma
 
-Page `Sections — Content & Resources` is `831:2`. Documentation root
+Page `50.10 Content & Resources` is `831:2`. Documentation root
 `DSB/Sections/Content & Resources` is `831:3`.
 
 The external Figma write limit interrupted the code-to-Figma phase after
@@ -2172,7 +2172,7 @@ ownership, and approval remain project- or application-owned.
 
 ### Figma
 
-Page `Sections — Product Communication` is `834:2`. Documentation root
+Page `50.12 Product Communication` is `834:2`. Documentation root
 `DSB/Sections/Product Communication` is `834:3`. Public Component Set
 `ProductComparisonSection` is `834:271`:
 
@@ -2233,7 +2233,7 @@ and approval remain project- or application-owned. No public slots exist.
 
 ### Figma
 
-Page `Sections — Product Communication` is `834:2`. Documentation root
+Page `50.12 Product Communication` is `834:2`. Documentation root
 `DSB/Sections/Product Communication` is `834:3`. Public Component Set
 `ProductAnnouncementSection` is `840:384`:
 

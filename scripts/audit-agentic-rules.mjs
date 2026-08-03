@@ -213,6 +213,8 @@ for (const contract of [
 
 const figmaRouterPath = `${figmaRuleDirectory}/README.md`;
 const figmaRouter = read(figmaRouterPath);
+const figmaArchitecturePath = `${figmaRuleDirectory}/00-file-architecture.md`;
+const figmaArchitecture = read(figmaArchitecturePath);
 for (const path of activeFigmaRules.filter(
   (path) => !path.endsWith("/README.md")
 )) {
@@ -223,6 +225,37 @@ for (const path of activeFigmaRules.filter(
 }
 if (!figmaRouter.includes("explicit")) {
   errors.push(`${figmaRouterPath} must describe explicit Figma activation.`);
+}
+if (!agents.includes(figmaArchitecturePath)) {
+  errors.push(
+    `AGENTS.md must route Figma page operations through ${figmaArchitecturePath}.`
+  );
+}
+if (!figmaRouter.includes("(./00-file-architecture.md)")) {
+  errors.push(`${figmaRouterPath} must route the project page architecture.`);
+}
+for (const contract of [
+  "NN — UPPERCASE GROUP",
+  "NN.N Title Case Label",
+  "numeric prefix controls order only",
+  "40.9 Navigation",
+  "90 — WORKSPACE"
+]) {
+  if (!figmaArchitecture.includes(contract)) {
+    errors.push(`${figmaArchitecturePath} is missing contract: ${contract}`);
+  }
+}
+
+const legacyFigmaPagePattern =
+  /(?:Architecture|Foundations|Assets|Components|Sections) — [A-Z]/u;
+for (const path of activeFigmaRules.filter(
+  (path) =>
+    !path.endsWith("/README.md") &&
+    !path.endsWith("/00-file-architecture.md")
+)) {
+  if (legacyFigmaPagePattern.test(read(path))) {
+    errors.push(`${path} contains a legacy Figma page name.`);
+  }
 }
 
 const historicalBenchmark = `${figmaRuleDirectory}/19-align-ui-benchmark.md`;

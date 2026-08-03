@@ -34,6 +34,9 @@ Select a role according to the surface relationship:
 
 ## Figma Representation
 
+The documentation page is `20.6 Elevation` (`499:3`) according to
+`00-file-architecture.md`.
+
 Figma uses three Effect Styles:
 
 ```text

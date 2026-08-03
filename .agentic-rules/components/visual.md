@@ -81,7 +81,7 @@ import { Layers } from "@lucide/astro";
 
 ## 13. Figma2Astro Contract
 
-Figma represents the component on `Components — Visual` as one public
+Figma represents the component on `40.8 Visual` as one public
 component set named `PanelPatternVisualSystem`.
 
 ```text

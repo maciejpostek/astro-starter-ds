@@ -2,7 +2,7 @@
 
 Status: active.
 
-This rule maps the `Components — Content` Figma page to the four public Astro
+This rule maps the `40.5 Content` Figma page to the four public Astro
 components in the `content` family. Code remains the source of truth for HTML
 semantics, public APIs, destinations, and slot content.
 

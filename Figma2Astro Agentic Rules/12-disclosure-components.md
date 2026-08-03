@@ -2,7 +2,7 @@
 
 Status: active.
 
-This rule maps the `Components — Disclosure` Figma page to four public Astro
+This rule maps the `40.6 Disclosure` Figma page to four public Astro
 components: Tab, Tabs, Accordion, and Tooltip. Code remains the source of truth for
 semantics, runtime state, identifiers, ARIA relationships, keyboard behavior,
 and interaction mechanics.

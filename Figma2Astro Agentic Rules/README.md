@@ -33,6 +33,12 @@ Figma page names, indentation, spaces, icons, and order are navigation
 metadata. Machine mapping must use stable node/component IDs, registry
 identity, and the adapters in this directory.
 
+The project-specific page naming contract is defined in
+[`00-file-architecture.md`](./00-file-architecture.md). It overrides generic
+Figma library defaults such as `Components — {Family}` or one page per public
+component. Numbered page prefixes organize the Figma sidebar and never become
+Astro component, family, registry, Variable, or `data-*` identifiers.
+
 ## Explicit Figma operation workflow
 
 ```text
@@ -124,6 +130,9 @@ the documented exception because its modes map to two Astro control tokens.
 
 ## Operational rule router
 
+- [`00-file-architecture.md`](./00-file-architecture.md) — numbered page
+  groups, stable page IDs, family mappings, naming rules, and page-operation
+  validation.
 - [`01-component-size.md`](./01-component-size.md) — `Component Size`,
   `data-component-size`, and local aliases.
 - [`02-color-modes.md`](./02-color-modes.md) — global/component semantics and

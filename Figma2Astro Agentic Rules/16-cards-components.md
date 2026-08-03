@@ -2,7 +2,7 @@
 
 Status: active. Family migration in progress.
 
-This rule maps the `Components — Cards` page to 19 public Astro components.
+This rule maps the `40.10 Cards` page to 19 public Astro components.
 Code, semantic HTML, CSS Variables and browser behavior remain the source of
 truth. Figma represents the stable visual contract and reusable composition;
 it does not create public props from documentation-only viewport variants.

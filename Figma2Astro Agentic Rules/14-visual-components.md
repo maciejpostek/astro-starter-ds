@@ -2,16 +2,16 @@
 
 Status: active.
 
-This rule maps the Figma `Components — Visual` page to the public Astro
+This rule maps the Figma `40.8 Visual` page to the public Astro
 `PanelPatternVisualSystem` component. Astro owns preset data, panel-positioning
 logic, responsive height, and accessibility semantics. The
-`Assets — Illustrations` page documents the accepted code state with linked
+`30.2 Illustrations` page documents the accepted code state with linked
 instances; it does not own another master.
 
 ## 1. Scope
 
 ```text
-Components — Visual
+40.8 Visual
 └── PanelPatternVisualSystem
     └── Variant
         ├── Hero Primary
@@ -19,13 +19,13 @@ Components — Visual
         ├── Field Design
         └── Field Development
 
-Assets — Illustrations
+30.2 Illustrations
 └── DSB/Illustration System
     └── four linked preset instances
 ```
 
 Figma contains exactly one public component set in this family. Lucide icons
-remain on `Assets — Icons` and do not increase the Visual public count.
+remain on `30.1 Icons` and do not increase the Visual public count.
 
 | Master | Figma node | Astro |
 | --- | --- | --- |
@@ -33,7 +33,7 @@ remain on `Assets — Icons` and do not increase the Visual public count.
 
 | Asset documentation | Figma node | Astro |
 | --- | --- | --- |
-| `Assets — Illustrations` | page `581:2`, frame `581:3` | `/design-system/illustration` |
+| `30.2 Illustrations` | page `581:2`, frame `581:3` | `/design-system/illustration` |
 
 ## 2. Figma representation
 
@@ -137,8 +137,8 @@ These are environment adapters, not code API changes.
 
 ## 8. Validation
 
-- page name is `Components — Visual`;
-- asset page name is `Assets — Illustrations` and its documentation frame is
+- page name is `40.8 Visual`;
+- asset page name is `30.2 Illustrations` and its documentation frame is
   `581:3`;
 - exactly one public master named `PanelPatternVisualSystem` exists;
 - the asset page contains four linked instances and no duplicated masters;

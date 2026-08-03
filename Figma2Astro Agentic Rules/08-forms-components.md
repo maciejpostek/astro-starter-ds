@@ -2,7 +2,7 @@
 
 Status: active.
 
-This rule maps the `Components — Forms` Figma page to the twelve public Astro
+This rule maps the `40.2 Forms` Figma page to the twelve public Astro
 components in the `forms` family. Code remains the source of truth for HTML
 semantics, props, `data-*` attributes, native state, and browser behavior.
 
@@ -139,7 +139,7 @@ implementation and are not constrained by the number of Figma children.
 `Content=Empty|Filled` maps to `data-search-state`. `State` maps to native
 pseudo-classes or `disabled`. `Value` and the visually hidden
 `Accessible Label` are TEXT properties. Search and X are instances from
-`Assets — Icons`. Clear remains a real Astro `<button>`.
+`30.1 Icons`. Clear remains a real Astro `<button>`.
 
 ### FormField
 
@@ -197,7 +197,7 @@ attribute exists.
   `Sizing Primitives / 2` and `/ 4` spread values;
 - spacing, padding, and radius use existing semantic tokens;
 - text uses existing Text Styles and Typography Variables;
-- icons are instances from `Assets — Icons`.
+- icons are instances from `30.1 Icons`.
 
 Checkbox, Radio, and Tab use `--size-2` for `outline-offset`.
 `--color-state-focus-ring-offset` remains a color and must never be used as a

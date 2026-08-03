@@ -2,7 +2,7 @@
 
 Status: active.
 
-This rule maps the `Components — Data Display` Figma page to the seven public
+This rule maps the `40.3 Data Display` Figma page to the seven public
 Astro components in the `data-display` family. Code remains the source of truth
 for HTML semantics, props, `data-*` attributes, dynamic content, verified
 claims, and runtime behavior.
@@ -40,7 +40,7 @@ Components, and three private table building blocks:
 | `_Parts/ComparisonTable.ValueCell` | `251:147` | `ComparisonTable.rows[].values` | text, included, excluded, and highlighted state | private |
 | `_Parts/ComparisonTable.Row` | `252:123` | `ComparisonTable.rows[]` | label plus `Values` Slot | private |
 
-TrustBadge also extends `Assets — Icons` with the exact code-owned Lucide
+TrustBadge also extends `30.1 Icons` with the exact code-owned Lucide
 assets used by Astro:
 
 | Icon | Figma component |
@@ -110,7 +110,7 @@ Award         -> award         -> Award
 ```
 
 `Label` maps to the default slot. `Component Size` maps to `size` and defaults
-to `Small`. The icon is decorative and comes from `Assets — Icons`.
+to `Small`. The icon is decorative and comes from `30.1 Icons`.
 
 The variant controls generic iconography and semantic treatment only. It does
 not verify a claim. Claim accuracy, expiry, supporting evidence, and official
