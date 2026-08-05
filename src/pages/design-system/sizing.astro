@@ -1,13 +1,13 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import DsDocCard from "../../components/design-system/DsDocCard.astro";
-import DsDocGrid from "../../components/design-system/DsDocGrid.astro";
-import DsDocSection from "../../components/design-system/DsDocSection.astro";
-import DsAttributeBlock from "../../components/design-system/DsAttributeBlock.astro";
-import DsSpacingBlock from "../../components/design-system/DsSpacingBlock.astro";
-import DsSectionHeaderLevel3 from "../../components/design-system-documentation/DsSectionHeaderLevel3.astro";
-import DsSectionHeaderLevel4 from "../../components/design-system-documentation/DsSectionHeaderLevel4.astro";
-import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
+import DsDocCard from "../../components/_internal/documentation/DsDocCard.astro";
+import DsDocGrid from "../../components/_internal/documentation/DsDocGrid.astro";
+import DsDocSection from "../../components/_internal/documentation/DsDocSection.astro";
+import DsAttributeBlock from "../../components/_internal/documentation/DsAttributeBlock.astro";
+import DsSpacingBlock from "../../components/_internal/documentation/DsSpacingBlock.astro";
+import DsSectionHeaderLevel3 from "../../components/_internal/documentation/DsSectionHeaderLevel3.astro";
+import DsSectionHeaderLevel4 from "../../components/_internal/documentation/DsSectionHeaderLevel4.astro";
+import SectionHeader from "../../components/_internal/documentation/SectionHeader.astro";
 
 type SpacingRow = {
   token: string;
@@ -275,30 +275,6 @@ const componentRadiusRows: SpacingRow[] = [
     sampleType: "radius",
     agenticRule: "Use for standalone label surfaces when a label needs a visible container.",
   },
-  {
-    token: "--radius-alert",
-    output: "var(--radius-none)",
-    source: "0px",
-    sampleValue: "var(--radius-alert)",
-    sampleType: "radius",
-    agenticRule: "Use for alert, notification and toast surfaces.",
-  },
-  {
-    token: "--radius-avatar",
-    output: "var(--radius-none)",
-    source: "0px",
-    sampleValue: "var(--radius-avatar)",
-    sampleType: "radius",
-    agenticRule: "Use for the default sharp Avatar shape; the explicit circle variant uses --radius-full.",
-  },
-  {
-    token: "--radius-embed",
-    output: "var(--radius-none)",
-    source: "0px",
-    sampleValue: "var(--radius-embed)",
-    sampleType: "radius",
-    agenticRule: "Use for embedded form and scheduling surfaces such as CalComEmbed.",
-  },
 ];
 
 const borderRows: SpacingRow[] = [
@@ -322,7 +298,7 @@ const borderRows: SpacingRow[] = [
     source: "4px",
     sampleValue: "var(--border-width-emphasis)",
     sampleType: "border",
-    agenticRule: "Use for a deliberate structural accent edge, such as the leading edge of Alert and Notification.",
+    agenticRule: "Use only for a deliberate structural accent edge.",
   },
 ];
 
@@ -410,7 +386,7 @@ const sizingRules = [
   {
     name: "sizing.documentation-components",
     title: "Use documentation components",
-    text: "Sizing documentation tables should use the shared Design System table atoms and spacing blocks. Do not create local table layouts for new sizing sections.",
+    text: "Sizing documentation tables should use the shared Design System table primitives and spacing blocks. Do not create local table layouts for new sizing sections.",
   },
   {
     name: "sizing.patch-global-first",

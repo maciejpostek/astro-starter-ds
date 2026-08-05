@@ -151,7 +151,6 @@
    * Consistent keyboard focus ring used by interactive components.
    */
   --component-focus-ring: var(--color-state-focus-ring);
-  --image-effect-overlay-background: color-mix(in oklab, var(--color-background-accent) 60%, transparent);
 }
 
 /* Dark-theme interaction adjustments

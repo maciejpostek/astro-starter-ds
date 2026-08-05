@@ -187,7 +187,7 @@ intake
 ```
 
 The initial calibration set normally includes Button, Input or FormField, Tag,
-ContentBlock or SectionHeader, one Card, Navigation, and one Hero or section.
+SectionHeader, one Card, Navigation, and one Hero or section.
 
 ## 8. Technical Translation
 

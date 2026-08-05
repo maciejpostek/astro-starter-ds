@@ -1,0 +1,29 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  variant?: "section" | "hero";
+}
+
+const { eyebrow, title, variant = "section" } = Astro.props as Props;
+const HeadingTag = variant === "hero" ? "h1" : "h2";
+const hasActions = Astro.slots.has("actions");
+---
+
+<header class="section-header" data-internal-component="SectionHeader" data-section-header-variant={variant}>
+  <div class="section-header__copy">
+    <span class="section-header__eyebrow">{eyebrow}</span>
+    <HeadingTag class="section-header__title">{title}</HeadingTag>
+  </div>
+  {hasActions && <div class="section-header__actions"><slot name="actions" /></div>}
+</header>
+
+<style>
+  .section-header { display:flex; align-items:flex-end; justify-content:space-between; gap:var(--gap-xlarge); margin-bottom:var(--space-section-header-bottom); }
+  .section-header__copy { display:grid; gap:var(--gap-tiny); max-width:64rem; }
+  .section-header__eyebrow { color:var(--color-text-secondary); font-size:var(--font-size-body-small); font-weight:var(--font-weight-emphasis); letter-spacing:var(--letter-spacing-caps); text-transform:uppercase; }
+  .section-header__title { margin:0; font-family:var(--text-style-heading-h2-font-family); font-size:var(--text-style-heading-h2-font-size); font-weight:var(--text-style-heading-h2-font-weight); line-height:var(--text-style-heading-h2-line-height); letter-spacing:var(--text-style-heading-h2-letter-spacing); }
+  .section-header[data-section-header-variant="hero"] .section-header__title { font-family:var(--text-style-heading-h1-font-family); font-size:var(--text-style-heading-h1-font-size); font-weight:var(--text-style-heading-h1-font-weight); line-height:var(--text-style-heading-h1-line-height); letter-spacing:var(--text-style-heading-h1-letter-spacing); }
+  .section-header__actions { display:flex; flex:0 0 auto; justify-content:flex-end; }
+  @media (width < 64rem) { .section-header { align-items:flex-start; flex-direction:column; } .section-header__actions { width:100%; justify-content:flex-start; } }
+</style>

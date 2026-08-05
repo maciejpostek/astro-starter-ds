@@ -1,0 +1,57 @@
+---
+import DsSectionHeaderLevel2 from "./DsSectionHeaderLevel2.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  class?: string;
+}
+
+const {
+  id,
+  title,
+  description,
+  class: className,
+} = Astro.props as Props;
+const titleId = `${id}-title`;
+---
+
+<section
+  id={id}
+  class:list={["ds-doc-section", className]}
+  aria-labelledby={titleId}
+  data-component-name="DsDocSection"
+  data-ds-toc-section
+>
+  <DsSectionHeaderLevel2
+    id={titleId}
+    title={title}
+    description={description}
+  />
+
+  <div class="ds-doc-section__body">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .ds-doc-section {
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-large);
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+
+  .ds-doc-section[data-active="true"] {
+    border-color: var(--color-border-accent);
+  }
+
+  .ds-doc-section + .ds-doc-section {
+    margin-top: var(--space-large);
+  }
+
+  .ds-doc-section__body {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+</style>

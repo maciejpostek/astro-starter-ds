@@ -8,7 +8,7 @@ breakpoint, token, and public layout-object system.
 ## Figma representation
 
 ```text
-Layout Foundations [Max, Min]
+Layout Foundations [Desktop, Mobile]
 ├── fluid/viewport
 └── breakpoint/small
 
@@ -25,9 +25,14 @@ and container limits, or calculated breakout values. Those details remain in
 Astro. `fluid/viewport` is the only Variable without one Web code syntax:
 
 ```text
-Max → var(--fluid-viewport-max)
-Min → var(--fluid-viewport-min)
+Desktop → var(--fluid-viewport-max)
+Mobile  → var(--fluid-viewport-min)
 ```
+
+The existing `fluid/viewport` Variable has the `WIDTH_HEIGHT` scope so it is
+available in Figma's Width and Height Variable picker. It is a design-time
+viewport control, not a content-container token and not a CSS width token for
+the section element.
 
 ## Exact value mapping
 
@@ -37,8 +42,8 @@ assume `1rem = 16px`; they do not replace Astro tokens with fixed pixels.
 
 | Figma Variable | Figma value | Astro token or rule | Mapping meaning |
 | --- | --- | --- | --- |
-| `fluid/viewport` | `Max: 1440`, `Min: 320` | `--fluid-viewport-max: 90rem`, `--fluid-viewport-min: 20rem` | Two Figma modes represent two Astro control tokens. This is the only exception without one Web code syntax. |
-| `breakpoint/small` | `Max: 768`, `Min: 768` | `--breakpoint-small: 48rem` | Fixed between modes; defines the transition to Mobile. |
+| `fluid/viewport` | `Desktop: 1440`, `Mobile: 320` | `--fluid-viewport-max: 90rem`, `--fluid-viewport-min: 20rem` | Two Figma authoring modes represent two Astro control tokens. This is the only exception without one Web code syntax. |
+| `breakpoint/small` | `Desktop: 768`, `Mobile: 768` | `--breakpoint-small: 48rem` | Fixed between modes; defines the transition to Mobile. |
 | `site/padding/inline` | `Desktop: 40`, `Mobile: 16` | `--site-padding-inline` | Control points for `--site-padding-inline-max` and `--site-padding-inline-min`. |
 | `container/full` | `Desktop: 1440`, `Mobile: 320` | `--container-full: 100%` | Figma shows frame width; Astro retains `100%`. |
 | `container/main` | `Desktop: 1360`, `Mobile: 288` | `--container-main: calc(100% - 2 * var(--site-padding-inline))` | Figma values are solved results for 1440 and 320 px frames. |
@@ -60,10 +65,37 @@ assume `1rem = 16px`; they do not replace Astro tokens with fixed pixels.
 - `grid/auto/min-width/default` aliases
   `Layout Semantic / grid/auto/min-width/card` in both modes.
 - `container/*` and `grid/auto/min-width/*` use `WIDTH_HEIGHT`.
-- `fluid/viewport`, `breakpoint/small`, and `site/grid/columns` have empty
-  scopes because they are system controls, not manually selected values.
+- `fluid/viewport` uses `WIDTH_HEIGHT` so designers can bind it to the width
+  of a viewport frame or section preview.
+- `breakpoint/small` and `site/grid/columns` have empty scopes because they are
+  system controls, not manually selected values.
 - Every Variable except `fluid/viewport` has Web code syntax that points to the
   exact Astro token in the table. Never construct CSS names from Figma paths.
+
+## Viewport binding contract
+
+When a Figma frame or section preview binds its Width to
+`Layout Foundations / fluid/viewport`, the binding declares the viewport used
+to author or validate the design:
+
+```text
+Figma Desktop mode: width = 1440 px
+Figma Mobile mode:  width = 320 px
+
+Astro section root: width = 100% in the current browser viewport
+Astro validation:   compare at 1440 px and 320 px browser widths
+```
+
+The agent must not copy `1440` or `320` into a section's CSS width,
+`max-width`, inline style, prop, or local token. It keeps the public section
+full-width, normally through `.l-section`, and preserves the existing
+`--fluid-viewport-max` and `--fluid-viewport-min` controls used by responsive
+calculations.
+
+`Layout Semantic / container/full` is not a substitute for
+`fluid/viewport`. The former represents an inner layout container that stays
+`100%` in Astro; the latter represents the outer design viewport used for
+Figma mode switching and visual comparison.
 
 ## Grid Style
 
@@ -107,21 +139,24 @@ CSS Grid and `fr`; it is not a public token.
 
 ## AI agent algorithm
 
-1. Read Auto Layout, constraints, Grid Style, collection modes, and code
-   syntax.
-2. Map `Layout/Site Grid` bindings to the public Astro site grid; do not copy a
+1. Read Auto Layout, constraints, Grid Style, collection modes, Width
+   bindings, and code syntax.
+2. If Width is bound to `Layout Foundations / fluid/viewport`, treat the
+   active mode as the browser validation context and keep the Astro section
+   full-width.
+3. Map `Layout/Site Grid` bindings to the public Astro site grid; do not copy a
    numeric column width.
-3. Map `Desktop` to the wide control point and 12 columns, and `Mobile` to the
+4. Map `Desktop` to the wide control point and 12 columns, and `Mobile` to the
    narrow control point and four columns.
-4. Preserve Astro's intermediate eight-column state below 1024 px even though
+5. Preserve Astro's intermediate eight-column state below 1024 px even though
    Figma has no Tablet frame.
-5. Use an existing layout object: `.l-section`, `.l-container`, `.l-grid`,
+6. Use an existing layout object: `.l-section`, `.l-container`, `.l-grid`,
    `.l-stack`, or `.l-cluster`.
-6. Map `grid/auto/min-width/*` to
+7. Map `grid/auto/min-width/*` to
    `data-min-width="small|card|panel|wide"`.
-7. Use Web code syntax instead of copying container, gap, or minimum-width
+8. Use Web code syntax instead of copying container, gap, or minimum-width
    numbers. Figma values are control points or solved CSS results.
-8. Compare Mobile and Desktop, then verify the intermediate browser viewport.
+9. Compare Mobile and Desktop, then verify the intermediate browser viewport.
 
 ## Forbidden shortcuts
 
@@ -131,11 +166,18 @@ CSS Grid and `fr`; it is not a public token.
 - Do not create Variables for private breakout or `fr` calculations.
 - Do not bind `sectionSize` in `Layout/Site Grid`.
 - Do not treat a container maximum as a breakpoint.
+- Do not use `container/full` as the outer viewport-width control.
+- Do not emit fixed 1440 px or 320 px section widths from a
+  `fluid/viewport` binding.
 - Do not create a local `.grid` before checking public `.l-*` objects.
 
 ## Validation checklist
 
-- `Layout Foundations` has `Max` / `Min` and two Variables;
+- `Layout Foundations` has `Desktop` / `Mobile` and two Variables;
+- `fluid/viewport` has `Desktop: 1440`, `Mobile: 320`, and only the
+  `WIDTH_HEIGHT` scope;
+- `fluid/viewport` remains the documented no-Web-syntax exception and its
+  description names both Astro viewport control tokens;
 - `Layout Semantic` has `Desktop` / `Mobile` and eleven Variables;
 - no Tablet mode or `breakpoint/medium` exists in Figma;
 - Astro preserves 12/8/4 and public `data-min-width`;
@@ -145,6 +187,8 @@ CSS Grid and `fr`; it is not a public token.
 - the style uses `COLUMNS / STRETCH`, with no `sectionSize` binding;
 - Desktop and Mobile frames use the same Grid Style and explicit modes;
 - Figma container values match Astro formula results at 1440 and 320 px;
+- a bound section remains full-width in Astro and is visually compared at the
+  mode's browser width;
 - scopes match this rule;
 - Web code syntax points to existing custom properties;
 - Mobile, intermediate, and Desktop states are verified.

@@ -52,7 +52,7 @@ projections and must never be edited as source data.
 - `generated/*.svg` are optional D2 CLI render outputs.
 - `src/pages/architecture/views/[view].json.ts` exposes a bounded, build-time
   projection for views that declare `presentation`.
-- `src/components/design-system/architecture/ArchitectureExplorer.tsx` renders
+- `src/components/_internal/documentation/architecture/ArchitectureExplorer.tsx` renders
   the read-only React Flow interface.
 - `scripts/audit-system-architecture.mjs` validates structure and architectural
   anti-patterns.
@@ -105,8 +105,8 @@ Its stage, instance, connection, trace, and detail content comes from
 
 Dependency edges are stored in their semantic direction:
 `dependent depends-on dependency`. The D2 projection reverses only their visual
-arrow and labels it `required by`, so the Atomic Design view reads from
-foundations toward pages without changing graph semantics.
+arrow and labels it `required by`, so the family-first dependency view reads
+from foundations toward pages without changing graph semantics.
 
 ## Audit
 

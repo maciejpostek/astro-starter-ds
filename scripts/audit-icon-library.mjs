@@ -4,7 +4,7 @@ import {
   readdirSync,
   statSync
 } from "node:fs";
-import { extname, join, resolve } from "node:path";
+import { extname, join, relative, resolve } from "node:path";
 
 const projectRoot = resolve(process.argv[2] ?? ".");
 const errors = [];
@@ -19,75 +19,106 @@ const read = (relativePath) => {
 
 const catalogPath = "src/data/design-system/iconLibrary.json";
 const rulePath = ".agentic-rules/components/icons.md";
+const astroRendererPath = "src/components/assets/icons/MaterialSymbol.astro";
+const reactRendererPath = "src/components/assets/icons/MaterialSymbol.tsx";
 const catalog = JSON.parse(read(catalogPath));
-const packageJson = JSON.parse(read("node_modules/@lucide/astro/package.json"));
-const license = read("node_modules/@lucide/astro/LICENSE");
-const lucideIndex = read("node_modules/@lucide/astro/src/icons/index.ts");
 const iconRule = read(rulePath);
+const astroRenderer = read(astroRendererPath);
+const reactRenderer = read(reactRendererPath);
+const packageJson = JSON.parse(read("package.json"));
+const license = read("LICENSES/material-symbols-Apache-2.0.txt");
 
-if (catalog.schemaVersion !== 1) {
-  errors.push("Icon catalog schemaVersion must equal 1.");
+if (catalog.schemaVersion !== 2) {
+  errors.push("Icon catalog schemaVersion must equal 2.");
 }
 
 if (
-  catalog.package?.name !== "@lucide/astro" ||
-  catalog.package?.version !== packageJson.version ||
-  catalog.package?.license !== packageJson.license
+  catalog.provider?.id !== "google-material-symbols" ||
+  catalog.provider?.family !== "Material Symbols Outlined" ||
+  catalog.provider?.license !== "Apache-2.0"
 ) {
-  errors.push("Icon catalog package metadata does not match the installed dependency.");
+  errors.push("Material Symbols provider metadata is incomplete or incorrect.");
 }
 
-if (!license.includes("ISC License") || !license.includes("Lucide Icons and Contributors")) {
-  errors.push("The installed Lucide license evidence is missing or unexpected.");
+const profile = catalog.profile ?? {};
+if (
+  profile.style !== "outlined" ||
+  profile.opticalSize !== 20 ||
+  profile.weight !== 400 ||
+  profile.grade !== 0 ||
+  profile.fill !== 0 ||
+  profile.runtime !== "local-inline-svg"
+) {
+  errors.push("The active Material Symbols profile drifted.");
 }
 
 if (
   catalog.figma?.pageId !== "184:2" ||
-  catalog.figma?.documentationFrameId !== "184:3" ||
-  catalog.figma?.namingPattern !== "Icon/<LucidePascalName>" ||
-  catalog.figma?.opticalCanvas !== 24
+  catalog.figma?.sectionId !== "1009:333" ||
+  catalog.figma?.namingPattern !== "Icon/Material/<google_snake_case_name>" ||
+  catalog.figma?.opticalCanvas !== 20 ||
+  catalog.figma?.iconColorVariableId !== "VariableID:7:91" ||
+  catalog.figma?.legacyLucideFrameDeleted !== true
 ) {
-  errors.push("Figma icon-library identity or optical-canvas metadata drifted.");
+  errors.push("Figma Material Symbols identity or geometry metadata drifted.");
 }
 
-const iconRecords = catalog.icons ?? [];
-if (iconRecords.length !== 51) {
-  errors.push(`Expected 51 curated icon records, found ${iconRecords.length}.`);
+if (
+  catalog.astro?.component !== astroRendererPath ||
+  catalog.astro?.reactComponent !== reactRendererPath ||
+  catalog.astro?.rendering !== "inline-svg" ||
+  catalog.astro?.networkRequestsAtRuntime !== 0 ||
+  catalog.astro?.fontFilesAtRuntime !== 0
+) {
+  errors.push("Astro icon runtime metadata drifted.");
 }
 
-const importNames = iconRecords.map((icon) => icon.importName);
-const figmaNames = iconRecords.map((icon) => icon.figmaName);
-const figmaNodeIds = iconRecords.map((icon) => icon.figmaNodeId);
+if (!license.includes("Apache License") || !license.includes("Version 2.0")) {
+  errors.push("The Material Symbols Apache-2.0 license notice is missing.");
+}
 
-for (const [label, values] of [
-  ["importName", importNames],
-  ["figmaName", figmaNames],
-  ["figmaNodeId", figmaNodeIds]
-]) {
-  const duplicates = values.filter(
-    (value, index) => value !== null && values.indexOf(value) !== index
-  );
-  if (duplicates.length > 0) {
-    errors.push(`Duplicate icon ${label} values: ${[...new Set(duplicates)].join(", ")}.`);
+const iconEntries = Object.entries(catalog.icons ?? {});
+if (iconEntries.length !== 30) {
+  errors.push(`Expected 30 curated Material Symbols, found ${iconEntries.length}.`);
+}
+
+const nodeIds = [];
+for (const [name, icon] of iconEntries) {
+  if (!/^[a-z0-9]+(?:_[a-z0-9]+)*$/.test(name)) {
+    errors.push(`Invalid canonical Material Symbol name: ${name}.`);
   }
-}
-
-for (const icon of iconRecords) {
-  if (!/^[A-Z][A-Za-z0-9]*$/.test(icon.importName)) {
-    errors.push(`Invalid Lucide import name: ${icon.importName}.`);
-  }
-  if (icon.figmaName !== `Icon/${icon.importName}`) {
-    errors.push(`${icon.importName} has an invalid Figma name.`);
+  if (icon.figmaName !== `Icon/Material/${name}`) {
+    errors.push(`${name} has an invalid Figma component name.`);
   }
   if (typeof icon.figmaNodeId !== "string" || !/^\d+:\d+$/.test(icon.figmaNodeId)) {
-    errors.push(`${icon.importName} is missing a permanent Figma node ID.`);
+    errors.push(`${name} is missing a permanent Figma node ID.`);
+  } else {
+    nodeIds.push(icon.figmaNodeId);
+  }
+  if (icon.viewBox !== "0 0 20 20") {
+    errors.push(`${name} must use the 20 × 20 view box.`);
+  }
+  if (!Array.isArray(icon.paths) || icon.paths.length === 0 || icon.paths.some((path) => typeof path !== "string" || path.length < 4)) {
+    errors.push(`${name} is missing local inline-SVG path geometry.`);
+  }
+  if (
+    icon.sourceSvg !==
+    `https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/${name}/default/20px.svg`
+  ) {
+    errors.push(`${name} has an invalid official source SVG URL.`);
   }
   if (typeof icon.requiredBySource !== "boolean") {
-    errors.push(`${icon.importName} requires a boolean requiredBySource value.`);
+    errors.push(`${name} requires a boolean requiredBySource value.`);
   }
-  if (!new RegExp(`export \\{ default as ${icon.importName} \\}`).test(lucideIndex)) {
-    errors.push(`${icon.importName} is not a named export in the installed Lucide package.`);
-  }
+}
+
+const duplicateNodeIds = nodeIds.filter(
+  (value, index) => nodeIds.indexOf(value) !== index
+);
+if (duplicateNodeIds.length > 0) {
+  errors.push(
+    `Duplicate Figma icon node IDs: ${[...new Set(duplicateNodeIds)].join(", ")}.`
+  );
 }
 
 const sourceFiles = [];
@@ -98,55 +129,85 @@ const walk = (directory) => {
       walk(path);
       continue;
     }
-    if ([".astro", ".ts", ".js", ".mjs"].includes(extname(path))) {
+    if ([".astro", ".tsx", ".ts", ".js", ".mjs"].includes(extname(path))) {
       sourceFiles.push(path);
     }
   }
 };
 walk(join(projectRoot, "src"));
 
-const sourceImports = new Set();
-const importPattern =
-  /import\s+(?:type\s+)?\{([^{}]*)\}\s+from\s+["']@lucide\/astro["'];?/g;
+const usedNames = new Set();
+const literalNamePattern =
+  /<MaterialSymbol\b[^>]*\bname=["']([a-z0-9_]+)["'][^>]*>/g;
 
 for (const path of sourceFiles) {
   const source = readFileSync(path, "utf8");
-  for (const match of source.matchAll(importPattern)) {
-    for (const rawImport of match[1].split(",")) {
-      const importName = rawImport
-        .trim()
-        .replace(/^type\s+/, "")
-        .split(/\s+as\s+/)[0]
-        .trim();
-      if (!importName || ["icons", "AstroComponent"].includes(importName)) continue;
-      sourceImports.add(importName);
+  for (const match of source.matchAll(literalNamePattern)) {
+    usedNames.add(match[1]);
+  }
+  if (/(?:@lucide\/astro|lucide-react)/.test(source)) {
+    errors.push(
+      `Retired Lucide import remains in ${relative(projectRoot, path)}.`
+    );
+  }
+}
+
+for (const name of usedNames) {
+  const record = catalog.icons?.[name];
+  if (!record) {
+    errors.push(`Source uses uncatalogued Material Symbol: ${name}.`);
+  } else if (!record.requiredBySource) {
+    errors.push(`${name} is used by source but marked reserve-only.`);
+  }
+}
+
+for (const [name, icon] of iconEntries) {
+  if (icon.requiredBySource && !usedNames.has(name)) {
+    errors.push(`${name} is marked requiredBySource but has no literal source use.`);
+  }
+}
+
+const dependencies = {
+  ...(packageJson.dependencies ?? {}),
+  ...(packageJson.devDependencies ?? {})
+};
+for (const retiredPackage of ["@lucide/astro", "lucide-react"]) {
+  if (retiredPackage in dependencies) {
+    errors.push(`Retired dependency remains: ${retiredPackage}.`);
+  }
+}
+
+if (existsSync(join(projectRoot, "src/components/_internal/documentation/LucideIconLibrary.astro"))) {
+  errors.push("The retired LucideIconLibrary.astro file still exists.");
+}
+
+for (const [path, source] of [
+  [astroRendererPath, astroRenderer],
+  [reactRendererPath, reactRenderer]
+]) {
+  for (const contract of [
+    "materialSymbols",
+    'fill="currentColor"',
+    "viewBox",
+    "<svg"
+  ]) {
+    if (!source.includes(contract)) {
+      errors.push(`${path} is missing renderer contract: ${contract}.`);
     }
   }
-}
-
-for (const importName of sourceImports) {
-  const record = iconRecords.find((icon) => icon.importName === importName);
-  if (!record) {
-    errors.push(`Source import ${importName} is missing from the curated Figma catalog.`);
-  } else if (!record.requiredBySource) {
-    errors.push(`${importName} is imported by source but marked as reserve-only.`);
-  }
-}
-
-for (const icon of iconRecords.filter((record) => record.requiredBySource)) {
-  if (!sourceImports.has(icon.importName)) {
-    errors.push(`${icon.importName} is marked requiredBySource but has no named source import.`);
+  if (/(?:font-family|fonts\.googleapis|fonts\.gstatic)/.test(source)) {
+    errors.push(`${path} must not use a runtime icon font or remote asset.`);
   }
 }
 
 for (const contract of [
-  "Astro icon package: `@lucide/astro`",
-  "Figma library naming: `Icon/<LucidePascalName>`",
-  "Default optical canvas: `24 × 24`",
-  "The Figma library is curated",
-  "Standalone decorative icons use `aria-hidden=\"true\"`",
-  "Do not paste raw SVG paths into Astro templates",
-  "ISC"
+  "Provider: Google Material Symbols",
+  "Figma naming: `Icon/Material/<google_snake_case_name>`",
+  "Default optical canvas: `20 × 20`",
+  "local inline SVG",
+  "Do not expose icon",
+  "Apache License 2.0",
+  "Do not import the complete Google catalog"
 ]) {
   if (!iconRule.includes(contract)) {
     errors.push(`${rulePath} is missing: ${contract}`);
@@ -168,5 +229,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `Icon library audit passed: ${iconRecords.length} curated Figma assets cover ${sourceImports.size} named Lucide source imports under ${packageJson.license}.`
+  `Icon library audit passed: ${iconEntries.length} curated Material Symbols cover ${usedNames.size} source-used names with local inline SVG under Apache-2.0.`
 );

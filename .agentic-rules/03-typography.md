@@ -295,7 +295,7 @@ When typography changes:
 - Update `src/data/design-system/typographyTokens.ts` when documented
   foundation values, semantic rows, utility rows or typography agentic cards
   change.
-- Use existing design-system documentation components and table atoms.
+- Use existing design-system documentation components and table primitives.
 - Keep foundation values, semantic values, style classes and agentic rules
   documented in separate sections.
 - Update `src/data/design-system-roadmap.json`.

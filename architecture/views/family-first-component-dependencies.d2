@@ -1,0 +1,75 @@
+# GENERATED FILE. DO NOT EDIT.
+# Canonical source: architecture/system-map.json
+# View: view.family-first-component-dependencies
+direction: right
+
+title: "Family-first Component Dependencies" {
+  shape: text
+  near: top-center
+  style.font-size: 30
+  style.bold: true
+  style.font-color: "#0f172a"
+}
+
+foundation_design_tokens: "Foundations and Tokens\\nfoundation\\ntokens" {
+  shape: rectangle
+  style.fill: "#ecfccb"
+  style.stroke: "#65a30d"
+  style.font-color: "#365314"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+component_base_components: "Base Components\\ncomponent\\nbase-components" {
+  shape: rectangle
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+component_website_patterns: "Website Patterns\\ncomponent\\nwebsite-patterns" {
+  shape: rectangle
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+component_examples_templates: "Examples and Templates\\ncomponent\\nexamples-templates" {
+  shape: rectangle
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+component_internal_pages: "Internal Tools and Pages\\ncomponent\\n_internal, pages" {
+  shape: rectangle
+  style.fill: "#dcfce7"
+  style.stroke: "#16a34a"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+foundation_design_tokens -> component_base_components: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+component_base_components -> component_website_patterns: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+component_examples_templates -> component_internal_pages: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}

@@ -38,9 +38,9 @@ test("exact token edits use the tiny path without component context", () => {
   assert.ok(context.contextBytes <= context.contextLimitBytes);
 });
 
-test("a canonical component name from Guides routes to reuse", () => {
+test("the active MaterialSymbol renderer routes to reuse", () => {
   const task = routeAgentRequest({
-    prompt: "Add Button.Primary to this page.",
+    prompt: "Reuse MaterialSymbol on this page.",
     projectRoot
   });
   assert.equal(task.intent, "reuse");
@@ -48,10 +48,10 @@ test("a canonical component name from Guides routes to reuse", () => {
 
   const context = resolveAgentContext({ task, projectRoot });
   assert.equal(context.components.length, 1);
-  assert.equal(context.components[0].name, "Button");
-  assert.equal(context.components[0].requestedIdentity, "Button.Primary");
+  assert.equal(context.components[0].name, "MaterialSymbol");
+  assert.equal(context.components[0].requestedIdentity, "MaterialSymbol");
   assert.deepEqual(context.requiredReads, [
-    "src/components/atoms/actions/Button.astro"
+    "src/components/assets/icons/MaterialSymbol.astro"
   ]);
   assert.equal(context.readPlan[0].reason, "component-source-and-api");
   assert.ok(context.skippedContexts.includes("family-rules"));
@@ -59,13 +59,13 @@ test("a canonical component name from Guides routes to reuse", () => {
 
 test("reuse includes targetFile without loading dependency sources", () => {
   const task = routeAgentRequest({
-    prompt: "Add ArticleCard.Compact to this page.",
+    prompt: "Reuse MaterialSymbol on this page.",
     targetFile: "src/pages/index.astro",
     projectRoot
   });
   const context = resolveAgentContext({ task, projectRoot });
   assert.deepEqual(context.requiredReads, [
-    "src/components/molecules/cards/ArticleCard.astro",
+    "src/components/assets/icons/MaterialSymbol.astro",
     "src/pages/index.astro"
   ]);
   assert.deepEqual(context.dependencies, []);
@@ -78,7 +78,7 @@ test("reuse includes targetFile without loading dependency sources", () => {
 test("named section composition resolves only selected components and dependencies", () => {
   const task = routeAgentRequest({
     prompt:
-      "Create a section with SectionHeader, SwiperStarter, and ArticleCard.",
+      "Create a section with SectionHeader, Form, and Accordion.",
     projectRoot
   });
   assert.equal(task.intent, "compose");
@@ -88,7 +88,7 @@ test("named section composition resolves only selected components and dependenci
   assert.equal(context.status, "ready");
   assert.deepEqual(
     context.components.map((component) => component.name).sort(),
-    ["ArticleCard", "SectionHeader", "SwiperStarter"]
+    ["Accordion", "Form", "SectionHeader"]
   );
   assert.ok(context.dependencies.length > 0);
   assert.ok(
@@ -150,9 +150,9 @@ test("an existing component cannot be created again", () => {
 test("create grammar keeps a new primary separate from props and dependencies", () => {
   const task = routeAgentRequest({
     prompt:
-      "Stwórz nowy publiczny komponent design-system `Keycap` z propem `label`, korzystający z `Avatar`.",
+      "Stwórz nowy publiczny komponent design-system `Keycap` z propem `label`, korzystający z `Ratio`.",
     explicitTargets: [
-      { kind: "component", id: "Avatar", role: "dependency" }
+      { kind: "component", id: "Ratio", role: "dependency" }
     ],
     projectRoot
   });
@@ -162,7 +162,7 @@ test("create grammar keeps a new primary separate from props and dependencies", 
   assert.deepEqual(
     task.targets.filter((target) => target.kind === "component"),
     [
-      { kind: "component", id: "Avatar", exists: true, role: "dependency" },
+      { kind: "component", id: "Ratio", exists: true, role: "dependency" },
       { kind: "component", id: "Keycap", exists: false, role: "primary" }
     ]
   );
@@ -174,8 +174,8 @@ test("create grammar keeps a new primary separate from props and dependencies", 
 
 test("negated component creation becomes a constraint, not a missing target", () => {
   for (const prompt of [
-    "Skomponuj sekcję z SectionHeader i ArticleCard; nie twórz BlogSection.",
-    "Compose a section with SectionHeader and ArticleCard; do not create BlogSection."
+    "Skomponuj sekcję z SectionHeader i Accordion; nie twórz BlogSection.",
+    "Compose a section with SectionHeader and Accordion; do not create BlogSection."
   ]) {
     const task = routeAgentRequest({ prompt, projectRoot });
     assert.equal(task.status, "ready");
@@ -190,7 +190,7 @@ test("negated component creation becomes a constraint, not a missing target", ()
 
 test("targetFile is validated as an existing repository-relative file", () => {
   const task = routeAgentRequest({
-    prompt: "Add ArticleCard.Compact to this page.",
+    prompt: "Add Accordion to this page.",
     targetFile: "src/pages/index.astro",
     projectRoot
   });
@@ -206,7 +206,7 @@ test("targetFile is validated as an existing repository-relative file", () => {
   );
 
   const invalid = routeAgentRequest({
-    prompt: "Add ArticleCard.Compact to this page.",
+    prompt: "Add Accordion to this page.",
     targetFile: "../outside.astro",
     projectRoot
   });
@@ -216,7 +216,7 @@ test("targetFile is validated as an existing repository-relative file", () => {
 
 test("V1.0 contracts remain accepted during migration", () => {
   const task = routeAgentRequest({
-    prompt: "Add Button.Primary.",
+    prompt: "Reuse MaterialSymbol.",
     projectRoot
   });
   const legacy = {
@@ -276,8 +276,8 @@ test("create family resolution narrows reads to the family and projections", () 
     },
     creationDraft: {
       layer: "atom",
-      family: "text",
-      sourcePath: "src/components/atoms/text/Keycap.astro",
+      family: "buttons",
+      sourcePath: "src/components/base-components/buttons/Keycap.astro",
       docsPath: "src/pages/design-system/components.astro"
     }
   });
@@ -286,7 +286,12 @@ test("create family resolution narrows reads to the family and projections", () 
   assert.equal(context.phase, "create-family-resolution");
   assert.deepEqual(
     context.readPlan.map(({ reason }) => reason),
-    ["creation-family-rule", "registry-projection", "guides-projection"]
+    [
+      "figma-astro-sync-contract",
+      "component-category-rule",
+      "registry-projection",
+      "guides-projection"
+    ]
   );
   assert.equal(
     context.requiredReads.includes(".agentic-rules/00-framework.md"),
@@ -294,25 +299,22 @@ test("create family resolution narrows reads to the family and projections", () 
   );
 });
 
-test("repair and extend use distinct context projections", () => {
+test("figma-only repair and extend avoid stale source reads", () => {
   const repairTask = routeAgentRequest({
-    prompt: "Repair ArticleCard without changing its API.",
+    prompt: "Repair Form without changing its API.",
     projectRoot
   });
   const repair = resolveAgentContext({ task: repairTask, projectRoot });
-  assert.ok(
-    repair.readPlan.some((read) => read.reason === "direct-dependency-source")
-  );
-  assert.ok(
-    repair.readPlan.some((read) => read.reason === "component-family-rule")
-  );
+  assert.equal(repair.components[0].sourcePath, null);
+  assert.equal(repair.components[0].syncStatus, "figma-only");
+  assert.deepEqual(repair.requiredReads, []);
   assert.equal(
     repair.readPlan.some((read) => read.reason === "registry-projection"),
     false
   );
 
   const extendTask = routeAgentRequest({
-    prompt: "Extend ArticleCard props API.",
+    prompt: "Extend Form props API.",
     projectRoot
   });
   const extend = resolveAgentContext({ task: extendTask, projectRoot });
@@ -378,11 +380,11 @@ test("brand resolution returns only approved matching implementation rules", () 
         }
       },
       {
-        id: "cards.pending",
+        id: "content.pending",
         status: "review",
         appliesTo: {
-          components: ["ArticleCard"],
-          scopes: ["cards"],
+          components: ["Accordion"],
+          scopes: ["content"],
           themes: []
         },
         implementation: {

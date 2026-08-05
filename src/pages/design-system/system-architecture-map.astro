@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import DsDocSection from "../../components/design-system/DsDocSection.astro";
-import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
-import ArchitectureExplorer from "../../components/design-system/architecture/ArchitectureExplorer";
+import DsDocSection from "../../components/_internal/documentation/DsDocSection.astro";
+import SectionHeader from "../../components/_internal/documentation/SectionHeader.astro";
+import ArchitectureExplorer from "../../components/_internal/documentation/architecture/ArchitectureExplorer";
 import systemMap from "../../../architecture/system-map.json";
 
 const aiNativeTargetDiagramUrl =
@@ -223,8 +223,8 @@ const architectureLegend = [
     </DsDocSection>
 
     <DsDocSection
-      id="system-architecture-atomic-dependencies"
-      title="Atomic Design Dependencies"
+      id="system-architecture-family-first-dependencies"
+      title="Family-first Component Dependencies"
     >
     </DsDocSection>
 

@@ -1,0 +1,768 @@
+---
+import DsComponentPreview from "./DsComponentPreview.astro";
+
+type ComponentSummary = {
+  component: string;
+};
+
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  sourcePath: string;
+  layer: string;
+  family: string;
+  sizeOptions?: string[];
+  defaultSize?: string;
+  stateOptions?: string[];
+  defaultState?: string;
+  variantOptions?: string[];
+  defaultVariant?: string;
+  variantLabel?: string;
+  variantAttribute?: string;
+  componentSummary?: ComponentSummary;
+  role?: string;
+  useWhen?: string[];
+  avoidWhen?: string[];
+  contract?: string[];
+  constraints?: string[];
+  realApiExample?: string;
+  agenticRulePath?: string;
+  figmaNodeId?: string;
+  componentName?: string;
+}
+
+const {
+  id,
+  title,
+  description,
+  sourcePath,
+  layer,
+  family,
+  sizeOptions = [],
+  defaultSize,
+  stateOptions = [],
+  defaultState = "default",
+  variantOptions = [],
+  defaultVariant,
+  variantLabel = "Variant",
+  variantAttribute,
+  componentSummary,
+  role,
+  useWhen = [],
+  avoidWhen = [],
+  contract = [],
+  constraints = [],
+  realApiExample,
+  agenticRulePath,
+  figmaNodeId,
+  componentName = `DsComponentSpec.${title}`
+} = Astro.props;
+
+const hasControls = sizeOptions.length > 0 || stateOptions.length > 0 || variantOptions.length > 0;
+const hasGuidance = Boolean(
+  role ||
+  useWhen.length ||
+  avoidWhen.length ||
+  contract.length ||
+  constraints.length ||
+  realApiExample ||
+  agenticRulePath ||
+  figmaNodeId
+);
+const componentInfoLabel = componentSummary?.component ?? title;
+---
+
+<section
+  id={id}
+  class="ds-component-spec"
+  aria-labelledby={`${id}-title`}
+  data-component-name={componentName}
+  data-component-spec
+  data-preview-state={defaultState}
+  data-default-size={defaultSize}
+  data-default-variant={defaultVariant}
+  data-variant-attribute={variantAttribute}
+>
+  <header class="ds-component-spec__header">
+    <div class="ds-component-spec__copy">
+      <span class="ds-component-spec__meta">{family} / {layer}</span>
+      <h3 id={`${id}-title`}>{title}</h3>
+      <span class="ds-component-spec__source">
+        Source: <code>{sourcePath}</code>
+      </span>
+      {description && <p>{description}</p>}
+    </div>
+  </header>
+
+  {
+    hasControls && (
+      <div class="ds-component-spec__controls" aria-label={`${title} preview controls`} data-component-spec-control>
+        {sizeOptions.length > 0 && (
+          <div class="ds-component-spec__control-group" data-control-group="size">
+            <span>Size</span>
+            <div class="ds-component-spec__segmented" role="group" aria-label={`${title} size`}>
+              {sizeOptions.map((size) => (
+                <button
+                  type="button"
+                  data-preview-size={size}
+                  data-active={size === defaultSize ? "true" : "false"}
+                  aria-pressed={size === defaultSize ? "true" : "false"}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {stateOptions.length > 0 && (
+          <div class="ds-component-spec__control-group" data-control-group="state">
+            <span>State</span>
+            <div class="ds-component-spec__segmented" role="group" aria-label={`${title} state`}>
+              {stateOptions.map((state) => (
+                <button
+                  type="button"
+                  data-preview-state-option={state}
+                  data-active={state === defaultState ? "true" : "false"}
+                  aria-pressed={state === defaultState ? "true" : "false"}
+                >
+                  {state}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {variantOptions.length > 0 && (
+          <div class="ds-component-spec__control-group" data-control-group="variant">
+            <span>{variantLabel}</span>
+            <div class="ds-component-spec__segmented" role="group" aria-label={`${title} ${variantLabel.toLowerCase()}`}>
+              {variantOptions.map((variant) => (
+                <button
+                  type="button"
+                  data-preview-variant={variant}
+                  data-active={variant === defaultVariant ? "true" : "false"}
+                  aria-pressed={variant === defaultVariant ? "true" : "false"}
+                >
+                  {variant}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  <div class="ds-component-spec__layout">
+    <DsComponentPreview
+      title={title}
+      label={componentInfoLabel}
+      componentName={`DsComponentPreview.${title}`}
+    >
+      <slot name="preview" />
+    </DsComponentPreview>
+  </div>
+
+  {
+    hasGuidance && (
+      <div class="ds-component-spec__guidance" aria-label={`${title} implementation guidance`}>
+        {role && (
+          <section>
+            <h4>Role</h4>
+            <p>{role}</p>
+          </section>
+        )}
+        {useWhen.length > 0 && (
+          <section>
+            <h4>Use when</h4>
+            <ul>{useWhen.map((item) => <li>{item}</li>)}</ul>
+          </section>
+        )}
+        {avoidWhen.length > 0 && (
+          <section>
+            <h4>Avoid when</h4>
+            <ul>{avoidWhen.map((item) => <li>{item}</li>)}</ul>
+          </section>
+        )}
+        {contract.length > 0 && (
+          <section>
+            <h4>Contract</h4>
+            <ul>{contract.map((item) => <li><code>{item}</code></li>)}</ul>
+          </section>
+        )}
+        {constraints.length > 0 && (
+          <section>
+            <h4>Constraints</h4>
+            <ul>{constraints.map((item) => <li>{item}</li>)}</ul>
+          </section>
+        )}
+        {(agenticRulePath || figmaNodeId) && (
+          <section>
+            <h4>AI and Figma</h4>
+            <ul>
+              {agenticRulePath && <li>Agentic rule: <code>{agenticRulePath}</code></li>}
+              {figmaNodeId && <li>Figma master: <code>{figmaNodeId}</code></li>}
+            </ul>
+          </section>
+        )}
+        {realApiExample && (
+          <section class="ds-component-spec__example">
+            <h4>Real API example</h4>
+            <pre><code>{realApiExample}</code></pre>
+          </section>
+        )}
+      </div>
+    )
+  }
+
+</section>
+
+<script>
+  type WindowWithComponentSpecControls = Window & {
+    __astroDsComponentSpecControlsInitialized?: boolean;
+  };
+
+  const getComponentSpecPreviewTargets = (spec: HTMLElement) => {
+    const explicitTargets = Array.from(
+      spec.querySelectorAll<HTMLElement>(".ds-component-preview__canvas [data-preview-target]")
+    ).filter(
+      (target) =>
+        !target.parentElement?.closest(
+          ".ds-component-preview__canvas [data-preview-target]"
+        )
+    );
+
+    return explicitTargets.length > 0
+      ? explicitTargets
+      : Array.from(
+          spec.querySelectorAll<HTMLElement>(".ds-component-preview__canvas [data-component-size]")
+        );
+  };
+
+  const syncComponentSpecSize = (spec: HTMLElement, size: string) => {
+    getComponentSpecPreviewTargets(spec).forEach((previewTarget) => {
+      previewTarget.dataset.componentSize = size;
+    });
+
+    spec.querySelectorAll<HTMLButtonElement>("[data-preview-size]").forEach((button) => {
+      const isActive = button.dataset.previewSize === size;
+      button.dataset.active = String(isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+  };
+
+  const syncComponentSpecState = (spec: HTMLElement, state: string) => {
+    spec.dataset.previewState = state;
+
+    getComponentSpecPreviewTargets(spec).forEach((previewTarget) => {
+      previewTarget.dataset.previewState = state;
+
+      const formControl = previewTarget.querySelector<HTMLInputElement>(
+        'input[type="checkbox"], input[type="radio"]'
+      );
+
+      if (formControl) {
+        const isDisabled = state === "disabled" || state === "checked-disabled";
+        formControl.disabled = isDisabled;
+        formControl.checked = state === "checked" || state === "checked-disabled";
+        if (formControl.type === "checkbox") {
+          formControl.indeterminate = state === "indeterminate";
+          if (formControl.indeterminate) {
+            formControl.setAttribute("aria-checked", "mixed");
+          } else {
+            formControl.removeAttribute("aria-checked");
+          }
+        }
+        previewTarget.dataset.state = isDisabled ? "disabled" : state;
+      }
+
+      if (
+        previewTarget.matches('input:not([type="checkbox"]):not([type="radio"]), textarea')
+      ) {
+        const textControl = previewTarget as HTMLInputElement | HTMLTextAreaElement;
+        textControl.disabled = state === "disabled";
+        textControl.dataset.inputState =
+          state === "invalid" || state === "valid" ? state : "default";
+        if (state === "invalid") {
+          textControl.setAttribute("aria-invalid", "true");
+        } else {
+          textControl.removeAttribute("aria-invalid");
+        }
+      }
+
+      const accordionToggles = previewTarget.querySelectorAll<HTMLButtonElement>(
+        "[data-accordion-toggle]"
+      );
+      if (accordionToggles.length > 0) {
+        accordionToggles.forEach((toggle) => {
+          toggle.disabled = state === "disabled";
+        });
+      }
+
+      if (previewTarget.matches('[role="tab"]')) {
+        const tab = previewTarget as HTMLButtonElement;
+        const isSelected = state === "selected";
+        tab.disabled = state === "disabled";
+        tab.dataset.tabState = tab.disabled
+          ? "disabled"
+          : isSelected
+            ? "selected"
+            : "default";
+        tab.setAttribute("aria-selected", String(isSelected));
+      }
+
+      if (previewTarget.matches('[role="switch"]')) {
+        const switchButton = previewTarget as HTMLButtonElement;
+        switchButton.disabled = state === "disabled";
+        const checked = state === "on";
+        switchButton.setAttribute("aria-checked", String(checked));
+        switchButton.dataset.switchState = state === "disabled" ? "disabled" : checked ? "on" : "off";
+      }
+
+      if (previewTarget.hasAttribute("data-dropdown-root")) {
+        const trigger = previewTarget.querySelector<HTMLButtonElement>("[data-dropdown-trigger]");
+        const menu = previewTarget.querySelector<HTMLElement>('[role="menu"]');
+        const isOpen = state === "open";
+        if (trigger) {
+          trigger.disabled = state === "disabled";
+          trigger.setAttribute("aria-expanded", String(isOpen));
+        }
+        menu?.toggleAttribute("hidden", !isOpen);
+        previewTarget.dataset.dropdownState = state === "disabled" ? "disabled" : isOpen ? "open" : "closed";
+      }
+
+      if (previewTarget.matches('[role="menuitemradio"]')) {
+        const dropdownItem = previewTarget as HTMLButtonElement;
+        const isSelected = state === "selected";
+        dropdownItem.disabled = state === "disabled";
+        dropdownItem.setAttribute("aria-checked", String(isSelected));
+        if (dropdownItem.disabled) {
+          dropdownItem.setAttribute("aria-disabled", "true");
+        } else {
+          dropdownItem.removeAttribute("aria-disabled");
+        }
+        dropdownItem.dataset.dropdownItemState = dropdownItem.disabled
+          ? "disabled"
+          : isSelected
+            ? "selected"
+            : "default";
+      }
+
+      const nativeControl = previewTarget.querySelector<HTMLInputElement | HTMLSelectElement>(
+        'input[type="file"], input[type="search"], select'
+      );
+      if (nativeControl) {
+        nativeControl.disabled = state === "disabled";
+        nativeControl.setAttribute("aria-invalid", String(state === "invalid"));
+      }
+
+      if (previewTarget.hasAttribute("data-search-input")) {
+        const searchControl = previewTarget.querySelector<HTMLInputElement>(
+          'input[type="search"]'
+        );
+        const isFilled = state === "filled";
+        if (searchControl) {
+          searchControl.value = isFilled ? "design system" : "";
+        }
+        previewTarget.dataset.searchState = isFilled ? "filled" : state === "disabled" ? "disabled" : "empty";
+      }
+
+      if (previewTarget.hasAttribute("data-file-upload")) {
+        previewTarget.dataset.uploadState = state;
+        const output = previewTarget.querySelector<HTMLOutputElement>(
+          "[data-file-upload-output]"
+        );
+        if (output) {
+          output.value = state === "selected" ? "proposal.pdf" : "No file selected";
+        }
+      }
+
+      if (previewTarget.hasAttribute("data-select-state")) {
+        previewTarget.dataset.selectState = state;
+      }
+
+      if (previewTarget.hasAttribute("data-field-state")) {
+        previewTarget.dataset.fieldState = state;
+        const fieldMessage = previewTarget.querySelector<HTMLElement>(
+          "[data-field-message]"
+        );
+        if (fieldMessage) {
+          if (state === "invalid") {
+            fieldMessage.setAttribute("aria-live", "polite");
+          } else {
+            fieldMessage.removeAttribute("aria-live");
+          }
+        }
+      }
+
+      if (previewTarget.hasAttribute("data-fieldset-state")) {
+        const fieldset = previewTarget as HTMLFieldSetElement;
+        fieldset.disabled = state === "disabled";
+        fieldset.dataset.fieldsetState = state;
+        if (state === "invalid") {
+          fieldset.setAttribute("aria-invalid", "true");
+        } else {
+          fieldset.removeAttribute("aria-invalid");
+        }
+        const fieldsetMessage = fieldset.querySelector<HTMLElement>(
+          "[data-fieldset-message]"
+        );
+        if (fieldsetMessage) {
+          if (state === "invalid") {
+            fieldsetMessage.setAttribute("aria-live", "polite");
+          } else {
+            fieldsetMessage.removeAttribute("aria-live");
+          }
+        }
+      }
+
+      if (previewTarget.hasAttribute("data-form-state")) {
+        previewTarget.dataset.formState = state;
+        previewTarget.setAttribute("aria-busy", String(state === "validating" || state === "submitting"));
+        const formStatus = previewTarget.querySelector<HTMLElement>(
+          "[data-form-status]"
+        );
+        if (formStatus) {
+          formStatus.setAttribute("role", state === "error" ? "alert" : "status");
+        }
+      }
+
+      if (previewTarget instanceof HTMLDialogElement) {
+        const isOpen = state === "open";
+        previewTarget.toggleAttribute("open", isOpen);
+        previewTarget.dataset.sidepanelState = isOpen ? "open" : "closed";
+      }
+    });
+
+    spec.querySelectorAll<HTMLButtonElement>("[data-preview-state-option]").forEach((button) => {
+      const isActive = button.dataset.previewStateOption === state;
+      button.dataset.active = String(isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+  };
+
+  const syncComponentSpecVariant = (spec: HTMLElement, variant: string) => {
+    const attribute = spec.dataset.variantAttribute;
+    if (!attribute) return;
+
+    getComponentSpecPreviewTargets(spec).forEach((previewTarget) => {
+      previewTarget.setAttribute(attribute, variant);
+
+      if (
+        attribute === "data-media-ratio" &&
+        !previewTarget.matches(".media-ratio")
+      ) {
+        previewTarget
+          .querySelector<HTMLElement>(".media-ratio")
+          ?.setAttribute(attribute, variant);
+      }
+
+      if (attribute === "data-divider-orientation") {
+        previewTarget.setAttribute("aria-orientation", variant);
+      }
+
+      if (attribute === "data-section-header-variant") {
+        const currentTitle = previewTarget.querySelector<HTMLElement>(
+          ".section-header__title"
+        );
+        const requiredTag = variant === "hero" ? "h1" : "h2";
+        if (currentTitle && currentTitle.tagName.toLowerCase() !== requiredTag) {
+          const nextTitle = document.createElement(requiredTag);
+          for (const { name, value } of currentTitle.attributes) {
+            nextTitle.setAttribute(name, value);
+          }
+          nextTitle.textContent = currentTitle.textContent;
+          currentTitle.replaceWith(nextTitle);
+        }
+      }
+    });
+
+    spec.querySelectorAll<HTMLButtonElement>("[data-preview-variant]").forEach((button) => {
+      const isActive = button.dataset.previewVariant === variant;
+      button.dataset.active = String(isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+  };
+
+  const setupComponentSpecs = () => {
+    document.querySelectorAll<HTMLElement>("[data-component-spec]").forEach((spec) => {
+      if (spec.dataset.componentSpecReady === "true") return;
+
+      spec.dataset.componentSpecReady = "true";
+
+      const defaultSize = spec.dataset.defaultSize;
+      if (getComponentSpecPreviewTargets(spec).length > 0 && defaultSize) {
+        syncComponentSpecSize(spec, defaultSize);
+      }
+
+      syncComponentSpecState(spec, spec.dataset.previewState || "default");
+
+      const defaultVariant = spec.dataset.defaultVariant;
+      if (defaultVariant) syncComponentSpecVariant(spec, defaultVariant);
+    });
+  };
+
+  const win = window as WindowWithComponentSpecControls;
+
+  if (!win.__astroDsComponentSpecControlsInitialized) {
+    win.__astroDsComponentSpecControlsInitialized = true;
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const sizeButton = target.closest<HTMLButtonElement>("[data-preview-size]");
+      if (sizeButton) {
+        event.stopPropagation();
+        const spec = sizeButton.closest<HTMLElement>("[data-component-spec]");
+        const size = sizeButton.dataset.previewSize;
+        if (spec && size) syncComponentSpecSize(spec, size);
+        return;
+      }
+
+      const stateButton = target.closest<HTMLButtonElement>("[data-preview-state-option]");
+      if (stateButton) {
+        event.stopPropagation();
+        const spec = stateButton.closest<HTMLElement>("[data-component-spec]");
+        const state = stateButton.dataset.previewStateOption;
+        if (spec && state) syncComponentSpecState(spec, state);
+        return;
+      }
+
+      const variantButton = target.closest<HTMLButtonElement>("[data-preview-variant]");
+      if (variantButton) {
+        event.stopPropagation();
+        const spec = variantButton.closest<HTMLElement>("[data-component-spec]");
+        const variant = variantButton.dataset.previewVariant;
+        if (spec && variant) syncComponentSpecVariant(spec, variant);
+      }
+    }, { capture: true });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupComponentSpecs, { once: true });
+  } else {
+    setupComponentSpecs();
+  }
+
+  document.addEventListener("astro:page-load", setupComponentSpecs);
+</script>
+
+<style>
+  .ds-component-spec {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--gap-large);
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+
+  .ds-component-spec + .ds-component-spec {
+    padding-top: var(--section-padding-small);
+    border-top: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .ds-component-spec__header {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--gap-large);
+    align-items: start;
+  }
+
+  .ds-component-spec__copy {
+    display: grid;
+    min-width: 0;
+    max-width: 50rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--gap-small);
+  }
+
+  .ds-component-spec__meta,
+  .ds-component-spec__source {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-compact);
+    letter-spacing: var(--letter-spacing-none);
+  }
+
+  .ds-component-spec__meta {
+    text-transform: uppercase;
+  }
+
+  .ds-component-spec__source {
+    display: inline-flex;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--color-text-accent);
+    overflow-wrap: anywhere;
+    text-transform: var(--text-transform-uppercase);
+  }
+
+  .ds-component-spec__source code {
+    width: auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ds-component-spec h3,
+  .ds-component-spec h4,
+  .ds-component-spec p {
+    margin: 0;
+  }
+
+  .ds-component-spec h3 {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+    letter-spacing: var(--letter-spacing-ultra-tight);
+    overflow-wrap: anywhere;
+  }
+
+  .ds-component-spec h4 {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+  }
+
+  .ds-component-spec__copy p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-normal);
+  }
+
+  .ds-component-spec__layout {
+    display: block;
+    min-width: 0;
+  }
+
+  .ds-component-spec__guidance {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: var(--border-width-default) solid var(--color-border-subtle);
+    border-left: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .ds-component-spec__guidance section {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: var(--gap-small);
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    padding: var(--component-padding-medium);
+  }
+
+  .ds-component-spec__guidance ul {
+    display: grid;
+    margin: 0;
+    padding-inline-start: var(--space-medium);
+    gap: var(--gap-tiny);
+    color: var(--color-text-secondary);
+  }
+
+  .ds-component-spec__guidance li,
+  .ds-component-spec__guidance p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-normal);
+  }
+
+  .ds-component-spec__example {
+    grid-column: 1 / -1;
+  }
+
+  .ds-component-spec__example pre {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: auto;
+    background: var(--color-background-muted);
+    padding: var(--component-padding-medium);
+  }
+
+  .ds-component-spec__example code {
+    white-space: pre;
+  }
+
+  .ds-component-spec__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-medium);
+  }
+
+  .ds-component-spec__control-group {
+    display: grid;
+    gap: var(--gap-small);
+  }
+
+  .ds-component-spec__control-group > span {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+    text-transform: uppercase;
+  }
+
+  .ds-component-spec__segmented {
+    display: flex;
+    flex-wrap: wrap;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .ds-component-spec__segmented button {
+    min-height: var(--component-size-small-min-height);
+    border: 0;
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-none);
+    padding: 0 var(--component-padding-small);
+    text-transform: uppercase;
+  }
+
+  .ds-component-spec__segmented button:last-child {
+    border-right: 0;
+  }
+
+  .ds-component-spec__segmented button[data-active="true"] {
+    background: var(--color-background-accent);
+    color: var(--color-text-on-accent);
+  }
+
+  .ds-component-spec code {
+    width: fit-content;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+  }
+
+  @media (width < 72rem) {
+    .ds-component-spec__header {
+      grid-template-columns: 1fr;
+    }
+
+    .ds-component-spec__guidance {
+      grid-template-columns: 1fr;
+    }
+
+    .ds-component-spec__example {
+      grid-column: auto;
+    }
+  }
+</style>

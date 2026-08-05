@@ -30,16 +30,16 @@ const references = (source) =>
 const canonicalFiles = {
   "color-primitives.css": 69,
   "color-semantic.css": 49,
-  "color-components.css": 102,
+  "color-components.css": 101,
   "size-primitives.css": 25,
-  "size-semantic.css": 55,
+  "size-semantic.css": 52,
   "component-sizes.css": 28,
   "typography-foundations.css": 72,
   "typography-semantic.css": 121,
   "layout-foundations.css": 7,
   "layout-semantic.css": 11,
-  "motion-foundations.css": 18,
-  "elevation-foundations.css": 9
+  "motion-foundations.css": 7,
+  "elevation-foundations.css": 6
 };
 
 const sources = new Map();
@@ -175,8 +175,7 @@ for (const contract of [
   "--motion-duration-surface-enter:",
   "--motion-duration-disclosure:",
   "@media (prefers-reduced-motion: reduce)",
-  "--motion-duration-fast: 0ms",
-  "--motion-delay-mobile-menu-footer: 0ms"
+  "--motion-duration-fast: 0ms"
 ]) {
   if (!motionFoundations.includes(contract)) {
     fail(`Missing motion contract: ${contract}`);
@@ -186,32 +185,11 @@ for (const contract of [
 const elevationFoundations = sources.get("elevation-foundations.css") ?? "";
 for (const contract of [
   "--elevation-primitive-raised:",
-  "--elevation-surface-floating:",
-  "--elevation-alert-toast:",
-  "--elevation-dropdown-menu:"
+  "--elevation-surface-floating:"
 ]) {
   if (!elevationFoundations.includes(contract)) {
     fail(`Missing elevation contract: ${contract}`);
   }
-}
-
-const alertSource = read(
-  join(projectRoot, "src/components/molecules/data-display/Alert.astro")
-);
-for (const token of [
-  "var(--elevation-alert-notification)",
-  "var(--elevation-alert-toast)"
-]) {
-  if (!alertSource.includes(token)) {
-    fail(`Alert must consume ${token}.`);
-  }
-}
-
-const dropdownSource = read(
-  join(projectRoot, "src/components/atoms/navigation/Dropdown.astro")
-);
-if (!dropdownSource.includes("var(--elevation-dropdown-menu)")) {
-  fail("Dropdown must consume var(--elevation-dropdown-menu).");
 }
 
 for (const documentationPath of [
@@ -226,11 +204,11 @@ for (const documentationPath of [
 }
 
 for (const [componentPath, headingTag] of Object.entries({
-  "src/components/design-system-documentation/DsSectionHeaderLevel2.astro":
+  "src/components/_internal/documentation/DsSectionHeaderLevel2.astro":
     "h2",
-  "src/components/design-system-documentation/DsSectionHeaderLevel3.astro":
+  "src/components/_internal/documentation/DsSectionHeaderLevel3.astro":
     "h3",
-  "src/components/design-system-documentation/DsSectionHeaderLevel4.astro":
+  "src/components/_internal/documentation/DsSectionHeaderLevel4.astro":
     "h4"
 })) {
   const source = read(join(projectRoot, componentPath));

@@ -1,12 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import DsCodeSnippet from "../../components/design-system/DsCodeSnippet.astro";
-import DsDocSection from "../../components/design-system/DsDocSection.astro";
-import DsMotionTokenGroups from "../../components/design-system/DsMotionTokenGroups.astro";
-import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
+import DsCodeSnippet from "../../components/_internal/documentation/DsCodeSnippet.astro";
+import DsDocSection from "../../components/_internal/documentation/DsDocSection.astro";
+import DsMotionTokenGroups from "../../components/_internal/documentation/DsMotionTokenGroups.astro";
+import SectionHeader from "../../components/_internal/documentation/SectionHeader.astro";
 import {
   motionAgenticRules,
-  motionComponentGroups,
   motionFoundationGroups,
   motionSemanticGroups,
 } from "../../data/design-system/motionTokens";
@@ -30,14 +29,6 @@ import {
       description="Semantic motion variables describe repeated interaction intent. They are the preferred component-facing contract."
     >
       <DsMotionTokenGroups groups={motionSemanticGroups} label="semantic tokens" />
-    </DsDocSection>
-
-    <DsDocSection
-      id="motion-component-tokens"
-      title="Motion Component Tokens"
-      description="Component timing is allowed when a coordinated sequence belongs to one reusable family and cannot be described by a shared semantic role."
-    >
-      <DsMotionTokenGroups groups={motionComponentGroups} label="component tokens" />
     </DsDocSection>
 
     <DsDocSection

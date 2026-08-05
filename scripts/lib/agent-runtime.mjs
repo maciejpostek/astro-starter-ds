@@ -179,7 +179,7 @@ const componentCandidateStopWords = new Set([
   "Use"
 ]);
 const likelyUnknownComponentPattern =
-  /(?:Section|Card|Button|Header|Input|Slider|Carousel|Navigation|Footer|Form|Table|Modal|Drawer|Tooltip|Tabs|Accordion|Tag|Label|Avatar|Gallery|Player|Block|Divider|Menu|Pagination)$/u;
+  /(?:Section|Card|Button|Header|Input|Slider|Form|Table|Modal|Drawer|Accordion|Tag|Label|Block|Divider)$/u;
 const creationActionPattern =
   /\b(?:create|build|add|stw[oó]rz|utw[oó]rz|dodaj)\b/iu;
 const creationNamePatterns = [
@@ -814,12 +814,24 @@ const suggestComponents = (query, records) => {
 };
 
 const projectComponent = (record, requestedIdentity = record.name) => ({
+  id: record.id,
   name: record.name,
   requestedIdentity,
   astroComponent: record.astroComponent,
   layer: record.layer,
   family: record.family,
   status: record.status,
+  role: record.role,
+  categoryKey: record.categoryKey,
+  pageKey: record.pageKey,
+  pageLabel: record.pageLabel,
+  sourceDirectory: record.sourceDirectory,
+  syncStatus: record.syncStatus,
+  figmaPageId: record.figmaPageId,
+  actualFigmaPageId: record.actualFigmaPageId,
+  figmaCanonicalNodeId: record.figmaCanonicalNodeId,
+  figmaCandidateNodeIds: record.figmaCandidateNodeIds ?? [],
+  divergences: record.divergences ?? [],
   readiness: record.readiness,
   sourcePath: record.sourcePath,
   docsAnchor: record.docsAnchor,
@@ -974,17 +986,30 @@ const validatePlannedPath = (path, projectRoot, { mustExist = false } = {}) => {
   return { path: relativePath, absolutePath, error: null };
 };
 
-const resolveCreationDraft = (draft, records, projectRoot) => {
-  if (!draft) return { draft: null, familyRule: null, errors: [] };
+const resolveCreationDraft = (draft, registry, projectRoot) => {
+  if (!draft) return { draft: null, page: null, errors: [] };
   const errors = [];
-  if (!["atom", "molecule", "organism", "template"].includes(draft.layer)) {
-    errors.push(`Unknown creation layer: ${draft.layer ?? "(missing)"}.`);
+  const allowedRoles = new Set(registry.roles ?? [
+    "asset",
+    "base-component",
+    "part",
+    "atom",
+    "molecule",
+    "card",
+    "section",
+    "template",
+    "internal"
+  ]);
+  if (!allowedRoles.has(draft.layer)) {
+    errors.push(`Unknown creation role: ${draft.layer ?? "(missing)"}.`);
   }
-  const matchingFamilyRecords = records.filter(
-    (record) => normalize(record.family) === normalize(draft.family ?? "")
+  const page = (registry.pages ?? []).find(
+    (record) =>
+      normalize(record.pageKey) === normalize(draft.family ?? "") ||
+      normalize(record.pageLabel) === normalize(draft.family ?? "")
   );
-  if (matchingFamilyRecords.length === 0) {
-    errors.push(`Unknown creation family: ${draft.family ?? "(missing)"}.`);
+  if (!page) {
+    errors.push(`Unknown architecture page: ${draft.family ?? "(missing)"}.`);
   }
   const source = validatePlannedPath(draft.sourcePath, projectRoot);
   const docs = validatePlannedPath(draft.docsPath, projectRoot, {
@@ -998,20 +1023,24 @@ const resolveCreationDraft = (draft, records, projectRoot) => {
     errors.push(`creationDraft.sourcePath already exists: ${source.path}.`);
   }
   if (docs.error) errors.push(`creationDraft.docsPath: ${docs.error}`);
-  const familyRule = matchingFamilyRecords
-    .map((record) => record.agenticRule)
-    .find(Boolean);
-  if (matchingFamilyRecords.length > 0 && !familyRule) {
-    errors.push(`No family rule is registered for ${draft.family}.`);
+  if (
+    page &&
+    source.path &&
+    !source.path.startsWith(`${page.sourceDirectory}/`)
+  ) {
+    errors.push(
+      `creationDraft.sourcePath must be inside ${page.sourceDirectory}.`
+    );
   }
   return {
     draft: {
-      layer: draft.layer,
-      family: draft.family,
+      role: draft.layer,
+      pageKey: page?.pageKey ?? draft.family,
+      sourceDirectory: page?.sourceDirectory ?? null,
       sourcePath: source.path,
       docsPath: docs.path
     },
-    familyRule,
+    page,
     errors
   };
 };
@@ -1194,8 +1223,8 @@ export const resolveAgentContext = ({
 
   const draftResolution =
     task.intent === "create"
-      ? resolveCreationDraft(creationDraft, records, absoluteRoot)
-      : { draft: null, familyRule: null, errors: [] };
+      ? resolveCreationDraft(creationDraft, registry, absoluteRoot)
+      : { draft: null, page: null, errors: [] };
   missing.push(...draftResolution.errors);
   const phase =
     task.intent !== "create"
@@ -1213,7 +1242,11 @@ export const resolveAgentContext = ({
     addRead("DESIGN-SYSTEM-FRAMEWORK.md", "public-api-framework");
     addDependencySources();
   } else if (task.intent === "create") {
-    addRead(draftResolution.familyRule, "creation-family-rule");
+    addRead(
+      "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
+      "figma-astro-sync-contract"
+    );
+    addRead(".agentic-rules/05-components.md", "component-category-rule");
     addRead(
       "src/data/design-system/componentArchitecture.json",
       "registry-projection"

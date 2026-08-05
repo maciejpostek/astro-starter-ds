@@ -1,0 +1,146 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+interface Props {
+  text: string;
+  label?: string;
+  name?: string;
+}
+
+const { text, label = "Agentic Rule", name = label } = Astro.props;
+---
+
+<span
+  class="ds-tooltip"
+  data-agentic-rule
+  data-agentic-rule-name={name}
+  data-component-name="DsTooltip"
+>
+  <button
+    aria-label={`${label}: ${text}`}
+    class="ds-tooltip__trigger"
+    data-ds-tooltip-trigger
+    type="button"
+  >
+    <MaterialSymbol name="info" size={12} />
+  </button>
+  <span class="ds-tooltip__content" data-ds-tooltip-content role="tooltip">
+    <span class="ds-tooltip__label">{label}</span>
+    <span>{text}</span>
+  </span>
+</span>
+
+<script>
+  const updateDsTooltipPosition = (trigger: HTMLElement, content: HTMLElement) => {
+    const triggerRect = trigger.getBoundingClientRect();
+    const contentRect = content.getBoundingClientRect();
+    const offset = 8;
+    const viewportPadding = 8;
+    const left = Math.min(
+      Math.max(triggerRect.right - contentRect.width, viewportPadding),
+      window.innerWidth - contentRect.width - viewportPadding
+    );
+    const preferredTop = triggerRect.top - contentRect.height - offset;
+    const top = preferredTop < viewportPadding
+      ? triggerRect.bottom + offset
+      : preferredTop;
+
+    content.style.setProperty("--ds-tooltip-left", `${left}px`);
+    content.style.setProperty(
+      "--ds-tooltip-top",
+      `${Math.min(top, window.innerHeight - contentRect.height - viewportPadding)}px`
+    );
+  };
+
+  const setupDsTooltips = () => {
+    document.querySelectorAll<HTMLElement>("[data-component-name='DsTooltip']").forEach((tooltip) => {
+      if (tooltip.dataset.dsTooltipMounted === "true") return;
+
+      const trigger = tooltip.querySelector<HTMLElement>("[data-ds-tooltip-trigger]");
+      const content = tooltip.querySelector<HTMLElement>("[data-ds-tooltip-content]");
+      if (!trigger || !content) return;
+
+      tooltip.dataset.dsTooltipMounted = "true";
+      document.body.append(content);
+
+      const sync = () => updateDsTooltipPosition(trigger, content);
+      const show = () => {
+        sync();
+        content.classList.add("is-visible");
+      };
+      const hide = () => content.classList.remove("is-visible");
+
+      tooltip.addEventListener("mouseenter", show);
+      tooltip.addEventListener("mouseleave", hide);
+      tooltip.addEventListener("focusin", show);
+      tooltip.addEventListener("focusout", hide);
+      window.addEventListener("scroll", sync, { passive: true });
+      window.addEventListener("resize", sync);
+    });
+  };
+
+  setupDsTooltips();
+  document.addEventListener("astro:page-load", setupDsTooltips);
+</script>
+
+<style>
+  .ds-tooltip {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+
+  .ds-tooltip__trigger {
+    display: inline-flex;
+    width: var(--component-size-small-min-height);
+    height: var(--component-size-small-min-height);
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    color: var(--color-icon-secondary);
+    cursor: help;
+    padding: 0;
+  }
+
+  .ds-tooltip__trigger:hover,
+  .ds-tooltip__trigger:focus-visible {
+    color: var(--color-icon-accent);
+  }
+
+  .ds-tooltip__content {
+    position: fixed;
+    z-index: 10000;
+    top: var(--ds-tooltip-top, 0);
+    left: var(--ds-tooltip-left, 0);
+    display: grid;
+    width: min(16rem, 72vw);
+    gap: var(--gap-tiny);
+    border: var(--border-width-default) solid var(--color-border-inverse);
+    background: var(--color-background-inverse);
+    color: var(--color-text-inverse);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+    opacity: 0;
+    padding:
+      var(--component-size-small-padding-inline)
+      var(--component-size-small-padding-inline);
+    pointer-events: none;
+    transform: translateY(var(--space-tiny));
+    transition:
+      opacity var(--motion-transition),
+      transform var(--motion-transition);
+  }
+
+  .ds-tooltip__label {
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+  }
+
+  .ds-tooltip__content.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>

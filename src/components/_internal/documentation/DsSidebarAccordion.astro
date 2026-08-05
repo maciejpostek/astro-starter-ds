@@ -1,0 +1,157 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type { DsNavigationAnchor } from "../../../data/designSystemNavigation";
+import DsSidebarAnchor from "./DsSidebarAnchor.astro";
+
+interface Props {
+  item: DsNavigationAnchor;
+  open?: boolean;
+}
+
+const { item, open = false } = Astro.props as Props;
+---
+
+<div
+  class="ds-sidebar-accordion"
+  data-component-name="DsSidebarAccordion"
+  data-ds-anchor-accordion
+  data-open={open ? "true" : "false"}
+>
+  <button
+    aria-expanded={open ? "true" : "false"}
+    class="ds-sidebar-accordion__trigger"
+    data-component-name="DsSidebarAccordion.Trigger"
+    data-ds-anchor-accordion-trigger
+    type="button"
+  >
+    <span class="ds-sidebar-accordion__label">{item.label}</span>
+    <span class="ds-sidebar-accordion__icon" aria-hidden="true">
+      <MaterialSymbol name="arrow_drop_down" size={14} />
+    </span>
+  </button>
+
+  <div class="ds-sidebar-accordion__panel" data-ds-anchor-accordion-panel>
+    <div class="ds-sidebar-accordion__content">
+      <DsSidebarAnchor
+        href={item.href}
+        label={`${item.label} overview`}
+        level={2}
+        variant="overview"
+      />
+
+      {
+        item.items?.map((nestedItem) => (
+          <DsSidebarAnchor
+            href={nestedItem.href}
+            label={nestedItem.label}
+            level={2}
+            status={nestedItem.status}
+          />
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<script>
+  const setupDsSidebarAccordions = () => {
+    document.querySelectorAll("[data-ds-anchor-accordion-trigger]").forEach((trigger) => {
+      if (!(trigger instanceof HTMLButtonElement)) return;
+      if (trigger.dataset.accordionInitialized === "true") return;
+
+      trigger.dataset.accordionInitialized = "true";
+      trigger.addEventListener("click", () => {
+        const accordion = trigger.closest("[data-ds-anchor-accordion]");
+
+        if (!(accordion instanceof HTMLElement)) return;
+
+        const shouldOpen = accordion.dataset.open !== "true";
+
+        accordion.dataset.open = shouldOpen ? "true" : "false";
+        trigger.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+      });
+    });
+  };
+
+  setupDsSidebarAccordions();
+  document.addEventListener("astro:page-load", setupDsSidebarAccordions);
+</script>
+
+<style>
+  .ds-sidebar-accordion {
+    display: grid;
+    gap: var(--gap-tiny);
+  }
+
+  .ds-sidebar-accordion__trigger {
+    display: flex;
+    width: 100%;
+    min-height: var(--ds-sidebar-anchor-row-size, var(--size-32));
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+    border: 0;
+    background: transparent;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+    padding-inline: var(--size-12) 0;
+    text-align: left;
+  }
+
+  .ds-sidebar-accordion__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ds-sidebar-accordion__icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+    opacity: 0.7;
+    transform: rotate(0deg);
+    transition: transform var(--motion-transition);
+  }
+
+  .ds-sidebar-accordion__trigger:hover {
+    color: var(--color-text-accent);
+  }
+
+  .ds-sidebar-accordion[data-active="true"] > .ds-sidebar-accordion__trigger {
+    color: var(--color-text-accent);
+  }
+
+  .ds-sidebar-accordion[data-search-match="true"] > .ds-sidebar-accordion__trigger {
+    color: var(--color-text-accent);
+  }
+
+  .ds-sidebar-accordion[data-open="true"] > .ds-sidebar-accordion__trigger .ds-sidebar-accordion__icon {
+    transform: rotate(180deg);
+  }
+
+  .ds-sidebar-accordion__panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--motion-transition);
+  }
+
+  .ds-sidebar-accordion[data-open="true"] > .ds-sidebar-accordion__panel {
+    max-height: 80vh;
+  }
+
+  .ds-sidebar-accordion__content {
+    display: grid;
+    gap: var(--gap-tiny);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ds-sidebar-accordion__panel {
+      transition: none;
+    }
+  }
+</style>

@@ -26,7 +26,4 @@
   --elevation-surface-overlay: var(--elevation-primitive-overlay);
 
   /* Stable component contracts */
-  --elevation-alert-notification: var(--elevation-surface-raised);
-  --elevation-alert-toast: var(--elevation-surface-overlay);
-  --elevation-dropdown-menu: var(--elevation-surface-floating);
 }

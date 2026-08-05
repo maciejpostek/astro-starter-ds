@@ -1,0 +1,69 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+interface Props {
+  number: string;
+  title: string;
+  href: string;
+}
+
+const { number, title, href } = Astro.props;
+---
+
+<a class="ds-field-card" href={href} data-component-name="DsFieldCard">
+  <span class="ds-field-card__meta">{number}</span>
+  <strong>{title}</strong>
+  <span class="ds-field-card__icon" aria-hidden="true">
+    <MaterialSymbol name="arrow_forward" size={16} />
+  </span>
+</a>
+
+<style>
+  .ds-field-card {
+    position: relative;
+    display: grid;
+    min-height: clamp(var(--size-160), 6.5714rem + 17.1429vw, var(--size-256));
+    align-content: space-between;
+    gap: var(--gap-medium);
+    border-right: var(--border-width-default) solid var(--color-border-subtle);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+    padding: var(--component-padding-medium);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition:
+      background var(--motion-transition),
+      color var(--motion-transition);
+  }
+
+  .ds-field-card:hover {
+    background: var(--color-background-surface);
+    color: var(--color-text-primary);
+  }
+
+  .ds-field-card__meta {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+  }
+
+  strong {
+    max-width: 12ch;
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+  }
+
+  .ds-field-card__icon {
+    position: absolute;
+    right: var(--component-padding-medium);
+    bottom: var(--component-padding-medium);
+    display: inline-flex;
+    width: var(--component-icon-size);
+    height: var(--component-icon-size);
+    align-items: center;
+    justify-content: center;
+    color: var(--color-icon-primary);
+  }
+</style>

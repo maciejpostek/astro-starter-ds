@@ -682,11 +682,11 @@ const approvedBrandContract = (includeMatchingRule = false) => ({
           }
         },
         {
-          id: "benchmark.cards.review",
+          id: "benchmark.content.review",
           status: "review",
           appliesTo: {
-            components: ["ArticleCard"],
-            scopes: ["cards"],
+            components: ["Accordion"],
+            scopes: ["content"],
             themes: []
           },
           implementation: {

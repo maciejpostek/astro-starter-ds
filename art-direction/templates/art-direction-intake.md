@@ -42,7 +42,7 @@ Use this checklist before drafting a project Brand Expression Contract.
 - [ ] Button is represented.
 - [ ] Input or FormField is represented.
 - [ ] Tag is represented.
-- [ ] ContentBlock or SectionHeader is represented.
+- [ ] SectionHeader is represented.
 - [ ] One representative Card is represented.
 - [ ] Navigation is represented.
 - [ ] One representative Hero or section is represented.

@@ -48,7 +48,7 @@ Use `npm run agent:context` to retrieve bounded context:
 ```bash
 npm run agent:context -- component Button.Primary
 npm run agent:context -- token --color-background-canvas
-npm run agent:context -- compose SectionHeader SwiperStarter ArticleCard
+npm run agent:context -- component MaterialSymbol
 npm run agent:context -- brand hero
 ```
 

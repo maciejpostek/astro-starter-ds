@@ -58,29 +58,6 @@ export const elevationTokenGroups: ElevationTokenGroup[] = [
       },
     ],
   },
-  {
-    id: "elevation-component-aliases",
-    title: "Component aliases",
-    description:
-      "Stable aliases keep component intent explicit and allow the semantic elevation role to change without rewriting component styles.",
-    rows: [
-      {
-        token: "--elevation-alert-notification",
-        value: "var(--elevation-surface-raised)",
-        role: "Notification variant of Alert.",
-      },
-      {
-        token: "--elevation-alert-toast",
-        value: "var(--elevation-surface-overlay)",
-        role: "Toast variant of Alert.",
-      },
-      {
-        token: "--elevation-dropdown-menu",
-        value: "var(--elevation-surface-floating)",
-        role: "Open Dropdown menu.",
-      },
-    ],
-  },
 ];
 
 export const elevationAgenticRules = [

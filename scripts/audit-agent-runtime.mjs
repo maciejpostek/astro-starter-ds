@@ -63,11 +63,11 @@ const scenarios = [
     expectedIntent: "exact-edit"
   },
   {
-    prompt: "Add Button.Primary.",
+    prompt: "Reuse MaterialSymbol.",
     expectedIntent: "reuse"
   },
   {
-    prompt: "Create a section with SectionHeader and ArticleCard.",
+    prompt: "Create a section with SectionHeader and Accordion.",
     expectedIntent: "compose"
   }
 ];

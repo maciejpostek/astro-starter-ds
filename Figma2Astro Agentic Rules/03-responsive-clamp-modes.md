@@ -18,10 +18,12 @@ Fixed tokens use the same value in both modes. This applies primarily to
 `Component Size` does not use `Min` / `Max`; its `Small` / `Medium` / `Large`
 modes have a different meaning.
 
-`Layout Foundations` uses `Max` / `Min` to represent the shared viewport
-range. `Layout Semantic` is an intentional exception: it uses `Desktop` /
-`Mobile` because those modes describe designed frames and breakpoint behavior,
-not only the endpoints of a single `clamp()`.
+`Layout Foundations` is an intentional exception. It uses `Desktop` /
+`Mobile` because `fluid/viewport` describes the width of a designed frame or
+section preview, even though its two values map to the maximum and minimum
+viewport control tokens in Astro. `Layout Semantic` also uses `Desktop` /
+`Mobile` because its values describe solved layout states, not only the
+endpoints of a single `clamp()`.
 
 Example:
 
@@ -62,6 +64,11 @@ a wide viewport. It does not remove the minimum value from CSS. Likewise,
    applying `Min` / `Max` automatically.
 6. If the Figma endpoints differ from code, report a source-of-truth conflict.
 
+For `Layout Foundations / fluid/viewport`, read `Desktop` as the 1440 px
+authoring context and `Mobile` as the 320 px authoring context. Do not apply
+the generic `Min` / `Max` naming rule to this collection. Follow
+`04-layout.md` for its two-token Astro mapping and section-width behavior.
+
 ## Forbidden shortcuts
 
 - Do not create a separate `Fluid` collection.
@@ -70,6 +77,8 @@ a wide viewport. It does not remove the minimum value from CSS. Likewise,
 - Do not treat `Min` and `Max` as breakpoints.
 - Do not use `Min` / `Max` modes in `Component Size`.
 - Do not change `Layout Semantic` modes from `Desktop` / `Mobile` to
+  `Max` / `Min`.
+- Do not change `Layout Foundations` modes from `Desktop` / `Mobile` to
   `Max` / `Min`.
 
 ## Validation checklist

@@ -4,12 +4,10 @@ import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
 import "../styles/tokens/tokens.css";
 import "../styles/global.css";
-import GlobalHeader from "../components/organisms/navigation/GlobalHeader.astro";
-import NavigationTooltip from "../components/molecules/navigation/NavigationTooltip.astro";
-import DsSidebar from "../components/design-system/DsSidebar.astro";
-import GridVisualizer from "../components/dev/GridVisualizer.astro";
-import ComponentInfoLayer from "../components/dev/ComponentInfoLayer.astro";
-import ClipboardCopy from "../components/global-scripts/ClipboardCopy.astro";
+import DsSidebar from "../components/_internal/documentation/DsSidebar.astro";
+import GridVisualizer from "../components/_internal/dev/GridVisualizer.astro";
+import ComponentInfoLayer from "../components/_internal/dev/ComponentInfoLayer.astro";
+import ClipboardCopy from "../components/_internal/behaviors/ClipboardCopy.astro";
 import { isDesignSystemPath } from "../data/designSystemNavigation";
 
 interface Props {
@@ -45,19 +43,6 @@ const isDesignSystem = isDesignSystemPath(activePath);
   </head>
   <body>
     <div class="app">
-      <GlobalHeader
-        activePath={activePath}
-        brandLabel="Astro Starter home"
-        availabilityLabel="Starter ready"
-        locationLabel="UTC"
-        timeZone="UTC"
-        workspaceLabel="Design system workspace"
-        contactLabel="Components"
-        contactHref="/design-system/components"
-        profileName="Astro Starter"
-        profileLabel="Project context"
-        profileDescription="Ready to configure"
-      />
       <div class="app__workspace">
         <GridVisualizer />
         <main class:list={["main", isDesignSystem && "main--design-system"]}>
@@ -68,50 +53,19 @@ const isDesignSystem = isDesignSystemPath(activePath);
         </main>
       </div>
     </div>
-    <NavigationTooltip />
     <ComponentInfoLayer />
     <ClipboardCopy />
 
     <script>
-      interface ShellRuntimeState {
-        abortController: AbortController;
-        clockInterval?: number;
-      }
-
       const runtimeWindow = window as Window & {
-        __astroDsShellRuntime?: ShellRuntimeState;
+        __astroDsShellAbortController?: AbortController;
       };
-      runtimeWindow.__astroDsShellRuntime?.abortController.abort();
-      if (runtimeWindow.__astroDsShellRuntime?.clockInterval) {
-        window.clearInterval(runtimeWindow.__astroDsShellRuntime.clockInterval);
-      }
+      runtimeWindow.__astroDsShellAbortController?.abort();
       const shellAbortController = new AbortController();
       const shellSignal = shellAbortController.signal;
-      runtimeWindow.__astroDsShellRuntime = {
-        abortController: shellAbortController
-      };
+      runtimeWindow.__astroDsShellAbortController = shellAbortController;
 
       const root = document.documentElement;
-      const themeToggle = document.querySelector("[data-theme-toggle]");
-      const navSidebar = document.querySelector<HTMLElement>("[data-nav-sidebar]");
-      const syncThemeToggle = () => {
-        const isDark = root.dataset.theme === "dark";
-        themeToggle?.setAttribute("data-nav-tooltip-label", isDark ? "Mode dark" : "Mode light");
-        themeToggle?.setAttribute("aria-pressed", String(isDark));
-        if (navSidebar) navSidebar.dataset.themeState = isDark ? "dark" : "light";
-      };
-      syncThemeToggle();
-      themeToggle?.addEventListener(
-        "click",
-        () => {
-          const next = root.dataset.theme === "dark" ? "light" : "dark";
-          root.dataset.theme = next;
-          localStorage.setItem("astro-ds-theme", next);
-          syncThemeToggle();
-        },
-        { signal: shellSignal }
-      );
-
       const gridToggles = document.querySelectorAll<HTMLButtonElement>("[data-grid-toggle]");
       const syncGridToggle = () => {
         const isVisible = root.dataset.grid !== "hidden";
@@ -121,9 +75,7 @@ const isDesignSystem = isDesignSystemPath(activePath);
             "aria-label",
             isVisible ? "Hide composition grid" : "Show composition grid"
           );
-          gridToggle.setAttribute("data-nav-tooltip-label", isVisible ? "Guides on" : "Guides off");
         });
-        if (navSidebar) navSidebar.dataset.gridState = isVisible ? "visible" : "hidden";
       };
       const setGridState = (next: "visible" | "hidden") => {
         root.dataset.grid = next;
@@ -157,146 +109,6 @@ const isDesignSystem = isDesignSystemPath(activePath);
           setGridState(next);
         },
         { signal: shellSignal }
-      );
-
-      const mobileMenu = document.querySelector<HTMLElement>("[data-mobile-menu]");
-      const mobileMenuToggle = document.querySelector<HTMLButtonElement>("[data-mobile-menu-toggle]");
-      const topNavbar = document.querySelector<HTMLElement>("[data-top-navbar]");
-      const mobileMenuQuery = window.matchMedia("(width < 64rem)");
-      let mobileMenuTransition = 0;
-
-      const getMobileMenuFocusables = () => {
-        if (!mobileMenu || !mobileMenuToggle) return [];
-        return [
-          mobileMenuToggle,
-          ...mobileMenu.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-          )
-        ].filter((element) => !element.hasAttribute("hidden"));
-      };
-
-      const hideMobileMenu = () => {
-        root.dataset.mobileMenu = "closed";
-        if (topNavbar) topNavbar.dataset.navigationState = "default";
-        mobileMenu?.setAttribute("hidden", "");
-        mobileMenu?.setAttribute("aria-hidden", "true");
-        document.body.classList.remove("has-mobile-menu");
-      };
-
-      const closeMobileMenu = (restoreFocus = true) => {
-        mobileMenuToggle?.setAttribute("aria-expanded", "false");
-        mobileMenuToggle?.setAttribute("aria-label", "Open mobile menu");
-
-        if (root.dataset.mobileMenu !== "open") {
-          hideMobileMenu();
-          return;
-        }
-
-        const transition = ++mobileMenuTransition;
-        root.dataset.mobileMenu = "closing";
-        if (topNavbar) topNavbar.dataset.navigationState = "closing";
-        if (
-          restoreFocus &&
-          mobileMenu &&
-          document.activeElement &&
-          mobileMenu.contains(document.activeElement)
-        ) {
-          mobileMenuToggle?.focus();
-        }
-        mobileMenu?.setAttribute("aria-hidden", "true");
-        requestAnimationFrame(() => {
-          const animations = mobileMenu?.getAnimations() ?? [];
-          if (!animations.length) {
-            if (transition === mobileMenuTransition) hideMobileMenu();
-            return;
-          }
-          Promise.allSettled(animations.map((animation) => animation.finished)).then(() => {
-            if (transition === mobileMenuTransition) hideMobileMenu();
-          });
-        });
-      };
-
-      const openMobileMenu = () => {
-        mobileMenuTransition += 1;
-        root.dataset.mobileMenu = "open";
-        if (topNavbar) topNavbar.dataset.navigationState = "open";
-        mobileMenu?.removeAttribute("hidden");
-        mobileMenu?.setAttribute("aria-hidden", "false");
-        mobileMenuToggle?.setAttribute("aria-expanded", "true");
-        mobileMenuToggle?.setAttribute("aria-label", "Close mobile menu");
-        document.body.classList.add("has-mobile-menu");
-        requestAnimationFrame(() => {
-          const firstMenuControl = getMobileMenuFocusables().find(
-            (element) => element !== mobileMenuToggle
-          );
-          firstMenuControl?.focus();
-        });
-      };
-
-      hideMobileMenu();
-      mobileMenuToggle?.addEventListener(
-        "click",
-        () => {
-          root.dataset.mobileMenu === "open"
-            ? closeMobileMenu()
-            : openMobileMenu();
-        },
-        { signal: shellSignal }
-      );
-      mobileMenu?.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => closeMobileMenu(false), {
-          signal: shellSignal
-        });
-      });
-      mobileMenuQuery.addEventListener(
-        "change",
-        () => {
-          if (!mobileMenuQuery.matches) closeMobileMenu(false);
-        },
-        { signal: shellSignal }
-      );
-      window.addEventListener(
-        "keydown",
-        (event) => {
-          if (root.dataset.mobileMenu !== "open") return;
-          if (event.key === "Escape") {
-            event.preventDefault();
-            closeMobileMenu();
-            return;
-          }
-          if (event.key !== "Tab") return;
-          const focusables = getMobileMenuFocusables();
-          if (!focusables.length) return;
-          const first = focusables[0];
-          const last = focusables[focusables.length - 1];
-          if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-          } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-          }
-        },
-        { signal: shellSignal }
-      );
-
-      const updateClocks = () => {
-        const now = new Date();
-        document.querySelectorAll<HTMLElement>("[data-local-time]").forEach((element) => {
-          const timeZone = element.dataset.timezone ?? "UTC";
-          const localTime = new Intl.DateTimeFormat("en-GB", {
-          timeZone,
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }).format(now);
-          element.textContent = localTime;
-        });
-      };
-      updateClocks();
-      runtimeWindow.__astroDsShellRuntime.clockInterval = window.setInterval(
-        updateClocks,
-        1000
       );
 
     </script>

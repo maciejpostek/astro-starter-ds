@@ -51,7 +51,7 @@ Resolve only the records and files required by the selected route:
 ```bash
 npm run agent:context -- component Button
 npm run agent:context -- token --color-background-primary
-npm run agent:context -- compose SectionHeader SwiperStarter ArticleCard
+npm run agent:context -- component MaterialSymbol
 npm run agent:context -- brand hero
 ```
 

@@ -23,15 +23,11 @@ Not configured.
 
 Not configured.
 
-## ContentBlock Or SectionHeader
+## SectionHeader
 
 Not configured.
 
 ## Representative Card
-
-Not configured.
-
-## Navigation
 
 Not configured.
 

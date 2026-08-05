@@ -299,7 +299,7 @@ Rules:
 
 - Use existing documentation components before creating local layouts.
 - Documentation pages must reflect actual token/component code.
-- Tables should use reusable table atoms and documentation components.
+- Tables should use reusable table primitives and documentation components.
 - Anchor sections should be wired into the shared design-system sidebar when
   they become part of the navigation.
 - Agentic rules in documentation should use the same language as files in

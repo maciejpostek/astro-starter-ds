@@ -1,0 +1,108 @@
+---
+type RoadmapStatus = "not-started" | "in-progress" | "done" | "blocked" | "later";
+type RoadmapPriority = "critical" | "high" | "medium" | "low";
+
+interface Props {
+  title: string;
+  id?: string;
+  description?: string;
+  status?: RoadmapStatus;
+  priority?: RoadmapPriority;
+}
+
+const { title, id, description, status, priority } = Astro.props;
+
+const statusLabels: Record<RoadmapStatus, string> = {
+  "not-started": "Not started",
+  "in-progress": "In progress",
+  done: "Done",
+  blocked: "Blocked",
+  later: "Later"
+};
+
+const priorityLabels: Record<RoadmapPriority, string> = {
+  critical: "Critical",
+  high: "High",
+  medium: "Medium",
+  low: "Low"
+};
+
+---
+
+<header class="ds-section-header" data-component-name="DsDocumentation.SectionHeader">
+  <div class="ds-section-header__copy">
+    <h2 id={id}>{title}</h2>
+    {description && <p>{description}</p>}
+  </div>
+
+  {(status || priority) && (
+    <div class="ds-section-header__meta" aria-label="Roadmap metadata">
+      {status && (
+        <span class="ds-section-header__tag" data-tone={status}>{statusLabels[status]}</span>
+      )}
+      {priority && (
+        <span class="ds-section-header__tag" data-tone={priority}>{priorityLabels[priority]}</span>
+      )}
+    </div>
+  )}
+</header>
+
+<style>
+  .ds-section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-xlarge);
+    margin-bottom: var(--space-section-header-bottom);
+  }
+
+  .ds-section-header__copy {
+    display: grid;
+    max-width: 56rem;
+    gap: var(--gap-regular);
+  }
+
+  .ds-section-header h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-family: var(--text-style-heading-h2-font-family);
+    font-size: var(--text-style-heading-h2-font-size);
+    font-weight: var(--text-style-heading-h2-font-weight);
+    line-height: var(--text-style-heading-h2-line-height);
+    letter-spacing: var(--text-style-heading-h2-letter-spacing);
+  }
+
+  .ds-section-header p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-normal);
+  }
+
+  .ds-section-header__meta {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--gap-tag-group);
+  }
+
+  .ds-section-header__tag {
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-small);
+    padding: var(--space-tiny) var(--space-small);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+  }
+
+  @media (width < 48rem) {
+    .ds-section-header {
+      flex-direction: column;
+    }
+
+    .ds-section-header__meta {
+      justify-content: flex-start;
+    }
+  }
+</style>

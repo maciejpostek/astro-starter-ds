@@ -422,9 +422,6 @@ Component-based radius tokens:
 - `--radius-tab`
 - `--radius-tag`
 - `--radius-label`
-- `--radius-alert`
-- `--radius-avatar`
-- `--radius-embed`
 
 Rules:
 
@@ -433,10 +430,9 @@ Rules:
 - Do not hardcode border-radius values in reusable UI.
 - Do not use one component radius token for a different component unless the
   token name intentionally covers that component.
-- Button, input, checkbox, tab, alert, default Avatar and embed surfaces use
-  the sharp `--radius-none` contract. Radio indicators, Switch knobs, status
-  dots and the explicit circular Avatar variant retain `--radius-full` because
-  their geometry communicates meaning.
+- Button, input, checkbox, tab, tag and label surfaces use the sharp
+  `--radius-none` contract. Radio indicators, Switch knobs and status dots
+  retain `--radius-full` because their geometry communicates meaning.
 
 Good:
 
@@ -650,7 +646,7 @@ Rules:
 - Component-based semantic tokens should include Agentic Rule tooltip/context.
 - Component size attributes should document attribute, property, token and final
   value.
-- Sizing documentation tables should use reusable Design System table atoms and
+- Sizing documentation tables should use reusable Design System table primitives and
   spacing blocks.
 - Remove documentation for deleted or exploratory sizing tokens.
 

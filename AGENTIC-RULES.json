@@ -27,6 +27,8 @@
     "projectContext": "project-context/README.md",
     "frameworkStrategy": "DESIGN-SYSTEM-FRAMEWORK.md",
     "figmaRouter": "Figma2Astro Agentic Rules/README.md",
+    "figmaSyncContract": "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
+    "iconManifest": "src/data/design-system/iconLibrary.json",
     "architectureModel": "architecture/system-map.json"
   },
   "defaults": {
@@ -101,7 +103,6 @@
       ],
       "skips": [
         "full component registry",
-        "full sections rule",
         "creation rules",
         "Figma"
       ],

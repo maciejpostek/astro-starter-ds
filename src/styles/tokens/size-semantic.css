@@ -98,13 +98,10 @@
   --radius-tab: var(--radius-none);
   --radius-tag: var(--radius-none);
   --radius-label: var(--radius-none);
-  --radius-alert: var(--radius-none);
-  --radius-avatar: var(--radius-none);
-  --radius-embed: var(--radius-none);
 
   /* Border width
    * Default is the regular stroke, strong is primarily for focus, and
-   * emphasis is a deliberate structural accent such as an Alert edge.
+   * emphasis is reserved for deliberate structural accents.
    */
   --border-width-default: var(--size-1);
   --border-width-strong: var(--size-2);

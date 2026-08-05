@@ -99,7 +99,7 @@ contracts.
 3. Validate the Motion documentation page in the browser.
 4. Reconcile the `Motion Foundations` collection by canonical Variable name.
 5. Write both modes and Web code syntax.
-6. Rebuild the `20.5 Motion` documentation page from the validated
+6. Rebuild the `Foundations / Motion` documentation page from the validated
    code contract.
 7. Re-read the collection and verify exact counts, descriptions, code syntax,
    modes, and zero-valued Reduced Motion timings.
@@ -121,6 +121,6 @@ contracts.
 - [ ] Every Variable has an English description and Web code syntax.
 - [ ] FLOAT values use milliseconds.
 - [ ] Every duration and delay is `0` in `Reduced Motion`.
-- [ ] The documentation page follows `20.4 Layout`.
+- [ ] The documentation page follows `Foundations / Layout`.
 - [ ] The Astro documentation page builds and has no responsive overflow.
 - [ ] Runtime animation behavior remains in Astro.

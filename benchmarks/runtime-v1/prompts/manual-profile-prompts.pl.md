@@ -70,35 +70,32 @@ Why: To jednoznaczne użycie pojedynczego istniejącego komponentu.
 
 Use instead if: Wybierz Luna + low + Standard, jeśli nie wykonujesz serii krótkich testów.
 
-## M — ArticleCard.Compact
+## M — Accordion
 
-W istniejącej sekcji aktualności dodaj kartę najnowszego artykułu.
+W istniejącej sekcji pomocy dodaj FAQ z dwoma pytaniami.
 
-Użyj `ArticleCard` w wariancie `compact` z tytułem „Projektowanie z AI”, kategorią „Design”, datą 29 lipca 2026, czasem czytania „6 min” i linkiem `/blog/projektowanie-z-ai`.
+Użyj istniejącego `Accordion` z id `runtime-faq`. Pierwszy element „Jak zacząć?” powinien być początkowo otwarty, a drugi „Jak walidować?” zamknięty.
 
-Karta nie powinna zawierać zdjęcia ani excerptu. Nie twórz nowego komponentu karty.
+Nie twórz nowego komponentu ani lokalnego zachowania akordeonu.
 
 Setup: gpt-5.6-terra + medium + Standard
 
-Why: Trzeba poprawnie wykorzystać istniejący wariant i jego publiczny kontrakt.
+Why: Trzeba poprawnie wykorzystać istniejący kontrakt danych i stanu początkowego.
 
 Use instead if: Wybierz Luna + medium + Standard, jeśli miejsce wstawienia jest już otwarte w edytorze.
 
-## L — Carousel.MultiItem
+## L — MediaRatio
 
-```text
-W istniejącej sekcji realizacji dodaj carousel z sześcioma projektami.
+W istniejącej sekcji projektu dodaj MediaRatio dla obrazu z danych projektu.
 
-Użyj istniejącego `Carousel` w wariancie `multi-item`. Każdy element powinien mieć tytuł, krótki opis, zatwierdzony obraz i prawdziwy link do projektu.
-
-Zachowaj obecne responsywne zachowanie komponentu: trzy elementy na desktopie, dwa na tablecie i jeden na mobile. Nie twórz nowego carousela i nie instaluj zewnętrznej biblioteki.
-```
+Użyj proporcji `21:9`, zachowaj alternatywny opis obrazu i nie twórz
+lokalnego wrappera proporcji.
 
 Setup: gpt-5.6-terra + medium + Standard
 
-Why: Komponent istnieje, lecz jego konfiguracja obejmuje dane, obrazy, linki i zachowanie responsywne.
+Why: Konfiguracja wykorzystuje publiczny kontrakt proporcji i slota treści.
 
-Use instead if: Przejdź na Sol + high + Standard, jeśli wymagania wykraczają poza obecny wariant `multi-item`.
+Use instead if: Przejdź na Sol + high + Standard, jeśli wymaganie zmienia publiczne proporcje lub semantykę mediów.
 
 # compose
 
@@ -118,16 +115,16 @@ Why: To niewielka kompozycja dwóch istniejących komponentów bez zmiany API.
 
 Use instead if: Wybierz Terra + medium + Standard, jeśli trzeba dopasować blok do złożonego istniejącego layoutu.
 
-## M — sekcja editorial
+## M — sekcja pomocy
 
 ```text
-Na stronie bloga skomponuj nową sekcję „Najnowsze artykuły”.
+Na stronie pomocy skomponuj nową sekcję „Najczęstsze pytania”.
 
-Na początku użyj `SectionHeader` z eyebrow „Blog”, nagłówkiem „Najnowsze artykuły” i `Button.Link` „Zobacz wszystkie”.
+Na początku użyj `SectionHeader` z eyebrow „Pomoc”, nagłówkiem „Najczęstsze pytania” i `Button.Link` „Zobacz dokumentację”.
 
-Poniżej pokaż sześć `ArticleCard` w wariancie `standard`. Układ powinien mieć trzy kolumny na desktopie, dwie na tablecie i jedną na mobile. Użyj istniejących `l-section`, `l-container`, `l-grid` oraz `--gap-large`.
+Poniżej użyj istniejącego `Accordion` do grupowania pytań i odpowiedzi. Oprzyj kompozycję na `l-section`, `l-container` i `l-stack`.
 
-Nie twórz `BlogSection`, `BlogCard` ani żadnego innego publicznego komponentu. To ma pozostać kompozycją istniejących elementów na tej stronie.
+Nie twórz `HelpSection` ani żadnego innego publicznego komponentu. To ma pozostać kompozycją istniejących elementów na tej stronie.
 ```
 
 Setup: gpt-5.6-terra + medium + Standard
@@ -181,37 +178,33 @@ Why: To ograniczony bug istniejącego komponentu z jasnym symptomem i prostą wa
 
 Use instead if: Przejdź na Sol + high + Standard, jeśli problem pochodzi ze współdzielonych state tokens.
 
-## M — ArticleCard.Compact contract
+## M — Accordion contract
 
 ```text
-`ArticleCard` w wariancie `compact` zaczął przyjmować excerpt i media, przez co wygląda jak zwykła karta.
+`Accordion` przestał odrzucać dwa elementy z tym samym identyfikatorem.
 
-Przywróć kontrakt `ArticleCard.Compact`: karta nie może przyjmować excerptu ani media slotu, ale nadal powinna obsługiwać category, publishedDate i opcjonalny readingTime.
+Przywróć walidację zduplikowanych `item.id`, zachowując generowanie stabilnych identyfikatorów dla elementów bez jawnego id.
 
-Nie dodawaj nowych propsów i nie zmieniaj zachowania wariantów `featured` oraz `standard`.
+Nie dodawaj nowych propsów i nie zmieniaj zachowania `closeSiblings`, stanów disabled ani początkowo otwartego elementu.
 ```
 
 Setup: gpt-5.6-terra + high + Standard
 
-Why: Naprawa dotyczy publicznego kontraktu wariantu i wymaga ochrony pozostałych zachowań komponentu.
+Why: Naprawa dotyczy walidacji publicznego kontraktu danych i wymaga ochrony pozostałych zachowań komponentu.
 
 Use instead if: Przejdź na Sol + high + Standard, jeśli regresja obejmuje również registry lub Guides.
 
-## L — SwiperStarter accessibility
+## L — Rating accessibility
 
-```text
-`SwiperStarter` niepoprawnie wystawia nieaktywne slajdy czytnikom ekranu i pozwala przejść fokusem do ich zawartości.
+Rating nie przekazuje czytnikowi ekranu dokładnej wartości i tekstu wspierającego.
 
-Napraw carousel tak, aby tylko aktywny slajd miał `aria-current`, a pozostałe były odpowiednio `aria-hidden` i `inert`. Przyciski Previous i Next muszą poprawnie reagować na pierwszy i ostatni slajd, a live region ma ogłaszać aktualną pozycję.
-
-Nie zmieniaj publicznego API komponentu i nie dodawaj zewnętrznej biblioteki.
-```
+Przywróć jedną skonsolidowaną etykietę dostępną. Nie zmieniaj publicznego API.
 
 Setup: gpt-5.6-sol + high + Standard
 
-Why: To consequential accessibility repair obejmujący DOM state, fokus, sterowanie i komunikaty live.
+Why: To istotna naprawa dostępności obejmująca wizualizację oraz dokładny tekst.
 
-Use instead if: Użyj Terra + high + Standard, jeśli regresja została już dokładnie zlokalizowana w jednej funkcji.
+Use instead if: Użyj Terra + high + Standard, jeśli regresja została już dokładnie zlokalizowana.
 
 # extend
 
@@ -231,45 +224,37 @@ Why: To ograniczone, kompatybilne rozszerzenie jednego istniejącego komponentu.
 
 Use instead if: Przejdź na Sol + high + Standard, jeśli opis wpływa na kilka wariantów lub istniejące section patterns.
 
-## M — ArticleCard author
+## M — Accordion heading level
 
 ```text
-Rozszerz istniejący `ArticleCard` o opcjonalne informacje o autorze.
+Rozszerz istniejący `Accordion`, przywracając udokumentowany prop `headingLevel`.
 
-Dodaj props `authorName` oraz opcjonalny `authorRole`. Autor powinien pojawiać się w metadanych karty obok daty i readingTime. Puste wartości mają być odrzucane.
+Prop powinien obsługiwać zatwierdzone poziomy od `h2` do `h6` i sterować semantycznym elementem nagłówka każdego elementu.
 
-Obecne użycia bez autora nie mogą zmienić markup ani wyglądu. Sprawdź warianty `featured`, `standard` i `compact`, a następnie zsynchronizuj registry oraz Guides.
+Obecne użycia bez jawnej wartości muszą zachować domyślne `h3`. Zsynchronizuj source, registry oraz Guides.
 
-Nie twórz `AuthorCard` ani nowego wariantu ArticleCard.
+Nie twórz nowego komponentu ani wariantu Accordion.
 ```
 
 Setup: gpt-5.6-sol + medium + Standard
 
-Why: Rozszerzenie publicznego API wpływa na walidację danych, trzy warianty i dokumentację.
+Why: Rozszerzenie publicznego API wpływa na semantykę nagłówków, registry i dokumentację.
 
 Use instead if: Wybierz Terra + medium + Standard, jeśli autor ma być obsługiwany tylko w jednym lokalnym użyciu.
 
-## L — Carousel items-per-view
+## L — Rating supporting-text contract
 
-```text
-Rozszerz istniejący `Carousel` o opcjonalną konfigurację liczby widocznych elementów dla desktopu, tabletu i mobile.
+Przywróć w Rating uzgodniony prop `supportingText`.
 
-Potrzebuję móc ustawić dwie karty na desktopie oraz jedną na tablecie i mobile. Domyślne zachowanie wariantu `multi-item` — trzy, dwa i jeden — musi pozostać bez zmian dla obecnych użyć.
-
-Oprzyj implementację na `--carousel-items-per-view` i istniejących gap variables. Zaktualizuj props, typy, registry i Guides. Sprawdź scroll snap, ResizeObserver, sterowanie klawiaturą, Previous/Next i reduced motion.
-
-Nie twórz nowego carousel component.
-```
+Zaktualizuj source, registry, Guides, family rules, adapter Figma i walidację. Nie twórz nowego komponentu ani lokalnego wariantu.
 
 Setup: gpt-5.6-sol + high + Standard
 
-Why: To cross-cutting zmiana publicznego API, responsywnego CSS, runtime i accessibility.
-
-Use instead if: Wybierz Sol + medium + Standard, jeśli wymaganie można spełnić bez zmiany publicznego API.
+Why: Zmiana publicznego API wpływa na kod, dokumentację, Figma i dostępność.
 
 # create
 
-Nazwy `Keycap`, `AuthorByline` i `ArticleCardCarouselSection` nie występują
+Nazwy `Keycap`, `DisclosureSummary` i `DisclosurePanelGroup` nie występują
 w aktualnym registry. Brak nazwy nie jest jednak wystarczającym dowodem luki:
 każdy scenariusz nadal musi przejść creation gate.
 
@@ -289,14 +274,14 @@ Why: To mały, ale publiczny komponent wymagający gap check i synchronizacji ź
 
 Use instead if: Wybierz Terra + medium + Standard, jeśli zadanie zostanie ograniczone do lokalnego elementu bez publicznego API.
 
-## M — AuthorByline
+## M — DisclosureSummary
 
 ```text
-Stwórz nowy publiczny komponent design-system `AuthorByline` do prezentowania autora artykułu.
+Stwórz nowy publiczny komponent design-system `DisclosureSummary` dla potwierdzonej, powtarzalnej potrzeby krótkiego podsumowania sterującego ujawnianiem szczegółów.
 
-Komponent powinien korzystać z istniejącego `Avatar` i przyjmować: `name`, opcjonalne `role`, opcjonalne `href` oraz opcjonalny tekst daty publikacji. Imię jest wymagane, puste wartości powinny być odrzucane, a link musi być bezpieczny.
+Komponent powinien reużywać istniejące kontrakty `Tab` i `Button`, przyjmować wymagany tytuł oraz opcjonalny opis i akcję. Puste wartości powinny być odrzucane.
 
-Użyj istniejących typography, color i spacing variables. Potwierdź lukę w registry, a następnie dodaj source, publiczne API, registry, Guides i walidację.
+Użyj istniejących typography, color i spacing variables. Potwierdź lukę w registry, a następnie dodaj source, publiczne API, registry, Guides i walidację rodziny disclosure.
 ```
 
 Setup: gpt-5.6-sol + medium + Standard
@@ -305,16 +290,16 @@ Why: Nowa molekuła ma zależność, publiczne API, walidację danych i dokument
 
 Use instead if: Przejdź na Sol + high + Standard, jeśli komponent ma zostać od razu zintegrowany z kilkoma istniejącymi rodzinami.
 
-## L — ArticleCardCarouselSection
+## L — DisclosurePanelGroup
 
 ```text
-Stwórz nowy publiczny komponent design-system `ArticleCardCarouselSection`.
+Stwórz nowy publiczny komponent design-system `DisclosurePanelGroup`.
 
-Ma prezentować `SectionHeader` oraz kolekcję istniejących `ArticleCard`. W actions slot nagłówka powinien móc znaleźć się istniejący `Button.Link`.
+Ma komponować istniejące `Accordion` oraz `Tab` dla potwierdzonego, powtarzalnego wzorca wielu kategorii paneli.
 
-Sekcja ma pokazywać dwie karty na desktopie oraz jedną na tablecie i mobile. Sterowanie musi być ręczne i dostępne: Previous/Next, obsługa klawiatury, scroll snap, live region, first/middle/last state oraz reduced motion.
+Sterowanie musi zachować istniejące role tablist/tabpanel, obsługę klawiatury, roving tabindex, stabilne identyfikatory i semantyczne nagłówki akordeonu.
 
-Nie duplikuj logiki `Carousel`. Najpierw sprawdź, czy wymaganie można spełnić przez jego bezpieczne rozszerzenie lub kompozycję. Jeśli tak, zwróć blocked dla creation i zaproponuj właściwy workflow. Twórz `ArticleCardCarouselSection` tylko po potwierdzeniu rzeczywistej, powtarzalnej luki.
+Nie duplikuj logiki `Accordion` ani `Tab`. Najpierw sprawdź, czy wymaganie można spełnić przez kompozycję. Jeśli tak, zwróć blocked dla creation i zaproponuj właściwy workflow. Twórz `DisclosurePanelGroup` tylko po potwierdzeniu rzeczywistej, powtarzalnej luki.
 
 Jeżeli creation gate zostanie spełniony, dodaj pełne API, registry, Guides, family rules i wymagane walidatory.
 ```
@@ -323,26 +308,25 @@ Setup: gpt-5.6-sol + high + Standard
 
 Why: To złożony publiczny komponent obejmujący kilka rodzin, interakcję, accessibility i creation gate.
 
-Use instead if: Użyj Sol + medium + Standard, jeśli wcześniej zatwierdzono API i sposób współdzielenia runtime z `Carousel`.
+Use instead if: Użyj Sol + medium + Standard, jeśli wcześniej zatwierdzono API i kontrakt tekstu wspierającego Rating.
 
 # Profile boundary examples
 
 ```text
-SectionHeader + ArticleCard w zwykłym gridzie
+SectionHeader + Accordion + TrustBadge w zwykłej kompozycji
 ```
 
 To profil `compose`.
 
 ```text
-Carousel ma dostać nowe responsive items-per-view
+Rating ma odzyskać publiczny supportingText
 ```
 
 To profil `extend`.
 
 ```text
-Potrzebuję nowego, powtarzalnego ArticleCardCarouselSection
+Potrzebuję nowego, powtarzalnego DisclosurePanelGroup
 ```
 
 To profil `create`, ale dopiero po wykazaniu, że kompozycja lub rozszerzenie
-`Carousel` nie wystarczą.
-
+`Accordion` i `Tab` nie wystarczą.

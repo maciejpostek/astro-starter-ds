@@ -1,39 +1,26 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Button from "../components/atoms/actions/Button.astro";
-import AvailableLabel from "../components/atoms/data-display/AvailableLabel.astro";
-import Tag from "../components/atoms/data-display/Tag.astro";
-import BulletPoint from "../components/atoms/content/BulletPoint.astro";
-import FileUpload from "../components/atoms/forms/FileUpload.astro";
-import Input from "../components/atoms/forms/Input.astro";
-import Eyebrow from "../components/atoms/text/Eyebrow.astro";
-import FormField from "../components/molecules/forms/FormField.astro";
-import SearchInput from "../components/molecules/forms/SearchInput.astro";
-import SectionHeader from "../components/molecules/text/SectionHeader.astro";
+import SectionHeader from "../components/_internal/documentation/SectionHeader.astro";
 ---
 
-<BaseLayout
-  title="Astro Design System Starter"
-  description="An empty Astro project backed by a documented, token-driven design system."
->
-  <section class="l-section" aria-label="Test button">
-    <div class="l-container">
-      <div class="l-cluster" data-align="center">
-        <Button>test button</Button>
-        <Button variant="secondary">test button two</Button>
-        <Button variant="link">Faster Link</Button>
-        <FormField for="test-email" label="Work e-mail" hint="this is test hint">
-          <Input id="test-email" name="email" type="email" />
-        </FormField>
-        <FileUpload id="test-file-upload" />
-        <SearchInput id="component-search" placeholder="Search components" />
-        <Button>new button</Button>
-        <SectionHeader eyebrow="Workflow" title="AI Native Workflow" />
-        <Tag size="small">AI Design Systems</Tag>
-        <AvailableLabel />
-        <Eyebrow text="Eyebrow AI" />
-        <BulletPoint text="Bullet point created by AI" />
-      </div>
-    </div>
-  </section>
+<BaseLayout title="Astro Design System Starter">
+  <main class="starter">
+    <SectionHeader
+      eyebrow="Astro Design System"
+      title="A clean family-first starter ready for canonical Figma components."
+      variant="hero"
+    />
+    <p>
+      The public component folders are intentionally empty. Build the library
+      one approved Figma node at a time and track every mapping in the shared
+      architecture manifest.
+    </p>
+    <a href="/design-system/components">Open the architecture catalog</a>
+  </main>
 </BaseLayout>
+
+<style>
+  .starter { display:grid; gap:var(--gap-large); max-width:72rem; padding:var(--section-padding-large) 0; }
+  .starter p { max-width:64ch; color:var(--color-text-secondary); font-size:var(--font-size-body-large); }
+  .starter a { color:var(--color-text-link); font-weight:var(--font-weight-emphasis); }
+</style>

@@ -63,8 +63,8 @@
       "status": "current",
       "architectureState": "current",
       "sourcePaths": [
-        "src/components/dev/ComponentInfoLayer.astro",
-        "src/components/dev/GridVisualizer.astro"
+        "src/components/_internal/dev/ComponentInfoLayer.astro",
+        "src/components/_internal/dev/GridVisualizer.astro"
       ],
       "ownership": {
         "owner": "Design-system Guides",
@@ -1148,7 +1148,7 @@
       "type": "foundation",
       "scope": "framework",
       "concerns": [
-        "atomic-dependencies"
+        "family-first-dependencies"
       ],
       "status": "current",
       "architectureState": "current",
@@ -1173,17 +1173,17 @@
       }
     },
     {
-      "id": "component.atoms",
-      "title": "Atoms",
+      "id": "component.base-components",
+      "title": "Base Components",
       "type": "component",
       "scope": "framework",
       "concerns": [
-        "atomic-dependencies"
+        "family-first-dependencies"
       ],
       "status": "current",
       "architectureState": "current",
       "sourcePaths": [
-        "src/components/atoms"
+        "src/components/base-components"
       ],
       "ownership": {
         "owner": "AI-native runtime",
@@ -1198,22 +1198,22 @@
         "contextCost": "low"
       },
       "metadata": {
-        "problem": "Primitive components establish the first reusable layer.",
+        "problem": "Global reusable building blocks depend on shared design tokens.",
         "pathKind": "directory"
       }
     },
     {
-      "id": "component.molecules",
-      "title": "Molecules and Family Parts",
+      "id": "component.website-patterns",
+      "title": "Website Patterns",
       "type": "component",
       "scope": "framework",
       "concerns": [
-        "atomic-dependencies"
+        "family-first-dependencies"
       ],
       "status": "current",
       "architectureState": "current",
       "sourcePaths": [
-        "src/components/molecules"
+        "src/components/website-patterns"
       ],
       "ownership": {
         "owner": "AI-native runtime",
@@ -1228,22 +1228,22 @@
         "contextCost": "low"
       },
       "metadata": {
-        "problem": "Small compositions depend on primitives.",
+        "problem": "Website families compose Base Components and family-owned parts.",
         "pathKind": "directory"
       }
     },
     {
-      "id": "component.cards",
-      "title": "Cards",
+      "id": "component.examples-templates",
+      "title": "Examples and Templates",
       "type": "component",
       "scope": "framework",
       "concerns": [
-        "atomic-dependencies"
+        "family-first-dependencies"
       ],
       "status": "current",
       "architectureState": "current",
       "sourcePaths": [
-        "src/components/organisms/cards"
+        "src/components/examples-templates"
       ],
       "ownership": {
         "owner": "AI-native runtime",
@@ -1258,52 +1258,22 @@
         "contextCost": "low"
       },
       "metadata": {
-        "problem": "Reusable content containers compose smaller parts.",
+        "problem": "Recipes and starters compose ready website patterns.",
         "pathKind": "directory"
       }
     },
     {
-      "id": "component.organisms",
-      "title": "Organisms and Sections",
+      "id": "component.internal-pages",
+      "title": "Internal Tools and Pages",
       "type": "component",
       "scope": "framework",
       "concerns": [
-        "atomic-dependencies"
+        "family-first-dependencies"
       ],
       "status": "current",
       "architectureState": "current",
       "sourcePaths": [
-        "src/components/organisms"
-      ],
-      "ownership": {
-        "owner": "AI-native runtime",
-        "readers": [
-          "AI agent",
-          "Design engineer"
-        ],
-        "writers": [
-          "Repository maintainers"
-        ],
-        "validatorNodeIds": [],
-        "contextCost": "low"
-      },
-      "metadata": {
-        "problem": "Large reusable regions compose atoms, molecules, and cards.",
-        "pathKind": "directory"
-      }
-    },
-    {
-      "id": "component.templates",
-      "title": "Templates and Pages",
-      "type": "component",
-      "scope": "framework",
-      "concerns": [
-        "atomic-dependencies"
-      ],
-      "status": "current",
-      "architectureState": "current",
-      "sourcePaths": [
-        "src/components/templates",
+        "src/components/_internal",
         "src/pages"
       ],
       "ownership": {
@@ -1319,7 +1289,7 @@
         "contextCost": "low"
       },
       "metadata": {
-        "problem": "Page structures compose ready reusable regions.",
+        "problem": "Internal documentation and project pages consume the public system without becoming its folder axis.",
         "pathKind": "mixed"
       }
     }
@@ -1660,37 +1630,23 @@
       "architectureState": "current"
     },
     {
-      "id": "edge.tokens-atoms",
-      "source": "component.atoms",
+      "id": "edge.tokens-base-components",
+      "source": "component.base-components",
       "target": "foundation.design-tokens",
       "type": "depends-on",
       "architectureState": "current"
     },
     {
-      "id": "edge.molecules-atoms",
-      "source": "component.molecules",
-      "target": "component.atoms",
+      "id": "edge.patterns-base-components",
+      "source": "component.website-patterns",
+      "target": "component.base-components",
       "type": "depends-on",
       "architectureState": "current"
     },
     {
-      "id": "edge.cards-molecules",
-      "source": "component.cards",
-      "target": "component.molecules",
-      "type": "depends-on",
-      "architectureState": "current"
-    },
-    {
-      "id": "edge.organisms-cards",
-      "source": "component.organisms",
-      "target": "component.cards",
-      "type": "depends-on",
-      "architectureState": "current"
-    },
-    {
-      "id": "edge.templates-organisms",
-      "source": "component.templates",
-      "target": "component.organisms",
+      "id": "edge.internal-examples-templates",
+      "source": "component.internal-pages",
+      "target": "component.examples-templates",
       "type": "depends-on",
       "architectureState": "current"
     }
@@ -3720,27 +3676,24 @@
       "direction": "right"
     },
     {
-      "id": "view.atomic-design-dependencies",
-      "title": "Atomic Design Dependencies",
+      "id": "view.family-first-component-dependencies",
+      "title": "Family-first Component Dependencies",
       "level": "L1",
       "architectureStates": [
         "current"
       ],
-      "description": "Foundations flow through atoms, molecules, cards, organisms and sections, then templates and pages.",
+      "description": "Foundations flow through Base Components and Website Patterns into examples, templates, internal tools, and pages. Atomic roles remain component metadata.",
       "nodeIds": [
         "foundation.design-tokens",
-        "component.atoms",
-        "component.molecules",
-        "component.cards",
-        "component.organisms",
-        "component.templates"
+        "component.base-components",
+        "component.website-patterns",
+        "component.examples-templates",
+        "component.internal-pages"
       ],
       "edgeIds": [
-        "edge.tokens-atoms",
-        "edge.molecules-atoms",
-        "edge.cards-molecules",
-        "edge.organisms-cards",
-        "edge.templates-organisms"
+        "edge.tokens-base-components",
+        "edge.patterns-base-components",
+        "edge.internal-examples-templates"
       ],
       "direction": "right"
     },

@@ -121,7 +121,7 @@ The calibration set should normally include:
 - Button;
 - Input or FormField;
 - Tag;
-- ContentBlock or SectionHeader;
+- SectionHeader;
 - one representative Card;
 - Navigation;
 - one representative Hero or marketing section.

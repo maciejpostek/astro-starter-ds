@@ -76,55 +76,6 @@ export const motionSemanticGroups: MotionTokenGroup[] = [
   },
 ];
 
-export const motionComponentGroups: MotionTokenGroup[] = [
-  {
-    id: "motion-component-mobile-menu",
-    title: "Mobile menu sequence",
-    description:
-      "Component-level timings coordinate one reusable navigation sequence. They remain named for the owning component and are not general spacing-style utilities.",
-    rows: [
-      {
-        token: "--motion-duration-mobile-menu-reveal",
-        defaultValue: "420ms",
-        reducedValue: "0ms",
-        role: "Mobile menu shell entrance.",
-      },
-      {
-        token: "--motion-duration-mobile-menu-close",
-        defaultValue: "260ms",
-        reducedValue: "0ms",
-        role: "Mobile menu shell exit.",
-      },
-      {
-        token: "--motion-duration-mobile-menu-link",
-        defaultValue: "340ms",
-        reducedValue: "0ms",
-        role: "Individual navigation-link entrance.",
-      },
-      {
-        token: "--motion-duration-mobile-menu-footer",
-        defaultValue: "370ms",
-        reducedValue: "0ms",
-        role: "Footer action entrance.",
-      },
-      ...[
-        ["--motion-delay-mobile-menu-link-1", "290ms", "First link delay."],
-        ["--motion-delay-mobile-menu-link-2", "340ms", "Second link delay."],
-        ["--motion-delay-mobile-menu-link-3", "390ms", "Third link delay."],
-        ["--motion-delay-mobile-menu-link-4", "440ms", "Fourth link delay."],
-        ["--motion-delay-mobile-menu-link-5", "490ms", "Fifth link delay."],
-        ["--motion-delay-mobile-menu-link-6", "550ms", "Sixth link delay."],
-        ["--motion-delay-mobile-menu-footer", "680ms", "Footer action delay."],
-      ].map(([token, defaultValue, role]) => ({
-        token,
-        defaultValue,
-        reducedValue: "0ms",
-        role,
-      })),
-    ],
-  },
-];
-
 export const motionAgenticRules = [
   {
     title: "Use semantic intent",

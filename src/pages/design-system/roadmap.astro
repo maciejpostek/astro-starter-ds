@@ -1,63 +1,62 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
-import DsDocCard from "../../components/design-system/DsDocCard.astro";
-import DsDocGrid from "../../components/design-system/DsDocGrid.astro";
-import DsDocSection from "../../components/design-system/DsDocSection.astro";
-import DsComponentReadiness from "../../components/design-system/DsComponentReadiness.astro";
-import componentArchitecture from "../../data/design-system/componentArchitecture.json";
+import SectionHeader from "../../components/_internal/documentation/SectionHeader.astro";
+import architecture from "../../data/design-system/componentArchitecture.json";
 
-const publicLayers = new Set(["atom", "molecule", "organism", "template"]);
-const records = componentArchitecture.components.filter((record) =>
-  publicLayers.has(record.layer)
+const figmaOnly = architecture.components.filter(
+  (record) => record.syncStatus === "figma-only"
 );
-const readyCount = records.filter((record) => record.status === "ready").length;
-const reviewedCount = records.filter(
-  (record) => record.readiness.visual === "approved"
-).length;
-const validatedCount = records.filter(
-  (record) => record.readiness.validation === "passed"
-).length;
+const intentional = architecture.components.filter(
+  (record) => record.syncStatus === "intentional-difference"
+);
+const mapped = architecture.components.filter(
+  (record) => record.syncStatus === "mapped"
+);
 ---
 
 <BaseLayout title="Component Readiness - Astro Design System">
   <div class="page">
     <SectionHeader
       eyebrow="Component Readiness"
-      title="Current implementation, visual review, and validation state."
+      title="Figma backlog and Astro implementation state"
       variant="hero"
     />
 
-    <DsDocSection
-      id="component-readiness-overview"
-      title="Readiness overview"
-      description="This lightweight projection is generated from the component registry. It records current state only; Git owns history and completed planning checkpoints."
-    >
-      <DsDocGrid columns={3}>
-        <DsDocCard
-          eyebrow="Implementation"
-          title={`${readyCount} / ${records.length} ready`}
-          text="Ready means the current Astro implementation and documented API are available for reuse."
-        />
-        <DsDocCard
-          eyebrow="Visual review"
-          title={`${reviewedCount} approved`}
-          text="Starter, modified, review, and approved states distinguish system defaults from project visual approval."
-        />
-        <DsDocCard
-          eyebrow="Validation"
-          title={`${validatedCount} passed`}
-          text="Validation tracks the current result only and does not store release history."
-        />
-      </DsDocGrid>
-    </DsDocSection>
+    <section class="metrics">
+      <article><span>Figma only</span><strong>{figmaOnly.length}</strong></article>
+      <article><span>Mapped</span><strong>{mapped.length}</strong></article>
+      <article><span>Intentional differences</span><strong>{intentional.length}</strong></article>
+    </section>
 
-    <DsDocSection
-      id="component-readiness-inventory"
-      title="Component inventory"
-      description="Filter the reusable public inventory by family, implementation status, visual adaptation, or validation result."
-    >
-      <DsComponentReadiness records={records} />
-    </DsDocSection>
+    <section class="inventory">
+      <h2>Canonical records</h2>
+      <table>
+        <thead><tr><th>Name</th><th>Page</th><th>Role</th><th>Status</th><th>Astro source</th></tr></thead>
+        <tbody>
+          {architecture.components.map((record) => (
+            <tr>
+              <th scope="row">{record.name}</th>
+              <td>{record.pageLabel}</td>
+              <td><code>{record.role}</code></td>
+              <td><code>{record.syncStatus}</code></td>
+              <td><code>{record.sourcePath ?? "—"}</code></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
   </div>
 </BaseLayout>
+
+<style>
+  .page { display:grid; gap:var(--section-padding-small); }
+  .metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap-small); }
+  .metrics article, .inventory { border:var(--border-width-default) solid var(--color-border-subtle); padding:var(--component-padding-large); }
+  .metrics article { display:grid; gap:var(--gap-small); }
+  .metrics span { color:var(--color-text-secondary); }
+  .metrics strong { font-size:var(--font-size-h4); }
+  .inventory { display:grid; gap:var(--gap-large); overflow:auto; }
+  table { width:100%; border-collapse:collapse; }
+  th, td { border-bottom:var(--border-width-default) solid var(--color-border-subtle); padding:var(--component-padding-small); text-align:left; vertical-align:top; }
+  @media (width < 64rem) { .metrics { grid-template-columns:1fr; } }
+</style>

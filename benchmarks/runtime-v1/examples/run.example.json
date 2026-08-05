@@ -50,7 +50,7 @@
     "targets": [
       {
         "kind": "component",
-        "id": "ArticleCard.Compact",
+        "id": "Accordion",
         "exists": true,
         "role": "primary"
       }
@@ -132,7 +132,7 @@
     "budget_overrun": false,
     "read_classification": [
       {
-        "path": "src/components/molecules/cards/ArticleCard.astro",
+        "path": "src/components/molecules/disclosure/Accordion.astro",
         "classification": "required",
         "bytes": 7200
       }
@@ -140,14 +140,14 @@
     "phase": "normal",
     "next_step": null,
     "required_reads": [
-      "src/components/molecules/cards/ArticleCard.astro",
+      "src/components/molecules/disclosure/Accordion.astro",
       "src/pages/index.astro"
     ],
     "read_plan": [
       {
-        "path": "src/components/molecules/cards/ArticleCard.astro",
+        "path": "src/components/molecules/disclosure/Accordion.astro",
         "reason": "component-source-and-api",
-        "target": "ArticleCard.Compact",
+        "target": "Accordion",
         "bytes": 7200
       },
       {
@@ -168,15 +168,15 @@
     "duplicate_reads": 0,
     "figma_calls": 0,
     "commands": [
-      "rg ArticleCard src",
-      "npm run audit:cards"
+      "rg Accordion src",
+      "npm run audit:disclosure"
     ]
   },
   "validation": {
     "passed": true,
     "checks": [
       {
-        "command": "npm run audit:cards",
+        "command": "npm run audit:disclosure",
         "status": "passed",
         "duration_ms": 18000,
         "exit_code": 0
@@ -202,7 +202,7 @@
     "registry_added": [],
     "registry_removed": [],
     "registry_changed": [],
-    "summary": "Reused ArticleCard Compact and passed the scoped validator."
+    "summary": "Reused Accordion Featured and passed the scoped validator."
   },
   "artifacts": {
     "events": ".benchmark-artifacts/runtime-v1/example/events.jsonl",

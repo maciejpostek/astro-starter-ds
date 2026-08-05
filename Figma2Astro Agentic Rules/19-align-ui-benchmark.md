@@ -361,7 +361,7 @@ ekranowe nie propagują się globalnie.
 | Empty States | `3860:4301` | 2 | 34 | 2 |
 
 **Obserwacja.** Navigation ma osobne mastery dla elementów sidebar/topbar,
-headerów, profilu, feature cards oraz dwóch organizmów: Sidebar
+headerów, profilu, feature items oraz dwóch organizmów: Sidebar
 `3802:11759` i Topbar `3814:25274`. Instance share tych organizmów wynosi
 odpowiednio 65,57% i 75%. Token coverage wynosi 30,33% i 29,84%.
 Wszystkie component descriptions są puste.
@@ -370,8 +370,8 @@ Wszystkie component descriptions są puste.
 wzorcem. Osie `Product` zakodowane w organizmie są jednak treściowym
 wariantem demo, nie stabilnym API nawigacji.
 
-**Rekomendacja.** MPCOM powinien rozwijać istniejące NavSidebar, TopNavbar
-i GlobalHeader przez Sloty oraz dane, nie przez warianty nazw sektorów.
+**Rekomendacja.** MPCOM powinien rozwijać globalne wzorce powłoki przez Sloty
+oraz dane, nie przez warianty nazw sektorów.
 
 ### Landing Page — przegląd
 
@@ -422,7 +422,7 @@ sekcyjnych. Co najmniej dwa równoważne sibling frames bez wspólnego mastera
 spełniają przyjęte kryterium luki komponentyzacji.
 
 **Rekomendacja.** Dla MPCOM najpierw tworzyć reusable section parts
-(`SectionHeading`, `FeatureCard`, `StepItem`, `MetricCard`, `MediaFrame`),
+(`SectionHeading`, `FeatureItem`, `StepItem`, `MetricItem`, `MediaFrame`),
 następnie organizmy sekcji i dopiero templates. Desktop/mobile powinny być
 odrębnym wariantem tylko wtedy, gdy zmienia się struktura, nie przy każdej
 zmianie układu możliwej do obsłużenia przez layout i tryby.
@@ -508,7 +508,6 @@ Zalecany kontrakt nazw:
   04.08 ◇ Visual
   04.09 ◇ Navigation
   04.10 ◇ Cards
-  04.11 ◇ Sidepanels
   04.12 ◇ Timeline
 05 ◆ Compositions
   05.01 ↳ Section Parts
@@ -590,7 +589,7 @@ Agentic rules:
 ```text
 tokens
   → atoms
-    → molecules / reusable cards
+    → molecules / reusable content units
       → section organisms
         → templates / product examples
 ```
@@ -598,7 +597,7 @@ tokens
 Kontrakt warstw:
 
 - atomy: typografia, ikony, akcje, inputy i proste media;
-- molecules/cards: powtarzalna jednostka treści, np. FeatureCard lub StepItem;
+- molecules: powtarzalna jednostka treści, np. FeatureItem lub StepItem;
 - section organisms: kolejność i layout jednostek, heading, CTA i media;
 - templates: kolejność sekcji, przykładowe dane i punkty kontrolne viewportu.
 

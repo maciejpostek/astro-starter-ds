@@ -70,8 +70,8 @@ test("scenario specification covers all core profiles, complexities, languages, 
     .map((scenario) => scenario.creationTarget.component);
   assert.deepEqual(createTargets, [
     "Keycap",
-    "AuthorByline",
-    "ArticleCardCarouselSection"
+    "DisclosureSummary",
+    "DisclosurePanelGroup"
   ]);
   assert.ok(
     createTargets.every(

@@ -122,8 +122,8 @@ column count, gaps and alignment.
 
 ### Motion
 
-- `motion-foundations.css`: shared easing, duration, transition, disclosure and
-  staged navigation timing contracts.
+- `motion-foundations.css`: shared easing, duration, transition and disclosure
+  timing contracts.
 - The same file owns the canonical `Reduced Motion` mode through
   `prefers-reduced-motion: reduce`; reusable durations and delays collapse to
   zero while components remain responsible for removing movement that would

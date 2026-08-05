@@ -8,8 +8,6 @@
   /* Application shell dimensions are local implementation decisions. */
   --app-nav-row-size: var(--size-64);
   --app-topbar-height: var(--app-nav-row-size);
-  --app-sidebar-collapsed-width: var(--app-nav-row-size);
-  --app-sidebar-width: var(--app-sidebar-collapsed-width);
   --ds-doc-anchor-offset: 22vh;
   --ds-doc-anchor-offset-ratio: 0.22;
   --app-topbar-surface:
@@ -37,8 +35,7 @@ body {
   background: var(--color-background-canvas);
 }
 
-body.has-overlay,
-body.has-mobile-menu {
+body.has-overlay {
   overflow: hidden;
 }
 
@@ -116,11 +113,6 @@ textarea:focus-visible {
   min-height: 100vh;
 }
 
-.app__workspace {
-  margin-left: var(--app-sidebar-width);
-  transition: margin-left var(--motion-transition);
-}
-
 .main {
   padding-top: var(--app-topbar-height);
 }
@@ -196,7 +188,7 @@ textarea:focus-visible {
     var(--app-topbar-height)
     0
     0
-    var(--app-sidebar-width);
+    0;
   z-index: 25;
   overflow: hidden;
   pointer-events: none;

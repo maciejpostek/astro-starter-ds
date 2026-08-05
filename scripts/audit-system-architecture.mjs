@@ -283,7 +283,7 @@ const requiredViewIds = [
   "view.brand-expression-calibration",
   "view.astro-figma-identity",
   "view.sources-of-truth",
-  "view.atomic-design-dependencies",
+  "view.family-first-component-dependencies",
   "view.new-project-fork"
 ];
 const viewIds = new Set(model.views.map((view) => view.id));

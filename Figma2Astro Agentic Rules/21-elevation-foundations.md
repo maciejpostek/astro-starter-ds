@@ -34,7 +34,7 @@ Select a role according to the surface relationship:
 
 ## Figma Representation
 
-The documentation page is `20.6 Elevation` (`499:3`) according to
+The documentation page is `Foundations / Elevation` (`499:3`) according to
 `00-file-architecture.md`.
 
 Figma uses three Effect Styles:
@@ -58,7 +58,7 @@ Figma uses a native black shadow as an approximation of the Astro
 contract.
 
 Component masters use these semantic Effect Styles. Do not create duplicate
-component-specific Effect Styles for Alert, Dropdown, or future consumers.
+component-specific Effect Styles for future consumers.
 
 ## Exclusions
 
@@ -78,7 +78,7 @@ system role.
 1. Audit existing reusable `box-shadow` declarations.
 2. Classify surface elevation separately from rings, outlines, and halos.
 3. Define or update the code tokens.
-4. Replace reusable component shadows with semantic or component aliases.
+4. Replace reusable component shadows with semantic aliases.
 5. Build and browser-validate Light, Dark, desktop, and mobile documentation.
 6. Reconcile the three semantic Figma Effect Styles.
 7. Apply them to existing component masters without changing component APIs.
@@ -86,12 +86,8 @@ system role.
 
 ## Validation Checklist
 
-- [ ] Astro defines three primitive, three semantic, and stable component aliases.
-- [ ] Reusable Alert and Dropdown shadows consume component aliases.
+- [ ] Astro defines three primitive and three semantic elevation aliases.
 - [ ] Figma has exactly three `Elevation/Surface/*` Effect Styles.
 - [ ] Style descriptions name their exact CSS Variables.
-- [ ] Alert notification variants use `Raised`.
-- [ ] Alert toast variants use `Overlay`.
-- [ ] The open Dropdown menu uses `Floating`.
 - [ ] Light and Dark browser output use the same stable neutral shadow color.
 - [ ] Focus/status rings and colored halos remain outside elevation.

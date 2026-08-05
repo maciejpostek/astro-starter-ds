@@ -1,0 +1,420 @@
+---
+import {
+  designSystemNavigation,
+  normalizePath
+} from "../../../data/designSystemNavigation";
+import DsSidebarAccordion from "./DsSidebarAccordion.astro";
+import DsSidebarAnchor from "./DsSidebarAnchor.astro";
+import DsSidebarSearch from "./DsSidebarSearch.astro";
+import DsSidebarSection from "./DsSidebarSection.astro";
+
+interface Props {
+  activePath: string;
+}
+
+const { activePath } = Astro.props;
+const normalizedActivePath = normalizePath(activePath);
+---
+
+<aside class="ds-sidebar" data-component-name="DsSidebar" data-lenis-prevent>
+  <DsSidebarSearch />
+  <nav class="ds-sidebar__nav" aria-label="Design system documentation navigation">
+    {
+      designSystemNavigation.map((section) => {
+        const sectionPath = normalizePath(section.href);
+        const isCurrentSection = normalizedActivePath === sectionPath;
+
+        return (
+          <DsSidebarSection
+            hasAnchors={isCurrentSection && section.items.length > 0}
+            href={section.href}
+            isCurrent={isCurrentSection}
+            label={section.label}
+          >
+            {section.items.map((item) => {
+              const hasNestedItems = Boolean(item.items?.length);
+              const shouldOpenNestedGroup = isCurrentSection;
+
+              if (!hasNestedItems) {
+                return (
+                  <DsSidebarAnchor
+                    href={item.href}
+                    label={item.label}
+                    status={item.status}
+                  />
+                );
+              }
+
+              return <DsSidebarAccordion item={item} open={shouldOpenNestedGroup} />;
+            })}
+          </DsSidebarSection>
+        );
+      })
+    }
+  </nav>
+</aside>
+
+<script>
+  const dsSidebarAnchorScrollLockMs = 900;
+
+  type WindowWithDsSidebarAnchorLock = Window & {
+    dsSidebarAnchorScrollLockUntil?: number;
+    dsSidebarAnchorScrollLockTimer?: number;
+  };
+
+  const getDsSidebarWindow = () => window as WindowWithDsSidebarAnchorLock;
+
+  const isDsSidebarAnchorScrollLocked = () => {
+    const browserWindow = getDsSidebarWindow();
+    return (browserWindow.dsSidebarAnchorScrollLockUntil ?? 0) > performance.now();
+  };
+
+  const lockDsSidebarAnchorScrollSpy = () => {
+    const browserWindow = getDsSidebarWindow();
+
+    browserWindow.dsSidebarAnchorScrollLockUntil = performance.now() + dsSidebarAnchorScrollLockMs;
+
+    if (browserWindow.dsSidebarAnchorScrollLockTimer) {
+      window.clearTimeout(browserWindow.dsSidebarAnchorScrollLockTimer);
+    }
+
+    browserWindow.dsSidebarAnchorScrollLockTimer = window.setTimeout(() => {
+      browserWindow.dsSidebarAnchorScrollLockUntil = 0;
+      browserWindow.dsSidebarAnchorScrollLockTimer = undefined;
+      window.dispatchEvent(new Event("astro-ds:ds-sidebar-anchor-scroll-complete"));
+    }, dsSidebarAnchorScrollLockMs);
+  };
+
+  const getDsDocAnchorOffset = () => {
+    const styles = getComputedStyle(document.documentElement);
+    const rawRatio = styles.getPropertyValue("--ds-doc-anchor-offset-ratio").trim();
+    const ratio = Number(rawRatio);
+
+    return window.innerHeight * (Number.isFinite(ratio) ? ratio : 0);
+  };
+
+  const syncDsDocActiveState = (
+    sidebar: HTMLElement,
+    links: HTMLAnchorElement[],
+    targets: { link: HTMLAnchorElement; target: HTMLElement }[]
+  ) => {
+    if (!targets.length) return;
+    if (isDsSidebarAnchorScrollLocked()) return;
+
+    const offset = getDsDocAnchorOffset();
+    const contentSections = Array.from(document.querySelectorAll<HTMLElement>("[data-ds-toc-section]"));
+    const activeTarget = targets.reduce((current, item) => {
+      const top = item.target.getBoundingClientRect().top;
+      return top <= offset ? item : current;
+    }, targets[0]);
+    let activeSection = contentSections[0] ?? null;
+
+    contentSections.forEach((section) => {
+      const top = section.getBoundingClientRect().top;
+      if (top <= offset) activeSection = section;
+    });
+
+    contentSections.forEach((section) => {
+      section.dataset.active = section === activeSection ? "true" : "false";
+    });
+
+    sidebar
+      .querySelectorAll("[data-ds-anchor-accordion]")
+      .forEach((item) => item.removeAttribute("data-active"));
+
+    links.forEach((link) => {
+      const isActive = link === activeTarget.link;
+      link.dataset.active = isActive ? "true" : "false";
+      link.setAttribute("aria-current", isActive ? "location" : "false");
+
+      const accordion = link.closest("[data-ds-anchor-accordion]");
+      if (accordion instanceof HTMLElement && isActive) {
+        accordion.dataset.active = "true";
+      }
+    });
+  };
+
+  const setDsDocActiveFromLink = (sidebar: HTMLElement, activeLink: HTMLAnchorElement) => {
+    const hash = activeLink.hash.replace("#", "");
+    const target = hash ? document.getElementById(hash) : null;
+    const activeSection = target?.closest("[data-ds-toc-section]");
+
+    document.querySelectorAll("[data-ds-toc-section]").forEach((section) => {
+      if (!(section instanceof HTMLElement)) return;
+      section.dataset.active = section === activeSection ? "true" : "false";
+    });
+
+    sidebar
+      .querySelectorAll("[data-ds-anchor-accordion]")
+      .forEach((item) => item.removeAttribute("data-active"));
+
+    sidebar.querySelectorAll<HTMLAnchorElement>(".ds-sidebar-anchor[href*='#']").forEach((link) => {
+      const isActive = link === activeLink;
+      link.dataset.active = isActive ? "true" : "false";
+      link.setAttribute("aria-current", isActive ? "location" : "false");
+    });
+
+    const accordion = activeLink.closest("[data-ds-anchor-accordion]");
+    if (accordion instanceof HTMLElement) {
+      accordion.dataset.active = "true";
+    }
+  };
+
+  const scrollToSidebarAnchorTarget = (link: HTMLAnchorElement) => {
+    const hash = link.hash.replace("#", "");
+    const target = hash ? document.getElementById(hash) : null;
+
+    if (!target) return;
+
+    const offset = getDsDocAnchorOffset();
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - offset;
+
+    window.scrollTo({
+      top: Math.max(targetTop, 0),
+      behavior: "smooth",
+    });
+    window.history.pushState(null, "", link.href);
+  };
+
+  const setupDsSidebarScrollSpy = () => {
+    const sidebar = document.querySelector("[data-component-name='DsSidebar']");
+    if (!(sidebar instanceof HTMLElement)) return;
+
+    const links = Array.from(sidebar.querySelectorAll<HTMLAnchorElement>(".ds-sidebar-anchor[href*='#']"));
+    const targets = links
+      .map((link) => {
+        const hash = link.hash.replace("#", "");
+        const target = hash ? document.getElementById(hash) : null;
+        return target ? { link, target } : null;
+      })
+      .filter((item): item is { link: HTMLAnchorElement; target: HTMLElement } => Boolean(item));
+
+    if (!targets.length) return;
+
+    const setActiveLink = () => syncDsDocActiveState(sidebar, links, targets);
+
+    setActiveLink();
+    window.addEventListener("scroll", setActiveLink, { passive: true });
+    window.addEventListener("resize", setActiveLink);
+    window.addEventListener("hashchange", setActiveLink);
+    window.addEventListener("astro-ds:ds-sidebar-anchor-scroll-complete", setActiveLink);
+  };
+
+  const setupDsSidebarAnchorLinks = () => {
+    const sidebar = document.querySelector("[data-component-name='DsSidebar']");
+    if (!(sidebar instanceof HTMLElement)) return;
+
+    const links = Array.from(sidebar.querySelectorAll<HTMLAnchorElement>(".ds-sidebar-anchor[href*='#']"));
+
+    links.forEach((link) => {
+      if (link.dataset.smoothScrollInitialized === "true") return;
+
+      link.dataset.smoothScrollInitialized = "true";
+      link.addEventListener("click", (event) => {
+        if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        if (event.button !== 0) return;
+
+        const hash = link.hash.replace("#", "");
+        if (!hash || !document.getElementById(hash)) return;
+
+        event.preventDefault();
+        lockDsSidebarAnchorScrollSpy();
+        setDsDocActiveFromLink(sidebar, link);
+        scrollToSidebarAnchorTarget(link);
+      });
+    });
+  };
+
+  const setupDsSidebarSearch = () => {
+    const sidebar = document.querySelector("[data-component-name='DsSidebar']");
+    if (!(sidebar instanceof HTMLElement)) return;
+
+    const input = sidebar.querySelector<HTMLInputElement>("[data-ds-sidebar-search-input]");
+    const status = sidebar.querySelector<HTMLElement>("[data-ds-sidebar-search-status]");
+
+    if (!(input instanceof HTMLInputElement)) return;
+    if (input.dataset.searchInitialized === "true") return;
+
+    input.dataset.searchInitialized = "true";
+
+    const entries = Array.from(sidebar.querySelectorAll<HTMLAnchorElement>(".ds-sidebar-anchor[href*='#']"))
+      .map((link) => {
+        const label = link.querySelector<HTMLElement>(".ds-sidebar-anchor__label");
+        if (!label) return null;
+
+        label.dataset.searchOriginal = label.textContent?.trim() ?? "";
+
+        return {
+          link,
+          label,
+          text: label.dataset.searchOriginal.toLowerCase(),
+        };
+      })
+      .filter((entry): entry is { link: HTMLAnchorElement; label: HTMLElement; text: string } => Boolean(entry));
+
+    const renderLabel = (label: HTMLElement, query: string) => {
+      const original = label.dataset.searchOriginal ?? label.textContent ?? "";
+      label.textContent = "";
+
+      if (!query) {
+        label.append(document.createTextNode(original));
+        return;
+      }
+
+      const lowerOriginal = original.toLowerCase();
+      const lowerQuery = query.toLowerCase();
+      let cursor = 0;
+      let index = lowerOriginal.indexOf(lowerQuery, cursor);
+
+      while (index !== -1) {
+        if (index > cursor) {
+          label.append(document.createTextNode(original.slice(cursor, index)));
+        }
+
+        const mark = document.createElement("mark");
+        mark.textContent = original.slice(index, index + query.length);
+        label.append(mark);
+
+        cursor = index + query.length;
+        index = lowerOriginal.indexOf(lowerQuery, cursor);
+      }
+
+      if (cursor < original.length) {
+        label.append(document.createTextNode(original.slice(cursor)));
+      }
+    };
+
+    const setAccordionOpen = (accordion: Element | null, shouldOpen: boolean) => {
+      if (!(accordion instanceof HTMLElement)) return;
+
+      accordion.dataset.open = shouldOpen ? "true" : "false";
+
+      const trigger = accordion.querySelector<HTMLButtonElement>("[data-ds-anchor-accordion-trigger]");
+      trigger?.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+    };
+
+    const updateSearch = () => {
+      const query = input.value.trim().toLowerCase();
+      const matches: typeof entries = [];
+
+      sidebar
+        .querySelectorAll("[data-ds-anchor-accordion][data-search-match='true']")
+        .forEach((accordion) => {
+          if (accordion instanceof HTMLElement) delete accordion.dataset.searchMatch;
+        });
+
+      entries.forEach((entry) => {
+        const isMatch = Boolean(query) && entry.text.includes(query);
+
+        entry.link.dataset.searchMatch = isMatch ? "true" : "false";
+        renderLabel(entry.label, query && isMatch ? query : "");
+
+        if (isMatch) {
+          matches.push(entry);
+          const accordion = entry.link.closest("[data-ds-anchor-accordion]");
+          if (accordion instanceof HTMLElement) {
+            accordion.dataset.searchMatch = "true";
+            setAccordionOpen(accordion, true);
+          }
+        }
+      });
+
+      if (!query) {
+        if (status) status.textContent = "";
+        return;
+      }
+
+      if (status) {
+        status.textContent = matches.length === 1 ? "1 result" : `${matches.length} results`;
+      }
+
+      matches[0]?.link.scrollIntoView({ block: "nearest" });
+    };
+
+    input.addEventListener("input", updateSearch);
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+
+      const firstMatch = entries.find((entry) => entry.link.dataset.searchMatch === "true");
+      if (!firstMatch) return;
+
+      event.preventDefault();
+      lockDsSidebarAnchorScrollSpy();
+      setDsDocActiveFromLink(sidebar, firstMatch.link);
+      scrollToSidebarAnchorTarget(firstMatch.link);
+    });
+  };
+
+  setupDsSidebarScrollSpy();
+  setupDsSidebarAnchorLinks();
+  setupDsSidebarSearch();
+  document.addEventListener("astro:page-load", setupDsSidebarScrollSpy);
+  document.addEventListener("astro:page-load", setupDsSidebarAnchorLinks);
+  document.addEventListener("astro:page-load", setupDsSidebarSearch);
+</script>
+
+<style>
+  .ds-sidebar {
+    --ds-sidebar-anchor-row-size: var(--size-32);
+
+    position: sticky;
+    top: calc(var(--app-topbar-height) + var(--site-padding-inline));
+    display: flex;
+    grid-column: 1 / span 3;
+    width: 100%;
+    max-height: calc(100dvh - var(--app-topbar-height) - 2 * var(--site-padding-inline));
+    flex-direction: column;
+    align-self: flex-start;
+    margin:
+      var(--site-padding-inline)
+      0;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: color-mix(in srgb, var(--color-background-canvas) 92%, transparent);
+    overflow-x: hidden;
+    overflow-y: auto;
+    animation:
+      ds-sidebar-enter
+      var(--motion-duration-surface-enter)
+      var(--motion-ease-standard)
+      both;
+  }
+
+  .ds-sidebar__nav {
+    display: grid;
+    gap: var(--gap-tiny);
+    padding:
+      var(--component-padding-small)
+      var(--component-padding-medium)
+      var(--component-padding-small);
+  }
+
+  @keyframes ds-sidebar-enter {
+    from {
+      transform: translateX(-100%);
+    }
+
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ds-sidebar {
+      animation: none;
+    }
+  }
+
+  @media (width < 64rem) {
+    .ds-sidebar {
+      position: relative;
+      top: auto;
+      width: 100%;
+      height: auto;
+      max-height: 42dvh;
+      margin: 0;
+      border-right: 0;
+      border-left: 0;
+      animation: none;
+    }
+  }
+</style>
