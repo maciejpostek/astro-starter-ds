@@ -8,7 +8,7 @@ component-size profiles and their exact mapping to the production
 
 ## Decision
 
-Figma stores seven public size properties directly in `Component Size`.
+Figma stores six public size properties directly in `Component Size`.
 
 The collection has three modes:
 
@@ -33,29 +33,11 @@ from Astro code.
 | `icon/size` | `var(--component-icon-size)` | 14 | 16 | 18 |
 | `gap` | `var(--component-gap)` | 8 | 10 | 12 |
 | `font/size` | `var(--component-font-size)` | 12 | 13 | 14 |
-| `line/height` | `var(--component-line-height)` | 100 | 100 | 100 |
 
-`line/height = 100` represents `100%`, which maps to
-`--line-height-none: 1` in code.
-
-## Figma MCP line-height limitation
-
-The `Component Size / line/height` Variable remains the numeric value `100`
-because the Variables panel represents it as `100%`. Binding that FLOAT
-Variable directly to a text `lineHeight` through the Plugin API may change the
-unit to pixels and interpret it as `100px`.
-
-Therefore, in Figma profile documentation:
-
-- visible text uses native `line-height: 100%` without a direct binding;
-- the Variable remains documented in the `Small / Medium / Large` table;
-- transfer to Astro always maps `100` to `--line-height-none: 1`, never
-  `100px`;
-- any manually bound text must be checked to confirm that its percentage unit
-  was preserved.
-
-This is an MCP representation limitation, not a change to the architecture or
-Astro source value.
+Line height is deliberately absent from the Figma collection. Component Text
+Styles store it as a native percentage and the typography adapter maps it to
+the existing Astro `--component-line-height` contract. This keeps Figma
+editable without weakening the code profile layer.
 
 ## Astro representation
 
@@ -137,8 +119,8 @@ instead of assuming that every component uses the same prop.
    `data-component-size`.
 6. Keep component CSS on the stable `--component-*` aliases.
 7. Do not copy values such as 48, 16, or 12 into local component CSS.
-8. Verify every profile-dependent property: height, padding, icon, gap, font
-   size, and line height.
+8. Verify every Figma profile-dependent property: height, padding, icon, gap
+   and font size; verify line height through the applied component Text Style.
 9. Compare the result with a Figma screenshot in the same mode.
 
 ## Default mode versus default prop
@@ -178,11 +160,13 @@ CSS alias layer.
 
 Figma:
 
-- `Component Size` has exactly seven Variables;
+- `Component Size` has exactly six Variables;
 - modes are `Medium`, `Small`, and `Large`;
 - every Variable has a direct value in every mode;
 - no `component-profile` group exists;
 - Web code syntax points to stable `var(--component-*)` aliases.
+- no `line/height` Variable exists; component Text Styles own native
+  percentage line height.
 
 Astro:
 

@@ -65,7 +65,8 @@ src/styles/tokens/typography-semantic.css
 
 src/styles/tokens/typography-styles.css
   -> .heading-h1 through .heading-h6
-  -> .body-large through .body-tiny
+  -> .body-{large|medium|base|small|tiny}-{regular|regular-underlined|semibold}
+  -> legacy .body-large through .body-tiny aliases for Regular
   -> small typography utility classes
   -> neutral native h1-h6 and p reset
 
@@ -128,7 +129,7 @@ Good:
 Good:
 
 ```html
-<p class="body-base">Reusable components keep the page consistent.</p>
+<p class="body-base-regular">Reusable components keep the page consistent.</p>
 ```
 
 Avoid:
@@ -151,11 +152,14 @@ Current global text style classes:
 - `.heading-h4`
 - `.heading-h5`
 - `.heading-h6`
-- `.body-large`
-- `.body-medium`
-- `.body-base`
-- `.body-small`
-- `.body-tiny`
+- `.body-large-regular`, `.body-large-regular-underlined`, `.body-large-semibold`
+- `.body-medium-regular`, `.body-medium-regular-underlined`, `.body-medium-semibold`
+- `.body-base-regular`, `.body-base-regular-underlined`, `.body-base-semibold`
+- `.body-small-regular`, `.body-small-regular-underlined`, `.body-small-semibold`
+- `.body-tiny-regular`, `.body-tiny-regular-underlined`, `.body-tiny-semibold`
+
+Legacy `.body-large` through `.body-tiny` classes remain compatible aliases for
+the corresponding Regular styles. Prefer explicit variant classes in new markup.
 
 Each class owns the complete typographic contract:
 
@@ -171,10 +175,17 @@ Each class owns the complete typographic contract:
 - word break,
 - white-space.
 
+Regular Underlined additionally owns a solid underline with 7% thickness,
+14% underline offset, current text color and automatic skip-ink behavior. It
+is a complete Body style, not an underline utility to compose with another
+Body class.
+
 Rules:
 
 - Use one global typography class per text node or text container.
 - Do not compose multiple heading/body classes on the same element.
+- For Body, choose size first and variant second; use only `regular`,
+  `regular-underlined` or `semibold` in the public class name.
 - Do not create `.text-h1` naming. Use `.heading-h1`.
 - Do not create font-size utility classes for heading or body scale.
 - Do not create component-based typography variables for reusable components by
@@ -222,12 +233,45 @@ Rules:
 
 - Semantic typography variables live in `typography-semantic.css`.
 - They should be consumed primarily by `typography-styles.css`.
+- Body semantic groups own the shared size metrics. Regular and Regular
+  Underlined classes bind the existing normal weight contract; Semi Bold
+  classes reuse those metrics and bind `--font-weight-strong`.
+- Do not duplicate body size, line-height or letter-spacing Variables for each
+  weight.
 - Do not add label, caption, eyebrow, tag or button semantic typography tokens
   by default.
 - Reusable components with their own Astro component should own their local
   typography inside the component.
 - If a repeated cross-component typography contract appears, document the need
   before adding new semantic variables.
+
+## Figma to Astro relative-unit adapter
+
+Figma Text Styles own `lineHeight` and `letterSpacing` as native percentages.
+Those properties are deliberately not backed by Figma Variables. Astro keeps
+the same proportions in implementation-friendly CSS units:
+
+```txt
+Figma line height 100% / 110% / 120% / 150% / 160%
+  -> Astro unitless 1 / 1.1 / 1.2 / 1.5 / 1.6
+
+Figma letter spacing 0% / -1% / -2% / -3% / -4%
+  -> Astro 0 / -0.01em / -0.02em / -0.03em / -0.04em
+```
+
+Transfer rules:
+
+- Read percentage values from the applied Figma Text Style, not the resolved
+  pixel measurements shown by the canvas.
+- Convert line height with `percentage / 100` and choose the existing matching
+  `--line-height-*` token.
+- Convert letter spacing with `percentage / 100 em` and choose the existing
+  matching `--letter-spacing-*` token.
+- Apply the same conversion to headings, Body variants and component-owned
+  styles such as Button, Tag, Eyebrow and Tab.
+- If no exact token exists, report a token gap. Do not hardcode a local value or
+  create a token without explicit authorization.
+- Never recreate Figma line-height or letter-spacing Variables.
 
 ## Utility Typography Class Rules
 

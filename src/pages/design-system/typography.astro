@@ -283,7 +283,7 @@ import {
     <DsDocSection
       id="typography-semantic"
       title="Typography Semantic"
-      description="Semantic typography styles define global text contracts used through classes. They combine typography foundation values into reusable heading and body styles."
+      description="Semantic typography styles define global text contracts used through classes. Body uses a size-first hierarchy with Regular, Regular Underlined and Semi Bold variants at every scale. Figma stores line height and tracking directly in Text Styles as percentages; Astro maps them to unitless line-height and em-based letter-spacing tokens."
     >
       <section
         id="typography-semantic-global-styles"
@@ -293,7 +293,7 @@ import {
         <DsSectionHeaderLevel3
           id="typography-semantic-global-styles-title"
           title="Global semantic styles"
-          description="Use these classes as the public typography interface. Reusable components keep their own local typography styles instead of adding component-based typography tokens."
+          description="Use explicit Body size and variant classes as the public typography interface. Regular Underlined preserves the Regular weight with a controlled underline; legacy size-only classes remain Regular aliases."
         />
 
         <DsSemanticTypographyBlock rows={semanticTypographyRows} />
@@ -303,7 +303,7 @@ import {
     <DsDocSection
       id="typography-styles"
       title="Styles"
-      description="Typography styles are the public CSS interface. Global text styles cover headings and body text, while utility classes stay limited to casing, font-style and wrapping behavior."
+      description="Typography styles are the public CSS interface. Global styles cover headings plus fifteen Body size-and-variant combinations, while utility classes stay limited to casing, font-style and wrapping behavior."
     >
       <section
         id="typography-styles-utility"

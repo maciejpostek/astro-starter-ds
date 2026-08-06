@@ -87,16 +87,29 @@ alias:
 
 - `typography-foundations.css`: font families, weight roles, responsive font
   sizes, line heights, letter spacing, font styles, transforms and text wrap.
-- `typography-semantic.css`: complete heading and body contracts.
+- `typography-semantic.css`: complete heading contracts and shared Body size
+  contracts.
 - `typography-styles.css`: public typography classes such as `.heading-h1`
-  and `.body-small`, neutral native heading/paragraph resets, and the small
-  approved typography utility set for font-style, casing and wrapping.
+  and `.body-small-semibold`, size-first Regular, Regular Underlined and Semi
+  Bold Body variants, legacy Regular aliases, neutral native
+  heading/paragraph resets, and the small approved typography utility set for
+  font-style, casing and wrapping. Underlined variants use a solid 7%
+  decoration with a 14% offset and automatic skip-ink behavior.
 - `src/data/design-system/typographyTokens.ts`: documentation data for
   foundation tables, semantic typography tables, resolved values, utility classes
   and typography agentic rules.
 
 Typography is class-first: HTML tags define document semantics, while classes
-define visual text style.
+define visual text style. Body classes use the
+`.body-{large|medium|base|small|tiny}-{regular|regular-underlined|semibold}`
+hierarchy.
+
+Figma and Astro intentionally use different native representations for two
+relative metrics. Figma Text Styles store line height and letter spacing as
+percentages without Variable bindings. Astro stores line height as a unitless
+ratio and letter spacing in `em`. The transfer formulas are `percentage / 100`
+for line height and `percentage / 100 em` for letter spacing; for example,
+`150% -> 1.5` and `-1% -> -0.01em`. Always select the matching existing token.
 
 ### Layout
 

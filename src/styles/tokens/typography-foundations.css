@@ -165,7 +165,9 @@
     );
 
   /* Line heights
-   * Reusable vertical rhythm independent of a specific text style.
+   * Unitless ratios keep vertical rhythm responsive and inherit safely.
+   * Figma Text Styles store the equivalent native percentages:
+   * 100% / 110% / 120% / 150% / 160%.
    */
   --line-height-none: 1;
   --line-height-tight: 1.1;
@@ -174,7 +176,8 @@
   --line-height-relaxed: 1.6;
 
   /* Letter spacing
-   * Universal negative tracking scale from 0% to -4%.
+   * em keeps tracking relative to the active font size. Figma Text Styles
+   * store the equivalent native percentages: 0% / -1% / -2% / -3% / -4%.
    */
   --letter-spacing-none: 0;
   --letter-spacing-tight: -0.01em;

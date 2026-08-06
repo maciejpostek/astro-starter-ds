@@ -23,6 +23,11 @@ export interface SemanticTypographyRow {
   overflowWrap: string;
   wordBreak: string;
   whiteSpace: string;
+  textDecoration?: string;
+  textDecorationStyle?: string;
+  textDecorationThickness?: string;
+  textUnderlineOffset?: string;
+  textDecorationSkipInk?: string;
   sample: string;
 }
 
@@ -39,6 +44,28 @@ export interface TypographyAgenticRule {
   title: string;
   text: string;
 }
+
+export const figmaLineHeightPercentByToken: Record<string, string> = {
+  "--line-height-none": "100%",
+  "--line-height-tight": "110%",
+  "--line-height-compact": "120%",
+  "--line-height-normal": "150%",
+  "--line-height-relaxed": "160%",
+};
+
+export const figmaLetterSpacingPercentByToken: Record<string, string> = {
+  "--letter-spacing-none": "0%",
+  "--letter-spacing-tight": "-1%",
+  "--letter-spacing-tighter": "-2%",
+  "--letter-spacing-tightest": "-3%",
+  "--letter-spacing-ultra-tight": "-4%",
+};
+
+export const resolveFigmaLineHeightPercent = (token: string) =>
+  figmaLineHeightPercentByToken[token] ?? "n/a";
+
+export const resolveFigmaLetterSpacingPercent = (token: string) =>
+  figmaLetterSpacingPercentByToken[token] ?? "n/a";
 
 export const fontFamilyRows: TypographyFoundationRow[] = [
   {
@@ -597,6 +624,73 @@ export const resolveTypographyTokenValue = (value: string) =>
 const semanticTypographySample =
   "AI-native websites shaped by strategy, systems thinking and precise execution for ambitious digital brands.";
 
+const bodySemanticDefinitions = [
+  { size: "large", label: "Large", letterSpacing: "--letter-spacing-tight" },
+  { size: "medium", label: "Medium", letterSpacing: "--letter-spacing-tight" },
+  { size: "base", label: "Base", letterSpacing: "--letter-spacing-tight" },
+  { size: "small", label: "Small", letterSpacing: "--letter-spacing-none" },
+  { size: "tiny", label: "Tiny", letterSpacing: "--letter-spacing-none" },
+] as const;
+
+const bodySemanticRows: SemanticTypographyRow[] = bodySemanticDefinitions.flatMap(
+  ({ size, label, letterSpacing }) =>
+    ([
+      {
+        name: `Body / ${label} / Regular`,
+        className: `body-${size}-regular`,
+        family: "--font-family-body",
+        size: `--font-size-body-${size}`,
+        weight: "--font-weight-normal",
+        lineHeight: "--line-height-normal",
+        letterSpacing,
+        fontStyle: "--font-style-normal",
+        transform: "--text-transform-none",
+        textWrap: "--text-wrap-pretty",
+        overflowWrap: "--overflow-wrap-break-word",
+        wordBreak: "--word-break-normal",
+        whiteSpace: "--white-space-normal",
+        sample: semanticTypographySample,
+      },
+      {
+        name: `Body / ${label} / Regular Underlined`,
+        className: `body-${size}-regular-underlined`,
+        family: "--font-family-body",
+        size: `--font-size-body-${size}`,
+        weight: "--font-weight-normal",
+        lineHeight: "--line-height-normal",
+        letterSpacing,
+        fontStyle: "--font-style-normal",
+        transform: "--text-transform-none",
+        textWrap: "--text-wrap-pretty",
+        overflowWrap: "--overflow-wrap-break-word",
+        wordBreak: "--word-break-normal",
+        whiteSpace: "--white-space-normal",
+        textDecoration: "underline",
+        textDecorationStyle: "solid",
+        textDecorationThickness: "7%",
+        textUnderlineOffset: "14%",
+        textDecorationSkipInk: "auto",
+        sample: semanticTypographySample,
+      },
+      {
+        name: `Body / ${label} / Semi Bold`,
+        className: `body-${size}-semibold`,
+        family: "--font-family-body",
+        size: `--font-size-body-${size}`,
+        weight: "--font-weight-strong",
+        lineHeight: "--line-height-normal",
+        letterSpacing,
+        fontStyle: "--font-style-normal",
+        transform: "--text-transform-none",
+        textWrap: "--text-wrap-pretty",
+        overflowWrap: "--overflow-wrap-break-word",
+        wordBreak: "--word-break-normal",
+        whiteSpace: "--white-space-normal",
+        sample: semanticTypographySample,
+      },
+    ] satisfies SemanticTypographyRow[]),
+);
+
 export const semanticTypographyRows: SemanticTypographyRow[] = [
   {
     name: "H1",
@@ -694,86 +788,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     whiteSpace: "--white-space-normal",
     sample: semanticTypographySample,
   },
-  {
-    name: "Body large",
-    className: "body-large",
-    family: "--font-family-body",
-    size: "--font-size-body-large",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-tight",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
-  {
-    name: "Body medium",
-    className: "body-medium",
-    family: "--font-family-body",
-    size: "--font-size-body-medium",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-tight",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
-  {
-    name: "Body base",
-    className: "body-base",
-    family: "--font-family-body",
-    size: "--font-size-body-base",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-tight",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
-  {
-    name: "Body small",
-    className: "body-small",
-    family: "--font-family-body",
-    size: "--font-size-body-small",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-none",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
-  {
-    name: "Body tiny",
-    className: "body-tiny",
-    family: "--font-family-body",
-    size: "--font-size-body-tiny",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-none",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
+  ...bodySemanticRows,
 ];
 
 export const utilityTypographyRows: UtilityTypographyRow[] = [
@@ -944,7 +959,12 @@ export const typographyAgenticRules: TypographyAgenticRule[] = [
   {
     name: "typography.class-first-interface",
     title: "Classes define visual text style",
-    text: "Use `.heading-h1` through `.heading-h6` and `.body-large` through `.body-tiny` as the public typography interface. HTML tags define document semantics, not visual appearance.",
+    text: "Use `.heading-h1` through `.heading-h6` and explicit `.body-{size}-{regular|regular-underlined|semibold}` classes as the public typography interface. HTML tags define document semantics, not visual appearance.",
+  },
+  {
+    name: "typography.body-size-weight-hierarchy",
+    title: "Body styles use size before weight",
+    text: "Choose Body size first, then Regular, Regular Underlined or Semi Bold. Legacy `.body-large` through `.body-tiny` classes remain aliases for Regular, but new markup should use an explicit variant class.",
   },
   {
     name: "typography.semantic-style-contracts",

@@ -147,10 +147,25 @@ for (const className of [
   "heading-h5",
   "heading-h6",
   "body-large",
+  "body-large-regular",
+  "body-large-regular-underlined",
+  "body-large-semibold",
   "body-medium",
+  "body-medium-regular",
+  "body-medium-regular-underlined",
+  "body-medium-semibold",
   "body-base",
+  "body-base-regular",
+  "body-base-regular-underlined",
+  "body-base-semibold",
   "body-small",
-  "body-tiny"
+  "body-small-regular",
+  "body-small-regular-underlined",
+  "body-small-semibold",
+  "body-tiny",
+  "body-tiny-regular",
+  "body-tiny-regular-underlined",
+  "body-tiny-semibold"
 ]) {
   if (!typographyStyles.includes(`.${className}`)) {
     fail(`Missing public typography class: .${className}`);
@@ -247,9 +262,9 @@ const figmaRepresentedVariableCount =
   canonicalFiles["color-components.css"] +
   canonicalFiles["size-primitives.css"] +
   canonicalFiles["size-semantic.css"] +
-  7 +
-  29 +
-  33 +
+  6 +
+  19 +
+  11 +
   2 +
   canonicalFiles["layout-semantic.css"] +
   canonicalFiles["motion-foundations.css"];
@@ -258,5 +273,5 @@ console.log(
   "Design-system foundation audit passed: " +
     `${declaredTokens.size} unique local token variables, ` +
     `${figmaRepresentedVariableCount} canonical Figma Variables, ` +
-    "11 public typography roles, and a 12/8/4 responsive grid."
+    "21 public typography styles, 5 legacy Regular aliases, and a 12/8/4 responsive grid."
 );

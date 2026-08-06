@@ -79,7 +79,10 @@
   --text-style-heading-h6-white-space: var(--white-space-normal);
 
   /* Body
-   * Reading styles from large lead text to compact supporting copy.
+   * Size contracts from large lead text to compact supporting copy.
+   * Public Regular, Regular Underlined and Semi Bold classes reuse these
+   * metrics. Regular variants bind the normal weight role; Semi Bold binds
+   * the strong typography foundation role.
    */
   --text-style-body-large-font-family: var(--font-family-body);
   --text-style-body-large-font-size: var(--font-size-body-large);

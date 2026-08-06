@@ -4,6 +4,8 @@ import DsTableCopyCell from "./DsTableCopyCell.astro";
 import DsTableFrame from "./DsTableFrame.astro";
 import DsTableRow from "./DsTableRow.astro";
 import {
+  resolveFigmaLetterSpacingPercent,
+  resolveFigmaLineHeightPercent,
   resolveTypographyTokenValue,
   type SemanticTypographyRow,
 } from "../../../data/design-system/typographyTokens";
@@ -21,13 +23,24 @@ const getProperties = (row: SemanticTypographyRow) => [
   { name: "Size", value: row.size, resolvedValue: resolveTypographyTokenValue(row.size) },
   { name: "Weight", value: row.weight, resolvedValue: resolveTypographyTokenValue(row.weight) },
   { name: "Line height", value: row.lineHeight, resolvedValue: resolveTypographyTokenValue(row.lineHeight) },
+  { name: "Figma line height", value: resolveFigmaLineHeightPercent(row.lineHeight), resolvedValue: "native percentage" },
   { name: "Letter spacing", value: row.letterSpacing, resolvedValue: resolveTypographyTokenValue(row.letterSpacing) },
+  { name: "Figma letter spacing", value: resolveFigmaLetterSpacingPercent(row.letterSpacing), resolvedValue: "native percentage" },
   { name: "Font style", value: row.fontStyle, resolvedValue: resolveTypographyTokenValue(row.fontStyle) },
   { name: "Transform", value: row.transform, resolvedValue: resolveTypographyTokenValue(row.transform) },
   { name: "Text wrap", value: row.textWrap, resolvedValue: resolveTypographyTokenValue(row.textWrap) },
   { name: "Overflow wrap", value: row.overflowWrap, resolvedValue: resolveTypographyTokenValue(row.overflowWrap) },
   { name: "Word break", value: row.wordBreak, resolvedValue: resolveTypographyTokenValue(row.wordBreak) },
   { name: "White space", value: row.whiteSpace, resolvedValue: resolveTypographyTokenValue(row.whiteSpace) },
+  ...(row.textDecoration
+    ? [
+        { name: "Text decoration", value: row.textDecoration, resolvedValue: "underline" },
+        { name: "Decoration style", value: row.textDecorationStyle ?? "solid", resolvedValue: row.textDecorationStyle ?? "solid" },
+        { name: "Decoration thickness", value: row.textDecorationThickness ?? "auto", resolvedValue: row.textDecorationThickness ?? "auto" },
+        { name: "Underline offset", value: row.textUnderlineOffset ?? "auto", resolvedValue: row.textUnderlineOffset ?? "auto" },
+        { name: "Decoration skip ink", value: row.textDecorationSkipInk ?? "auto", resolvedValue: row.textDecorationSkipInk ?? "auto" },
+      ]
+    : []),
 ];
 ---
 
