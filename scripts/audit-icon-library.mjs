@@ -34,7 +34,7 @@ if (catalog.schemaVersion !== 2) {
 
 if (
   catalog.provider?.id !== "google-material-symbols" ||
-  catalog.provider?.family !== "Material Symbols Outlined" ||
+  catalog.provider?.family !== "Material Symbols Sharp" ||
   catalog.provider?.license !== "Apache-2.0"
 ) {
   errors.push("Material Symbols provider metadata is incomplete or incorrect.");
@@ -42,7 +42,7 @@ if (
 
 const profile = catalog.profile ?? {};
 if (
-  profile.style !== "outlined" ||
+  profile.style !== "sharp" ||
   profile.opticalSize !== 20 ||
   profile.weight !== 400 ||
   profile.grade !== 0 ||
@@ -57,6 +57,8 @@ if (
   catalog.figma?.sectionId !== "1009:333" ||
   catalog.figma?.namingPattern !== "Icon/Material/<google_snake_case_name>" ||
   catalog.figma?.opticalCanvas !== 20 ||
+  catalog.figma?.innerGroupAspectRatio !== "locked-1:1" ||
+  catalog.figma?.innerGroupHorizontalSizing !== "fill-container" ||
   catalog.figma?.iconColorVariableId !== "VariableID:7:91" ||
   catalog.figma?.legacyLucideFrameDeleted !== true
 ) {
@@ -67,6 +69,10 @@ if (
   catalog.astro?.component !== astroRendererPath ||
   catalog.astro?.reactComponent !== reactRendererPath ||
   catalog.astro?.rendering !== "inline-svg" ||
+  catalog.astro?.colorInheritance !== "currentColor" ||
+  catalog.astro?.defaultSize !== "1em" ||
+  catalog.astro?.sizingOwner !== "consumer-parent" ||
+  catalog.astro?.preserveAspectRatio !== "xMidYMid meet" ||
   catalog.astro?.networkRequestsAtRuntime !== 0 ||
   catalog.astro?.fontFilesAtRuntime !== 0
 ) {
@@ -78,8 +84,8 @@ if (!license.includes("Apache License") || !license.includes("Version 2.0")) {
 }
 
 const iconEntries = Object.entries(catalog.icons ?? {});
-if (iconEntries.length !== 30) {
-  errors.push(`Expected 30 curated Material Symbols, found ${iconEntries.length}.`);
+if (iconEntries.length !== 45) {
+  errors.push(`Expected 45 curated Material Symbols, found ${iconEntries.length}.`);
 }
 
 const nodeIds = [];
@@ -103,7 +109,7 @@ for (const [name, icon] of iconEntries) {
   }
   if (
     icon.sourceSvg !==
-    `https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/${name}/default/20px.svg`
+    `https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/${name}/default/20px.svg`
   ) {
     errors.push(`${name} has an invalid official source SVG URL.`);
   }
@@ -188,6 +194,8 @@ for (const [path, source] of [
   for (const contract of [
     "materialSymbols",
     'fill="currentColor"',
+    'preserveAspectRatio="xMidYMid meet"',
+    'size = "1em"',
     "viewBox",
     "<svg"
   ]) {
@@ -205,6 +213,7 @@ for (const contract of [
   "Figma naming: `Icon/Material/<google_snake_case_name>`",
   "Default optical canvas: `20 × 20`",
   "local inline SVG",
+  "Parent components control",
   "Do not expose icon",
   "Apache License 2.0",
   "Do not import the complete Google catalog"

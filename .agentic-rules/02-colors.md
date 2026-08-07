@@ -117,7 +117,7 @@ Allowed primitive usage:
 
 ```css
 :root {
-  --color-background-accent: var(--color-accent-600);
+  --color-background-accent: var(--color-accent-500);
 }
 ```
 
@@ -155,8 +155,21 @@ Rules:
 
 - Use global semantic tokens for page-level and generic UI roles.
 - Use `--color-background-*` for generic surfaces and overlays.
+- Use `--color-background-strong` for a stronger neutral surface state after
+  `muted`, such as hover on a neutral control.
+- Use `--color-background-accent-subtle`, `--color-background-accent`, and
+  `--color-background-accent-strong` as the three theme-aware accent surface
+  levels. Their primitive direction reverses in dark mode so the semantic
+  emphasis remains stable.
 - Use `--color-text-*` for copy hierarchy and contrast roles.
 - Use `--color-border-*` for generic boundaries.
+- Keep the neutral border scale aligned with the reusable background surface
+  values: `border-subtle` matches `background-subtle`, `border-default`
+  matches `background-muted`, and `border-strong` matches
+  `background-strong` in both themes.
+- Use `--color-border-accent-subtle`, `--color-border-accent`, and
+  `--color-border-accent-strong` as the three theme-aware accent boundary
+  levels matching the corresponding accent background values.
 - Use `--color-icon-*` for icon hierarchy.
 - Use `--color-status-*` for feedback and validation states.
 - Use `--color-state-*` for shared states such as disabled and focus.

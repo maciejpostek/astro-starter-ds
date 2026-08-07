@@ -8,8 +8,8 @@ Styles and the responsive Astro typography contract.
 ## Architecture
 
 ```text
-Typography Foundations · 19 Variables
-├── font/family/{heading|body|mono}
+Typography Foundations · 18 Variables
+├── font/family/{heading|body}
 ├── font/weight/{normal|emphasis|strong}
 ├── font/style/{normal|italic}
 └── font/size/{h1|h2|h3|h4|h5|h6|body/*}
@@ -27,6 +27,18 @@ Text Styles
 Fluid font sizes keep `Min` and `Max` modes. Line height and letter spacing are
 not Variables in Figma. This avoids pixel-resolved values such as `28.8px` and
 keeps the design-facing proportions readable at every font size.
+
+## Internal mono exclusion
+
+Astro keeps `--font-family-mono` as an internal dependency for documentation
+UI and code snippets. It is intentionally excluded from the standard Figma
+Variable and Text Style projection.
+
+- Do not create `Typography Foundations / font/family/mono`.
+- Do not create a global Mono Text Style.
+- Do not use Roboto Mono for labels, captions, metadata or component text.
+- An explicit code-snippet specimen or component may use Roboto Mono locally.
+  That scoped exception does not promote mono into the public typography API.
 
 ## Relative-unit adapter
 
@@ -104,8 +116,7 @@ Global values:
 | H1, H2, H3 | `110%` | `-4%` |
 | H4, H5 | `120%` | `-4%` |
 | H6 | `120%` | `-2%` |
-| Body Large, Medium, Base | `150%` | `-1%` |
-| Body Small, Tiny | `150%` | `0%` |
+| Body Large, Medium, Base, Small, Tiny | `150%` | `-1%` |
 
 `Body/*/Regular Underlined` uses the same three bindings and relative metrics
 as Regular and sets `textDecoration: UNDERLINE`. Documentation specimens keep
@@ -119,17 +130,21 @@ native relative metrics:
 
 | Text Style | Line height | Letter spacing |
 | --- | ---: | ---: |
-| `Component/Button/Label` | `120%` | `0%` |
-| `Component/Tag/Label` | `100%` | `0%` |
-| `Component/Eyebrow/Label` | `120%` | `0%` |
-| `Component/Tab/Label` | `100%` | `0%` |
-| `Component/Input/Value` | `100%` | `0%` |
-| `Component/Label/Metric` | `150%` | `0%` |
-| `Component/Label/Field` | `120%` | `0%` |
+| `Component/Button/Label` | `120%` | `-1%` |
+| `Component/Tag/Label` | `100%` | `-1%` |
+| `Component/Eyebrow/Label` | `120%` | `-1%` |
+| `Component/Tab/Label` | `100%` | `-1%` |
+| `Component/Input/Value` | `100%` | `-1%` |
+| `Component/Label/Metric` | `150%` | `-1%` |
+| `Component/Label/Field` | `120%` | `-1%` |
 
 `Component/Input/Value` is intentionally reused by Input, SearchInput and
 Select because all three share the same value and placeholder contract. The
 two Label styles remain separate because their line heights differ.
+
+All component Text Styles map native `-1%` tracking to Astro's existing
+`--letter-spacing-tight` (`-0.01em`) foundation token. Component CSS consumes
+that token locally; no per-component tracking token is created.
 
 Across all 28 local Text Styles this produces 84 Variable bindings. Component
 Size still controls component font size, geometry and modes; it no longer owns
@@ -164,7 +179,8 @@ a Figma `line/height` Variable.
 
 ## Validation checklist
 
-- `Typography Foundations` has 19 Variables;
+- `Typography Foundations` has 18 Variables and does not contain
+  `font/family/mono`;
 - `Typography Semantic` has 11 font-size Variables;
 - neither collection contains `line/height/*` or `letter/spacing/*` Variables;
 - `Component Size` has 6 Variables and no `line/height` Variable;

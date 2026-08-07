@@ -147,11 +147,22 @@ column count, gaps and alignment.
 ### Elevation
 
 - `elevation-foundations.css`: primitive shadow references, semantic surface
-  roles and stable component aliases for raised, floating and overlay surfaces.
+  roles for subtle, raised, floating and overlay surfaces, plus compact control
+  roles for raised controls and thumbs.
 - Surface elevation is distinct from focus rings, status indicators, divider
   outlines, colored attention halos and documentation-only inspector overlays.
 - Components consume semantic or component aliases. They do not copy reusable
   shadow geometry locally.
+
+### Interaction effects
+
+- `interaction-effects.css`: reusable state effects that are not surface
+  elevation.
+- `--effect-focused` mirrors the Figma Effect Style `Focused` with a 2 px
+  surface-colored offset and a 4 px semantic focus ring.
+- CSS `:focus-visible` owns keyboard-focus detection. The native outline
+  remains active as the accessibility and forced-colors fallback; JavaScript
+  must not determine focus visibility.
 
 ### Documentation UI
 
@@ -178,7 +189,8 @@ layers below, while Figma-specific simplifications are documented in
 | `layout-foundations.css` | `Layout Foundations` |
 | `layout-semantic.css` | `Layout Semantic` |
 | `motion-foundations.css` | `Motion Foundations` |
-| `elevation-foundations.css` | `Effect Styles / Elevation/Surface/*` |
+| `elevation-foundations.css` | `Effect Styles / Elevation/Surface/*` and `Elevation/Control/*` |
+| `interaction-effects.css` | `Effect Style / Focused` |
 
 Do not add a project-name prefix to these collection names. Every Figma
 variable that maps directly to CSS should use Web code syntax in the form
@@ -225,8 +237,9 @@ There is no separate fluid-token namespace.
 
 ## Typography Baseline
 
-The starter baseline uses Inter for heading and body text, and Roboto Mono for
-utility/code text:
+The starter baseline uses Inter for all public heading and body text. Roboto
+Mono is an internal technical dependency reserved for documentation UI and
+code snippets:
 
 ```css
 --font-family-heading: "Inter", Arial, sans-serif;
@@ -234,8 +247,11 @@ utility/code text:
 --font-family-mono: "Roboto Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 ```
 
-The variables remain separate so heading, body and utility/code roles can be
-explored independently on future branches.
+Heading and body remain independently editable public roles. Mono must not be
+used by public Text Styles, product components or general Figma/Paper
+typography. Figma omits the mono Variable. Paper may retain an unused technical
+token, but Roboto Mono may be applied only to an explicit code-snippet specimen
+or component.
 
 ## Values To Review
 

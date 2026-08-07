@@ -4,6 +4,11 @@
    * They are raw references; reusable components consume semantic or
    * component aliases below.
    */
+  --elevation-primitive-subtle:
+    0
+    var(--size-1)
+    var(--size-2)
+    color-mix(in oklab, var(--color-neutral-950) 3%, transparent);
   --elevation-primitive-raised:
     0
     var(--size-8)
@@ -19,11 +24,30 @@
     var(--size-12)
     var(--size-32)
     color-mix(in oklab, var(--color-neutral-950) 16%, transparent);
+  --elevation-primitive-control-raised:
+    0
+    var(--size-1)
+    calc(var(--size-2) + var(--size-1))
+    color-mix(in oklab, var(--color-neutral-950) 12%, transparent);
+  --elevation-primitive-control-thumb:
+    0
+    var(--size-2)
+    var(--size-4)
+    color-mix(in oklab, var(--color-neutral-950) 8%, transparent),
+    0
+    var(--size-4)
+    var(--size-8)
+    color-mix(in oklab, var(--color-neutral-950) 6%, transparent);
 
   /* Semantic surface roles */
+  --elevation-surface-subtle: var(--elevation-primitive-subtle);
   --elevation-surface-raised: var(--elevation-primitive-raised);
   --elevation-surface-floating: var(--elevation-primitive-floating);
   --elevation-surface-overlay: var(--elevation-primitive-overlay);
 
-  /* Stable component contracts */
+  /* Semantic control roles */
+  --elevation-control-raised: var(--elevation-primitive-control-raised);
+  --elevation-control-thumb: var(--elevation-primitive-control-thumb);
+
+  /* Stable component contracts may alias the semantic roles above. */
 }

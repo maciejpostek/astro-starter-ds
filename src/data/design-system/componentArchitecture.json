@@ -6,7 +6,7 @@
   "figma": {
     "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
     "fileUrl": "https://www.figma.com/design/Dga0pMJHvQMUXGiXUKWTAm/Astro---Design-System-Starter",
-    "expectedPageCount": 71,
+    "expectedPageCount": 77,
     "variablesCheckpoint": 385,
     "componentNodesCheckpoint": 739,
     "componentSetsCheckpoint": 276,
@@ -71,9 +71,9 @@
       "figmaPageId": "1065:5",
       "afterCategoryKey": "base-components",
       "beforeCategoryKey": "website-patterns",
-      "afterContentOrder": 30,
-      "figmaTargetIndex": 34,
-      "figmaCurrentIndex": 32,
+      "afterContentOrder": 35,
+      "figmaTargetIndex": 39,
+      "figmaCurrentIndex": 37,
       "role": "navigation-metadata"
     },
     {
@@ -82,9 +82,9 @@
       "figmaPageId": "1065:7",
       "afterCategoryKey": "website-patterns",
       "beforeCategoryKey": "examples-templates",
-      "afterContentOrder": 56,
-      "figmaTargetIndex": 61,
-      "figmaCurrentIndex": 65,
+      "afterContentOrder": 62,
+      "figmaTargetIndex": 67,
+      "figmaCurrentIndex": 70,
       "role": "navigation-metadata"
     },
     {
@@ -93,9 +93,9 @@
       "figmaPageId": "1065:6",
       "afterCategoryKey": "examples-templates",
       "beforeCategoryKey": "workspace",
-      "afterContentOrder": 60,
-      "figmaTargetIndex": 66,
-      "figmaCurrentIndex": 58,
+      "afterContentOrder": 66,
+      "figmaTargetIndex": 72,
+      "figmaCurrentIndex": 63,
       "role": "navigation-metadata"
     }
   ],
@@ -160,8 +160,8 @@
       "figmaIcon": "▦",
       "folderKey": "website-patterns",
       "figmaPageId": "964:13175",
-      "targetOrder": 31,
-      "figmaCurrentIndex": 29
+      "targetOrder": 36,
+      "figmaCurrentIndex": 34
     },
     {
       "categoryKey": "examples-templates",
@@ -169,8 +169,8 @@
       "figmaIcon": "▣",
       "folderKey": "examples-templates",
       "figmaPageId": "1062:9",
-      "targetOrder": 57,
-      "figmaCurrentIndex": 59
+      "targetOrder": 63,
+      "figmaCurrentIndex": 65
     },
     {
       "categoryKey": "workspace",
@@ -178,8 +178,8 @@
       "figmaIcon": "◌",
       "folderKey": "workspace",
       "figmaPageId": "444:2078",
-      "targetOrder": 61,
-      "figmaCurrentIndex": 53
+      "targetOrder": 67,
+      "figmaCurrentIndex": 59
     }
   ],
   "pages": [
@@ -341,7 +341,7 @@
       "figmaPageId": "997:3249",
       "sourceDirectory": "src/components/base-components/checkbox-radio",
       "targetOrder": 19,
-      "figmaCurrentIndex": 21
+      "figmaCurrentIndex": 20
     },
     {
       "categoryKey": "base-components",
@@ -351,7 +351,7 @@
       "figmaPageId": "1062:4",
       "sourceDirectory": "src/components/base-components/select",
       "targetOrder": 20,
-      "figmaCurrentIndex": 54
+      "figmaCurrentIndex": 60
     },
     {
       "categoryKey": "base-components",
@@ -361,7 +361,7 @@
       "figmaPageId": "1062:5",
       "sourceDirectory": "src/components/base-components/file-upload",
       "targetOrder": 21,
-      "figmaCurrentIndex": 55
+      "figmaCurrentIndex": 61
     },
     {
       "categoryKey": "base-components",
@@ -371,7 +371,7 @@
       "figmaPageId": "1062:6",
       "sourceDirectory": "src/components/base-components/form-structure",
       "targetOrder": 22,
-      "figmaCurrentIndex": 56
+      "figmaCurrentIndex": 62
     },
     {
       "categoryKey": "base-components",
@@ -381,7 +381,7 @@
       "figmaPageId": "985:2785",
       "sourceDirectory": "src/components/base-components/tabs",
       "targetOrder": 23,
-      "figmaCurrentIndex": 22
+      "figmaCurrentIndex": 21
     },
     {
       "categoryKey": "base-components",
@@ -391,7 +391,47 @@
       "figmaPageId": "985:2724",
       "sourceDirectory": "src/components/base-components/accordion",
       "targetOrder": 24,
+      "figmaCurrentIndex": 22
+    },
+    {
+      "categoryKey": "base-components",
+      "pageKey": "tooltip",
+      "pageLabel": "Tooltip",
+      "figmaPageName": "     ↪  ❖  Tooltip",
+      "figmaPageId": "1140:594",
+      "sourceDirectory": "src/components/base-components/tooltip",
+      "targetOrder": 25,
       "figmaCurrentIndex": 23
+    },
+    {
+      "categoryKey": "base-components",
+      "pageKey": "hint",
+      "pageLabel": "Hint",
+      "figmaPageName": "     ↪  ❖  Hint",
+      "figmaPageId": "1140:595",
+      "sourceDirectory": "src/components/base-components/hint",
+      "targetOrder": 26,
+      "figmaCurrentIndex": 24
+    },
+    {
+      "categoryKey": "base-components",
+      "pageKey": "alerts",
+      "pageLabel": "Alerts",
+      "figmaPageName": "     ↪  ❖  Alerts",
+      "figmaPageId": "1140:596",
+      "sourceDirectory": "src/components/base-components/alerts",
+      "targetOrder": 27,
+      "figmaCurrentIndex": 25
+    },
+    {
+      "categoryKey": "base-components",
+      "pageKey": "toast-notification",
+      "pageLabel": "Toast Notification",
+      "figmaPageName": "     ↪  ❖  Toast Notification",
+      "figmaPageId": "1140:597",
+      "sourceDirectory": "src/components/base-components/toast-notification",
+      "targetOrder": 28,
+      "figmaCurrentIndex": 26
     },
     {
       "categoryKey": "base-components",
@@ -400,7 +440,7 @@
       "figmaPageName": "     ↪  ❖  Dividers",
       "figmaPageId": "1009:1631",
       "sourceDirectory": "src/components/base-components/dividers",
-      "targetOrder": 25,
+      "targetOrder": 29,
       "figmaCurrentIndex": 18
     },
     {
@@ -410,8 +450,8 @@
       "figmaPageName": "     ↪  ❖  Ratio",
       "figmaPageId": "964:13169",
       "sourceDirectory": "src/components/base-components/ratio",
-      "targetOrder": 26,
-      "figmaCurrentIndex": 24
+      "targetOrder": 30,
+      "figmaCurrentIndex": 27
     },
     {
       "categoryKey": "base-components",
@@ -420,8 +460,8 @@
       "figmaPageName": "     ↪  ❖  Breadcrumbs",
       "figmaPageId": "1009:2626",
       "sourceDirectory": "src/components/base-components/breadcrumbs",
-      "targetOrder": 27,
-      "figmaCurrentIndex": 25
+      "targetOrder": 31,
+      "figmaCurrentIndex": 28
     },
     {
       "categoryKey": "base-components",
@@ -430,8 +470,8 @@
       "figmaPageName": "     ↪  ❖  Pagination",
       "figmaPageId": "1009:5696",
       "sourceDirectory": "src/components/base-components/pagination",
-      "targetOrder": 28,
-      "figmaCurrentIndex": 26
+      "targetOrder": 32,
+      "figmaCurrentIndex": 29
     },
     {
       "categoryKey": "base-components",
@@ -440,8 +480,18 @@
       "figmaPageName": "     ↪  ❖  Tag",
       "figmaPageId": "964:12970",
       "sourceDirectory": "src/components/base-components/tag",
-      "targetOrder": 29,
-      "figmaCurrentIndex": 27
+      "targetOrder": 33,
+      "figmaCurrentIndex": 30
+    },
+    {
+      "categoryKey": "base-components",
+      "pageKey": "label",
+      "pageLabel": "Label",
+      "figmaPageName": "     ↪  ❖  Label",
+      "figmaPageId": "1140:598",
+      "sourceDirectory": "src/components/base-components/label",
+      "targetOrder": 34,
+      "figmaCurrentIndex": 31
     },
     {
       "categoryKey": "base-components",
@@ -450,8 +500,8 @@
       "figmaPageName": "     ↪  ❖  Eyebrow",
       "figmaPageId": "964:13167",
       "sourceDirectory": "src/components/base-components/eyebrow",
-      "targetOrder": 30,
-      "figmaCurrentIndex": 28
+      "targetOrder": 35,
+      "figmaCurrentIndex": 32
     },
     {
       "categoryKey": "website-patterns",
@@ -460,8 +510,8 @@
       "figmaPageName": "     ↪  ▦  Navigation",
       "figmaPageId": "964:13172",
       "sourceDirectory": "src/components/website-patterns/navigation",
-      "targetOrder": 32,
-      "figmaCurrentIndex": 32
+      "targetOrder": 37,
+      "figmaCurrentIndex": 37
     },
     {
       "categoryKey": "website-patterns",
@@ -470,8 +520,8 @@
       "figmaPageName": "     ↪  ▦  Announcements & Banners",
       "figmaPageId": "992:2823",
       "sourceDirectory": "src/components/website-patterns/announcements-banners",
-      "targetOrder": 33,
-      "figmaCurrentIndex": 31
+      "targetOrder": 38,
+      "figmaCurrentIndex": 36
     },
     {
       "categoryKey": "website-patterns",
@@ -480,8 +530,8 @@
       "figmaPageName": "     ↪  ▦  Hero",
       "figmaPageId": "964:14724",
       "sourceDirectory": "src/components/website-patterns/hero",
-      "targetOrder": 34,
-      "figmaCurrentIndex": 42
+      "targetOrder": 39,
+      "figmaCurrentIndex": 47
     },
     {
       "categoryKey": "website-patterns",
@@ -490,8 +540,8 @@
       "figmaPageName": "     ↪  ▦  Page Headers",
       "figmaPageId": "964:13166",
       "sourceDirectory": "src/components/website-patterns/page-headers",
-      "targetOrder": 35,
-      "figmaCurrentIndex": 43
+      "targetOrder": 40,
+      "figmaCurrentIndex": 48
     },
     {
       "categoryKey": "website-patterns",
@@ -500,8 +550,8 @@
       "figmaPageName": "     ↪  ▦  Brand & Logo Proof",
       "figmaPageId": "1062:7",
       "sourceDirectory": "src/components/website-patterns/brand-logo-proof",
-      "targetOrder": 36,
-      "figmaCurrentIndex": 57
+      "targetOrder": 41,
+      "figmaCurrentIndex": 63
     },
     {
       "categoryKey": "website-patterns",
@@ -510,8 +560,8 @@
       "figmaPageName": "     ↪  ▦  Ratings & Reviews",
       "figmaPageId": "964:14729",
       "sourceDirectory": "src/components/website-patterns/ratings-reviews",
-      "targetOrder": 37,
-      "figmaCurrentIndex": 35
+      "targetOrder": 42,
+      "figmaCurrentIndex": 40
     },
     {
       "categoryKey": "website-patterns",
@@ -520,8 +570,8 @@
       "figmaPageName": "     ↪  ▦  Stats & Metrics",
       "figmaPageId": "964:14725",
       "sourceDirectory": "src/components/website-patterns/stats-metrics",
-      "targetOrder": 38,
-      "figmaCurrentIndex": 36
+      "targetOrder": 43,
+      "figmaCurrentIndex": 41
     },
     {
       "categoryKey": "website-patterns",
@@ -530,8 +580,8 @@
       "figmaPageName": "     ↪  ▦  Testimonials & Stories",
       "figmaPageId": "964:14728",
       "sourceDirectory": "src/components/website-patterns/testimonials-stories",
-      "targetOrder": 39,
-      "figmaCurrentIndex": 37
+      "targetOrder": 44,
+      "figmaCurrentIndex": 42
     },
     {
       "categoryKey": "website-patterns",
@@ -540,8 +590,8 @@
       "figmaPageName": "     ↪  ▦  Features",
       "figmaPageId": "964:14722",
       "sourceDirectory": "src/components/website-patterns/features",
-      "targetOrder": 40,
-      "figmaCurrentIndex": 44
+      "targetOrder": 45,
+      "figmaCurrentIndex": 49
     },
     {
       "categoryKey": "website-patterns",
@@ -550,8 +600,8 @@
       "figmaPageName": "     ↪  ▦  How It Works",
       "figmaPageId": "964:14723",
       "sourceDirectory": "src/components/website-patterns/how-it-works",
-      "targetOrder": 41,
-      "figmaCurrentIndex": 41
+      "targetOrder": 46,
+      "figmaCurrentIndex": 46
     },
     {
       "categoryKey": "website-patterns",
@@ -560,8 +610,8 @@
       "figmaPageName": "     ↪  ▦  Integrations & Security",
       "figmaPageId": "964:12974",
       "sourceDirectory": "src/components/website-patterns/integrations-security",
-      "targetOrder": 42,
-      "figmaCurrentIndex": 48
+      "targetOrder": 47,
+      "figmaCurrentIndex": 54
     },
     {
       "categoryKey": "website-patterns",
@@ -570,8 +620,8 @@
       "figmaPageName": "     ↪  ▦  Pricing & Comparison",
       "figmaPageId": "975:773",
       "sourceDirectory": "src/components/website-patterns/pricing-comparison",
-      "targetOrder": 43,
-      "figmaCurrentIndex": 38
+      "targetOrder": 48,
+      "figmaCurrentIndex": 43
     },
     {
       "categoryKey": "website-patterns",
@@ -580,8 +630,8 @@
       "figmaPageName": "     ↪  ▦  Before & After",
       "figmaPageId": "975:774",
       "sourceDirectory": "src/components/website-patterns/before-after",
-      "targetOrder": 44,
-      "figmaCurrentIndex": 39
+      "targetOrder": 49,
+      "figmaCurrentIndex": 44
     },
     {
       "categoryKey": "website-patterns",
@@ -590,8 +640,8 @@
       "figmaPageName": "     ↪  ▦  Filtering & Search",
       "figmaPageId": "992:2825",
       "sourceDirectory": "src/components/website-patterns/filtering-search",
-      "targetOrder": 45,
-      "figmaCurrentIndex": 30
+      "targetOrder": 50,
+      "figmaCurrentIndex": 35
     },
     {
       "categoryKey": "website-patterns",
@@ -600,8 +650,8 @@
       "figmaPageName": "     ↪  ▦  Tabbed Content",
       "figmaPageId": "964:12972",
       "sourceDirectory": "src/components/website-patterns/tabbed-content",
-      "targetOrder": 46,
-      "figmaCurrentIndex": 45
+      "targetOrder": 51,
+      "figmaCurrentIndex": 50
     },
     {
       "categoryKey": "website-patterns",
@@ -610,8 +660,18 @@
       "figmaPageName": "     ↪  ▦  Sliders & Carousels",
       "figmaPageId": "964:13170",
       "sourceDirectory": "src/components/website-patterns/sliders-carousels",
-      "targetOrder": 47,
-      "figmaCurrentIndex": 46
+      "targetOrder": 52,
+      "figmaCurrentIndex": 51
+    },
+    {
+      "categoryKey": "website-patterns",
+      "pageKey": "modal",
+      "pageLabel": "Modal",
+      "figmaPageName": "     ↪  ▦  Modal",
+      "figmaPageId": "1140:599",
+      "sourceDirectory": "src/components/website-patterns/modal",
+      "targetOrder": 53,
+      "figmaCurrentIndex": 52
     },
     {
       "categoryKey": "website-patterns",
@@ -620,8 +680,8 @@
       "figmaPageName": "     ↪  ▦  CTA",
       "figmaPageId": "964:14726",
       "sourceDirectory": "src/components/website-patterns/cta",
-      "targetOrder": 48,
-      "figmaCurrentIndex": 40
+      "targetOrder": 54,
+      "figmaCurrentIndex": 45
     },
     {
       "categoryKey": "website-patterns",
@@ -630,8 +690,8 @@
       "figmaPageName": "     ↪  ▦  FAQ",
       "figmaPageId": "964:12973",
       "sourceDirectory": "src/components/website-patterns/faq",
-      "targetOrder": 49,
-      "figmaCurrentIndex": 47
+      "targetOrder": 55,
+      "figmaCurrentIndex": 53
     },
     {
       "categoryKey": "website-patterns",
@@ -640,8 +700,8 @@
       "figmaPageName": "     ↪  ▦  Blog & Resources",
       "figmaPageId": "964:14727",
       "sourceDirectory": "src/components/website-patterns/blog-resources",
-      "targetOrder": 50,
-      "figmaCurrentIndex": 34
+      "targetOrder": 56,
+      "figmaCurrentIndex": 39
     },
     {
       "categoryKey": "website-patterns",
@@ -650,8 +710,8 @@
       "figmaPageName": "     ↪  ▦  Rich Text",
       "figmaPageId": "964:9276",
       "sourceDirectory": "src/components/website-patterns/rich-text",
-      "targetOrder": 51,
-      "figmaCurrentIndex": 52
+      "targetOrder": 57,
+      "figmaCurrentIndex": 58
     },
     {
       "categoryKey": "website-patterns",
@@ -660,8 +720,8 @@
       "figmaPageName": "     ↪  ▦  Newsletter & Lead Capture",
       "figmaPageId": "1062:8",
       "sourceDirectory": "src/components/website-patterns/newsletter-lead-capture",
-      "targetOrder": 52,
-      "figmaCurrentIndex": 58
+      "targetOrder": 58,
+      "figmaCurrentIndex": 64
     },
     {
       "categoryKey": "website-patterns",
@@ -670,8 +730,8 @@
       "figmaPageName": "     ↪  ▦  Careers",
       "figmaPageId": "964:12975",
       "sourceDirectory": "src/components/website-patterns/careers",
-      "targetOrder": 53,
-      "figmaCurrentIndex": 49
+      "targetOrder": 59,
+      "figmaCurrentIndex": 55
     },
     {
       "categoryKey": "website-patterns",
@@ -680,8 +740,8 @@
       "figmaPageName": "     ↪  ▦  Team",
       "figmaPageId": "992:2821",
       "sourceDirectory": "src/components/website-patterns/team",
-      "targetOrder": 54,
-      "figmaCurrentIndex": 50
+      "targetOrder": 60,
+      "figmaCurrentIndex": 56
     },
     {
       "categoryKey": "website-patterns",
@@ -690,8 +750,8 @@
       "figmaPageName": "     ↪  ▦  Contact",
       "figmaPageId": "964:12977",
       "sourceDirectory": "src/components/website-patterns/contact",
-      "targetOrder": 55,
-      "figmaCurrentIndex": 51
+      "targetOrder": 61,
+      "figmaCurrentIndex": 57
     },
     {
       "categoryKey": "website-patterns",
@@ -700,8 +760,8 @@
       "figmaPageName": "     ↪  ▦  Footer",
       "figmaPageId": "975:1271",
       "sourceDirectory": "src/components/website-patterns/footer",
-      "targetOrder": 56,
-      "figmaCurrentIndex": 33
+      "targetOrder": 62,
+      "figmaCurrentIndex": 38
     },
     {
       "categoryKey": "examples-templates",
@@ -710,8 +770,8 @@
       "figmaPageName": "     ↪  ▣  Component Recipes",
       "figmaPageId": "1062:10",
       "sourceDirectory": "src/components/examples-templates/component-recipes",
-      "targetOrder": 58,
-      "figmaCurrentIndex": 60
+      "targetOrder": 64,
+      "figmaCurrentIndex": 66
     },
     {
       "categoryKey": "examples-templates",
@@ -720,8 +780,8 @@
       "figmaPageName": "     ↪  ▣  Starters",
       "figmaPageId": "964:13171",
       "sourceDirectory": "src/components/examples-templates/starters",
-      "targetOrder": 59,
-      "figmaCurrentIndex": 61
+      "targetOrder": 65,
+      "figmaCurrentIndex": 67
     },
     {
       "categoryKey": "examples-templates",
@@ -730,8 +790,8 @@
       "figmaPageName": "     ↪  ▣  Landing Templates",
       "figmaPageId": "1062:11",
       "sourceDirectory": "src/components/examples-templates/landing-templates",
-      "targetOrder": 60,
-      "figmaCurrentIndex": 62
+      "targetOrder": 66,
+      "figmaCurrentIndex": 68
     },
     {
       "categoryKey": "workspace",
@@ -740,8 +800,8 @@
       "figmaPageName": "     ↪  ◌  Internal Parts",
       "figmaPageId": "1062:12",
       "sourceDirectory": "src/components/_internal/documentation",
-      "targetOrder": 62,
-      "figmaCurrentIndex": 63
+      "targetOrder": 68,
+      "figmaCurrentIndex": 69
     },
     {
       "categoryKey": "workspace",
@@ -750,8 +810,8 @@
       "figmaPageName": "     ↪  ◌  Sandbox",
       "figmaPageId": "1009:5216",
       "sourceDirectory": "src/components/_internal/dev",
-      "targetOrder": 63,
-      "figmaCurrentIndex": 20
+      "targetOrder": 69,
+      "figmaCurrentIndex": 33
     },
     {
       "categoryKey": "workspace",
@@ -760,8 +820,8 @@
       "figmaPageName": "     ↪  ◌  Visual Calibration",
       "figmaPageId": "1062:13",
       "sourceDirectory": "src/components/_internal/behaviors",
-      "targetOrder": 64,
-      "figmaCurrentIndex": 64
+      "targetOrder": 70,
+      "figmaCurrentIndex": 70
     }
   ],
   "components": [
@@ -788,7 +848,7 @@
       "divergences": [
         {
           "kind": "representation",
-          "reason": "Figma stores 30 curated Icon/Material masters while Astro uses one typed inline-SVG renderer.",
+          "reason": "Figma stores 45 curated Icon/Material masters while Astro uses one typed inline-SVG renderer.",
           "instruction": "Resolve glyph identities through src/data/design-system/iconLibrary.json; never expose consumer INSTANCE_SWAP or an arbitrary icon prop."
         }
       ],

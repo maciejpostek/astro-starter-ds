@@ -3,14 +3,14 @@
   "provider": {
     "id": "google-material-symbols",
     "name": "Material Symbols",
-    "family": "Material Symbols Outlined",
+    "family": "Material Symbols Sharp",
     "repository": "https://github.com/google/material-design-icons",
     "documentation": "https://developers.google.com/fonts/docs/material_symbols",
     "license": "Apache-2.0",
     "licensePath": "LICENSES/material-symbols-Apache-2.0.txt"
   },
   "profile": {
-    "style": "outlined",
+    "style": "sharp",
     "opticalSize": 20,
     "weight": 400,
     "grade": 0,
@@ -23,6 +23,8 @@
     "sectionId": "1009:333",
     "namingPattern": "Icon/Material/<google_snake_case_name>",
     "opticalCanvas": 20,
+    "innerGroupAspectRatio": "locked-1:1",
+    "innerGroupHorizontalSizing": "fill-container",
     "iconColorVariableId": "VariableID:7:91",
     "iconColorVariableName": "Color Semantic / Global/icon/primary",
     "legacyLucideFrameId": "184:3",
@@ -33,7 +35,11 @@
     "reactComponent": "src/components/assets/icons/MaterialSymbol.tsx",
     "rendering": "inline-svg",
     "networkRequestsAtRuntime": 0,
-    "fontFilesAtRuntime": 0
+    "fontFilesAtRuntime": 0,
+    "colorInheritance": "currentColor",
+    "defaultSize": "1em",
+    "sizingOwner": "consumer-parent",
+    "preserveAspectRatio": "xMidYMid meet"
   },
   "icons": {
     "add": {
@@ -44,7 +50,17 @@
         "M9.25 10.75H5V9.25H9.25V5H10.75V9.25H15V10.75H10.75V15H9.25V10.75Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/add/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/add/default/20px.svg"
+    },
+    "arrow_back": {
+      "figmaName": "Icon/Material/arrow_back",
+      "figmaNodeId": "1130:28",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M6.875 10.75L11.0625 14.9375L10 16L4 10L10 4L11.0625 5.0625L6.875 9.25H16V10.75H6.875Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/arrow_back/default/20px.svg"
     },
     "arrow_drop_down": {
       "figmaName": "Icon/Material/arrow_drop_down",
@@ -54,7 +70,7 @@
         "M10 12L6 8H14L10 12Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/arrow_drop_down/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/arrow_drop_down/default/20px.svg"
     },
     "arrow_forward": {
       "figmaName": "Icon/Material/arrow_forward",
@@ -64,27 +80,37 @@
         "M13.125 10.75H4V9.25H13.125L8.9375 5.0625L10 4L16 10L10 16L8.9375 14.9375L13.125 10.75Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/arrow_forward/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/arrow_forward/default/20px.svg"
+    },
+    "calendar_month": {
+      "figmaName": "Icon/Material/calendar_month",
+      "figmaNodeId": "1127:4",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M9.25 12V10.5H10.75V12H9.25ZM6 12V10.5H7.5V12H6ZM12.5 12V10.5H14V12H12.5ZM9.25 15V13.5H10.75V15H9.25ZM6 15V13.5H7.5V15H6ZM12.5 15V13.5H14V15H12.5ZM3 18V4H6V2H7.5V4H12.5V2H14V4H17V18H3ZM4.5 16.5H15.5V9H4.5V16.5ZM4.5 7.5H15.5V5.5H4.5V7.5Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/calendar_month/default/20px.svg"
     },
     "call": {
       "figmaName": "Icon/Material/call",
       "figmaNodeId": "1008:321",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M16 17C14.4722 17 12.9306 16.6458 11.375 15.9375C9.81944 15.2292 8.38889 14.2222 7.08333 12.9167C5.77778 11.6111 4.77083 10.1805 4.0625 8.62499C3.35417 7.06943 3 5.52082 3 3.97916V2.97916H7.60417L8.39583 6.52082L5.95833 8.97916C6.27778 9.52082 6.62153 10.0347 6.98958 10.5208C7.35764 11.0069 7.74618 11.4512 8.15521 11.8537C8.53785 12.2429 8.95833 12.6146 9.41667 12.9687C9.875 13.3229 10.3889 13.6736 10.9583 14.0208L13.4583 11.5833L17 12.3333V17H16ZM5.27083 7.56249L6.77083 6.04166L6.40667 4.47916H4.5C4.55556 5.00693 4.64583 5.53124 4.77083 6.05207C4.89583 6.57291 5.0625 7.07638 5.27083 7.56249ZM12.4583 14.6458C12.875 14.8403 13.3507 15.0139 13.8854 15.1667C14.4201 15.3194 14.9583 15.4305 15.5 15.5V13.5417L13.9375 13.2083L12.4583 14.6458Z"
+        "M16 17.0104C14.4722 17.0104 12.9306 16.6563 11.375 15.9479C9.81944 15.2396 8.38889 14.2326 7.08333 12.9271C5.77778 11.6215 4.77083 10.191 4.0625 8.63543C3.35417 7.07987 3 5.53126 3 3.98959V2.98959H7.60417L8.39583 6.53126L5.95833 8.98959C6.27778 9.53126 6.62153 10.0451 6.98958 10.5313C7.35764 11.0174 7.74618 11.4617 8.15521 11.8642C8.53785 12.2533 8.95833 12.625 9.41667 12.9792C9.875 13.3333 10.3889 13.684 10.9583 14.0313L13.4583 11.5938L17 12.3438V17.0104H16ZM5.27083 7.57293L6.77083 6.05209L6.40667 4.48959H4.5C4.55556 5.01737 4.64583 5.54168 4.77083 6.06251C4.89583 6.58334 5.0625 7.08682 5.27083 7.57293ZM12.4583 14.6563C12.875 14.8507 13.3507 15.0243 13.8854 15.1771C14.4201 15.3299 14.9583 15.441 15.5 15.5104V13.5521L13.9375 13.2188L12.4583 14.6563Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/call/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/call/default/20px.svg"
     },
     "center_focus_strong": {
       "figmaName": "Icon/Material/center_focus_strong",
       "figmaNodeId": "1050:32",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M4.5 17C4.0875 17 3.73437 16.8531 3.44062 16.5594C3.14687 16.2656 3 15.9125 3 15.5V12H4.5V15.5H8V17H4.5ZM12 17V15.5H15.5V12H17V15.5C17 15.9125 16.8531 16.2656 16.5594 16.5594C16.2656 16.8531 15.9125 17 15.5 17H12ZM3 8V4.5C3 4.0875 3.14687 3.73438 3.44062 3.44063C3.73437 3.14688 4.0875 3 4.5 3H8V4.5H4.5V8H3ZM15.5 8V4.5H12V3H15.5C15.9125 3 16.2656 3.14688 16.5594 3.44063C16.8531 3.73438 17 4.0875 17 4.5V8H15.5ZM7.16667 12.8285C6.38889 12.0477 6 11.1033 6 9.99521C6 8.88729 6.39049 7.94444 7.17146 7.16667C7.95229 6.38889 8.89674 6 10.0048 6C11.1127 6 12.0556 6.39049 12.8333 7.17146C13.6111 7.95229 14 8.89674 14 10.0048C14 11.1127 13.6095 12.0556 12.8285 12.8333C12.0477 13.6111 11.1033 14 9.99521 14C8.88729 14 7.94444 13.6095 7.16667 12.8285ZM11.7708 11.7708C12.2569 11.2847 12.5 10.6944 12.5 10C12.5 9.30556 12.2569 8.71528 11.7708 8.22917C11.2847 7.74306 10.6944 7.5 10 7.5C9.30556 7.5 8.71528 7.74306 8.22917 8.22917C7.74306 8.71528 7.5 9.30556 7.5 10C7.5 10.6944 7.74306 11.2847 8.22917 11.7708C8.71528 12.2569 9.30556 12.5 10 12.5C10.6944 12.5 11.2847 12.2569 11.7708 11.7708Z"
+        "M3 17V12H4.5V15.5H8V17H3ZM12 17V15.5H15.5V12H17V17H12ZM3 8V3H8V4.5H4.5V8H3ZM15.5 8V4.5H12V3H17V8H15.5ZM7.16667 12.8285C6.38889 12.0477 6 11.1033 6 9.99521C6 8.88729 6.39049 7.94444 7.17146 7.16667C7.95229 6.38889 8.89674 6 10.0048 6C11.1127 6 12.0556 6.39049 12.8333 7.17146C13.6111 7.95229 14 8.89674 14 10.0048C14 11.1127 13.6095 12.0556 12.8285 12.8333C12.0477 13.6111 11.1033 14 9.99521 14C8.88729 14 7.94444 13.6095 7.16667 12.8285ZM11.7708 11.7708C12.2569 11.2847 12.5 10.6944 12.5 10C12.5 9.30556 12.2569 8.71528 11.7708 8.22917C11.2847 7.74306 10.6944 7.5 10 7.5C9.30556 7.5 8.71528 7.74306 8.22917 8.22917C7.74306 8.71528 7.5 9.30556 7.5 10C7.5 10.6944 7.74306 11.2847 8.22917 11.7708C8.71528 12.2569 9.30556 12.5 10 12.5C10.6944 12.5 11.2847 12.2569 11.7708 11.7708Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/center_focus_strong/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/center_focus_strong/default/20px.svg"
     },
     "check": {
       "figmaName": "Icon/Material/check",
@@ -94,7 +120,37 @@
         "M8.10417 14.4375L4.0625 10.4167L5.125 9.33333L8.10417 12.3125L14.875 5.5625L15.9375 6.625L8.10417 14.4375Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/check/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/check/default/20px.svg"
+    },
+    "check_circle": {
+      "figmaName": "Icon/Material/check_circle",
+      "figmaNodeId": "1130:64",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M8.9375 13L13.8958 8.0625L12.8333 7L8.9375 10.875L7.16667 9.125L6.10417 10.1875L8.9375 13ZM10 18C8.90278 18 7.86806 17.7917 6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0764 2.625 13.1042C2.20833 12.1319 2 11.0972 2 10C2 8.88889 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92361 3.04167 6.89583 2.625C7.86806 2.20833 8.90278 2 10 2C11.1111 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92014 17.375 6.88542C17.7917 7.85069 18 8.88889 18 10C18 11.0972 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0799 16.9583 13.1146 17.375C12.1493 17.7917 11.1111 18 10 18ZM10 16.5C11.8056 16.5 13.3403 15.8681 14.6042 14.6042C15.8681 13.3403 16.5 11.8056 16.5 10C16.5 8.19444 15.8681 6.65972 14.6042 5.39583C13.3403 4.13194 11.8056 3.5 10 3.5C8.19444 3.5 6.65972 4.13194 5.39583 5.39583C4.13194 6.65972 3.5 8.19444 3.5 10C3.5 11.8056 4.13194 13.3403 5.39583 14.6042C6.65972 15.8681 8.19444 16.5 10 16.5Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/check_circle/default/20px.svg"
+    },
+    "chevron_left": {
+      "figmaName": "Icon/Material/chevron_left",
+      "figmaNodeId": "1130:4",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M11.9688 15L6.96875 10L11.9688 5L13.0312 6.0625L9.09375 10L13.0312 13.9375L11.9688 15Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/chevron_left/default/20px.svg"
+    },
+    "chevron_right": {
+      "figmaName": "Icon/Material/chevron_right",
+      "figmaNodeId": "1130:10",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10.9062 10L6.96875 6.0625L8.03125 5L13.0312 10L8.03125 15L6.96875 13.9375L10.9062 10Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/chevron_right/default/20px.svg"
     },
     "close": {
       "figmaName": "Icon/Material/close",
@@ -104,7 +160,7 @@
         "M6.0625 15L5 13.9375L8.9375 10L5 6.0625L6.0625 5L10 8.9375L13.9375 5L15 6.0625L11.0625 10L15 13.9375L13.9375 15L10 11.0625L6.0625 15Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/close/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/close/default/20px.svg"
     },
     "content_copy": {
       "figmaName": "Icon/Material/content_copy",
@@ -114,7 +170,7 @@
         "M6 15V2H17V15H6ZM7.5 13.5H15.5V3.5H7.5V13.5ZM3 18V5H4.5V16.5H14V18H3Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/content_copy/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/content_copy/default/20px.svg"
     },
     "dehaze": {
       "figmaName": "Icon/Material/dehaze",
@@ -124,27 +180,77 @@
         "M3 6V4.5H17V6H3ZM3 15.5V14H17V15.5H3ZM3 10.75V9.25H17V10.75H3Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/dehaze/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/dehaze/default/20px.svg"
+    },
+    "delete": {
+      "figmaName": "Icon/Material/delete",
+      "figmaNodeId": "1130:40",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M5 17V5.5H4V4H8V3H12V4H16V5.5H15V17H5ZM6.5 15.5H13.5V5.5H6.5V15.5ZM8 14H9.5V7H8V14ZM10.5 14H12V7H10.5V14Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/delete/default/20px.svg"
+    },
+    "download": {
+      "figmaName": "Icon/Material/download",
+      "figmaNodeId": "1130:34",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10 13.5L6 9.5L7.0625 8.4375L9.25 10.625V3.5H10.75V10.625L12.9375 8.4375L14 9.5L10 13.5ZM4 16.5V13.5H5.5V15H14.5V13.5H16V16.5H4Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/download/default/20px.svg"
     },
     "error": {
       "figmaName": "Icon/Material/error",
       "figmaNodeId": "1008:327",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M10.5312 13.7856C10.6771 13.6427 10.75 13.4656 10.75 13.2544C10.75 13.0431 10.6785 12.8646 10.5356 12.7188C10.3927 12.5729 10.2156 12.5 10.0044 12.5C9.79313 12.5 9.61458 12.5715 9.46875 12.7144C9.32292 12.8573 9.25 13.0344 9.25 13.2456C9.25 13.4569 9.32146 13.6354 9.46438 13.7812C9.60729 13.9271 9.78438 14 9.99563 14C10.2069 14 10.3854 13.9285 10.5312 13.7856ZM9.25 11H10.75V6H9.25V11ZM10.0058 18C8.90472 18 7.86806 17.7917 6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0767 2.625 13.105C2.20833 12.1333 2 11.0951 2 9.99042C2 8.88569 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92333 3.04167 6.895 2.625C7.86667 2.20833 8.90486 2 10.0096 2C11.1143 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92167 17.375 6.89C17.7917 7.85847 18 8.89319 18 9.99417C18 11.0953 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0783 16.9583 13.11 17.375C12.1415 17.7917 11.1068 18 10.0058 18ZM10 16.5C11.8056 16.5 13.3403 15.8681 14.6042 14.6042C15.8681 13.3403 16.5 11.8056 16.5 10C16.5 8.19444 15.8681 6.65972 14.6042 5.39583C13.3403 4.13194 11.8056 3.5 10 3.5C8.19444 3.5 6.65972 4.13194 5.39583 5.39583C4.13194 6.65972 3.5 8.19444 3.5 10C3.5 11.8056 4.13194 13.3403 5.39583 14.6042C6.65972 15.8681 8.19444 16.5 10 16.5Z"
+        "M10.5312 13.7856C10.6771 13.6427 10.75 13.4656 10.75 13.2544C10.75 13.0431 10.6785 12.8646 10.5356 12.7188C10.3927 12.5729 10.2156 12.5 10.0044 12.5C9.79312 12.5 9.61458 12.5715 9.46875 12.7144C9.32292 12.8573 9.25 13.0344 9.25 13.2456C9.25 13.4569 9.32146 13.6354 9.46438 13.7812C9.60729 13.9271 9.78438 14 9.99563 14C10.2069 14 10.3854 13.9285 10.5312 13.7856ZM9.25 11H10.75V6H9.25V11ZM10.0058 18C8.90472 18 7.86806 17.7917 6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0767 2.625 13.105C2.20833 12.1333 2 11.0951 2 9.99042C2 8.88569 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92333 3.04167 6.895 2.625C7.86667 2.20833 8.90486 2 10.0096 2C11.1143 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92167 17.375 6.89C17.7917 7.85847 18 8.89319 18 9.99417C18 11.0953 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0783 16.9583 13.11 17.375C12.1415 17.7917 11.1068 18 10.0058 18ZM10 16.5C11.8056 16.5 13.3403 15.8681 14.6042 14.6042C15.8681 13.3403 16.5 11.8056 16.5 10C16.5 8.19444 15.8681 6.65972 14.6042 5.39583C13.3403 4.13194 11.8056 3.5 10 3.5C8.19444 3.5 6.65972 4.13194 5.39583 5.39583C4.13194 6.65972 3.5 8.19444 3.5 10C3.5 11.8056 4.13194 13.3403 5.39583 14.6042C6.65972 15.8681 8.19444 16.5 10 16.5Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/error/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/error/default/20px.svg"
+    },
+    "expand_less": {
+      "figmaName": "Icon/Material/expand_less",
+      "figmaNodeId": "1130:22",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M6.0625 13.0312L5 11.9688L10 6.96875L15 11.9688L13.9375 13.0312L10 9.09375L6.0625 13.0312Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/expand_less/default/20px.svg"
+    },
+    "expand_more": {
+      "figmaName": "Icon/Material/expand_more",
+      "figmaNodeId": "1130:16",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10 13.0312L5 8.03125L6.0625 6.96875L10 10.9062L13.9375 6.96875L15 8.03125L10 13.0312Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/expand_more/default/20px.svg"
+    },
+    "filter_list": {
+      "figmaName": "Icon/Material/filter_list",
+      "figmaNodeId": "1130:70",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M8 14.5V13H12V14.5H8ZM5 10.75V9.25H15V10.75H5ZM3 7V5.5H17V7H3Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/filter_list/default/20px.svg"
     },
     "flag_2": {
       "figmaName": "Icon/Material/flag_2",
       "figmaNodeId": "1008:326",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M4 18V3H16.5L14 7L16.5 11H5.5V18H4ZM5.5 9.5H13.7917L12.2292 7L13.7917 4.5H5.5V9.5Z"
+        "M3.75 17.5V2.5H16.25L13.75 6.5L16.25 10.5H5.25V17.5H3.75ZM5.25 9H13.5417L11.9792 6.5L13.5417 4H5.25V9Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/flag_2/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/flag_2/default/20px.svg"
     },
     "gpp_bad": {
       "figmaName": "Icon/Material/gpp_bad",
@@ -154,7 +260,7 @@
         "M8.29167 12.75L10 11.0417L11.7083 12.75L12.75 11.7083L11.0417 10L12.75 8.29167L11.7083 7.25L10 8.95833L8.29167 7.25L7.25 8.29167L8.95833 10L7.25 11.7083L8.29167 12.75ZM10 18C8.125 17.5417 6.57292 16.4792 5.34375 14.8125C4.11458 13.1458 3.5 11.2986 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.2986 15.8854 13.1458 14.6562 14.8125C13.4271 16.4792 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9931 12.6389 15.0972 13.5833 13.75C14.5278 12.4028 15 10.9097 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9097 5.47222 12.4028 6.41667 13.75C7.36111 15.0972 8.55556 15.9931 10 16.4375Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/gpp_bad/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/gpp_bad/default/20px.svg"
     },
     "gpp_maybe": {
       "figmaName": "Icon/Material/gpp_maybe",
@@ -164,17 +270,17 @@
         "M10.5312 12.7856C10.6771 12.6427 10.75 12.4656 10.75 12.2544C10.75 12.0431 10.6785 11.8646 10.5356 11.7188C10.3927 11.5729 10.2156 11.5 10.0044 11.5C9.79313 11.5 9.61458 11.5715 9.46875 11.7144C9.32292 11.8573 9.25 12.0344 9.25 12.2456C9.25 12.4569 9.32146 12.6354 9.46438 12.7812C9.60729 12.9271 9.78438 13 9.99563 13C10.2069 13 10.3854 12.9285 10.5312 12.7856ZM9.25 10H10.75V6H9.25V10ZM10 18C8.125 17.5417 6.57292 16.4803 5.34375 14.8158C4.11458 13.1513 3.5 11.3029 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.3029 15.8854 13.1513 14.6562 14.8158C13.4271 16.4803 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9896 12.6389 15.0938 13.5833 13.75C14.5278 12.4062 15 10.9132 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9132 5.47222 12.4062 6.41667 13.75C7.36111 15.0938 8.55556 15.9896 10 16.4375Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/gpp_maybe/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/gpp_maybe/default/20px.svg"
     },
     "info": {
       "figmaName": "Icon/Material/info",
       "figmaNodeId": "1008:323",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M9.25 14H10.75V9H9.25V14ZM10.5312 7.28563C10.6771 7.14271 10.75 6.96563 10.75 6.75438C10.75 6.54313 10.6785 6.36458 10.5356 6.21875C10.3927 6.07292 10.2156 6 10.0044 6C9.79313 6 9.61458 6.07146 9.46875 6.21437C9.32292 6.35729 9.25 6.53437 9.25 6.74562C9.25 6.95687 9.32146 7.13542 9.46438 7.28125C9.60729 7.42708 9.78438 7.5 9.99563 7.5C10.2069 7.5 10.3854 7.42854 10.5312 7.28563ZM10.0058 18C8.90472 18 7.86806 17.7917 6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0767 2.625 13.105C2.20833 12.1333 2 11.0951 2 9.99042C2 8.88569 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92333 3.04167 6.895 2.625C7.86667 2.20833 8.90486 2 10.0096 2C11.1143 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92167 17.375 6.89C17.7917 7.85847 18 8.89319 18 9.99417C18 11.0953 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0783 16.9583 13.11 17.375C12.1415 17.7917 11.1068 18 10.0058 18ZM10 16.5C11.8056 16.5 13.3403 15.8681 14.6042 14.6042C15.8681 13.3403 16.5 11.8056 16.5 10C16.5 8.19444 15.8681 6.65972 14.6042 5.39583C13.3403 4.13194 11.8056 3.5 10 3.5C8.19444 3.5 6.65972 4.13194 5.39583 5.39583C4.13194 6.65972 3.5 8.19444 3.5 10C3.5 11.8056 4.13194 13.3403 5.39583 14.6042C6.65972 15.8681 8.19444 16.5 10 16.5Z"
+        "M9.25 14H10.75V9H9.25V14ZM10.5312 7.28563C10.6771 7.14271 10.75 6.96563 10.75 6.75438C10.75 6.54313 10.6785 6.36458 10.5356 6.21875C10.3927 6.07292 10.2156 6 10.0044 6C9.79312 6 9.61458 6.07146 9.46875 6.21437C9.32292 6.35729 9.25 6.53437 9.25 6.74562C9.25 6.95687 9.32146 7.13542 9.46438 7.28125C9.60729 7.42708 9.78438 7.5 9.99563 7.5C10.2069 7.5 10.3854 7.42854 10.5312 7.28563ZM10.0058 18C8.90472 18 7.86806 17.7917 6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0767 2.625 13.105C2.20833 12.1333 2 11.0951 2 9.99042C2 8.88569 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92333 3.04167 6.895 2.625C7.86667 2.20833 8.90486 2 10.0096 2C11.1143 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92167 17.375 6.89C17.7917 7.85847 18 8.89319 18 9.99417C18 11.0953 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0783 16.9583 13.11 17.375C12.1415 17.7917 11.1068 18 10.0058 18ZM10 16.5C11.8056 16.5 13.3403 15.8681 14.6042 14.6042C15.8681 13.3403 16.5 11.8056 16.5 10C16.5 8.19444 15.8681 6.65972 14.6042 5.39583C13.3403 4.13194 11.8056 3.5 10 3.5C8.19444 3.5 6.65972 4.13194 5.39583 5.39583C4.13194 6.65972 3.5 8.19444 3.5 10C3.5 11.8056 4.13194 13.3403 5.39583 14.6042C6.65972 15.8681 8.19444 16.5 10 16.5Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/info/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/info/default/20px.svg"
     },
     "language": {
       "figmaName": "Icon/Material/language",
@@ -184,7 +290,7 @@
         "M6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0764 2.625 13.1042C2.20833 12.1319 2 11.0938 2 9.98958C2 8.88542 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92361 3.04167 6.89583 2.625C7.86806 2.20833 8.90625 2 10.0104 2C11.1146 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92014 17.375 6.88542C17.7917 7.85069 18 8.88542 18 9.98958C18 11.0938 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0799 16.9583 13.1146 17.375C12.1493 17.7917 11.1146 18 10.0104 18C8.90625 18 7.86806 17.7917 6.89583 17.375ZM10 16.4375C10.2361 16.2014 10.4722 15.7604 10.7083 15.1146C10.9444 14.4688 11.125 13.7639 11.25 13H8.75C8.875 13.7639 9.05556 14.4688 9.29167 15.1146C9.52778 15.7604 9.76389 16.2014 10 16.4375ZM8.10417 16.2292C7.90972 15.8125 7.73958 15.3333 7.59375 14.7917C7.44792 14.25 7.32639 13.6528 7.22917 13H4.25C4.65278 13.7917 5.1875 14.4688 5.85417 15.0312C6.52083 15.5938 7.27083 15.9931 8.10417 16.2292ZM11.8958 16.2292C12.7292 15.9931 13.4792 15.5938 14.1458 15.0312C14.8125 14.4688 15.3472 13.7917 15.75 13H12.7708C12.6736 13.6528 12.5521 14.25 12.4062 14.7917C12.2604 15.3333 12.0903 15.8125 11.8958 16.2292ZM3.6875 11.5H7.04167C7.01389 11.2361 6.99653 10.9757 6.98958 10.7188C6.98264 10.4618 6.97917 10.2083 6.97917 9.95833C6.97917 9.70833 6.98264 9.46181 6.98958 9.21875C6.99653 8.97569 7.01389 8.73611 7.04167 8.5H3.6875C3.61806 8.76389 3.56944 9.01736 3.54167 9.26042C3.51389 9.50347 3.5 9.75 3.5 10C3.5 10.25 3.51389 10.4965 3.54167 10.7396C3.56944 10.9826 3.61806 11.2361 3.6875 11.5ZM8.5625 11.5H11.4375C11.4653 11.2222 11.4826 10.9618 11.4896 10.7188C11.4965 10.4757 11.5 10.2361 11.5 10C11.5 9.76389 11.4965 9.52083 11.4896 9.27083C11.4826 9.02083 11.4653 8.76389 11.4375 8.5H8.5625C8.53472 8.76389 8.51736 9.02083 8.51042 9.27083C8.50347 9.52083 8.5 9.76389 8.5 10C8.5 10.2361 8.50347 10.4792 8.51042 10.7292C8.51736 10.9792 8.53472 11.2361 8.5625 11.5ZM12.9583 11.5H16.3125C16.3819 11.2361 16.4306 10.9826 16.4583 10.7396C16.4861 10.4965 16.5 10.25 16.5 10C16.5 9.75 16.4861 9.5 16.4583 9.25C16.4306 9 16.3819 8.75 16.3125 8.5H12.9583C12.9861 8.76389 13.0035 9.02431 13.0104 9.28125C13.0174 9.53819 13.0208 9.79167 13.0208 10.0417C13.0208 10.2917 13.0174 10.5382 13.0104 10.7812C13.0035 11.0243 12.9861 11.2639 12.9583 11.5ZM12.7708 7H15.75C15.3472 6.20833 14.8125 5.53125 14.1458 4.96875C13.4792 4.40625 12.7292 4.00694 11.8958 3.77083C12.0903 4.1875 12.2604 4.66667 12.4062 5.20833C12.5521 5.75 12.6736 6.34722 12.7708 7ZM8.75 7H11.25C11.125 6.23611 10.9444 5.53125 10.7083 4.88542C10.4722 4.23958 10.2361 3.79861 10 3.5625C9.76389 3.79861 9.52778 4.23958 9.29167 4.88542C9.05556 5.53125 8.875 6.23611 8.75 7ZM4.25 7H7.22917C7.32639 6.34722 7.44792 5.75 7.59375 5.20833C7.73958 4.66667 7.90972 4.1875 8.10417 3.77083C7.27083 4.00694 6.52083 4.40625 5.85417 4.96875C5.1875 5.53125 4.65278 6.20833 4.25 7Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/language/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/language/default/20px.svg"
     },
     "link": {
       "figmaName": "Icon/Material/link",
@@ -194,7 +300,7 @@
         "M9 14H6C4.89333 14 3.95 13.6095 3.17 12.8285C2.39 12.0477 2 11.1033 2 9.99521C2 8.88729 2.39 7.94444 3.17 7.16667C3.95 6.38889 4.89333 6 6 6H9V7.5H6C5.30556 7.5 4.71528 7.74306 4.22917 8.22917C3.74306 8.71528 3.5 9.30556 3.5 10C3.5 10.6944 3.74306 11.2847 4.22917 11.7708C4.71528 12.2569 5.30556 12.5 6 12.5H9V14ZM7 10.75V9.25H13V10.75H7ZM11 14V12.5H14C14.6944 12.5 15.2847 12.2569 15.7708 11.7708C16.2569 11.2847 16.5 10.6944 16.5 10C16.5 9.30556 16.2569 8.71528 15.7708 8.22917C15.2847 7.74306 14.6944 7.5 14 7.5H11V6H14C15.1067 6 16.05 6.39049 16.83 7.17146C17.61 7.95229 18 8.89674 18 10.0048C18 11.1127 17.61 12.0556 16.83 12.8333C16.05 13.6111 15.1067 14 14 14H11Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/link/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/link/default/20px.svg"
     },
     "location_on": {
       "figmaName": "Icon/Material/location_on",
@@ -204,7 +310,7 @@
         "M11.0625 9.5625C11.3542 9.27083 11.5 8.91667 11.5 8.5C11.5 8.08333 11.3542 7.72917 11.0625 7.4375C10.7708 7.14583 10.4167 7 10 7C9.58333 7 9.22917 7.14583 8.9375 7.4375C8.64583 7.72917 8.5 8.08333 8.5 8.5C8.5 8.91667 8.64583 9.27083 8.9375 9.5625C9.22917 9.85417 9.58333 10 10 10C10.4167 10 10.7708 9.85417 11.0625 9.5625ZM10 16.0208C11.6528 14.5347 12.8993 13.1667 13.7396 11.9167C14.5799 10.6667 15 9.54861 15 8.5625C15 7.10417 14.5243 5.89583 13.5729 4.9375C12.6215 3.97917 11.4306 3.5 10 3.5C8.56944 3.5 7.37847 3.97917 6.42708 4.9375C5.47569 5.89583 5 7.10417 5 8.5625C5 9.54861 5.42014 10.6667 6.26042 11.9167C7.10069 13.1667 8.34722 14.5347 10 16.0208ZM10 18C7.81944 16.1806 6.19097 14.4896 5.11458 12.9271C4.03819 11.3646 3.5 9.90972 3.5 8.5625C3.5 6.70139 4.11806 5.14236 5.35417 3.88542C6.59028 2.62847 8.13889 2 10 2C11.8472 2 13.3924 2.62847 14.6354 3.88542C15.8785 5.14236 16.5 6.70139 16.5 8.5625C16.5 9.90972 15.9653 11.3611 14.8958 12.9167C13.8264 14.4722 12.1944 16.1667 10 18Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/location_on/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/location_on/default/20px.svg"
     },
     "mail": {
       "figmaName": "Icon/Material/mail",
@@ -214,7 +320,7 @@
         "M2 16V4H18V16H2ZM10 11L3.5 7.27083V14.5H16.5V7.27083L10 11ZM10 9.25L16.4792 5.5H3.54167L10 9.25ZM3.5 7.27083V5.5V14.5V7.27083Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/mail/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/mail/default/20px.svg"
     },
     "open_in_full": {
       "figmaName": "Icon/Material/open_in_full",
@@ -224,17 +330,37 @@
         "M3 17V11H4.5V14.4375L14.4375 4.5H11V3H17V9H15.5V5.5625L5.5625 15.5H9V17H3Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/open_in_full/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/open_in_full/default/20px.svg"
     },
     "open_in_new": {
       "figmaName": "Icon/Material/open_in_new",
       "figmaNodeId": "1050:27",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M4.5 17C4.0875 17 3.73437 16.8531 3.44062 16.5594C3.14687 16.2656 3 15.9125 3 15.5V4.5C3 4.0875 3.14687 3.73438 3.44062 3.44063C3.73437 3.14688 4.0875 3 4.5 3H10V4.5H4.5V15.5H15.5V10H17V15.5C17 15.9125 16.8531 16.2656 16.5594 16.5594C16.2656 16.8531 15.9125 17 15.5 17H4.5ZM8.0625 13L7 11.9375L14.4375 4.5H12V3H17V8H15.5V5.5625L8.0625 13Z"
+        "M3 17V3H10V4.5H4.5V15.5H15.5V10H17V17H3ZM8.0625 13L7 11.9375L14.4375 4.5H12V3H17V8H15.5V5.5625L8.0625 13Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/open_in_new/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/open_in_new/default/20px.svg"
+    },
+    "pause": {
+      "figmaName": "Icon/Material/pause",
+      "figmaNodeId": "1130:82",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M11 16V4H16V16H11ZM4 16V4H9V16H4ZM12.5 14.5H14.5V5.5H12.5V14.5ZM5.5 14.5H7.5V5.5H5.5V14.5Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/pause/default/20px.svg"
+    },
+    "play_arrow": {
+      "figmaName": "Icon/Material/play_arrow",
+      "figmaNodeId": "1130:76",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M5.75 15.5V4.5L14.25 10L5.75 15.5ZM7.25 12.75L11.5 10L7.25 7.25V12.75Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/play_arrow/default/20px.svg"
     },
     "refresh": {
       "figmaName": "Icon/Material/refresh",
@@ -244,7 +370,7 @@
         "M10 16C8.33333 16 6.91667 15.4167 5.75 14.25C4.58333 13.0833 4 11.6667 4 10C4 8.33333 4.58333 6.91667 5.75 5.75C6.91667 4.58333 8.33333 4 10 4C10.9028 4 11.7396 4.1875 12.5104 4.5625C13.2812 4.9375 13.9444 5.4375 14.5 6.0625V4H16V9H11V7.5H13.7292C13.3264 6.88889 12.7986 6.40278 12.1458 6.04167C11.4931 5.68056 10.7778 5.5 10 5.5C8.75 5.5 7.6875 5.9375 6.8125 6.8125C5.9375 7.6875 5.5 8.75 5.5 10C5.5 11.25 5.9375 12.3125 6.8125 13.1875C7.6875 14.0625 8.75 14.5 10 14.5C11.1667 14.5 12.1667 14.1146 13 13.3438C13.8333 12.5729 14.3125 11.625 14.4375 10.5H15.9792C15.8542 12.0556 15.2222 13.3611 14.0833 14.4167C12.9444 15.4722 11.5833 16 10 16Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/refresh/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/refresh/default/20px.svg"
     },
     "remove": {
       "figmaName": "Icon/Material/remove",
@@ -254,37 +380,37 @@
         "M4.83334 10.75V9.25H15.1667V10.75H4.83334Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/remove/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/remove/default/20px.svg"
     },
     "search": {
       "figmaName": "Icon/Material/search",
       "figmaNodeId": "1007:35",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M15.9375 17L10.9583 12.0208C10.5417 12.3264 10.0848 12.566 9.58771 12.7396C9.09063 12.9132 8.5616 13 8.00063 13C6.61132 13 5.43056 12.5139 4.45833 11.5417C3.48611 10.5694 3 9.38889 3 8C3 6.61111 3.48611 5.43056 4.45833 4.45833C5.43056 3.48611 6.61111 3 8 3C9.38889 3 10.5694 3.48611 11.5417 4.45833C12.5139 5.43056 13 6.61132 13 8.00063C13 8.5616 12.9132 9.09063 12.7396 9.58771C12.566 10.0848 12.3264 10.5417 12.0208 10.9583L17 15.9375L15.9375 17ZM8 11.5C8.97222 11.5 9.79861 11.1597 10.4792 10.4792C11.1597 9.79861 11.5 8.97222 11.5 8C11.5 7.02778 11.1597 6.20139 10.4792 5.52083C9.79861 4.84028 8.97222 4.5 8 4.5C7.02778 4.5 6.20139 4.84028 5.52083 5.52083C4.84028 6.20139 4.5 7.02778 4.5 8C4.5 8.97222 4.84028 9.79861 5.52083 10.4792C6.20139 11.1597 7.02778 11.5 8 11.5Z"
+        "M15.9375 17L10.9583 12.0208C10.5417 12.3264 10.0848 12.566 9.58771 12.7396C9.09062 12.9132 8.5616 13 8.00063 13C6.61132 13 5.43056 12.5139 4.45833 11.5417C3.48611 10.5694 3 9.38889 3 8C3 6.61111 3.48611 5.43056 4.45833 4.45833C5.43056 3.48611 6.61111 3 8 3C9.38889 3 10.5694 3.48611 11.5417 4.45833C12.5139 5.43056 13 6.61132 13 8.00063C13 8.5616 12.9132 9.09062 12.7396 9.58771C12.566 10.0848 12.3264 10.5417 12.0208 10.9583L17 15.9375L15.9375 17ZM8 11.5C8.97222 11.5 9.79861 11.1597 10.4792 10.4792C11.1597 9.79861 11.5 8.97222 11.5 8C11.5 7.02778 11.1597 6.20139 10.4792 5.52083C9.79861 4.84028 8.97222 4.5 8 4.5C7.02778 4.5 6.20139 4.84028 5.52083 5.52083C4.84028 6.20139 4.5 7.02778 4.5 8C4.5 8.97222 4.84028 9.79861 5.52083 10.4792C6.20139 11.1597 7.02778 11.5 8 11.5Z"
       ],
       "requiredBySource": true,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/search/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/search/default/20px.svg"
     },
     "shield_lock": {
       "figmaName": "Icon/Material/shield_lock",
       "figmaNodeId": "1008:330",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M10 18C8.125 17.5417 6.57292 16.4803 5.34375 14.8158C4.11458 13.1513 3.5 11.3029 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.3029 15.8854 13.1513 14.6562 14.8158C13.4271 16.4803 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9896 12.6389 15.0938 13.5833 13.75C14.5278 12.4062 15 10.9132 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9132 5.47222 12.4062 6.41667 13.75C7.36111 15.0938 8.55556 15.9896 10 16.4375ZM7.5 12.5H12.5V8.5H11.5V8C11.5 7.5875 11.3527 7.23438 11.0581 6.94063C10.7635 6.64688 10.4094 6.5 9.99563 6.5C9.58188 6.5 9.22917 6.64688 8.9375 6.94063C8.64583 7.23438 8.5 7.5875 8.5 8V8.5H7.5V12.5ZM9.25 8.5V8C9.25 7.7875 9.32146 7.60938 9.46438 7.46562C9.60729 7.32187 9.78438 7.25 9.99563 7.25C10.2069 7.25 10.3854 7.32187 10.5312 7.46562C10.6771 7.60938 10.75 7.7875 10.75 8V8.5H9.25Z"
+        "M10 18C8.125 17.5417 6.57292 16.4803 5.34375 14.8158C4.11458 13.1513 3.5 11.3029 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.3029 15.8854 13.1513 14.6562 14.8158C13.4271 16.4803 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9896 12.6389 15.0938 13.5833 13.75C14.5278 12.4062 15 10.9132 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9132 5.47222 12.4062 6.41667 13.75C7.36111 15.0938 8.55556 15.9896 10 16.4375ZM7.5 12.5H12.5V8.5H11.5V8C11.5 7.5875 11.3527 7.23438 11.0581 6.94063C10.7635 6.64688 10.4094 6.5 9.99563 6.5C9.58187 6.5 9.22917 6.64688 8.9375 6.94063C8.64583 7.23438 8.5 7.5875 8.5 8V8.5H7.5V12.5ZM9.25 8.5V8C9.25 7.7875 9.32146 7.60937 9.46438 7.46562C9.60729 7.32187 9.78438 7.25 9.99563 7.25C10.2069 7.25 10.3854 7.32187 10.5312 7.46562C10.6771 7.60937 10.75 7.7875 10.75 8V8.5H9.25Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/shield_lock/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/shield_lock/default/20px.svg"
     },
     "star_rate": {
       "figmaName": "Icon/Material/star_rate",
       "figmaNodeId": "1008:325",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M7.875 12.9792L10 11.3542L12.125 12.9792L11.3333 10.3958L13.7083 8.5H10.8542L10 5.875L9.16667 8.5H6.29167L8.6875 10.3958L7.875 12.9792ZM5.0625 17L6.9375 10.9375L2 7H8.0625L10 1L11.9375 7H18L13.0625 10.9375L14.9375 17L10 13.25L5.0625 17Z"
+        "M7.875 13.9792L10 12.3542L12.125 13.9792L11.3333 11.3958L13.7083 9.5H10.8542L10 6.875L9.16667 9.5H6.29167L8.6875 11.3958L7.875 13.9792ZM5.0625 18L6.9375 11.9375L2 8H8.0625L10 2L11.9375 8H18L13.0625 11.9375L14.9375 18L10 14.25L5.0625 18Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/star_rate/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/star_rate/default/20px.svg"
     },
     "trending_down": {
       "figmaName": "Icon/Material/trending_down",
@@ -294,7 +420,7 @@
         "M13 14.8229V13.3229H15.4375L11.0208 8.92709L7.85417 12.0938L2 6.23959L3.0625 5.17709L7.85417 9.96876L11.0208 6.80209L16.5 12.2604V9.82293H18V14.8229H13Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/trending_down/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/trending_down/default/20px.svg"
     },
     "trending_up": {
       "figmaName": "Icon/Material/trending_up",
@@ -304,17 +430,17 @@
         "M3.0625 14.8229L2 13.7604L7.85417 7.90626L11.0208 11.0729L15.4375 6.67709H13V5.17709H18V10.1771H16.5V7.73959L11.0208 13.1979L7.85417 10.0313L3.0625 14.8229Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/trending_up/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/trending_up/default/20px.svg"
     },
     "upload": {
       "figmaName": "Icon/Material/upload",
       "figmaNodeId": "1050:17",
       "viewBox": "0 0 20 20",
       "paths": [
-        "M9.25 13.5V6.375L7.0625 8.5625L6 7.5L10 3.5L14 7.5L12.9375 8.5625L10.75 6.375V13.5H9.25ZM5.49417 16.5C5.08139 16.5 4.72917 16.3531 4.4375 16.0594C4.14583 15.7656 4 15.4125 4 15V13.5H5.5V15H14.5V13.5H16V15C16 15.4125 15.8531 15.7656 15.5592 16.0594C15.2653 16.3531 14.9119 16.5 14.4992 16.5H5.49417Z"
+        "M9.25 13.5V6.375L7.0625 8.5625L6 7.5L10 3.5L14 7.5L12.9375 8.5625L10.75 6.375V13.5H9.25ZM4 16.5V13.5H5.5V15H14.5V13.5H16V16.5H4Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/upload/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/upload/default/20px.svg"
     },
     "verified": {
       "figmaName": "Icon/Material/verified",
@@ -324,7 +450,7 @@
         "M7.22917 18.5L5.66667 15.9167L2.72917 15.25L3 12.25L1 10L3 7.75L2.72917 4.75L5.66667 4.08333L7.22917 1.5L10 2.6875L12.7708 1.5L14.3333 4.08333L17.2708 4.75L17 7.75L19 10L17 12.25L17.2708 15.25L14.3333 15.9167L12.7708 18.5L10 17.3125L7.22917 18.5ZM7.83333 16.6042L10 15.6875L12.1667 16.6042L13.375 14.5833L15.6667 14.0625L15.4583 11.75L17 10L15.4583 8.25L15.6667 5.9375L13.375 5.41667L12.1667 3.39583L10 4.3125L7.83333 3.39583L6.625 5.41667L4.33333 5.91667L4.54167 8.25L3 10L4.5625 11.75L4.33333 14.0833L6.625 14.6042L7.83333 16.6042ZM8.9375 13L13.8958 8.0625L12.8333 7L8.9375 10.875L7.16667 9.125L6.10417 10.1875L8.9375 13Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/verified/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/verified/default/20px.svg"
     },
     "verified_user": {
       "figmaName": "Icon/Material/verified_user",
@@ -334,7 +460,37 @@
         "M9.125 12.9375L13.7083 8.33333L12.6458 7.27083L9.125 10.8125L7.35417 9.04167L6.29167 10.1042L9.125 12.9375ZM10 18C8.125 17.5417 6.57292 16.4803 5.34375 14.8158C4.11458 13.1513 3.5 11.3029 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.3029 15.8854 13.1513 14.6562 14.8158C13.4271 16.4803 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9896 12.6389 15.0938 13.5833 13.75C14.5278 12.4062 15 10.9132 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9132 5.47222 12.4062 6.41667 13.75C7.36111 15.0938 8.55556 15.9896 10 16.4375Z"
       ],
       "requiredBySource": false,
-      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/verified_user/default/20px.svg"
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/verified_user/default/20px.svg"
+    },
+    "visibility": {
+      "figmaName": "Icon/Material/visibility",
+      "figmaNodeId": "1130:46",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M12.4792 12.4792C13.1597 11.7986 13.5 10.9722 13.5 10C13.5 9.02778 13.1597 8.20139 12.4792 7.52083C11.7986 6.84028 10.9722 6.5 10 6.5C9.02778 6.5 8.20139 6.84028 7.52083 7.52083C6.84028 8.20139 6.5 9.02778 6.5 10C6.5 10.9722 6.84028 11.7986 7.52083 12.4792C8.20139 13.1597 9.02778 13.5 10 13.5C10.9722 13.5 11.7986 13.1597 12.4792 12.4792ZM8.58333 11.4167C8.19444 11.0278 8 10.5556 8 10C8 9.44444 8.19444 8.97222 8.58333 8.58333C8.97222 8.19444 9.44444 8 10 8C10.5556 8 11.0278 8.19444 11.4167 8.58333C11.8056 8.97222 12 9.44444 12 10C12 10.5556 11.8056 11.0278 11.4167 11.4167C11.0278 11.8056 10.5556 12 10 12C9.44444 12 8.97222 11.8056 8.58333 11.4167ZM4.58333 14.3646C2.95833 13.2743 1.76389 11.8194 1 10C1.76389 8.18056 2.95833 6.72569 4.58333 5.63542C6.20833 4.54514 8.01389 4 10 4C11.9861 4 13.7917 4.54514 15.4167 5.63542C17.0417 6.72569 18.2361 8.18056 19 10C18.2361 11.8194 17.0417 13.2743 15.4167 14.3646C13.7917 15.4549 11.9861 16 10 16C8.01389 16 6.20833 15.4549 4.58333 14.3646ZM14.3125 13.2917C15.6319 12.4861 16.6458 11.3889 17.3542 10C16.6458 8.61111 15.6319 7.51389 14.3125 6.70833C12.9931 5.90278 11.5556 5.5 10 5.5C8.44444 5.5 7.00694 5.90278 5.6875 6.70833C4.36806 7.51389 3.35417 8.61111 2.64583 10C3.35417 11.3889 4.36806 12.4861 5.6875 13.2917C7.00694 14.0972 8.44444 14.5 10 14.5C11.5556 14.5 12.9931 14.0972 14.3125 13.2917Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/visibility/default/20px.svg"
+    },
+    "visibility_off": {
+      "figmaName": "Icon/Material/visibility_off",
+      "figmaNodeId": "1130:52",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M13.2708 10.625L11.9792 9.33334C12.0347 8.80557 11.875 8.35071 11.5 7.96876C11.125 7.58682 10.6736 7.42362 10.1458 7.47918L8.85417 6.18751C9.03472 6.11807 9.22222 6.06598 9.41667 6.03126C9.61111 5.99654 9.80556 5.97918 10 5.97918C10.9722 5.97918 11.7986 6.31945 12.4792 7.00001C13.1597 7.68057 13.5 8.50695 13.5 9.47918C13.5 9.67362 13.4826 9.86807 13.4479 10.0625C13.4132 10.257 13.3542 10.4445 13.2708 10.625ZM16.0417 13.3958L14.9583 12.3125C15.4583 11.9236 15.9132 11.4965 16.3229 11.0313C16.7326 10.566 17.0764 10.0486 17.3542 9.47918C16.6736 8.0764 15.6701 6.9757 14.3438 6.17709C13.0174 5.37848 11.5694 4.97918 10 4.97918C9.63889 4.97918 9.28472 5.00001 8.9375 5.04168C8.59028 5.08334 8.25 5.15279 7.91667 5.25001L6.70833 4.04168C7.23611 3.83334 7.77431 3.68751 8.32292 3.60418C8.87153 3.52084 9.43056 3.47918 10 3.47918C11.9861 3.47918 13.8021 4.01737 15.4479 5.09376C17.0938 6.17015 18.2778 7.63195 19 9.47918C18.6944 10.2708 18.2882 10.9896 17.7812 11.6354C17.2743 12.2813 16.6944 12.8681 16.0417 13.3958ZM16 17.6042L13.2917 14.8958C12.7639 15.0903 12.2257 15.2361 11.6771 15.3333C11.1285 15.4306 10.5694 15.4792 10 15.4792C8.01389 15.4792 6.19792 14.941 4.55208 13.8646C2.90625 12.7882 1.72222 11.3264 1 9.47918C1.30556 8.68751 1.70833 7.96529 2.20833 7.31251C2.70833 6.65973 3.29167 6.06945 3.95833 5.54168L1.875 3.45834L2.9375 2.39584L17.0625 16.5417L16 17.6042ZM5.02083 6.62501C4.53472 7.0139 4.08333 7.44098 3.66667 7.90626C3.25 8.37154 2.90972 8.89584 2.64583 9.47918C3.32639 10.882 4.32986 11.9826 5.65625 12.7813C6.98264 13.5799 8.43056 13.9792 10 13.9792C10.3611 13.9792 10.7153 13.9549 11.0625 13.9063C11.4097 13.8576 11.7569 13.7917 12.1042 13.7083L11.1667 12.7708C10.9722 12.8403 10.7778 12.8924 10.5833 12.9271C10.3889 12.9618 10.1944 12.9792 10 12.9792C9.02778 12.9792 8.20139 12.6389 7.52083 11.9583C6.84028 11.2778 6.5 10.4514 6.5 9.47918C6.5 9.28473 6.52431 9.09029 6.57292 8.89584C6.62153 8.7014 6.66667 8.50696 6.70833 8.31251L5.02083 6.62501Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/visibility_off/default/20px.svg"
+    },
+    "warning": {
+      "figmaName": "Icon/Material/warning",
+      "figmaNodeId": "1130:58",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M1 17.5L10 2.5L19 17.5H1ZM3.64583 16H16.3542L10 5.41667L3.64583 16ZM10.5312 14.7856C10.6771 14.6427 10.75 14.4656 10.75 14.2544C10.75 14.0431 10.6785 13.8646 10.5356 13.7188C10.3927 13.5729 10.2156 13.5 10.0044 13.5C9.79312 13.5 9.61458 13.5715 9.46875 13.7144C9.32292 13.8573 9.25 14.0344 9.25 14.2456C9.25 14.4569 9.32146 14.6354 9.46438 14.7812C9.60729 14.9271 9.78438 15 9.99563 15C10.2069 15 10.3854 14.9285 10.5312 14.7856ZM9.25 12.5H10.75V8.5H9.25V12.5Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/warning/default/20px.svg"
     }
   }
 }

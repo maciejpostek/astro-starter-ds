@@ -124,7 +124,7 @@
   --text-style-body-small-font-size: var(--font-size-body-small);
   --text-style-body-small-font-weight: var(--font-weight-normal);
   --text-style-body-small-line-height: var(--line-height-normal);
-  --text-style-body-small-letter-spacing: var(--letter-spacing-none);
+  --text-style-body-small-letter-spacing: var(--letter-spacing-tight);
   --text-style-body-small-font-style: var(--font-style-normal);
   --text-style-body-small-text-transform: var(--text-transform-none);
   --text-style-body-small-text-wrap: var(--text-wrap-pretty);
@@ -136,7 +136,7 @@
   --text-style-body-tiny-font-size: var(--font-size-body-tiny);
   --text-style-body-tiny-font-weight: var(--font-weight-normal);
   --text-style-body-tiny-line-height: var(--line-height-normal);
-  --text-style-body-tiny-letter-spacing: var(--letter-spacing-none);
+  --text-style-body-tiny-letter-spacing: var(--letter-spacing-tight);
   --text-style-body-tiny-font-style: var(--font-style-normal);
   --text-style-body-tiny-text-transform: var(--text-transform-none);
   --text-style-body-tiny-text-wrap: var(--text-wrap-pretty);

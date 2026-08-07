@@ -29,7 +29,7 @@ const references = (source) =>
 
 const canonicalFiles = {
   "color-primitives.css": 69,
-  "color-semantic.css": 49,
+  "color-semantic.css": 54,
   "color-components.css": 101,
   "size-primitives.css": 25,
   "size-semantic.css": 52,
@@ -39,7 +39,8 @@ const canonicalFiles = {
   "layout-foundations.css": 7,
   "layout-semantic.css": 11,
   "motion-foundations.css": 7,
-  "elevation-foundations.css": 6
+  "elevation-foundations.css": 12,
+  "interaction-effects.css": 1
 };
 
 const sources = new Map();
@@ -89,6 +90,7 @@ const expectedImports = [
   "motion-foundations.css",
   "elevation-foundations.css",
   "color-components.css",
+  "interaction-effects.css",
   "component-sizes.css",
   "design-system-components.css"
 ];
@@ -199,8 +201,12 @@ for (const contract of [
 
 const elevationFoundations = sources.get("elevation-foundations.css") ?? "";
 for (const contract of [
+  "--elevation-primitive-subtle:",
   "--elevation-primitive-raised:",
-  "--elevation-surface-floating:"
+  "--elevation-primitive-control-thumb:",
+  "--elevation-surface-floating:",
+  "--elevation-control-raised:",
+  "--elevation-control-thumb:"
 ]) {
   if (!elevationFoundations.includes(contract)) {
     fail(`Missing elevation contract: ${contract}`);
@@ -263,7 +269,7 @@ const figmaRepresentedVariableCount =
   canonicalFiles["size-primitives.css"] +
   canonicalFiles["size-semantic.css"] +
   6 +
-  19 +
+  18 +
   11 +
   2 +
   canonicalFiles["layout-semantic.css"] +

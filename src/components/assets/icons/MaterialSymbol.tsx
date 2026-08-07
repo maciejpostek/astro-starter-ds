@@ -29,6 +29,7 @@ export default function MaterialSymbol({
       fill="currentColor"
       focusable="false"
       height={size}
+      preserveAspectRatio="xMidYMid meet"
       role={label ? "img" : undefined}
       viewBox={icon.viewBox}
       width={size}

@@ -63,10 +63,15 @@ Allowed sync statuses: `figma-only`, `astro-only`, `mapped`,
 
 The curated icon contract is `src/data/design-system/iconLibrary.json`.
 
-- Figma keeps 30 `Icon/Material/<google_snake_case_name>` masters.
+- Figma keeps 45 `Icon/Material/<google_snake_case_name>` masters.
 - Astro renders local inline SVG through
   `src/components/assets/icons/MaterialSymbol.astro` or `.tsx`.
-- Active profile: Outlined, optical size 20, weight 400, grade 0, fill 0.
+- Active profile: Sharp, optical size 20, weight 400, grade 0, fill 0.
+- Every icon master keeps a `20 × 20` inner group with locked 1:1 aspect ratio
+  and horizontal `Fill container` sizing.
+- Astro glyphs inherit color through `currentColor`. The consumer parent owns
+  both dimensions through one shared size value (`1em` by default), while
+  `preserveAspectRatio="xMidYMid meet"` protects the glyph geometry.
 - Lucide, icon fonts, runtime icon requests, Unicode glyph fallbacks, and
   pasted consumer SVG paths are forbidden.
 - A consumer component owns one fixed semantic icon across all states.

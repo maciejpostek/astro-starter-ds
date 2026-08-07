@@ -19,6 +19,11 @@ export const elevationTokenGroups: ElevationTokenGroup[] = [
       "Raw shadow compositions reuse the sizing scale and a stable neutral primitive. Components do not consume this layer directly.",
     rows: [
       {
+        token: "--elevation-primitive-subtle",
+        value: "0 1px 2px neutral-950 / 3%",
+        role: "Minimal separation for a low-elevation surface.",
+      },
+      {
         token: "--elevation-primitive-raised",
         value: "0 8px 24px neutral-950 / 12%",
         role: "Low separation for a raised surface.",
@@ -33,6 +38,16 @@ export const elevationTokenGroups: ElevationTokenGroup[] = [
         value: "0 12px 32px neutral-950 / 16%",
         role: "Strong separation for an overlay above page content.",
       },
+      {
+        token: "--elevation-primitive-control-raised",
+        value: "0 1px 3px neutral-950 / 12%",
+        role: "Compact separation for a raised interactive control.",
+      },
+      {
+        token: "--elevation-primitive-control-thumb",
+        value: "0 2px 4px neutral-950 / 8%, 0 4px 8px neutral-950 / 6%",
+        role: "Two-layer depth for a thumb or draggable handle.",
+      },
     ],
   },
   {
@@ -41,6 +56,11 @@ export const elevationTokenGroups: ElevationTokenGroup[] = [
     description:
       "Reusable UI selects elevation by relationship to surrounding content, not by copied coordinates or blur values.",
     rows: [
+      {
+        token: "--elevation-surface-subtle",
+        value: "var(--elevation-primitive-subtle)",
+        role: "A surface with minimal separation from its parent.",
+      },
       {
         token: "--elevation-surface-raised",
         value: "var(--elevation-primitive-raised)",
@@ -58,12 +78,30 @@ export const elevationTokenGroups: ElevationTokenGroup[] = [
       },
     ],
   },
+  {
+    id: "elevation-semantic-controls",
+    title: "Semantic control roles",
+    description:
+      "Compact controls use dedicated elevation roles so their depth is not approximated with surface shadows or border effects.",
+    rows: [
+      {
+        token: "--elevation-control-raised",
+        value: "var(--elevation-primitive-control-raised)",
+        role: "A compact interactive control lifted from its surrounding surface.",
+      },
+      {
+        token: "--elevation-control-thumb",
+        value: "var(--elevation-primitive-control-thumb)",
+        role: "A switch, slider, or draggable thumb above its track.",
+      },
+    ],
+  },
 ];
 
 export const elevationAgenticRules = [
   {
     title: "Choose by relationship",
-    text: "Use raised, floating, or overlay according to the surface relationship. Do not choose a shadow by visual intensity alone.",
+    text: "Use subtle, raised, floating, or overlay according to the surface relationship. Use control roles only for compact interactive elements.",
   },
   {
     title: "Keep rings separate",

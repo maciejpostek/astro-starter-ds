@@ -23,6 +23,10 @@ import {
       description="Elevation communicates a surface relationship. The examples use the semantic contracts that reusable components consume."
     >
       <div class="ds-elevation-preview-grid">
+        <article class="ds-elevation-preview" data-elevation="subtle">
+          <h3>Subtle</h3>
+          <p>Minimal separation for low-elevation surfaces.</p>
+        </article>
         <article class="ds-elevation-preview" data-elevation="raised">
           <h3>Raised</h3>
           <p>Low separation from the parent surface.</p>
@@ -35,6 +39,18 @@ import {
           <h3>Overlay</h3>
           <p>High-priority content above the page canvas.</p>
         </article>
+      </div>
+      <div class="ds-elevation-control-preview-grid">
+        <div class="ds-elevation-control-preview">
+          <h3>Control Raised</h3>
+          <button type="button">Action</button>
+        </div>
+        <div class="ds-elevation-control-preview">
+          <h3>Control Thumb</h3>
+          <span class="ds-elevation-switch-track" aria-hidden="true">
+            <span class="ds-elevation-switch-thumb"></span>
+          </span>
+        </div>
       </div>
     </DsDocSection>
 
@@ -104,9 +120,17 @@ import {
 
   .ds-elevation-preview-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--gap-large);
     padding: var(--component-padding-large);
+    background: var(--color-background-muted);
+  }
+
+  .ds-elevation-control-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-large);
+    padding: 0 var(--component-padding-large) var(--component-padding-large);
     background: var(--color-background-muted);
   }
 
@@ -117,6 +141,10 @@ import {
     gap: var(--gap-small);
     background: var(--color-background-canvas);
     padding: var(--component-padding-large);
+  }
+
+  .ds-elevation-preview[data-elevation="subtle"] {
+    box-shadow: var(--elevation-surface-subtle);
   }
 
   .ds-elevation-preview[data-elevation="raised"] {
@@ -131,8 +159,48 @@ import {
     box-shadow: var(--elevation-surface-overlay);
   }
 
+  .ds-elevation-control-preview {
+    display: grid;
+    min-height: var(--size-112);
+    place-items: center;
+    align-content: center;
+    gap: var(--gap-regular);
+    background: var(--color-background-canvas);
+    padding: var(--component-padding-large);
+  }
+
+  .ds-elevation-control-preview button {
+    border: var(--border-width-default) solid var(--color-border-default);
+    border-radius: var(--radius-small);
+    padding: var(--component-padding-small) var(--component-padding-medium);
+    color: var(--color-text-primary);
+    background: var(--color-background-surface);
+    box-shadow: var(--elevation-control-raised);
+    font: inherit;
+  }
+
+  .ds-elevation-switch-track {
+    display: flex;
+    width: var(--size-40);
+    height: var(--size-24);
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: var(--radius-full);
+    padding: var(--size-4);
+    background: var(--color-background-accent);
+  }
+
+  .ds-elevation-switch-thumb {
+    width: var(--size-16);
+    height: var(--size-16);
+    border-radius: var(--radius-full);
+    background: var(--color-background-canvas);
+    box-shadow: var(--elevation-control-thumb);
+  }
+
   .ds-elevation-preview h3,
-  .ds-elevation-preview p {
+  .ds-elevation-preview p,
+  .ds-elevation-control-preview h3 {
     margin: 0;
   }
 
@@ -158,7 +226,8 @@ import {
   }
 
   @media (width < 64rem) {
-    .ds-elevation-preview-grid {
+    .ds-elevation-preview-grid,
+    .ds-elevation-control-preview-grid {
       grid-template-columns: 1fr;
     }
   }

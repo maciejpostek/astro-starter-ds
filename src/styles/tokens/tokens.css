@@ -24,8 +24,9 @@
 @import "./elevation-foundations.css";
 
 /* Component contracts
- * Component-specific colors and shared component size profiles.
+ * Component-specific colors, interaction effects and shared size profiles.
  */
 @import "./color-components.css";
+@import "./interaction-effects.css";
 @import "./component-sizes.css";
 @import "./design-system-components.css";

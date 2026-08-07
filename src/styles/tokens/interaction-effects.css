@@ -1,0 +1,12 @@
+:root {
+  /*
+   * Shared keyboard-focus treatment.
+   *
+   * CSS paints the first shadow on top, so the surface-colored 2 px offset is
+   * listed before the 4 px focus ring. This matches the Figma Effect Style
+   * named "Focused".
+   */
+  --effect-focused:
+    0 0 0 var(--size-2) var(--color-state-focus-ring-offset),
+    0 0 0 var(--size-4) var(--component-focus-ring);
+}

@@ -304,8 +304,13 @@ background/canvas
 background/surface
 background/subtle
 background/muted
+background/strong
 background/inverse
+background/accent-subtle
 background/accent
+background/accent-strong
+background/overlay
+background/media-overlay
 ```
 
 ### Definicje
@@ -316,14 +321,21 @@ background/accent
 | `surface` | Domyślna neutralna powierzchnia komponentu, panelu lub sekcji. |
 | `subtle` | Powierzchnia wymagająca delikatnego odróżnienia od otoczenia. |
 | `muted` | Powierzchnia celowo obniżona w hierarchii lub wyciszona. |
+| `strong` | Mocniejsza neutralna powierzchnia, np. stan hover po `muted`. |
 | `inverse` | Powierzchnia o odwróconym kontraście wobec canvasu. |
-| `accent` | Powierzchnia wykorzystująca kolor marki do wyróżnienia. |
+| `accent-subtle` | Akcentowa powierzchnia o najniższym nacisku. |
+| `accent` | Domyślna akcentowa powierzchnia wykorzystująca kolor marki. |
+| `accent-strong` | Akcentowa powierzchnia o najwyższym nacisku. |
+| `overlay` | Ogólna półprzezroczysta warstwa nakładana nad interfejsem. |
+| `media-overlay` | Mocniejsza nakładka zapewniająca kontrast treści na mediach. |
 
 ### Reguły Użycia Powierzchni
 
 - Tokeny powierzchni nie definiują obowiązkowego zagnieżdżenia.
-- `surface`, `subtle` i `muted` mogą występować na dowolnym poziomie layoutu,
-  jeżeli ich rola odpowiada definicji.
+- `surface`, `subtle`, `muted` i `strong` mogą występować na dowolnym poziomie
+  layoutu, jeżeli ich rola odpowiada definicji.
+- Poziomy `accent-subtle`, `accent` i `accent-strong` opisują nacisk, a nie
+  stały kierunek numerów palety; ich aliasy odwracają się w dark mode.
 - `subtle` nie musi znajdować się wewnątrz `surface`.
 - Jeden element otrzymuje token na podstawie swojej roli, nie na podstawie
   tokena użytego przez rodzica.
@@ -338,8 +350,13 @@ body                         → background/canvas
 sidebar                      → background/surface
 niezależna sekcja pomocnicza → background/subtle
 wyciszony rekord tabeli      → background/muted
+hover neutralnego switcha    → background/strong
 ciemna sekcja CTA            → background/inverse
+delikatny brandowy panel     → background/accent-subtle
 brandowy banner              → background/accent
+aktywny brandowy control     → background/accent-strong
+modal backdrop               → background/overlay
+tekst na zdjęciu             → background/media-overlay
 ```
 
 ## 4.3 Text
@@ -369,7 +386,10 @@ border/subtle
 border/default
 border/strong
 border/inverse
+border/accent-subtle
 border/accent
+border/accent-strong
+border/on-media
 ```
 
 ### Definicje
@@ -380,7 +400,21 @@ border/accent
 | `default` | Standardowy border komponentu. |
 | `strong` | Wyraźne oddzielenie lub podkreślenie hierarchii. |
 | `inverse` | Border na powierzchniach o odwróconym kontraście. |
-| `accent` | Brandowe wyróżnienie lub zaznaczenie. |
+| `accent-subtle` | Najdelikatniejsze akcentowe obramowanie. |
+| `accent` | Domyślne akcentowe wyróżnienie lub zaznaczenie. |
+| `accent-strong` | Najmocniejsze akcentowe obramowanie. |
+| `on-media` | Półprzezroczyste obramowanie elementu umieszczonego na mediach. |
+
+Neutralne role borderów współdzielą wartości z powierzchniami:
+
+```text
+border/subtle  = background/subtle
+border/default = background/muted
+border/strong  = background/strong
+```
+
+Trzy role akcentowe borderów odpowiadają bezpośrednio trzem rolom akcentowym
+backgroundów w każdym trybie kolorystycznym.
 
 ## 4.5 Icon
 
@@ -1413,8 +1447,13 @@ Zasady:
 - role mogą zostać zmienione niezależnie podczas eksploracji na osobnych
   branchach,
 - zmiana fonta nie wymaga edycji semantic ani component typography tokens,
-- `font-family-mono` powstaje tylko wtedy, gdy interfejs zawiera kod, dane
-  techniczne lub treści wymagające fonta monospace,
+- `font-family-mono` jest wewnętrzną zależnością dokumentacji i code snippetów;
+  nie jest publiczną rolą typograficzną ani standardową zmienną eksportowaną
+  do Figmy; Paper może przechować nieużywany token techniczny dla jawnego code
+  snippetu,
+- w Figmie i Paper font mono może zostać użyty wyłącznie lokalnie w jawnym
+  przykładzie lub komponencie code snippet; nie stosujemy go do captionów,
+  metadanych, labeli ani zwykłego tekstu interfejsu,
 - fallbacki są częścią wartości font-family foundation.
 
 ## 14.3 Font Weight

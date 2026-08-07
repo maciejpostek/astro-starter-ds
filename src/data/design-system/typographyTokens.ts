@@ -88,7 +88,7 @@ export const fontFamilyRows: TypographyFoundationRow[] = [
     token: "--font-family-mono",
     value: '"Roboto Mono", system mono stack',
     minMax: "n/a",
-    role: "Code, captions and compact utility text.",
+    role: "Internal documentation UI and code snippets only; excluded from public Text Styles and standard design-tool typography.",
     sample: "Mono 0123",
     sampleStyle: "font-family: var(--font-family-mono); font-size: var(--font-size-body-small);",
   },
@@ -429,7 +429,7 @@ export const transformRows: TypographyFoundationRow[] = [
     minMax: "n/a",
     role: "Reusable uppercase transform for captions and utility metadata.",
     sample: "Uppercase metadata",
-    sampleStyle: "text-transform: var(--text-transform-uppercase); font-family: var(--font-family-mono); font-size: var(--font-size-body-tiny);",
+    sampleStyle: "text-transform: var(--text-transform-uppercase); font-family: var(--font-family-body); font-size: var(--font-size-body-tiny);",
   },
   {
     token: "--text-transform-lowercase",
@@ -628,8 +628,8 @@ const bodySemanticDefinitions = [
   { size: "large", label: "Large", letterSpacing: "--letter-spacing-tight" },
   { size: "medium", label: "Medium", letterSpacing: "--letter-spacing-tight" },
   { size: "base", label: "Base", letterSpacing: "--letter-spacing-tight" },
-  { size: "small", label: "Small", letterSpacing: "--letter-spacing-none" },
-  { size: "tiny", label: "Tiny", letterSpacing: "--letter-spacing-none" },
+  { size: "small", label: "Small", letterSpacing: "--letter-spacing-tight" },
+  { size: "tiny", label: "Tiny", letterSpacing: "--letter-spacing-tight" },
 ] as const;
 
 const bodySemanticRows: SemanticTypographyRow[] = bodySemanticDefinitions.flatMap(
@@ -984,6 +984,6 @@ export const typographyAgenticRules: TypographyAgenticRule[] = [
   {
     name: "typography.components-own-compact-text",
     title: "Reusable components own compact text",
-    text: "Components such as Button, Tag, Label and Eyebrow define their own local typography using foundation tokens. Do not add component-based typography tokens unless a repeated cross-component contract appears.",
+    text: "Components such as Button, Tag, Label and Eyebrow define their own local typography using foundation tokens. Every component-owned text style uses `--letter-spacing-tight` (`-0.01em`), matching native `-1%` tracking in Figma. Do not add per-component typography tokens for this shared value.",
   },
 ];

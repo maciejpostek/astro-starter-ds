@@ -51,6 +51,18 @@ Example code syntax:
 | Figma path | Web code syntax |
 | --- | --- |
 | `Global/background/canvas` | `var(--color-background-canvas)` |
+| `Global/background/strong` | `var(--color-background-strong)` |
+| `Global/background/accent-subtle` | `var(--color-background-accent-subtle)` |
+| `Global/background/accent` | `var(--color-background-accent)` |
+| `Global/background/accent-strong` | `var(--color-background-accent-strong)` |
+| `Global/background/media-overlay` | `var(--color-background-media-overlay)` |
+| `Global/border/subtle` | `var(--color-border-subtle)` |
+| `Global/border/default` | `var(--color-border-default)` |
+| `Global/border/strong` | `var(--color-border-strong)` |
+| `Global/border/accent-subtle` | `var(--color-border-accent-subtle)` |
+| `Global/border/accent` | `var(--color-border-accent)` |
+| `Global/border/accent-strong` | `var(--color-border-accent-strong)` |
+| `Global/border/on-media` | `var(--color-border-on-media)` |
 | `Global/text/primary` | `var(--color-text-primary)` |
 | `Component/button/primary/background/default` | `var(--button-primary-background-default)` |
 | `Component/input/border/focus` | `var(--input-border-focus)` |
@@ -89,6 +101,10 @@ is only a Variables-panel representation.
 - Do not add a project prefix to collection or Variable names.
 - Do not name the collection only `Color`.
 - Do not create `Semantic/Global`; use `Global` directly.
+- Keep all global background roles directly inside `Global/background`; do not
+  create nested `accent/*` or `media/*` groups.
+- Keep all global border roles directly inside `Global/border`; do not create
+  nested `accent/*` or `on/*` groups.
 - Do not rename the `link` variant to a nonexistent `tertiary` variant.
 - Do not copy HEX values from Figma into an Astro component.
 - Do not reconstruct the CSS name from a path when Web code syntax exists.

@@ -14,8 +14,11 @@
   --color-background-surface: var(--color-neutral-50);
   --color-background-subtle: var(--color-neutral-100);
   --color-background-muted: var(--color-neutral-200);
+  --color-background-strong: var(--color-neutral-300);
   --color-background-inverse: var(--color-neutral-950);
-  --color-background-accent: var(--color-accent-600);
+  --color-background-accent-subtle: var(--color-accent-300);
+  --color-background-accent: var(--color-accent-500);
+  --color-background-accent-strong: var(--color-accent-700);
   --color-background-overlay: oklch(14.5% 0 0 / 22%);
   --color-background-media-overlay: oklch(14.5% 0 0 / 78%);
 
@@ -32,11 +35,13 @@
   /* Borders
    * Boundary strength plus inverse and accent roles.
    */
-  --color-border-subtle: var(--color-neutral-200);
-  --color-border-default: var(--color-neutral-300);
-  --color-border-strong: var(--color-neutral-500);
+  --color-border-subtle: var(--color-neutral-100);
+  --color-border-default: var(--color-neutral-200);
+  --color-border-strong: var(--color-neutral-300);
   --color-border-inverse: var(--color-neutral-700);
-  --color-border-accent: var(--color-accent-600);
+  --color-border-accent-subtle: var(--color-accent-300);
+  --color-border-accent: var(--color-accent-500);
+  --color-border-accent-strong: var(--color-accent-700);
   --color-border-on-media: oklch(100% 0 0 / 35%);
 
   /* Icons
@@ -101,8 +106,11 @@
   --color-background-surface: var(--color-neutral-900);
   --color-background-subtle: var(--color-neutral-800);
   --color-background-muted: var(--color-neutral-700);
+  --color-background-strong: var(--color-neutral-600);
   --color-background-inverse: var(--color-neutral-0);
+  --color-background-accent-subtle: var(--color-accent-700);
   --color-background-accent: var(--color-accent-500);
+  --color-background-accent-strong: var(--color-accent-300);
   --color-background-overlay: oklch(0% 0 0 / 50%);
   --color-background-media-overlay: oklch(0% 0 0 / 78%);
 
@@ -117,9 +125,11 @@
   /* Borders */
   --color-border-subtle: var(--color-neutral-800);
   --color-border-default: var(--color-neutral-700);
-  --color-border-strong: var(--color-neutral-500);
+  --color-border-strong: var(--color-neutral-600);
   --color-border-inverse: var(--color-neutral-300);
-  --color-border-accent: var(--color-accent-400);
+  --color-border-accent-subtle: var(--color-accent-700);
+  --color-border-accent: var(--color-accent-500);
+  --color-border-accent-strong: var(--color-accent-300);
   --color-border-on-media: oklch(100% 0 0 / 35%);
 
   /* Icons */

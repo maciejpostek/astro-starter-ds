@@ -53,12 +53,12 @@ import {
         <DsSectionHeaderLevel3
           id="typography-foundations-font-families-title"
           title="Font families"
-          description="Foundation font-family tokens keep heading, body and mono roles independent so future font changes do not require rewriting component CSS."
+          description="Heading and body are public font-family roles. Mono is an internal technical role reserved for documentation UI and code snippets."
         />
 
         <DsTypographyFoundationBlock
           name="Font families"
-          description="Primary family roles used by semantic text styles."
+          description="Public semantic families plus the internal documentation/code family. Mono is not a public Text Style or general design-tool typography."
           rows={fontFamilyRows}
           showHeader={false}
         />
@@ -283,7 +283,7 @@ import {
     <DsDocSection
       id="typography-semantic"
       title="Typography Semantic"
-      description="Semantic typography styles define global text contracts used through classes. Body uses a size-first hierarchy with Regular, Regular Underlined and Semi Bold variants at every scale. Figma stores line height and tracking directly in Text Styles as percentages; Astro maps them to unitless line-height and em-based letter-spacing tokens."
+      description="Semantic typography styles define global text contracts used through classes. Body uses a size-first hierarchy with Regular, Regular Underlined and Semi Bold variants at every scale, all with -1% tracking in Figma and -0.01em in Astro. Component-owned text styles use the same tracking contract."
     >
       <section
         id="typography-semantic-global-styles"

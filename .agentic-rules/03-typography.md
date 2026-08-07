@@ -324,12 +324,28 @@ Rules:
 
 - Button, Tag, Label, Eyebrow and similar reusable components should define
   their typography inside the master component.
-- Component typography may use foundation tokens such as `--font-family-mono`,
+- Component typography may use foundation tokens such as
   `--font-size-body-tiny`, `--line-height-compact` and
   `--text-transform-uppercase`.
+- Every component-owned text style uses `--letter-spacing-tight` (`-0.01em`),
+  which maps to native `-1%` tracking in Figma.
+- `--font-family-mono` is internal-only. Use it for documentation UI and code
+  snippets; do not use it for public component labels, captions, metadata or
+  general utility text.
 - Do not create per-component typography variables unless a strong repeated
   cross-component need appears.
 - Component colors may still use component-based color variables.
+
+## Design-tool Projection Rule
+
+- Figma omits `--font-family-mono` from its standard public typography
+  projection. Paper may retain it as an unused technical token so an explicit
+  code snippet can opt in without promoting mono to a public role.
+- Do not create a global Mono Text Style or bind general documentation labels,
+  captions, metadata or component text to Roboto Mono in either tool.
+- Roboto Mono is allowed only on an explicit code-snippet specimen or
+  code-snippet component. This is a scoped technical exception, not a public
+  typography role.
 
 ## Documentation Rules
 

@@ -1,14 +1,15 @@
 /*
  * Design system typography foundations.
- * Heading, body and utility font families remain separate so each role can
- * change independently on an exploration branch.
+ * Heading and body are public typography roles. Mono is an internal technical
+ * role reserved for documentation UI and code snippets.
  */
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap");
 
 :root {
   /* Font families
-   * All primary text roles resolve to Inter loaded through @fontsource/inter.
+   * All public text roles resolve to Inter loaded through @fontsource/inter.
+   * Mono must not back public Text Styles or general design-tool typography.
    */
   --font-family-heading: "Inter", Arial, sans-serif;
   --font-family-body: "Inter", Arial, sans-serif;

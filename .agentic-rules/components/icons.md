@@ -12,10 +12,19 @@ Figma naming: `Icon/Material/<google_snake_case_name>`
 Default optical canvas: `20 × 20`
 License: Apache License 2.0
 
-Use only the 30 curated Google Material Symbols in the manifest. Render each
-glyph as local inline SVG with the Outlined profile: optical size 20, weight 400, grade 0,
+Use only the 45 curated Google Material Symbols in the manifest. Render each
+glyph as local inline SVG with the Sharp profile: optical size 20, weight 400, grade 0,
 fill 0. Lucide, icon fonts, runtime requests, Unicode glyphs, and pasted SVG
 paths in consumers are forbidden.
+
+Each Figma icon master uses a `20 × 20` inner group with locked 1:1 aspect ratio
+and horizontal `Fill container` sizing. The vector remains centered and bound
+to `Color Semantic / Global/icon/primary`.
+
+Astro renderers inherit color through `currentColor`. Parent components control
+both icon dimensions through the shared `size` value; its default `1em` follows
+the parent's font size. Keep width and height equal and use
+`preserveAspectRatio="xMidYMid meet"` so glyph geometry is never distorted.
 
 Do not import the complete Google catalog. Do not expose icon selection from a
 consumer component.
