@@ -3,6 +3,9 @@ interface Props {
   variant?: "header" | "body";
   role?: "row" | "rowgroup";
   state?: string;
+  id?: string;
+  variable?: string;
+  componentName?: string;
   class?: string;
 }
 
@@ -10,15 +13,20 @@ const {
   variant = "body",
   role = "row",
   state,
+  id,
+  variable,
+  componentName = "DsTableRow",
   class: className,
 } = Astro.props as Props;
 ---
 
 <div
+  id={id}
   class:list={["ds-table-row", className]}
-  data-component-name="DsTableRow"
+  data-component-name={componentName}
   data-component-style-state={state}
   data-ds-table-row-variant={variant}
+  data-variable-row={variable}
   role={role}
 >
   <slot />

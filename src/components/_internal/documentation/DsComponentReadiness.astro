@@ -10,7 +10,7 @@ export interface ComponentReadinessRecord {
   family: string;
   status: string;
   sourcePath: string;
-  docsAnchor: string;
+  href: string;
   description: string;
   readiness: Readiness;
 }
@@ -28,7 +28,11 @@ const statusLabel = (value: string) =>
     .join(" ");
 ---
 
-<div class="ds-component-readiness" data-component-readiness>
+<div
+  class="ds-component-readiness"
+  data-component-name="DsComponentReadiness"
+  data-component-readiness
+>
   <form class="ds-component-readiness__filters" data-readiness-filters>
     <label>
       <span>Search</span>
@@ -53,7 +57,7 @@ const statusLabel = (value: string) =>
       <span>Implementation</span>
       <select name="implementation" data-readiness-filter="status">
         <option value="">All statuses</option>
-        {["planned", "draft", "review", "ready", "deprecated"].map((status) => (
+        {["figma-only", "astro-only", "mapped", "intentional-difference", "deprecated"].map((status) => (
           <option value={status}>{statusLabel(status)}</option>
         ))}
       </select>
@@ -108,7 +112,7 @@ const statusLabel = (value: string) =>
               data-validation={record.readiness.validation}
             >
               <th scope="row">
-                <a href={`/design-system/components#${record.docsAnchor}`}>
+                <a href={record.href}>
                   {record.name}
                 </a>
                 <span>{record.description}</span>

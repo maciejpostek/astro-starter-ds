@@ -1,0 +1,232 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
+import DsTableCell from "../../../components/_internal/documentation/DsTableCell.astro";
+import DsTableCopyCell from "../../../components/_internal/documentation/DsTableCopyCell.astro";
+import DsTableFrame from "../../../components/_internal/documentation/DsTableFrame.astro";
+import DsTableRow from "../../../components/_internal/documentation/DsTableRow.astro";
+import DsSectionHeaderLevel3 from "../../../components/_internal/documentation/DsSectionHeaderLevel3.astro";
+import {
+  elevationTokenGroups,
+} from "../../../data/design-system/elevationTokens";
+import {
+  documentationFoundationHeader,
+  documentationFoundationToc,
+} from "../../../data/documentationFoundationRegistry";
+import {
+  documentationTokenMap,
+  getDocumentationTokenValue,
+} from "../../../data/documentationTokenRegistry";
+
+const canonicalTokenValue = (tokenName: string, fallback: string) => {
+  const token = documentationTokenMap.get(tokenName);
+  return token ? getDocumentationTokenValue(token) : fallback;
+};
+const foundationHeader = documentationFoundationHeader("elevation");
+---
+
+<DesignSystemLayout
+  title="Elevation - Astro Design System"
+  pageType="foundation"
+  toc={documentationFoundationToc("elevation")}
+  header={foundationHeader}
+>
+    <DsDocSection
+      id="elevation-visual-roles"
+      title="Elevation Roles"
+      description="Elevation communicates a surface relationship. The examples use the semantic contracts that reusable components consume."
+    >
+      <div class="ds-elevation-preview-grid">
+        <article class="ds-elevation-preview" data-elevation="subtle">
+          <h3 class="heading-h6">Subtle</h3>
+          <p class="body-small-regular">Minimal separation for low-elevation surfaces.</p>
+        </article>
+        <article class="ds-elevation-preview" data-elevation="raised">
+          <h3 class="heading-h6">Raised</h3>
+          <p class="body-small-regular">Low separation from the parent surface.</p>
+        </article>
+        <article class="ds-elevation-preview" data-elevation="floating">
+          <h3 class="heading-h6">Floating</h3>
+          <p class="body-small-regular">Temporary controls such as menus and popovers.</p>
+        </article>
+        <article class="ds-elevation-preview" data-elevation="overlay">
+          <h3 class="heading-h6">Overlay</h3>
+          <p class="body-small-regular">High-priority content above the page canvas.</p>
+        </article>
+      </div>
+      <div class="ds-elevation-control-preview-grid">
+        <div class="ds-elevation-control-preview">
+          <h3 class="heading-h6">Control Raised</h3>
+          <button type="button">Action</button>
+        </div>
+        <div class="ds-elevation-control-preview">
+          <h3 class="heading-h6">Control Thumb</h3>
+          <span class="ds-elevation-switch-track" aria-hidden="true">
+            <span class="ds-elevation-switch-thumb"></span>
+          </span>
+        </div>
+      </div>
+    </DsDocSection>
+
+    {
+      elevationTokenGroups.map((group, index) => (
+        <DsDocSection
+          id={group.id}
+          title={group.title}
+          description={group.description}
+        >
+          <section
+            class="ds-elevation-topic"
+            aria-labelledby={`${group.id}-details-title`}
+          >
+            <DsSectionHeaderLevel3
+              id={`${group.id}-details-title`}
+              title={index === 0 ? "Reference values" : index === 1 ? "Reusable roles" : "Owned contracts"}
+              description="Every row maps to a canonical CSS Variable in elevation-foundations.css."
+            />
+            <DsTableFrame
+              label={`${group.title} elevation tokens`}
+              minWidth="72rem"
+              columns="minmax(22rem, 0.28fr) minmax(24rem, 0.3fr) minmax(34rem, 0.42fr)"
+              size="tiny"
+            >
+              <DsTableRow variant="header">
+                <DsTableCell role="columnheader" variant="header">Token</DsTableCell>
+                <DsTableCell role="columnheader" variant="header">Value</DsTableCell>
+                <DsTableCell role="columnheader" variant="header">Role</DsTableCell>
+              </DsTableRow>
+              {group.rows.map((row) => (
+                <DsTableRow>
+                  <DsTableCopyCell role="cell" value={row.token} />
+                  <DsTableCell role="cell" tone="secondary"><code>{canonicalTokenValue(row.token, row.value)}</code></DsTableCell>
+                  <DsTableCell role="cell" tone="secondary"><span>{row.role}</span></DsTableCell>
+                </DsTableRow>
+              ))}
+            </DsTableFrame>
+          </section>
+        </DsDocSection>
+      ))
+    }
+
+</DesignSystemLayout>
+
+<style>
+  .ds-elevation-topic {
+    display: grid;
+    min-width: 0;
+  }
+
+  .ds-elevation-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap-large);
+    padding: var(--component-padding-large);
+    background: var(--color-background-muted);
+  }
+
+  .ds-elevation-control-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-large);
+    padding: 0 var(--component-padding-large) var(--component-padding-large);
+    background: var(--color-background-muted);
+  }
+
+  .ds-elevation-preview {
+    display: grid;
+    min-height: var(--size-160);
+    align-content: center;
+    gap: var(--gap-small);
+    background: var(--color-background-canvas);
+    padding: var(--component-padding-large);
+  }
+
+  .ds-elevation-preview[data-elevation="subtle"] {
+    box-shadow: var(--elevation-surface-subtle);
+  }
+
+  .ds-elevation-preview[data-elevation="raised"] {
+    box-shadow: var(--elevation-surface-raised);
+  }
+
+  .ds-elevation-preview[data-elevation="floating"] {
+    box-shadow: var(--elevation-surface-floating);
+  }
+
+  .ds-elevation-preview[data-elevation="overlay"] {
+    box-shadow: var(--elevation-surface-overlay);
+  }
+
+  .ds-elevation-control-preview {
+    display: grid;
+    min-height: var(--size-112);
+    place-items: center;
+    align-content: center;
+    gap: var(--gap-regular);
+    background: var(--color-background-canvas);
+    padding: var(--component-padding-large);
+  }
+
+  .ds-elevation-control-preview button {
+    border: var(--border-width-default) solid var(--color-border-default);
+    border-radius: var(--radius-small);
+    padding: var(--component-padding-small) var(--component-padding-medium);
+    color: var(--color-text-primary);
+    background: var(--color-background-surface);
+    box-shadow: var(--elevation-control-raised);
+    font: inherit;
+  }
+
+  .ds-elevation-switch-track {
+    display: flex;
+    width: var(--size-40);
+    height: var(--size-24);
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: var(--radius-full);
+    padding: var(--size-4);
+    background: var(--color-background-accent);
+  }
+
+  .ds-elevation-switch-thumb {
+    width: var(--size-16);
+    height: var(--size-16);
+    border-radius: var(--radius-full);
+    background: var(--color-background-canvas);
+    box-shadow: var(--elevation-control-thumb);
+  }
+
+  .ds-elevation-preview h3,
+  .ds-elevation-preview p,
+  .ds-elevation-control-preview h3 {
+    margin: 0;
+  }
+
+  .ds-elevation-preview p,
+  .ds-elevation-rules span {
+    color: var(--color-text-secondary);
+  }
+
+  .ds-elevation-rules {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    gap: var(--gap-regular);
+    list-style: none;
+  }
+
+  .ds-elevation-rules li {
+    display: grid;
+    gap: var(--gap-tiny);
+    border-left: var(--border-width-emphasis) solid var(--color-border-accent);
+    padding: var(--component-padding-medium);
+    background: var(--color-background-surface);
+  }
+
+  @media (width < 64rem) {
+    .ds-elevation-preview-grid,
+    .ds-elevation-control-preview-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

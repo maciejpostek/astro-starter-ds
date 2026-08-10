@@ -21,8 +21,29 @@
     const restoreTimers = new WeakMap();
 
     const writeClipboard = async (value) => {
-      if (!navigator.clipboard?.writeText) throw new Error("Clipboard API is unavailable.");
-      await navigator.clipboard.writeText(value);
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+
+      const textArea = document.createElement("textarea");
+      const copyCommand = document.execCommand?.bind(document);
+
+      textArea.value = value;
+      textArea.setAttribute("readonly", "");
+      textArea.style.position = "fixed";
+      textArea.style.inset = "0";
+      textArea.style.opacity = "0";
+      textArea.style.pointerEvents = "none";
+
+      document.body.append(textArea);
+      textArea.select();
+
+      const didCopy =
+        typeof copyCommand === "function" && Reflect.apply(copyCommand, document, ["copy"]);
+      textArea.remove();
+
+      if (!didCopy) throw new Error("Clipboard API is unavailable.");
     };
 
     const getTargetValue = (selector) => {
@@ -37,6 +58,12 @@
     };
 
     const getCopyValue = (trigger) => {
+      const sharedValue = trigger.getAttribute("data-copy-value");
+      if (sharedValue) return sharedValue;
+
+      const legacyDsValue = trigger.getAttribute("data-ds-copy-value");
+      if (legacyDsValue) return legacyDsValue;
+
       const explicitValue = trigger.getAttribute("data-clipboard-value");
       if (explicitValue) return explicitValue;
 
@@ -75,7 +102,7 @@
       const target = event.target;
       if (!(target instanceof Element)) return;
 
-      const trigger = target.closest("[data-clipboard-copy]");
+      const trigger = target.closest("[data-copy-value], [data-ds-copy-value], [data-clipboard-copy]");
       if (!(trigger instanceof HTMLElement)) return;
 
       const value = getCopyValue(trigger);
@@ -86,6 +113,15 @@
       try {
         await writeClipboard(value);
         syncLabel(trigger);
+        const toast = document.querySelector("[data-ds-copy-toast]");
+        if (toast instanceof HTMLElement) {
+          toast.textContent = trigger.getAttribute("data-copied-label") ?? "Copied to clipboard";
+          toast.dataset.visible = "true";
+          window.clearTimeout(window.__astroDsCopyToastTimer);
+          window.__astroDsCopyToastTimer = window.setTimeout(() => {
+            toast.dataset.visible = "false";
+          }, 1400);
+        }
         trigger.dispatchEvent(
           new CustomEvent("astro-ds:clipboard-copy", {
             bubbles: true,

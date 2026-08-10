@@ -13,7 +13,10 @@ interface Props {
   gridRow?: number | string;
   flushInline?: boolean;
   flushInlineStart?: boolean;
+  truncate?: boolean;
   componentName?: string;
+  id?: string;
+  variable?: string;
   class?: string;
 }
 
@@ -31,7 +34,10 @@ const {
   gridRow,
   flushInline = false,
   flushInlineStart = false,
+  truncate = false,
   componentName = "DsTableCell",
+  id,
+  variable,
   class: className,
 } = Astro.props as Props;
 const Tag = as;
@@ -50,6 +56,7 @@ const style = [
 ---
 
 <Tag
+  id={id}
   class:list={["ds-table-cell", className]}
   colspan={colspan}
   data-component-name={componentName}
@@ -57,7 +64,9 @@ const style = [
   data-ds-table-cell-flush-inline={flushInline ? "true" : undefined}
   data-ds-table-cell-flush-inline-start={flushInlineStart ? "true" : undefined}
   data-ds-table-cell-tone={tone}
+  data-ds-table-cell-truncate={truncate ? "true" : undefined}
   data-ds-table-cell-variant={variant}
+  data-variable-row={variable}
   role={role}
   rowspan={rowspan}
   scope={scope}
@@ -128,9 +137,16 @@ const style = [
 
   .ds-table-cell :global(code),
   .ds-table-cell :global(span) {
-    overflow: hidden;
+    min-width: 0;
     font: inherit;
     color: inherit;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .ds-table-cell[data-ds-table-cell-truncate="true"] :global(code),
+  .ds-table-cell[data-ds-table-cell-truncate="true"] :global(span) {
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }

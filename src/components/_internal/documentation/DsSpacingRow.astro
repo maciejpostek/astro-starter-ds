@@ -30,9 +30,15 @@ const sourceSize = Number.parseFloat(source);
 const samplePercent = Number.isFinite(sourceSize)
   ? `${Math.min(Math.max((sourceSize / 320) * 100, 0), 100)}%`
   : "100%";
+const tokenId = `token-${token.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`;
 ---
 
-<DsTableRow class="spacing-row">
+<DsTableRow
+  class="spacing-row"
+  componentName="DsSpacingRow"
+  id={tokenId}
+  variable={token}
+>
   <DsTableSampleCell
     label={`${token} spacing sample`}
     sampleLabel={sampleLabel}

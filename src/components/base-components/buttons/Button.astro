@@ -1,0 +1,173 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export type ButtonVariant = "primary" | "secondary" | "tertiary";
+export type ButtonSize = "small" | "medium" | "large";
+
+export interface Props extends Omit<HTMLAttributes<"button">, "class" | "type"> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  showIcon?: boolean;
+  class?: string;
+  type?: "button" | "submit" | "reset";
+}
+
+const {
+  variant = "primary",
+  size = "small",
+  showIcon = true,
+  class: className,
+  type = "button",
+  disabled = false,
+  ...attributes
+} = Astro.props;
+---
+
+<button
+  {...attributes}
+  class:list={["ds-button", className]}
+  data-button-variant={variant}
+  data-component-name="Button"
+  data-component-size={size}
+  disabled={disabled}
+  type={type}
+>
+  <span class="ds-button__label"><slot /></span>
+  {showIcon && (
+    <MaterialSymbol
+      class="ds-button__icon"
+      name="arrow_forward"
+      size="var(--component-icon-size)"
+    />
+  )}
+</button>
+
+<style>
+  .ds-button {
+    --ds-button-background: var(--button-primary-background-default);
+    --ds-button-border: var(--button-primary-border-default);
+    --ds-button-text: var(--button-primary-text-default);
+    --ds-button-icon: var(--button-primary-icon-default);
+
+    display: inline-flex;
+    min-height: var(--component-min-height);
+    align-items: center;
+    justify-content: center;
+    gap: var(--component-gap);
+    border: var(--border-width-default) solid var(--ds-button-border);
+    border-radius: var(--radius-button);
+    padding: var(--component-padding-block) var(--component-padding-inline);
+    color: var(--ds-button-text);
+    background: var(--ds-button-background);
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    font-size: var(--component-font-size);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-compact);
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .ds-button__label {
+    white-space: nowrap;
+  }
+
+  .ds-button__icon {
+    flex: 0 0 auto;
+    color: var(--ds-button-icon);
+  }
+
+  .ds-button[data-button-variant="secondary"] {
+    --ds-button-background: var(--button-secondary-background-default);
+    --ds-button-border: var(--button-secondary-border-default);
+    --ds-button-text: var(--button-secondary-text-default);
+    --ds-button-icon: var(--button-secondary-icon-default);
+  }
+
+  .ds-button[data-button-variant="tertiary"] {
+    --ds-button-background: var(--button-tertiary-background-default);
+    --ds-button-border: var(--button-tertiary-border-default);
+    --ds-button-text: var(--button-tertiary-text-default);
+    --ds-button-icon: var(--button-tertiary-icon-default);
+  }
+
+  .ds-button:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+    --ds-button-background: var(--button-primary-background-hover);
+    --ds-button-border: var(--button-primary-border-hover);
+    --ds-button-text: var(--button-primary-text-hover);
+    --ds-button-icon: var(--button-primary-icon-hover);
+  }
+
+  .ds-button[data-button-variant="secondary"]:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+    --ds-button-background: var(--button-secondary-background-hover);
+    --ds-button-border: var(--button-secondary-border-hover);
+    --ds-button-text: var(--button-secondary-text-hover);
+    --ds-button-icon: var(--button-secondary-icon-hover);
+  }
+
+  .ds-button[data-button-variant="tertiary"]:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+    --ds-button-background: var(--button-tertiary-background-hover);
+    --ds-button-border: var(--button-tertiary-border-hover);
+    --ds-button-text: var(--button-tertiary-text-hover);
+    --ds-button-icon: var(--button-tertiary-icon-hover);
+  }
+
+  .ds-button:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
+    --ds-button-background: var(--button-primary-background-pressed);
+    --ds-button-border: var(--button-primary-border-pressed);
+    --ds-button-text: var(--button-primary-text-pressed);
+    --ds-button-icon: var(--button-primary-icon-pressed);
+  }
+
+  .ds-button[data-button-variant="secondary"]:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
+    --ds-button-background: var(--button-secondary-background-pressed);
+    --ds-button-border: var(--button-secondary-border-pressed);
+    --ds-button-text: var(--button-secondary-text-pressed);
+    --ds-button-icon: var(--button-secondary-icon-pressed);
+  }
+
+  .ds-button[data-button-variant="tertiary"]:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
+    --ds-button-background: var(--button-tertiary-background-pressed);
+    --ds-button-border: var(--button-tertiary-border-pressed);
+    --ds-button-text: var(--button-tertiary-text-pressed);
+    --ds-button-icon: var(--button-tertiary-icon-pressed);
+  }
+
+  .ds-button:disabled {
+    --ds-button-background: var(--button-primary-background-disabled);
+    --ds-button-border: var(--button-primary-border-disabled);
+    --ds-button-text: var(--button-primary-text-disabled);
+    --ds-button-icon: var(--button-primary-icon-disabled);
+
+    cursor: not-allowed;
+  }
+
+  .ds-button[data-button-variant="secondary"]:disabled {
+    --ds-button-background: var(--button-secondary-background-disabled);
+    --ds-button-border: var(--button-secondary-border-disabled);
+    --ds-button-text: var(--button-secondary-text-disabled);
+    --ds-button-icon: var(--button-secondary-icon-disabled);
+  }
+
+  .ds-button[data-button-variant="tertiary"]:disabled {
+    --ds-button-background: var(--button-tertiary-background-disabled);
+    --ds-button-border: var(--button-tertiary-border-disabled);
+    --ds-button-text: var(--button-tertiary-text-disabled);
+    --ds-button-icon: var(--button-tertiary-icon-disabled);
+  }
+
+  .ds-button:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    outline: var(--border-width-strong) solid var(--component-focus-ring);
+    outline-offset: var(--size-2);
+    box-shadow: var(--effect-focused);
+  }
+
+  @media (forced-colors: active) {
+    .ds-button:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+      outline-color: Highlight;
+      box-shadow: none;
+    }
+  }
+</style>

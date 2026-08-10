@@ -98,8 +98,8 @@ const ArchitectureCard = ({ data, selected }: NodeProps<Node<ExplorerNodeData>>)
           <span>{stage.number}</span>
           <span>{stage.kind}</span>
         </div>
-        <h3>{stage.title}</h3>
-        <p>{stage.description}</p>
+        <h3 className="heading-h5">{stage.title}</h3>
+        <p className="body-small-regular">{stage.description}</p>
         <span className="architecture-node__action">
           Open {stage.instanceIds.length} steps
           <MaterialSymbol name="open_in_full" size={14} />
@@ -125,8 +125,8 @@ const ArchitectureCard = ({ data, selected }: NodeProps<Node<ExplorerNodeData>>)
         <span>{instance.stepNumber}</span>
         <span>{typeLabels[node.type] ?? node.type}</span>
       </div>
-      <h3>{instance.title ?? node.title}</h3>
-      <p>{instance.summary}</p>
+      <h3 className="heading-h5">{instance.title ?? node.title}</h3>
+      <p className="body-small-regular">{instance.summary}</p>
       <div className="architecture-node__meta">
         <span data-status={node.status}>{node.status}</span>
         <span>{node.ownership.contextCost} context</span>
@@ -520,7 +520,7 @@ const ExplorerCanvas = ({
   if (loadError) {
     return (
       <div className="architecture-explorer architecture-explorer--error">
-        <p>Interactive architecture data could not be loaded: {loadError}</p>
+        <p className="body-small-regular">Interactive architecture data could not be loaded: {loadError}</p>
         <a href={fallbackSvgUrl}>Open the static SVG fallback</a>
       </div>
     );
@@ -766,7 +766,7 @@ const ExplorerCanvas = ({
             <div className="architecture-explorer__details-header">
               <div>
                 <span>{selectedInstance.stepNumber}</span>
-                <h3>{selectedInstance.title ?? selectedNode.title}</h3>
+                <h3 className="heading-h5">{selectedInstance.title ?? selectedNode.title}</h3>
               </div>
               <button
                 type="button"
@@ -800,12 +800,12 @@ const ExplorerCanvas = ({
             </dl>
 
             <section>
-              <h4>Purpose</h4>
-              <p>{selectedInstance.purpose}</p>
+              <h4 className="heading-h6">Purpose</h4>
+              <p className="body-small-regular">{selectedInstance.purpose}</p>
             </section>
             <section className="architecture-explorer__io">
               <div>
-                <h4>Input</h4>
+                <h4 className="heading-h6">Input</h4>
                 <ul>
                   {selectedInstance.inputs.map((input) => (
                     <li key={input}>{input}</li>
@@ -813,7 +813,7 @@ const ExplorerCanvas = ({
                 </ul>
               </div>
               <div>
-                <h4>Output</h4>
+                <h4 className="heading-h6">Output</h4>
                 <ul>
                   {selectedInstance.outputs.map((output) => (
                     <li key={output}>{output}</li>
@@ -823,7 +823,7 @@ const ExplorerCanvas = ({
             </section>
 
             <section>
-              <h4>Ownership</h4>
+              <h4 className="heading-h6">Ownership</h4>
               <dl className="architecture-explorer__ownership">
                 <div>
                   <dt>Owner</dt>
@@ -848,7 +848,7 @@ const ExplorerCanvas = ({
             </section>
 
             <section>
-              <h4>Files</h4>
+              <h4 className="heading-h6">Files</h4>
               {selectedNode.sourcePaths.length ? (
                 <ul className="architecture-explorer__paths">
                   {selectedNode.sourcePaths.map((path) => (
@@ -865,12 +865,12 @@ const ExplorerCanvas = ({
                   ))}
                 </ul>
               ) : (
-                <p>No current source file; this mechanism is proposed.</p>
+                <p className="body-small-regular">No current source file; this mechanism is proposed.</p>
               )}
             </section>
 
             <section>
-              <h4>Relations</h4>
+              <h4 className="heading-h6">Relations</h4>
               <ul>
                 {(incoming ?? []).map((connection) => (
                   <li key={`in-${connection.id}`}>

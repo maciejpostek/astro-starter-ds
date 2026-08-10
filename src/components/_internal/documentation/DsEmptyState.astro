@@ -1,0 +1,46 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string;
+}
+
+const {
+  title = "No documented implementation yet",
+  description = "This family exists in the design-system architecture, but it does not contain a canonical Astro implementation yet.",
+  path,
+} = Astro.props;
+---
+
+<div
+  class="ds-empty-state"
+  data-component-name="DsEmptyState"
+>
+  <span class="ds-documentation-status">Figma only</span>
+  <h3 class="heading-h4">{title}</h3>
+  <p class="body-base-regular">{description}</p>
+  {path && <code>{path}</code>}
+</div>
+
+<style>
+  .ds-empty-state {
+    display: grid;
+    min-height: 18rem;
+    place-content: center;
+    justify-items: start;
+    gap: var(--gap-medium);
+    border: var(--border-width-default) dashed var(--color-border-default);
+    background: var(--color-background-surface);
+    padding: var(--section-padding-small);
+  }
+
+  p {
+    max-width: 60ch;
+    color: var(--color-text-secondary);
+  }
+
+  code {
+    color: var(--color-text-tertiary);
+    overflow-wrap: anywhere;
+  }
+</style>

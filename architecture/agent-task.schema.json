@@ -116,6 +116,13 @@
         ]
       }
     },
+    "requestedContexts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": ["responsive", "figma"]
+      }
+    },
     "blockedReason": {
       "type": ["string", "null"]
     },

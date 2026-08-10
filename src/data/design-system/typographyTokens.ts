@@ -9,7 +9,7 @@ export interface TypographyFoundationRow {
   sampleStyle?: string;
 }
 
-export interface SemanticTypographyRow {
+export interface TypographyStyleRow {
   name: string;
   className: string;
   family: string;
@@ -621,10 +621,10 @@ export const typographyFoundationTokenValues = Object.fromEntries(
 export const resolveTypographyTokenValue = (value: string) =>
   typographyFoundationTokenValues[value] ?? value;
 
-const semanticTypographySample =
+const typographyStyleSample =
   "AI-native websites shaped by strategy, systems thinking and precise execution for ambitious digital brands.";
 
-const bodySemanticDefinitions = [
+const bodyStyleDefinitions = [
   { size: "large", label: "Large", letterSpacing: "--letter-spacing-tight" },
   { size: "medium", label: "Medium", letterSpacing: "--letter-spacing-tight" },
   { size: "base", label: "Base", letterSpacing: "--letter-spacing-tight" },
@@ -632,7 +632,7 @@ const bodySemanticDefinitions = [
   { size: "tiny", label: "Tiny", letterSpacing: "--letter-spacing-tight" },
 ] as const;
 
-const bodySemanticRows: SemanticTypographyRow[] = bodySemanticDefinitions.flatMap(
+const bodyStyleRows: TypographyStyleRow[] = bodyStyleDefinitions.flatMap(
   ({ size, label, letterSpacing }) =>
     ([
       {
@@ -649,7 +649,7 @@ const bodySemanticRows: SemanticTypographyRow[] = bodySemanticDefinitions.flatMa
         overflowWrap: "--overflow-wrap-break-word",
         wordBreak: "--word-break-normal",
         whiteSpace: "--white-space-normal",
-        sample: semanticTypographySample,
+        sample: typographyStyleSample,
       },
       {
         name: `Body / ${label} / Regular Underlined`,
@@ -670,7 +670,7 @@ const bodySemanticRows: SemanticTypographyRow[] = bodySemanticDefinitions.flatMa
         textDecorationThickness: "7%",
         textUnderlineOffset: "14%",
         textDecorationSkipInk: "auto",
-        sample: semanticTypographySample,
+        sample: typographyStyleSample,
       },
       {
         name: `Body / ${label} / Semi Bold`,
@@ -686,12 +686,12 @@ const bodySemanticRows: SemanticTypographyRow[] = bodySemanticDefinitions.flatMa
         overflowWrap: "--overflow-wrap-break-word",
         wordBreak: "--word-break-normal",
         whiteSpace: "--white-space-normal",
-        sample: semanticTypographySample,
+        sample: typographyStyleSample,
       },
-    ] satisfies SemanticTypographyRow[]),
+    ] satisfies TypographyStyleRow[]),
 );
 
-export const semanticTypographyRows: SemanticTypographyRow[] = [
+export const typographyStyleRows: TypographyStyleRow[] = [
   {
     name: "H1",
     className: "heading-h1",
@@ -706,7 +706,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H2",
@@ -722,7 +722,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H3",
@@ -738,7 +738,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H4",
@@ -754,7 +754,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H5",
@@ -770,7 +770,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H6",
@@ -786,9 +786,9 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
-  ...bodySemanticRows,
+  ...bodyStyleRows,
 ];
 
 export const utilityTypographyRows: UtilityTypographyRow[] = [
@@ -964,11 +964,11 @@ export const typographyAgenticRules: TypographyAgenticRule[] = [
   {
     name: "typography.body-size-weight-hierarchy",
     title: "Body styles use size before weight",
-    text: "Choose Body size first, then Regular, Regular Underlined or Semi Bold. Legacy `.body-large` through `.body-tiny` classes remain aliases for Regular, but new markup should use an explicit variant class.",
+    text: "Choose Body size first, then Regular, Regular Underlined or Semi Bold. Size-only Body aliases do not exist; every use must name its variant explicitly.",
   },
   {
-    name: "typography.semantic-style-contracts",
-    title: "Semantic styles own the full contract",
+    name: "typography.text-style-contracts",
+    title: "Text Style classes own the full contract",
     text: "A typography style class defines font family, size, weight, line height, letter spacing, font style, transform, wrapping and breaking behavior. Do not recreate partial local versions of those properties.",
   },
   {

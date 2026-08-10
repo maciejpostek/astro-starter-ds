@@ -25,6 +25,12 @@ Token layers should stay explicit:
 - component-based variables describe specific repeated use cases,
 - components consume semantic and component-based variables instead of hardcoded values.
 
+Typography has one deliberate, documented exception: foundation typography
+tokens feed complete public Text Style classes directly. The class is the
+semantic visual contract, while `h1-h6` and `p` remain neutral document
+semantics. This exception does not apply to colors; semantic and component
+color variables remain mandatory contracts.
+
 ### Astro Components Are The Main Interface
 
 Astro components are the primary way to compose pages. A page should prefer existing components and documented props before adding local markup and styles.
@@ -142,6 +148,27 @@ CSS variables = values
 ```
 
 This model makes UI intent more explicit than utility-only markup and maps cleanly to Astro and React component APIs.
+
+### Intrinsic-First Responsive Model
+
+Responsive authoring starts from one semantic, token-backed composition rather
+than separate device implementations. Use this decision order:
+
+1. semantic HTML, layout primitives, responsive typography and sizing;
+2. intrinsic CSS such as `auto-fit`, `minmax()`, `clamp()` and `flex-wrap`;
+3. component-owned container queries when parent allocation owns the change;
+4. viewport media queries when the viewport owns the change;
+5. an alternate rendering only when the earlier mechanisms cannot preserve the
+   required interaction.
+
+Each implemented public component records its actual mechanisms, query
+thresholds, reflow, order and visibility contract in the canonical component
+rule. The required schema lives in
+`architecture/component-rule-contract.json`; the complete operational strategy
+lives in `.agentic-rules/09-responsive.md`.
+
+This hierarchy does not forbid combining mechanisms. It exists so agents begin
+with the smallest, most reusable solution and document justified exceptions.
 
 ### Agentic Markdown Is Operational Instruction
 

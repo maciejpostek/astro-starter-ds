@@ -1,0 +1,43 @@
+---
+import {
+  componentColorGroups,
+  type DocumentationComponentColorGroupId,
+} from "../../../data/documentationFoundationData";
+import DsPaletteBlock from "./DsPaletteBlock.astro";
+import DsSectionHeaderLevel4 from "./DsSectionHeaderLevel4.astro";
+
+interface Props {
+  groupId: DocumentationComponentColorGroupId;
+  id?: string;
+}
+
+const { groupId, id = `colors-component-${groupId}` } = Astro.props;
+const group = componentColorGroups[groupId];
+---
+
+<section
+  id={id}
+  class="ds-component-color-reference"
+  aria-labelledby={`${id}-title`}
+  data-component-name="DsComponentColorReference"
+  data-ds-component-color-group={groupId}
+>
+  <DsSectionHeaderLevel4
+    id={`${id}-title`}
+    title={group.title}
+    description={group.description}
+  />
+  <DsPaletteBlock
+    name={group.tableName}
+    description={group.tableDescription}
+    rows={group.rows}
+    showHeader={false}
+  />
+</section>
+
+<style>
+  .ds-component-color-reference {
+    min-width: 0;
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+</style>

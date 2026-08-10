@@ -19,71 +19,13 @@ const {
 <button
   aria-label={label}
   class:list={["ds-copy-button", className]}
+  data-component-name="DsCopyButton"
   data-copied-label={copiedLabel}
-  data-ds-copy-value={value}
+  data-copy-value={value}
   type="button"
 >
   <MaterialSymbol name="content_copy" size="var(--size-16)" />
 </button>
-
-<script>
-  const getDsCopyFeedback = (): HTMLElement => {
-    const existingFeedback = document.querySelector("[data-ds-copy-feedback]");
-
-    if (existingFeedback instanceof HTMLElement) {
-      return existingFeedback;
-    }
-
-    const createdFeedback = document.createElement("span");
-    createdFeedback.dataset.dsCopyFeedback = "true";
-    createdFeedback.className = "ds-copy-feedback";
-    document.body.append(createdFeedback);
-
-    return createdFeedback;
-  };
-
-  const updateDsCopyFeedbackPosition = (
-    button: HTMLButtonElement,
-    feedback: HTMLElement
-  ) => {
-    const buttonRect = button.getBoundingClientRect();
-    const feedbackRect = feedback.getBoundingClientRect();
-    const offset = 8;
-    const viewportPadding = 8;
-    const left = Math.min(
-      Math.max(buttonRect.left - feedbackRect.width - offset, viewportPadding),
-      window.innerWidth - feedbackRect.width - viewportPadding
-    );
-    const top = Math.min(
-      Math.max(
-        buttonRect.top + buttonRect.height / 2 - feedbackRect.height / 2,
-        viewportPadding
-      ),
-      window.innerHeight - feedbackRect.height - viewportPadding
-    );
-
-    feedback.style.setProperty("--ds-copy-feedback-left", `${left}px`);
-    feedback.style.setProperty("--ds-copy-feedback-top", `${top}px`);
-  };
-
-  document.addEventListener("click", async (event) => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
-
-    const button = target.closest("[data-ds-copy-value]");
-    if (!(button instanceof HTMLButtonElement)) return;
-
-    const value = button.getAttribute("data-ds-copy-value");
-    if (!value) return;
-
-    await navigator.clipboard?.writeText(value);
-    const feedback = getDsCopyFeedback();
-    feedback.textContent = button.dataset.copiedLabel ?? "Copied to clipboard";
-    feedback.classList.add("is-visible");
-    updateDsCopyFeedbackPosition(button, feedback);
-    window.setTimeout(() => feedback.classList.remove("is-visible"), 1200);
-  });
-</script>
 
 <style>
   .ds-copy-button {
@@ -104,33 +46,4 @@ const {
     color: var(--color-icon-accent);
   }
 
-  :global(.ds-copy-feedback) {
-    position: fixed;
-    z-index: 10000;
-    top: var(--ds-copy-feedback-top, 0);
-    left: var(--ds-copy-feedback-left, 0);
-    display: flex;
-    min-height: var(--component-size-small-min-height);
-    align-items: center;
-    border: var(--border-width-default) solid var(--color-border-inverse);
-    background: var(--color-background-inverse);
-    color: var(--color-text-inverse);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-body-tiny);
-    font-weight: var(--font-weight-emphasis);
-    line-height: var(--line-height-none);
-    opacity: 0;
-    padding: 0 var(--component-size-small-padding-inline);
-    pointer-events: none;
-    transform: translateX(var(--space-tiny));
-    transition:
-      opacity var(--motion-transition),
-      transform var(--motion-transition);
-    white-space: nowrap;
-  }
-
-  :global(.ds-copy-feedback.is-visible) {
-    opacity: 1;
-    transform: translateX(0);
-  }
 </style>

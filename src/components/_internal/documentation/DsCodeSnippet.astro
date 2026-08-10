@@ -10,31 +10,17 @@ const { label = "Code", code } = Astro.props;
 <figure class="ds-code-snippet" data-component-name="DsCodeSnippet">
   <figcaption class="ds-code-snippet__header">
     <span>{label}</span>
-    <button class="ds-code-snippet__copy" data-copy-code={code} type="button">
+    <button
+      class="ds-code-snippet__copy"
+      data-copied-label="Code copied to clipboard"
+      data-copy-value={code}
+      type="button"
+    >
       Copy
     </button>
   </figcaption>
   <pre><code>{code}</code></pre>
 </figure>
-
-<script>
-  document.addEventListener("click", async (event) => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
-
-    const button = target.closest("[data-copy-code]");
-    if (!(button instanceof HTMLButtonElement)) return;
-
-    const code = button.getAttribute("data-copy-code");
-    if (!code) return;
-
-    await navigator.clipboard?.writeText(code);
-    button.textContent = "Copied";
-    window.setTimeout(() => {
-      button.textContent = "Copy";
-    }, 1200);
-  });
-</script>
 
 <style>
   .ds-code-snippet {
@@ -77,7 +63,7 @@ const { label = "Code", code } = Astro.props;
   }
 
   pre {
-    overflow: auto;
+    overflow-x: hidden;
     margin: 0;
     background: var(--color-background-surface);
     padding: var(--component-padding-large);
@@ -88,6 +74,7 @@ const { label = "Code", code } = Astro.props;
     font-family: var(--font-family-mono);
     font-size: var(--font-size-body-tiny);
     line-height: 1.8;
-    white-space: pre;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 </style>

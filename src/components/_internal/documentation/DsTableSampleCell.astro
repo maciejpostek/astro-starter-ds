@@ -18,7 +18,11 @@ const {
 } = Astro.props as Props;
 ---
 
-<DsTableCell class="ds-table-sample-cell" role="cell">
+<DsTableCell
+  class="ds-table-sample-cell"
+  componentName="DsTableSampleCell"
+  role="cell"
+>
   <span class="ds-table-sample-cell__track" aria-label={label}>
     <span
       class="ds-table-sample-cell__sample"

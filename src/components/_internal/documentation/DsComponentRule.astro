@@ -1,0 +1,36 @@
+---
+import DsCodeSnippet from "./DsCodeSnippet.astro";
+import DsSectionHeaderLevel2 from "./DsSectionHeaderLevel2.astro";
+import type { ComponentRuleDocument } from "../../../data/componentRuleLoader";
+
+interface Props {
+  rule: ComponentRuleDocument;
+}
+
+const { rule } = Astro.props;
+---
+
+<section
+  class="ds-component-rule"
+  data-component-name="DsComponentRule"
+  id="component-rule"
+  aria-labelledby="component-rule-title"
+  data-ds-doc-section
+>
+  <DsSectionHeaderLevel2
+    id="component-rule-title"
+    title="Component UX rule"
+    description="Canonical human- and agent-readable Markdown. Copy the complete rule as one context block."
+  />
+  <DsCodeSnippet label={`${rule.title} · Markdown`} code={rule.raw} />
+</section>
+
+<style>
+  .ds-component-rule {
+    display: grid;
+    gap: var(--space-large);
+    margin-top: var(--section-padding-small);
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+
+</style>

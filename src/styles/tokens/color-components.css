@@ -51,6 +51,26 @@
   --button-secondary-icon-pressed: var(--color-icon-primary);
   --button-secondary-icon-disabled: var(--color-state-disabled-icon);
 
+  /* Tertiary button
+   * Low-emphasis action with a transparent resting container.
+   */
+  --button-tertiary-background-default: var(--color-transparent);
+  --button-tertiary-background-hover: var(--color-background-subtle);
+  --button-tertiary-background-pressed: var(--color-background-muted);
+  --button-tertiary-background-disabled: var(--color-transparent);
+  --button-tertiary-border-default: var(--color-transparent);
+  --button-tertiary-border-hover: var(--color-transparent);
+  --button-tertiary-border-pressed: var(--color-transparent);
+  --button-tertiary-border-disabled: var(--color-transparent);
+  --button-tertiary-text-default: var(--color-text-primary);
+  --button-tertiary-text-hover: var(--color-text-primary);
+  --button-tertiary-text-pressed: var(--color-text-primary);
+  --button-tertiary-text-disabled: var(--color-state-disabled-text);
+  --button-tertiary-icon-default: var(--color-icon-primary);
+  --button-tertiary-icon-hover: var(--color-icon-primary);
+  --button-tertiary-icon-pressed: var(--color-icon-primary);
+  --button-tertiary-icon-disabled: var(--color-state-disabled-icon);
+
   /* Link button
    * Low-emphasis action without a persistent container.
    */
@@ -70,6 +90,34 @@
   --button-link-icon-hover: var(--color-accent-500);
   --button-link-icon-pressed: var(--color-accent-900);
   --button-link-icon-disabled: var(--color-state-disabled-icon);
+
+  /* Switch button
+   * Persistent binary setting with distinct off and on track states.
+   */
+  --switch-track-off-background-default: var(--color-background-muted);
+  --switch-track-off-background-hover: var(--color-background-strong);
+  --switch-track-off-background-pressed: var(--color-background-muted);
+  --switch-track-off-background-disabled: var(--color-background-muted);
+  --switch-track-off-border-default: var(--color-border-default);
+  --switch-track-off-border-hover: var(--color-border-strong);
+  --switch-track-off-border-pressed: var(--color-border-default);
+  --switch-track-off-border-disabled: var(--color-border-default);
+  --switch-track-on-background-default: var(--color-background-accent);
+  --switch-track-on-background-hover: var(--color-background-accent-strong);
+  --switch-track-on-background-pressed: var(--color-background-accent);
+  --switch-track-on-background-disabled: var(--color-background-accent);
+  --switch-track-on-border-default: var(--color-border-accent);
+  --switch-track-on-border-hover: var(--color-border-accent-strong);
+  --switch-track-on-border-pressed: var(--color-border-accent);
+  --switch-track-on-border-disabled: var(--color-border-accent);
+  --switch-handle-background-default: var(--color-background-canvas);
+  --switch-handle-background-hover: var(--color-background-canvas);
+  --switch-handle-background-pressed: var(--color-background-canvas);
+  --switch-handle-background-disabled: var(--color-background-canvas);
+  --switch-label-text-default: var(--color-text-primary);
+  --switch-label-text-hover: var(--color-text-primary);
+  --switch-label-text-pressed: var(--color-text-primary);
+  --switch-label-text-disabled: var(--color-state-disabled-text);
 
   /* Input
    * Shared field colors for default, validation, focus and disabled states.

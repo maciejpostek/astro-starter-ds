@@ -1,8 +1,11 @@
 ---
 import DsColorRow from "./DsColorRow.astro";
+import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
 import DsTableCell from "./DsTableCell.astro";
 import DsTableFrame from "./DsTableFrame.astro";
 import DsTableRow from "./DsTableRow.astro";
+import { createDocumentationColorRows } from "../../../data/documentationFoundationData";
+import { documentationTokenMap } from "../../../data/documentationTokenRegistry";
 
 type SampleType = "fill" | "border" | "text";
 type Row =
@@ -40,14 +43,21 @@ const sampleTypes = ["fill", "border", "text"];
 const normalizeSampleType = (sampleType?: string): SampleType =>
   sampleTypes.includes(sampleType ?? "") ? (sampleType as SampleType) : "fill";
 
-const normalizedRows = rows.map((row) =>
-  Array.isArray(row)
+const normalizedRows = rows.map((row) => {
+  const normalized = Array.isArray(row)
     ? { token: row[0] ?? "", value: row[1] ?? "", sampleType: "fill" as SampleType }
-    : {
-        ...row,
-        sampleType: normalizeSampleType(row.sampleType),
-      },
-);
+    : { ...row, sampleType: normalizeSampleType(row.sampleType) };
+  const canonical = documentationTokenMap.get(normalized.token);
+  if (!canonical) return normalized;
+  const projected = createDocumentationColorRows([canonical])[0];
+  return {
+    ...normalized,
+    ...projected,
+    label: normalized.label ?? projected.label,
+    sampleType: normalized.sampleType ?? projected.sampleType,
+    sampleSurfaceValue: normalized.sampleSurfaceValue ?? projected.sampleSurfaceValue,
+  };
+});
 const hasModeValues = normalizedRows.some((row) => row.lightValue || row.darkValue);
 const columns = hasModeValues
   ? "minmax(18rem, 0.36fr) minmax(18rem, 0.32fr) minmax(18rem, 0.32fr)"
@@ -63,10 +73,11 @@ const minWidth = hasModeValues ? "58rem" : "46rem";
   data-ds-doc-table-size="tiny"
 >
   {showHeader && (
-    <div class="ds-palette-block__header">
-      <h3 id={`${id}-title`}>{name}</h3>
-      <p>{description}</p>
-    </div>
+    <DsSectionHeaderLevel3
+      id={`${id}-title`}
+      title={name}
+      description={description}
+    />
   )}
 
   <DsTableFrame
@@ -115,26 +126,6 @@ const minWidth = hasModeValues ? "58rem" : "46rem";
   .ds-palette-block {
     display: grid;
     gap: var(--gap-medium);
-  }
-
-  .ds-palette-block__header {
-    display: grid;
-    gap: var(--gap-regular);
-  }
-
-  .ds-palette-block__header h3 {
-    color: var(--color-text-primary);
-    font-size: var(--font-size-h6);
-    font-weight: var(--font-weight-emphasis);
-    letter-spacing: var(--letter-spacing-ultra-tight);
-    line-height: var(--line-height-compact);
-  }
-
-  .ds-palette-block__header p {
-    max-width: 48rem;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body-small);
-    line-height: var(--line-height-normal);
   }
 
 </style>

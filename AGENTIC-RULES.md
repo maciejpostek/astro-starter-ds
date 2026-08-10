@@ -106,11 +106,20 @@ compact layout contract:
 Use props and data attributes for finite variants. Compose mode cannot create
 or extend a public component.
 
+Composition always receives the compact intrinsic-first contract. When a
+request explicitly concerns responsive behavior, the resolver also reads
+`.agentic-rules/09-responsive.md`. Start with semantic structure, fluid
+typography and sizing, then intrinsic layout. Use component-owned container
+queries for parent-width changes and viewport queries only for viewport-owned
+changes.
+
 ### Repair and extend
 
 Repair reads the component source, direct dependencies, and its family rule.
 Extend reads the component source/API, family and component-category rules,
-and only the affected registry and Guides projections.
+the canonical Component Readiness rule, and only the affected registry and
+Guides projections. Repair also reads Component Readiness when the prompt
+concerns readiness, Guides identity, or a reusable component boundary.
 
 ### Create
 
@@ -124,7 +133,11 @@ Creation is resolved in two phases:
 1. `create-planning` reads gap evidence, creation rules, dependencies, and
    Brand Contract status, then returns `nextStep`.
 2. `create-family-resolution` accepts a `creationDraft` and reads only the
-   selected family rule plus declared registry and Guides projections.
+   selected family rule, Component Readiness, the responsive strategy, and
+   declared registry and Guides projections.
+
+Figma context is added only when the prompt explicitly requests a Figma
+operation. Code-first component creation does not read or validate Figma.
 
 A source-budget overrun returns a controlled blocked result naming the read
 that crossed the limit.
@@ -165,7 +178,8 @@ Run the smallest relevant validator:
 - page composition — Astro check/build and browser review when visual or
   responsive behavior changed;
 - repair — matching family audit;
-- extend/create — registry, family, documentation, and build validation.
+- extend/create — Component Readiness, registry, family, documentation, and
+  build validation.
 
 Repair is bounded to one attempt for exact edits and reuse, and two attempts
 for compose, repair, extend, or create. Exhausted repair returns `blocked`.

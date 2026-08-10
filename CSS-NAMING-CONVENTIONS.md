@@ -177,6 +177,21 @@ Use `u-` only for small, generic escape hatches.
 
 Avoid creating a large utility class API for spacing, radius, typography, or colors unless the design system explicitly approves it.
 
+Typography uses a small approved class API rather than a utility scale:
+
+```css
+.heading-h1 {}
+.body-base-regular {}
+.body-base-regular-underlined {}
+.body-base-semibold {}
+```
+
+These Text Style classes are complete semantic typography contracts. HTML tags
+still own document hierarchy, so `<h3 class="heading-h1">` is valid. Do not
+create standalone size aliases such as `.body-base`, partial font-size
+utilities or `--text-style-*` token aliases. This naming decision does not
+change semantic color-token conventions.
+
 ### Design System Documentation Classes
 
 Use `ds-` for documentation-only UI.

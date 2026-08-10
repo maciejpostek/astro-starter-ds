@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class"> {
+  class?: string;
+}
+
+const { class: className, ...attributes } = Astro.props;
+---
+
+<div
+  {...attributes}
+  class:list={["ds-button-group", className]}
+  data-component-name="ButtonGroup"
+  role="group"
+>
+  <slot />
+</div>
+
+<style>
+  .ds-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-button-group);
+  }
+</style>

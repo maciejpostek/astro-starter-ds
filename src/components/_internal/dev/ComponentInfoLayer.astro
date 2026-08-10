@@ -10,6 +10,7 @@ const isOverlay = mode === "overlay";
 
 <div
   class="component-info-layer"
+  data-component-name="ComponentInfoLayer"
   data-component-info-layer
   data-component-info-mode={mode}
   hidden={isOverlay ? true : undefined}
@@ -27,7 +28,7 @@ const isOverlay = mode === "overlay";
 
   const copyFeedbackDuration = 1400;
 
-  const canShowInfoLayer = () => document.documentElement.dataset.grid === "visible";
+  const canShowInfoLayer = () => document.documentElement.dataset.guides === "visible";
 
   const getComponentTarget = (target: EventTarget | null) => {
     if (!(target instanceof Element)) return null;
@@ -168,12 +169,12 @@ const isOverlay = mode === "overlay";
       if (!canShowInfoLayer()) return;
       if (isGuidesToggle(event.target)) return;
 
+      const target = getComponentTarget(event.target);
+      if (!target) return;
+
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-
-      const target = getComponentTarget(event.target);
-      if (!target) return;
 
       showInfoLayer(target, event.clientX, event.clientY);
       void copyComponentName(target);
@@ -185,7 +186,7 @@ const isOverlay = mode === "overlay";
     if (!canShowInfoLayer()) hideInfoLayer();
   }).observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ["data-grid"]
+    attributeFilter: ["data-guides"]
   });
 </script>
 

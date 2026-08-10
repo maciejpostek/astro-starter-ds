@@ -27,9 +27,13 @@ const {
   gridRow,
   class: className,
 } = Astro.props as Props;
+const tokenId = value.startsWith("--")
+  ? `token-${value.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`
+  : undefined;
 ---
 
 <DsTableCell
+  id={tokenId}
   as={as}
   class={className}
   componentName="DsTableCopyCell"
@@ -40,6 +44,7 @@ const {
   role={role}
   rowspan={rowspan}
   scope={scope}
+  variable={value.startsWith("--") ? value : undefined}
 >
   <code>{value}</code>
   <DsCopyButton label={label} value={value} />

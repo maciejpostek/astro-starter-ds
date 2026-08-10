@@ -1,6 +1,6 @@
 /*
- * Typography style classes.
- * Classes are the public interface for global typography usage.
+ * Public typography contracts.
+ * HTML elements carry document semantics; these classes control appearance.
  */
 
 :where(h1, h2, h3, h4, h5, h6, p) {
@@ -20,23 +20,18 @@
 .heading-h4,
 .heading-h5,
 .heading-h6,
-.body-large,
 .body-large-regular,
 .body-large-regular-underlined,
 .body-large-semibold,
-.body-medium,
 .body-medium-regular,
 .body-medium-regular-underlined,
 .body-medium-semibold,
-.body-base,
 .body-base-regular,
 .body-base-regular-underlined,
 .body-base-semibold,
-.body-small,
 .body-small-regular,
 .body-small-regular-underlined,
 .body-small-semibold,
-.body-tiny,
 .body-tiny-regular,
 .body-tiny-regular-underlined,
 .body-tiny-semibold {
@@ -45,172 +40,175 @@
 }
 
 .heading-h1 {
-  font-family: var(--text-style-heading-h1-font-family);
-  font-size: var(--text-style-heading-h1-font-size);
-  font-weight: var(--text-style-heading-h1-font-weight);
-  font-style: var(--text-style-heading-h1-font-style);
-  line-height: var(--text-style-heading-h1-line-height);
-  letter-spacing: var(--text-style-heading-h1-letter-spacing);
-  text-transform: var(--text-style-heading-h1-text-transform);
-  text-wrap: var(--text-style-heading-h1-text-wrap);
-  overflow-wrap: var(--text-style-heading-h1-overflow-wrap);
-  word-break: var(--text-style-heading-h1-word-break);
-  white-space: var(--text-style-heading-h1-white-space);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-emphasis);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-ultra-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-balance);
+  overflow-wrap: var(--overflow-wrap-normal);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
 .heading-h2 {
-  font-family: var(--text-style-heading-h2-font-family);
-  font-size: var(--text-style-heading-h2-font-size);
-  font-weight: var(--text-style-heading-h2-font-weight);
-  font-style: var(--text-style-heading-h2-font-style);
-  line-height: var(--text-style-heading-h2-line-height);
-  letter-spacing: var(--text-style-heading-h2-letter-spacing);
-  text-transform: var(--text-style-heading-h2-text-transform);
-  text-wrap: var(--text-style-heading-h2-text-wrap);
-  overflow-wrap: var(--text-style-heading-h2-overflow-wrap);
-  word-break: var(--text-style-heading-h2-word-break);
-  white-space: var(--text-style-heading-h2-white-space);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-emphasis);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-ultra-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-balance);
+  overflow-wrap: var(--overflow-wrap-normal);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
 .heading-h3 {
-  font-family: var(--text-style-heading-h3-font-family);
-  font-size: var(--text-style-heading-h3-font-size);
-  font-weight: var(--text-style-heading-h3-font-weight);
-  font-style: var(--text-style-heading-h3-font-style);
-  line-height: var(--text-style-heading-h3-line-height);
-  letter-spacing: var(--text-style-heading-h3-letter-spacing);
-  text-transform: var(--text-style-heading-h3-text-transform);
-  text-wrap: var(--text-style-heading-h3-text-wrap);
-  overflow-wrap: var(--text-style-heading-h3-overflow-wrap);
-  word-break: var(--text-style-heading-h3-word-break);
-  white-space: var(--text-style-heading-h3-white-space);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-emphasis);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-ultra-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-balance);
+  overflow-wrap: var(--overflow-wrap-normal);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
 .heading-h4 {
-  font-family: var(--text-style-heading-h4-font-family);
-  font-size: var(--text-style-heading-h4-font-size);
-  font-weight: var(--text-style-heading-h4-font-weight);
-  font-style: var(--text-style-heading-h4-font-style);
-  line-height: var(--text-style-heading-h4-line-height);
-  letter-spacing: var(--text-style-heading-h4-letter-spacing);
-  text-transform: var(--text-style-heading-h4-text-transform);
-  text-wrap: var(--text-style-heading-h4-text-wrap);
-  overflow-wrap: var(--text-style-heading-h4-overflow-wrap);
-  word-break: var(--text-style-heading-h4-word-break);
-  white-space: var(--text-style-heading-h4-white-space);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-emphasis);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-compact);
+  letter-spacing: var(--letter-spacing-ultra-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-balance);
+  overflow-wrap: var(--overflow-wrap-normal);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
 .heading-h5 {
-  font-family: var(--text-style-heading-h5-font-family);
-  font-size: var(--text-style-heading-h5-font-size);
-  font-weight: var(--text-style-heading-h5-font-weight);
-  font-style: var(--text-style-heading-h5-font-style);
-  line-height: var(--text-style-heading-h5-line-height);
-  letter-spacing: var(--text-style-heading-h5-letter-spacing);
-  text-transform: var(--text-style-heading-h5-text-transform);
-  text-wrap: var(--text-style-heading-h5-text-wrap);
-  overflow-wrap: var(--text-style-heading-h5-overflow-wrap);
-  word-break: var(--text-style-heading-h5-word-break);
-  white-space: var(--text-style-heading-h5-white-space);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-emphasis);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-compact);
+  letter-spacing: var(--letter-spacing-ultra-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-balance);
+  overflow-wrap: var(--overflow-wrap-normal);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
 .heading-h6 {
-  font-family: var(--text-style-heading-h6-font-family);
-  font-size: var(--text-style-heading-h6-font-size);
-  font-weight: var(--text-style-heading-h6-font-weight);
-  font-style: var(--text-style-heading-h6-font-style);
-  line-height: var(--text-style-heading-h6-line-height);
-  letter-spacing: var(--text-style-heading-h6-letter-spacing);
-  text-transform: var(--text-style-heading-h6-text-transform);
-  text-wrap: var(--text-style-heading-h6-text-wrap);
-  overflow-wrap: var(--text-style-heading-h6-overflow-wrap);
-  word-break: var(--text-style-heading-h6-word-break);
-  white-space: var(--text-style-heading-h6-white-space);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-h6);
+  font-weight: var(--font-weight-emphasis);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-compact);
+  letter-spacing: var(--letter-spacing-tighter);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-balance);
+  overflow-wrap: var(--overflow-wrap-normal);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
-.body-large,
 .body-large-regular,
 .body-large-regular-underlined,
 .body-large-semibold {
-  font-family: var(--text-style-body-large-font-family);
-  font-size: var(--text-style-body-large-font-size);
-  font-weight: var(--text-style-body-large-font-weight);
-  font-style: var(--text-style-body-large-font-style);
-  line-height: var(--text-style-body-large-line-height);
-  letter-spacing: var(--text-style-body-large-letter-spacing);
-  text-transform: var(--text-style-body-large-text-transform);
-  text-wrap: var(--text-style-body-large-text-wrap);
-  overflow-wrap: var(--text-style-body-large-overflow-wrap);
-  word-break: var(--text-style-body-large-word-break);
-  white-space: var(--text-style-body-large-white-space);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-large);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-pretty);
+  overflow-wrap: var(--overflow-wrap-break-word);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
-.body-medium,
 .body-medium-regular,
 .body-medium-regular-underlined,
 .body-medium-semibold {
-  font-family: var(--text-style-body-medium-font-family);
-  font-size: var(--text-style-body-medium-font-size);
-  font-weight: var(--text-style-body-medium-font-weight);
-  font-style: var(--text-style-body-medium-font-style);
-  line-height: var(--text-style-body-medium-line-height);
-  letter-spacing: var(--text-style-body-medium-letter-spacing);
-  text-transform: var(--text-style-body-medium-text-transform);
-  text-wrap: var(--text-style-body-medium-text-wrap);
-  overflow-wrap: var(--text-style-body-medium-overflow-wrap);
-  word-break: var(--text-style-body-medium-word-break);
-  white-space: var(--text-style-body-medium-white-space);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-medium);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-pretty);
+  overflow-wrap: var(--overflow-wrap-break-word);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
-.body-base,
 .body-base-regular,
 .body-base-regular-underlined,
 .body-base-semibold {
-  font-family: var(--text-style-body-base-font-family);
-  font-size: var(--text-style-body-base-font-size);
-  font-weight: var(--text-style-body-base-font-weight);
-  font-style: var(--text-style-body-base-font-style);
-  line-height: var(--text-style-body-base-line-height);
-  letter-spacing: var(--text-style-body-base-letter-spacing);
-  text-transform: var(--text-style-body-base-text-transform);
-  text-wrap: var(--text-style-body-base-text-wrap);
-  overflow-wrap: var(--text-style-body-base-overflow-wrap);
-  word-break: var(--text-style-body-base-word-break);
-  white-space: var(--text-style-body-base-white-space);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-base);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-pretty);
+  overflow-wrap: var(--overflow-wrap-break-word);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
-.body-small,
 .body-small-regular,
 .body-small-regular-underlined,
 .body-small-semibold {
-  font-family: var(--text-style-body-small-font-family);
-  font-size: var(--text-style-body-small-font-size);
-  font-weight: var(--text-style-body-small-font-weight);
-  font-style: var(--text-style-body-small-font-style);
-  line-height: var(--text-style-body-small-line-height);
-  letter-spacing: var(--text-style-body-small-letter-spacing);
-  text-transform: var(--text-style-body-small-text-transform);
-  text-wrap: var(--text-style-body-small-text-wrap);
-  overflow-wrap: var(--text-style-body-small-overflow-wrap);
-  word-break: var(--text-style-body-small-word-break);
-  white-space: var(--text-style-body-small-white-space);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-small);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-pretty);
+  overflow-wrap: var(--overflow-wrap-break-word);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
 }
 
-.body-tiny,
 .body-tiny-regular,
 .body-tiny-regular-underlined,
 .body-tiny-semibold {
-  font-family: var(--text-style-body-tiny-font-family);
-  font-size: var(--text-style-body-tiny-font-size);
-  font-weight: var(--text-style-body-tiny-font-weight);
-  font-style: var(--text-style-body-tiny-font-style);
-  line-height: var(--text-style-body-tiny-line-height);
-  letter-spacing: var(--text-style-body-tiny-letter-spacing);
-  text-transform: var(--text-style-body-tiny-text-transform);
-  text-wrap: var(--text-style-body-tiny-text-wrap);
-  overflow-wrap: var(--text-style-body-tiny-overflow-wrap);
-  word-break: var(--text-style-body-tiny-word-break);
-  white-space: var(--text-style-body-tiny-white-space);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-tiny);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-tight);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-pretty);
+  overflow-wrap: var(--overflow-wrap-break-word);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
+}
+
+.body-large-regular,
+.body-large-regular-underlined,
+.body-medium-regular,
+.body-medium-regular-underlined,
+.body-base-regular,
+.body-base-regular-underlined,
+.body-small-regular,
+.body-small-regular-underlined,
+.body-tiny-regular,
+.body-tiny-regular-underlined {
+  font-weight: var(--font-weight-normal);
 }
 
 .body-large-semibold,

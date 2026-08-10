@@ -1,0 +1,34 @@
+---
+import DesignSystemLayout from "../../../../layouts/DesignSystemLayout.astro";
+import DsFamilyGallery from "../../../../components/_internal/documentation/DsFamilyGallery.astro";
+import {
+  architecture,
+  componentsByPage,
+  type ArchitecturePage,
+} from "../../../../data/documentationRegistry";
+
+export function getStaticPaths() {
+  return architecture.pages
+    .filter((page) => page.categoryKey === "base-components")
+    .map((page) => ({ params: { familyKey: page.pageKey }, props: { page } }));
+}
+
+interface Props { page: ArchitecturePage; }
+const { page } = Astro.props;
+const components = componentsByPage.get(`base-components/${page.pageKey}`) ?? [];
+const availableCount = components.filter((component) => Boolean(component.sourcePath)).length;
+---
+
+<DesignSystemLayout
+  title={`${page.pageLabel} - Base Components`}
+  pageType="family-gallery"
+  toc={[{ label: "Variants", href: "#variants" }]}
+  header={{
+    eyebrow: "Base Components",
+    title: page.pageLabel,
+    description: `${components.length} canonical component identities. ${availableCount} currently have an Astro source implementation.`,
+    status: availableCount ? "Partially available" : "Figma only",
+  }}
+>
+  <DsFamilyGallery page={page} components={components} />
+</DesignSystemLayout>

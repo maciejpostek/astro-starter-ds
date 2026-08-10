@@ -19,8 +19,8 @@ const { eyebrow, title, text, tone = "default", agenticRuleName } = Astro.props;
 >
   <div class="ds-doc-card__copy">
     {eyebrow && <span class="ds-doc-card__eyebrow">{eyebrow}</span>}
-    <h3>{title}</h3>
-    {text && <p>{text}</p>}
+    <h3 class="heading-h6">{title}</h3>
+    {text && <p class="body-small-regular">{text}</p>}
   </div>
   <slot />
 </article>
@@ -65,16 +65,10 @@ const { eyebrow, title, text, tone = "default", agenticRuleName } = Astro.props;
 
   .ds-doc-card h3 {
     color: inherit;
-    font-size: var(--font-size-h6);
-    font-weight: var(--font-weight-emphasis);
-    letter-spacing: var(--letter-spacing-ultra-tight);
-    line-height: var(--line-height-compact);
   }
 
   .ds-doc-card p {
     color: var(--color-text-secondary);
-    font-size: var(--font-size-body-small);
-    line-height: var(--line-height-normal);
   }
 
   .ds-doc-card[data-tone="inverse"] p {

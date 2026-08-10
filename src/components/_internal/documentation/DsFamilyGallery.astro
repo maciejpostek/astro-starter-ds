@@ -1,0 +1,140 @@
+---
+import DsCopyButton from "./DsCopyButton.astro";
+import DsEmptyState from "./DsEmptyState.astro";
+import DsSectionHeaderLevel2 from "./DsSectionHeaderLevel2.astro";
+import type { ArchitectureComponent, ArchitecturePage } from "../../../data/documentationRegistry";
+import { documentationComponentHref } from "../../../data/documentationRegistry";
+
+interface Props {
+  page: ArchitecturePage;
+  components: ArchitectureComponent[];
+}
+
+const { page, components } = Astro.props;
+---
+
+<section
+  data-component-name="DsFamilyGallery"
+  id="variants"
+  aria-labelledby="variants-title"
+  data-ds-doc-section
+>
+  <DsSectionHeaderLevel2
+    id="variants-title"
+    title="Variants"
+    description={`Canonical records available in the ${page.pageLabel} family.`}
+  />
+  {
+    components.length === 0 ? (
+      <DsEmptyState path={page.sourceDirectory} />
+    ) : (
+      <div class="ds-family-gallery">
+        {components.map((component) => {
+          const available = Boolean(component.sourcePath);
+          return (
+            <article class="ds-family-card" data-status={component.syncStatus}>
+              <div class="ds-family-card__preview" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="ds-family-card__content">
+                <div>
+                  <span class="ds-documentation-status">{component.syncStatus}</span>
+                  <h3 class="heading-h5">{component.name}</h3>
+                  <p class="body-small-regular">{component.role} · {component.layer}</p>
+                </div>
+                <DsCopyButton value={component.name} />
+              </div>
+              {component.dependencies.length > 0 && (
+                <p class="ds-family-card__dependencies body-small-regular">
+                  Dependencies: {component.dependencies.join(", ")}
+                </p>
+              )}
+              <div class="ds-family-card__actions">
+                <a href={documentationComponentHref(component)}>View details</a>
+                {available ? (
+                  <span class="ds-family-card__preview-status">Preview adapter required</span>
+                ) : (
+                  <span class="ds-family-card__preview-status">Preview unavailable</span>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .ds-family-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--gap-medium);
+  }
+
+  .ds-family-card {
+    display: grid;
+    align-content: start;
+    gap: var(--gap-medium);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+    padding: var(--component-padding-medium);
+  }
+
+  .ds-family-card__preview {
+    display: grid;
+    min-height: 12rem;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: var(--gap-small);
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+    padding: var(--component-padding-large);
+  }
+
+  .ds-family-card__preview span {
+    display: block;
+    min-height: var(--size-24);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-subtle);
+  }
+
+  .ds-family-card__preview span:first-child {
+    grid-row: span 2;
+  }
+
+  .ds-family-card__content,
+  .ds-family-card__actions {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-medium);
+  }
+
+  .ds-family-card h3 {
+    margin-top: var(--gap-small);
+  }
+
+  .ds-family-card__preview-status {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-body-small);
+  }
+
+  .ds-family-card p {
+    color: var(--color-text-tertiary);
+  }
+
+  .ds-family-card__dependencies {
+    min-height: 2.5rem;
+  }
+
+  .ds-family-card__actions {
+    align-items: center;
+    border-top: var(--border-width-default) solid var(--color-border-subtle);
+    padding-top: var(--component-padding-small);
+  }
+
+  .ds-family-card__actions a {
+    color: var(--color-text-accent);
+    font-weight: var(--font-weight-emphasis);
+  }
+</style>

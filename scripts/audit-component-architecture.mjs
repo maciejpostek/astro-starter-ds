@@ -120,6 +120,7 @@ const emptyRoots = [
   "src/components/examples-templates"
 ];
 let emptyFolderCount = 0;
+let implementedFolderCount = 0;
 for (const root of emptyRoots) {
   const absoluteRoot = join(projectRoot, root);
   for (const entry of readdirSync(absoluteRoot, { withFileTypes: true })) {
@@ -127,10 +128,33 @@ for (const root of emptyRoots) {
       errors.push(`Unexpected file in ${root}: ${entry.name}`);
       continue;
     }
-    emptyFolderCount += 1;
+    const sourceDirectory = `${root}/${entry.name}`;
+    const implementedSources = new Set(
+      (registry.components ?? [])
+        .filter(
+          (component) =>
+            component.sourceDirectory === sourceDirectory && component.sourcePath
+        )
+        .map((component) => component.sourcePath)
+    );
     const entries = readdirSync(join(absoluteRoot, entry.name));
-    if (entries.length !== 1 || entries[0] !== ".gitkeep") {
-      errors.push(`${root}/${entry.name} must contain only .gitkeep.`);
+
+    if (implementedSources.size === 0) {
+      emptyFolderCount += 1;
+      if (entries.length !== 1 || entries[0] !== ".gitkeep") {
+        errors.push(`${sourceDirectory} must contain only .gitkeep until implemented.`);
+      }
+      continue;
+    }
+
+    implementedFolderCount += 1;
+    for (const fileName of entries) {
+      const sourcePath = `${sourceDirectory}/${fileName}`;
+      if (fileName === ".gitkeep") {
+        errors.push(`${sourceDirectory} must remove .gitkeep after implementation.`);
+      } else if (!implementedSources.has(sourcePath)) {
+        errors.push(`Unregistered public component source: ${sourcePath}.`);
+      }
     }
   }
 }
@@ -147,5 +171,6 @@ console.log(
   `Component architecture audit passed: ${registry.categories.length} categories, ` +
   `${registry.pages.length} child pages, ${registry.navigationDividers.length} navigation dividers, ` +
   `${registry.components.length} Figma records, ` +
+  `${implementedFolderCount} implemented public family folders, ` +
   `${emptyFolderCount} empty public family folders, and no legacy Atomic Design roots.`
 );

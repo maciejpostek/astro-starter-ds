@@ -67,6 +67,10 @@ must not expose icon swap, icon slots, or arbitrary icon-name props. See
 
 ## Validation
 
-Run `npm run audit:components`, the matching token/icon audit, and Astro
-check/build for the affected scope. Figma parity is validated only for an
-explicit Figma task.
+The canonical reusable-component Definition of Done is
+`.agentic-rules/10-component-readiness.md`, with its machine-readable
+projection in `architecture/component-readiness-contract.json`.
+
+Run `npm run audit:component-readiness`, `npm run audit:components`, the
+matching family/token/icon audit, and Astro check/build for the affected scope.
+Figma parity is validated only for an explicit Figma task.

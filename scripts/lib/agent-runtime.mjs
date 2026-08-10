@@ -371,6 +371,30 @@ const hasBrandSensitiveIntent = (prompt) =>
     /\bkierunek wizualny\b/u
   ]);
 
+const hasResponsiveIntent = (prompt) =>
+  hasAny(prompt.toLowerCase(), [
+    /\bresponsive\b/u,
+    /\bresponsyw/u,
+    /\bbreakpoint/u,
+    /\bmedia quer/u,
+    /\bcontainer quer/u,
+    /\bintrinsic\b/u,
+    /\bauto[- ]?fit\b/u,
+    /\breflow\b/u,
+    /\bmobile\b/u,
+    /\btablet\b/u,
+    /\bviewport\b/u,
+    /\bwrap(?:ping)?\b/u,
+    /\bzawij/u
+  ]);
+
+const hasExplicitFigmaIntent = (prompt) => /\bfigma\b/iu.test(prompt);
+
+const hasComponentReadinessIntent = (prompt) =>
+  /\b(?:component readiness|readiness|guides?|data-component-name|component boundary)\b/iu.test(
+    prompt
+  );
+
 const normalizeTargetRole = (role) =>
   ["primary", "dependency", "context"].includes(role) ? role : "primary";
 
@@ -443,7 +467,8 @@ const buildContract = ({
   },
   status = "ready",
   blockedReason = null,
-  suggestedPrompt = null
+  suggestedPrompt = null,
+  requestedContexts = []
 }) => {
   const policy = intentPolicy[intent];
   return {
@@ -458,7 +483,10 @@ const buildContract = ({
     contextBudget: policy.contextBudget,
     validationScope: policy.validationScope,
     maxRepairAttempts: policy.maxRepairAttempts,
-    excludedContexts: policy.excludedContexts,
+    requestedContexts,
+    excludedContexts: policy.excludedContexts.filter(
+      (context) => !requestedContexts.includes(context)
+    ),
     blockedReason,
     suggestedPrompt
   };
@@ -473,6 +501,11 @@ export const routeAgentRequest = ({
   intentOverride,
   projectRoot = "."
 }) => {
+  const requestedContexts = unique([
+    hasResponsiveIntent(prompt) ? "responsive" : null,
+    hasComponentReadinessIntent(prompt) ? "component-readiness" : null,
+    hasExplicitFigmaIntent(prompt) ? "figma" : null
+  ]);
   const normalizedExplicitTargets = normalizeExplicitTargets({
     explicitTargets,
     explicitComponentIds,
@@ -527,6 +560,7 @@ export const routeAgentRequest = ({
       targets: [...tokenTargets, ...fileTargets],
       targetFile: inspectedTargetFile.path,
       constraints,
+      requestedContexts,
       status:
         missingTokens.length > 0 || inspectedTargetFile.error
           ? "blocked"
@@ -704,6 +738,7 @@ export const routeAgentRequest = ({
       targets,
       targetFile: inspectedTargetFile.path,
       constraints,
+      requestedContexts,
       status: "blocked",
       blockedReason,
       suggestedPrompt
@@ -777,7 +812,8 @@ export const routeAgentRequest = ({
     targets,
     brandMode,
     targetFile: inspectedTargetFile.path,
-    constraints
+    constraints,
+    requestedContexts
   });
 };
 
@@ -1215,10 +1251,25 @@ export const resolveAgentContext = ({
       "registry-projection"
     );
     addRead(
-      "src/pages/design-system/components.astro",
+      "src/data/documentationComponentRegistry.ts",
       "guides-projection"
     );
     if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
+  }
+
+  if (
+    ["create", "extend"].includes(task.intent) ||
+    (task.intent === "repair" &&
+      task.requestedContexts?.includes("component-readiness"))
+  ) {
+    addRead(
+      ".agentic-rules/10-component-readiness.md",
+      "component-readiness-rule"
+    );
+    addRead(
+      "architecture/component-readiness-contract.json",
+      "component-readiness-contract"
+    );
   }
 
   const draftResolution =
@@ -1242,10 +1293,12 @@ export const resolveAgentContext = ({
     addRead("DESIGN-SYSTEM-FRAMEWORK.md", "public-api-framework");
     addDependencySources();
   } else if (task.intent === "create") {
-    addRead(
-      "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
-      "figma-astro-sync-contract"
-    );
+    if (task.requestedContexts?.includes("figma")) {
+      addRead(
+        "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
+        "figma-astro-sync-contract"
+      );
+    }
     addRead(".agentic-rules/05-components.md", "component-category-rule");
     addRead(
       "src/data/design-system/componentArchitecture.json",
@@ -1255,6 +1308,16 @@ export const resolveAgentContext = ({
       draftResolution.draft?.docsPath,
       "guides-projection",
       componentTargets.find((target) => target.role === "primary")?.id ?? null
+    );
+  }
+
+  if (
+    task.intent === "create" ||
+    task.requestedContexts?.includes("responsive")
+  ) {
+    addRead(
+      ".agentic-rules/09-responsive.md",
+      "responsive-strategy-rule"
     );
   }
 
@@ -1348,6 +1411,8 @@ export const resolveAgentContext = ({
             principles: [
               "Use existing Astro components before local markup.",
               "Use .l-section, .l-container, .l-grid, .l-stack, and .l-cluster for structural composition.",
+              "Start with semantic structure, fluid typography and sizing, then use intrinsic layout before adding a query.",
+              "Use container queries for parent-width component changes and viewport queries only for viewport-owned changes.",
               "Use component props and data attributes for finite variants.",
               "Do not create or extend a public component in compose mode."
             ]

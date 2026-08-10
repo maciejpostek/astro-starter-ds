@@ -1,0 +1,83 @@
+---
+interface Props {
+  level: 2 | 3 | 4;
+  title: string;
+  id?: string;
+  description?: string;
+  componentName?: string;
+}
+
+const {
+  level,
+  title,
+  id,
+  description,
+  componentName = "DsSectionHeading",
+} = Astro.props as Props;
+const Heading = `h${level}` as "h2" | "h3" | "h4";
+const headingClass = {
+  2: "heading-h2",
+  3: "heading-h3",
+  4: "heading-h4",
+}[level];
+---
+
+<header
+  class="ds-section-heading"
+  data-component-name={componentName}
+  data-ds-section-heading-level={level}
+>
+  <div class="ds-section-heading__copy">
+    <Heading id={id} class={headingClass}>{title}</Heading>
+    {description && <p class="body-small-regular">{description}</p>}
+  </div>
+</header>
+
+<style>
+  .ds-section-heading {
+    min-width: 0;
+    margin-block: var(--space-large) var(--space-regular);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    padding-block: var(--space-regular);
+  }
+
+  .ds-section-heading[data-ds-section-heading-level="2"] {
+    margin-block: var(--space-large) var(--space-regular);
+    padding-block: var(--space-medium);
+  }
+
+  .ds-section-heading[data-ds-section-heading-level="4"] {
+    margin-block: var(--space-medium) var(--space-regular);
+    padding-block: var(--space-small);
+  }
+
+  .ds-section-heading:first-child {
+    margin-block-start: 0;
+  }
+
+  .ds-section-heading__copy {
+    display: grid;
+    max-width: 48rem;
+    gap: var(--gap-small);
+  }
+
+  .ds-section-heading[data-ds-section-heading-level="4"] .ds-section-heading__copy {
+    max-width: 44rem;
+  }
+
+  .ds-section-heading h2 {
+    color: var(--color-text-primary);
+  }
+
+  .ds-section-heading h3 {
+    color: var(--color-text-primary);
+  }
+
+  .ds-section-heading h4 {
+    color: var(--color-text-primary);
+  }
+
+  .ds-section-heading p {
+    color: var(--color-text-secondary);
+  }
+</style>

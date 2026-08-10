@@ -38,6 +38,13 @@ and Guides projections. For cross-category or public API changes, read
 `AGENTIC-RULES.md`, `DESIGN-SYSTEM-FRAMEWORK.md`, and
 `.agentic-rules/00-framework.md`.
 
+For reusable component `create` and `extend`, follow the twelve readiness gates
+in `.agentic-rules/10-component-readiness.md`. Load the same rule for `repair`
+when the request concerns component readiness, Guides identity, or a reusable
+component boundary. Every visual reusable Astro component exposes a stable
+`data-component-name`; local page composition does not become a component by
+default.
+
 Resolve `create` in two phases. Planning reads gap evidence, creation rules,
 existing dependencies, and Brand Contract status. After an approved
 `creationDraft`, family resolution reads only the selected family rule and the

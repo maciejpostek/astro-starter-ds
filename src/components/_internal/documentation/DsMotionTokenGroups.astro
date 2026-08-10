@@ -5,6 +5,10 @@ import DsTableFrame from "./DsTableFrame.astro";
 import DsTableRow from "./DsTableRow.astro";
 import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
 import type { MotionTokenGroup } from "../../../data/design-system/motionTokens";
+import {
+  documentationTokenMap,
+  getDocumentationTokenValue,
+} from "../../../data/documentationTokenRegistry";
 
 interface Props {
   groups: MotionTokenGroup[];
@@ -16,7 +20,12 @@ const { groups, label } = Astro.props as Props;
 
 {
   groups.map((group) => (
-    <section id={group.id} class="ds-motion-topic" aria-labelledby={`${group.id}-title`}>
+    <section
+      id={group.id}
+      class="ds-motion-topic"
+      aria-labelledby={`${group.id}-title`}
+      data-component-name="DsMotionTokenGroups"
+    >
       <DsSectionHeaderLevel3
         id={`${group.id}-title`}
         title={group.title}
@@ -34,14 +43,19 @@ const { groups, label } = Astro.props as Props;
           <DsTableCell role="columnheader" variant="header">Reduced Motion</DsTableCell>
           <DsTableCell role="columnheader" variant="header">Role</DsTableCell>
         </DsTableRow>
-        {group.rows.map((row) => (
-          <DsTableRow>
-            <DsTableCopyCell role="cell" value={row.token} />
-            <DsTableCell role="cell" tone="secondary"><code>{row.defaultValue}</code></DsTableCell>
-            <DsTableCell role="cell" tone="secondary"><code>{row.reducedValue}</code></DsTableCell>
-            <DsTableCell role="cell" tone="secondary"><span>{row.role}</span></DsTableCell>
-          </DsTableRow>
-        ))}
+        {group.rows.map((row) => {
+          const token = documentationTokenMap.get(row.token);
+          const defaultValue = token ? getDocumentationTokenValue(token) : row.defaultValue;
+          const reducedValue = token ? getDocumentationTokenValue(token, "reduced-motion") : row.reducedValue;
+          return (
+            <DsTableRow>
+              <DsTableCopyCell role="cell" value={row.token} />
+              <DsTableCell role="cell" tone="secondary"><code>{defaultValue}</code></DsTableCell>
+              <DsTableCell role="cell" tone="secondary"><code>{reducedValue}</code></DsTableCell>
+              <DsTableCell role="cell" tone="secondary"><span>{row.role}</span></DsTableCell>
+            </DsTableRow>
+          );
+        })}
       </DsTableFrame>
     </section>
   ))

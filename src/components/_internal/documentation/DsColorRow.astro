@@ -38,9 +38,15 @@ const resolvedDarkValue = darkValue ?? value;
 const resolvedSampleValue = sampleValue ?? `var(${token})`;
 const resolvedLightSampleValue = lightValue ?? resolvedSampleValue;
 const resolvedDarkSampleValue = darkValue ?? resolvedSampleValue;
+const tokenId = `token-${token.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`;
 ---
 
-<DsTableRow class="color-row">
+<DsTableRow
+  class="color-row"
+  componentName="DsColorRow"
+  id={tokenId}
+  variable={token}
+>
   <DsTableCell class="color-row__token-cell" justify="between" role="cell">
     <code>{token}</code>
     <DsCopyButton label={`Copy ${token}`} value={token} />

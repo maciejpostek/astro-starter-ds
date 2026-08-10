@@ -96,6 +96,30 @@ test("named section composition resolves only selected components and dependenci
   );
   assert.equal(context.brandRules.length, 0);
   assert.ok(context.contextBytes <= context.contextLimitBytes);
+  assert.ok(
+    context.compositionContract.principles.some((principle) =>
+      principle.includes("intrinsic layout")
+    )
+  );
+  assert.equal(
+    context.requiredReads.includes(".agentic-rules/09-responsive.md"),
+    false
+  );
+});
+
+test("responsive composition loads the full intrinsic-first strategy", () => {
+  const task = routeAgentRequest({
+    prompt: "Compose a responsive section with ButtonGroup.",
+    projectRoot
+  });
+  assert.equal(task.intent, "compose");
+  assert.deepEqual(task.requestedContexts, ["responsive"]);
+
+  const context = resolveAgentContext({ task, projectRoot });
+  assert.ok(context.requiredReads.includes(".agentic-rules/09-responsive.md"));
+  assert.ok(
+    context.readPlan.some((read) => read.reason === "responsive-strategy-rule")
+  );
 });
 
 test("open-ended page composition requires approved brand context without enabling component creation", () => {
@@ -278,7 +302,7 @@ test("create family resolution narrows reads to the family and projections", () 
       layer: "atom",
       family: "buttons",
       sourcePath: "src/components/base-components/buttons/Keycap.astro",
-      docsPath: "src/pages/design-system/components.astro"
+      docsPath: "src/data/documentationComponentRegistry.ts"
     }
   });
 
@@ -287,15 +311,89 @@ test("create family resolution narrows reads to the family and projections", () 
   assert.deepEqual(
     context.readPlan.map(({ reason }) => reason),
     [
-      "figma-astro-sync-contract",
+      "component-readiness-rule",
+      "component-readiness-contract",
       "component-category-rule",
       "registry-projection",
-      "guides-projection"
+      "guides-projection",
+      "responsive-strategy-rule"
     ]
+  );
+  assert.equal(
+    context.requiredReads.some((path) => path.includes("FIGMA-ASTRO-SYNC-CONTRACT")),
+    false
   );
   assert.equal(
     context.requiredReads.includes(".agentic-rules/00-framework.md"),
     false
+  );
+});
+
+test("component readiness context is scoped to create, extend, and relevant repair", () => {
+  const reuseTask = routeAgentRequest({
+    prompt: "Reuse Button in the page.",
+    projectRoot,
+  });
+  const reuse = resolveAgentContext({ task: reuseTask, projectRoot });
+  assert.equal(
+    reuse.requiredReads.includes(".agentic-rules/10-component-readiness.md"),
+    false,
+  );
+
+  const extendTask = routeAgentRequest({
+    prompt: "Extend Button props API.",
+    projectRoot,
+  });
+  const extend = resolveAgentContext({ task: extendTask, projectRoot });
+  assert.ok(
+    extend.requiredReads.includes(".agentic-rules/10-component-readiness.md"),
+  );
+  assert.ok(
+    extend.requiredReads.includes("architecture/component-readiness-contract.json"),
+  );
+
+  const repairTask = routeAgentRequest({
+    prompt: "Repair Button Guides identity.",
+    projectRoot,
+  });
+  assert.ok(repairTask.requestedContexts.includes("component-readiness"));
+  const repair = resolveAgentContext({ task: repairTask, projectRoot });
+  assert.ok(
+    repair.requiredReads.includes(".agentic-rules/10-component-readiness.md"),
+  );
+});
+
+test("Figma creation context is loaded only after an explicit Figma request", () => {
+  const task = routeAgentRequest({
+    prompt: "Create a new reusable design-system component `Keycap` and project it to Figma.",
+    projectRoot
+  });
+  assert.deepEqual(task.requestedContexts, ["figma"]);
+  assert.equal(task.excludedContexts.includes("figma"), false);
+
+  const context = resolveAgentContext({
+    task,
+    projectRoot,
+    contractOverride: {
+      version: "1.0.0",
+      status: "approved",
+      projectId: "runtime-test",
+      owner: "Runtime test",
+      approvedAt: "2026-07-28",
+      rules: []
+    },
+    creationDraft: {
+      layer: "atom",
+      family: "buttons",
+      sourcePath: "src/components/base-components/buttons/Keycap.astro",
+      docsPath: "src/data/documentationComponentRegistry.ts"
+    }
+  });
+
+  assert.ok(
+    context.requiredReads.includes(
+      "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md"
+    )
   );
 });
 

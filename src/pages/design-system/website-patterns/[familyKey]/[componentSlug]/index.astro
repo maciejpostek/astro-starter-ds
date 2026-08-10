@@ -1,0 +1,45 @@
+---
+import DesignSystemLayout from "../../../../../layouts/DesignSystemLayout.astro";
+import DsComponentDetail from "../../../../../components/_internal/documentation/DsComponentDetail.astro";
+import { architecture, type ArchitectureComponent } from "../../../../../data/documentationRegistry";
+import { loadComponentRule } from "../../../../../data/componentRuleLoader";
+import { getComponentDocumentationAdapter } from "../../../../../data/documentationComponentRegistry";
+
+export function getStaticPaths() {
+  return architecture.components
+    .filter((component) => component.categoryKey === "website-patterns")
+    .map((component) => ({
+      params: { familyKey: component.pageKey, componentSlug: component.id },
+      props: { component },
+    }));
+}
+
+interface Props { component: ArchitectureComponent; }
+const { component } = Astro.props;
+const rule = component.agenticRule ? await loadComponentRule(component.agenticRule) : undefined;
+const adapter = getComponentDocumentationAdapter(component.id);
+const documentationToc = adapter?.toc ?? [
+  { label: "Component metadata", href: "#component-metadata" },
+  { label: "Preview", href: "#preview" },
+  { label: "Dependencies", href: "#dependencies" },
+];
+---
+
+<DesignSystemLayout
+  title={`${component.name} - Website Patterns`}
+  pageType="component-detail"
+  toc={[
+    ...documentationToc,
+    ...(rule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
+  ]}
+  header={{
+    eyebrow: `Website Patterns / ${component.pageLabel}`,
+    title: component.name,
+    description: component.sourcePath
+      ? "Canonical Astro website pattern and its responsive documentation contract."
+      : "Canonical Figma pattern identity. Responsive preview remains unavailable until Astro implementation.",
+    copyValue: component.name,
+  }}
+>
+  <DsComponentDetail component={component} rule={rule} adapter={adapter} />
+</DesignSystemLayout>

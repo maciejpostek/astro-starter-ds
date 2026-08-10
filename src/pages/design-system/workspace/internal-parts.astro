@@ -1,0 +1,65 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsSectionHeaderLevel2 from "../../../components/_internal/documentation/DsSectionHeaderLevel2.astro";
+import architecture from "../../../data/design-system/componentArchitecture.json";
+
+const figmaOnly = architecture.components.filter(
+  (record) => record.syncStatus === "figma-only"
+);
+const intentional = architecture.components.filter(
+  (record) => record.syncStatus === "intentional-difference"
+);
+const mapped = architecture.components.filter(
+  (record) => record.syncStatus === "mapped"
+);
+---
+
+<DesignSystemLayout title="Internal Parts - Astro Design System" pageType="workspace" toc={[
+  { label: "Readiness overview", href: "#readiness-overview" },
+  { label: "Canonical records", href: "#canonical-records" },
+]} header={{
+  eyebrow: "Workspace",
+  title: "Internal Parts",
+  description: "Operational inventory of canonical component identities and their current Figma–Astro readiness.",
+}}>
+
+    <section class="readiness-overview" id="readiness-overview" aria-labelledby="readiness-overview-title" data-ds-doc-section>
+      <DsSectionHeaderLevel2 id="readiness-overview-title" title="Readiness overview" />
+      <div class="metrics">
+        <article><span>Figma only</span><strong>{figmaOnly.length}</strong></article>
+        <article><span>Mapped</span><strong>{mapped.length}</strong></article>
+        <article><span>Intentional differences</span><strong>{intentional.length}</strong></article>
+      </div>
+    </section>
+
+    <section class="inventory" id="canonical-records" aria-labelledby="canonical-records-title" data-ds-doc-section>
+      <DsSectionHeaderLevel2 id="canonical-records-title" title="Canonical records" />
+      <table>
+        <thead><tr><th>Name</th><th>Page</th><th>Role</th><th>Status</th><th>Astro source</th></tr></thead>
+        <tbody>
+          {architecture.components.map((record) => (
+            <tr>
+              <th scope="row">{record.name}</th>
+              <td>{record.pageLabel}</td>
+              <td><code>{record.role}</code></td>
+              <td><code>{record.syncStatus}</code></td>
+              <td><code>{record.sourcePath ?? "—"}</code></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+</DesignSystemLayout>
+
+<style>
+  .readiness-overview { display:grid; }
+  .metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap-small); margin-bottom:var(--section-padding-small); }
+  .metrics article, .inventory { border:var(--border-width-default) solid var(--color-border-subtle); padding:var(--component-padding-large); }
+  .metrics article { display:grid; gap:var(--gap-small); }
+  .metrics span { color:var(--color-text-secondary); }
+  .metrics strong { font-size:var(--font-size-h4); }
+  .inventory { display:grid; gap:var(--gap-large); overflow:auto; }
+  table { width:100%; border-collapse:collapse; }
+  th, td { border-bottom:var(--border-width-default) solid var(--color-border-subtle); padding:var(--component-padding-small); text-align:left; vertical-align:top; }
+  @media (width < 64rem) { .metrics { grid-template-columns:1fr; } }
+</style>

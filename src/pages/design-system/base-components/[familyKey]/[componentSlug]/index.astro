@@ -1,0 +1,51 @@
+---
+import DesignSystemLayout from "../../../../../layouts/DesignSystemLayout.astro";
+import DsComponentDetail from "../../../../../components/_internal/documentation/DsComponentDetail.astro";
+import { architecture, type ArchitectureComponent } from "../../../../../data/documentationRegistry";
+import { loadComponentRule } from "../../../../../data/componentRuleLoader";
+import {
+  getComponentDocumentationAdapter,
+} from "../../../../../data/documentationComponentRegistry";
+
+export function getStaticPaths() {
+  return architecture.components
+    .filter((component) => component.categoryKey === "base-components")
+    .map((component) => ({
+      params: { familyKey: component.pageKey, componentSlug: component.id },
+      props: { component },
+    }));
+}
+
+interface Props { component: ArchitectureComponent; }
+const { component } = Astro.props;
+const rule = component.agenticRule ? await loadComponentRule(component.agenticRule) : undefined;
+const adapter = getComponentDocumentationAdapter(component.id);
+const documentationToc = adapter?.toc ?? [{ label: "Preview", href: "#preview" }];
+---
+
+<DesignSystemLayout
+  title={`${component.name} - Astro Design System`}
+  pageType="component-detail"
+  toc={[
+    ...(!adapter ? [{ label: "Component metadata", href: "#component-metadata" }] : []),
+    ...documentationToc,
+    ...(!documentationToc.some((item) => item.href === "#dependencies")
+      ? [{ label: "Dependencies", href: "#dependencies" }]
+      : []),
+    ...(rule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
+  ]}
+  header={{
+    eyebrow: `Base Components / ${component.pageLabel}`,
+    title: component.name,
+    description: component.sourcePath
+      ? "Canonical Astro component documentation generated from the implementation and registry contract."
+      : "Canonical Figma identity. Astro API and preview remain intentionally unavailable until implementation.",
+    copyValue: component.name,
+  }}
+>
+  <DsComponentDetail
+    component={component}
+    rule={rule}
+    adapter={adapter}
+  />
+</DesignSystemLayout>

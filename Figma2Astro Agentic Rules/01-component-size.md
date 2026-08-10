@@ -12,8 +12,8 @@ Figma stores six public size properties directly in `Component Size`.
 
 The collection has three modes:
 
-- `Medium` — the collection default;
-- `Small`;
+- `Small` — the collection default;
+- `Medium`;
 - `Large`.
 
 Figma does not contain a `component-profile` group, and `Component Size`
@@ -27,12 +27,12 @@ from Astro code.
 
 | Figma Variable | Web code syntax | Small | Medium | Large |
 | --- | --- | ---: | ---: | ---: |
-| `min/height` | `var(--component-min-height)` | 48 | 56 | 64 |
-| `padding/inline` | `var(--component-padding-inline)` | 16 | 20 | 24 |
-| `padding/block` | `var(--component-padding-block)` | 12 | 18 | 24 |
+| `min/height` | `var(--component-min-height)` | 32 | 48 | 56 |
+| `padding/inline` | `var(--component-padding-inline)` | 12 | 20 | 24 |
+| `padding/block` | `var(--component-padding-block)` | 0 | 18 | 24 |
 | `icon/size` | `var(--component-icon-size)` | 14 | 16 | 18 |
-| `gap` | `var(--component-gap)` | 8 | 10 | 12 |
-| `font/size` | `var(--component-font-size)` | 12 | 13 | 14 |
+| `gap` | `var(--component-gap)` | 4 | 8 | 10 |
+| `font/size` | `var(--component-font-size)` | 12 | 14 | 16 |
 
 Line height is deliberately absent from the Figma collection. Component Text
 Styles store it as a native percentage and the typography adapter maps it to
@@ -64,9 +64,9 @@ Example:
 
 ```css
 :root {
-  --component-size-small-min-height: var(--size-48);
-  --component-size-medium-min-height: var(--size-56);
-  --component-size-large-min-height: var(--size-64);
+  --component-size-small-min-height: var(--size-32);
+  --component-size-medium-min-height: var(--size-48);
+  --component-size-large-min-height: var(--size-56);
 }
 
 [data-component-size="medium"] {
@@ -118,28 +118,29 @@ instead of assuming that every component uses the same prop.
 5. Pass the prop so rendered HTML contains the correct
    `data-component-size`.
 6. Keep component CSS on the stable `--component-*` aliases.
-7. Do not copy values such as 48, 16, or 12 into local component CSS.
+7. Do not copy values such as 32, 12, or 4 into local component CSS.
 8. Verify every Figma profile-dependent property: height, padding, icon, gap
    and font size; verify line height through the applied component Text Style.
 9. Compare the result with a Figma screenshot in the same mode.
 
 ## Default mode versus default prop
 
-`Medium` is the default Figma mode, but this does not mean every Astro
-component defaults to `medium`.
+`Small` is the default Figma mode, but this does not mean every Astro
+component defaults to `small`.
 
-If a Figma node uses `Medium` while Astro defaults to `Small`, pass
-`size="medium"` or the appropriate equivalent explicitly. Never rely on a
+If a Figma node uses a mode different from the Astro component default, pass
+the matching `size` or `componentSize` prop explicitly. Never rely on a
 component default before inspecting its code.
 
 ## Changing a profile value
 
-Code remains the source of truth. When a profile value changes:
+The approved canonical Figma collection is the source of truth for public
+component geometry. When a profile value changes in Figma:
 
-1. update the correct `--component-size-{mode}-*` token;
-2. verify the `[data-component-size]` mapping;
-3. verify all consumers of `--component-*`;
-4. update the direct value in the corresponding Figma mode;
+1. inspect and validate all six values in every Figma mode;
+2. update the correct `--component-size-{mode}-*` tokens in Astro;
+3. verify the `[data-component-size]` mapping;
+4. verify all consumers of `--component-*`;
 5. update the table in this rule;
 6. validate both environments.
 
@@ -161,7 +162,7 @@ CSS alias layer.
 Figma:
 
 - `Component Size` has exactly six Variables;
-- modes are `Medium`, `Small`, and `Large`;
+- modes are `Small`, `Medium`, and `Large`, with `Small` as default;
 - every Variable has a direct value in every mode;
 - no `component-profile` group exists;
 - Web code syntax points to stable `var(--component-*)` aliases.

@@ -26,6 +26,9 @@
     "brandContract": "project-context/brand-foundations/brand-expression/contract.json",
     "projectContext": "project-context/README.md",
     "frameworkStrategy": "DESIGN-SYSTEM-FRAMEWORK.md",
+    "responsiveStrategy": ".agentic-rules/09-responsive.md",
+    "componentReadiness": ".agentic-rules/10-component-readiness.md",
+    "componentReadinessContract": "architecture/component-readiness-contract.json",
     "figmaRouter": "Figma2Astro Agentic Rules/README.md",
     "figmaSyncContract": "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
     "iconManifest": "src/data/design-system/iconLibrary.json",
@@ -98,6 +101,7 @@
         "named component records",
         "direct dependencies",
         "compact layout contract",
+        "compact intrinsic-first responsive contract",
         "matching approved brand rules when applicable",
         "target file"
       ],
@@ -141,7 +145,7 @@
       "budget": "large",
       "reads": [
         "phase 1: gap evidence, creation rules, dependencies, Brand Contract status",
-        "phase 2: selected family rule and declared registry/Guides projections"
+        "phase 2: selected family rule, responsive strategy and declared registry/Guides projections"
       ],
       "skips": [
         "Figma unless explicitly requested"
@@ -182,11 +186,13 @@
       "matching family audit"
     ],
     "component-contract": [
+      "component readiness audit",
       "component registry audit",
       "matching family audit",
       "build"
     ],
     "component-creation": [
+      "component readiness audit",
       "component registry audit",
       "agent runtime audit",
       "matching family audit",
@@ -201,6 +207,7 @@
       "reused",
       "createdComponents",
       "changedFiles",
+      "readinessGates",
       "validation",
       "missingInput"
     ],

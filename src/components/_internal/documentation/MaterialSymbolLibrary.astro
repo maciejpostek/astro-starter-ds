@@ -1,6 +1,8 @@
 ---
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import { materialSymbolNames } from "../../../lib/icons/materialSymbols";
+import DsCopyButton from "./DsCopyButton.astro";
+import { slugifyDocumentationValue } from "../../../data/documentationRegistry";
 ---
 
 <section
@@ -8,6 +10,16 @@ import { materialSymbolNames } from "../../../lib/icons/materialSymbols";
   data-component-name="MaterialSymbolLibrary"
   data-material-symbol-library
 >
+  <div class="material-symbol-library__profile">
+    <div>
+      <strong>Google Material Symbols Sharp</strong>
+      <p class="body-small-regular">
+        Optical size 20 · weight 400 · grade 0 · fill 0. Astro renders curated inline SVG
+        with <code>currentColor</code>; no runtime font or network request is required.
+      </p>
+    </div>
+    <span>45 curated symbols</span>
+  </div>
   <header class="material-symbol-library__header">
     <label>
       <span>Search curated Material Symbols</span>
@@ -23,9 +35,16 @@ import { materialSymbolNames } from "../../../lib/icons/materialSymbols";
   <div class="material-symbol-library__grid" data-material-symbol-grid>
     {
       materialSymbolNames.map((name) => (
-        <article class="material-symbol-library__item" data-icon-name={name}>
+        <article
+          class="material-symbol-library__item"
+          id={`icon-${slugifyDocumentationValue(name)}`}
+          data-icon-name={name}
+        >
           <MaterialSymbol name={name} size={20} />
-          <span>{name}</span>
+          <div>
+            <span>{name}</span>
+            <DsCopyButton value={name} />
+          </div>
         </article>
       ))
     }
@@ -86,6 +105,31 @@ import { materialSymbolNames } from "../../../lib/icons/materialSymbols";
     gap: var(--gap-medium);
   }
 
+  .material-symbol-library__profile {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--gap-large);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+    padding: var(--component-padding-large);
+  }
+
+  .material-symbol-library__profile div {
+    display: grid;
+    gap: var(--gap-small);
+  }
+
+  .material-symbol-library__profile > span {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .material-symbol-library__profile p {
+    color: var(--color-text-secondary);
+  }
+
   label {
     display: grid;
     flex: 1;
@@ -128,6 +172,13 @@ import { materialSymbolNames } from "../../../lib/icons/materialSymbols";
     padding: var(--component-padding-small);
     color: var(--color-icon-primary);
     text-align: center;
+  }
+
+  .material-symbol-library__item > div {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--gap-tiny);
   }
 
   .material-symbol-library__item span,

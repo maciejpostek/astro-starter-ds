@@ -1,0 +1,24 @@
+---
+import SearchInput from "../../base-components/inputs/SearchInput.astro";
+---
+
+<div
+  class="ds-search-input-preview"
+  data-component-name="DsSearchInputPreview"
+  data-component-size="medium"
+  data-ds-preview-target
+  data-search-input-content="empty"
+>
+  <SearchInput
+    data-ds-input-preview-control
+    label="Search documentation"
+    placeholder="Search"
+  />
+</div>
+
+<style>
+  .ds-search-input-preview {
+    display: grid;
+    width: min(100%, 20rem);
+  }
+</style>

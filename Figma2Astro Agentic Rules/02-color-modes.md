@@ -25,16 +25,21 @@ Color Semantic
 │   └── state/*
 └── Component/
     ├── button/{primary|secondary|link}/{property}/{state}
+    ├── switch/{track|handle|label}/*
     ├── input/{property}/{state}
     ├── tab/{property}/{state}
     ├── link/{property}/{state}
-    ├── tag/*
     └── card/*
 ```
 
 `Color Semantic` has `Light` and `Dark` modes. The first-level group is
 `Global` or `Component`; do not add a `Semantic` group because the collection
 already expresses that layer.
+
+Tag intentionally consumes existing accent, status and inverse roles directly.
+Its nested close action inherits the current tone, uses native opacity for
+interaction feedback and the shared Focused Effect Style for keyboard focus;
+there is no `Component/tag/*` Variable group.
 
 Component masters, variants, nested instances, and internal frames do not set
 an explicit `Color Semantic` mode. Theme is set only on a composition parent,
@@ -65,6 +70,7 @@ Example code syntax:
 | `Global/border/on-media` | `var(--color-border-on-media)` |
 | `Global/text/primary` | `var(--color-text-primary)` |
 | `Component/button/primary/background/default` | `var(--button-primary-background-default)` |
+| `Component/switch/track/on/background/default` | `var(--switch-track-on-background-default)` |
 | `Component/input/border/focus` | `var(--input-border-focus)` |
 
 ## Astro representation
@@ -105,7 +111,8 @@ is only a Variables-panel representation.
   create nested `accent/*` or `media/*` groups.
 - Keep all global border roles directly inside `Global/border`; do not create
   nested `accent/*` or `on/*` groups.
-- Do not rename the `link` variant to a nonexistent `tertiary` variant.
+- Do not collapse `ButtonLink` into Button's `tertiary` variant. They have
+  different semantics and geometry even though both are visually subtle.
 - Do not copy HEX values from Figma into an Astro component.
 - Do not reconstruct the CSS name from a path when Web code syntax exists.
 - Do not set `Color Semantic = Light` or `Dark` on a component master,

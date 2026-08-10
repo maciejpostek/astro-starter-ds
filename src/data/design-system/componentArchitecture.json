@@ -1,7 +1,7 @@
 {
   "schemaVersion": "2.0.0",
   "status": "active",
-  "updatedAt": "2026-08-05",
+  "updatedAt": "2026-08-09",
   "sourceContract": "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
   "figma": {
     "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
@@ -895,9 +895,9 @@
       "figmaCanonicalNodeId": "190:131",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/buttons",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/buttons/Button.astro",
       "name": "Button",
-      "astroComponent": null,
+      "astroComponent": "Button",
       "role": "atom",
       "layer": "atom",
       "family": "buttons",
@@ -907,13 +907,24 @@
       "uses": [
         "material-symbol"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Style maps to the Astro variant prop, while Figma State variants map to native CSS interaction states.",
+          "instruction": "Use variant for primary, secondary, or tertiary. Do not expose a public state prop."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/button.md",
+      "variants": ["primary", "secondary", "tertiary"],
+      "props": ["variant", "size", "showIcon", "disabled", "type"],
+      "slots": ["default"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--component-*", "--button-primary-*", "--button-secondary-*", "--button-tertiary-*"],
       "readiness": {
         "visual": "approved",
-        "validation": "not-run"
+        "validation": "passed"
       }
     },
     {
@@ -926,9 +937,9 @@
       "figmaCanonicalNodeId": "959:2706",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/buttons",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/buttons/ButtonLink.astro",
       "name": "ButtonLink",
-      "astroComponent": null,
+      "astroComponent": "ButtonLink",
       "role": "atom",
       "layer": "atom",
       "family": "buttons",
@@ -938,13 +949,24 @@
       "uses": [
         "material-symbol"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "semantics",
+          "reason": "Figma documents interaction states; Astro renders a native anchor and omits layout-neutral transparent border geometry.",
+          "instruction": "Use href for navigation, keep the component free of fixed height and padding, and do not expose a public state prop."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/button-link.md",
+      "variants": [],
+      "props": ["href", "size", "showIcon", "disabled"],
+      "slots": ["default"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--component-gap", "--component-icon-size", "--component-font-size", "--button-link-*"],
       "readiness": {
         "visual": "approved",
-        "validation": "not-run"
+        "validation": "passed"
       }
     },
     {
@@ -957,9 +979,9 @@
       "figmaCanonicalNodeId": "193:110",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/buttons",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/buttons/IconButton.astro",
       "name": "IconButton",
-      "astroComponent": null,
+      "astroComponent": "IconButton",
       "role": "atom",
       "layer": "atom",
       "family": "buttons",
@@ -969,13 +991,24 @@
       "uses": [
         "material-symbol"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "accessibility",
+          "reason": "Figma stores the accessible Label as hidden text; Astro maps the required label prop to aria-label.",
+          "instruction": "Always provide label and do not expose arbitrary icon selection."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/icon-button.md",
+      "variants": ["primary", "secondary"],
+      "props": ["label", "variant", "size", "disabled", "type"],
+      "slots": [],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--component-min-height", "--component-icon-size", "--button-primary-*", "--button-secondary-*"],
       "readiness": {
         "visual": "approved",
-        "validation": "not-run"
+        "validation": "passed"
       }
     },
     {
@@ -985,24 +1018,35 @@
       "pageLabel": "Buttons",
       "figmaPageId": "190:3",
       "actualFigmaPageId": "190:3",
-      "figmaCanonicalNodeId": "205:47",
+      "figmaCanonicalNodeId": "204:103",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/buttons",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/buttons/ButtonGroup.astro",
       "name": "ButtonGroup",
-      "astroComponent": null,
+      "astroComponent": "ButtonGroup",
       "role": "molecule",
       "layer": "molecule",
       "family": "buttons",
-      "dependencies": [],
-      "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "dependencies": ["button", "button-link", "icon-button"],
+      "uses": ["button", "button-link", "icon-button"],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma uses one unrestricted native Slot; Astro uses the unrestricted default slot with flex wrapping.",
+          "instruction": "Do not introduce a Count prop or child-count limit."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/button-group.md",
+      "variants": [],
+      "props": [],
+      "slots": ["default"],
+      "states": [],
+      "tokens": ["--gap-button-group"],
       "readiness": {
         "visual": "approved",
-        "validation": "not-run"
+        "validation": "passed"
       }
     },
     {
@@ -1015,21 +1059,37 @@
       "figmaCanonicalNodeId": "206:166",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/switch",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/switch/SwitchButton.astro",
       "name": "SwitchButton",
-      "astroComponent": null,
+      "astroComponent": "SwitchButton",
       "role": "atom",
       "layer": "atom",
       "family": "switch",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Checked variants map to the initial checked prop, while Figma State variants map to native checkbox interaction states and a private documentation preview hook.",
+          "instruction": "Use checked only for the initial value, preserve native checkbox behavior, and do not expose a public state prop."
+        },
+        {
+          "kind": "sizing",
+          "reason": "The canonical master explicitly uses the Small Component Size mode; Astro fixes data-component-size to small instead of exposing an unsupported size prop.",
+          "instruction": "Do not add a public size prop until the canonical Figma master introduces an approved size decision."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/switch-button.md",
+      "variants": ["off", "on"],
+      "props": ["label", "checked", "disabled"],
+      "slots": [],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--component-gap", "--component-icon-size", "--component-font-size", "--switch-*", "--elevation-control-thumb"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1042,21 +1102,38 @@
       "figmaCanonicalNodeId": "215:29",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/inputs",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/inputs/Input.astro",
       "name": "Input",
-      "astroComponent": null,
+      "astroComponent": "Input",
       "role": "atom",
       "layer": "atom",
       "family": "inputs",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Type maps to the Astro multiline boolean, while Hover and Focus remain native CSS interaction states.",
+          "instruction": "Use multiline for textarea semantics and validation for valid or invalid presentation. Do not expose hover or focus as public props."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma uses a fixed 320 px documentation width, while Astro fills the available inline size.",
+          "instruction": "Treat the Figma width as a preview fixture. Constrain Input through its composition container in production."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/input.md",
+      "variants": ["input", "textarea"],
+      "props": ["multiline", "size", "validation", "disabled", "value", "placeholder"],
+      "slots": [],
+      "attributes": ["data-component-size", "data-input-validation"],
+      "states": ["default", "hover", "focus-visible", "invalid", "valid", "disabled"],
+      "tokens": ["--component-*", "--input-*", "--radius-input", "--size-128"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1096,9 +1173,9 @@
       "figmaCanonicalNodeId": "223:137",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/inputs",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/inputs/SearchInput.astro",
       "name": "SearchInput",
-      "astroComponent": null,
+      "astroComponent": "SearchInput",
       "role": "molecule",
       "layer": "molecule",
       "family": "inputs",
@@ -1110,13 +1187,55 @@
         "input",
         "material-symbol"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        "Figma Content=Empty|Filled is a presentation axis derived automatically from the native Astro input value; it is not a public prop.",
+        "Figma State documents Default, Hover, Focus and Disabled; Astro uses native input pseudo-classes and a private documentation preview hook rather than exposing state.",
+        "Figma keeps an optimized standalone field master bound to the canonical Input token and typography contracts because inserting icons into an Input instance would broaden Input's public Figma API; Astro composes the real Input component.",
+        "Figma uses _Parts/SearchInput.ClearButton to document the fixed clear action states; Astro renders one native button that clears the value, emits an input event and restores focus.",
+        "Figma Component Size modes map to the Astro size prop and data-component-size, with Medium as the shared default."
+      ],
+      "agenticRule": ".agentic-rules/components/search-input.md",
+      "variants": [
+        "empty",
+        "filled"
+      ],
+      "props": [
+        "label",
+        "size",
+        "disabled",
+        "clearLabel",
+        "placeholder",
+        "value"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-component-size",
+        "data-search-input",
+        "data-search-input-content",
+        "data-search-input-control",
+        "data-search-input-clear"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "disabled",
+        "clear-hover",
+        "clear-focus-visible",
+        "clear-pressed"
+      ],
+      "tokens": [
+        "--component-*",
+        "--input-*",
+        "--radius-input",
+        "--size-24",
+        "--effect-focused"
+      ],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1506,21 +1625,70 @@
       "figmaCanonicalNodeId": "244:19",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/tag",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/tag/Tag.astro",
       "name": "Tag",
-      "astroComponent": null,
+      "astroComponent": "Tag",
       "role": "atom",
       "layer": "atom",
       "family": "tag",
-      "dependencies": [],
-      "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "dependencies": [
+        "material-symbol"
+      ],
+      "uses": [
+        "material-symbol"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        "Figma keeps Tone as a seven-value variant axis; Astro maps it to the tone prop and data-tag-tone.",
+        "Figma represents Removable as a Boolean property with _Parts/Tag.RemoveButton documentation states; Astro renders one nested native button and owns hover, focus-visible, pressed and disabled through native interaction states.",
+        "Figma uses a TEXT Label property; Astro requires the label prop so the default removeLabel can include the visible value.",
+        "Figma Component Size modes map to the Astro size prop and data-component-size, with Small as the shared default."
+      ],
+      "agenticRule": ".agentic-rules/components/tag.md",
+      "variants": [
+        "neutral",
+        "accent",
+        "success",
+        "warning",
+        "error",
+        "info",
+        "inverse"
+      ],
+      "props": [
+        "label",
+        "tone",
+        "size",
+        "removable",
+        "disabled",
+        "removeLabel"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-component-size",
+        "data-tag-tone",
+        "data-tag-removable",
+        "data-tag-remove"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "pressed",
+        "disabled"
+      ],
+      "tokens": [
+        "component-size",
+        "radius-tag",
+        "border-width-default",
+        "effect-focused",
+        "accent",
+        "status",
+        "inverse"
+      ],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {

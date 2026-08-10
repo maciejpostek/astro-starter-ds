@@ -22,7 +22,6 @@ The token system is integrated with the Astro prototype.
 @import "./color-semantic.css";
 @import "./size-semantic.css";
 @import "./typography-foundations.css";
-@import "./typography-semantic.css";
 @import "./typography-styles.css";
 @import "./layout-foundations.css";
 @import "./layout-semantic.css";
@@ -47,8 +46,9 @@ Reference and foundation layer
 Semantic layer
 ├── Color Semantic
 ├── Sizing Semantic
-├── Typography Semantic
 └── Layout Semantic
+        ↓
+Typography Text Style classes
         ↓
 Component contracts
         ↓
@@ -87,22 +87,25 @@ alias:
 
 - `typography-foundations.css`: font families, weight roles, responsive font
   sizes, line heights, letter spacing, font styles, transforms and text wrap.
-- `typography-semantic.css`: complete heading contracts and shared Body size
-  contracts.
 - `typography-styles.css`: public typography classes such as `.heading-h1`
   and `.body-small-semibold`, size-first Regular, Regular Underlined and Semi
-  Bold Body variants, legacy Regular aliases, neutral native
+  Bold Body variants, neutral native
   heading/paragraph resets, and the small approved typography utility set for
   font-style, casing and wrapping. Underlined variants use a solid 7%
   decoration with a 14% offset and automatic skip-ink behavior.
 - `src/data/design-system/typographyTokens.ts`: documentation data for
-  foundation tables, semantic typography tables, resolved values, utility classes
+  foundation tables, Text Style tables, resolved values, utility classes
   and typography agentic rules.
 
 Typography is class-first: HTML tags define document semantics, while classes
 define visual text style. Body classes use the
 `.body-{large|medium|base|small|tiny}-{regular|regular-underlined|semibold}`
 hierarchy.
+
+Text Style classes consume typography foundation tokens directly. There is no
+`--text-style-*` alias layer and no standalone `.body-large` through
+`.body-tiny` compatibility API. This simplification is typography-only;
+semantic color tokens remain essential.
 
 Figma and Astro intentionally use different native representations for two
 relative metrics. Figma Text Styles store line height and letter spacing as
@@ -185,7 +188,7 @@ layers below, while Figma-specific simplifications are documented in
 | `size-semantic.css` | `Sizing Semantic` |
 | `component-sizes.css` | `Component Size` |
 | `typography-foundations.css` | `Typography Foundations` |
-| `typography-semantic.css` | `Typography Semantic` |
+| `typography-styles.css` | Figma Text Styles (separate synchronization follow-up) |
 | `layout-foundations.css` | `Layout Foundations` |
 | `layout-semantic.css` | `Layout Semantic` |
 | `motion-foundations.css` | `Motion Foundations` |
@@ -218,9 +221,17 @@ line-height: var(--component-line-height);
 Not every component must support every profile. Form inputs should normally use
 `medium` or `large`; `small` is the minimum supported component size for compact controls.
 
+`SearchInput` reuses the Input color and Component Size contracts. Its fixed
+search glyph and clear action use `--input-icon-*`; it does not own a separate
+component color group.
+
 `Tag` is the default component for short categorical values such as service
 scope, process activities, tech stack, industries and project metadata. Use
 `small` by default; larger tag sizes require an explicit UI reason.
+
+For applied filters, Tag may expose one nested close action. The shell remains
+non-interactive, the close action inherits the tone through `currentColor`, and
+its runtime states use native opacity plus the shared focus treatment.
 
 ## Responsive Strategy
 

@@ -4,6 +4,7 @@ interface Props {
   columns?: string;
   minWidth?: string;
   size?: "tiny";
+  componentName?: string;
   class?: string;
 }
 
@@ -12,6 +13,7 @@ const {
   columns,
   minWidth,
   size = "tiny",
+  componentName = "DsTableFrame",
   class: className,
 } = Astro.props as Props;
 const style = [
@@ -25,7 +27,7 @@ const style = [
 <div
   aria-label={label}
   class:list={["ds-table-frame", className]}
-  data-component-name="DsTableFrame"
+  data-component-name={componentName}
   data-ds-doc-table-size={size}
   role="table"
   style={style || undefined}

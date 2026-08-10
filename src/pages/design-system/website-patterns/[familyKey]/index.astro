@@ -1,0 +1,34 @@
+---
+import DesignSystemLayout from "../../../../layouts/DesignSystemLayout.astro";
+import DsFamilyGallery from "../../../../components/_internal/documentation/DsFamilyGallery.astro";
+import {
+  architecture,
+  componentsByPage,
+  type ArchitecturePage,
+} from "../../../../data/documentationRegistry";
+
+export function getStaticPaths() {
+  return architecture.pages
+    .filter((page) => page.categoryKey === "website-patterns")
+    .map((page) => ({ params: { familyKey: page.pageKey }, props: { page } }));
+}
+
+interface Props { page: ArchitecturePage; }
+const { page } = Astro.props;
+const components = componentsByPage.get(`website-patterns/${page.pageKey}`) ?? [];
+const availableCount = components.filter((component) => Boolean(component.sourcePath)).length;
+---
+
+<DesignSystemLayout
+  title={`${page.pageLabel} - Website Patterns`}
+  pageType="family-gallery"
+  toc={[{ label: "Variants", href: "#variants" }]}
+  header={{
+    eyebrow: "Website Patterns",
+    title: page.pageLabel,
+    description: "Compare canonical section identities in this family. Responsive preview is enabled only for implemented Astro patterns with a registered preview adapter.",
+    status: availableCount ? "Partially available" : components.length ? "Figma only" : "Empty family",
+  }}
+>
+  <DsFamilyGallery page={page} components={components} />
+</DesignSystemLayout>

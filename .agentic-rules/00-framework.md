@@ -115,6 +115,11 @@ Rules:
 - Do not keep old exploratory tokens once the system decision is made.
 - Prefer semantic/component tokens in UI code over raw values.
 
+Typography uses a scoped exception: foundation typography tokens feed complete
+Text Style classes directly, and those classes are the semantic typography
+contract. Do not generalize this exception to colors, sizing, layout or
+component contracts. Semantic color tokens remain required.
+
 ## Component Authoring Model
 
 Astro components are the main interface for building UI.
@@ -286,6 +291,8 @@ Use category rule packs for detailed decisions:
 - layout -> `.agentic-rules/04-layout.md`
 - components -> `.agentic-rules/05-components.md`
 - brand expression -> `.agentic-rules/08-brand-expression.md`
+- responsive behavior -> `.agentic-rules/09-responsive.md`
+- component readiness -> `.agentic-rules/10-component-readiness.md`
 
 Read the full category file when the task touches that category. For small
 copy-only or visual micro-changes, the router summary may be enough.
@@ -308,6 +315,11 @@ Rules:
   AI context.
 
 ## Component Readiness Rules
+
+The twelve reusable-component completion gates live in
+`.agentic-rules/10-component-readiness.md`. Its machine-readable projection is
+`architecture/component-readiness-contract.json`; do not maintain a second
+checklist in component pages or family rules.
 
 Use `src/data/design-system/componentArchitecture.json` to record only current
 component state:

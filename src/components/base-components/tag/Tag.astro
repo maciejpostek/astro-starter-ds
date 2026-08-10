@@ -1,0 +1,162 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export type TagTone = "neutral" | "accent" | "success" | "warning" | "error" | "info" | "inverse";
+export type TagSize = "small" | "medium" | "large";
+
+export interface Props extends Omit<HTMLAttributes<"span">, "class"> {
+  label: string;
+  tone?: TagTone;
+  size?: TagSize;
+  removable?: boolean;
+  disabled?: boolean;
+  removeLabel?: string;
+  class?: string;
+}
+
+const {
+  label,
+  tone = "neutral",
+  size = "small",
+  removable = false,
+  disabled = false,
+  removeLabel = `Remove ${label}`,
+  class: className,
+  ...attributes
+} = Astro.props;
+---
+
+<span
+  {...attributes}
+  class:list={["ds-tag", className]}
+  data-component-name="Tag"
+  data-component-size={size}
+  data-tag-disabled={removable && disabled ? "true" : undefined}
+  data-tag-removable={removable ? "true" : "false"}
+  data-tag-tone={tone}
+>
+  <span class="ds-tag__label">{label}</span>
+  {removable && (
+    <button
+      class="ds-tag__remove"
+      type="button"
+      aria-label={removeLabel}
+      data-tag-remove
+      data-tag-value={label}
+      disabled={disabled}
+    >
+      <MaterialSymbol name="close" size="var(--component-icon-size)" />
+    </button>
+  )}
+</span>
+
+<style>
+  .ds-tag {
+    display: inline-flex;
+    min-height: var(--component-min-height);
+    align-items: center;
+    justify-content: center;
+    gap: var(--component-gap);
+    border: var(--border-width-default) solid var(--color-border-accent);
+    border-radius: var(--radius-tag);
+    padding: var(--component-padding-block) var(--component-padding-inline);
+    color: var(--color-text-accent);
+    background: var(--color-transparent);
+    font-family: var(--font-family-body);
+    font-size: var(--component-font-size);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-none);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .ds-tag[data-tag-tone="accent"] {
+    border-color: var(--color-accent-200);
+    color: var(--color-accent-700);
+    background: var(--color-accent-50);
+  }
+
+  .ds-tag[data-tag-tone="success"] {
+    border-color: var(--color-status-success-border);
+    color: var(--color-status-success-text);
+    background: var(--color-status-success-background);
+  }
+
+  .ds-tag[data-tag-tone="warning"] {
+    border-color: var(--color-status-warning-border);
+    color: var(--color-status-warning-text);
+    background: var(--color-status-warning-background);
+  }
+
+  .ds-tag[data-tag-tone="error"] {
+    border-color: var(--color-status-error-border);
+    color: var(--color-status-error-text);
+    background: var(--color-status-error-background);
+  }
+
+  .ds-tag[data-tag-tone="info"] {
+    border-color: var(--color-status-info-border);
+    color: var(--color-status-info-text);
+    background: var(--color-status-info-background);
+  }
+
+  .ds-tag[data-tag-tone="inverse"] {
+    border-color: var(--color-background-inverse);
+    color: var(--color-text-inverse);
+    background: var(--color-background-inverse);
+  }
+
+  .ds-tag__label {
+    overflow-wrap: anywhere;
+  }
+
+  .ds-tag__remove {
+    display: inline-grid;
+    width: var(--size-24);
+    height: var(--size-24);
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-full);
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.72;
+  }
+
+  .ds-tag__remove:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+    opacity: 1;
+  }
+
+  .ds-tag__remove:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
+    opacity: 0.56;
+  }
+
+  .ds-tag__remove:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    outline: none;
+    opacity: 1;
+    box-shadow: var(--effect-focused);
+  }
+
+  .ds-tag__remove:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  @media (forced-colors: active) {
+    .ds-tag {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .ds-tag__remove:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+      box-shadow: none;
+    }
+  }
+</style>

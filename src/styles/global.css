@@ -64,16 +64,6 @@ a {
   text-decoration: none;
 }
 
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-}
-
 ul,
 ol {
   margin: 0;
@@ -129,22 +119,8 @@ textarea:focus-visible {
   padding-top: var(--app-topbar-height);
 }
 
-.main--design-system {
-  display: grid;
-  grid-template-columns: repeat(var(--site-grid-columns), minmax(0, 1fr));
-  gap: 0 var(--site-grid-column-gap);
-  align-items: start;
-  padding-inline: var(--site-padding-inline);
-}
-
-.design-system-shell__content {
-  grid-column: 4 / -1;
-  min-width: 0;
-}
-
-.design-system-shell__content > .page,
-.design-system-shell__content > .page--wide {
-  padding-inline: 0;
+.main--flush {
+  padding-top: 0;
 }
 
 .brand {
@@ -207,7 +183,7 @@ textarea:focus-visible {
   user-select: none;
 }
 
-html[data-grid="hidden"] .grid-visualizer:not(.grid-visualizer--preview) {
+html[data-guides="hidden"] .grid-visualizer:not(.grid-visualizer--preview) {
   display: none;
 }
 
@@ -240,14 +216,7 @@ html[data-grid="hidden"] .grid-visualizer:not(.grid-visualizer--preview) {
   align-items: center;
   justify-content: center;
   margin-inline: auto;
-  border: var(--border-width-default) solid var(--color-border-accent);
   color: var(--color-text-accent);
-  background:
-    color-mix(
-      in oklab,
-      var(--color-background-canvas) 88%,
-      transparent
-    );
   content: attr(data-grid-column);
   font-size: var(--font-size-body-tiny);
   font-weight: var(--font-weight-emphasis);
@@ -286,15 +255,6 @@ html[data-grid="hidden"] .grid-visualizer:not(.grid-visualizer--preview) {
       var(--section-padding-medium);
   }
 
-  .main--design-system {
-    display: block;
-    padding-inline: 0;
-  }
-
-  .design-system-shell__content > .page,
-  .design-system-shell__content > .page--wide {
-    padding-inline: var(--site-padding-inline);
-  }
 }
 
 @media (width < 32.5rem) {

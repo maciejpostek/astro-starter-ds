@@ -243,9 +243,6 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--color-text-primary);
-  font-family: var(--font-family-heading);
-  font-size: var(--font-size-body-medium);
-  line-height: var(--line-height-compact);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -254,8 +251,6 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--color-text-secondary);
-  font-size: var(--font-size-body-tiny);
-  line-height: var(--line-height-normal);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
 }
@@ -404,7 +399,6 @@
 }
 
 .architecture-explorer__details-header span,
-.architecture-explorer__details h4,
 .architecture-explorer__facts dt,
 .architecture-explorer__ownership dt {
   color: var(--color-text-tertiary);
@@ -416,7 +410,6 @@
 
 .architecture-explorer__details h3 {
   margin-block-start: var(--gap-tiny);
-  font-size: var(--font-size-h5);
 }
 
 .architecture-explorer__details h4,
@@ -431,12 +424,15 @@
   gap: var(--gap-small);
 }
 
-.architecture-explorer__details p,
 .architecture-explorer__details li,
 .architecture-explorer__details dd {
   color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
   line-height: var(--line-height-normal);
+}
+
+.architecture-explorer__details p {
+  color: var(--color-text-secondary);
 }
 
 .architecture-explorer__details ul {

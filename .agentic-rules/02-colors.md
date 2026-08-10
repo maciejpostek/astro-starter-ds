@@ -231,10 +231,12 @@ Current component token groups:
 `--button-primary-*` and `--button-secondary-*` contracts instead of defining a
 separate icon-only color contract.
 
-`Tag` is a non-interactive tone component. It consumes global status colors and
-controlled accent/inverse roles directly. It has no separate `--tag-*` group
-because the former hover and selected tokens did not match its public API and
-had no consumers.
+`Tag` has a non-interactive tone shell and an optional nested remove button for
+applied-filter use cases. Its seven tones consume global status colors and
+controlled accent/inverse roles directly. The remove button inherits the tone
+through `currentColor`; hover, pressed and disabled use native opacity mechanics,
+while focus uses the shared `--component-focus-ring` contract. Tag therefore
+does not duplicate these decisions in a separate `--tag-*` group.
 
 Rules:
 

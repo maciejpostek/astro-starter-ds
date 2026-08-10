@@ -281,7 +281,7 @@ test("declarative fixtures mutate only the isolated workspace", async () => {
       )}\n`
     );
     await writeFile(
-      join(workspace, "src/pages/design-system/components.astro"),
+      join(workspace, "src/data/documentationComponentRegistry.ts"),
       '<DsComponentSpec id="demo">demo</DsComponentSpec>\n<p>kept</p>\n'
     );
     await writeFile(
@@ -318,7 +318,7 @@ test("declarative fixtures mutate only the isolated workspace", async () => {
         },
         {
           type: "remove-doc-spec",
-          path: "src/pages/design-system/components.astro",
+          path: "src/data/documentationComponentRegistry.ts",
           id: "demo"
         },
         { type: "set-approved-brand-contract", includeMatchingRule: true }
@@ -342,7 +342,7 @@ test("declarative fixtures mutate only the isolated workspace", async () => {
     ]);
     assert.equal(
       await readFile(
-        join(workspace, "src/pages/design-system/components.astro"),
+        join(workspace, "src/data/documentationComponentRegistry.ts"),
         "utf8"
       ),
       "<p>kept</p>\n"

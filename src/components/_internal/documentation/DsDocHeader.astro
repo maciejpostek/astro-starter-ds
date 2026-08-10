@@ -1,0 +1,105 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  copyValue?: string;
+  status?: string;
+  componentName?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  description,
+  copyValue,
+  status,
+  componentName = "DsDocHeader",
+} = Astro.props;
+---
+
+<header
+  class="ds-documentation-page-header"
+  data-component-name={componentName}
+>
+  <div class="ds-documentation-page-header__inner">
+    <div class="ds-documentation-page-header__meta">
+      <span class="ds-documentation-page-header__eyebrow">{eyebrow}</span>
+      {status && <span class="ds-documentation-status">{status}</span>}
+    </div>
+    <h1 class="heading-h1">{title}</h1>
+    <p class="body-base-regular">{description}</p>
+    {
+      copyValue && (
+        <button
+          aria-label={`Copy component name ${copyValue}`}
+          class="ds-documentation-page-header__component-copy"
+          data-copied-label="Component name copied to clipboard"
+          data-copy-value={copyValue}
+          type="button"
+        >
+          <span>{copyValue}</span>
+          <MaterialSymbol name="content_copy" size="var(--size-16)" />
+        </button>
+      )
+    }
+  </div>
+</header>
+
+<style>
+  .ds-documentation-page-header__inner {
+    display: grid;
+    width: 100%;
+    max-width: var(--ds-documentation-content-max-width);
+    margin-inline: auto;
+    gap: var(--gap-medium);
+  }
+
+  .ds-documentation-page-header__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-medium);
+  }
+
+  .ds-documentation-page-header__component-copy {
+    --component-info-purple-background: #f5f0ff;
+    --component-info-purple-border: #8b5cf6;
+
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    align-items: center;
+    gap: var(--size-4);
+    border: var(--border-width-default) solid var(--component-info-purple-border);
+    background: var(--component-info-purple-background);
+    box-shadow: 0 var(--size-12) var(--size-40) rgb(0 0 0 / 0.1);
+    color: var(--component-info-purple-border);
+    cursor: pointer;
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+    padding: var(--size-6) var(--size-8);
+    white-space: nowrap;
+  }
+
+  .ds-documentation-page-header__component-copy:hover {
+    box-shadow: 0 var(--size-12) var(--size-40) rgb(0 0 0 / 0.16);
+  }
+
+  .ds-documentation-page-header__component-copy:focus-visible {
+    outline: var(--border-width-strong) solid var(--color-border-accent);
+    outline-offset: var(--size-4);
+  }
+
+  .ds-documentation-page-header__component-copy span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ds-documentation-page-header__component-copy :global(svg) {
+    flex: 0 0 auto;
+  }
+</style>

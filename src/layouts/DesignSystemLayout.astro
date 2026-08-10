@@ -1,0 +1,444 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import MaterialSymbol from "../components/assets/icons/MaterialSymbol.astro";
+import SearchInput from "../components/base-components/inputs/SearchInput.astro";
+import SwitchButton from "../components/base-components/switch/SwitchButton.astro";
+import DsDocHeader from "../components/_internal/documentation/DsDocHeader.astro";
+import {
+  componentsByPage,
+  documentationCategories,
+  documentationComponentHref,
+  documentationPageHref,
+  documentationPages,
+  documentationSearchRegistry,
+  type DocumentationPageType,
+  type DocumentationTocItem,
+} from "../data/documentationRegistry";
+import "../styles/documentation.css";
+
+export interface DocumentationPageHeader {
+  eyebrow: string;
+  title: string;
+  description: string;
+  copyValue?: string;
+  status?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  pageType?: DocumentationPageType;
+  toc?: DocumentationTocItem[];
+  header: DocumentationPageHeader;
+}
+
+const {
+  title,
+  description = "Astro Design System documentation",
+  pageType = "reading",
+  toc = [],
+  header,
+} = Astro.props;
+
+const activePath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const activeCategory = documentationCategories.find((category) =>
+  activePath.startsWith(`/design-system/${category.categoryKey}/`)
+);
+const pagesById = new Map(documentationPages.map((page) => [page.id, page]));
+const searchRecords = documentationSearchRegistry;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  mainClass="main--flush"
+>
+  <div
+    class="ds-documentation"
+    data-component-name="DesignSystemLayout"
+    data-page-type={pageType}
+    data-ds-documentation
+  >
+    <header class="ds-documentation-topbar" data-ds-documentation-topbar>
+      <div class="ds-documentation-topbar__identity">
+        <a class="ds-documentation-topbar__brand" href="/design-system">Astro Design System</a>
+        <nav class="ds-documentation-topbar__nav" aria-label="Documentation areas">
+          <a href="/design-system/architecture/component-model">Architecture</a>
+          <a href="/design-system/foundations/color">Foundations</a>
+          <a href="/design-system/base-components/buttons">Components</a>
+          <a href="/design-system/website-patterns/hero">Patterns</a>
+        </nav>
+      </div>
+
+      <div class="ds-documentation-topbar__actions">
+        <SearchInput
+          class="ds-documentation-search-control"
+          label="Search documentation"
+          size="small"
+          autocomplete="off"
+          placeholder="Search documentation…"
+          readonly
+          aria-haspopup="dialog"
+          aria-keyshortcuts="Meta+K Control+K"
+          data-ds-search-open
+        />
+        <SwitchButton
+          class="ds-documentation-theme-control"
+          label="Dark mode"
+          aria-label="Enable dark mode"
+          data-ds-theme-toggle
+        />
+      </div>
+    </header>
+
+    <div class="ds-documentation-shell">
+      <aside class="ds-documentation-sidebar" data-lenis-prevent>
+        <span class="ds-documentation-sidebar__label">Pages</span>
+        <nav class="ds-documentation-sidebar__nav" aria-label="Design system pages">
+          <div class="ds-documentation-sidebar__groups">
+            {
+              documentationCategories.map((category) => {
+                const expanded = activeCategory?.categoryKey === category.categoryKey;
+                const panelId = `ds-documentation-category-${category.categoryKey}`;
+
+                return (
+                  <section class="ds-documentation-sidebar__group" data-ds-sidebar-group>
+                    <button
+                      class="ds-documentation-sidebar__trigger"
+                      type="button"
+                      aria-controls={panelId}
+                      aria-expanded={expanded}
+                      data-ds-sidebar-trigger
+                    >
+                      <span>{category.displayLabel}</span>
+                      <span class="ds-documentation-sidebar__trigger-icon" aria-hidden="true">
+                        <MaterialSymbol name="arrow_drop_down" size="var(--size-18)" />
+                      </span>
+                    </button>
+                    <div
+                      class="ds-documentation-sidebar__panel"
+                      id={panelId}
+                      hidden={!expanded}
+                      data-ds-sidebar-panel
+                    >
+                      <ul class="ds-documentation-sidebar__pages">
+                        {category.pages.map((page) => {
+                          const pageRecord = pagesById.get(`${page.categoryKey}-${page.pageKey}`);
+                          const pageHref = documentationPageHref(page.categoryKey, page.pageKey);
+                          const components = componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
+                          const currentPage = activePath === pageHref;
+
+                          return (
+                            <li>
+                              <a
+                                class="ds-documentation-sidebar__page"
+                                href={pageHref}
+                                aria-current={currentPage ? "page" : undefined}
+                              >
+                                <span>{page.pageLabel}</span>
+                                <span
+                                  class="ds-documentation-status-dot"
+                                  data-status={pageRecord?.status ?? "empty"}
+                                  title={pageRecord?.status ?? "empty"}
+                                ></span>
+                              </a>
+                              {components.length > 0 && (
+                                <ul class="ds-documentation-sidebar__components">
+                                  {components.map((component) => {
+                                    const componentHref = documentationComponentHref(component);
+                                    return (
+                                      <li>
+                                        <a
+                                          class="ds-documentation-sidebar__component"
+                                          href={componentHref}
+                                          aria-current={activePath === componentHref ? "page" : undefined}
+                                        >
+                                          <span>{component.name}</span>
+                                          <span
+                                            class="ds-documentation-status-dot"
+                                            data-status={component.syncStatus}
+                                            title={component.syncStatus}
+                                          ></span>
+                                        </a>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </section>
+                );
+              })
+            }
+          </div>
+        </nav>
+      </aside>
+
+      <div class="ds-documentation-content">
+        <div class="ds-documentation-content__inner">
+          <DsDocHeader {...header} />
+          <slot />
+        </div>
+      </div>
+
+      <aside class="ds-documentation-toc" hidden={toc.length === 0}>
+        <span class="ds-documentation-toc__label">On this page</span>
+        <nav aria-label="On this page">
+          <ol>
+            {toc.map((item) => <li><a href={item.href} data-ds-toc-link>{item.label}</a></li>)}
+          </ol>
+        </nav>
+      </aside>
+    </div>
+  </div>
+
+  <dialog class="ds-documentation-dialog" aria-label="Search documentation" data-ds-search-dialog>
+    <div class="ds-documentation-dialog__header">
+      <SearchInput
+        class="ds-documentation-dialog__search"
+        label="Search documentation"
+        size="medium"
+        autocomplete="off"
+        placeholder="Search pages, components, icons and variables…"
+        aria-controls="ds-documentation-search-results"
+        data-ds-search-input
+      />
+      <button class="ds-documentation-dialog__close" type="button" aria-label="Close search" data-ds-search-close>
+        <MaterialSymbol name="close" size="var(--size-18)" />
+      </button>
+    </div>
+    <div
+      class="ds-documentation-search-results"
+      id="ds-documentation-search-results"
+      role="listbox"
+      data-ds-search-results
+    ></div>
+  </dialog>
+
+  <div class="ds-copy-toast" role="status" aria-live="polite" data-ds-copy-toast>
+    Copied to clipboard
+  </div>
+
+  <script is:inline define:vars={{ searchRecords }}>
+    (() => {
+      const runtimeWindow = window;
+      runtimeWindow.__astroDsDocumentationAbortController?.abort();
+      const controller = new AbortController();
+      const signal = controller.signal;
+      runtimeWindow.__astroDsDocumentationAbortController = controller;
+
+      const root = document.documentElement;
+      const dialog = document.querySelector("[data-ds-search-dialog]");
+      const input = dialog?.querySelector("[data-ds-search-input]");
+      const results = dialog?.querySelector("[data-ds-search-results]");
+      let matches = [];
+      let selectedIndex = 0;
+
+      const syncTheme = () => {
+        const dark = root.dataset.theme === "dark";
+        document.querySelectorAll("[data-ds-theme-toggle]").forEach((toggle) => {
+          if (!(toggle instanceof HTMLInputElement)) return;
+          toggle.checked = dark;
+          toggle.setAttribute("aria-label", dark ? "Disable dark mode" : "Enable dark mode");
+        });
+      };
+
+      const setTheme = (theme) => {
+        root.dataset.theme = theme;
+        localStorage.setItem("astro-ds-theme", theme);
+        syncTheme();
+      };
+
+      const normalize = (value) => value.trim().toLowerCase();
+      const scoreRecord = (record, query) => {
+        const label = record.label.toLowerCase();
+        if (label === query) return 0;
+        if (label.startsWith(query)) return 1;
+        if (label.includes(query)) return 2;
+        if (record.keywords.includes(query)) return 3;
+        return 99;
+      };
+
+      const renderResults = () => {
+        if (!(results instanceof HTMLElement)) return;
+        results.replaceChildren();
+
+        if (!matches.length) {
+          const empty = document.createElement("p");
+          empty.className = "ds-search-empty";
+          empty.textContent = "No documentation record matches this query.";
+          results.append(empty);
+          return;
+        }
+
+        matches.forEach((record, index) => {
+          const row = document.createElement("div");
+          row.className = "ds-search-result";
+          row.dataset.selected = String(index === selectedIndex);
+          row.setAttribute("role", "option");
+          row.setAttribute("aria-selected", String(index === selectedIndex));
+
+          const link = document.createElement("a");
+          link.className = "ds-search-result__link";
+          link.href = record.href;
+          link.dataset.dsSearchResultLink = "true";
+
+          const title = document.createElement("span");
+          title.className = "ds-search-result__title";
+          title.textContent = record.label;
+
+          const meta = document.createElement("span");
+          meta.className = "ds-search-result__meta";
+          const tag = document.createElement("span");
+          tag.className = "ds-search-result__tag";
+          tag.textContent = record.kind;
+          meta.append(tag);
+          if (record.parent) meta.append(document.createTextNode(record.parent));
+          if (record.status) meta.append(document.createTextNode(record.status));
+          link.append(title, meta);
+
+          const copy = document.createElement("button");
+          copy.type = "button";
+          copy.className = "ds-documentation-icon-button";
+          copy.setAttribute("aria-label", `Copy ${record.label}`);
+          copy.dataset.copyValue = record.copyValue;
+          copy.textContent = "⧉";
+
+          row.append(link, copy);
+          results.append(row);
+        });
+      };
+
+      const updateSearch = () => {
+        const query = input instanceof HTMLInputElement ? normalize(input.value) : "";
+        matches = searchRecords
+          .map((record) => ({ record, score: query ? scoreRecord(record, query) : 0 }))
+          .filter((entry) => entry.score < 99)
+          .sort((a, b) => a.score - b.score || a.record.label.localeCompare(b.record.label))
+          .slice(0, 30)
+          .map((entry) => entry.record);
+        selectedIndex = 0;
+        renderResults();
+      };
+
+      const openSearch = () => {
+        if (!(dialog instanceof HTMLDialogElement)) return;
+        if (!dialog.open) dialog.showModal();
+        updateSearch();
+        requestAnimationFrame(() => input?.focus());
+      };
+
+      document.querySelectorAll("[data-ds-search-open]").forEach((trigger) => {
+        trigger.addEventListener("click", openSearch, { signal });
+        trigger.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          openSearch();
+        }, { signal });
+      });
+
+      document.querySelectorAll("[data-ds-theme-toggle]").forEach((toggle) => {
+        toggle.addEventListener("change", () => {
+          if (!(toggle instanceof HTMLInputElement)) return;
+          setTheme(toggle.checked ? "dark" : "light");
+        }, { signal });
+      });
+
+      document.addEventListener("click", (event) => {
+        const target = event.target instanceof Element ? event.target : null;
+        if (!target) return;
+
+        const accordion = target.closest("[data-ds-sidebar-trigger]");
+        if (accordion instanceof HTMLButtonElement) {
+          const panelId = accordion.getAttribute("aria-controls");
+          const panel = panelId ? document.getElementById(panelId) : null;
+          const nextExpanded = accordion.getAttribute("aria-expanded") !== "true";
+          document.querySelectorAll("[data-ds-sidebar-trigger]").forEach((trigger) => {
+            trigger.setAttribute("aria-expanded", "false");
+            const controlledId = trigger.getAttribute("aria-controls");
+            const controlled = controlledId ? document.getElementById(controlledId) : null;
+            if (controlled) controlled.hidden = true;
+          });
+          accordion.setAttribute("aria-expanded", String(nextExpanded));
+          if (panel) panel.hidden = !nextExpanded;
+          return;
+        }
+
+        if (target.closest("[data-ds-search-close]") && dialog instanceof HTMLDialogElement) dialog.close();
+      }, { signal });
+
+      input?.addEventListener("input", updateSearch, { signal });
+      input?.addEventListener("keydown", (event) => {
+        if (!matches.length) return;
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          const direction = event.key === "ArrowDown" ? 1 : -1;
+          selectedIndex = (selectedIndex + direction + matches.length) % matches.length;
+          renderResults();
+          results?.querySelector('[data-selected="true"]')?.scrollIntoView({ block: "nearest" });
+        }
+        if (event.key === "Enter") {
+          event.preventDefault();
+          const selected = matches[selectedIndex];
+          if (selected) window.location.href = selected.href;
+        }
+      }, { signal });
+
+      window.addEventListener("keydown", (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+          event.preventDefault();
+          openSearch();
+        }
+      }, { signal });
+
+      const tocLinks = Array.from(document.querySelectorAll("[data-ds-toc-link]"));
+      const sections = tocLinks
+        .map((link) => {
+          const id = link.hash.slice(1);
+          const section = id ? document.getElementById(id) : null;
+          return section ? { link, section } : null;
+        })
+        .filter(Boolean);
+
+      if (sections.length) {
+        const syncToc = () => {
+          const offset = 120;
+          let active = sections[0];
+          sections.forEach((entry) => {
+            if (entry.section.getBoundingClientRect().top <= offset) active = entry;
+          });
+          sections.forEach((entry) => {
+            entry.link.dataset.active = String(entry === active);
+            entry.link.setAttribute("aria-current", entry === active ? "location" : "false");
+          });
+        };
+        syncToc();
+        window.addEventListener("scroll", syncToc, { passive: true, signal });
+        window.addEventListener("resize", syncToc, { signal });
+      }
+
+      document.querySelectorAll("[data-ds-toc-link]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          const target = document.getElementById(link.hash.slice(1));
+          if (!target) return;
+          event.preventDefault();
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          history.pushState(null, "", link.hash);
+        }, { signal });
+      });
+
+      const hashTarget = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+      if (hashTarget) {
+        hashTarget.dataset.dsSearchTarget = "true";
+        requestAnimationFrame(() => hashTarget.scrollIntoView({ block: "center" }));
+        window.setTimeout(() => delete hashTarget.dataset.dsSearchTarget, 1800);
+      }
+
+      syncTheme();
+    })();
+  </script>
+</BaseLayout>

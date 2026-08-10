@@ -1,0 +1,371 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
+import DsTypographyStylesBlock from "../../../components/_internal/documentation/DsTypographyStylesBlock.astro";
+import DsTableCell from "../../../components/_internal/documentation/DsTableCell.astro";
+import DsTableCopyCell from "../../../components/_internal/documentation/DsTableCopyCell.astro";
+import DsTableFrame from "../../../components/_internal/documentation/DsTableFrame.astro";
+import DsTableRow from "../../../components/_internal/documentation/DsTableRow.astro";
+import DsTypographyFoundationBlock from "../../../components/_internal/documentation/DsTypographyFoundationBlock.astro";
+import DsSectionHeaderLevel3 from "../../../components/_internal/documentation/DsSectionHeaderLevel3.astro";
+import DsSectionHeaderLevel4 from "../../../components/_internal/documentation/DsSectionHeaderLevel4.astro";
+import {
+  documentationFoundationHeader,
+  documentationFoundationToc,
+} from "../../../data/documentationFoundationRegistry";
+import {
+  documentationTokenMap,
+  getDocumentationTokenValue,
+} from "../../../data/documentationTokenRegistry";
+
+import {
+  bodySizeRows,
+  fontFamilyRows,
+  fontStyleRows,
+  fontWeightRows,
+  headingSizeRows,
+  letterSpacingRows,
+  lineHeightRows,
+  overflowWrapRows,
+  typographyStyleRows,
+  textWrapRows,
+  transformRows,
+  utilityTypographyRows,
+  whiteSpaceRows,
+  wordBreakRows,
+} from "../../../data/design-system/typographyTokens";
+
+const canonicalTypographyToken = (tokenName: string, fallback: string) => {
+  const token = documentationTokenMap.get(tokenName);
+  return token ? getDocumentationTokenValue(token) : fallback;
+};
+const foundationHeader = documentationFoundationHeader("typography");
+---
+
+<DesignSystemLayout
+  title="Typography - Astro Design System"
+  pageType="foundation"
+  toc={documentationFoundationToc("typography")}
+  header={foundationHeader}
+>
+    <DsDocSection
+      id="typography-tokens"
+      title="Typography Tokens"
+      description="Typography tokens define the reusable values consumed directly by Text Style classes and compact component typography. They are implementation inputs, not the default markup API."
+    >
+      <section
+        id="typography-foundations-font-families"
+        class="ds-typography-topic"
+        aria-labelledby="typography-foundations-font-families-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-foundations-font-families-title"
+          title="Font families"
+          description="Heading and body are public font-family roles. Mono is an internal technical role reserved for documentation UI and code snippets."
+        />
+
+        <DsTypographyFoundationBlock
+          name="Font families"
+          description="Public heading and body families plus the internal documentation/code family. Mono is not a public Text Style."
+          rows={fontFamilyRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="typography-foundations-sizes"
+        class="ds-typography-topic"
+        aria-labelledby="typography-foundations-sizes-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-foundations-sizes-title"
+          title="Font sizes"
+          description="Foundation size tokens define the H1–H6 heading scale separately from body reading sizes."
+        />
+
+        <div class="ds-typography-subsections">
+          <section aria-labelledby="typography-foundations-heading-sizes-title">
+            <DsSectionHeaderLevel4
+              id="typography-foundations-heading-sizes-title"
+              title="Heading sizes"
+              description="Raw H1–H6 scale values used by heading Text Style classes."
+            />
+
+            <DsTypographyFoundationBlock
+              name="Heading sizes"
+              description="Raw H1–H6 heading scale values."
+              rows={headingSizeRows}
+              showMinMax
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="typography-foundations-body-sizes-title">
+            <DsSectionHeaderLevel4
+              id="typography-foundations-body-sizes-title"
+              title="Body sizes"
+              description="Reading and compact interface text sizes."
+            />
+
+            <DsTypographyFoundationBlock
+              name="Body sizes"
+              description="Reading and compact interface text sizes."
+              rows={bodySizeRows}
+              showMinMax
+              showHeader={false}
+            />
+          </section>
+        </div>
+      </section>
+
+      <section
+        id="typography-foundations-line-heights"
+        class="ds-typography-topic"
+        aria-labelledby="typography-foundations-line-heights-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-foundations-line-heights-title"
+          title="Line heights"
+          description="Reusable vertical rhythm values independent of one specific text style."
+        />
+
+        <DsTypographyFoundationBlock
+          name="Line heights"
+          description="Reusable vertical rhythm values."
+          rows={lineHeightRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="typography-foundations-letter-spacings"
+        class="ds-typography-topic"
+        aria-labelledby="typography-foundations-letter-spacings-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-foundations-letter-spacings-title"
+          title="Letter spacing"
+          description="Reusable tracking values for prominent headings, body copy and compact utility text."
+        />
+
+        <DsTypographyFoundationBlock
+          name="Letter spacing"
+          description="Reusable tracking values."
+          rows={letterSpacingRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="typography-foundations-text-wrap"
+        class="ds-typography-topic"
+        aria-labelledby="typography-foundations-text-wrap-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-foundations-text-wrap-title"
+          title="Text wrap"
+          description="Foundation wrapping tokens expose CSS text wrapping and breaking behavior for Text Style classes and constrained UI."
+        />
+
+        <div class="ds-typography-subsections">
+          <section aria-labelledby="typography-foundations-text-wrap-mode-title">
+            <DsSectionHeaderLevel4
+              id="typography-foundations-text-wrap-mode-title"
+              title="Text wrap"
+              description="Values for the CSS text-wrap property."
+            />
+
+            <DsTypographyFoundationBlock
+              name="Text wrap"
+              description="Text wrapping behavior."
+              rows={textWrapRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="typography-foundations-overflow-wrap-title">
+            <DsSectionHeaderLevel4
+              id="typography-foundations-overflow-wrap-title"
+              title="Overflow wrap"
+              description="Values for breaking long words and strings when text overflows."
+            />
+
+            <DsTypographyFoundationBlock
+              name="Overflow wrap"
+              description="Long string overflow behavior."
+              rows={overflowWrapRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="typography-foundations-word-break-title">
+            <DsSectionHeaderLevel4
+              id="typography-foundations-word-break-title"
+              title="Word break"
+              description="Values for controlling word-level breaking behavior."
+            />
+
+            <DsTypographyFoundationBlock
+              name="Word break"
+              description="Word-level breaking behavior."
+              rows={wordBreakRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="typography-foundations-white-space-title">
+            <DsSectionHeaderLevel4
+              id="typography-foundations-white-space-title"
+              title="White space"
+              description="Values for preserving, collapsing and wrapping whitespace."
+            />
+
+            <DsTypographyFoundationBlock
+              name="White space"
+              description="Whitespace handling behavior."
+              rows={whiteSpaceRows}
+              showHeader={false}
+            />
+          </section>
+        </div>
+      </section>
+
+      <section
+        id="typography-foundations-weights"
+        class="ds-typography-topic"
+        aria-labelledby="typography-foundations-weights-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-foundations-weights-title"
+          title="Weights"
+          description="Role-based font-weight values that can change without renaming Text Style classes."
+        />
+
+        <DsTypographyFoundationBlock
+          name="Weights"
+          description="Role-based weight values."
+          rows={fontWeightRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="typography-foundations-font-styles"
+        class="ds-typography-topic"
+        aria-labelledby="typography-foundations-font-styles-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-foundations-font-styles-title"
+          title="Font styles"
+          description="Reusable font-style values for predictable emphasis and resets."
+        />
+
+        <DsTypographyFoundationBlock
+          name="Font styles"
+          description="Reusable font-style values."
+          rows={fontStyleRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="typography-foundations-transform"
+        class="ds-typography-topic"
+        aria-labelledby="typography-foundations-transform-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-foundations-transform-title"
+          title="Text transforms"
+          description="Reusable text-transform values for compact utility, labels and metadata text."
+        />
+
+        <DsTypographyFoundationBlock
+          name="Text transforms"
+          description="Reusable transform values."
+          rows={transformRows}
+          showHeader={false}
+        />
+      </section>
+    </DsDocSection>
+
+    <DsDocSection
+      id="typography-text-styles"
+      title="Text Styles"
+      description="Twenty-one public classes define complete visual typography contracts: six Heading styles and fifteen explicit Body size-and-variant styles. HTML tags remain neutral and describe only document structure."
+    >
+      <section
+        id="typography-text-styles-global"
+        class="ds-typography-topic"
+        aria-labelledby="typography-text-styles-global-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-text-styles-global-title"
+          title="Global Text Styles"
+          description="Use a Heading or explicit Body size-and-variant class as the public typography interface. The class controls appearance independently of the semantic HTML tag."
+        />
+
+        <DsTypographyStylesBlock rows={typographyStyleRows} />
+      </section>
+    </DsDocSection>
+
+    <DsDocSection
+      id="typography-utilities"
+      title="Utilities"
+      description="Focused utility classes provide narrow font-style, casing and wrapping overrides without creating another text hierarchy."
+    >
+      <section
+        id="typography-utilities-list"
+        class="ds-typography-topic"
+        aria-labelledby="typography-utilities-list-title"
+      >
+        <DsSectionHeaderLevel3
+          id="typography-utilities-list-title"
+          title="Typography utilities"
+          description="Small typography escape hatches for font-style, text-transform and wrapping. Do not use utility classes for font size, heading scale or body text hierarchy."
+        />
+
+        <DsTableFrame
+          label="Utility typography styles"
+          minWidth="88rem"
+          columns="minmax(18rem, 0.22fr) minmax(14rem, 0.16fr) minmax(18rem, 0.2fr) minmax(12rem, 0.12fr) minmax(28rem, 0.3fr)"
+          size="tiny"
+        >
+          <DsTableRow variant="header">
+            <DsTableCell role="columnheader" variant="header">Class</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Property</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Token</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Value</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Role</DsTableCell>
+          </DsTableRow>
+
+          {
+            utilityTypographyRows.map((row) => (
+              <DsTableRow>
+                <DsTableCopyCell role="cell" value={`.${row.className}`} />
+                <DsTableCell role="cell" tone="secondary">
+                  <code>{row.property}</code>
+                </DsTableCell>
+                <DsTableCopyCell role="cell" value={row.token} />
+                <DsTableCell role="cell" tone="secondary">
+                  <code>{canonicalTypographyToken(row.token, row.value)}</code>
+                </DsTableCell>
+                <DsTableCell role="cell" tone="secondary">
+                  <span>{row.role}</span>
+                </DsTableCell>
+              </DsTableRow>
+            ))
+          }
+        </DsTableFrame>
+      </section>
+    </DsDocSection>
+
+</DesignSystemLayout>
+
+<style>
+  .ds-typography-topic,
+  .ds-typography-subsections {
+    display: grid;
+    gap: var(--gap-xlarge);
+  }
+
+</style>

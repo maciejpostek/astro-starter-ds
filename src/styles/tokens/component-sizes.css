@@ -9,34 +9,34 @@
   /* Small profile
    * Intended for compact buttons, tabs and secondary controls.
    */
-  --component-size-small-min-height: var(--size-48);
-  --component-size-small-padding-inline: var(--size-16);
-  --component-size-small-padding-block: var(--size-12);
+  --component-size-small-min-height: var(--size-32);
+  --component-size-small-padding-inline: var(--size-12);
+  --component-size-small-padding-block: var(--size-0);
   --component-size-small-icon-size: 0.875rem;
-  --component-size-small-gap: var(--size-8);
+  --component-size-small-gap: var(--size-4);
   --component-size-small-font-size: var(--font-size-body-tiny);
   --component-size-small-line-height: var(--line-height-none);
 
   /* Medium profile
    * Default profile for primary controls and form fields.
    */
-  --component-size-medium-min-height: var(--size-56);
+  --component-size-medium-min-height: var(--size-48);
   --component-size-medium-padding-inline: var(--size-20);
   --component-size-medium-padding-block: var(--size-18);
   --component-size-medium-icon-size: var(--size-16);
-  --component-size-medium-gap: 0.625rem;
-  --component-size-medium-font-size: 0.8125rem;
+  --component-size-medium-gap: var(--size-8);
+  --component-size-medium-font-size: var(--font-size-body-small);
   --component-size-medium-line-height: var(--line-height-none);
 
   /* Large profile
    * Main component size for primary actions and prominent interface controls.
    */
-  --component-size-large-min-height: var(--size-64);
+  --component-size-large-min-height: var(--size-56);
   --component-size-large-padding-inline: var(--size-24);
   --component-size-large-padding-block: var(--size-24);
   --component-size-large-icon-size: var(--size-18);
-  --component-size-large-gap: var(--size-12);
-  --component-size-large-font-size: var(--font-size-body-small);
+  --component-size-large-gap: 0.625rem;
+  --component-size-large-font-size: var(--font-size-body-base);
   --component-size-large-line-height: var(--line-height-none);
 }
 

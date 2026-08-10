@@ -3,6 +3,11 @@ import DsTableCell from "./DsTableCell.astro";
 import DsTableCopyCell from "./DsTableCopyCell.astro";
 import DsTableFrame from "./DsTableFrame.astro";
 import DsTableRow from "./DsTableRow.astro";
+import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+import {
+  documentationTokenMap,
+  getDocumentationTokenValue,
+} from "../../../data/documentationTokenRegistry";
 
 interface Row {
   token: string;
@@ -32,8 +37,12 @@ const {
   showMinMax = false,
   size = "tiny",
 } = Astro.props as Props;
+const resolvedRows = rows.map((row) => {
+  const token = documentationTokenMap.get(row.token);
+  return token ? { ...row, value: getDocumentationTokenValue(token) } : row;
+});
 const id = `typography-foundation-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-const showFluidControls = rows.some((row) => row.minValue && row.maxValue);
+const showFluidControls = resolvedRows.some((row) => row.minValue && row.maxValue);
 const columns = showMinMax
   ? showFluidControls
     ? "minmax(18rem, 0.18fr) minmax(24rem, 0.24fr) minmax(10rem, 0.1fr) minmax(10rem, 0.1fr) minmax(12rem, 0.12fr) minmax(24rem, 0.26fr) minmax(16rem, 0.16fr)"
@@ -49,10 +58,11 @@ const columns = showMinMax
   data-ds-doc-table-size={size}
 >
   {showHeader && (
-    <div class="ds-typography-foundation-block__header">
-      <h3 id={`${id}-title`}>{name}</h3>
-      <p>{description}</p>
-    </div>
+    <DsSectionHeaderLevel3
+      id={`${id}-title`}
+      title={name}
+      description={description}
+    />
   )}
 
   <DsTableFrame
@@ -72,7 +82,7 @@ const columns = showMinMax
     </DsTableRow>
 
     {
-      rows.map((row) => (
+      resolvedRows.map((row) => (
         <DsTableRow>
           <DsTableCopyCell role="cell" value={row.token} />
           <DsTableCell role="cell" tone="secondary">
@@ -114,26 +124,6 @@ const columns = showMinMax
   .ds-typography-foundation-block {
     display: grid;
     gap: var(--gap-medium);
-  }
-
-  .ds-typography-foundation-block__header {
-    display: grid;
-    gap: var(--gap-regular);
-  }
-
-  .ds-typography-foundation-block__header h3 {
-    color: var(--color-text-primary);
-    font-size: var(--font-size-h6);
-    font-weight: var(--font-weight-emphasis);
-    letter-spacing: var(--letter-spacing-ultra-tight);
-    line-height: var(--line-height-compact);
-  }
-
-  .ds-typography-foundation-block__header p {
-    max-width: 48rem;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body-small);
-    line-height: var(--line-height-normal);
   }
 
   :global(.ds-typography-foundation-block__sample-cell.ds-table-cell) {

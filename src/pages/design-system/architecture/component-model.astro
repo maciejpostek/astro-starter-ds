@@ -1,0 +1,527 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
+import DsComponentReadiness from "../../../components/_internal/documentation/DsComponentReadiness.astro";
+import DsSectionHeaderLevel3 from "../../../components/_internal/documentation/DsSectionHeaderLevel3.astro";
+import ArchitectureExplorer from "../../../components/_internal/documentation/architecture/ArchitectureExplorer";
+import componentArchitecture from "../../../data/design-system/componentArchitecture.json";
+import { documentationComponentHref } from "../../../data/documentationRegistry";
+import systemMap from "../../../../architecture/system-map.json";
+
+const aiNativeTargetDiagramUrl =
+  "/architecture/generated/ai-native-target-architecture.svg?v=runtime-v1";
+const aiNativeTargetDataUrl =
+  "/architecture/views/ai-native-target-architecture.json";
+const promptToAstroDiagramUrl =
+  "/architecture/generated/prompt-to-astro-page-section.svg?v=prompt-flow-v1";
+const targetArchitectureView = systemMap.views.find(
+  (view) => view.id === "view.ai-native-target-architecture"
+);
+const targetStages =
+  targetArchitectureView &&
+  "presentation" in targetArchitectureView &&
+  targetArchitectureView.presentation
+    ? targetArchitectureView.presentation.stages
+    : [];
+
+const architectureLegend = [
+  { type: "prompt", label: "Prompt / input" },
+  { type: "actor", label: "Actor" },
+  { type: "router", label: "Router" },
+  { type: "decision", label: "Decision gate" },
+  { type: "process", label: "Process" },
+  { type: "source", label: "Source of Truth" },
+  { type: "validator", label: "Validator" },
+  { type: "approval", label: "Human approval" },
+  { type: "output", label: "Output" }
+];
+const readinessGates = [
+  "Classification and reuse",
+  "Stable identity",
+  "Semantic structure",
+  "Typed API",
+  "Variables and tokens",
+  "Responsive behavior",
+  "Accessibility",
+  "UX and content contract",
+  "Dependencies and composition",
+  "Documentation",
+  "Guides",
+  "Validation",
+];
+const readinessProfiles = [
+  {
+    title: "Public component",
+    description: "Registry-backed UI contract with all twelve gates, canonical UX rule, documentation and routed validation.",
+  },
+  {
+    title: "Internal reusable",
+    description: "Private visual helper with typed props, system tokens, accessibility, responsive behavior and Guides identity.",
+  },
+  {
+    title: "Local composition",
+    description: "Page-local semantic markup. It receives no registry record or component identity until explicitly promoted.",
+  },
+];
+const readinessRecords = componentArchitecture.components
+  .filter((component) =>
+    Boolean(component.sourcePath) &&
+    ["base-components", "website-patterns", "examples-templates"].includes(component.categoryKey) &&
+    !["internal", "part"].includes(component.role)
+  )
+  .map((component) => ({
+    name: component.name,
+    layer: component.layer,
+    family: component.family,
+    status: component.syncStatus,
+    sourcePath: component.sourcePath ?? "",
+    href: documentationComponentHref(component),
+    description: `${component.pageLabel} · ${component.role}`,
+    readiness: component.readiness,
+  }));
+---
+
+<DesignSystemLayout title="Component Model - Astro Design System" pageType="reading" toc={[
+  { label: "Component readiness", href: "#system-architecture-component-readiness" },
+  { label: "AI-Native Runtime", href: "#system-architecture-ai-native-target" },
+  { label: "Prompt to Astro", href: "#system-architecture-prompt-to-astro" },
+  { label: "Component lifecycle", href: "#system-architecture-component-lifecycle" },
+  { label: "Sources of truth", href: "#system-architecture-sources-of-truth" },
+]} header={{
+  eyebrow: "Architecture",
+  title: "Component Model",
+  description: "Runtime, source-of-truth and family-first dependency model for the Astro design system.",
+}}>
+
+    <DsDocSection
+      id="system-architecture-component-readiness"
+      title="Component Readiness"
+      description="Code-first Definition of Done for public components, reusable internals and local page composition. Figma remains an explicit projection, not a normal completion gate."
+    >
+      <div class="ds-component-readiness-overview">
+        <div
+          class="l-grid ds-component-readiness-overview__profiles"
+          data-grid="auto-fit"
+          data-columns="3"
+          data-min-width="card"
+          data-gap="medium"
+        >
+          {readinessProfiles.map((profile) => (
+            <article>
+              <h3 class="heading-h5">{profile.title}</h3>
+              <p class="body-small-regular">{profile.description}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="ds-component-readiness-overview__contract">
+          <div>
+            <DsSectionHeaderLevel3
+              title="Twelve readiness gates"
+              description="The runtime loads the full contract for create and extend, and for repairs that touch readiness, Guides or a reusable component boundary."
+            />
+          </div>
+          <ol>
+            {readinessGates.map((gate) => <li>{gate}</li>)}
+          </ol>
+        </div>
+
+        <div class="ds-component-readiness-overview__guides">
+          <DsSectionHeaderLevel3 title="Guides identity" />
+          <p class="body-small-regular">
+            Every visual reusable Astro component exposes one stable <code>data-component-name</code>. Nested inspection resolves the closest named component; variants, states and sizes never change that identity.
+          </p>
+          <p class="body-small-regular">
+            Required validation: <code>npm run audit:component-readiness</code>, the matching family audits, documentation and responsive audits, then the Astro build. Figma is loaded only after an explicit Figma request.
+          </p>
+        </div>
+
+        <DsComponentReadiness records={readinessRecords} />
+      </div>
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-ai-native-target"
+      title="AI-Native Runtime V1.0"
+      description="Implemented reuse-first runtime. Every normal request follows Classify → Resolve Context → Execute → Validate → Result, while component creation, brand interpretation, Figma, and evals remain conditional side mechanisms."
+    >
+      <figure
+        class="ds-architecture-diagram"
+        aria-labelledby="ai-native-target-diagram-caption"
+      >
+        <div class="ds-architecture-diagram__header">
+          <figcaption id="ai-native-target-diagram-caption">
+            <span class="caption">Implemented architecture · L0 system and agent flow</span>
+            <p class="body-small-regular">
+              The upper lane contains the five real runtime stages. The lower
+              lane contains mechanisms that activate only under a specific
+              condition or between runs: Creation Gate, Brand Activation,
+              Explicit Figma, and the Eval Harness.
+            </p>
+          </figcaption>
+
+          <a
+            class="ds-architecture-diagram__full-size-link"
+            href={aiNativeTargetDiagramUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open full-size SVG
+          </a>
+        </div>
+
+        <ul
+          class="ds-architecture-diagram__legend"
+          aria-label="Architecture node type legend"
+        >
+          {architectureLegend.map((item) => (
+            <li data-node-type={item.type}>
+              <span aria-hidden="true"></span>
+              {item.label}
+            </li>
+          ))}
+        </ul>
+
+        <ArchitectureExplorer
+          client:visible
+          dataUrl={aiNativeTargetDataUrl}
+          fallbackSvgUrl={aiNativeTargetDiagramUrl}
+        />
+
+        <noscript>
+          <ol class="ds-architecture-diagram__fallback-stages">
+            {targetStages.map((stage) => (
+              <li>
+                <strong>{stage.number} · {stage.title}</strong>
+                <span>{stage.description}</span>
+              </li>
+            ))}
+          </ol>
+          <div class="ds-architecture-diagram__viewport" data-layout="canvas">
+            <a
+              href={aiNativeTargetDiagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Open the AI-Native Design System V1.0 Runtime diagram at full size"
+            >
+              <img
+                src={aiNativeTargetDiagramUrl}
+                width="7686"
+                height="5547"
+                alt="Implemented AI-Native Design System V1.0 architecture showing five core runtime stages and conditional Creation Gate, Brand Activation, Explicit Figma, and Eval Harness mechanisms."
+                loading="eager"
+                decoding="async"
+              />
+            </a>
+          </div>
+        </noscript>
+
+        <p class="ds-architecture-diagram__references body-tiny-regular">
+          Reference basis:
+          <a href="https://developers.openai.com/api/docs/guides/agents/orchestration">OpenAI orchestration</a>,
+          <a href="https://developers.openai.com/api/docs/guides/agents/guardrails-approvals">guardrails and human review</a>,
+          <a href="https://developers.openai.com/api/docs/guides/agent-evals">agent evals</a>,
+          <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic effective agents</a>,
+          and
+          <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">context engineering</a>.
+        </p>
+      </figure>
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-prompt-to-astro"
+      title="Prompt → Astro Page or Section"
+      description="Implemented reuse-first composition flow from a prompt through focused component lookup, optional approved brand rules, Astro composition, scoped validation, and an accepted or blocked result."
+    >
+      <figure
+        class="ds-architecture-diagram"
+        aria-labelledby="prompt-to-astro-diagram-caption"
+      >
+        <div class="ds-architecture-diagram__header">
+          <figcaption id="prompt-to-astro-diagram-caption">
+            <span class="caption">Implemented runtime · L1 composition flow</span>
+            <p class="body-small-regular">
+              Named components are reused by default. Brand context activates
+              only when the composition requires a visual decision, and failed
+              validation enters a bounded repair loop before returning a
+              terminal result.
+            </p>
+          </figcaption>
+
+          <a
+            class="ds-architecture-diagram__full-size-link"
+            href={promptToAstroDiagramUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open full-size SVG
+          </a>
+        </div>
+
+        <ul
+          class="ds-architecture-diagram__legend"
+          aria-label="Architecture node type legend"
+        >
+          {architectureLegend.map((item) => (
+            <li data-node-type={item.type}>
+              <span aria-hidden="true"></span>
+              {item.label}
+            </li>
+          ))}
+        </ul>
+
+        <div class="ds-architecture-diagram__viewport">
+          <a
+            href={promptToAstroDiagramUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open the Prompt to Astro Page or Section architecture diagram at full size"
+          >
+            <img
+              src={promptToAstroDiagramUrl}
+              width="5178"
+              height="923"
+              alt="Reuse-first flow from a prompt through classification, focused context, Astro composition, conditional brand activation, scoped validation, bounded repair, and accepted or blocked output."
+              loading="eager"
+              decoding="async"
+            />
+          </a>
+        </div>
+      </figure>
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-figma-mcp-to-astro"
+      title="Figma MCP → Astro"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-component-lifecycle"
+      title="Component Creation and Repair Lifecycle"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-brand-activation"
+      title="Brand Expression and Art Direction Activation"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-astro-figma-sync"
+      title="Astro ↔ Figma Synchronization"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-sources-of-truth"
+      title="Sources of Truth"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-family-first-dependencies"
+      title="Family-first Component Dependencies"
+    >
+    </DsDocSection>
+
+    <DsDocSection
+      id="system-architecture-project-fork"
+      title="Project Fork and Duplicated Figma File"
+    >
+    </DsDocSection>
+</DesignSystemLayout>
+
+<style>
+  .ds-component-readiness-overview {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-large);
+  }
+
+  .ds-component-readiness-overview__profiles article,
+  .ds-component-readiness-overview__contract,
+  .ds-component-readiness-overview__guides {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-small);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+    padding: var(--component-padding-medium);
+  }
+
+  .ds-component-readiness-overview__profiles p,
+  .ds-component-readiness-overview__contract p,
+  .ds-component-readiness-overview__guides p {
+    color: var(--color-text-secondary);
+  }
+
+  .ds-component-readiness-overview__contract ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--gap-small) var(--gap-large);
+    margin: 0;
+    padding-inline-start: var(--component-padding-large);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-normal);
+  }
+
+  .ds-architecture-diagram {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-medium);
+    margin: 0;
+  }
+
+  .ds-architecture-diagram__header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--gap-medium);
+  }
+
+  .ds-architecture-diagram figcaption {
+    display: grid;
+    max-width: var(--container-small);
+    gap: var(--gap-small);
+  }
+
+  .ds-architecture-diagram figcaption p {
+    color: var(--color-text-secondary);
+  }
+
+  .ds-architecture-diagram__full-size-link {
+    flex: none;
+    padding-block: var(--component-padding-tiny);
+    border-bottom: var(--border-width-default) solid var(--color-border-accent);
+    color: var(--color-text-accent);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+  }
+
+  .ds-architecture-diagram__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-small) var(--gap-medium);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+    list-style: none;
+  }
+
+  .ds-architecture-diagram__legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-tiny);
+  }
+
+  .ds-architecture-diagram__legend span {
+    display: inline-block;
+    width: var(--size-16);
+    height: var(--size-12);
+    border: var(--border-width-default) solid var(--color-border-strong);
+    background: var(--color-background-subtle);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="prompt"] span,
+  .ds-architecture-diagram__legend [data-node-type="output"] span {
+    clip-path: polygon(16% 0, 100% 0, 84% 100%, 0 100%);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="actor"] span {
+    border-radius: var(--radius-full) var(--radius-full) var(--radius-small) var(--radius-small);
+    background: var(--color-status-info-background);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="router"] span,
+  .ds-architecture-diagram__legend [data-node-type="validator"] span {
+    clip-path: polygon(22% 0, 78% 0, 100% 50%, 78% 100%, 22% 100%, 0 50%);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="decision"] span,
+  .ds-architecture-diagram__legend [data-node-type="approval"] span {
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    background: var(--color-status-warning-background);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="process"] span {
+    border-radius: var(--radius-small);
+    background: var(--color-background-accent);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="source"] span {
+    border-radius: 50%;
+    background: var(--color-status-success-background);
+  }
+
+  .ds-architecture-diagram__legend [data-node-type="output"] span {
+    background: var(--color-status-success-background);
+  }
+
+  .ds-architecture-diagram__viewport {
+    position: relative;
+    z-index: 26;
+    min-width: 0;
+    overflow-x: auto;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-neutral-0);
+    overscroll-behavior-inline: contain;
+  }
+
+  .ds-architecture-diagram__viewport a {
+    display: block;
+    width: 100%;
+  }
+
+  .ds-architecture-diagram__viewport img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .ds-architecture-diagram__viewport[data-layout="canvas"] a {
+    width: max(100%, 320rem);
+  }
+
+  .ds-architecture-diagram__references {
+    max-width: var(--container-small);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+  }
+
+  .ds-architecture-diagram__references a {
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    color: var(--color-text-accent);
+  }
+
+  .ds-architecture-diagram__fallback-stages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--size-256)), 1fr));
+    gap: var(--gap-small);
+    padding: 0;
+    list-style: none;
+  }
+
+  .ds-architecture-diagram__fallback-stages li {
+    display: grid;
+    gap: var(--gap-tiny);
+    padding: var(--component-padding-small);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .ds-architecture-diagram__fallback-stages span {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+  }
+
+  @media (width < 48rem) {
+    .ds-architecture-diagram__header {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+</style>

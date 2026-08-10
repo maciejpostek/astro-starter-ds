@@ -1,0 +1,305 @@
+---
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import type { DocumentationPreviewAxis } from "../../../data/documentationComponentRegistry";
+import DsSectionHeaderLevel2 from "./DsSectionHeaderLevel2.astro";
+
+interface Props {
+  title: string;
+  renderer: AstroComponentFactory;
+  rendererProps?: Record<string, unknown>;
+  axes: DocumentationPreviewAxis[];
+}
+
+const {
+  title,
+  renderer: PreviewRenderer,
+  rendererProps = {},
+  axes,
+} = Astro.props;
+---
+
+<section
+  class="ds-interactive-component-preview"
+  id="preview"
+  aria-labelledby="preview-title"
+  data-component-name="DsInteractiveComponentPreview"
+  data-ds-doc-section
+  data-ds-interactive-preview
+>
+  <DsSectionHeaderLevel2
+    id="preview-title"
+    title="Preview"
+    description={`Inspect one canonical ${title} configuration at a time.`}
+  />
+
+  <div
+    class="ds-interactive-component-preview__frame"
+    data-has-controls={axes.length > 0 ? "true" : undefined}
+  >
+    {axes.length > 0 && (
+      <div class="ds-interactive-component-preview__controls" aria-label={`${title} preview controls`}>
+        {axes.map((axis) => (
+          <div class="ds-interactive-component-preview__control-group" data-ds-preview-axis={axis.id}>
+            <span id={`preview-${axis.id}-label`}>{axis.label}</span>
+            <div
+              class="ds-interactive-component-preview__segmented"
+              role="group"
+              aria-labelledby={`preview-${axis.id}-label`}
+            >
+              {axis.options.map((option) => (
+                <button
+                  type="button"
+                  aria-pressed={option.value === axis.defaultValue ? "true" : "false"}
+                  data-axis-id={axis.id}
+                  data-axis-value={option.value}
+                  data-ds-preview-control
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div class="ds-interactive-component-preview__scene" aria-live="polite">
+      <PreviewRenderer {...rendererProps} />
+    </div>
+  </div>
+</section>
+
+<script>
+  const syncInteractivePreview = (preview: HTMLElement, axisId: string, value: string) => {
+    const target = preview.querySelector<HTMLElement>("[data-ds-preview-target]");
+    if (!target) return;
+
+    preview.querySelectorAll<HTMLButtonElement>(`[data-ds-preview-control][data-axis-id="${axisId}"]`).forEach((control) => {
+      control.setAttribute("aria-pressed", String(control.dataset.axisValue === value));
+    });
+
+    if (axisId === "variant") target.dataset.buttonVariant = value;
+    if (axisId === "type") target.dataset.inputType = value;
+    if (axisId === "tone") target.dataset.tagTone = value;
+    if (axisId === "removable") target.dataset.tagRemovable = value === "visible" ? "true" : "false";
+    if (axisId === "content") {
+      target.dataset.searchInputContent = value;
+      const searchControl = target.querySelector<HTMLInputElement>("[data-search-input-control]");
+      if (searchControl) {
+        searchControl.value = value === "filled" ? "Design systems" : "";
+        searchControl.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }
+    if (axisId === "size") {
+      target.dataset.componentSize = value;
+      target.querySelectorAll<HTMLElement>("[data-ds-input-preview-control]").forEach((control) => {
+        control.dataset.componentSize = value;
+      });
+      target.querySelectorAll<HTMLElement>("[data-search-input]").forEach((control) => {
+        control.dataset.componentSize = value;
+      });
+    }
+    if (axisId === "icon") target.dataset.dsPreviewIcon = value;
+
+    if (axisId === "checked" && target instanceof HTMLInputElement && target.type === "checkbox") {
+      target.checked = value === "on";
+    }
+
+    if (axisId === "state") {
+      target.dataset.dsPreviewState = value;
+      if (target instanceof HTMLButtonElement || target instanceof HTMLInputElement) {
+        target.disabled = value === "disabled";
+      }
+      const switchRoot = target.closest<HTMLElement>(".ds-switch-button");
+      if (switchRoot) {
+        if (value === "disabled") switchRoot.dataset.switchDisabled = "true";
+        else delete switchRoot.dataset.switchDisabled;
+      }
+      if (target instanceof HTMLAnchorElement) {
+        if (value === "disabled") target.setAttribute("aria-disabled", "true");
+        else target.removeAttribute("aria-disabled");
+      }
+
+      target.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[data-ds-input-preview-control]").forEach((control) => {
+        const validation = value === "invalid" || value === "valid" ? value : "default";
+        control.dataset.dsPreviewState = value;
+        control.dataset.inputValidation = validation;
+        control.disabled = value === "disabled";
+        if (value === "invalid") control.setAttribute("aria-invalid", "true");
+        else control.removeAttribute("aria-invalid");
+      });
+
+      target.querySelectorAll<HTMLButtonElement>("[data-tag-remove]").forEach((control) => {
+        control.dataset.dsPreviewState = value;
+        control.disabled = value === "disabled";
+      });
+
+      target.querySelectorAll<HTMLElement>("[data-search-input]").forEach((control) => {
+        if (value === "disabled") control.dataset.searchInputDisabled = "true";
+        else delete control.dataset.searchInputDisabled;
+      });
+
+      const clearState = preview.querySelector<HTMLButtonElement>(
+        '[data-ds-preview-control][data-axis-id="clearState"][aria-pressed="true"]'
+      )?.dataset.axisValue ?? "default";
+      target.querySelectorAll<HTMLButtonElement>("[data-search-input-clear]").forEach((control) => {
+        control.disabled = value === "disabled" || clearState === "disabled";
+      });
+    }
+
+    if (axisId === "clearState") {
+      const fieldState = preview.querySelector<HTMLButtonElement>(
+        '[data-ds-preview-control][data-axis-id="state"][aria-pressed="true"]'
+      )?.dataset.axisValue ?? "default";
+      target.querySelectorAll<HTMLButtonElement>("[data-search-input-clear]").forEach((control) => {
+        control.dataset.dsPreviewState = value;
+        control.disabled = fieldState === "disabled" || value === "disabled";
+      });
+    }
+
+    preview.dispatchEvent(new CustomEvent("astro-ds:preview-change", {
+      bubbles: true,
+      detail: { axisId, value },
+    }));
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-ds-interactive-preview]").forEach((preview) => {
+    if (preview.dataset.dsPreviewReady === "true") return;
+    preview.dataset.dsPreviewReady = "true";
+
+    preview.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const control = target.closest<HTMLButtonElement>("[data-ds-preview-control]");
+      if (!control?.dataset.axisId || !control.dataset.axisValue) return;
+      syncInteractivePreview(preview, control.dataset.axisId, control.dataset.axisValue);
+    });
+
+    preview.addEventListener("keydown", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement) || !target.matches("[data-ds-preview-control]")) return;
+      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+
+      const controls = Array.from(
+        target.closest('[role="group"]')?.querySelectorAll<HTMLButtonElement>("[data-ds-preview-control]") ?? []
+      );
+      const currentIndex = controls.indexOf(target);
+      if (currentIndex < 0 || controls.length === 0) return;
+
+      event.preventDefault();
+      const nextIndex = event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? controls.length - 1
+          : (currentIndex + (["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1) + controls.length) % controls.length;
+      const next = controls[nextIndex];
+      next.focus();
+      if (next.dataset.axisId && next.dataset.axisValue) {
+        syncInteractivePreview(preview, next.dataset.axisId, next.dataset.axisValue);
+      }
+    });
+  });
+</script>
+
+<style>
+  .ds-interactive-component-preview {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-medium);
+    margin-top: var(--section-padding-small);
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+
+  .ds-interactive-component-preview__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    gap: var(--gap-medium);
+  }
+
+  .ds-interactive-component-preview__frame {
+    display: grid;
+    min-width: 0;
+  }
+
+  .ds-interactive-component-preview__control-group {
+    display: grid;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    flex: 1 0 max-content;
+    gap: var(--gap-small);
+  }
+
+  .ds-interactive-component-preview__control-group > span {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-strong);
+    line-height: var(--line-height-normal);
+    text-transform: var(--text-transform-none);
+  }
+
+  .ds-interactive-component-preview__segmented {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: nowrap;
+    gap: var(--gap-tiny);
+    overflow-x: auto;
+  }
+
+  .ds-interactive-component-preview__segmented button {
+    min-height: var(--component-size-small-min-height);
+    min-inline-size: 0;
+    inline-size: auto;
+    flex: 0 0 auto;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-control);
+    padding-inline: var(--component-padding-small);
+    color: var(--color-text-primary);
+    background: var(--color-background-canvas);
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-normal);
+    white-space: nowrap;
+  }
+
+  .ds-interactive-component-preview__segmented button:hover {
+    border-color: var(--color-border-default);
+  }
+
+  .ds-interactive-component-preview__segmented button:focus-visible {
+    outline: var(--border-width-strong) solid var(--color-border-accent);
+    outline-offset: var(--size-2);
+    border-color: var(--color-border-accent);
+  }
+
+  .ds-interactive-component-preview__segmented button[aria-pressed="true"] {
+    border-color: var(--color-border-accent);
+    color: var(--color-text-primary);
+    background: var(--color-background-subtle);
+    font-weight: var(--font-weight-strong);
+  }
+
+  .ds-interactive-component-preview__scene {
+    display: grid;
+    width: 100%;
+    min-height: 32rem;
+    margin-block-start: var(--space-medium);
+    aspect-ratio: 1 / 1;
+    place-items: center;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+    padding: var(--component-padding-large);
+  }
+
+  .ds-interactive-component-preview__scene :global([data-ds-preview-icon="hidden"] .ds-button__icon),
+  .ds-interactive-component-preview__scene :global([data-ds-preview-icon="hidden"] .ds-button-link__icon) {
+    display: none;
+  }
+
+  .ds-interactive-component-preview__scene :global([data-tag-removable="false"] [data-tag-remove]) {
+    display: none;
+  }
+</style>

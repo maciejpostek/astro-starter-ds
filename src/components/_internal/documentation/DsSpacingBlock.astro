@@ -1,8 +1,14 @@
 ---
 import DsSpacingRow from "./DsSpacingRow.astro";
+import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
 import DsTableCell from "./DsTableCell.astro";
 import DsTableFrame from "./DsTableFrame.astro";
 import DsTableRow from "./DsTableRow.astro";
+import {
+  documentationTokenMap,
+  getDocumentationResolvedValue,
+  getDocumentationTokenValue,
+} from "../../../data/documentationTokenRegistry";
 
 interface Row {
   token: string;
@@ -23,6 +29,17 @@ interface Props {
 }
 
 const { name, description, rows, showHeader = true, size = "tiny" } = Astro.props;
+const resolvedRows = rows.map((row) => {
+  const token = documentationTokenMap.get(row.token);
+  if (!token) return row;
+  const resolved = getDocumentationResolvedValue(token);
+  const remMatch = resolved.match(/^(-?\d*\.?\d+)rem$/);
+  return {
+    ...row,
+    output: getDocumentationTokenValue(token),
+    source: remMatch ? `${Number(remMatch[1]) * 16}px` : resolved,
+  };
+});
 const id = `spacing-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 ---
 
@@ -34,10 +51,11 @@ const id = `spacing-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   data-ds-doc-table-size={size}
 >
   {showHeader && (
-    <div class="ds-spacing-block__header">
-      <h3 id={`${id}-title`}>{name}</h3>
-      <p>{description}</p>
-    </div>
+    <DsSectionHeaderLevel3
+      id={`${id}-title`}
+      title={name}
+      description={description}
+    />
   )}
 
   <DsTableFrame label={`${name} sizing tokens`} size={size}>
@@ -48,7 +66,7 @@ const id = `spacing-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
       <DsTableCell role="columnheader" variant="header">Value (PX)</DsTableCell>
     </DsTableRow>
     {
-      rows.map((row) => (
+      resolvedRows.map((row) => (
         <DsSpacingRow
           agenticRule={row.agenticRule}
           output={row.output}
@@ -68,26 +86,6 @@ const id = `spacing-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   .ds-spacing-block {
     display: grid;
     gap: var(--gap-medium);
-  }
-
-  .ds-spacing-block__header {
-    display: grid;
-    gap: var(--gap-regular);
-  }
-
-  .ds-spacing-block__header h3 {
-    color: var(--color-text-primary);
-    font-size: var(--font-size-h6);
-    font-weight: var(--font-weight-emphasis);
-    letter-spacing: var(--letter-spacing-ultra-tight);
-    line-height: var(--line-height-compact);
-  }
-
-  .ds-spacing-block__header p {
-    max-width: 48rem;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body-small);
-    line-height: var(--line-height-normal);
   }
 
 </style>

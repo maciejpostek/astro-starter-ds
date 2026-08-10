@@ -63,6 +63,7 @@ const agents = read("AGENTS.md");
 const router = readJson("AGENTIC-RULES.json");
 const routerSource = read("AGENTIC-RULES.json");
 const registry = readJson("src/data/design-system/componentArchitecture.json");
+const readinessContract = readJson("architecture/component-readiness-contract.json");
 if (Buffer.byteLength(routerSource, "utf8") > 8 * 1024) {
   errors.push("AGENTIC-RULES.json must remain within the 8 KB routing budget.");
 }
@@ -81,7 +82,24 @@ if (router.sources?.componentIndex !== "src/data/design-system/componentArchitec
 if (router.sources?.figmaSyncContract !== "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md") {
   errors.push("Router must expose the canonical Figma–Astro Sync Contract.");
 }
+if (router.sources?.componentReadiness !== ".agentic-rules/10-component-readiness.md") {
+  errors.push("Router must expose the canonical Component Readiness rule.");
+}
+if (router.sources?.componentReadinessContract !== "architecture/component-readiness-contract.json") {
+  errors.push("Router must expose the machine-readable Component Readiness contract.");
+}
+if (readinessContract.figmaPolicy !== "explicit-only") {
+  errors.push("Component Readiness must keep Figma explicit-only.");
+}
+for (const scope of ["component-contract", "component-creation"]) {
+  if (!router.validationRouting?.[scope]?.includes("component readiness audit")) {
+    errors.push(`${scope} must route the Component Readiness audit.`);
+  }
+}
 for (const contract of ["Classify the request as","Reuse existing tokens and components by default","Use Figma rules and tools only"]) {
+  if (!agents.includes(contract)) errors.push(`AGENTS.md is missing: ${contract}`);
+}
+for (const contract of [".agentic-rules/10-component-readiness.md", "data-component-name"]) {
   if (!agents.includes(contract)) errors.push(`AGENTS.md is missing: ${contract}`);
 }
 
@@ -107,9 +125,15 @@ for (const record of publicRecords) {
 const retiredFamilyRules = [
   "button.md","forms.md","data-display.md","text.md","disclosure.md","media.md"
 ];
+const activeComponentRules = new Set(
+  publicRecords.map((record) => record.agenticRule).filter(Boolean)
+);
 for (const filename of retiredFamilyRules) {
-  const path = join(projectRoot, ".agentic-rules/components", filename);
-  if (existsSync(path)) errors.push(`Retired family rule remains: ${filename}`);
+  const relativePath = `.agentic-rules/components/${filename}`;
+  const path = join(projectRoot, relativePath);
+  if (existsSync(path) && !activeComponentRules.has(relativePath)) {
+    errors.push(`Retired family rule remains: ${filename}`);
+  }
 }
 
 const figmaRouterPath = `${figmaDirectory}/README.md`;

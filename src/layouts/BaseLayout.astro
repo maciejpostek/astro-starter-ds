@@ -4,27 +4,31 @@ import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
 import "../styles/tokens/tokens.css";
 import "../styles/global.css";
-import DsSidebar from "../components/_internal/documentation/DsSidebar.astro";
 import GridVisualizer from "../components/_internal/dev/GridVisualizer.astro";
 import ComponentInfoLayer from "../components/_internal/dev/ComponentInfoLayer.astro";
 import ClipboardCopy from "../components/_internal/behaviors/ClipboardCopy.astro";
-import { isDesignSystemPath } from "../data/designSystemNavigation";
+import SwitchButton from "../components/base-components/switch/SwitchButton.astro";
 
 interface Props {
   title: string;
   description?: string;
+  showGridVisualizer?: boolean;
+  showComponentInfo?: boolean;
+  mainClass?: string;
 }
 
 const {
   title,
-  description = "Astro Starter provides a reusable, token-driven component system with operational documentation for people and AI."
+  description = "Astro Starter provides a reusable, token-driven component system with operational documentation for people and AI.",
+  showGridVisualizer = true,
+  showComponentInfo = true,
+  mainClass,
 } = Astro.props;
 const activePath = Astro.url.pathname;
-const isDesignSystem = isDesignSystemPath(activePath);
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light" data-grid="visible">
+<html lang="en" data-theme="light" data-grid="visible" data-guides="visible">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -36,24 +40,37 @@ const isDesignSystem = isDesignSystemPath(activePath);
       const storedTheme = localStorage.getItem("astro-ds-theme");
       document.documentElement.dataset.theme =
         storedTheme === "dark" || storedTheme === "light" ? storedTheme : "light";
+      const storedGuides = localStorage.getItem("astro-ds-guides");
       const storedGrid = localStorage.getItem("astro-ds-grid");
-      document.documentElement.dataset.grid =
-        storedGrid === "hidden" ? "hidden" : "visible";
+      const guidesState = storedGuides === "hidden" || storedGuides === "visible"
+        ? storedGuides
+        : storedGrid === "hidden"
+          ? "hidden"
+          : "visible";
+      document.documentElement.dataset.guides = guidesState;
+      document.documentElement.dataset.grid = guidesState;
     </script>
   </head>
   <body>
     <div class="app">
       <div class="app__workspace">
-        <GridVisualizer />
-        <main class:list={["main", isDesignSystem && "main--design-system"]}>
-          {isDesignSystem && <DsSidebar activePath={activePath} />}
-          <div class:list={[isDesignSystem && "design-system-shell__content"]}>
-            <slot />
-          </div>
+        {showGridVisualizer && <GridVisualizer />}
+        <main class:list={["main", mainClass]}>
+          <slot />
         </main>
       </div>
     </div>
-    <ComponentInfoLayer />
+    {showComponentInfo && <ComponentInfoLayer />}
+    {(showGridVisualizer || showComponentInfo) && (
+      <div class="guides-toggle" data-grid-toggle>
+        <SwitchButton
+          label="Guides"
+          aria-label="Disable guides"
+          checked
+          data-guides-switch
+        />
+      </div>
+    )}
     <ClipboardCopy />
 
     <script>
@@ -66,21 +83,23 @@ const isDesignSystem = isDesignSystemPath(activePath);
       runtimeWindow.__astroDsShellAbortController = shellAbortController;
 
       const root = document.documentElement;
-      const gridToggles = document.querySelectorAll<HTMLButtonElement>("[data-grid-toggle]");
-      const syncGridToggle = () => {
-        const isVisible = root.dataset.grid !== "hidden";
-        gridToggles.forEach((gridToggle) => {
-          gridToggle.setAttribute("aria-pressed", String(isVisible));
-          gridToggle.setAttribute(
+      const guidesSwitches = document.querySelectorAll<HTMLInputElement>("[data-guides-switch]");
+      const syncGuidesSwitch = () => {
+        const isVisible = root.dataset.guides !== "hidden";
+        guidesSwitches.forEach((guidesSwitch) => {
+          guidesSwitch.checked = isVisible;
+          guidesSwitch.setAttribute(
             "aria-label",
-            isVisible ? "Hide composition grid" : "Show composition grid"
+            isVisible ? "Disable guides" : "Enable guides"
           );
         });
       };
-      const setGridState = (next: "visible" | "hidden") => {
+      const setGuidesState = (next: "visible" | "hidden") => {
+        root.dataset.guides = next;
         root.dataset.grid = next;
+        localStorage.setItem("astro-ds-guides", next);
         localStorage.setItem("astro-ds-grid", next);
-        syncGridToggle();
+        syncGuidesSwitch();
       };
       const isTypingContext = (event: KeyboardEvent) => {
         const element = event.target as HTMLElement | null;
@@ -88,13 +107,12 @@ const isDesignSystem = isDesignSystemPath(activePath);
         const tag = element.tagName.toLowerCase();
         return tag === "input" || tag === "textarea" || tag === "select" || element.isContentEditable;
       };
-      syncGridToggle();
-      gridToggles.forEach((gridToggle) => {
-        gridToggle.addEventListener(
-          "click",
+      syncGuidesSwitch();
+      guidesSwitches.forEach((guidesSwitch) => {
+        guidesSwitch.addEventListener(
+          "change",
           () => {
-            const next = root.dataset.grid === "hidden" ? "visible" : "hidden";
-            setGridState(next);
+            setGuidesState(guidesSwitch.checked ? "visible" : "hidden");
           },
           { signal: shellSignal }
         );
@@ -105,12 +123,41 @@ const isDesignSystem = isDesignSystemPath(activePath);
           if (isTypingContext(event)) return;
           if (!(event.shiftKey && event.key.toLowerCase() === "g")) return;
           event.preventDefault();
-          const next = root.dataset.grid === "hidden" ? "visible" : "hidden";
-          setGridState(next);
+          const next = root.dataset.guides === "hidden" ? "visible" : "hidden";
+          setGuidesState(next);
         },
         { signal: shellSignal }
       );
 
     </script>
+
+    <style>
+      .guides-toggle {
+        position: fixed;
+        right: var(--size-16);
+        bottom: var(--size-16);
+        z-index: 1100;
+        display: grid;
+        place-items: center;
+        border: var(--border-width-default) solid var(--color-border-subtle);
+        border-radius: var(--radius-medium);
+        padding: var(--size-8);
+        background: var(--color-background-surface);
+        box-shadow: var(--elevation-surface-floating);
+      }
+
+      .guides-toggle :global(.ds-switch-button__label) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        margin: -1px;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+    </style>
   </body>
 </html>

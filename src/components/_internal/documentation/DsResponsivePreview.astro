@@ -1,0 +1,217 @@
+---
+interface Props {
+  title: string;
+  backHref: string;
+}
+
+const { title, backHref } = Astro.props;
+---
+
+<div
+  class="ds-responsive-preview"
+  data-component-name="DsResponsivePreview"
+  data-ds-responsive-preview
+>
+  <header class="ds-responsive-preview__toolbar">
+    <a href={backHref}>← Back</a>
+    <strong>{title}</strong>
+    <div class="ds-responsive-preview__controls" role="group" aria-label="Preview width">
+      <button type="button" data-preview-device="desktop">Desktop</button>
+      <button type="button" data-preview-device="tablet">Tablet</button>
+      <button type="button" data-preview-device="mobile">Mobile</button>
+      <button type="button" data-preview-device="fit">Fit width</button>
+      <output data-preview-width>1440 px</output>
+    </div>
+  </header>
+
+  <div class="ds-responsive-preview__workspace" data-preview-workspace>
+    <div
+      class="ds-responsive-preview__handle ds-responsive-preview__handle--left"
+      role="separator"
+      aria-label="Resize preview from the left"
+      aria-orientation="vertical"
+      tabindex="0"
+      data-preview-handle="left"
+    ></div>
+    <div class="ds-responsive-preview__viewport" data-preview-viewport data-device="desktop">
+      <slot />
+    </div>
+    <div
+      class="ds-responsive-preview__handle ds-responsive-preview__handle--right"
+      role="separator"
+      aria-label="Resize preview from the right"
+      aria-orientation="vertical"
+      tabindex="0"
+      data-preview-handle="right"
+    ></div>
+  </div>
+</div>
+
+<script>
+  const previewRoot = document.querySelector<HTMLElement>("[data-ds-responsive-preview]");
+  const workspace = previewRoot?.querySelector<HTMLElement>("[data-preview-workspace]");
+  const viewport = previewRoot?.querySelector<HTMLElement>("[data-preview-viewport]");
+  const widthOutput = previewRoot?.querySelector<HTMLOutputElement>("[data-preview-width]");
+  const minimumWidth = 320;
+  const presetWidths = { desktop: 1440, tablet: 768, mobile: 390 } as const;
+  type Device = keyof typeof presetWidths | "fit" | "custom";
+
+  const maximumWidth = () => Math.max(minimumWidth, workspace?.clientWidth ?? window.innerWidth);
+  const clampWidth = (value: number) => Math.min(maximumWidth(), Math.max(minimumWidth, Math.round(value)));
+  const currentWidth = () => Math.round(viewport?.getBoundingClientRect().width ?? minimumWidth);
+
+  const writeUrl = (device: Device, width?: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("device", device);
+    if (device === "custom" && width) url.searchParams.set("width", String(width));
+    else url.searchParams.delete("width");
+    url.searchParams.delete("fit");
+    history.replaceState(null, "", url);
+  };
+
+  const applyDevice = (device: Device, requestedWidth?: number, updateUrl = true) => {
+    if (!viewport) return;
+    const width = device === "custom"
+      ? clampWidth(requestedWidth ?? currentWidth())
+      : device === "fit"
+        ? maximumWidth()
+        : clampWidth(presetWidths[device]);
+    viewport.dataset.device = device;
+    viewport.style.width = `${width}px`;
+    if (widthOutput) widthOutput.value = `${width} px`;
+    previewRoot?.querySelectorAll<HTMLButtonElement>("[data-preview-device]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.previewDevice === device));
+    });
+    if (updateUrl) writeUrl(device, width);
+  };
+
+  const params = new URLSearchParams(location.search);
+  const legacyFit = params.get("fit") === "true";
+  const requestedDevice = legacyFit ? "fit" : params.get("device");
+  const initialDevice: Device = requestedDevice === "desktop" || requestedDevice === "tablet" ||
+    requestedDevice === "mobile" || requestedDevice === "fit" || requestedDevice === "custom"
+    ? requestedDevice
+    : "desktop";
+  applyDevice(initialDevice, Number(params.get("width")) || undefined, false);
+
+  previewRoot?.addEventListener("click", (event) => {
+    const target = event.target instanceof Element
+      ? event.target.closest<HTMLButtonElement>("[data-preview-device]")
+      : null;
+    if (!target) return;
+    applyDevice(target.dataset.previewDevice as Device);
+  });
+
+  let dragStart: { pointerX: number; width: number } | null = null;
+  previewRoot?.querySelectorAll<HTMLElement>("[data-preview-handle]").forEach((handle) => {
+    handle.addEventListener("pointerdown", (event) => {
+      dragStart = { pointerX: event.clientX, width: currentWidth() };
+      handle.setPointerCapture(event.pointerId);
+    });
+    handle.addEventListener("pointermove", (event) => {
+      if (!dragStart || !handle.hasPointerCapture(event.pointerId)) return;
+      const direction = handle.dataset.previewHandle === "right" ? 1 : -1;
+      const width = clampWidth(dragStart.width + (event.clientX - dragStart.pointerX) * direction * 2);
+      applyDevice("custom", width);
+    });
+    handle.addEventListener("pointerup", () => { dragStart = null; });
+    handle.addEventListener("keydown", (event) => {
+      const step = event.shiftKey ? 64 : 16;
+      let width = currentWidth();
+      if (event.key === "ArrowLeft") width -= step;
+      else if (event.key === "ArrowRight") width += step;
+      else if (event.key === "Home") width = minimumWidth;
+      else if (event.key === "End") width = maximumWidth();
+      else return;
+      event.preventDefault();
+      applyDevice("custom", width);
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    const device = viewport?.dataset.device as Device | undefined;
+    if (!device) return;
+    applyDevice(device, currentWidth(), false);
+  });
+</script>
+
+<style>
+  .ds-responsive-preview {
+    min-height: 100vh;
+    background: var(--color-background-subtle);
+  }
+
+  .ds-responsive-preview__toolbar {
+    position: sticky;
+    z-index: 20;
+    top: 0;
+    display: grid;
+    min-height: var(--size-64);
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--gap-large);
+    border-bottom: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-canvas);
+    padding-inline: var(--component-padding-medium);
+  }
+
+  .ds-responsive-preview__controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap-tiny);
+  }
+
+  button,
+  output {
+    min-height: var(--component-size-small-min-height);
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+    padding-inline: var(--component-size-small-padding-inline);
+  }
+
+  button { cursor: pointer; }
+  button[aria-pressed="true"] { border-color: var(--color-border-accent); color: var(--color-text-accent); }
+  output { display:flex; min-width:5.5rem; align-items:center; color:var(--color-text-tertiary); font-family:var(--font-family-mono); font-size:var(--font-size-body-tiny); }
+
+  .ds-responsive-preview__workspace {
+    display: flex;
+    min-height: calc(100vh - var(--size-64));
+    align-items: flex-start;
+    justify-content: center;
+    overflow: auto;
+    padding: var(--component-padding-large);
+  }
+
+  .ds-responsive-preview__viewport {
+    width: min(1440px, 100%);
+    min-height: calc(100vh - var(--size-128));
+    flex: 0 0 auto;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--color-border-strong);
+    background: var(--color-background-canvas);
+    box-shadow: var(--effect-raised);
+    container-type: inline-size;
+  }
+
+  .ds-responsive-preview__handle {
+    position: sticky;
+    top: calc(50vh - var(--size-48));
+    width: var(--size-12);
+    height: var(--size-96);
+    flex: 0 0 auto;
+    cursor: ew-resize;
+  }
+
+  .ds-responsive-preview__handle::after {
+    position: absolute;
+    inset: 0 var(--size-4);
+    border-radius: var(--radius-pill);
+    background: var(--color-border-strong);
+    content: "";
+  }
+
+  .ds-responsive-preview__handle:focus-visible::after,
+  .ds-responsive-preview__handle:hover::after {
+    background: var(--color-border-accent);
+  }
+</style>

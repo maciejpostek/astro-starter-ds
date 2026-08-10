@@ -1,0 +1,35 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
+import DsEmptyState from "../../../components/_internal/documentation/DsEmptyState.astro";
+import { architecture, type ArchitecturePage } from "../../../data/documentationRegistry";
+
+export function getStaticPaths() {
+  return architecture.pages
+    .filter((page) => page.categoryKey === "assets" && page.pageKey !== "icons")
+    .map((page) => ({ params: { pageKey: page.pageKey }, props: { page } }));
+}
+
+interface Props { page: ArchitecturePage; }
+const { page } = Astro.props;
+---
+
+<DesignSystemLayout
+  title={`${page.pageLabel} - Assets`}
+  pageType="asset-gallery"
+  toc={[{ label: "Implementation status", href: "#implementation-status" }]}
+  header={{
+    eyebrow: "Assets",
+    title: page.pageLabel,
+    description: "This asset family follows the canonical Figma–Astro architecture and exposes only implemented records.",
+    status: "Empty family",
+  }}
+>
+  <DsDocSection
+    id="implementation-status"
+    title="Implementation status"
+    description="Only canonical Astro implementations are exposed as documented runtime assets."
+  >
+    <DsEmptyState path={page.sourceDirectory} />
+  </DsDocSection>
+</DesignSystemLayout>
