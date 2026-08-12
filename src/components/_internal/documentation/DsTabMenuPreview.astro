@@ -1,0 +1,35 @@
+---
+import TabMenu, { type TabMenuItems } from "../../base-components/tabs/TabMenu.astro";
+
+const items: TabMenuItems = [
+  { label: "Overview", href: "#component-metadata" },
+];
+---
+
+<div class="ds-preview-renderer-boundary ds-tab-menu-preview" data-component-name="DsTabMenuPreview">
+  <TabMenu
+    class="ds-tab-menu-preview__menu"
+    items={items}
+    aria-label="Preview tab menu item"
+    data-ds-preview-state="default"
+    data-ds-preview-target
+  />
+</div>
+
+<style>
+  .ds-tab-menu-preview {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    place-items: center;
+    overflow: visible;
+  }
+
+  .ds-tab-menu-preview :global(.ds-tab-menu-preview__menu) {
+    overflow: visible;
+  }
+
+  .ds-tab-menu-preview :global(.ds-tab-menu-preview__menu .tab-menu__list) {
+    justify-content: center;
+  }
+</style>

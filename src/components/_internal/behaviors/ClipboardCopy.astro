@@ -11,6 +11,12 @@
   - data-clipboard-label: optional child label updated after a successful copy.
   - data-clipboard-copied-label="Copied": temporary feedback label.
   - data-clipboard-restore-delay="1600": optional feedback restore delay in ms.
+  - data-clipboard-success-toast="toast-id": shows a prerendered Toast after success.
+  - data-clipboard-error-toast="toast-id": shows a prerendered Toast after failure.
+
+  Documentation fallback:
+  - ds-clipboard-copy-success: addressed system Toast used when no success id is supplied.
+  - ds-clipboard-copy-error: addressed system Toast used when no error id is supplied.
 -->
 
 <script is:inline>
@@ -19,6 +25,8 @@
     window.__astroDsClipboardCopyInitialized = true;
 
     const restoreTimers = new WeakMap();
+    const defaultSuccessToastId = "ds-clipboard-copy-success";
+    const defaultErrorToastId = "ds-clipboard-copy-error";
 
     const writeClipboard = async (value) => {
       if (navigator.clipboard?.writeText) {
@@ -98,6 +106,23 @@
       restoreTimers.set(trigger, timer);
     };
 
+    const showToast = (id) => {
+      const toast = id ? document.getElementById(id) : null;
+      if (!(toast instanceof HTMLElement) || !toast.matches("[data-toast]")) return false;
+
+      window.dispatchEvent(
+        new CustomEvent("astro-ds:toast-show", {
+          detail: { id }
+        })
+      );
+      return true;
+    };
+
+    const showAddressedToast = (trigger, attribute, fallbackId) => {
+      const id = trigger.getAttribute(attribute)?.trim();
+      return showToast(id || fallbackId);
+    };
+
     document.addEventListener("click", async (event) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
@@ -113,20 +138,16 @@
       try {
         await writeClipboard(value);
         syncLabel(trigger);
-        const toast = document.querySelector("[data-ds-copy-toast]");
-        if (toast instanceof HTMLElement) {
-          toast.textContent = trigger.getAttribute("data-copied-label") ?? "Copied to clipboard";
-          toast.dataset.visible = "true";
-          window.clearTimeout(window.__astroDsCopyToastTimer);
-          window.__astroDsCopyToastTimer = window.setTimeout(() => {
-            toast.dataset.visible = "false";
-          }, 1400);
-        }
         trigger.dispatchEvent(
           new CustomEvent("astro-ds:clipboard-copy", {
             bubbles: true,
             detail: { value }
           })
+        );
+        showAddressedToast(
+          trigger,
+          "data-clipboard-success-toast",
+          defaultSuccessToastId
         );
       } catch (error) {
         trigger.dispatchEvent(
@@ -134,6 +155,11 @@
             bubbles: true,
             detail: { error }
           })
+        );
+        showAddressedToast(
+          trigger,
+          "data-clipboard-error-toast",
+          defaultErrorToastId
         );
       }
     });

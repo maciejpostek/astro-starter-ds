@@ -1,8 +1,8 @@
 ---
 import DsSectionHeading from "./DsSectionHeading.astro";
 
-interface Props { title: string; id?: string; description?: string; }
-const { title, id, description } = Astro.props as Props;
+interface Props { title: string; id?: string; }
+const { title, id } = Astro.props as Props;
 ---
 
 <DsSectionHeading
@@ -10,5 +10,4 @@ const { title, id, description } = Astro.props as Props;
   level={2}
   title={title}
   id={id}
-  description={description}
 />

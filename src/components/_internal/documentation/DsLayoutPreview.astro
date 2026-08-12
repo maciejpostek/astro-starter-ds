@@ -70,14 +70,14 @@ const { variant, label } = Astro.props;
 
   .ds-layout-preview figcaption {
     display: flex;
-    min-height: var(--component-size-small-min-height);
+    min-height: var(--size-32);
     align-items: center;
     border-bottom: var(--size-1) solid var(--color-border-subtle);
     color: var(--color-text-secondary);
     font-family: var(--font-family-mono);
     font-size: var(--font-size-body-tiny);
     line-height: var(--line-height-none);
-    padding: 0 var(--component-padding-small);
+    padding: 0 var(--content-padding-small);
     text-transform: uppercase;
   }
 
@@ -85,7 +85,7 @@ const { variant, label } = Astro.props;
     display: grid;
     min-height: var(--size-192);
     align-items: stretch;
-    padding: var(--component-padding-medium);
+    padding: var(--content-padding-medium);
   }
 
   .ds-layout-preview__container {

@@ -1,0 +1,22 @@
+---
+import Ratio from "../../base-components/ratio/Ratio.astro";
+---
+
+<div
+  class="ratio-preview"
+  data-component-name="DsRatioPreview"
+>
+  <Ratio data-ds-preview-target />
+</div>
+
+<style>
+  .ratio-preview {
+    display: grid;
+    inline-size: min(100%, 24rem);
+    place-items: center;
+  }
+
+  .ratio-preview > :global([data-component-name="Ratio"]) {
+    inline-size: 100%;
+  }
+</style>

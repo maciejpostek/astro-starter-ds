@@ -1,0 +1,185 @@
+---
+import IconButton from "../../base-components/buttons/IconButton.astro";
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+import DsTableRowGroup from "./DsTableRowGroup.astro";
+import {
+  resolveFigmaLetterSpacingPercent,
+  resolveFigmaLineHeightPercent,
+  resolveTypographyTokenValue,
+  type TypographyStyleRow,
+} from "../../../data/design-system/typographyTokens";
+import {
+  documentationTokenMap,
+  getDocumentationResolvedValue,
+} from "../../../data/documentationTokenRegistry";
+
+interface Props {
+  row: TypographyStyleRow;
+}
+
+const { row } = Astro.props as Props;
+const resolveDocumentationValue = (value: string) => {
+  const token = documentationTokenMap.get(value);
+  return token ? getDocumentationResolvedValue(token) : resolveTypographyTokenValue(value);
+};
+const details = [
+  { name: "Font family", value: row.family, resolvedValue: resolveDocumentationValue(row.family) },
+  { name: "Size", value: row.size, resolvedValue: resolveDocumentationValue(row.size) },
+  { name: "Weight", value: row.weight, resolvedValue: resolveDocumentationValue(row.weight) },
+  { name: "Line height", value: row.lineHeight, resolvedValue: resolveDocumentationValue(row.lineHeight) },
+  { name: "Figma line height", value: resolveFigmaLineHeightPercent(row.lineHeight), resolvedValue: "native percentage" },
+  { name: "Letter spacing", value: row.letterSpacing, resolvedValue: resolveDocumentationValue(row.letterSpacing) },
+  { name: "Figma letter spacing", value: resolveFigmaLetterSpacingPercent(row.letterSpacing), resolvedValue: "native percentage" },
+  { name: "Font style", value: row.fontStyle, resolvedValue: resolveDocumentationValue(row.fontStyle) },
+  { name: "Transform", value: row.transform, resolvedValue: resolveDocumentationValue(row.transform) },
+  { name: "Text wrap", value: row.textWrap, resolvedValue: resolveDocumentationValue(row.textWrap) },
+  { name: "Overflow wrap", value: row.overflowWrap, resolvedValue: resolveDocumentationValue(row.overflowWrap) },
+  { name: "Word break", value: row.wordBreak, resolvedValue: resolveDocumentationValue(row.wordBreak) },
+  { name: "White space", value: row.whiteSpace, resolvedValue: resolveDocumentationValue(row.whiteSpace) },
+  ...(row.textDecoration
+    ? [
+        { name: "Text decoration", value: row.textDecoration, resolvedValue: "underline" },
+        { name: "Decoration style", value: row.textDecorationStyle ?? "solid", resolvedValue: row.textDecorationStyle ?? "solid" },
+        { name: "Decoration thickness", value: row.textDecorationThickness ?? "auto", resolvedValue: row.textDecorationThickness ?? "auto" },
+        { name: "Underline offset", value: row.textUnderlineOffset ?? "auto", resolvedValue: row.textUnderlineOffset ?? "auto" },
+        { name: "Decoration skip ink", value: row.textDecorationSkipInk ?? "auto", resolvedValue: row.textDecorationSkipInk ?? "auto" },
+      ]
+    : []),
+];
+const detailsId = `typography-style-${row.className.replace(/[^a-zA-Z0-9]+/g, "-")}-details`;
+---
+
+<article
+  class="ds-typography-style-profile"
+  data-component-name="DsTypographyStyleProfile"
+  data-ds-typography-style-profile
+>
+  <DsTableFrame
+    label={`${row.name} typography profile`}
+    minWidth="32rem"
+    columns="minmax(9rem, 12fr) minmax(11rem, 20fr) minmax(12rem, 20fr)"
+  >
+    <DsTableRow>
+      <DsTableCell role="rowheader" variant="header">Name</DsTableCell>
+      <DsTableCell
+        gridColumn="2 / -1"
+        role="cell"
+      >
+        <code>{row.name}</code>
+      </DsTableCell>
+    </DsTableRow>
+
+    <DsTableRow>
+      <DsTableCell role="rowheader" variant="header">Class</DsTableCell>
+      <DsTableCopyCell gridColumn="2 / -1" role="cell" value={`.${row.className}`} />
+    </DsTableRow>
+
+    <DsTableRow>
+      <DsTableCell
+        class="ds-typography-style-profile__sample-cell"
+        gridColumn="1 / -1"
+        overflow="visual"
+        role="cell"
+      >
+        <span class:list={["ds-typography-style-profile__sample", row.className]}>
+          {row.sample}
+        </span>
+        <IconButton
+          slot="actions"
+          aria-controls={detailsId}
+          aria-expanded="false"
+          class="ds-typography-style-profile__trigger"
+          data-ds-typography-style-trigger
+          icon="add"
+          label={`Show ${row.name} typography details`}
+          size="small"
+          variant="secondary"
+        />
+      </DsTableCell>
+    </DsTableRow>
+
+    <DsTableRowGroup
+      id={detailsId}
+      class="ds-typography-style-profile__details"
+      data-ds-typography-style-details
+      hidden
+    >
+      {
+        details.map((property) => (
+          <DsTableRow>
+            <DsTableCell role="rowheader" variant="header">{property.name}</DsTableCell>
+            <DsTableCell role="cell" tone="secondary"><code>{property.value}</code></DsTableCell>
+            <DsTableCell role="cell" tone="secondary"><code>{property.resolvedValue}</code></DsTableCell>
+          </DsTableRow>
+        ))
+      }
+    </DsTableRowGroup>
+  </DsTableFrame>
+</article>
+
+<style>
+  .ds-typography-style-profile {
+    min-width: 0;
+  }
+
+  :global(.ds-typography-style-profile__details.ds-table-row-group:not([hidden])) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(.ds-typography-style-profile__sample-cell.ds-table-cell) {
+    position: relative;
+    align-items: flex-start;
+    padding: var(--size-32) !important;
+  }
+
+  :global(.ds-typography-style-profile__sample-cell .ds-table-cell__actions) {
+    position: absolute;
+    right: var(--content-padding-tiny);
+    bottom: var(--content-padding-tiny);
+  }
+
+  .ds-typography-style-profile__sample {
+    display: block;
+    width: min(100%, 32ch);
+    min-height: 3lh;
+    overflow: visible;
+    color: var(--color-text-primary);
+    overflow-wrap: break-word;
+    text-overflow: clip;
+    white-space: normal;
+  }
+</style>
+
+<script>
+  const setupTypographyStyleProfiles = () => {
+    const root = document.documentElement;
+    if (root.dataset.dsTypographyStylesReady === "true") return;
+    root.dataset.dsTypographyStylesReady = "true";
+
+    document.addEventListener("click", (event) => {
+      const trigger = (event.target as Element | null)?.closest<HTMLButtonElement>(
+        "[data-ds-typography-style-trigger]",
+      );
+      if (!trigger) return;
+      const profile = trigger.closest<HTMLElement>("[data-ds-typography-style-profile]");
+      const detailsId = trigger.getAttribute("aria-controls");
+      const details = detailsId ? document.getElementById(detailsId) : null;
+      if (!profile || !details || !profile.contains(details)) return;
+
+      const expanded = trigger.getAttribute("aria-expanded") === "true";
+      trigger.setAttribute("aria-expanded", String(!expanded));
+      trigger.setAttribute(
+        "aria-label",
+        `${expanded ? "Show" : "Hide"} ${profile.querySelector("code")?.textContent?.trim() ?? "typography"} details`,
+      );
+      details.hidden = expanded;
+    }, { capture: true });
+  };
+
+  setupTypographyStyleProfiles();
+  document.addEventListener("astro:page-load", setupTypographyStyleProfiles);
+</script>

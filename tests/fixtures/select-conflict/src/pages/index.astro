@@ -1,0 +1,17 @@
+---
+import Select from "../../../../../src/components/base-components/select/Select.astro";
+
+const options = [{
+  value: "pl",
+  label: "Poland",
+  flag: "poland",
+  visual: { kind: "text", text: "PL" },
+}] as any;
+---
+
+<Select
+  id="conflicting-country-select"
+  label="Country"
+  options={options}
+  purpose="country"
+/>

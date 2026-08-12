@@ -1,14 +1,16 @@
 ---
 import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsCodeSnippet from "../../../components/_internal/documentation/DsCodeSnippet.astro";
 import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
+import DsDocumentationBlockTitle from "../../../components/_internal/documentation/DsDocumentationBlockTitle.astro";
 import DsComponentColorReference from "../../../components/_internal/documentation/DsComponentColorReference.astro";
 import DsPaletteBlock from "../../../components/_internal/documentation/DsPaletteBlock.astro";
-import DsSectionHeaderLevel3 from "../../../components/_internal/documentation/DsSectionHeaderLevel3.astro";
-import DsSectionHeaderLevel4 from "../../../components/_internal/documentation/DsSectionHeaderLevel4.astro";
 import {
   documentationFoundationHeader,
   documentationFoundationToc,
 } from "../../../data/documentationFoundationRegistry";
+import { resolveDocumentationColorSampleSurface } from "../../../data/documentationFoundationData";
+import colorAgenticRules from "../../../../.agentic-rules/02-colors.md?raw";
 
 type ColorRow = {
   token: string;
@@ -53,29 +55,10 @@ const tokenSample = (
   ...parseModeValue(value),
   sampleType,
   sampleValue: `var(${token})`,
-  sampleSurfaceValue: getColorSampleSurfaceValue(token),
+  sampleSurfaceValue: resolveDocumentationColorSampleSurface(token),
   label,
 });
 const foundationHeader = documentationFoundationHeader("color");
-
-function getColorSampleSurfaceValue(token: string) {
-  if (token.includes("disabled")) return "var(--color-state-disabled-background)";
-  if (token.includes("success")) return "var(--color-status-success-background)";
-  if (token.includes("warning")) return "var(--color-status-warning-background)";
-  if (token.includes("error") || token.includes("invalid")) return "var(--color-status-error-background)";
-  if (token.includes("info")) return "var(--color-status-info-background)";
-  if (token.includes("on-accent") || token.includes("primary-text") || token.includes("primary-icon")) {
-    return "var(--color-background-accent)";
-  }
-  if (token.includes("on-media") || token.includes("content-on-media")) {
-    return "var(--color-background-media-overlay)";
-  }
-  if (token.includes("inverse") || token.includes("selected")) {
-    return "var(--color-background-inverse)";
-  }
-
-  return "var(--color-background-canvas)";
-}
 
 const baseColorRows: ColorRow[] = [
   { token: "--color-transparent", value: "transparent" },
@@ -183,7 +166,7 @@ const semanticBackgroundRows: ColorRow[] = [
   tokenSample("--color-background-accent-subtle", "light: var(--color-accent-300) / dark: var(--color-accent-700)"),
   tokenSample("--color-background-accent", "light/dark: var(--color-accent-500)"),
   tokenSample("--color-background-accent-strong", "light: var(--color-accent-700) / dark: var(--color-accent-300)"),
-  tokenSample("--color-background-overlay", "light: oklch(14.5% 0 0 / 22%) / dark: oklch(0% 0 0 / 50%)"),
+  tokenSample("--color-background-overlay", "light/dark: oklch(0% 0 0 / 20%)"),
   tokenSample("--color-background-media-overlay", "light: oklch(14.5% 0 0 / 78%) / dark: oklch(0% 0 0 / 78%)"),
 ];
 
@@ -243,6 +226,10 @@ const semanticStatusRows: ColorRow[] = [
   tokenSample("--color-status-info-border", "light: var(--color-info-200) / dark: var(--color-info-800)", "border"),
   tokenSample("--color-status-info-text", "light: var(--color-info-800) / dark: var(--color-info-200)", "text", "Aa"),
   tokenSample("--color-status-info-icon", "light: var(--color-info-600) / dark: var(--color-info-400)", "text", "Icon"),
+  tokenSample("--color-status-feature-background", "light: var(--color-accent-50) / dark: var(--color-accent-950)"),
+  tokenSample("--color-status-feature-border", "light/dark: var(--color-border-accent-subtle)", "border"),
+  tokenSample("--color-status-feature-text", "light/dark: var(--color-text-accent)", "text", "Aa"),
+  tokenSample("--color-status-feature-icon", "light/dark: var(--color-icon-accent)", "text", "Icon"),
 ];
 
 const inputRows: ColorRow[] = [
@@ -260,25 +247,6 @@ const inputRows: ColorRow[] = [
   tokenSample("--input-helper-default", "var(--color-text-secondary)", "text", "Aa"),
   tokenSample("--input-helper-invalid", "var(--color-status-error-text)", "text", "Aa"),
   tokenSample("--input-helper-valid", "var(--color-status-success-text)", "text", "Aa"),
-];
-
-const tabRows: ColorRow[] = [
-  tokenSample("--tab-background-default", "var(--color-transparent)"),
-  tokenSample("--tab-background-hover", "var(--color-background-subtle)"),
-  tokenSample("--tab-background-selected", "var(--color-background-inverse)"),
-  tokenSample("--tab-background-disabled", "var(--color-transparent)"),
-  tokenSample("--tab-border-default", "var(--color-transparent)", "border"),
-  tokenSample("--tab-border-hover", "var(--color-border-subtle)", "border"),
-  tokenSample("--tab-border-selected", "var(--color-background-inverse)", "border"),
-  tokenSample("--tab-border-disabled", "var(--color-transparent)", "border"),
-  tokenSample("--tab-text-default", "var(--color-text-secondary)", "text", "Aa"),
-  tokenSample("--tab-text-hover", "var(--color-text-primary)", "text", "Aa"),
-  tokenSample("--tab-text-selected", "var(--color-text-inverse)", "text", "Aa"),
-  tokenSample("--tab-text-disabled", "var(--color-state-disabled-text)", "text", "Aa"),
-  tokenSample("--tab-icon-default", "var(--color-icon-secondary)", "text", "Icon"),
-  tokenSample("--tab-icon-hover", "var(--color-icon-primary)", "text", "Icon"),
-  tokenSample("--tab-icon-selected", "var(--color-icon-inverse)", "text", "Icon"),
-  tokenSample("--tab-icon-disabled", "var(--color-state-disabled-icon)", "text", "Icon"),
 ];
 
 const cardRows: ColorRow[] = [
@@ -308,9 +276,6 @@ const labelRows: ColorRow[] = [
   tokenSample("--label-field-text-default", "var(--color-text-secondary)", "text", "Aa"),
 ];
 
-const focusRows: ColorRow[] = [
-  tokenSample("--component-focus-ring", "var(--color-state-focus-ring)", "border"),
-];
 ---
 
 <DesignSystemLayout
@@ -322,17 +287,15 @@ const focusRows: ColorRow[] = [
     <DsDocSection
       id="colors-primitive-tokens"
       title="Color Primitives"
-      description="Primitive color tokens are raw HEX reference values. They define palettes only; components and layouts should normally consume semantic color tokens instead of these primitives directly."
     >
       <section
         id="colors-primitive-base"
         class="ds-color-topic"
         aria-labelledby="colors-primitive-base-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-primitive-base-title"
           title="Base utility values"
-          description="Shared primitive color utilities used by semantic aliases and accent contrast decisions."
         />
 
         <DsPaletteBlock
@@ -349,10 +312,9 @@ const focusRows: ColorRow[] = [
         class="ds-color-topic"
         aria-labelledby="colors-primitive-neutral-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-primitive-neutral-title"
           title="Neutral palette"
-          description="Achromatic scale from pure white to near black."
         />
 
         <DsPaletteBlock
@@ -369,10 +331,9 @@ const focusRows: ColorRow[] = [
         class="ds-color-topic"
         aria-labelledby="colors-primitive-accent-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-primitive-accent-title"
           title="Accent palette"
-          description="Default brand and interaction emphasis scale."
         />
 
         <DsPaletteBlock
@@ -387,21 +348,11 @@ const focusRows: ColorRow[] = [
       <section
         id="colors-primitive-status"
         class="ds-color-topic"
-        aria-labelledby="colors-primitive-status-title"
+        aria-label="Status primitive colors"
       >
-        <DsSectionHeaderLevel3
-          id="colors-primitive-status-title"
-          title="Status palettes"
-          description="Raw positive, warning, destructive and informational color scales."
-        />
-
         <div class="ds-color-subsections">
           <section aria-labelledby="colors-primitive-success-title">
-            <DsSectionHeaderLevel4
-              id="colors-primitive-success-title"
-              title="Success"
-              description="Positive status and validation scale."
-            />
+              <DsDocumentationBlockTitle id="colors-primitive-success-title" title="Success" />
 
             <DsPaletteBlock
               name="Success palette"
@@ -413,11 +364,7 @@ const focusRows: ColorRow[] = [
           </section>
 
           <section aria-labelledby="colors-primitive-warning-title">
-            <DsSectionHeaderLevel4
-              id="colors-primitive-warning-title"
-              title="Warning"
-              description="Caution and attention status scale."
-            />
+              <DsDocumentationBlockTitle id="colors-primitive-warning-title" title="Warning" />
 
             <DsPaletteBlock
               name="Warning palette"
@@ -429,11 +376,7 @@ const focusRows: ColorRow[] = [
           </section>
 
           <section aria-labelledby="colors-primitive-error-title">
-            <DsSectionHeaderLevel4
-              id="colors-primitive-error-title"
-              title="Error"
-              description="Destructive action and invalid-state scale."
-            />
+              <DsDocumentationBlockTitle id="colors-primitive-error-title" title="Error" />
 
             <DsPaletteBlock
               name="Error palette"
@@ -445,11 +388,7 @@ const focusRows: ColorRow[] = [
           </section>
 
           <section aria-labelledby="colors-primitive-info-title">
-            <DsSectionHeaderLevel4
-              id="colors-primitive-info-title"
-              title="Info"
-              description="Informational and neutral-notice status scale."
-            />
+              <DsDocumentationBlockTitle id="colors-primitive-info-title" title="Info" />
 
             <DsPaletteBlock
               name="Info palette"
@@ -467,26 +406,15 @@ const focusRows: ColorRow[] = [
     <DsDocSection
       id="colors-semantic-tokens"
       title="Color Semantic — Global"
-      description="Semantic color tokens translate primitive palettes into UI intent. They are theme-aware and should be the default layer for page, layout and generic UI styling."
     >
       <section
         id="colors-semantic-global"
         class="ds-color-topic"
-        aria-labelledby="colors-semantic-global-title"
+        aria-label="Global semantic colors"
       >
-        <DsSectionHeaderLevel3
-          id="colors-semantic-global-title"
-          title="Global"
-          description="Global semantic tokens describe reusable UI roles such as backgrounds, text, borders and icons. Use these when the decision is about role, not a specific component."
-        />
-
         <div class="ds-color-subsections">
           <section aria-labelledby="colors-semantic-backgrounds-title">
-            <DsSectionHeaderLevel4
-              id="colors-semantic-backgrounds-title"
-              title="Backgrounds"
-              description="Reusable surface and overlay roles for canvases, sections, panels and media overlays."
-            />
+              <DsDocumentationBlockTitle id="colors-semantic-backgrounds-title" title="Backgrounds" />
 
             <DsPaletteBlock
               name="Semantic background tokens"
@@ -498,11 +426,7 @@ const focusRows: ColorRow[] = [
           </section>
 
           <section aria-labelledby="colors-semantic-text-title">
-            <DsSectionHeaderLevel4
-              id="colors-semantic-text-title"
-              title="Text"
-              description="Text hierarchy and contrast roles for regular content, inverse surfaces and accent text."
-            />
+              <DsDocumentationBlockTitle id="colors-semantic-text-title" title="Text" />
 
             <DsPaletteBlock
               name="Semantic text tokens"
@@ -513,11 +437,7 @@ const focusRows: ColorRow[] = [
           </section>
 
           <section aria-labelledby="colors-semantic-border-title">
-            <DsSectionHeaderLevel4
-              id="colors-semantic-border-title"
-              title="Border"
-              description="Boundary strength and contrast roles for dividers, outlines, media overlays and accent borders."
-            />
+              <DsDocumentationBlockTitle id="colors-semantic-border-title" title="Border" />
 
             <DsPaletteBlock
               name="Semantic border tokens"
@@ -528,11 +448,7 @@ const focusRows: ColorRow[] = [
           </section>
 
           <section aria-labelledby="colors-semantic-icon-title">
-            <DsSectionHeaderLevel4
-              id="colors-semantic-icon-title"
-              title="Icon"
-              description="Icon hierarchy roles aligned with text contrast, but kept as a separate contract."
-            />
+              <DsDocumentationBlockTitle id="colors-semantic-icon-title" title="Icon" />
 
             <DsPaletteBlock
               name="Semantic icon tokens"
@@ -547,21 +463,11 @@ const focusRows: ColorRow[] = [
       <section
         id="colors-semantic-status"
         class="ds-color-topic"
-        aria-labelledby="colors-semantic-status-title"
+        aria-label="Semantic status and state colors"
       >
-        <DsSectionHeaderLevel3
-          id="colors-semantic-status-title"
-          title="Status and state"
-          description="Status tokens describe feedback meaning. State tokens describe shared interaction states such as disabled and focus."
-        />
-
         <div class="ds-color-subsections">
           <section aria-labelledby="colors-semantic-status-feedback-title">
-            <DsSectionHeaderLevel4
-              id="colors-semantic-status-feedback-title"
-              title="Status"
-              description="Complete background, border, text and icon contracts for success, warning, error and info."
-            />
+              <DsDocumentationBlockTitle id="colors-semantic-status-feedback-title" title="Status" />
 
             <DsPaletteBlock
               name="Semantic status tokens"
@@ -572,11 +478,7 @@ const focusRows: ColorRow[] = [
           </section>
 
           <section aria-labelledby="colors-semantic-state-title">
-            <DsSectionHeaderLevel4
-              id="colors-semantic-state-title"
-              title="State"
-              description="Shared disabled and keyboard focus contracts consumed by component-level tokens."
-            />
+              <DsDocumentationBlockTitle id="colors-semantic-state-title" title="State" />
 
             <DsPaletteBlock
               name="Semantic state tokens"
@@ -592,17 +494,15 @@ const focusRows: ColorRow[] = [
     <DsDocSection
       id="colors-component-tokens"
       title="Color Semantic — Component"
-      description="Component-based color tokens are stable contracts for repeated UI components. Each documented component keeps its own color contract instead of sharing a generic bucket."
     >
       <section
         id="colors-component-buttons"
         class="ds-color-topic"
         aria-labelledby="colors-component-buttons-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-component-buttons-title"
           title="Buttons"
-          description="Button color contracts cover primary, secondary, tertiary, link and icon-only actions. They resolve through semantic color roles and include state-specific aliases."
         />
 
         <div class="ds-color-subsections">
@@ -614,29 +514,18 @@ const focusRows: ColorRow[] = [
         </div>
       </section>
 
-      <section
-        id="colors-component-switch"
-        class="ds-color-topic"
-        aria-labelledby="colors-component-switch-title"
-      >
-        <DsSectionHeaderLevel3
-          id="colors-component-switch-title"
-          title="Switch"
-          description="SwitchButton color contracts cover off, on, hover, pressed and disabled presentation while focus remains a shared interaction effect."
-        />
+      <DsComponentColorReference groupId="feedback" />
 
-        <DsComponentColorReference groupId="switch-button" />
-      </section>
+      <DsComponentColorReference groupId="switch-button" />
 
       <section
         id="colors-component-input"
         class="ds-color-topic"
         aria-labelledby="colors-component-input-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-component-input-title"
           title="Input"
-          description="Input color contracts cover default, hover, focus, disabled and validation states."
         />
         <DsPaletteBlock
           name="Input colors"
@@ -646,37 +535,30 @@ const focusRows: ColorRow[] = [
         />
       </section>
 
-      <section
-        id="colors-component-tag"
-        class="ds-color-topic"
-        aria-labelledby="colors-component-tag-title"
-      >
-        <DsSectionHeaderLevel3
-          id="colors-component-tag-title"
-          title="Tag"
-          description="Tag tones reference the established accent, status and inverse semantic roles used by the component."
-        />
+      <DsComponentColorReference groupId="breadcrumb" />
 
-        <DsComponentColorReference groupId="tag-tones" />
-      </section>
+      <DsComponentColorReference groupId="content-divider" />
+
+      <DsComponentColorReference groupId="pagination" />
+
+      <DsComponentColorReference groupId="ratio" />
+
+      <DsComponentColorReference groupId="tag-tones" />
 
       <section
-        id="colors-component-tab"
+        id="colors-component-tabs"
         class="ds-color-topic"
-        aria-labelledby="colors-component-tab-title"
+        aria-labelledby="colors-component-tabs-title"
       >
-        <DsSectionHeaderLevel3
-          id="colors-component-tab-title"
-          title="Tab"
-          description="Tab color contracts cover default, hover, selected and disabled states."
+        <DsDocumentationBlockTitle
+          id="colors-component-tabs-title"
+          title="Tabs"
         />
 
-        <DsPaletteBlock
-          name="Tab colors"
-          description="Tab color contract."
-          rows={tabRows}
-          showHeader={false}
-        />
+        <div class="ds-color-subsections">
+          <DsComponentColorReference groupId="tab" />
+          <DsComponentColorReference groupId="tab-menu" />
+        </div>
       </section>
 
       <section
@@ -684,10 +566,9 @@ const focusRows: ColorRow[] = [
         class="ds-color-topic"
         aria-labelledby="colors-component-card-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-component-card-title"
           title="Card"
-          description="Card color contracts define reusable content surfaces and their emphasis states."
         />
         <DsPaletteBlock
           name="Card colors"
@@ -702,10 +583,9 @@ const focusRows: ColorRow[] = [
         class="ds-color-topic"
         aria-labelledby="colors-component-link-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-component-link-title"
           title="Link"
-          description="Link color contracts cover text action states and underline color."
         />
 
         <DsPaletteBlock
@@ -721,10 +601,9 @@ const focusRows: ColorRow[] = [
         class="ds-color-topic"
         aria-labelledby="colors-component-eyebrow-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-component-eyebrow-title"
           title="Eyebrow"
-          description="Eyebrow color contracts define repeated section labels and their marker."
         />
         <DsPaletteBlock
           name="Eyebrow colors"
@@ -739,10 +618,9 @@ const focusRows: ColorRow[] = [
         class="ds-color-topic"
         aria-labelledby="colors-component-label-title"
       >
-        <DsSectionHeaderLevel3
+        <DsDocumentationBlockTitle
           id="colors-component-label-title"
           title="Label"
-          description="Label color contracts define compact metadata and field-label text."
         />
         <DsPaletteBlock
           name="Label colors"
@@ -752,29 +630,24 @@ const focusRows: ColorRow[] = [
         />
       </section>
 
-      <section
-        id="colors-component-focus"
-        class="ds-color-topic"
-        aria-labelledby="colors-component-focus-title"
-      >
-        <DsSectionHeaderLevel3
-          id="colors-component-focus-title"
-          title="Focus"
-          description="Focus color contracts define the shared keyboard focus treatment used by interactive components."
-        />
+    </DsDocSection>
 
-        <DsPaletteBlock
-          name="Focus colors"
-          description="Focus color contract."
-          rows={focusRows}
-          showHeader={false}
-        />
-      </section>
+    <DsDocSection
+      id="colors-agentic-rules"
+      title="Agentic Rules"
+    >
+      <DsCodeSnippet
+        filename=".agentic-rules/02-colors.md"
+        language="markdown"
+        code={colorAgenticRules.trim()}
+      />
     </DsDocSection>
 </DesignSystemLayout>
 
 <style>
   .ds-color-topic {
+    display: grid;
+    gap: var(--space-regular);
     scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
   }
 
@@ -784,6 +657,8 @@ const focusRows: ColorRow[] = [
   }
 
   .ds-color-subsections > :global(section) {
+    display: grid;
+    gap: var(--space-regular);
     scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
   }
 </style>

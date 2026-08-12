@@ -1,0 +1,151 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import {
+  componentsByPage,
+  documentationCategories,
+  documentationComponentHref,
+  documentationPageHref,
+  normalizeDocumentationPath,
+} from "../../../data/documentationRegistry";
+import DsDocumentationSearch from "./DsDocumentationSearch.astro";
+import DsDocumentationThemePicker from "./DsDocumentationThemePicker.astro";
+
+interface Props {
+  activePath: string;
+}
+
+const { activePath } = Astro.props;
+const normalizedActivePath = normalizeDocumentationPath(activePath);
+---
+
+<aside
+  class="ds-documentation-sidebar"
+  id="ds-documentation-sidebar"
+  aria-label="Design system navigation"
+  data-component-name="DsDocumentationSidebar"
+  data-ds-documentation-sidebar
+  data-lenis-prevent
+>
+  <div class="ds-documentation-sidebar__utility">
+    <div class="ds-documentation-sidebar__identity">
+      <a class="ds-documentation-sidebar__brand" href="/design-system">Astro Design System</a>
+      <button
+        class="ds-documentation-sidebar__mobile-close"
+        type="button"
+        aria-label="Close navigation"
+        data-ds-sidebar-close
+      >
+        <MaterialSymbol name="close" size="var(--size-18)" />
+      </button>
+    </div>
+    <DsDocumentationThemePicker />
+    <DsDocumentationSearch />
+  </div>
+
+  <nav class="ds-documentation-sidebar__nav" aria-label="Design system pages">
+    <div class="ds-documentation-sidebar__groups">
+      {
+        documentationCategories.map((category) => (
+          <section class="ds-documentation-sidebar__group">
+            <div class="ds-documentation-sidebar__category">
+              <MaterialSymbol
+                name={category.icon}
+                size="var(--size-16)"
+              />
+              <span>{category.displayLabel}</span>
+            </div>
+
+            <ul class="ds-documentation-sidebar__pages">
+              {category.pages.map((page) => {
+                const pageHref = documentationPageHref(page.categoryKey, page.pageKey);
+                const components = category.categoryKey === "assets"
+                  ? []
+                  : componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
+                const activeComponent = components.some(
+                  (component) =>
+                    normalizeDocumentationPath(documentationComponentHref(component)) === normalizedActivePath
+                );
+                const currentPage = normalizedActivePath === normalizeDocumentationPath(pageHref);
+                const panelId = `ds-documentation-components-${page.categoryKey}-${page.pageKey}`;
+                const expanded = activeComponent;
+
+                return (
+                  <li class="ds-documentation-sidebar__page-item">
+                    <div
+                      class="ds-documentation-sidebar__page-row"
+                      data-active-parent={activeComponent ? "true" : undefined}
+                    >
+                      <a
+                        class="ds-documentation-sidebar__page"
+                        href={pageHref}
+                        aria-current={currentPage ? "page" : undefined}
+                      >
+                        {page.pageLabel}
+                      </a>
+                      {components.length > 0 && (
+                        <button
+                          class="ds-documentation-sidebar__disclosure"
+                          type="button"
+                          aria-label={`${expanded ? "Collapse" : "Expand"} ${page.pageLabel} components`}
+                          aria-controls={panelId}
+                          aria-expanded={expanded}
+                          data-ds-sidebar-disclosure
+                        >
+                          <MaterialSymbol name="chevron_right" size="var(--size-16)" />
+                        </button>
+                      )}
+                    </div>
+
+                    {components.length > 0 && (
+                      <ul
+                        class="ds-documentation-sidebar__components"
+                        id={panelId}
+                        hidden={!expanded}
+                        data-ds-sidebar-component-list
+                      >
+                        {components.map((component) => {
+                          const componentHref = documentationComponentHref(component);
+                          const currentComponent =
+                            normalizeDocumentationPath(componentHref) === normalizedActivePath;
+                          return (
+                            <li>
+                              <a
+                                class="ds-documentation-sidebar__component"
+                                href={componentHref}
+                                aria-current={currentComponent ? "page" : undefined}
+                              >
+                                {component.name}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </nav>
+</aside>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-ds-sidebar-disclosure]").forEach((trigger) => {
+    if (trigger.dataset.dsSidebarReady === "true") return;
+    trigger.dataset.dsSidebarReady = "true";
+    trigger.addEventListener("click", () => {
+      const panelId = trigger.getAttribute("aria-controls");
+      const panel = panelId ? document.getElementById(panelId) : null;
+      const expanded = trigger.getAttribute("aria-expanded") === "true";
+      trigger.setAttribute("aria-expanded", String(!expanded));
+      trigger.setAttribute(
+        "aria-label",
+        `${expanded ? "Expand" : "Collapse"} ${trigger.getAttribute("aria-label")?.replace(/^(Expand|Collapse)\s+/, "") ?? "components"}`
+      );
+      if (panel) panel.hidden = expanded;
+    });
+  });
+</script>

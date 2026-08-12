@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"ul">, "class"> {
+  class?: string;
+}
+
+const { class: className, ...attributes } = Astro.props;
+
+if (!Astro.slots.has("default")) {
+  throw new TypeError("PaginationGroup requires PaginationItem or PaginationEllipsis children.");
+}
+---
+
+<ul
+  {...attributes}
+  class:list={["pagination-group", className]}
+  data-component-name="PaginationGroup"
+>
+  <slot />
+</ul>
+
+<style>
+  .pagination-group {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pagination-control-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

@@ -2,6 +2,10 @@
 
 Status: active.
 
+## Deterministic authoring gate
+
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
 The source tree is family-first. Figma page keys and Astro folders share one
 grouping axis. Atomic Design is component metadata only.
 

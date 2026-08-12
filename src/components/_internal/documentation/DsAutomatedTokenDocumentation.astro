@@ -18,7 +18,7 @@ const tokens = Array.from(css.matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/gi))
   .filter((row, index, rows) => (!prefix || row.token.startsWith(prefix)) && rows.findIndex((candidate) => candidate.token === row.token) === index);
 ---
 <section class="ds-automated-token-documentation" data-component-name="DsAutomatedTokenDocumentation" data-token-source={source}>
-  <DsTableFrame label={label} columns="minmax(18rem, 0.45fr) minmax(24rem, 0.55fr)" minWidth="48rem">
+  <DsTableFrame label={label} columns="minmax(18rem, 45fr) minmax(24rem, 55fr)" minWidth="48rem">
     <DsTableRow variant="header"><DsTableCell role="columnheader" variant="header">Token</DsTableCell><DsTableCell role="columnheader" variant="header">Value</DsTableCell></DsTableRow>
     {tokens.map((row) => {
       const token = documentationTokenMap.get(row.token);

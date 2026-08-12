@@ -1,0 +1,24 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import SwitchCard from "../../base-components/switch/SwitchCard.astro";
+---
+
+<div
+  class="switch-card-preview"
+  data-component-name="DsSwitchCardPreview"
+  data-ds-preview-target
+>
+  <SwitchCard
+    id="ds-preview-switch-card"
+    label="Email notifications"
+    description="Receive a concise update when important account activity occurs."
+  >
+    <MaterialSymbol slot="leading" name="mail" size="var(--size-20)" />
+  </SwitchCard>
+</div>
+
+<style>
+  .switch-card-preview {
+    inline-size: min(100%, var(--size-320));
+  }
+</style>

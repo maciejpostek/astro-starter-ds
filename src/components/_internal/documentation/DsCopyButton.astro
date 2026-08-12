@@ -1,49 +1,27 @@
 ---
-import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import CopyIconButton from "../../base-components/buttons/CopyIconButton.astro";
 
 interface Props {
   value: string;
   label?: string;
-  copiedLabel?: string;
   class?: string;
 }
 
 const {
   value,
   label = `Copy ${value}`,
-  copiedLabel = "Copied to clipboard",
   class: className,
 } = Astro.props;
+const componentName = "DsCopyButton";
 ---
 
-<button
-  aria-label={label}
-  class:list={["ds-copy-button", className]}
-  data-component-name="DsCopyButton"
-  data-copied-label={copiedLabel}
-  data-copy-value={value}
-  type="button"
->
-  <MaterialSymbol name="content_copy" size="var(--size-16)" />
-</button>
-
-<style>
-  .ds-copy-button {
-    display: inline-flex;
-    width: var(--component-size-small-min-height);
-    height: var(--component-size-small-min-height);
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    background: transparent;
-    color: var(--color-icon-secondary);
-    cursor: pointer;
-    padding: 0;
-  }
-
-  .ds-copy-button:hover {
-    color: var(--color-icon-accent);
-  }
-
-</style>
+<CopyIconButton
+  class={className}
+  copyValue={value}
+  data-component-name={componentName}
+  label={label}
+  successToastId="ds-clipboard-copy-success"
+  errorToastId="ds-clipboard-copy-error"
+  variant="tertiary"
+  size="small"
+/>

@@ -1,0 +1,22 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import SocialIconLibrary from "../../../components/_internal/documentation/SocialIconLibrary.astro";
+import { socialIconPlatforms } from "../../../lib/icons/socialIcons";
+---
+
+<DesignSystemLayout
+  title="Social icons - Astro Design System"
+  pageType="asset-gallery"
+  header={{
+    eyebrow: "Assets",
+    title: "Social icons",
+    summary: [{
+      kind: "text",
+      text: `Browse and copy ${socialIconPlatforms.length} canonical brand icons; the renderer also supports monochrome output.`,
+    }],
+  }}
+>
+  <div id="component-social-icons" data-ds-doc-section>
+    <SocialIconLibrary />
+  </div>
+</DesignSystemLayout>

@@ -15,13 +15,12 @@ import DsTableRow from "./DsTableRow.astro";
     <DsSectionHeaderLevel3
       id="responsive-decision-order-title"
       title="Decision order"
-      description="Breakpointless is the default starting point, not a ban on queries. Move to the next mechanism only when the previous one cannot preserve the required content and interaction."
     />
 
     <DsTableFrame
       label="Responsive strategy decision order"
-      minWidth="74rem"
-      columns="minmax(6rem, 0.08fr) minmax(18rem, 0.22fr) minmax(26rem, 0.34fr) minmax(30rem, 0.36fr)"
+      minWidth="80rem"
+      columns="minmax(6rem, 8fr) minmax(18rem, 22fr) minmax(26rem, 34fr) minmax(30rem, 36fr)"
       size="tiny"
     >
       <DsTableRow variant="header">
@@ -48,7 +47,6 @@ import DsTableRow from "./DsTableRow.astro";
     <DsSectionHeaderLevel3
       id="responsive-intrinsic-demo-title"
       title="Breakpointless grid"
-      description="Both examples use the same count-aware auto-fit contract. The available inline size alone determines whether children remain in columns or move into new rows."
     />
 
     <div class="ds-responsive-reference__comparison">
@@ -71,7 +69,6 @@ import DsTableRow from "./DsTableRow.astro";
     <DsSectionHeaderLevel3
       id="responsive-container-demo-title"
       title="Component-based response"
-      description="The same panel changes from two columns to one because its own parent becomes narrow. The viewport does not change."
     />
 
     <div class="ds-responsive-reference__comparison">
@@ -96,10 +93,17 @@ import DsTableRow from "./DsTableRow.astro";
     <DsSectionHeaderLevel3
       id="responsive-recipes-title"
       title="Canonical recipes"
-      description="Use the intrinsic recipe first, a component-owned container query second, and a viewport query only for viewport-owned behavior."
     />
 
-    {layoutResponsiveExamples.map((example) => <DsCodeSnippet label={example.label} code={example.code} />)}
+    {
+      layoutResponsiveExamples.map((example) => (
+        <DsCodeSnippet
+          label={example.label}
+          language={example.language}
+          code={example.code}
+        />
+      ))
+    }
   </section>
 </div>
 
@@ -127,7 +131,7 @@ import DsTableRow from "./DsTableRow.astro";
     inline-size: 100%;
     border: var(--border-width-default) solid var(--color-border-subtle);
     background: var(--color-background-subtle);
-    padding: var(--component-padding-medium);
+    padding: var(--content-padding-medium);
   }
 
   [data-sample-width="narrow"] {
@@ -146,7 +150,7 @@ import DsTableRow from "./DsTableRow.astro";
     min-inline-size: 0;
     border: var(--border-width-default) solid var(--color-border-default);
     background: var(--color-background-surface);
-    padding: var(--component-padding-small);
+    padding: var(--content-padding-small);
   }
 
   .ds-responsive-reference__panel {

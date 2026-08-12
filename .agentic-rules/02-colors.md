@@ -2,6 +2,10 @@
 
 Status: active.
 
+## Deterministic authoring gate
+
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
 This file defines how AI agents should use and extend the color system in the
 Astro design system.
 
@@ -225,7 +229,7 @@ Current component token groups:
 - `--eyebrow-*`
 - `--label-*`
 - `--card-*`
-- `--component-focus-*`
+- shared focus role `--color-state-focus-ring`
 
 `IconButton.Primary` and `IconButton.Secondary` reuse the standard
 `--button-primary-*` and `--button-secondary-*` contracts instead of defining a
@@ -234,9 +238,10 @@ separate icon-only color contract.
 `Tag` has a non-interactive tone shell and an optional nested remove button for
 applied-filter use cases. Its seven tones consume global status colors and
 controlled accent/inverse roles directly. The remove button inherits the tone
-through `currentColor`; hover, pressed and disabled use native opacity mechanics,
-while focus uses the shared `--component-focus-ring` contract. Tag therefore
-does not duplicate these decisions in a separate `--tag-*` group.
+through `currentColor` with the same opacity as the text. Hover and pressed
+strengthen the shell border, disabled uses the shared global state colors, and
+focus uses the shared `--color-state-focus-ring` contract. Tag therefore does
+not duplicate these decisions in a separate color group.
 
 Rules:
 

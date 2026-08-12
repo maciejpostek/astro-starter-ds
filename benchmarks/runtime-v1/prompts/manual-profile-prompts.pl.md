@@ -167,7 +167,7 @@ rezultatem może być stwierdzenie, że aktualny kontrakt jest już prawidłowy.
 ```text
 W `Button.Primary` przestał być widoczny focus state podczas nawigacji klawiaturą, chociaż hover nadal działa.
 
-Napraw istniejący komponent bez zmiany jego publicznego API. Focus powinien korzystać z `--component-focus-ring`, `--border-width-strong` i właściwego outline offsetu opartego na `--size-2`.
+Napraw istniejący komponent bez zmiany jego publicznego API. Focus powinien korzystać z `--color-state-focus-ring`, `--border-width-strong` i właściwego outline offsetu opartego na `--size-2`.
 
 Sprawdź focus-visible dla wszystkich wariantów `Button`.
 ```

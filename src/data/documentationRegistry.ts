@@ -1,6 +1,19 @@
 import architecture from "./design-system/componentArchitecture.json";
-import { materialSymbolNames } from "../lib/icons/materialSymbols";
+import {
+  materialSymbolNames,
+  type MaterialSymbolName,
+} from "../lib/icons/materialSymbols";
+import {
+  getSocialIconLabel,
+  socialIconPlatforms,
+} from "../lib/icons/socialIcons";
 import { documentationTokenHref, documentationTokens } from "./documentationTokenRegistry";
+import {
+  buildUniqueDocumentationNavigation,
+  getNavigationNeighbors,
+} from "../lib/documentation/navigation";
+
+export { normalizeDocumentationPath } from "../lib/documentation/navigation";
 
 export type DocumentationPageType =
   | "reading"
@@ -14,6 +27,7 @@ export type DocumentationPageType =
 
 export type DocumentationStatus =
   | "available"
+  | "astro-only"
   | "empty"
   | "figma-only"
   | "intentional-difference"
@@ -23,6 +37,48 @@ export interface DocumentationTocItem {
   label: string;
   href: string;
 }
+
+export type DocumentationHeaderSegment =
+  | { kind: "text"; text: string }
+  | { kind: "link"; text: string; href: `#${string}` };
+
+export interface DocumentationPageHeader {
+  eyebrow: string;
+  title: string;
+  summary: readonly DocumentationHeaderSegment[];
+  copyValue?: string;
+  sourcePath?: string;
+  figmaHref?: string;
+  status?: string;
+}
+
+export const createDocumentationSummary = (
+  introduction: string,
+  links: readonly DocumentationTocItem[],
+  conclusion: string,
+): DocumentationHeaderSegment[] => {
+  const segments: DocumentationHeaderSegment[] = [{ kind: "text", text: introduction }];
+
+  if (links.length === 0) {
+    if (conclusion) segments.push({ kind: "text", text: ` ${conclusion}` });
+    return segments;
+  }
+
+  segments.push({ kind: "text", text: " " });
+
+  links.forEach((link, index) => {
+    if (index > 0) {
+      segments.push({
+        kind: "text",
+        text: index === links.length - 1 ? " and " : ", ",
+      });
+    }
+    segments.push({ kind: "link", text: link.label, href: link.href as `#${string}` });
+  });
+
+  if (conclusion) segments.push({ kind: "text", text: ` ${conclusion}` });
+  return segments;
+};
 
 export interface DocumentationPageRecord {
   id: string;
@@ -34,6 +90,15 @@ export interface DocumentationPageRecord {
   status: DocumentationStatus;
   toc: DocumentationTocItem[];
 }
+
+export type DocumentationCategoryKey =
+  | "architecture"
+  | "foundations"
+  | "assets"
+  | "base-components"
+  | "website-patterns"
+  | "examples-templates"
+  | "workspace";
 
 export interface DocumentationSearchRecord {
   id: string;
@@ -48,6 +113,8 @@ export interface DocumentationSearchRecord {
     | "Icon"
     | "Variable"
     | "Workspace";
+  categoryKey: DocumentationCategoryKey;
+  breadcrumb: readonly string[];
   href: string;
   copyValue: string;
   keywords: string;
@@ -55,8 +122,24 @@ export interface DocumentationSearchRecord {
   parent?: string;
 }
 
+export interface DocumentationNavigationRecord {
+  id: string;
+  label: string;
+  href: string;
+  parent?: string;
+  kind: "overview" | "page" | "component";
+}
+
+export interface DocumentationNeighbors {
+  previous?: DocumentationNavigationRecord;
+  next?: DocumentationNavigationRecord;
+}
+
 export type ArchitectureComponent = (typeof architecture.components)[number];
 export type ArchitecturePage = (typeof architecture.pages)[number];
+
+export const isPublicDocumentationComponent = (component: ArchitectureComponent) =>
+  !["internal", "part"].includes(component.role);
 
 const categoryType: Record<string, DocumentationPageType> = {
   architecture: "reading",
@@ -88,6 +171,16 @@ const routeRoot: Record<string, string> = {
   workspace: "workspace",
 };
 
+export const documentationCategoryIcons = {
+  architecture: "dehaze",
+  foundations: "center_focus_strong",
+  assets: "download",
+  "base-components": "verified",
+  "website-patterns": "language",
+  "examples-templates": "description",
+  workspace: "filter_list",
+} as const satisfies Record<DocumentationCategoryKey, MaterialSymbolName>;
+
 export const cleanCategoryLabel = (label: string) =>
   label.replace(/^[^A-Za-z]+/, "").trim();
 
@@ -115,29 +208,34 @@ export const documentationCategories = architecture.categories
   .sort((a, b) => a.targetOrder - b.targetOrder)
   .map((category) => ({
     ...category,
+    categoryKey: category.categoryKey as DocumentationCategoryKey,
     displayLabel: cleanCategoryLabel(category.label),
+    icon: documentationCategoryIcons[category.categoryKey as DocumentationCategoryKey],
     pages: architecture.pages
-      .filter((page) => page.categoryKey === category.categoryKey)
+      .filter((page) => page.categoryKey === category.categoryKey && page.documentationVisible !== false)
       .slice()
       .sort((a, b) => a.targetOrder - b.targetOrder),
   }));
 
 export const componentsByPage = new Map<string, ArchitectureComponent[]>();
 for (const component of architecture.components) {
+  if (!isPublicDocumentationComponent(component)) continue;
   const key = `${component.categoryKey}/${component.pageKey}`;
   const records = componentsByPage.get(key) ?? [];
   records.push(component);
   componentsByPage.set(key, records);
 }
 
-export const documentationPages: DocumentationPageRecord[] = architecture.pages.map((page) => {
+export const documentationPages: DocumentationPageRecord[] = architecture.pages
+  .filter((page) => page.documentationVisible !== false)
+  .map((page) => {
   const components = componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
   const available = components.some((component) => Boolean(component.sourcePath));
   const hasHandAuthoredPage =
     page.categoryKey === "architecture" ||
     page.categoryKey === "foundations" ||
     page.categoryKey === "workspace" ||
-    (page.categoryKey === "assets" && page.pageKey === "icons");
+    (page.categoryKey === "assets" && ["material-symbols", "social-icons", "flags"].includes(page.pageKey));
 
   return {
     id: `${page.categoryKey}-${page.pageKey}`,
@@ -149,12 +247,14 @@ export const documentationPages: DocumentationPageRecord[] = architecture.pages.
     status: available || hasHandAuthoredPage ? "available" : components.length ? "figma-only" : "empty",
     toc: [],
   };
-});
+  });
 
 const categorySearchRecords: DocumentationSearchRecord[] = documentationCategories.map((category) => ({
   id: `category-${category.categoryKey}`,
   label: category.displayLabel,
   kind: "Category",
+  categoryKey: category.categoryKey,
+  breadcrumb: ["Category", category.displayLabel],
   href: category.pages[0]
     ? documentationPageHref(category.categoryKey, category.pages[0].pageKey)
     : "/design-system",
@@ -166,6 +266,13 @@ const pageSearchRecords: DocumentationSearchRecord[] = documentationPages.map((p
   id: `page-${page.id}`,
   label: page.title,
   kind: searchKind[page.categoryKey] ?? "Category",
+  categoryKey: page.categoryKey as DocumentationCategoryKey,
+  breadcrumb: [
+    searchKind[page.categoryKey] ?? "Category",
+    cleanCategoryLabel(
+      architecture.categories.find((category) => category.categoryKey === page.categoryKey)?.label ?? ""
+    ),
+  ],
   href: page.href,
   copyValue: page.title,
   keywords: `${page.title} ${page.categoryKey} ${page.pageKey}`.toLowerCase(),
@@ -175,7 +282,9 @@ const pageSearchRecords: DocumentationSearchRecord[] = documentationPages.map((p
   ),
 }));
 
-const componentSearchRecords: DocumentationSearchRecord[] = architecture.components.map((component) => ({
+const componentSearchRecords: DocumentationSearchRecord[] = architecture.components
+  .filter(isPublicDocumentationComponent)
+  .map((component) => ({
   id: `component-${component.id}`,
   label: component.name,
   kind:
@@ -186,27 +295,57 @@ const componentSearchRecords: DocumentationSearchRecord[] = architecture.compone
         : component.categoryKey === "workspace"
           ? "Workspace"
           : "Base Component",
+  categoryKey: component.categoryKey as DocumentationCategoryKey,
+  breadcrumb: [
+    component.categoryKey === "website-patterns"
+      ? "Website Pattern"
+      : component.categoryKey === "assets"
+        ? "Asset"
+        : component.categoryKey === "workspace"
+          ? "Workspace"
+          : "Base Component",
+    cleanCategoryLabel(
+      architecture.categories.find((category) => category.categoryKey === component.categoryKey)?.label ?? ""
+    ),
+    component.pageLabel,
+  ],
   href: documentationComponentHref(component),
   copyValue: component.name,
   keywords: `${component.name} ${component.id} ${component.pageLabel} ${component.family} ${component.role}`.toLowerCase(),
   status: component.syncStatus as DocumentationStatus,
   parent: component.pageLabel,
-}));
+  }));
 
 const iconSearchRecords: DocumentationSearchRecord[] = materialSymbolNames.map((name) => ({
   id: `icon-${name}`,
   label: name,
   kind: "Icon",
-  href: `/design-system/assets/icons#icon-${slugifyDocumentationValue(name)}`,
+  categoryKey: "assets",
+  breadcrumb: ["Icon", "Assets", "Material Symbols"],
+  href: `/design-system/assets/material-symbols#icon-${slugifyDocumentationValue(name)}`,
   copyValue: name,
   keywords: `${name} material symbol icon`.toLowerCase(),
-  parent: "Icons",
+  parent: "Material Symbols",
+}));
+
+const socialIconSearchRecords: DocumentationSearchRecord[] = socialIconPlatforms.map((platform) => ({
+  id: `social-icon-${platform}`,
+  label: getSocialIconLabel(platform),
+  kind: "Icon",
+  categoryKey: "assets",
+  breadcrumb: ["Icon", "Assets", "Social icons"],
+  href: `/design-system/assets/social-icons#social-icon-${platform}`,
+  copyValue: platform,
+  keywords: `${platform} ${getSocialIconLabel(platform)} social icon brand monochrome`.toLowerCase(),
+  parent: "Social icons",
 }));
 
 const tokenSearchRecords: DocumentationSearchRecord[] = documentationTokens.map((token) => ({
   id: `variable-${slugifyDocumentationValue(token.name)}`,
   label: token.name,
   kind: "Variable",
+  categoryKey: "foundations",
+  breadcrumb: ["Variable", "Foundations", token.sourceFile],
   href: documentationTokenHref(token),
   copyValue: token.name,
   keywords: `${token.name} ${token.sourceFile} css variable token`.toLowerCase(),
@@ -218,8 +357,50 @@ export const documentationSearchRegistry: DocumentationSearchRecord[] = [
   ...pageSearchRecords,
   ...componentSearchRecords,
   ...iconSearchRecords,
+  ...socialIconSearchRecords,
   ...tokenSearchRecords,
 ];
+
+const navigationRecords: DocumentationNavigationRecord[] = [
+  {
+    id: "overview",
+    label: "Design System overview",
+    href: "/design-system",
+    kind: "overview",
+  },
+];
+
+for (const category of documentationCategories) {
+  for (const page of category.pages) {
+    const pageHref = documentationPageHref(page.categoryKey, page.pageKey);
+    navigationRecords.push({
+      id: `page-${page.categoryKey}-${page.pageKey}`,
+      label: page.pageLabel,
+      href: pageHref,
+      parent: category.displayLabel,
+      kind: "page",
+    });
+
+    if (!["base-components", "website-patterns"].includes(page.categoryKey)) continue;
+    const components = componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
+    for (const component of components) {
+      navigationRecords.push({
+        id: `component-${component.id}`,
+        label: component.name,
+        href: documentationComponentHref(component),
+        parent: page.pageLabel,
+        kind: "component",
+      });
+    }
+  }
+}
+
+export const documentationNavigation: DocumentationNavigationRecord[] =
+  buildUniqueDocumentationNavigation(navigationRecords);
+
+export const getDocumentationNeighbors = (pathname: string): DocumentationNeighbors => {
+  return getNavigationNeighbors(documentationNavigation, pathname);
+};
 
 export const getDocumentationPage = (categoryKey: string, pageKey: string) =>
   documentationPages.find(

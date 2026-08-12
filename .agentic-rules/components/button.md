@@ -40,7 +40,7 @@ Trigger a user action in the current interface, such as submitting, confirming, 
 ## Responsive behavior
 
 - Primary strategy: `intrinsic`
-- Mechanisms and references: `data-component-size`, component-size aliases and natural inline content sizing.
+- Mechanisms and references: `data-control-size`, Control Size aliases and natural inline content sizing.
 - Container queries: none.
 - Viewport queries: none.
 - Reflow, order and visibility: Button keeps one DOM representation and its label/icon order; the parent composition, normally `ButtonGroup` or `.l-cluster`, owns wrapping.
@@ -56,6 +56,10 @@ Trigger a user action in the current interface, such as submitting, confirming, 
 - [ButtonLink](/design-system/base-components/buttons/button-link) for navigation.
 - [IconButton](/design-system/base-components/buttons/icon-button) for a compact icon-only action.
 - [ButtonGroup](/design-system/base-components/buttons/button-group) for related actions.
+
+## Naming and token contract
+
+Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
 
 ## Core decision
 

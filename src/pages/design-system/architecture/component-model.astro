@@ -5,7 +5,10 @@ import DsComponentReadiness from "../../../components/_internal/documentation/Ds
 import DsSectionHeaderLevel3 from "../../../components/_internal/documentation/DsSectionHeaderLevel3.astro";
 import ArchitectureExplorer from "../../../components/_internal/documentation/architecture/ArchitectureExplorer";
 import componentArchitecture from "../../../data/design-system/componentArchitecture.json";
-import { documentationComponentHref } from "../../../data/documentationRegistry";
+import {
+  createDocumentationSummary,
+  documentationComponentHref,
+} from "../../../data/documentationRegistry";
 import systemMap from "../../../../architecture/system-map.json";
 
 const aiNativeTargetDiagramUrl =
@@ -79,24 +82,28 @@ const readinessRecords = componentArchitecture.components
     description: `${component.pageLabel} · ${component.role}`,
     readiness: component.readiness,
   }));
----
-
-<DesignSystemLayout title="Component Model - Astro Design System" pageType="reading" toc={[
+const pageToc = [
   { label: "Component readiness", href: "#system-architecture-component-readiness" },
   { label: "AI-Native Runtime", href: "#system-architecture-ai-native-target" },
   { label: "Prompt to Astro", href: "#system-architecture-prompt-to-astro" },
   { label: "Component lifecycle", href: "#system-architecture-component-lifecycle" },
   { label: "Sources of truth", href: "#system-architecture-sources-of-truth" },
-]} header={{
+];
+---
+
+<DesignSystemLayout title="Component Model - Astro Design System" pageType="reading" toc={pageToc} header={{
   eyebrow: "Architecture",
   title: "Component Model",
-  description: "Runtime, source-of-truth and family-first dependency model for the Astro design system.",
+  summary: createDocumentationSummary(
+    "The component model connects runtime behavior, source ownership and family-first dependencies into one reuse-oriented workflow. Follow",
+    pageToc,
+    "to see how a request becomes an approved Astro result and how every reusable identity proves readiness.",
+  ),
 }}>
 
     <DsDocSection
       id="system-architecture-component-readiness"
       title="Component Readiness"
-      description="Code-first Definition of Done for public components, reusable internals and local page composition. Figma remains an explicit projection, not a normal completion gate."
     >
       <div class="ds-component-readiness-overview">
         <div
@@ -118,7 +125,6 @@ const readinessRecords = componentArchitecture.components
           <div>
             <DsSectionHeaderLevel3
               title="Twelve readiness gates"
-              description="The runtime loads the full contract for create and extend, and for repairs that touch readiness, Guides or a reusable component boundary."
             />
           </div>
           <ol>
@@ -143,7 +149,6 @@ const readinessRecords = componentArchitecture.components
     <DsDocSection
       id="system-architecture-ai-native-target"
       title="AI-Native Runtime V1.0"
-      description="Implemented reuse-first runtime. Every normal request follows Classify → Resolve Context → Execute → Validate → Result, while component creation, brand interpretation, Figma, and evals remain conditional side mechanisms."
     >
       <figure
         class="ds-architecture-diagram"
@@ -231,7 +236,6 @@ const readinessRecords = componentArchitecture.components
     <DsDocSection
       id="system-architecture-prompt-to-astro"
       title="Prompt → Astro Page or Section"
-      description="Implemented reuse-first composition flow from a prompt through focused component lookup, optional approved brand rules, Astro composition, scoped validation, and an accepted or blocked result."
     >
       <figure
         class="ds-architecture-diagram"
@@ -348,7 +352,7 @@ const readinessRecords = componentArchitecture.components
     gap: var(--gap-small);
     border: var(--border-width-default) solid var(--color-border-subtle);
     background: var(--color-background-surface);
-    padding: var(--component-padding-medium);
+    padding: var(--content-padding-medium);
   }
 
   .ds-component-readiness-overview__profiles p,
@@ -362,7 +366,7 @@ const readinessRecords = componentArchitecture.components
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
     gap: var(--gap-small) var(--gap-large);
     margin: 0;
-    padding-inline-start: var(--component-padding-large);
+    padding-inline-start: var(--content-padding-large);
     color: var(--color-text-secondary);
     font-size: var(--font-size-body-small);
     line-height: var(--line-height-normal);
@@ -394,7 +398,7 @@ const readinessRecords = componentArchitecture.components
 
   .ds-architecture-diagram__full-size-link {
     flex: none;
-    padding-block: var(--component-padding-tiny);
+    padding-block: var(--content-padding-tiny);
     border-bottom: var(--border-width-default) solid var(--color-border-accent);
     color: var(--color-text-accent);
     font-size: var(--font-size-body-small);
@@ -508,7 +512,7 @@ const readinessRecords = componentArchitecture.components
   .ds-architecture-diagram__fallback-stages li {
     display: grid;
     gap: var(--gap-tiny);
-    padding: var(--component-padding-small);
+    padding: var(--content-padding-small);
     border: var(--border-width-default) solid var(--color-border-subtle);
   }
 

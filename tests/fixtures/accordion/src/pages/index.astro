@@ -1,0 +1,75 @@
+---
+import Accordion, {
+  type AccordionItems,
+} from "../../../../../src/components/base-components/accordion/Accordion.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const primaryItems: AccordionItems = [
+  {
+    id: "delivery",
+    title: "When will it arrive?",
+    content: "Most orders arrive within three business days.",
+    helpText: "Delivery windows begin after dispatch.",
+    helpLabel: "Explain the delivery window",
+  },
+  {
+    id: "returns",
+    title: "Can I return it?",
+    content: "Unused products can be returned within thirty days.",
+  },
+  {
+    id: "unavailable",
+    title: "Is same-day delivery available?",
+    content: "Same-day delivery is not available.",
+    disabled: true,
+  },
+];
+
+const secondaryItems: AccordionItems = [
+  { id: "alpha", title: "Alpha", content: "Alpha answer" },
+  { id: "beta", title: "Beta", content: "Beta answer" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accordion contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <section data-theme="light">
+        <Accordion
+          id="primary-accordion"
+          items={primaryItems}
+          initialOpen="first"
+          headingLevel={4}
+        />
+      </section>
+      <section data-theme="dark">
+        <Accordion
+          items={secondaryItems}
+          mode="multiple"
+          initialOpen={["alpha", "beta"]}
+        />
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--space-large);
+    padding: var(--content-padding-medium);
+  }
+
+  section {
+    min-inline-size: 0;
+    background: var(--color-background-canvas);
+    padding: var(--content-padding-medium);
+  }
+</style>

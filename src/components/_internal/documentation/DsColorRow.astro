@@ -1,7 +1,7 @@
 ---
 import DsColorModeCell from "./DsColorModeCell.astro";
-import DsCopyButton from "./DsCopyButton.astro";
 import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
 import DsTableRow from "./DsTableRow.astro";
 
 type SampleType = "fill" | "border" | "text";
@@ -9,6 +9,7 @@ type SampleType = "fill" | "border" | "text";
 interface Props {
   token: string;
   value: string;
+  anchorToken?: boolean;
   lightValue?: string;
   darkValue?: string;
   flushSampleInline?: boolean;
@@ -23,6 +24,7 @@ interface Props {
 const {
   token,
   value,
+  anchorToken = true,
   lightValue,
   darkValue,
   flushSampleInline = false,
@@ -38,19 +40,14 @@ const resolvedDarkValue = darkValue ?? value;
 const resolvedSampleValue = sampleValue ?? `var(${token})`;
 const resolvedLightSampleValue = lightValue ?? resolvedSampleValue;
 const resolvedDarkSampleValue = darkValue ?? resolvedSampleValue;
-const tokenId = `token-${token.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`;
 ---
 
 <DsTableRow
   class="color-row"
   componentName="DsColorRow"
-  id={tokenId}
   variable={token}
 >
-  <DsTableCell class="color-row__token-cell" justify="between" role="cell">
-    <code>{token}</code>
-    <DsCopyButton label={`Copy ${token}`} value={token} />
-  </DsTableCell>
+  <DsTableCopyCell anchor={anchorToken} class="color-row__token-cell" role="cell" value={token} />
 
   {
     hasModeValues ? (
@@ -79,23 +76,24 @@ const tokenId = `token-${token.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-")
         <DsTableCell
           class={flushSampleInline ? "color-row__sample-cell color-row__sample-cell--flush-inline" : "color-row__sample-cell"}
           flushInline={flushSampleInline}
+          overflow="visual"
           role="cell"
         >
           {
             sampleType === "fill" && (
-              <span class="color-row__sample color-row__sample--fill" style={`--color-row-value: ${sampleValue}`} />
+              <span class="color-row__sample color-row__sample--fill" style={`--color-row-value: ${resolvedSampleValue}`} />
             )
           }
           {
             sampleType === "border" && (
-              <span class="color-row__sample color-row__sample--border" style={`--color-row-value: ${sampleValue}`} />
+              <span class="color-row__sample color-row__sample--border" style={`--color-row-value: ${resolvedSampleValue}`} />
             )
           }
           {
             sampleType === "text" && (
               <span
                 class="color-row__sample color-row__sample--text"
-                style={`--color-row-value: ${sampleValue}; --color-row-surface-value: ${sampleSurfaceValue}`}
+                style={`--color-row-value: ${resolvedSampleValue}; --color-row-surface-value: ${sampleSurfaceValue}`}
               >
                 {label}
               </span>

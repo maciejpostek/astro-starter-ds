@@ -1,0 +1,113 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Checkbox from "./Checkbox.astro";
+
+export interface Props extends Omit<
+  HTMLAttributes<"input">,
+  "aria-label" | "aria-labelledby" | "checked" | "class" | "disabled" | "id" | "type"
+> {
+  id: string;
+  label: string;
+  description?: string;
+  checked?: boolean;
+  indeterminate?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  label,
+  description,
+  checked = false,
+  indeterminate = false,
+  disabled = false,
+  class: className,
+  "aria-describedby": externalDescriptionId,
+  ...attributes
+} = Astro.props;
+
+const labelId = `${id}-label`;
+const descriptionId = description ? `${id}-description` : undefined;
+const describedBy = [descriptionId, externalDescriptionId]
+  .filter((value): value is string => typeof value === "string" && value.length > 0)
+  .join(" ") || undefined;
+---
+
+<label
+  class:list={["checkbox-label", className]}
+  data-component-name="CheckboxLabel"
+  data-selection-disabled={disabled ? "true" : undefined}
+  for={id}
+>
+  <span class="checkbox-label__control">
+    <Checkbox
+      {...attributes}
+      id={id}
+      aria-labelledby={labelId}
+      aria-describedby={describedBy}
+      checked={checked}
+      indeterminate={indeterminate}
+      disabled={disabled}
+    />
+  </span>
+  <span class="checkbox-label__content">
+    <span class="checkbox-label__label body-small-semibold" id={labelId}>{label}</span>
+    {description && (
+      <span class="checkbox-label__description body-tiny-regular" id={descriptionId}>
+        {description}
+      </span>
+    )}
+  </span>
+</label>
+
+<style>
+  .checkbox-label {
+    display: inline-grid;
+    min-inline-size: 0;
+    min-block-size: var(--size-24);
+    grid-template-columns: var(--size-16) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--gap-small);
+    color: var(--input-text-default);
+    cursor: pointer;
+  }
+
+  .checkbox-label__control {
+    display: grid;
+    inline-size: var(--size-16);
+    padding-block-start: var(--size-2);
+    place-items: start;
+  }
+
+  .checkbox-label__content {
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  .checkbox-label__label,
+  .checkbox-label__description {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .checkbox-label__description {
+    color: var(--input-helper-default);
+  }
+
+  .checkbox-label[data-selection-disabled="true"] {
+    color: var(--input-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .checkbox-label[data-selection-disabled="true"] .checkbox-label__description {
+    color: var(--input-text-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .checkbox-label[data-selection-disabled="true"],
+    .checkbox-label[data-selection-disabled="true"] .checkbox-label__description {
+      color: GrayText;
+    }
+  }
+</style>

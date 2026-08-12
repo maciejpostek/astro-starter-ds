@@ -1,0 +1,62 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import ClipboardCopy from "../../_internal/behaviors/ClipboardCopy.astro";
+import "../../../styles/components/input-controls.css";
+import Input, { type InputSize, type InputValidation } from "./Input.astro";
+
+export interface Props extends Omit<HTMLAttributes<"input">, "class" | "disabled" | "readonly" | "size" | "type"> {
+  size?: InputSize;
+  validation?: InputValidation;
+  disabled?: boolean;
+  copyLabel?: string;
+  copiedLabel?: string;
+  class?: string;
+}
+
+const {
+  size = "medium",
+  validation = "default",
+  disabled = false,
+  copyLabel = "Copy share link",
+  copiedLabel = "Copied share link",
+  class: className,
+  value = "",
+  ...attributes
+} = Astro.props;
+---
+
+<div
+  class:list={["input-control", "input-control--leading", "input-control--trailing", className]}
+  data-component-name="ShareLinkInput"
+  data-control-size={size}
+  data-input-control-disabled={disabled ? "true" : undefined}
+>
+  <span class="input-control__leading">
+    <MaterialSymbol name="link" size="var(--control-icon-size)" />
+  </span>
+  <Input
+    {...attributes}
+    class="input-control__field"
+    disabled={disabled}
+    readonly
+    size={size}
+    validation={validation}
+    type="url"
+    value={value}
+  />
+  <button
+    class="input-control__action"
+    type="button"
+    data-clipboard-copy
+    data-clipboard-value={String(value)}
+    data-clipboard-default-label={copyLabel}
+    data-clipboard-copied-label={copiedLabel}
+    disabled={disabled || String(value).length === 0}
+  >
+    <MaterialSymbol name="content_copy" size="var(--control-icon-size)" />
+    <span class="input-control__sr-only" data-clipboard-label>{copyLabel}</span>
+  </button>
+</div>
+
+<ClipboardCopy />

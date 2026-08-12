@@ -2,6 +2,10 @@
 
 Status: active.
 
+## Deterministic authoring gate
+
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
 This file defines how AI agents should use and extend the sizing system in the
 Astro design system.
 
@@ -15,7 +19,7 @@ Source references:
 - `.agentic-rules/00-framework.md`
 - `src/styles/tokens/size-primitives.css`
 - `src/styles/tokens/size-semantic.css`
-- `src/styles/tokens/component-sizes.css`
+- `src/styles/tokens/control-sizes.css`
 - `src/pages/design-system/sizing.astro`
 - `src/data/design-system-roadmap.json`
 
@@ -60,10 +64,14 @@ src/styles/tokens/size-semantic.css
   -> global and component-based radius
   -> border width
 
-src/styles/tokens/component-sizes.css
-  -> data-component-size profiles
+src/styles/tokens/size-components.css
+  -> component-owned dimensions
+  -> --eyebrow-marker-size
+
+src/styles/tokens/control-sizes.css
+  -> data-control-size profiles
   -> small, medium, large
-  -> local component aliases such as --component-min-height
+  -> local control aliases such as --control-min-height
 
 src/pages/design-system/sizing.astro
   -> documentation mirror of the sizing system
@@ -83,8 +91,8 @@ Need a generic size-based decision?
 Need a repeated component/use-case contract?
   -> component-based semantic token
 
-Need repeated component geometry?
-  -> data-component-size profile
+Need repeated aligned control geometry?
+  -> data-control-size profile
 
 Need only one local visual adjustment?
   -> avoid unless explicitly temporary and not reusable
@@ -148,7 +156,7 @@ Allowed:
 
 ```css
 :root {
-  --component-padding-small: var(--size-12);
+  --content-padding-small: var(--size-12);
 }
 ```
 
@@ -172,7 +180,7 @@ Prefer:
 
 ```css
 .button {
-  padding-inline: var(--component-padding-inline);
+  padding-inline: var(--control-padding-inline);
 }
 ```
 
@@ -181,11 +189,12 @@ Prefer:
 Current semantic groups:
 
 - `--section-padding-*`
-- `--component-padding-*`
+- `--content-padding-*`
 - `--gap-*`
 - `--space-*`
 - `--radius-*`
 - `--border-width-*`
+- `--eyebrow-marker-size`
 
 Semantic sizing tokens define intent. They are not just aliases for raw values.
 
@@ -233,20 +242,20 @@ composed UI blocks.
 
 Current tokens:
 
-- `--component-padding-none`
-- `--component-padding-tiny`
-- `--component-padding-xsmall`
-- `--component-padding-small`
-- `--component-padding-medium`
-- `--component-padding-large`
-- `--component-padding-xlarge`
+- `--content-padding-none`
+- `--content-padding-tiny`
+- `--content-padding-xsmall`
+- `--content-padding-small`
+- `--content-padding-medium`
+- `--content-padding-large`
+- `--content-padding-xlarge`
 
 Rules:
 
 - Use component padding for internal space inside a surface.
 - Do not use component padding for distance between children; use gap.
 - Do not use component padding for external margins; use space.
-- Use `--component-padding-medium` as the default inner padding for reusable
+- Use `--content-padding-medium` as the default inner padding for reusable
   cards, panels and composed UI blocks unless the component has a better
   contract.
 - Component padding may be fluid with `clamp()` for larger surfaces.
@@ -255,7 +264,7 @@ Good:
 
 ```css
 .card {
-  padding: var(--component-padding-medium);
+  padding: var(--content-padding-medium);
 }
 ```
 
@@ -263,7 +272,7 @@ Avoid:
 
 ```css
 .card-list {
-  gap: var(--component-padding-medium);
+  gap: var(--content-padding-medium);
 }
 ```
 
@@ -493,43 +502,54 @@ Good:
 }
 ```
 
-## Component Size Attribute Rules
+## Control Size Attribute Rules
 
-`data-component-size` is the public sizing API for repeated compact component
-geometry.
+`data-control-size` is the public sizing API for controls that must share
+geometry and align when composed together.
 
 Current profiles:
 
-- `data-component-size="small"`
-- `data-component-size="medium"`
-- `data-component-size="large"`
+- `data-control-size="small"`
+- `data-control-size="medium"`
+- `data-control-size="large"`
 
-Each profile exposes local aliases:
+Each profile exposes the centrally registered `control-size` attribute bridge:
 
-- `--component-min-height`
-- `--component-padding-inline`
-- `--component-padding-block`
-- `--component-icon-size`
-- `--component-gap`
-- `--component-font-size`
-- `--component-line-height`
+- `--control-min-height`
+- `--control-padding-inline`
+- `--control-padding-block`
+- `--control-icon-size`
+- `--control-gap`
+- `--control-font-size`
+- `--control-line-height`
 
 Rules:
 
-- Buttons, tags, inputs, tabs, labels and similar controls should use
-  `data-component-size` where possible.
-- Component CSS should consume the local aliases, not duplicate every profile.
-- Not every component must support every profile.
-- `small` is the minimum supported component size and is intended for compact buttons, tabs, tags, labels and secondary controls.
+- Button, ButtonLink, IconButton, Input and SearchInput use `data-control-size`.
+  FormField owns the complete field profile, while its field Label and Hint
+  consume the inherited typography, icon and gap roles. Future aligned
+  controls should reuse the same bridge.
+- When FormField has no explicit profile, it may infer one from its single
+  sized slotted control. An explicit FormField profile wins and its control
+  descendants inherit that effective profile.
+- Tag, metric Label, Badge, SwitchButton, Checkbox and Radio do not join this
+  contract merely because they expose or consume a size.
+- Control CSS should consume this shared bridge directly, not declare a local
+  alias layer or duplicate every profile.
+- Not every control must support every profile.
+- `small` is the minimum supported control size and is intended for compact buttons, tabs and secondary controls.
 - `medium` is the default profile for primary controls and form fields.
 - `large` is for prominent actions and interface controls.
-- If a component needs a new repeated size profile, update
-  `component-sizes.css`, documentation and this rule file.
+- If the aligned control family needs a new repeated size profile, update
+  `control-sizes.css`, documentation and this rule file.
+- A component outside the control family resolves registered component sizing
+  first. A missing role extends its existing owner group through an approved
+  `tokenDraft`; it does not create local custom properties.
 
 Good:
 
 ```html
-<button class="button" data-component-size="medium">
+<button class="button" data-control-size="medium">
   Action
 </button>
 ```
@@ -538,19 +558,19 @@ Good:
 
 ```css
 .button {
-  min-height: var(--component-min-height);
-  padding-inline: var(--component-padding-inline);
-  padding-block: var(--component-padding-block);
-  gap: var(--component-gap);
-  font-size: var(--component-font-size);
-  line-height: var(--component-line-height);
+  min-height: var(--control-min-height);
+  padding-inline: var(--control-padding-inline);
+  padding-block: var(--control-padding-block);
+  gap: var(--control-gap);
+  font-size: var(--control-font-size);
+  line-height: var(--control-line-height);
 }
 ```
 
 Avoid:
 
 ```css
-.button[data-component-size="medium"] {
+.button[data-control-size="medium"] {
   min-height: var(--size-48);
   padding-inline: var(--size-20);
 }
@@ -597,7 +617,9 @@ attributes.
 
 Use:
 
-- `data-component-size` for component geometry profiles.
+- `data-control-size` for aligned control geometry profiles.
+- component-specific presence attributes such as `data-tag-leading` and
+  `data-tag-removable` when optional visuals alter a fixed geometry.
 - `data-gap` for layout primitives that expose gap variants.
 - `data-padding` for section/layout primitives that expose padding variants.
 - `data-radius` only when a surface has a documented finite radius API.
@@ -621,7 +643,7 @@ Before adding a hardcoded size, check:
 Is this a primitive scale value?
 Is this a semantic global sizing role?
 Is this a component-based sizing contract?
-Is this a component size profile?
+Is this a shared control-size profile?
 Is this a temporary local exception?
 ```
 
@@ -644,7 +666,7 @@ Rules:
 - Primitive tables should show rem values and pixel equivalents.
 - Semantic tables should separate global and component-based tokens.
 - Component-based semantic tokens should include Agentic Rule tooltip/context.
-- Component size attributes should document attribute, property, token and final
+- Control Size attributes should document attribute, property, token and final
   value.
 - Sizing documentation tables should use reusable Design System table primitives and
   spacing blocks.
@@ -659,7 +681,7 @@ When working on sizing, check for:
 - margins used where parent gap should be used,
 - primitive tokens used directly in reusable component CSS,
 - hardcoded `px` values in reusable UI,
-- component CSS bypassing component size aliases,
+- control CSS bypassing Control Size aliases,
 - documentation tables that do not match token files.
 
 Use `rg` for targeted checks:
@@ -667,7 +689,7 @@ Use `rg` for targeted checks:
 ```bash
 rg -n "margin|gap|padding|border-radius|border-width|min-height|width|height" src/components src/pages src/styles
 rg -n "px|rem" src/components src/pages src/styles --glob '!src/styles/tokens/*'
-rg -n "data-component-size|--component-min-height|--component-padding-inline" src
+rg -n "data-control-size|--control-min-height|--control-padding-inline" src
 ```
 
 ## Agent Decision Checklist
@@ -678,7 +700,7 @@ Before making a sizing change, answer:
 2. Is the size used by a reusable component?
 3. Is this internal padding, child gap, external space, radius, border width or
    dimension?
-4. Should this variation be expressed by `data-component-size`, `data-gap`,
+4. Should this variation be expressed by `data-control-size`, a component-specific size attribute, `data-gap`,
    `data-padding`, `data-radius` or `data-density`?
 5. Does the value need to be fixed or fluid with `clamp()`?
 6. Does `/design-system/sizing` need an update?
@@ -690,8 +712,7 @@ Before making a sizing change, answer:
 A sizing-system change is done when:
 
 - token files contain the source-of-truth change,
-- reusable components consume semantic/component tokens or component-size
-  aliases,
+- reusable controls consume semantic/component tokens or Control Size aliases,
 - gap, space and padding responsibilities are not mixed,
 - obsolete sizing tokens or exploratory aliases are removed,
 - `/design-system/sizing` reflects the code,

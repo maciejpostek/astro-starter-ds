@@ -1,12 +1,12 @@
 {
   "schemaVersion": "2.0.0",
   "status": "active",
-  "updatedAt": "2026-08-09",
+  "updatedAt": "2026-08-12",
   "sourceContract": "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
   "figma": {
     "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
     "fileUrl": "https://www.figma.com/design/Dga0pMJHvQMUXGiXUKWTAm/Astro---Design-System-Starter",
-    "expectedPageCount": 77,
+    "expectedPageCount": 78,
     "variablesCheckpoint": 385,
     "componentNodesCheckpoint": 739,
     "componentSetsCheckpoint": 276,
@@ -17,7 +17,7 @@
       "grid": 1,
       "paint": 0
     },
-    "materialSymbolMasterCount": 30
+    "materialSymbolMasterCount": 46
   },
   "conventions": {
     "categoryAndPageLabel": "English Title Case",
@@ -271,7 +271,36 @@
       "figmaPageId": "184:2",
       "sourceDirectory": "src/components/assets/icons",
       "targetOrder": 11,
-      "figmaCurrentIndex": 11
+      "figmaCurrentIndex": 11,
+      "documentationVisible": false
+    },
+    {
+      "categoryKey": "assets",
+      "pageKey": "material-symbols",
+      "pageLabel": "Material Symbols",
+      "sourceDirectory": "src/components/assets/icons",
+      "targetOrder": 11.1,
+      "documentationVisible": true,
+      "figmaProjection": false
+    },
+    {
+      "categoryKey": "assets",
+      "pageKey": "social-icons",
+      "pageLabel": "Social icons",
+      "sourceDirectory": "src/components/assets/icons",
+      "targetOrder": 11.2,
+      "documentationVisible": true,
+      "figmaProjection": false
+    },
+    {
+      "categoryKey": "assets",
+      "pageKey": "flags",
+      "pageLabel": "Flags",
+      "figmaPageName": "     ↪  ◆  Flags",
+      "figmaPageId": "1291:111",
+      "sourceDirectory": "src/assets/flags",
+      "targetOrder": 13.5,
+      "figmaCurrentIndex": 13.5
     },
     {
       "categoryKey": "assets",
@@ -370,6 +399,7 @@
       "figmaPageName": "     ↪  ❖  Form Structure",
       "figmaPageId": "1062:6",
       "sourceDirectory": "src/components/base-components/form-structure",
+      "documentationVisible": false,
       "targetOrder": 22,
       "figmaCurrentIndex": 62
     },
@@ -490,6 +520,7 @@
       "figmaPageName": "     ↪  ❖  Label",
       "figmaPageId": "1140:598",
       "sourceDirectory": "src/components/base-components/label",
+      "documentationVisible": false,
       "targetOrder": 34,
       "figmaCurrentIndex": 31
     },
@@ -828,8 +859,8 @@
     {
       "id": "material-symbol",
       "categoryKey": "assets",
-      "pageKey": "icons",
-      "pageLabel": "Icons",
+      "pageKey": "material-symbols",
+      "pageLabel": "Material Symbols",
       "figmaPageId": "184:2",
       "actualFigmaPageId": "184:2",
       "figmaCanonicalNodeId": "1009:333",
@@ -848,7 +879,7 @@
       "divergences": [
         {
           "kind": "representation",
-          "reason": "Figma stores 45 curated Icon/Material masters while Astro uses one typed inline-SVG renderer.",
+          "reason": "Figma stores 46 curated Icon/Material masters while Astro uses one typed inline-SVG renderer.",
           "instruction": "Resolve glyph identities through src/data/design-system/iconLibrary.json; never expose consumer INSTANCE_SWAP or an arbitrary icon prop."
         }
       ],
@@ -861,28 +892,49 @@
     {
       "id": "social-icons",
       "categoryKey": "assets",
-      "pageKey": "icons",
-      "pageLabel": "Icons",
+      "pageKey": "social-icons",
+      "pageLabel": "Social icons",
       "figmaPageId": "184:2",
       "actualFigmaPageId": "184:2",
       "figmaCanonicalNodeId": "964:9411",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/assets/icons",
-      "sourcePath": null,
+      "sourcePath": "src/components/assets/icons/SocialIcons.astro",
       "name": "SocialIcons",
-      "astroComponent": null,
+      "astroComponent": "SocialIcons",
       "role": "asset",
       "layer": "asset",
       "family": "icons",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Color=Original and Color=Negative map to the Astro brand and monochrome variants.",
+          "instruction": "Use brand for immutable platform artwork and monochrome when the parent must own currentColor."
+        },
+        {
+          "kind": "api",
+          "reason": "Figma defaults Platform to Facebook, while Astro requires an explicit platform to prevent accidental identity.",
+          "instruction": "Always pass one canonical lowercase platform slug."
+        },
+        {
+          "kind": "responsive",
+          "reason": "Figma variants use a fixed 15.692 px canvas, while Astro fills both dimensions assigned by the consumer parent.",
+          "instruction": "Size the parent box; SocialIcons exposes no size prop and preserves the source aspect ratio."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/icons.md",
+      "variants": ["brand", "monochrome"],
+      "props": ["platform", "variant", "label"],
+      "slots": [],
+      "states": [],
+      "tokens": [],
       "readiness": {
         "visual": "approved",
-        "validation": "not-run"
+        "validation": "passed"
       }
     },
     {
@@ -920,8 +972,10 @@
       "variants": ["primary", "secondary", "tertiary"],
       "props": ["variant", "size", "showIcon", "disabled", "type"],
       "slots": ["default"],
+      "attributes": ["data-control-size", "data-button-variant"],
       "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
-      "tokens": ["--component-*", "--button-primary-*", "--button-secondary-*", "--button-tertiary-*"],
+      "tokens": ["--control-*", "--button-primary-*", "--button-secondary-*", "--button-tertiary-*"],
+      "tokenGroups": ["control-size", "button-color"],
       "readiness": {
         "visual": "approved",
         "validation": "passed"
@@ -962,8 +1016,10 @@
       "variants": [],
       "props": ["href", "size", "showIcon", "disabled"],
       "slots": ["default"],
+      "attributes": ["data-control-size"],
       "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
-      "tokens": ["--component-gap", "--component-icon-size", "--component-font-size", "--button-link-*"],
+      "tokens": ["--control-gap", "--control-icon-size", "--control-font-size", "--button-link-*"],
+      "tokenGroups": ["control-size", "button-color"],
       "readiness": {
         "visual": "approved",
         "validation": "passed"
@@ -997,17 +1053,184 @@
         {
           "kind": "accessibility",
           "reason": "Figma stores the accessible Label as hidden text; Astro maps the required label prop to aria-label.",
-          "instruction": "Always provide label and do not expose arbitrary icon selection."
+          "instruction": "Always provide label. Icon selection remains a closed typed set without slots or arbitrary Material Symbol names."
+        },
+        {
+          "kind": "api",
+          "reason": "The canonical Figma node shows arrow_forward, while Astro also permits the curated add glyph for compact creation and disclosure actions.",
+          "instruction": "Use only arrow_forward or add through the typed icon prop and keep the glyph stable for the lifetime of the rendered action."
         }
       ],
       "agenticRule": ".agentic-rules/components/icon-button.md",
-      "variants": ["primary", "secondary"],
-      "props": ["label", "variant", "size", "disabled", "type"],
+      "variants": ["primary", "secondary", "tertiary"],
+      "props": ["label", "icon", "variant", "size", "disabled", "type"],
       "slots": [],
+      "attributes": ["data-control-size", "data-button-variant"],
       "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
-      "tokens": ["--component-min-height", "--component-icon-size", "--button-primary-*", "--button-secondary-*"],
+      "tokens": ["--control-min-height", "--control-icon-size", "--button-primary-*", "--button-secondary-*", "--button-tertiary-*"],
+      "tokenGroups": ["control-size", "button-color"],
       "readiness": {
         "visual": "approved",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "copy-button",
+      "categoryKey": "base-components",
+      "pageKey": "buttons",
+      "pageLabel": "Buttons",
+      "figmaPageId": "190:3",
+      "actualFigmaPageId": "190:3",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/buttons",
+      "sourcePath": "src/components/base-components/buttons/CopyButton.astro",
+      "name": "CopyButton",
+      "astroComponent": "CopyButton",
+      "role": "atom",
+      "layer": "atom",
+      "family": "buttons",
+      "dependencies": ["material-symbol", "toast"],
+      "uses": ["material-symbol", "toast"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The component is code-first and has no approved canonical Figma node.",
+          "instruction": "Keep the Astro clipboard and addressed Toast contract canonical until a separate explicit Figma task creates and maps a component node."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/copy-button.md",
+      "variants": ["primary", "secondary", "tertiary"],
+      "props": ["copyValue", "successToastId", "errorToastId", "variant", "size", "disabled"],
+      "slots": ["default"],
+      "attributes": ["data-control-size", "data-button-variant", "data-clipboard-copy", "data-clipboard-value", "data-clipboard-success-toast", "data-clipboard-error-toast"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled", "copy-success", "copy-error"],
+      "tokens": ["--control-*", "--button-primary-*", "--button-secondary-*", "--button-tertiary-*"],
+      "tokenGroups": ["control-size", "button-color"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "copy-icon-button",
+      "categoryKey": "base-components",
+      "pageKey": "buttons",
+      "pageLabel": "Buttons",
+      "figmaPageId": "190:3",
+      "actualFigmaPageId": "190:3",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/buttons",
+      "sourcePath": "src/components/base-components/buttons/CopyIconButton.astro",
+      "name": "CopyIconButton",
+      "astroComponent": "CopyIconButton",
+      "role": "atom",
+      "layer": "atom",
+      "family": "buttons",
+      "dependencies": ["material-symbol", "toast"],
+      "uses": ["material-symbol", "toast"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The component is code-first and has no approved canonical Figma node.",
+          "instruction": "Keep the Astro clipboard and addressed Toast contract canonical until a separate explicit Figma task creates and maps a component node."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/copy-icon-button.md",
+      "variants": ["primary", "secondary", "tertiary"],
+      "props": ["copyValue", "successToastId", "errorToastId", "label", "variant", "size", "disabled"],
+      "slots": [],
+      "attributes": ["data-control-size", "data-button-variant", "data-clipboard-copy", "data-clipboard-value", "data-clipboard-success-toast", "data-clipboard-error-toast"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled", "copy-success", "copy-error"],
+      "tokens": ["--control-min-height", "--control-icon-size", "--button-primary-*", "--button-secondary-*", "--button-tertiary-*"],
+      "tokenGroups": ["control-size", "button-color"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "social-button",
+      "categoryKey": "base-components",
+      "pageKey": "buttons",
+      "pageLabel": "Buttons",
+      "figmaPageId": "190:3",
+      "actualFigmaPageId": "190:3",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/buttons",
+      "sourcePath": "src/components/base-components/buttons/SocialButton.astro",
+      "name": "SocialButton",
+      "astroComponent": "SocialButton",
+      "role": "atom",
+      "layer": "atom",
+      "family": "buttons",
+      "dependencies": ["social-icons"],
+      "uses": ["social-icons"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The component is code-first and has no approved canonical Figma node.",
+          "instruction": "Keep the Astro contract canonical until a separate explicit Figma task creates and maps a component node."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/social-button.md",
+      "variants": ["primary", "secondary", "tertiary"],
+      "props": ["platform", "variant", "size", "disabled", "type"],
+      "slots": ["default"],
+      "attributes": ["data-control-size", "data-button-variant", "data-social-platform"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--control-*", "--space-small", "--button-primary-*", "--button-secondary-*", "--button-tertiary-*"],
+      "tokenGroups": ["control-size", "global-size", "button-color"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "social-icon-button",
+      "categoryKey": "base-components",
+      "pageKey": "buttons",
+      "pageLabel": "Buttons",
+      "figmaPageId": "190:3",
+      "actualFigmaPageId": "190:3",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/buttons",
+      "sourcePath": "src/components/base-components/buttons/SocialIconButton.astro",
+      "name": "SocialIconButton",
+      "astroComponent": "SocialIconButton",
+      "role": "atom",
+      "layer": "atom",
+      "family": "buttons",
+      "dependencies": ["social-icons"],
+      "uses": ["social-icons"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The component is code-first and has no approved canonical Figma node.",
+          "instruction": "Keep the Astro contract canonical until a separate explicit Figma task creates and maps a component node."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/social-icon-button.md",
+      "variants": ["primary", "secondary"],
+      "props": ["platform", "label", "variant", "size", "disabled", "type"],
+      "slots": [],
+      "attributes": ["data-control-size", "data-button-variant", "data-social-platform"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--control-min-height", "--control-icon-size", "--button-primary-*", "--button-secondary-*"],
+      "tokenGroups": ["control-size", "button-color"],
+      "readiness": {
+        "visual": "review",
         "validation": "passed"
       }
     },
@@ -1027,8 +1250,8 @@
       "role": "molecule",
       "layer": "molecule",
       "family": "buttons",
-      "dependencies": ["button", "button-link", "icon-button"],
-      "uses": ["button", "button-link", "icon-button"],
+      "dependencies": ["button", "button-link", "icon-button", "copy-button", "copy-icon-button", "social-button", "social-icon-button"],
+      "uses": ["button", "button-link", "icon-button", "copy-button", "copy-icon-button", "social-button", "social-icon-button"],
       "syncStatus": "mapped",
       "status": "mapped",
       "divergences": [
@@ -1044,6 +1267,7 @@
       "slots": ["default"],
       "states": [],
       "tokens": ["--gap-button-group"],
+      "tokenGroups": ["global-size"],
       "readiness": {
         "visual": "approved",
         "validation": "passed"
@@ -1067,8 +1291,8 @@
       "family": "switch",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "mapped",
-      "status": "mapped",
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
       "divergences": [
         {
           "kind": "property-mapping",
@@ -1077,16 +1301,103 @@
         },
         {
           "kind": "sizing",
-          "reason": "The canonical master explicitly uses the Small Component Size mode; Astro fixes data-component-size to small instead of exposing an unsupported size prop.",
-          "instruction": "Do not add a public size prop until the canonical Figma master introduces an approved size decision."
+          "reason": "The canonical Figma master still uses the Small Component Size mode, while Astro now owns one fixed SwitchButton geometry without consuming Control Size.",
+          "instruction": "Keep the Astro geometry component-owned and do not add a public size prop. Reconcile the pending Figma projection in a separate explicit Figma task."
+        },
+        {
+          "kind": "composition",
+          "reason": "The canonical Figma master still includes a visible label, while Astro now treats SwitchButton as the bare control primitive and keeps label only as a deprecated compatibility fallback.",
+          "instruction": "Use aria-label or aria-labelledby for bare SwitchButton instances and compose SwitchLabel or SwitchCard for visible content until a separate Figma task remaps the family."
         }
       ],
       "agenticRule": ".agentic-rules/components/switch-button.md",
       "variants": ["off", "on"],
       "props": ["label", "checked", "disabled"],
       "slots": [],
+      "attributes": ["data-switch-disabled"],
       "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
-      "tokens": ["--component-gap", "--component-icon-size", "--component-font-size", "--switch-*", "--elevation-control-thumb"],
+      "tokens": ["--switch-*", "--elevation-control-thumb"],
+      "tokenGroups": ["switch-color", "switch-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "switch-label",
+      "categoryKey": "base-components",
+      "pageKey": "switch",
+      "pageLabel": "Switch",
+      "figmaPageId": "1009:2736",
+      "actualFigmaPageId": "1009:2736",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/switch",
+      "sourcePath": "src/components/base-components/switch/SwitchLabel.astro",
+      "name": "SwitchLabel",
+      "astroComponent": "SwitchLabel",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "switch",
+      "dependencies": ["switch-button"],
+      "uses": ["switch-button"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The component is code-first and has no approved canonical Figma node.",
+          "instruction": "Keep the Astro contract canonical until a separate explicit Figma task creates and maps a component node."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/switch-label.md",
+      "variants": ["start", "end"],
+      "props": ["id", "label", "switchPosition", "checked", "disabled"],
+      "slots": [],
+      "attributes": ["data-switch-position", "data-switch-disabled"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--gap-small", "--switch-*"],
+      "tokenGroups": ["switch-color", "switch-size", "global-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "switch-card",
+      "categoryKey": "base-components",
+      "pageKey": "switch",
+      "pageLabel": "Switch",
+      "figmaPageId": "1009:2736",
+      "actualFigmaPageId": "1009:2736",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/switch",
+      "sourcePath": "src/components/base-components/switch/SwitchCard.astro",
+      "name": "SwitchCard",
+      "astroComponent": "SwitchCard",
+      "role": "card",
+      "layer": "card",
+      "family": "switch",
+      "dependencies": ["switch-button"],
+      "uses": ["switch-button"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The component is code-first and has no approved canonical Figma node.",
+          "instruction": "Keep the Astro contract canonical until a separate explicit Figma task creates and maps a component node."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/switch-card.md",
+      "variants": [],
+      "props": ["id", "label", "description", "checked", "disabled"],
+      "slots": ["leading"],
+      "attributes": ["data-switch-leading", "data-switch-disabled"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--content-padding-medium", "--gap-regular", "--radius-medium", "--card-*", "--switch-*"],
+      "tokenGroups": ["switch-color", "switch-size", "card-color", "global-size"],
       "readiness": {
         "visual": "review",
         "validation": "passed"
@@ -1128,9 +1439,10 @@
       "variants": ["input", "textarea"],
       "props": ["multiline", "size", "validation", "disabled", "value", "placeholder"],
       "slots": [],
-      "attributes": ["data-component-size", "data-input-validation"],
+      "attributes": ["data-control-size", "data-input-validation"],
       "states": ["default", "hover", "focus-visible", "invalid", "valid", "disabled"],
-      "tokens": ["--component-*", "--input-*", "--radius-input", "--size-128"],
+      "tokens": ["--control-*", "--input-*", "--radius-input", "--size-128"],
+      "tokenGroups": ["control-size", "input-color", "global-size"],
       "readiness": {
         "visual": "review",
         "validation": "passed"
@@ -1146,21 +1458,34 @@
       "figmaCanonicalNodeId": "216:9",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/inputs",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/inputs/Label.astro",
       "name": "Label",
-      "astroComponent": null,
+      "astroComponent": "Label",
       "role": "atom",
       "layer": "atom",
       "family": "inputs",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "api",
+          "reason": "Astro adds native for/id semantics, required or optional metadata and disabled presentation to the Field and Metric visual variants documented in Figma.",
+          "instruction": "Use field for native form labels and metric only for non-editable quantitative labels; keep required and optionalText mutually exclusive."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/label.md",
+      "variants": ["field", "metric"],
+      "props": ["label", "variant", "for", "required", "optionalText", "disabled"],
+      "slots": [],
+      "attributes": ["data-label-variant", "data-label-disabled"],
+      "states": ["default", "disabled"],
+      "tokens": ["--label-*", "--input-label-*", "--input-helper-*", "--control-font-size", "--gap-tiny"],
+      "tokenGroups": ["label-color", "input-color", "control-size", "global-size"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1194,7 +1519,7 @@
         "Figma State documents Default, Hover, Focus and Disabled; Astro uses native input pseudo-classes and a private documentation preview hook rather than exposing state.",
         "Figma keeps an optimized standalone field master bound to the canonical Input token and typography contracts because inserting icons into an Input instance would broaden Input's public Figma API; Astro composes the real Input component.",
         "Figma uses _Parts/SearchInput.ClearButton to document the fixed clear action states; Astro renders one native button that clears the value, emits an input event and restores focus.",
-        "Figma Component Size modes map to the Astro size prop and data-component-size, with Medium as the shared default."
+        "Figma Component Size modes map to the Astro size prop and data-control-size, with Medium as the shared default; renaming the Figma collection remains a separate explicit projection task."
       ],
       "agenticRule": ".agentic-rules/components/search-input.md",
       "variants": [
@@ -1204,6 +1529,7 @@
       "props": [
         "label",
         "size",
+        "validation",
         "disabled",
         "clearLabel",
         "placeholder",
@@ -1211,7 +1537,7 @@
       ],
       "slots": [],
       "attributes": [
-        "data-component-size",
+        "data-control-size",
         "data-search-input",
         "data-search-input-content",
         "data-search-input-control",
@@ -1221,18 +1547,21 @@
         "default",
         "hover",
         "focus-visible",
+        "invalid",
+        "valid",
         "disabled",
         "clear-hover",
         "clear-focus-visible",
         "clear-pressed"
       ],
       "tokens": [
-        "--component-*",
+        "--control-*",
         "--input-*",
         "--radius-input",
         "--size-24",
         "--effect-focused"
       ],
+      "tokenGroups": ["control-size", "input-color", "global-size"],
       "readiness": {
         "visual": "review",
         "validation": "passed"
@@ -1248,28 +1577,262 @@
       "figmaCanonicalNodeId": "224:122",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/inputs",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/inputs/FormField.astro",
       "name": "FormField",
-      "astroComponent": null,
+      "astroComponent": "FormField",
       "role": "molecule",
       "layer": "molecule",
       "family": "inputs",
       "dependencies": [
         "label",
-        "input"
+        "hint"
       ],
       "uses": [
         "label",
-        "input"
+        "hint"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "composition",
+          "reason": "The Figma master demonstrates Label, Input and helper composition, while Astro accepts any one slotted native control and connects the canonical Label and Hint around it.",
+          "instruction": "Pass matching controlId, id, aria-describedby, validation and disabled values explicitly at the call site."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/form-field.md",
+      "variants": [],
+      "props": ["controlId", "label", "hint", "descriptionId", "size", "required", "optionalText", "validation", "disabled"],
+      "slots": ["default"],
+      "attributes": ["data-control-size", "data-field-validation", "data-field-disabled"],
+      "states": ["default", "valid", "invalid", "disabled"],
+      "tokens": ["--control-gap", "--gap-small"],
+      "tokenGroups": ["control-size", "global-size"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
+    },
+    {
+      "id": "hint",
+      "categoryKey": "base-components",
+      "pageKey": "hint",
+      "pageLabel": "Hint",
+      "figmaPageId": "985:2971",
+      "actualFigmaPageId": "985:2971",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/hint",
+      "sourcePath": "src/components/base-components/hint/Hint.astro",
+      "name": "Hint",
+      "astroComponent": "Hint",
+      "role": "atom",
+      "layer": "atom",
+      "family": "hint",
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "projection",
+        "reason": "The runtime Hint contract is code-first and has no approved canonical Figma node in the starter library.",
+        "instruction": "Keep Hint astro-only until a separate explicit Figma task creates and maps the starter-owned component."
+      }],
+      "agenticRule": ".agentic-rules/components/hint.md",
+      "variants": ["default", "valid", "invalid"],
+      "props": ["text", "tone", "disabled"],
+      "slots": [],
+      "attributes": ["data-hint-tone", "data-hint-disabled"],
+      "states": ["default", "valid", "invalid", "disabled"],
+      "tokens": ["--input-helper-*", "--input-text-disabled", "--control-font-size", "--control-icon-size", "--size-16", "--size-2", "--gap-tiny"],
+      "tokenGroups": ["input-color", "control-size", "global-size"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "url-input",
+      "categoryKey": "base-components",
+      "pageKey": "inputs",
+      "pageLabel": "Inputs",
+      "figmaPageId": "213:2",
+      "actualFigmaPageId": "213:2",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/inputs",
+      "sourcePath": "src/components/base-components/inputs/UrlInput.astro",
+      "name": "UrlInput",
+      "astroComponent": "UrlInput",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "inputs",
+      "dependencies": ["input"],
+      "uses": ["input"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "projection", "reason": "This code-first HTTPS specialization has no approved canonical Figma node in the starter library.", "instruction": "Do not map the external Align UI benchmark node; create a starter-owned Figma projection only in a separate explicit task." }],
+      "agenticRule": ".agentic-rules/components/url-input.md",
+      "variants": [],
+      "props": ["name", "value", "size", "validation", "disabled"],
+      "slots": [],
+      "attributes": ["data-url-input", "data-url-input-control", "data-url-input-value", "data-control-size", "data-input-validation"],
+      "states": ["default", "hover", "focus-visible", "filled", "valid", "invalid", "disabled"],
+      "tokens": ["--control-*", "--input-*", "--radius-input", "--effect-focused", "--elevation-control-raised", "--motion-transition"],
+      "tokenGroups": ["control-size", "input-color", "global-size", "interaction-effect", "global-elevation", "global-motion"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "date-input",
+      "categoryKey": "base-components",
+      "pageKey": "inputs",
+      "pageLabel": "Inputs",
+      "figmaPageId": "213:2",
+      "actualFigmaPageId": "213:2",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/inputs",
+      "sourcePath": "src/components/base-components/inputs/DateInput.astro",
+      "name": "DateInput",
+      "astroComponent": "DateInput",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "inputs",
+      "dependencies": ["input", "material-symbol"],
+      "uses": ["input", "material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "projection", "reason": "This native date specialization has no approved canonical Figma node in the starter library.", "instruction": "Treat external benchmark nodes as references only and project to Figma in a separate explicit task." }],
+      "agenticRule": ".agentic-rules/components/date-input.md",
+      "variants": [],
+      "props": ["size", "validation", "disabled", "pickerLabel"],
+      "slots": [],
+      "attributes": ["data-date-input", "data-date-input-control", "data-date-input-picker", "data-control-size"],
+      "states": ["default", "hover", "focus-visible", "filled", "valid", "invalid", "disabled", "action-pressed"],
+      "tokens": ["--control-*", "--input-*", "--effect-focused"],
+      "tokenGroups": ["control-size", "input-color", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "password-input",
+      "categoryKey": "base-components",
+      "pageKey": "inputs",
+      "pageLabel": "Inputs",
+      "figmaPageId": "213:2",
+      "actualFigmaPageId": "213:2",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/inputs",
+      "sourcePath": "src/components/base-components/inputs/PasswordInput.astro",
+      "name": "PasswordInput",
+      "astroComponent": "PasswordInput",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "inputs",
+      "dependencies": ["input", "material-symbol"],
+      "uses": ["input", "material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "projection", "reason": "This code-first password specialization has no approved canonical Figma node in the starter library.", "instruction": "Keep it astro-only until a separate explicit Figma task creates the starter projection." }],
+      "agenticRule": ".agentic-rules/components/password-input.md",
+      "variants": ["hidden", "visible"],
+      "props": ["size", "validation", "disabled", "showLabel", "hideLabel"],
+      "slots": [],
+      "attributes": ["data-password-input", "data-password-input-control", "data-password-input-toggle", "data-control-size"],
+      "states": ["default", "hover", "focus-visible", "filled", "valid", "invalid", "disabled", "pressed"],
+      "tokens": ["--control-*", "--input-*", "--effect-focused"],
+      "tokenGroups": ["control-size", "input-color", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "not-run" }
+    },
+    {
+      "id": "share-link-input",
+      "categoryKey": "base-components",
+      "pageKey": "inputs",
+      "pageLabel": "Inputs",
+      "figmaPageId": "213:2",
+      "actualFigmaPageId": "213:2",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/inputs",
+      "sourcePath": "src/components/base-components/inputs/ShareLinkInput.astro",
+      "name": "ShareLinkInput",
+      "astroComponent": "ShareLinkInput",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "inputs",
+      "dependencies": ["input", "material-symbol"],
+      "uses": ["input", "material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "projection", "reason": "This code-first share-link specialization has no approved canonical Figma node in the starter library.", "instruction": "Keep external benchmark nodes out of the starter mapping and create a Figma projection separately." }],
+      "agenticRule": ".agentic-rules/components/share-link-input.md",
+      "variants": [],
+      "props": ["value", "size", "validation", "disabled", "copyLabel", "copiedLabel"],
+      "slots": [],
+      "attributes": ["data-clipboard-copy", "data-control-size"],
+      "states": ["default", "hover", "focus-visible", "valid", "invalid", "disabled", "copy-success", "copy-error"],
+      "tokens": ["--control-*", "--input-*", "--effect-focused"],
+      "tokenGroups": ["control-size", "input-color", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "not-run" }
+    },
+    {
+      "id": "counter-input",
+      "categoryKey": "base-components",
+      "pageKey": "inputs",
+      "pageLabel": "Inputs",
+      "figmaPageId": "213:2",
+      "actualFigmaPageId": "213:2",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/inputs",
+      "sourcePath": "src/components/base-components/inputs/CounterInput.astro",
+      "name": "CounterInput",
+      "astroComponent": "CounterInput",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "inputs",
+      "dependencies": ["input", "material-symbol"],
+      "uses": ["input", "material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "projection", "reason": "This native number specialization has no approved canonical Figma node in the starter library.", "instruction": "Keep the runtime contract canonical and create any Figma projection in a separate explicit task." }],
+      "agenticRule": ".agentic-rules/components/counter-input.md",
+      "variants": [],
+      "props": ["min", "max", "step", "value", "size", "validation", "disabled", "readonly", "decrementLabel", "incrementLabel"],
+      "slots": [],
+      "attributes": ["data-counter-input", "data-counter-control", "data-counter-decrement", "data-counter-increment", "data-control-size", "data-input-validation"],
+      "states": ["default", "hover", "focus-visible", "valid", "invalid", "readonly", "disabled", "at-min", "at-max"],
+      "tokens": ["--control-*", "--input-*", "--radius-input", "--effect-focused", "--elevation-control-raised", "--motion-transition"],
+      "tokenGroups": ["control-size", "input-color", "global-size", "interaction-effect", "global-elevation", "global-motion"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "text-area-input",
+      "categoryKey": "base-components",
+      "pageKey": "inputs",
+      "pageLabel": "Inputs",
+      "figmaPageId": "213:2",
+      "actualFigmaPageId": "213:2",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/inputs",
+      "sourcePath": "src/components/base-components/inputs/TextAreaInput.astro",
+      "name": "TextAreaInput",
+      "astroComponent": "TextAreaInput",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "inputs",
+      "dependencies": ["input"],
+      "uses": ["input"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "projection", "reason": "This code-first limited textarea and its private character count have no approved canonical Figma node in the starter library.", "instruction": "Do not register CharacterCount separately; project TextAreaInput to Figma only in a separate explicit task." }],
+      "agenticRule": ".agentic-rules/components/text-area-input.md",
+      "variants": [],
+      "props": ["maxLength", "value", "size", "validation", "disabled", "countLabel"],
+      "slots": [],
+      "attributes": ["data-text-area-input", "data-text-area-control", "data-component-part=character-count", "data-control-size"],
+      "states": ["default", "hover", "focus-visible", "filled", "valid", "invalid", "disabled"],
+      "tokens": ["--control-*", "--input-*", "--size-128"],
+      "tokenGroups": ["control-size", "input-color"],
+      "readiness": { "visual": "review", "validation": "passed" }
     },
     {
       "id": "checkbox",
@@ -1281,21 +1844,39 @@
       "figmaCanonicalNodeId": "219:110",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/checkbox-radio",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/checkbox-radio/Checkbox.astro",
       "name": "Checkbox",
-      "astroComponent": null,
+      "astroComponent": "Checkbox",
       "role": "atom",
       "layer": "atom",
       "family": "checkbox-radio",
-      "dependencies": [],
-      "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma selection variants map to initial checked and indeterminate values, while interaction states map to native pseudo-classes and a private Guides preview hook.",
+          "instruction": "Use checked and indeterminate only for initial state and do not expose public state or size props."
+        },
+        {
+          "kind": "sizing",
+          "reason": "Figma documents the standalone picker in a fixed presentation frame while Astro keeps one 16 px token-derived interactive indicator.",
+          "instruction": "Preserve the fixed picker geometry and compose visible text through CheckboxLabel or another labelled parent."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/checkbox.md",
+      "variants": ["unchecked", "checked", "indeterminate"],
+      "props": ["id", "aria-label", "aria-labelledby", "checked", "indeterminate", "disabled"],
+      "slots": [],
+      "attributes": ["data-selection-kind", "data-selection-disabled", "data-selection-indeterminate"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--input-*", "--button-primary-*", "--effect-focused", "--radius-checkbox", "--size-16"],
+      "tokenGroups": ["selection-control-color", "global-size"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "partial"
       }
     },
     {
@@ -1308,21 +1889,199 @@
       "figmaCanonicalNodeId": "220:80",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/checkbox-radio",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/checkbox-radio/Radio.astro",
       "name": "Radio",
-      "astroComponent": null,
+      "astroComponent": "Radio",
       "role": "atom",
       "layer": "atom",
       "family": "checkbox-radio",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma selection variants map to the initial checked value, while interaction states map to native pseudo-classes and a private Guides preview hook.",
+          "instruction": "Use checked only for initial state and do not expose public state or size props."
+        },
+        {
+          "kind": "sizing",
+          "reason": "Figma documents the standalone picker in a fixed presentation frame while Astro keeps one 16 px token-derived interactive indicator.",
+          "instruction": "Preserve the fixed picker geometry and compose visible text through RadioLabel or another labelled parent."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/radio.md",
+      "variants": ["unchecked", "checked"],
+      "props": ["id", "name", "value", "aria-label", "aria-labelledby", "checked", "disabled"],
+      "slots": [],
+      "attributes": ["data-selection-kind", "data-selection-disabled"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--input-*", "--button-primary-*", "--effect-focused", "--radius-full", "--size-16"],
+      "tokenGroups": ["selection-control-color", "global-size"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "checkbox-label",
+      "categoryKey": "base-components",
+      "pageKey": "checkbox-radio",
+      "pageLabel": "Checkbox & Radio",
+      "figmaPageId": "997:3249",
+      "actualFigmaPageId": "997:3249",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/checkbox-radio",
+      "sourcePath": "src/components/base-components/checkbox-radio/CheckboxLabel.astro",
+      "name": "CheckboxLabel",
+      "astroComponent": "CheckboxLabel",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "checkbox-radio",
+      "dependencies": ["checkbox"],
+      "uses": ["checkbox"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The labelled composition is code-first and has no separately approved canonical Figma node.",
+          "instruction": "Keep CheckboxLabel Astro-only until a separate explicit Figma task creates or maps its canonical master."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/checkbox-label.md",
+      "variants": ["unchecked", "checked", "indeterminate"],
+      "props": ["id", "label", "description", "checked", "indeterminate", "disabled"],
+      "slots": [],
+      "attributes": ["data-selection-disabled"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--input-*", "--gap-small", "--size-2", "--size-16", "--size-24"],
+      "tokenGroups": ["input-color", "global-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "radio-label",
+      "categoryKey": "base-components",
+      "pageKey": "checkbox-radio",
+      "pageLabel": "Checkbox & Radio",
+      "figmaPageId": "997:3249",
+      "actualFigmaPageId": "997:3249",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/checkbox-radio",
+      "sourcePath": "src/components/base-components/checkbox-radio/RadioLabel.astro",
+      "name": "RadioLabel",
+      "astroComponent": "RadioLabel",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "checkbox-radio",
+      "dependencies": ["radio"],
+      "uses": ["radio"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The labelled composition is code-first and has no separately approved canonical Figma node.",
+          "instruction": "Keep RadioLabel Astro-only until a separate explicit Figma task creates or maps its canonical master."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/radio-label.md",
+      "variants": ["unchecked", "checked"],
+      "props": ["id", "name", "value", "label", "description", "checked", "disabled"],
+      "slots": [],
+      "attributes": ["data-selection-disabled"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--input-*", "--gap-small", "--size-2", "--size-16", "--size-24"],
+      "tokenGroups": ["input-color", "global-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "checkbox-card",
+      "categoryKey": "base-components",
+      "pageKey": "checkbox-radio",
+      "pageLabel": "Checkbox & Radio",
+      "figmaPageId": "997:3249",
+      "actualFigmaPageId": "997:3249",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/checkbox-radio",
+      "sourcePath": "src/components/base-components/checkbox-radio/CheckboxCard.astro",
+      "name": "CheckboxCard",
+      "astroComponent": "CheckboxCard",
+      "role": "card",
+      "layer": "card",
+      "family": "checkbox-radio",
+      "dependencies": ["checkbox"],
+      "uses": ["checkbox"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The component is code-first and has no approved canonical Figma node.",
+          "instruction": "Keep the Astro contract canonical until a separate explicit Figma task creates and maps a component node."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/checkbox-card.md",
+      "variants": ["unchecked", "checked", "indeterminate"],
+      "props": ["id", "label", "description", "checked", "indeterminate", "disabled"],
+      "slots": ["leading"],
+      "attributes": ["data-selection-disabled", "data-selection-leading"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--input-*", "--card-*", "--color-icon-accent", "--effect-focused", "--elevation-surface-subtle", "--content-padding-medium", "--gap-regular", "--radius-medium"],
+      "tokenGroups": ["selection-control-color", "card-color", "global-color", "global-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "radio-card",
+      "categoryKey": "base-components",
+      "pageKey": "checkbox-radio",
+      "pageLabel": "Checkbox & Radio",
+      "figmaPageId": "997:3249",
+      "actualFigmaPageId": "997:3249",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/checkbox-radio",
+      "sourcePath": "src/components/base-components/checkbox-radio/RadioCard.astro",
+      "name": "RadioCard",
+      "astroComponent": "RadioCard",
+      "role": "card",
+      "layer": "card",
+      "family": "checkbox-radio",
+      "dependencies": ["radio"],
+      "uses": ["radio"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "The component is code-first and has no approved canonical Figma node.",
+          "instruction": "Keep the Astro contract canonical until a separate explicit Figma task creates and maps a component node."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/radio-card.md",
+      "variants": ["unchecked", "checked"],
+      "props": ["id", "name", "value", "label", "description", "checked", "disabled"],
+      "slots": ["leading"],
+      "attributes": ["data-selection-disabled", "data-selection-leading"],
+      "states": ["default", "hover", "focus-visible", "pressed", "disabled"],
+      "tokens": ["--input-*", "--card-*", "--color-icon-accent", "--effect-focused", "--elevation-surface-subtle", "--content-padding-medium", "--gap-regular", "--radius-medium"],
+      "tokenGroups": ["selection-control-color", "card-color", "global-color", "global-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1335,22 +2094,115 @@
       "figmaCanonicalNodeId": "222:83",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/select",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/select/Select.astro",
       "name": "Select",
-      "astroComponent": null,
+      "astroComponent": "Select",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "select",
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "runtime-behavior",
+          "reason": "The canonical Figma node documents a bare standard trigger and visual states, while Astro adds optional label and hint content, a separated semantic leading segment, native form fallback, a progressive-enhancement listbox, and finite semantic purposes.",
+          "instruction": "Keep node 222:83 as the standard visual reference. Do not project the richer Astro structure or runtime behavior into Figma without a separate explicit synchronization task."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma State variants map to native hover, focus, validation and disabled behavior; Astro does not expose interaction state as a public prop.",
+          "instruction": "Use validation only for valid or invalid presentation and let native interaction or the private Guides hook drive hover and focus."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma uses a fixed documentation width while the Astro Select fills its assigned container and constrains its top-layer listbox to the viewport.",
+          "instruction": "Treat the Figma width as a preview fixture and preserve the responsive Astro field contract."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/select.md",
+      "variants": ["basic", "language", "phone", "country", "brand", "company"],
+      "props": ["id", "options", "label", "hint", "purpose", "value", "size", "validation", "disabled"],
+      "slots": [],
+      "attributes": ["data-control-size", "data-select-kind=standard", "data-select-purpose", "data-select-validation", "data-select-disabled"],
+      "states": ["default", "hover", "focus-visible", "open", "invalid", "valid", "disabled"],
+      "tokens": ["--control-*", "--input-*", "--effect-focused", "--elevation-control-raised", "--elevation-surface-floating", "--radius-input", "--gap-small"],
+      "tokenGroups": ["control-size", "input-color", "interaction-effect", "global-elevation", "global-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "compact-select",
+      "categoryKey": "base-components",
+      "pageKey": "select",
+      "pageLabel": "Select",
+      "figmaPageId": "1062:4",
+      "actualFigmaPageId": "1062:4",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/select",
+      "sourcePath": "src/components/base-components/select/CompactSelect.astro",
+      "name": "CompactSelect",
+      "astroComponent": "CompactSelect",
       "role": "atom",
       "layer": "atom",
       "family": "select",
-      "dependencies": [],
-      "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
-      "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
-      }
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "projection",
+        "reason": "CompactSelect is a code-first public select contract split from the standard field and has no approved canonical Figma node.",
+        "instruction": "Keep its intrinsic compact API canonical until a separate explicit Figma synchronization task."
+      }],
+      "agenticRule": ".agentic-rules/components/compact-select.md",
+      "variants": ["language", "phone", "country", "brand", "company"],
+      "props": ["id", "options", "purpose", "value", "size", "validation", "disabled"],
+      "slots": [],
+      "attributes": ["data-control-size", "data-select-kind=compact", "data-select-purpose", "data-select-validation", "data-select-disabled"],
+      "states": ["default", "hover", "focus-visible", "open", "invalid", "valid", "disabled"],
+      "tokens": ["--control-*", "--input-*", "--effect-focused", "--elevation-control-raised", "--elevation-surface-floating"],
+      "tokenGroups": ["control-size", "input-color", "interaction-effect", "global-elevation", "global-size"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "inline-select",
+      "categoryKey": "base-components",
+      "pageKey": "select",
+      "pageLabel": "Select",
+      "figmaPageId": "1062:4",
+      "actualFigmaPageId": "1062:4",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/select",
+      "sourcePath": "src/components/base-components/select/InlineSelect.astro",
+      "name": "InlineSelect",
+      "astroComponent": "InlineSelect",
+      "role": "atom",
+      "layer": "atom",
+      "family": "select",
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "projection",
+        "reason": "InlineSelect is a code-first inline selection contract with no approved canonical Figma node.",
+        "instruction": "Keep its intrinsic text-like API canonical until a separate explicit Figma synchronization task."
+      }],
+      "agenticRule": ".agentic-rules/components/inline-select.md",
+      "variants": [],
+      "props": ["id", "options", "value", "disabled"],
+      "slots": [],
+      "attributes": ["data-control-size=small", "data-select-kind=inline", "data-select-disabled"],
+      "states": ["default", "hover", "focus-visible", "open", "disabled"],
+      "tokens": ["--control-*", "--input-*", "--elevation-surface-floating"],
+      "tokenGroups": ["control-size", "input-color", "global-elevation", "global-size"],
+      "readiness": { "visual": "review", "validation": "passed" }
     },
     {
       "id": "file-upload",
@@ -1362,83 +2214,95 @@
       "figmaCanonicalNodeId": "221:88",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/file-upload",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/file-upload/FileUpload.astro",
       "name": "FileUpload",
-      "astroComponent": null,
+      "astroComponent": "FileUpload",
       "role": "atom",
       "layer": "atom",
       "family": "file-upload",
       "dependencies": [
+        "button",
         "material-symbol"
       ],
       "uses": [
+        "button",
         "material-symbol"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "runtime-behavior",
+          "reason": "Astro adds one native file input, a local Browse Button, drag-and-drop validation, a live selection status and bubbling DOM events while Figma state variants remain presentational.",
+          "instruction": "Keep upload transport and queue state outside FileUpload; do not project runtime behavior into the Figma master without a separate explicit synchronization task."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes presentation State variants while Astro derives hover and focus from native CSS and stores dragging, selected, invalid and disabled runtime state in data-file-upload-state.",
+          "instruction": "Do not add a public interaction-state prop. Use validation only for authored invalid presentation and native or runtime state for interactions."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "The Figma documentation fixture uses a fixed width while Astro fills the inline size assigned by its parent.",
+          "instruction": "Treat the Figma width as a preview fixture and preserve the fluid intrinsic Astro contract."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/file-upload.md",
+      "variants": ["default", "invalid"],
+      "props": ["id", "label", "browseLabel", "hint", "emptyMessage", "maxFileSizeBytes", "validation", "errorMessage", "multiple", "disabled"],
+      "slots": [],
+      "attributes": ["data-file-upload-state", "data-validation"],
+      "states": ["default", "hover", "focus-visible", "dragging", "selected", "invalid", "disabled"],
+      "tokens": ["--input-*", "--button-secondary-*", "--color-border-accent", "--color-background-subtle", "--effect-focused", "--content-padding-medium", "--gap-small", "--radius-input", "--motion-transition"],
+      "tokenGroups": ["input-color", "button-color", "global-color", "global-size", "global-motion", "interaction-effect"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
-      "id": "fieldset",
+      "id": "file-upload-card",
       "categoryKey": "base-components",
-      "pageKey": "form-structure",
-      "pageLabel": "Form Structure",
-      "figmaPageId": "1062:6",
-      "actualFigmaPageId": "1062:6",
-      "figmaCanonicalNodeId": "511:204",
+      "pageKey": "file-upload",
+      "pageLabel": "File Upload",
+      "figmaPageId": "1062:5",
+      "actualFigmaPageId": "1062:5",
+      "figmaCanonicalNodeId": null,
       "figmaCandidateNodeIds": [],
-      "sourceDirectory": "src/components/base-components/form-structure",
-      "sourcePath": null,
-      "name": "Fieldset",
-      "astroComponent": null,
-      "role": "molecule",
-      "layer": "molecule",
-      "family": "form-structure",
-      "dependencies": [],
-      "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
-      "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
-      }
-    },
-    {
-      "id": "form",
-      "categoryKey": "base-components",
-      "pageKey": "form-structure",
-      "pageLabel": "Form Structure",
-      "figmaPageId": "1062:6",
-      "actualFigmaPageId": "1062:6",
-      "figmaCanonicalNodeId": "225:455",
-      "figmaCandidateNodeIds": [],
-      "sourceDirectory": "src/components/base-components/form-structure",
-      "sourcePath": null,
-      "name": "Form",
-      "astroComponent": null,
-      "role": "base-component",
-      "layer": "base-component",
-      "family": "form-structure",
-      "dependencies": [
-        "form-field"
+      "sourceDirectory": "src/components/base-components/file-upload",
+      "sourcePath": "src/components/base-components/file-upload/FileUploadCard.astro",
+      "name": "FileUploadCard",
+      "astroComponent": "FileUploadCard",
+      "role": "card",
+      "layer": "card",
+      "family": "file-upload",
+      "dependencies": ["button", "material-symbol"],
+      "uses": ["button", "material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "astro-only-source",
+          "reason": "FileUploadCard is an approved Astro-only component benchmarked structurally against Align UI and has no canonical component master in the project Figma file.",
+          "instruction": "Keep Astro canonical and do not create or alter a Figma File Upload component master without a separate explicit synchronization task."
+        },
+        {
+          "kind": "benchmark-adaptation",
+          "reason": "Astro uses local card and status tokens, one fixed close action glyph and explicit status text instead of benchmark-specific icons, colors and API.",
+          "instruction": "Preserve the local semantic contract and use Align UI only as structural evidence for anatomy and state coverage."
+        }
       ],
-      "uses": [
-        "form-field"
-      ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "agenticRule": ".agentic-rules/components/file-upload-card.md",
+      "variants": ["uploading", "success", "error"],
+      "props": ["fileId", "fileName", "state", "progress", "loadedBytes", "totalBytes", "formatLabel", "labels"],
+      "slots": [],
+      "attributes": ["data-file-upload-card-state", "data-file-id"],
+      "states": ["uploading-determinate", "uploading-indeterminate", "success", "error"],
+      "tokens": ["--card-*", "--color-status-*", "--color-text-*", "--color-background-*", "--effect-focused", "--content-padding-medium", "--gap-*", "--radius-*", "--motion-*"],
+      "tokenGroups": ["card-color", "global-color", "global-size", "global-motion", "interaction-effect"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1451,21 +2315,108 @@
       "figmaCanonicalNodeId": "295:15",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/tabs",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/tabs/Tab.astro",
       "name": "Tab",
-      "astroComponent": null,
+      "astroComponent": "Tab",
       "role": "atom",
       "layer": "atom",
       "family": "tabs",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
+      "syncStatus": "mapped",
+      "status": "mapped",
       "divergences": [],
-      "agenticRule": null,
+      "agenticRule": ".agentic-rules/components/tab.md",
+      "variants": [],
+      "props": ["id", "controls", "selected", "disabled", "size"],
+      "slots": ["default"],
+      "attributes": ["data-control-size", "role=tab", "aria-selected", "aria-controls"],
+      "states": ["default", "hover", "focus-visible", "selected", "disabled"],
+      "tokens": ["--control-*", "--tab-*", "--effect-focused", "--radius-button", "--motion-transition"],
+      "tokenGroups": ["control-size", "tab-color", "interaction-effect", "global-size", "global-motion", "typography-foundations"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "tabs",
+      "categoryKey": "base-components",
+      "pageKey": "tabs",
+      "pageLabel": "Tabs",
+      "figmaPageId": "985:2785",
+      "actualFigmaPageId": "985:2785",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/tabs",
+      "sourcePath": "src/components/base-components/tabs/Tabs.astro",
+      "name": "Tabs",
+      "astroComponent": "Tabs",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "tabs",
+      "dependencies": ["tab"],
+      "uses": ["tab"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "Tabs is the Astro runtime composition for a tablist, generated panels and automatic keyboard activation; it has no approved canonical Figma master.",
+          "instruction": "Keep the Astro API and behavior canonical until a separate explicit Figma synchronization task creates or maps a Tabs master."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/tabs.md",
+      "variants": [],
+      "props": ["items", "initialTab", "size", "id", "aria-label", "aria-labelledby"],
+      "slots": ["named panels by item id"],
+      "attributes": ["role=tablist", "role=tabpanel", "data-tabs-root", "data-tab-id"],
+      "states": ["default", "selected", "disabled"],
+      "tokens": ["--control-*", "--tab-*", "--effect-focused", "--gap-small", "--space-regular"],
+      "tokenGroups": ["control-size", "tab-color", "interaction-effect", "global-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "tab-menu",
+      "categoryKey": "base-components",
+      "pageKey": "tabs",
+      "pageLabel": "Tabs",
+      "figmaPageId": "985:2785",
+      "actualFigmaPageId": "985:2785",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/tabs",
+      "sourcePath": "src/components/base-components/tabs/TabMenu.astro",
+      "name": "TabMenu",
+      "astroComponent": "TabMenu",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "tabs",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "TabMenu is an Astro-only anchor navigation with native hash history and runtime scrollspy; Align UI is a bounded quality benchmark rather than a component dependency.",
+          "instruction": "Keep TabMenu Astro-only and do not copy Align UI API, tokens, icons, badge options, count variants or overflow control."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/tab-menu.md",
+      "variants": [],
+      "props": ["items", "size", "aria-label", "aria-labelledby"],
+      "slots": [],
+      "attributes": ["data-control-size", "aria-current=location", "data-tab-menu"],
+      "states": ["default", "hover", "focus-visible", "current"],
+      "tokens": ["--control-*", "--tab-menu-*", "--effect-focused", "--content-padding-none", "--gap-regular", "--motion-transition"],
+      "tokenGroups": ["control-size", "tab-color", "interaction-effect", "global-size", "global-motion", "typography-foundations"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1505,27 +2456,264 @@
       "figmaCanonicalNodeId": "299:23",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/accordion",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/accordion/Accordion.astro",
       "name": "Accordion",
-      "astroComponent": null,
+      "astroComponent": "Accordion",
       "role": "molecule",
       "layer": "molecule",
       "family": "accordion",
       "dependencies": [
         "accordion-item",
-        "material-symbol"
+        "material-symbol",
+        "tooltip"
       ],
       "uses": [
         "accordion-item",
+        "material-symbol",
+        "tooltip"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "api",
+          "reason": "Astro exposes a validated text item array and single or multiple disclosure mode while the Figma master projects visual item states.",
+          "instruction": "Keep item rendering private inside Accordion and do not publish an Astro AccordionItem component."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma presents Default and Active variants while Astro uses native hover, focus-visible, disabled, open and closed states.",
+          "instruction": "Do not expose a public visual state prop; derive state from native interaction and data-accordion-state."
+        },
+        {
+          "kind": "projection",
+          "reason": "The required left Tooltip exists only in Astro because this implementation explicitly excludes edits to the canonical Figma component.",
+          "instruction": "Keep Tooltip composition canonical in Astro and update Figma only in a separate explicitly authorized Figma task."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/accordion.md",
+      "variants": [
+        "single",
+        "multiple"
+      ],
+      "props": [
+        "items",
+        "mode",
+        "initialOpen",
+        "headingLevel",
+        "id"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-accordion-mode",
+        "data-accordion-initial-open",
+        "data-accordion-state",
+        "data-accordion-disabled",
+        "aria-expanded",
+        "aria-controls",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "disabled",
+        "open",
+        "closed"
+      ],
+      "tokens": [
+        "--color-background-*",
+        "--color-border-*",
+        "--color-text-*",
+        "--color-icon-*",
+        "--content-padding-medium",
+        "--content-padding-xsmall",
+        "--gap-small",
+        "--font-size-body-base",
+        "--font-weight-strong",
+        "--effect-focused",
+        "--motion-transition",
+        "--motion-duration-surface-enter",
+        "--motion-ease-premium-out"
+      ],
+      "tokenGroups": ["global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "tooltip",
+      "categoryKey": "base-components",
+      "pageKey": "tooltip",
+      "pageLabel": "Tooltip",
+      "figmaPageId": "1140:594",
+      "actualFigmaPageId": "1140:594",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/tooltip",
+      "sourcePath": "src/components/base-components/tooltip/Tooltip.astro",
+      "name": "Tooltip",
+      "astroComponent": "Tooltip",
+      "role": "atom",
+      "layer": "atom",
+      "family": "tooltip",
+      "dependencies": [
         "material-symbol"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "uses": [
+        "material-symbol"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "Tooltip is code-first and has no canonical Figma master in the project file for this implementation scope.",
+          "instruction": "Keep Astro semantics, fixed info icon and Popover behavior canonical until a separate explicit Figma task creates and maps a master."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/tooltip.md",
+      "variants": [
+        "small",
+        "medium"
+      ],
+      "props": [
+        "text",
+        "label",
+        "size",
+        "placement",
+        "id"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-tooltip-trigger",
+        "data-tooltip-content",
+        "data-tooltip-size",
+        "data-overlay-placement",
+        "data-overlay-resolved-placement",
+        "aria-describedby",
+        "role=tooltip",
+        "popover=manual"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "pressed",
+        "visible",
+        "hidden"
+      ],
+      "tokens": [
+        "--color-background-inverse",
+        "--color-text-inverse",
+        "--color-icon-secondary",
+        "--color-border-inverse",
+        "--control-min-height",
+        "--control-icon-size",
+        "--content-padding-xsmall",
+        "--tooltip-tail-size",
+        "--tooltip-compact-max-inline-size",
+        "--radius-small",
+        "--effect-focused",
+        "--motion-transition"
+      ],
+      "tokenGroups": ["tooltip-size", "control-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "info-popover",
+      "categoryKey": "base-components",
+      "pageKey": "tooltip",
+      "pageLabel": "Tooltip",
+      "figmaPageId": "1140:594",
+      "actualFigmaPageId": "1140:594",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/tooltip",
+      "sourcePath": "src/components/base-components/tooltip/InfoPopover.astro",
+      "name": "InfoPopover",
+      "astroComponent": "InfoPopover",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "tooltip",
+      "dependencies": [
+        "material-symbol"
+      ],
+      "uses": [
+        "material-symbol"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "InfoPopover is code-first and Align UI is used only as bounded structural benchmark evidence; no canonical project Figma master was created.",
+          "instruction": "Keep the Astro dialog, fixed icon, focus and Popover behavior canonical until a separate explicitly authorized Figma task creates and maps a master."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/info-popover.md",
+      "variants": [],
+      "props": [
+        "title",
+        "description",
+        "label",
+        "closeLabel",
+        "placement",
+        "id"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-info-popover-trigger",
+        "data-info-popover-content",
+        "data-overlay-placement",
+        "data-overlay-resolved-placement",
+        "aria-controls",
+        "aria-expanded",
+        "aria-haspopup=dialog",
+        "aria-labelledby",
+        "aria-describedby",
+        "role=dialog",
+        "popover=auto"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "pressed",
+        "open",
+        "closed"
+      ],
+      "tokens": [
+        "--color-background-canvas",
+        "--color-background-subtle",
+        "--color-background-muted",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--color-icon-primary",
+        "--color-icon-secondary",
+        "--color-border-default",
+        "--control-min-height",
+        "--control-icon-size",
+        "--content-padding-small",
+        "--gap-tiny",
+        "--gap-regular",
+        "--radius-small",
+        "--radius-medium",
+        "--tooltip-tail-size",
+        "--tooltip-rich-max-inline-size",
+        "--tooltip-rich-icon-size",
+        "--elevation-surface-floating",
+        "--effect-focused",
+        "--motion-transition"
+      ],
+      "tokenGroups": ["tooltip-size", "control-size", "global-color", "global-size", "global-motion", "global-elevation", "typography-foundations", "interaction-effect"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1540,21 +2728,34 @@
         "1009:7308"
       ],
       "sourceDirectory": "src/components/base-components/dividers",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/dividers/ContentDivider.astro",
       "name": "ContentDivider",
-      "astroComponent": null,
+      "astroComponent": "ContentDivider",
       "role": "atom",
       "layer": "atom",
       "family": "dividers",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "scope",
+          "reason": "Astro implements the approved line and text variants with three neutral tone values, while this code-only task does not modify or parity-validate the existing Figma master.",
+          "instruction": "Keep Figma unchanged and run a separate explicit synchronization task before changing the status to mapped."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/content-divider.md",
+      "variants": ["line", "text"],
+      "props": ["variant", "text", "tone"],
+      "slots": [],
+      "attributes": ["data-content-divider-variant", "data-content-divider-tone"],
+      "states": ["default"],
+      "tokens": ["--content-divider-min-height", "--border-width-default", "--gap-small", "--color-border-subtle", "--color-border-default", "--color-border-strong", "--color-text-tertiary"],
+      "tokenGroups": ["content-divider-size", "global-color", "global-size", "typography-foundations"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1567,21 +2768,39 @@
       "figmaCanonicalNodeId": "1009:2614",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/ratio",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/ratio/Ratio.astro",
       "name": "Ratio",
-      "astroComponent": null,
+      "astroComponent": "Ratio",
       "role": "atom",
       "layer": "atom",
       "family": "ratio",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "layout",
+          "reason": "Figma presents each Ratio variant at a fixed documentation width and height, while Astro fills the assigned inline size and preserves the selected proportion with native aspect-ratio.",
+          "instruction": "Let the parent own Ratio width; do not copy Figma's presentation dimensions into runtime CSS."
+        },
+        {
+          "kind": "composition",
+          "reason": "The Figma variants are empty placeholder masters, while Astro exposes one optional default slot for production images, video, embeds or arbitrary content.",
+          "instruction": "Keep media semantics and accessibility on the slotted content; Ratio owns only geometry, clipping and placeholder presentation."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/ratio.md",
+      "variants": ["16:9", "1:1", "2.39:1", "2:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4"],
+      "props": ["ratio"],
+      "slots": ["default"],
+      "attributes": ["data-ratio"],
+      "states": ["default"],
+      "tokens": ["--color-background-surface"],
+      "tokenGroups": ["global-color"],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1594,9 +2813,9 @@
       "figmaCanonicalNodeId": "1009:2627",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/breadcrumbs",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/breadcrumbs/Breadcrumb.astro",
       "name": "Breadcrumb",
-      "astroComponent": null,
+      "astroComponent": "Breadcrumb",
       "role": "molecule",
       "layer": "molecule",
       "family": "breadcrumbs",
@@ -1606,13 +2825,239 @@
       "uses": [
         "material-symbol"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "api",
+          "reason": "Figma presents a fixed example trail, while Astro accepts a non-empty item array and derives breadcrumb depth from content.",
+          "instruction": "Pass hierarchy-ordered items and do not introduce quantity or maximum-item props."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma documents Default and Active variants, while Astro uses native hover, focus-visible and pressed states and marks the final item with aria-current=page.",
+          "instruction": "Do not expose a public state prop; use the documentation preview hook only for visual state inspection."
+        },
+        {
+          "kind": "projection",
+          "reason": "Astro exposes chevron, slash and dot separators, while the canonical Figma node currently shows only chevron.",
+          "instruction": "Keep the three-value Astro separator API canonical; update Figma only through a separate explicit operation."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/breadcrumb.md",
+      "variants": [
+        "chevron",
+        "slash",
+        "dot"
+      ],
+      "props": [
+        "items",
+        "separator",
+        "label"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-breadcrumb-separator"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "pressed",
+        "current"
+      ],
+      "tokens": [
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--color-text-tertiary",
+        "--color-icon-secondary",
+        "--gap-tiny",
+        "--size-16",
+        "--effect-focused"
+      ],
+      "tokenGroups": ["global-color", "global-size", "interaction-effect"],
       "readiness": {
-        "visual": "approved",
+        "visual": "review",
         "validation": "not-run"
+      }
+    },
+    {
+      "id": "pagination-item",
+      "categoryKey": "base-components",
+      "pageKey": "pagination",
+      "pageLabel": "Pagination",
+      "figmaPageId": "1009:5696",
+      "actualFigmaPageId": "1009:5696",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/pagination",
+      "sourcePath": "src/components/base-components/pagination/PaginationItem.astro",
+      "name": "PaginationItem",
+      "astroComponent": "PaginationItem",
+      "role": "atom",
+      "layer": "atom",
+      "family": "pagination",
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "projection",
+        "reason": "PaginationItem is a code-first composition atom with no approved canonical Figma node.",
+        "instruction": "Keep the Astro link semantics and finite item kinds canonical until a separate explicit Figma task creates and maps a PaginationItem master."
+      }],
+      "agenticRule": ".agentic-rules/components/pagination-item.md",
+      "variants": ["page", "first", "previous", "next", "last"],
+      "props": ["kind", "label", "href", "disabled", "page", "current", "linkAttributes"],
+      "slots": [],
+      "attributes": ["data-pagination-item", "data-pagination-control", "data-pagination-page", "aria-current", "aria-disabled"],
+      "states": ["default", "hover", "focus-visible", "pressed", "current", "disabled"],
+      "tokens": ["--pagination-control-*", "--pagination-icon-size", "--radius-button", "--effect-focused"],
+      "tokenGroups": ["pagination-color", "pagination-size", "global-size", "interaction-effect", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "pagination-ellipsis",
+      "categoryKey": "base-components",
+      "pageKey": "pagination",
+      "pageLabel": "Pagination",
+      "figmaPageId": "1009:5696",
+      "actualFigmaPageId": "1009:5696",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/pagination",
+      "sourcePath": "src/components/base-components/pagination/PaginationEllipsis.astro",
+      "name": "PaginationEllipsis",
+      "astroComponent": "PaginationEllipsis",
+      "role": "atom",
+      "layer": "atom",
+      "family": "pagination",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "projection",
+        "reason": "PaginationEllipsis is a code-first non-interactive composition atom with no approved canonical Figma node.",
+        "instruction": "Keep the Astro ellipsis semantics canonical until a separate explicit Figma task creates and maps a PaginationEllipsis master."
+      }],
+      "agenticRule": ".agentic-rules/components/pagination-ellipsis.md",
+      "variants": [],
+      "props": [],
+      "slots": [],
+      "attributes": ["data-pagination-item=ellipsis", "aria-hidden=true"],
+      "states": [],
+      "tokens": ["--pagination-control-size", "--color-text-tertiary", "--radius-button"],
+      "tokenGroups": ["pagination-size", "global-color", "global-size", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "pagination-group",
+      "categoryKey": "base-components",
+      "pageKey": "pagination",
+      "pageLabel": "Pagination",
+      "figmaPageId": "1009:5696",
+      "actualFigmaPageId": "1009:5696",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/pagination",
+      "sourcePath": "src/components/base-components/pagination/PaginationGroup.astro",
+      "name": "PaginationGroup",
+      "astroComponent": "PaginationGroup",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "pagination",
+      "dependencies": ["pagination-item", "pagination-ellipsis"],
+      "uses": ["pagination-item", "pagination-ellipsis"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "projection",
+        "reason": "PaginationGroup is a code-first slot composition with no approved canonical Figma node.",
+        "instruction": "Keep the unrestricted Astro child composition canonical until a separate explicit Figma task creates and maps a PaginationGroup master."
+      }],
+      "agenticRule": ".agentic-rules/components/pagination-group.md",
+      "variants": [],
+      "props": [],
+      "slots": ["default"],
+      "attributes": [],
+      "states": [],
+      "tokens": ["--pagination-control-gap"],
+      "tokenGroups": ["pagination-size"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "pagination",
+      "categoryKey": "base-components",
+      "pageKey": "pagination",
+      "pageLabel": "Pagination",
+      "figmaPageId": "1009:5696",
+      "actualFigmaPageId": "1009:5696",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/pagination",
+      "sourcePath": "src/components/base-components/pagination/Pagination.astro",
+      "name": "Pagination",
+      "astroComponent": "Pagination",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "pagination",
+      "dependencies": [
+        "pagination-item",
+        "pagination-ellipsis",
+        "pagination-group"
+      ],
+      "uses": [
+        "pagination-item",
+        "pagination-ellipsis",
+        "pagination-group"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "projection",
+          "reason": "Pagination is code-first and uses the external Align UI file only as a quality benchmark, not as a canonical design-system node.",
+          "instruction": "Keep Astro semantics, API and tokens canonical until a separate explicit Figma task creates and maps a Pagination master in the project file."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/pagination.md",
+      "variants": [],
+      "props": [
+        "currentPage",
+        "totalPages",
+        "getPageHref",
+        "showSummary",
+        "showFirstLast",
+        "labels"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-pagination-summary",
+        "data-pagination-first-last",
+        "data-pagination-item",
+        "data-pagination-page",
+        "aria-current",
+        "aria-disabled"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "pressed",
+        "current",
+        "disabled"
+      ],
+      "tokens": [
+        "--pagination-control-*",
+        "--pagination-icon-size",
+        "--radius-button",
+        "--effect-focused"
+      ],
+      "tokenGroups": ["pagination-color", "pagination-size", "global-size"],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -1643,7 +3088,8 @@
         "Figma keeps Tone as a seven-value variant axis; Astro maps it to the tone prop and data-tag-tone.",
         "Figma represents Removable as a Boolean property with _Parts/Tag.RemoveButton documentation states; Astro renders one nested native button and owns hover, focus-visible, pressed and disabled through native interaction states.",
         "Figma uses a TEXT Label property; Astro requires the label prop so the default removeLabel can include the visible value.",
-        "Figma Component Size modes map to the Astro size prop and data-component-size, with Small as the shared default."
+        "Figma Component Size modes remain unchanged, while Astro intentionally owns one fixed Tag geometry without a public size prop; the Figma projection remains pending.",
+        "Astro exposes a decorative named leading slot for an approved icon or logo; the current Figma projection remains unchanged."
       ],
       "agenticRule": ".agentic-rules/components/tag.md",
       "variants": [
@@ -1658,16 +3104,18 @@
       "props": [
         "label",
         "tone",
-        "size",
         "removable",
         "disabled",
         "removeLabel"
       ],
-      "slots": [],
+      "slots": [
+        "leading"
+      ],
       "attributes": [
-        "data-component-size",
         "data-tag-tone",
+        "data-tag-leading",
         "data-tag-removable",
+        "data-tag-disabled",
         "data-tag-remove"
       ],
       "states": [
@@ -1678,14 +3126,17 @@
         "disabled"
       ],
       "tokens": [
-        "component-size",
+        "--tag-*",
         "radius-tag",
         "border-width-default",
         "effect-focused",
+        "motion-transition",
+        "state-disabled",
         "accent",
         "status",
         "inverse"
       ],
+      "tokenGroups": ["tag-size", "global-color", "global-size", "global-motion", "interaction-effect"],
       "readiness": {
         "visual": "review",
         "validation": "passed"
@@ -1701,22 +3152,186 @@
       "figmaCanonicalNodeId": "268:5",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/base-components/eyebrow",
-      "sourcePath": null,
+      "sourcePath": "src/components/base-components/eyebrow/Eyebrow.astro",
       "name": "Eyebrow",
-      "astroComponent": null,
+      "astroComponent": "Eyebrow",
       "role": "atom",
       "layer": "atom",
       "family": "eyebrow",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
+      "syncStatus": "mapped",
+      "status": "mapped",
       "divergences": [],
-      "agenticRule": null,
+      "agenticRule": ".agentic-rules/components/eyebrow.md",
+      "variants": [],
+      "props": [
+        "text"
+      ],
+      "slots": [],
+      "attributes": [],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--eyebrow-text-default",
+        "--eyebrow-marker-default",
+        "--eyebrow-marker-size",
+        "--space-eyebrow-bottom",
+        "--gap-small",
+        "--font-size-body-small",
+        "--font-weight-normal"
+      ],
+      "tokenGroups": [
+        "eyebrow-color",
+        "eyebrow-size",
+        "global-size",
+        "typography-foundations"
+      ],
       "readiness": {
         "visual": "approved",
-        "validation": "not-run"
+        "validation": "passed"
       }
+    },
+    {
+      "id": "alert",
+      "categoryKey": "base-components",
+      "pageKey": "alerts",
+      "pageLabel": "Alerts",
+      "figmaPageId": "1140:596",
+      "actualFigmaPageId": "1140:596",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/alerts",
+      "sourcePath": "src/components/base-components/alerts/Alert.astro",
+      "name": "Alert",
+      "astroComponent": "Alert",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "alerts",
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "benchmark-adaptation",
+        "reason": "Alert is an Astro-only compact feedback component using Align UI only as a benchmark for status coverage and emphasis hierarchy.",
+        "instruction": "Keep the single-message anatomy, local tokens, fixed status glyphs and Astro semantics canonical; do not add rich-card content or map the external Align UI node as a master."
+      }],
+      "agenticRule": ".agentic-rules/components/alert.md",
+      "variants": ["solid", "soft", "subtle"],
+      "props": ["title", "status", "emphasis", "size", "statusLabel", "live"],
+      "slots": [],
+      "attributes": ["data-feedback-status", "data-feedback-emphasis", "data-feedback-size", "aria-live"],
+      "states": ["default"],
+      "tokens": ["--feedback-*", "--color-status-*", "--effect-focused", "--motion-*"],
+      "tokenGroups": ["feedback-color", "feedback-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "passed", "validation": "passed" }
+    },
+    {
+      "id": "notification",
+      "categoryKey": "base-components",
+      "pageKey": "toast-notification",
+      "pageLabel": "Toast Notification",
+      "figmaPageId": "1140:597",
+      "actualFigmaPageId": "1140:597",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/toast-notification",
+      "sourcePath": "src/components/base-components/toast-notification/Notification.astro",
+      "name": "Notification",
+      "astroComponent": "Notification",
+      "role": "card",
+      "layer": "card",
+      "family": "toast-notification",
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "benchmark-adaptation",
+        "reason": "Notification adopts the approved feedback matrix while remaining a persistent, code-first article without inbox data behavior.",
+        "instruction": "Keep storage, read state and timestamps outside this v1 component boundary."
+      }],
+      "agenticRule": ".agentic-rules/components/notification.md",
+      "variants": ["solid", "soft", "subtle"],
+      "props": ["id", "title", "description", "status", "emphasis", "actions", "showIcon", "dismissible", "dismissLabel", "statusLabel"],
+      "slots": [],
+      "attributes": ["data-feedback-status", "data-feedback-emphasis"],
+      "states": ["default", "dismissed"],
+      "tokens": ["--feedback-*", "--color-status-*", "--effect-focused", "--elevation-surface-floating"],
+      "tokenGroups": ["feedback-color", "feedback-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "passed", "validation": "passed" }
+    },
+    {
+      "id": "toast",
+      "categoryKey": "base-components",
+      "pageKey": "toast-notification",
+      "pageLabel": "Toast Notification",
+      "figmaPageId": "1140:597",
+      "actualFigmaPageId": "1140:597",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/toast-notification",
+      "sourcePath": "src/components/base-components/toast-notification/Toast.astro",
+      "name": "Toast",
+      "astroComponent": "Toast",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "toast-notification",
+      "dependencies": ["material-symbol"],
+      "uses": ["material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "astro-only-source",
+        "reason": "Toast is rendered by Astro and controlled through a bounded DOM event runtime; the Align UI reference is not canonical.",
+        "instruction": "Do not add runtime HTML injection or accept arbitrary status glyphs."
+      }],
+      "agenticRule": ".agentic-rules/components/toast.md",
+      "variants": ["solid", "soft", "subtle"],
+      "props": ["id", "title", "description", "status", "emphasis", "actions", "showIcon", "dismissible", "dismissLabel", "statusLabel", "duration"],
+      "slots": [],
+      "attributes": ["data-feedback-status", "data-feedback-emphasis", "data-toast", "data-toast-duration-ms", "popover=manual"],
+      "states": ["closed", "queued", "visible", "paused", "dismissed"],
+      "tokens": ["--feedback-*", "--color-status-*", "--effect-focused", "--elevation-surface-floating", "--motion-*"],
+      "tokenGroups": ["feedback-color", "feedback-size", "toast-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "passed", "validation": "passed" }
+    },
+    {
+      "id": "popup",
+      "categoryKey": "website-patterns",
+      "pageKey": "modal",
+      "pageLabel": "Modal",
+      "figmaPageId": "1140:599",
+      "actualFigmaPageId": "1140:599",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/modal",
+      "sourcePath": "src/components/website-patterns/modal/Popup.astro",
+      "name": "Popup",
+      "astroComponent": "Popup",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "modal",
+      "dependencies": ["button", "button-group", "checkbox-label", "material-symbol"],
+      "uses": ["button", "button-group", "checkbox-label", "material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "benchmark-adaptation",
+        "reason": "Popup is an Astro-only native dialog. Align UI supplies a bounded anatomy and quality benchmark but is not a canonical component source.",
+        "instruction": "Keep native dialog semantics, the closed status matrix, system dependencies and Astro runtime canonical; do not copy the external API, tokens, icons or assets."
+      }],
+      "agenticRule": ".agentic-rules/components/popup.md",
+      "variants": ["error", "warning", "success", "info", "horizontal", "vertical"],
+      "props": ["id", "title", "description", "status", "alignment", "confirmLabel", "cancelLabel", "preferenceLabel", "statusLabel", "showCancel", "showPreference", "preferenceChecked", "dismissible", "initialOpen"],
+      "slots": [],
+      "attributes": ["data-popup-status", "data-popup-alignment", "data-popup-dismissible", "aria-labelledby", "aria-describedby"],
+      "states": ["closed", "open", "dismissed", "confirmed", "cancelled", "superseded"],
+      "tokens": ["--popup-*", "--color-background-overlay", "--color-background-*", "--color-border-*", "--color-text-*", "--color-status-*", "--elevation-surface-overlay", "--motion-duration-surface-enter", "--motion-ease-premium-out"],
+      "tokenGroups": ["popup-size", "global-color", "global-size", "global-motion", "global-elevation", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
     },
     {
       "id": "trust-badge",

@@ -20,9 +20,13 @@ const { rule } = Astro.props;
   <DsSectionHeaderLevel2
     id="component-rule-title"
     title="Component UX rule"
-    description="Canonical human- and agent-readable Markdown. Copy the complete rule as one context block."
   />
-  <DsCodeSnippet label={`${rule.title} · Markdown`} code={rule.raw} />
+  <DsCodeSnippet
+    filename={rule.sourcePath}
+    label={`${rule.title} · Markdown`}
+    language="markdown"
+    code={rule.raw}
+  />
 </section>
 
 <style>

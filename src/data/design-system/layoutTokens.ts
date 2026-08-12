@@ -54,6 +54,7 @@ export interface LayoutAgenticRule {
 
 export interface LayoutStructureExample {
   label: string;
+  language: "html" | "css";
   code: string;
 }
 
@@ -432,6 +433,7 @@ export const layoutAgenticRules: LayoutAgenticRule[] = [
 export const layoutStructureExamples: LayoutStructureExample[] = [
   {
     label: "Section + container",
+    language: "html",
     code: `<section class="l-section" data-padding="large">
   <div class="l-container" data-container="main">
     <div class="l-stack" data-gap="medium">
@@ -443,6 +445,7 @@ export const layoutStructureExamples: LayoutStructureExample[] = [
   },
   {
     label: "Section + container + composition grid",
+    language: "html",
     code: `<section class="l-section" data-padding="medium">
   <div class="l-container" data-container="main">
     <div class="l-grid" data-grid="site" data-gap="site">
@@ -455,6 +458,7 @@ export const layoutStructureExamples: LayoutStructureExample[] = [
   },
   {
     label: "Stack + cluster inside a component area",
+    language: "html",
     code: `<div class="l-stack" data-gap="regular">
   <h3 class="heading-h4">Design system audit</h3>
   <p class="body-regular">Use stack for vertical rhythm and cluster for wrapped inline actions.</p>
@@ -470,6 +474,7 @@ export const layoutStructureExamples: LayoutStructureExample[] = [
 export const layoutGridExamples: LayoutStructureExample[] = [
   {
     label: "Site composition grid",
+    language: "html",
     code: `<div class="l-grid" data-grid="site" data-gap="site">
   <article data-grid-span="4">...</article>
   <article data-grid-span="4">...</article>
@@ -478,6 +483,7 @@ export const layoutGridExamples: LayoutStructureExample[] = [
   },
   {
     label: "Auto-fit card grid",
+    language: "html",
     code: `<div class="l-grid" data-grid="auto-fit" data-min-width="card" data-gap="medium">
   <article>...</article>
   <article>...</article>
@@ -486,6 +492,7 @@ export const layoutGridExamples: LayoutStructureExample[] = [
   },
   {
     label: "Count-aware breakpointless card grid",
+    language: "html",
     code: `<div class="l-grid" data-grid="auto-fit" data-columns="3" data-min-width="card" data-gap="medium">
   <article>...</article>
   <article>...</article>
@@ -495,6 +502,7 @@ export const layoutGridExamples: LayoutStructureExample[] = [
   },
   {
     label: "Breakout grid",
+    language: "html",
     code: `<section class="l-section" data-padding="large">
   <div class="l-grid" data-grid="breakout">
     <div data-grid-span="content">Content aligned to the site grid.</div>
@@ -540,12 +548,14 @@ export const layoutResponsiveStrategyRows: LayoutResponsiveStrategyRow[] = [
 export const layoutResponsiveExamples: LayoutStructureExample[] = [
   {
     label: "Intrinsic count-aware grid",
+    language: "html",
     code: `<div class="l-grid" data-grid="auto-fit" data-columns="3" data-min-width="card" data-gap="medium">
   ...
 </div>`,
   },
   {
     label: "Component-owned container query",
+    language: "css",
     code: `.search-panel {
   container: search-panel / inline-size;
 }
@@ -558,6 +568,7 @@ export const layoutResponsiveExamples: LayoutStructureExample[] = [
   },
   {
     label: "Viewport-owned exception",
+    language: "css",
     code: `@media (width < 48rem) {
   .site-navigation {
     /* A global navigation mode may change with the viewport. */

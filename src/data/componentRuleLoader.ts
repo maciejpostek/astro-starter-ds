@@ -15,6 +15,7 @@ export interface ComponentRuleSection {
 
 export interface ComponentRuleDocument {
   title: string;
+  sourcePath: string;
   raw: string;
   sections: ComponentRuleSection[];
 }
@@ -53,5 +54,5 @@ export const loadComponentRule = async (repositoryRelativePath: string): Promise
   const title = raw.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? repositoryRelativePath;
   const sections = parseRuleSections(raw, repositoryRelativePath);
 
-  return { title, raw, sections };
+  return { title, sourcePath: repositoryRelativePath, raw, sections };
 };

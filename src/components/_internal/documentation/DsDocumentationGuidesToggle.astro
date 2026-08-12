@@ -1,0 +1,28 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import "../../../styles/components/button-controls.css";
+---
+
+<button
+  class="icon-button ds-documentation-guides-toggle"
+  type="button"
+  aria-label="Disable guides"
+  aria-pressed="true"
+  data-button-variant="secondary"
+  data-component-name="DsDocumentationGuidesToggle"
+  data-control-size="small"
+  data-grid-toggle
+  data-guides-button
+>
+  <MaterialSymbol
+    name="visibility"
+    size="var(--control-icon-size)"
+    data-guides-visible-icon
+  />
+  <MaterialSymbol
+    name="visibility_off"
+    size="var(--control-icon-size)"
+    data-guides-hidden-icon
+    hidden
+  />
+</button>

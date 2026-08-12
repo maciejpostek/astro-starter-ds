@@ -1,5 +1,4 @@
 ---
-import FigmaIcon from "../../../assets/documentation/figma.svg";
 import {
   architecture,
   type ArchitectureComponent,
@@ -11,7 +10,6 @@ import type {
 } from "../../../data/documentationComponentRegistry";
 import { resolveDocumentationLink } from "../../../data/documentationLinkResolver";
 import DsComponentRule from "./DsComponentRule.astro";
-import DsCopyButton from "./DsCopyButton.astro";
 import DsEmptyState from "./DsEmptyState.astro";
 import DsInteractiveComponentPreview from "./DsInteractiveComponentPreview.astro";
 import DsSectionHeaderLevel2 from "./DsSectionHeaderLevel2.astro";
@@ -27,12 +25,8 @@ interface Props {
 }
 
 const { component, rule, adapter } = Astro.props;
+const componentName = "DsComponentDetail";
 const available = Boolean(component.sourcePath);
-const figmaNodeUrl = `${architecture.figma.fileUrl}?node-id=${component.figmaCanonicalNodeId.replace(":", "-")}`;
-const syncStatuses = architecture.syncStatuses;
-const colorVariableLinks = adapter?.foundationReferences.colorGroups.map((groupId) =>
-  resolveDocumentationLink({ kind: "component-color-group", id: groupId })
-) ?? [];
 const resolveApiTypeParts = (row: DocumentationApiRow) => {
   const references = (row.typeReferences ?? [])
     .map((reference) => ({
@@ -73,86 +67,35 @@ const usedBy = architecture.components
   .map((candidate) => ({
     ...resolveDocumentationLink({ kind: "component", id: candidate.id }),
     description: `${candidate.name} declares ${component.name} as a direct reusable dependency.`,
-  }));
+}));
 ---
-
-<section
-  class="ds-component-detail__metadata"
-  data-component-name="DsComponentDetail"
-  id="component-metadata"
-  aria-labelledby="component-metadata-title"
-  data-ds-doc-section
->
-  <DsSectionHeaderLevel2 id="component-metadata-title" title="Component metadata" />
-  <dl>
-    <div><dt>Family:</dt><dd>{component.family}</dd></div>
-    <div><dt>Role:</dt><dd>{component.role}</dd></div>
-    {colorVariableLinks.length > 0 && (
-      <div>
-        <dt>Color variables:</dt>
-        <dd>
-          <ul class="ds-component-detail__foundation-links">
-            {colorVariableLinks.map((link) => (
-              <li><a href={link.href}>{link.label}</a></li>
-            ))}
-          </ul>
-        </dd>
-      </div>
-    )}
-    <div class="ds-component-detail__status-row">
-      <dt>Sync status:</dt>
-      <dd>
-        <ul aria-label={`Available sync statuses. Current status: ${component.syncStatus}`}>
-          {syncStatuses.map((status) => (
-            <li aria-current={status === component.syncStatus ? "true" : undefined} data-sync-status={status}>
-              {status}
-            </li>
-          ))}
-        </ul>
-      </dd>
-    </div>
-    <div>
-      <dt>Registry ID:</dt>
-      <dd><code>{component.id}</code><DsCopyButton value={component.id} /></dd>
-    </div>
-    <div><dt>Source:</dt><dd><code>{component.sourcePath ?? "Not implemented"}</code></dd></div>
-    <div>
-      <dt>Figma node:</dt>
-      <dd>
-        <a class="ds-component-detail__figma-link" href={figmaNodeUrl} target="_blank" rel="noreferrer">
-          <FigmaIcon aria-hidden="true" width="16" height="16" />
-          <code>{component.figmaCanonicalNodeId}</code>
-          <span>Open in Figma</span>
-        </a>
-        <DsCopyButton value={component.figmaCanonicalNodeId} />
-      </dd>
-    </div>
-    <div>
-      <dt>Agentic rule:</dt>
-      <dd><code>{component.agenticRule ?? "Not available"}</code>{component.agenticRule && <DsCopyButton value={component.agenticRule} />}</dd>
-    </div>
-  </dl>
-</section>
 
 {
   adapter ? (
     <>
-      <DsInteractiveComponentPreview
-        title={component.name}
-        renderer={adapter.preview.renderer}
-        rendererProps={adapter.preview.props}
-        axes={adapter.preview.axes}
-      />
+      {adapter.preview && (
+        <DsInteractiveComponentPreview
+          title={component.name}
+          renderer={adapter.preview.renderer}
+          rendererProps={adapter.preview.props}
+          axes={adapter.preview.axes}
+        />
+      )}
 
-      <section class="ds-component-detail__section" id="api" aria-labelledby="api-title" data-ds-doc-section>
+      <section
+        class="ds-component-detail__section"
+        id="api"
+        aria-labelledby="api-title"
+        data-component-name={componentName}
+        data-ds-doc-section
+      >
         <DsSectionHeaderLevel2
           id="api-title"
           title="API"
-          description="Canonical Astro props and slots exposed by the production component."
         />
         <DsTableFrame
           label={`${component.name} API`}
-          columns="minmax(12rem, 0.8fr) minmax(18rem, 1.4fr) minmax(10rem, 0.8fr)"
+          columns="minmax(12rem, 8fr) minmax(18rem, 14fr) minmax(10rem, 8fr)"
           minWidth="44rem"
         >
           <DsTableRow variant="header">
@@ -176,35 +119,33 @@ const usedBy = architecture.components
         </DsTableFrame>
       </section>
     </>
-  ) : available ? (
-    <section class="ds-component-detail__section" id="preview" aria-labelledby="preview-title" data-ds-doc-section>
-      <DsSectionHeaderLevel2
-        id="preview-title"
-        title="Preview"
-        description="A source implementation exists. The V2 documentation adapter has not been migrated for this component yet."
-      />
-    </section>
-  ) : (
-    <section class="ds-component-detail__section" id="preview" aria-labelledby="preview-title" data-ds-doc-section>
-      <DsSectionHeaderLevel2
-        id="preview-title"
-        title="Preview"
-        description="Runtime previews are available only for canonical Astro implementations."
-      />
+  ) : !available ? (
+    <section
+      class="ds-component-detail__empty-preview"
+      id="preview"
+      aria-label={`${component.name} preview availability`}
+      data-component-name={componentName}
+      data-ds-doc-section
+    >
       <DsEmptyState
         title="Astro preview unavailable"
         description="This Figma identity has not been implemented as a canonical Astro component. The documentation does not fabricate an API or visual preview."
         path={component.sourceDirectory}
       />
     </section>
-  )
+  ) : null
 }
 
-<section class="ds-component-detail__section" id="dependencies" aria-labelledby="dependencies-title" data-ds-doc-section>
+<section
+  class="ds-component-detail__section"
+  id="dependencies"
+  aria-labelledby="dependencies-title"
+  data-component-name={componentName}
+  data-ds-doc-section
+>
   <DsSectionHeaderLevel2
     id="dependencies-title"
     title="Dependencies"
-    description="Direct reusable records required by the component implementation."
   />
   {resolvedDependencies.length ? (
     <ul class="ds-component-detail__dependencies">
@@ -236,7 +177,6 @@ const usedBy = architecture.components
 {rule && <DsComponentRule rule={rule} />}
 
 <style>
-  .ds-component-detail__metadata,
   .ds-component-detail__section {
     display: grid;
     min-width: 0;
@@ -245,125 +185,9 @@ const usedBy = architecture.components
     scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
   }
 
-  .ds-component-detail__metadata dl {
-    display: grid;
-    margin: 0;
-    border-top: var(--border-width-default) solid var(--color-border-subtle);
-  }
-
-  .ds-component-detail__metadata dl > div {
-    display: flex;
+  .ds-component-detail__empty-preview {
     min-width: 0;
-    align-items: center;
-    gap: var(--gap-medium);
-    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
-    padding-block: var(--component-padding-small);
-  }
-
-  .ds-component-detail__metadata dt {
-    width: 8rem;
-    flex: 0 0 auto;
-    color: var(--color-text-tertiary);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-body-small);
-    font-weight: var(--font-weight-strong);
-  }
-
-  .ds-component-detail__metadata dd {
-    display: flex;
-    min-width: 0;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-small);
-    margin: 0;
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-body-small);
-    font-weight: var(--font-weight-normal);
-    overflow-wrap: anywhere;
-  }
-
-  .ds-component-detail__status-row {
-    align-items: flex-start !important;
-  }
-
-  .ds-component-detail__status-row dd ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--gap-tiny);
-    list-style: none;
-  }
-
-  .ds-component-detail__foundation-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--gap-small) var(--gap-medium);
-    list-style: none;
-  }
-
-  .ds-component-detail__foundation-links a {
-    color: var(--color-text-accent);
-    font-weight: var(--font-weight-strong);
-    text-decoration: underline;
-    text-underline-offset: var(--size-2);
-  }
-
-  .ds-component-detail__status-row li {
-    border: var(--border-width-default) solid var(--color-border-subtle);
-    border-radius: var(--radius-control);
-    padding: var(--space-tiny) var(--component-padding-small);
-    color: var(--color-text-tertiary);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-body-tiny);
-    font-weight: var(--font-weight-normal);
-  }
-
-  .ds-component-detail__status-row li[aria-current="true"] {
-    border-color: var(--color-border-strong);
-    color: var(--color-text-primary);
-    background: var(--color-background-subtle);
-    font-weight: var(--font-weight-emphasis);
-  }
-
-  .ds-component-detail__status-row li[data-sync-status="mapped"][aria-current="true"] {
-    border-color: var(--color-status-success-border);
-    color: var(--color-status-success-text);
-    background: var(--color-status-success-background);
-  }
-
-  .ds-component-detail__status-row li[data-sync-status="figma-only"][aria-current="true"],
-  .ds-component-detail__status-row li[data-sync-status="astro-only"][aria-current="true"] {
-    border-color: var(--color-status-info-border);
-    color: var(--color-status-info-text);
-    background: var(--color-status-info-background);
-  }
-
-  .ds-component-detail__status-row li[data-sync-status="intentional-difference"][aria-current="true"] {
-    border-color: var(--color-status-warning-border);
-    color: var(--color-status-warning-text);
-    background: var(--color-status-warning-background);
-  }
-
-  .ds-component-detail__status-row li[data-sync-status="deprecated"][aria-current="true"] {
-    border-color: var(--color-status-error-border);
-    color: var(--color-status-error-text);
-    background: var(--color-status-error-background);
-  }
-
-  .ds-component-detail__figma-link {
-    display: inline-flex;
-    min-width: 0;
-    align-items: center;
-    gap: var(--gap-small);
-    color: var(--color-text-primary);
-    text-decoration: underline;
-    text-underline-offset: var(--size-2);
-  }
-
-  .ds-component-detail__figma-link :global(svg) {
-    width: var(--size-16);
-    height: var(--size-16);
-    flex: 0 0 auto;
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
   }
 
   .ds-component-detail__muted,
@@ -404,13 +228,4 @@ const usedBy = architecture.components
     gap: var(--gap-medium);
   }
 
-  @media (width < 48rem) {
-    .ds-component-detail__metadata dl > div {
-      display: grid;
-    }
-
-    .ds-component-detail__metadata dt {
-      width: auto;
-    }
-  }
 </style>

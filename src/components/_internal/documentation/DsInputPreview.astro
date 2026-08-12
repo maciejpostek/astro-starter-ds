@@ -3,34 +3,36 @@ import Input from "../../base-components/inputs/Input.astro";
 ---
 
 <div
-  class="ds-input-preview"
+  class="input-preview"
   data-component-name="DsInputPreview"
   data-ds-preview-target
   data-input-type="input"
-  data-component-size="medium"
+  data-control-size="medium"
   data-ds-preview-state="default"
 >
   <Input
-    class="ds-input-preview__single"
-    data-ds-input-preview-control
+    class="input-preview__single"
+    data-input-preview-control
+    aria-label="Input preview"
     placeholder="Enter a value…"
   />
   <Input
-    class="ds-input-preview__multiline"
-    data-ds-input-preview-control
+    class="input-preview__multiline"
+    data-input-preview-control
+    aria-label="Textarea preview"
     multiline
     placeholder="Enter a value…"
   />
 </div>
 
 <style>
-  .ds-input-preview {
+  .input-preview {
     display: grid;
     width: min(100%, 20rem);
   }
 
-  .ds-input-preview[data-input-type="input"] :global(.ds-input-preview__multiline),
-  .ds-input-preview[data-input-type="textarea"] :global(.ds-input-preview__single) {
+  .input-preview[data-input-type="input"] :global(.input-preview__multiline),
+  .input-preview[data-input-type="textarea"] :global(.input-preview__single) {
     display: none;
   }
 </style>

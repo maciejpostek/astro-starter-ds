@@ -22,15 +22,15 @@
    * Inner spacing inside cards, panels, controls and composed UI components.
    * Use these for padding, not for gap or external margins.
    */
-  --component-padding-none: var(--size-0);
-  --component-padding-tiny: var(--size-4);
-  --component-padding-xsmall: var(--size-8);
-  --component-padding-small: var(--size-12);
-  --component-padding-medium:
+  --content-padding-none: var(--size-0);
+  --content-padding-tiny: var(--size-4);
+  --content-padding-xsmall: var(--size-8);
+  --content-padding-small: var(--size-12);
+  --content-padding-medium:
     clamp(var(--size-16), 0.8571rem + 0.7143vw, var(--size-24));
-  --component-padding-large:
+  --content-padding-large:
     clamp(var(--size-24), 1.2143rem + 1.4286vw, var(--size-40));
-  --component-padding-xlarge:
+  --content-padding-xlarge:
     clamp(var(--size-32), 1.4286rem + 2.8571vw, var(--size-56));
 
   /* Global gaps
@@ -72,7 +72,7 @@
   /* Component-based spaces
    * Margin contracts for important repeated vertical relationships.
    */
-  --space-eyebrow-bottom: var(--space-medium);
+  --space-eyebrow-bottom: var(--space-regular);
   --space-heading-content: var(--space-regular);
   --space-section-header-bottom: var(--space-xlarge);
   --space-media-content: var(--space-medium);
@@ -92,11 +92,11 @@
   /* Component-based radius
    * Surface shape contracts for repeated components.
    */
-  --radius-button: var(--radius-none);
-  --radius-input: var(--radius-none);
-  --radius-checkbox: var(--radius-none);
+  --radius-button: var(--radius-small);
+  --radius-input: var(--radius-small);
+  --radius-checkbox: var(--radius-small);
   --radius-tab: var(--radius-none);
-  --radius-tag: var(--radius-none);
+  --radius-tag: var(--radius-button);
   --radius-label: var(--radius-none);
 
   /* Border width
@@ -111,6 +111,6 @@
 @media (width < 48rem) {
   :root {
     /* Composed surfaces use a tighter medium padding on narrow screens. */
-    --component-padding-medium: var(--size-16);
+    --content-padding-medium: var(--size-16);
   }
 }

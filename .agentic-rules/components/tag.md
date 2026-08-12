@@ -28,7 +28,8 @@ Tag communicates one short categorical value, status or applied filter. Its opti
 
 ## Content contract
 
-- `label` contains one concise noun, short phrase or status value.
+- `label` contains one concise noun, short phrase or status value written in normal sentence case; Tag does not transform it to uppercase.
+- Optional `leading` content is one decorative contextual icon, approved logo, flag or avatar; `label` still carries the meaning.
 - Do not place sentences, headings or multiple unrelated values inside one Tag.
 - Tone communicates semantic meaning only when that meaning is already established by the surrounding content; color must not be the sole status cue.
 - `removeLabel` names the action and value, for example `Remove Industry: Finance`.
@@ -37,13 +38,14 @@ Tag communicates one short categorical value, status or applied filter. Its opti
 
 - Place related tags in a wrapping list with stable spacing.
 - Keep removable filter Tags near the filter controls or results summary they affect.
+- Use the named `leading` slot only for one non-interactive visual; never place controls or additional text inside it.
 - Use one fixed `close` Material Symbol for the remove action; do not expose arbitrary icons.
 - The caller owns filter state, removes the value after activation and updates the associated results.
 
 ## Responsive behavior
 
 - Primary strategy: `intrinsic`
-- Mechanisms and references: content-driven inline sizing, `data-component-size` and parent-owned `.l-cluster` or wrapping list gaps.
+- Mechanisms and references: one fixed component-owned geometry, conditional logical edge padding through `data-tag-leading` and `data-tag-removable`, a shared 24px visual target around either 14px edge icon, and parent-owned `.l-cluster` or wrapping list gaps.
 - Container queries: none.
 - Viewport queries: none.
 - Reflow, order and visibility: Each Tag remains intact while the parent wraps tags in DOM order; the label and optional remove button are never split into alternate renderings.
@@ -51,8 +53,11 @@ Tag communicates one short categorical value, status or applied filter. Its opti
 ## Accessibility and required behavior
 
 - The Tag shell remains non-interactive text; only the nested remove action is a native `button`.
+- Leading content is decorative and hidden from assistive technology because the visible `label` owns the accessible meaning.
 - A removable Tag requires an accessible remove label that includes the visible value.
 - Preserve native keyboard activation, visible `focus-visible`, pressed and disabled behavior on the remove button.
+- Hover, pressed, focus-visible and disabled visuals exist only when the remove action exists; a Tag without it has no interactive state.
+- The remove glyph inherits the current Tag text color and opacity in every tone and state.
 - When removal updates results asynchronously, the composing filter pattern owns any required result-count or status announcement.
 - Do not make the whole Tag focusable merely because it contains a removable value.
 
@@ -62,6 +67,10 @@ Tag communicates one short categorical value, status or applied filter. Its opti
 - [Input](/design-system/base-components/inputs/input) may collect filter text but does not represent an applied value.
 - [SwitchButton](/design-system/base-components/switch/switch-button) changes an immediately applied persistent binary setting.
 
+## Naming and token contract
+
+Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
+
 ## Core decision
 
-Use Tag for one compact value. Enable `removable` only when that value is an applied filter or selection that the caller can remove through the nested native button.
+Use Tag for one compact value with one fixed size and the same corner radius as Button. Add one decorative leading visual only when it improves recognition, and enable `removable` only when the caller can remove the applied value through the nested native button.

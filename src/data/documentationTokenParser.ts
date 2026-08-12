@@ -5,7 +5,7 @@ export type DocumentationTokenMode =
   | "light"
   | "dark"
   | "reduced-motion"
-  | `component-size:${string}`
+  | `control-size:${string}`
   | `media:${string}`
   | `selector:${string}`;
 
@@ -30,11 +30,11 @@ const tokenReferencePattern = /var\(\s*(--[a-z0-9-]+)(?:\s*,\s*([^)]*))?\)/gi;
 
 const modesForDeclaration = (selector: string, atRule: string): DocumentationTokenMode[] => {
   const modes = new Set<DocumentationTokenMode>();
-  const sizeMatch = selector.match(/\[data-component-size=["']?([a-z0-9-]+)["']?\]/i);
+  const sizeMatch = selector.match(/\[data-control-size=["']?([a-z0-9-]+)["']?\]/i);
 
   if (/prefers-reduced-motion\s*:\s*reduce/i.test(atRule)) return ["reduced-motion"];
   if (atRule.trim()) return [`media:${atRule.replace(/\s+/g, " ").trim()}`];
-  if (sizeMatch?.[1]) return [`component-size:${sizeMatch[1]}`];
+  if (sizeMatch?.[1]) return [`control-size:${sizeMatch[1]}`];
   if (/\[data-theme=["']dark["']\]/i.test(selector)) modes.add("dark");
   if (/\[data-theme=["']light["']\]/i.test(selector)) modes.add("light");
   if (/(^|,)\s*:root\b/.test(selector)) modes.add("default");
@@ -47,7 +47,7 @@ const fallbackModes = (mode: DocumentationTokenMode): DocumentationTokenMode[] =
   if (mode === "dark") return ["dark", "default", "light"];
   if (mode === "light") return ["light", "default"];
   if (mode === "reduced-motion") return ["reduced-motion", "default", "light"];
-  if (mode.startsWith("component-size:")) return [mode, "default", "light"];
+  if (mode.startsWith("control-size:")) return [mode, "default", "light"];
   if (mode.startsWith("media:") || mode.startsWith("selector:")) return [mode, "default", "light"];
   return ["default", "light"];
 };

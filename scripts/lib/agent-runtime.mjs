@@ -468,7 +468,9 @@ const buildContract = ({
   status = "ready",
   blockedReason = null,
   suggestedPrompt = null,
-  requestedContexts = []
+  requestedContexts = [],
+  tokenNeed = null,
+  tokenDraft = null
 }) => {
   const policy = intentPolicy[intent];
   return {
@@ -484,6 +486,8 @@ const buildContract = ({
     validationScope: policy.validationScope,
     maxRepairAttempts: policy.maxRepairAttempts,
     requestedContexts,
+    tokenNeed,
+    tokenDraft,
     excludedContexts: policy.excludedContexts.filter(
       (context) => !requestedContexts.includes(context)
     ),
@@ -499,6 +503,8 @@ export const routeAgentRequest = ({
   explicitTargets = [],
   targetFile,
   intentOverride,
+  tokenNeed = null,
+  tokenDraft = null,
   projectRoot = "."
 }) => {
   const requestedContexts = unique([
@@ -561,6 +567,8 @@ export const routeAgentRequest = ({
       targetFile: inspectedTargetFile.path,
       constraints,
       requestedContexts,
+      tokenNeed,
+      tokenDraft,
       status:
         missingTokens.length > 0 || inspectedTargetFile.error
           ? "blocked"
@@ -739,6 +747,8 @@ export const routeAgentRequest = ({
       targetFile: inspectedTargetFile.path,
       constraints,
       requestedContexts,
+      tokenNeed,
+      tokenDraft,
       status: "blocked",
       blockedReason,
       suggestedPrompt
@@ -813,7 +823,9 @@ export const routeAgentRequest = ({
     brandMode,
     targetFile: inspectedTargetFile.path,
     constraints,
-    requestedContexts
+    requestedContexts,
+    tokenNeed,
+    tokenDraft
   });
 };
 
@@ -919,6 +931,182 @@ export const resolveTokenContext = (tokenId, projectRoot = ".") => {
     definitions,
     found: definitions.length > 0
   };
+};
+
+const readTokenArchitecture = (projectRoot) =>
+  readJson(join(projectRoot, "src/data/design-system/tokenArchitecture.json"));
+
+const tokenNeedFields = ["owner", "scope", "domain", "property", "consumer"];
+
+const normalizeTokenIdentity = (value) =>
+  String(value ?? "")
+    .normalize("NFKD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const normalizeTokenNeed = (need) => {
+  if (!need || typeof need !== "object") return null;
+  return {
+    owner: normalizeTokenIdentity(need.owner),
+    scope: need.scope ?? "component",
+    domain: need.domain ?? "",
+    property: need.property ?? "",
+    variant: need.variant ?? null,
+    state: need.state ?? null,
+    consumer: normalizeTokenIdentity(need.consumer ?? need.owner),
+    dependencies: unique((need.dependencies ?? []).map(normalizeTokenIdentity)),
+    useCases: unique((need.useCases ?? []).map(normalizeTokenIdentity)),
+    proposedAliasSource: need.proposedAliasSource ?? null
+  };
+};
+
+const groupSupportsNeed = (group, need) => {
+  if (group.domain !== need.domain) return false;
+  if (!(group.consumers ?? []).includes("*") && !(group.consumers ?? []).includes(need.consumer)) {
+    return false;
+  }
+  if (!(group.properties ?? []).includes(need.property)) return false;
+  if (need.variant && !(group.variants ?? []).includes(need.variant)) return false;
+  if (need.state && !(group.states ?? []).includes(need.state)) return false;
+  return true;
+};
+
+const groupTier = (group, need) => {
+  if (group.scope === "component" && normalizeTokenIdentity(group.owner) === need.owner) return 0;
+  if (group.scope === "component" && need.dependencies.includes(normalizeTokenIdentity(group.owner))) return 1;
+  if (
+    group.scope === "use-case" &&
+    (need.useCases.includes(normalizeTokenIdentity(group.owner)) || (group.consumers ?? []).includes(need.consumer))
+  ) return 2;
+  if (group.scope === "global") return 3;
+  return Number.POSITIVE_INFINITY;
+};
+
+const proposedTokenName = (need, groupId = null) => {
+  const propertyParts = need.property.split("-").filter(Boolean);
+  const firstPropertyPart = propertyParts.shift();
+  const restOfProperty = propertyParts.join("-");
+  const segmentsByGroup = {
+    "button-color": [need.owner, need.variant, need.property, need.state],
+    "input-color": [need.owner, need.property, need.state],
+    "card-color": [need.owner, need.property, need.state],
+    "switch-color": [need.owner, firstPropertyPart, need.variant, restOfProperty, need.state],
+    "switch-size": [need.owner, need.property],
+    "tag-size": [need.owner, "size", need.variant, need.property],
+    "pagination-color": [need.owner, "control", need.property, need.state],
+    "pagination-size": [need.owner, need.property],
+    "selection-control-color": [need.owner, need.variant, need.property, need.state],
+    "tooltip-size": [need.owner, need.property],
+    "control-size": [need.owner, "size", need.variant, need.property]
+  };
+  const segments = segmentsByGroup[groupId] ?? [need.owner, need.property, need.variant, need.state];
+  return `--${segments.filter(Boolean).join("-")}`;
+};
+
+export const resolveTokenNeed = (rawNeed, projectRoot = ".") => {
+  const need = normalizeTokenNeed(rawNeed);
+  const errors = [];
+  if (!need) {
+    return { status: "gap", need: null, searchedGroups: [], candidates: [], errors: ["tokenNeed must be an object."] };
+  }
+  for (const field of tokenNeedFields) {
+    if (!need[field]) errors.push(`tokenNeed.${field} is required.`);
+  }
+  if (!["global", "use-case", "component", "section"].includes(need.scope)) {
+    errors.push("tokenNeed.scope is invalid.");
+  }
+  if (!["color", "size", "typography", "layout", "motion", "elevation"].includes(need.domain)) {
+    errors.push("tokenNeed.domain is invalid.");
+  }
+
+  const architecture = readTokenArchitecture(resolve(projectRoot));
+  const authoringContract = readJson(
+    join(resolve(projectRoot), "architecture/component-authoring-contract.json")
+  );
+  const groups = architecture.groups ?? [];
+  const ranked = groups
+    .map((group) => ({ group, tier: groupTier(group, need) }))
+    .filter(({ tier }) => Number.isFinite(tier))
+    .sort((a, b) => a.tier - b.tier);
+  const searchedGroups = ranked.map(({ group }) => group.id);
+
+  for (const tier of [0, 1, 2, 3]) {
+    const candidates = ranked
+      .filter((candidate) => candidate.tier === tier)
+      .map(({ group }) => group)
+      .filter((group) => groupSupportsNeed(group, need));
+    if (candidates.length === 1 && errors.length === 0) {
+      return { status: "reuse", need, searchedGroups, candidates, selectedGroup: candidates[0], extensionTarget: null, tokenDraft: null, errors: [] };
+    }
+    if (candidates.length > 1 && errors.length === 0) {
+      return { status: "ambiguous", need, searchedGroups, candidates, selectedGroup: null, extensionTarget: null, tokenDraft: null, errors: [] };
+    }
+  }
+
+  const ownedGroup = ranked.find(
+    ({ group, tier }) => tier === 0 && group.domain === need.domain
+  )?.group ?? null;
+  const tokenDraft = {
+    approvalStatus: "proposed",
+    requestedFor: need.consumer,
+    missingNeed: {
+      owner: need.owner,
+      scope: need.scope,
+      domain: need.domain,
+      property: need.property,
+      variant: need.variant,
+      state: need.state
+    },
+    searchedGroups,
+    alternatives: ranked.map(({ group, tier }) => ({ id: group.id, tier })),
+    extensionTarget: ownedGroup?.id ?? null,
+    proposedGroup: ownedGroup ? null : {
+      id: `${need.owner}-${need.domain}`,
+      scope: need.scope,
+      owner: need.owner,
+      domain: need.domain
+    },
+    proposedTokens: [{
+      name: proposedTokenName(need, ownedGroup?.id ?? null),
+      aliasSource: need.proposedAliasSource
+    }],
+    sourcePath: ownedGroup?.sourcePaths?.[0] ?? authoringContract.tokenDomains?.[need.domain] ?? null,
+    consumers: [need.consumer]
+  };
+  return {
+    status: "gap",
+    need,
+    searchedGroups,
+    candidates: [],
+    selectedGroup: null,
+    extensionTarget: ownedGroup,
+    tokenDraft,
+    errors
+  };
+};
+
+const approvedTokenDraftMatches = (approvedDraft, proposedDraft) => {
+  if (
+    !approvedDraft ||
+    approvedDraft.approvalStatus !== "approved" ||
+    !approvedDraft.approvedBy ||
+    !approvedDraft.approvedAt ||
+    !proposedDraft
+  ) return false;
+  const normalizeTokens = (tokens) =>
+    [...(tokens ?? [])]
+      .map(({ name, aliasSource }) => ({ name, aliasSource }))
+      .sort((left, right) => left.name.localeCompare(right.name));
+  return (
+    approvedDraft.requestedFor === proposedDraft.requestedFor &&
+    approvedDraft.extensionTarget === proposedDraft.extensionTarget &&
+    approvedDraft.sourcePath === proposedDraft.sourcePath &&
+    JSON.stringify(normalizeTokens(approvedDraft.proposedTokens)) ===
+      JSON.stringify(normalizeTokens(proposedDraft.proposedTokens))
+  );
 };
 
 const matchesBrandRule = (rule, scopes, components) => {
@@ -1085,7 +1273,9 @@ export const resolveAgentContext = ({
   task,
   projectRoot = ".",
   contractOverride,
-  creationDraft
+  creationDraft,
+  tokenNeed = task.tokenNeed ?? null,
+  tokenDraft = task.tokenDraft ?? null
 }) => {
   const absoluteRoot = resolve(projectRoot);
   const registry =
@@ -1144,6 +1334,9 @@ export const resolveAgentContext = ({
       tokenQueue.push(...aliases);
     }
   }
+  const tokenResolution = tokenNeed
+    ? resolveTokenNeed(tokenNeed, absoluteRoot)
+    : null;
   const missing = [];
 
   for (const target of componentTargets.filter(
@@ -1153,6 +1346,19 @@ export const resolveAgentContext = ({
   }
   for (const token of tokens.filter((candidate) => !candidate.found)) {
     missing.push(`Missing token: ${token.id}`);
+  }
+  if (tokenResolution?.errors?.length) {
+    missing.push(...tokenResolution.errors);
+  } else if (tokenResolution?.status === "ambiguous") {
+    missing.push(
+      `Ambiguous token groups: ${tokenResolution.candidates.map((group) => group.id).join(", ")}.`
+    );
+  } else if (tokenResolution?.status === "gap") {
+    if (["reuse", "compose"].includes(task.intent)) {
+      missing.push(`${task.intent} cannot create or extend token groups.`);
+    } else if (!approvedTokenDraftMatches(tokenDraft, tokenResolution.tokenDraft)) {
+      missing.push("Token gap requires an explicitly approved tokenDraft.");
+    }
   }
 
   const readPlan = [];
@@ -1182,6 +1388,17 @@ export const resolveAgentContext = ({
       addRead(dependency.sourcePath, "direct-dependency-source", dependency.name);
     }
   };
+
+  if (["compose", "repair", "extend", "create"].includes(task.intent) || tokenNeed) {
+    addRead(
+      "architecture/component-authoring-contract.json",
+      "deterministic-authoring-contract"
+    );
+    addRead(
+      "src/data/design-system/tokenArchitecture.json",
+      "token-group-registry"
+    );
+  }
 
   if (task.intent === "exact-edit") {
     const tokenReads = new Map();
@@ -1277,13 +1494,17 @@ export const resolveAgentContext = ({
       ? resolveCreationDraft(creationDraft, registry, absoluteRoot)
       : { draft: null, page: null, errors: [] };
   missing.push(...draftResolution.errors);
-  const phase =
-    task.intent !== "create"
+  const tokenApprovalRequired =
+    tokenResolution?.status === "gap" &&
+    !approvedTokenDraftMatches(tokenDraft, tokenResolution.tokenDraft);
+  const phase = tokenApprovalRequired
+    ? "token-planning"
+    : task.intent !== "create"
       ? "normal"
       : draftResolution.draft
         ? "create-family-resolution"
         : "create-planning";
-  if (task.intent === "create" && phase === "create-planning") {
+  if (task.intent === "create" && ["create-planning", "token-planning"].includes(phase)) {
     addRead(
       "src/data/design-system/componentArchitecture.json",
       "component-gap-evidence"
@@ -1390,9 +1611,11 @@ export const resolveAgentContext = ({
     route: task.intent,
     phase,
     nextStep:
-      phase === "create-planning" && missing.length === 0
-        ? "Provide creationDraft with layer, family, sourcePath, and docsPath."
-        : null,
+      phase === "token-planning"
+        ? "Review tokenResolution.tokenDraft and provide the exact draft with approvalStatus=approved."
+        : phase === "create-planning" && missing.length === 0
+          ? "Provide creationDraft with layer, family, sourcePath, docsPath, and resolved token groups."
+          : null,
     allowNewComponents: task.allowNewComponents,
     targetFile: task.targetFile ?? null,
     constraints: task.constraints ?? {
@@ -1400,6 +1623,12 @@ export const resolveAgentContext = ({
       prohibitedCreations: []
     },
     creationDraft: draftResolution.draft,
+    tokenNeed: tokenResolution?.need ?? null,
+    tokenResolution,
+    tokenDraft:
+      tokenResolution?.status === "gap"
+        ? tokenDraft ?? tokenResolution.tokenDraft
+        : null,
     components,
     dependencies,
     tokens,
@@ -1502,6 +1731,20 @@ export const validateTaskContract = (task) => {
       )
     ) {
       errors.push("constraints must contain prohibitNewComponents and prohibitedCreations");
+    }
+  }
+  if (task.tokenNeed !== undefined && task.tokenNeed !== null) {
+    const normalizedNeed = normalizeTokenNeed(task.tokenNeed);
+    for (const field of tokenNeedFields) {
+      if (!normalizedNeed?.[field]) errors.push(`tokenNeed.${field} is required`);
+    }
+  }
+  if (task.tokenDraft?.approvalStatus === "approved") {
+    if (["reuse", "compose"].includes(task.intent)) {
+      errors.push(`${task.intent} cannot approve or create token drafts`);
+    }
+    if (!task.tokenDraft.approvedBy || !task.tokenDraft.approvedAt) {
+      errors.push("approved tokenDraft requires approvedBy and approvedAt");
     }
   }
   return errors;

@@ -1,0 +1,213 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Checkbox from "./Checkbox.astro";
+
+export interface Props extends Omit<
+  HTMLAttributes<"input">,
+  "aria-label" | "aria-labelledby" | "checked" | "class" | "disabled" | "id" | "type"
+> {
+  id: string;
+  label: string;
+  description?: string;
+  checked?: boolean;
+  indeterminate?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  label,
+  description,
+  checked = false,
+  indeterminate = false,
+  disabled = false,
+  class: className,
+  "aria-describedby": externalDescriptionId,
+  ...attributes
+} = Astro.props;
+
+const labelId = `${id}-label`;
+const descriptionId = description ? `${id}-description` : undefined;
+const describedBy = [descriptionId, externalDescriptionId]
+  .filter((value): value is string => typeof value === "string" && value.length > 0)
+  .join(" ") || undefined;
+const hasLeading = Astro.slots.has("leading");
+---
+
+<label
+  class:list={["checkbox-card", className]}
+  data-component-name="CheckboxCard"
+  data-selection-disabled={disabled ? "true" : undefined}
+  data-selection-leading={hasLeading ? "true" : "false"}
+  for={id}
+>
+  {hasLeading && (
+    <span class="checkbox-card__leading" aria-hidden="true" inert>
+      <slot name="leading" />
+    </span>
+  )}
+
+  <span class="checkbox-card__content">
+    <span class="checkbox-card__label body-small-semibold" id={labelId}>{label}</span>
+    {description && (
+      <span class="checkbox-card__description body-tiny-regular" id={descriptionId}>
+        {description}
+      </span>
+    )}
+  </span>
+
+  <Checkbox
+    {...attributes}
+    class="checkbox-card__control"
+    id={id}
+    aria-labelledby={labelId}
+    aria-describedby={describedBy}
+    checked={checked}
+    indeterminate={indeterminate}
+    disabled={disabled}
+  />
+</label>
+
+<style>
+  .checkbox-card {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    grid-template-areas: "content control";
+    grid-template-columns: minmax(0, 1fr) var(--size-16);
+    align-items: start;
+    gap: var(--gap-regular);
+    border: var(--border-width-default) solid var(--card-border-default);
+    border-radius: var(--radius-medium);
+    padding: var(--content-padding-medium);
+    color: var(--input-text-default);
+    background: var(--card-background-default);
+    box-shadow: var(--elevation-surface-subtle);
+    cursor: pointer;
+    transition:
+      background-color var(--motion-transition),
+      border-color var(--motion-transition),
+      box-shadow var(--motion-transition);
+  }
+
+  .checkbox-card[data-selection-leading="true"] {
+    grid-template-areas: "leading content control";
+    grid-template-columns: max-content minmax(0, 1fr) var(--size-16);
+  }
+
+  .checkbox-card__leading {
+    display: block;
+    inline-size: max-content;
+    block-size: max-content;
+    grid-area: leading;
+    overflow: hidden;
+    color: var(--color-icon-accent);
+    background: transparent;
+    line-height: 0;
+    pointer-events: none;
+  }
+
+  .checkbox-card__leading :global(> *) {
+    display: block;
+  }
+
+  .checkbox-card__content {
+    display: grid;
+    min-inline-size: 0;
+    grid-area: content;
+  }
+
+  .checkbox-card__label,
+  .checkbox-card__description {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .checkbox-card__description {
+    color: var(--input-helper-default);
+  }
+
+  .checkbox-card :global(.checkbox-card__control) {
+    grid-area: control;
+    margin-block-start: var(--size-2);
+  }
+
+  .checkbox-card:has(.checkbox__input:is(:focus-visible, [data-ds-preview-state="focus-visible"])) :global(.checkbox__indicator) {
+    box-shadow: none;
+  }
+
+  .checkbox-card:not([data-selection-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
+    border-color: var(--card-border-hover);
+    background: var(--card-background-hover);
+  }
+
+  .checkbox-card:has(.checkbox__input:checked),
+  .checkbox-card:has(.checkbox__input[data-selection-indeterminate="true"]) {
+    border-color: var(--card-border-selected);
+    background: var(--card-background-selected);
+  }
+
+  .checkbox-card:has(.checkbox__input:is(:focus-visible, [data-ds-preview-state="focus-visible"])) {
+    outline: none;
+    box-shadow: var(--effect-focused), var(--elevation-surface-subtle);
+  }
+
+  .checkbox-card[data-selection-disabled="true"] {
+    border-color: var(--color-state-disabled-border);
+    color: var(--input-text-disabled);
+    background: var(--color-state-disabled-background);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .checkbox-card[data-selection-disabled="true"] .checkbox-card__description {
+    color: var(--input-text-disabled);
+  }
+
+  .checkbox-card[data-selection-disabled="true"] .checkbox-card__leading {
+    color: var(--color-state-disabled-icon);
+    background: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .checkbox-card {
+      transition-duration: 0ms;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .checkbox-card {
+      border-color: ButtonText;
+      background: Canvas;
+      box-shadow: none;
+    }
+
+    .checkbox-card__leading {
+      color: Highlight;
+      background: transparent;
+    }
+
+    .checkbox-card:has(.checkbox__input:checked),
+    .checkbox-card:has(.checkbox__input[data-selection-indeterminate="true"]) {
+      border-color: Highlight;
+    }
+
+    .checkbox-card:has(.checkbox__input:is(:focus-visible, [data-ds-preview-state="focus-visible"])) {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+      box-shadow: none;
+    }
+
+    .checkbox-card[data-selection-disabled="true"],
+    .checkbox-card[data-selection-disabled="true"] .checkbox-card__description {
+      border-color: GrayText;
+      color: GrayText;
+    }
+
+    .checkbox-card[data-selection-disabled="true"] .checkbox-card__leading {
+      color: GrayText;
+      background: transparent;
+    }
+  }
+</style>

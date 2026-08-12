@@ -1,0 +1,175 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { createPaginationRange } from "../../../lib/pagination/pagination-model.mjs";
+import PaginationEllipsis from "./PaginationEllipsis.astro";
+import PaginationGroup from "./PaginationGroup.astro";
+import PaginationItem from "./PaginationItem.astro";
+
+export interface PaginationLabels {
+  navigation: string;
+  summary: (currentPage: number, totalPages: number) => string;
+  page: (page: number) => string;
+  currentPage: (page: number) => string;
+  first: string;
+  previous: string;
+  next: string;
+  last: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<"nav">, "class"> {
+  currentPage: number;
+  totalPages: number;
+  getPageHref: (page: number) => string;
+  showSummary?: boolean;
+  showFirstLast?: boolean;
+  labels?: Partial<PaginationLabels>;
+  class?: string;
+}
+
+const defaultLabels: PaginationLabels = {
+  navigation: "Pagination",
+  summary: (currentPage, totalPages) => `Page ${currentPage} of ${totalPages}`,
+  page: (page) => `Go to page ${page}`,
+  currentPage: (page) => `Page ${page}, current page`,
+  first: "First",
+  previous: "Previous page",
+  next: "Next page",
+  last: "Last",
+};
+
+const {
+  currentPage,
+  totalPages,
+  getPageHref,
+  showSummary = true,
+  showFirstLast = true,
+  labels,
+  class: className,
+  "aria-label": ariaLabel,
+  ...attributes
+} = Astro.props;
+
+const resolvedLabels: PaginationLabels = { ...defaultLabels, ...labels };
+const range = createPaginationRange(currentPage, totalPages);
+const isFirstPage = currentPage === 1;
+const isLastPage = currentPage === totalPages;
+---
+
+<nav
+  {...attributes}
+  aria-label={ariaLabel ?? resolvedLabels.navigation}
+  class:list={["pagination", className]}
+  data-component-name="Pagination"
+  data-pagination-first-last={showFirstLast ? "visible" : "hidden"}
+  data-pagination-summary={showSummary ? "visible" : "hidden"}
+>
+  {showSummary && (
+    <p class="pagination__summary body-small-regular">
+      {resolvedLabels.summary(currentPage, totalPages)}
+    </p>
+  )}
+
+  <PaginationGroup class="pagination__list">
+    {showFirstLast && (
+      <PaginationItem
+        kind="first"
+        label={resolvedLabels.first}
+        disabled={isFirstPage}
+        href={isFirstPage ? undefined : getPageHref(1)}
+      />
+    )}
+
+    <PaginationItem
+      kind="previous"
+      label={resolvedLabels.previous}
+      disabled={isFirstPage}
+      href={isFirstPage ? undefined : getPageHref(currentPage - 1)}
+    />
+
+    {range.map((item) => item.type === "ellipsis" ? (
+      <PaginationEllipsis data-pagination-key={item.key} />
+    ) : (
+      <PaginationItem
+        kind="page"
+        page={item.page}
+        current={item.page === currentPage}
+        label={item.page === currentPage
+          ? resolvedLabels.currentPage(item.page)
+          : resolvedLabels.page(item.page)}
+        href={getPageHref(item.page)}
+      />
+    ))}
+
+    <PaginationItem
+      kind="next"
+      label={resolvedLabels.next}
+      disabled={isLastPage}
+      href={isLastPage ? undefined : getPageHref(currentPage + 1)}
+    />
+
+    {showFirstLast && (
+      <PaginationItem
+        kind="last"
+        label={resolvedLabels.last}
+        disabled={isLastPage}
+        href={isLastPage ? undefined : getPageHref(totalPages)}
+      />
+    )}
+  </PaginationGroup>
+</nav>
+
+<style>
+  .pagination {
+    container: pagination / inline-size;
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-medium);
+  }
+
+  .pagination::after {
+    grid-column: 3;
+    content: "";
+  }
+
+  .pagination__summary {
+    min-inline-size: 0;
+    grid-column: 1;
+    margin: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .pagination__list {
+    grid-column: 2;
+  }
+
+  @container pagination (max-width: 35.999rem) {
+    .pagination {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-regular);
+    }
+
+    .pagination::after,
+    .pagination :global([data-pagination-item="first"]),
+    .pagination :global([data-pagination-item="last"]),
+    .pagination :global([data-pagination-item="page"]),
+    .pagination :global([data-pagination-item="ellipsis"]) {
+      display: none;
+    }
+
+    .pagination__list {
+      grid-column: 2;
+    }
+
+    .pagination[data-pagination-summary="hidden"] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pagination[data-pagination-summary="hidden"] .pagination__list {
+      grid-column: 1;
+      justify-self: center;
+    }
+  }
+</style>

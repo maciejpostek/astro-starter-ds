@@ -1,6 +1,12 @@
 ---
 import DesignSystemLayout from "../../layouts/DesignSystemLayout.astro";
-import { documentationCategories, documentationPageHref } from "../../data/documentationRegistry";
+import MaterialSymbol from "../../components/assets/icons/MaterialSymbol.astro";
+import {
+  createDocumentationSummary,
+  documentationCategories,
+  documentationPageHref,
+} from "../../data/documentationRegistry";
+
 ---
 
 <DesignSystemLayout
@@ -9,14 +15,18 @@ import { documentationCategories, documentationPageHref } from "../../data/docum
   header={{
     eyebrow: "Design system documentation",
     title: "Code-backed foundations, components and website patterns.",
-    description: "Browse the canonical Astro architecture. Registry status makes the boundary between implemented code and the Figma backlog explicit.",
+    summary: createDocumentationSummary(
+      "Browse the canonical Astro architecture across foundations, assets and reusable UI families. The category cards below lead into each area, while registry status keeps implemented code distinct from the Figma backlog.",
+      [],
+      "Use the left navigation or search to move directly to a documented record.",
+    ),
   }}
 >
   <section class="documentation-categories" aria-label="Documentation categories">
     {
       documentationCategories.map((category) => (
         <article>
-          <span>{category.figmaIcon}</span>
+          <span><MaterialSymbol name={category.icon} size="var(--size-24)" /></span>
           <div>
             <h2 class="heading-h4">{category.displayLabel}</h2>
             <p class="body-small-regular">{category.pages.length} pages</p>
@@ -46,7 +56,7 @@ import { documentationCategories, documentationPageHref } from "../../data/docum
     gap: var(--gap-large);
     border: var(--border-width-default) solid var(--color-border-subtle);
     background: var(--color-background-surface);
-    padding: var(--component-padding-large);
+    padding: var(--content-padding-large);
   }
 
   article > span {

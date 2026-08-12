@@ -1,0 +1,22 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import MaterialSymbolLibrary from "../../../components/_internal/documentation/MaterialSymbolLibrary.astro";
+import { materialSymbolNames } from "../../../lib/icons/materialSymbols";
+---
+
+<DesignSystemLayout
+  title="Material Symbols - Astro Design System"
+  pageType="asset-gallery"
+  header={{
+    eyebrow: "Assets",
+    title: "Material Symbols",
+    summary: [{
+      kind: "text",
+      text: `Browse and copy ${materialSymbolNames.length} curated local Material Symbols rendered as inline SVG.`,
+    }],
+  }}
+>
+  <div id="component-material-symbol" data-ds-doc-section>
+    <MaterialSymbolLibrary />
+  </div>
+</DesignSystemLayout>

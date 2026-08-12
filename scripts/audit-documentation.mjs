@@ -29,6 +29,20 @@ const collectAstroPages = (directory) => {
   walk(join(projectRoot, directory));
   return pages;
 };
+const collectRawElementBlocks = (source, tagName) => {
+  const blocks = [];
+  const starts = [];
+  const tagPattern = new RegExp(`<${tagName}\\b[^>]*>|<\\/${tagName}>`, "g");
+  for (const match of source.matchAll(tagPattern)) {
+    if (match[0].startsWith(`</${tagName}`)) {
+      const start = starts.pop();
+      if (start !== undefined) blocks.push(source.slice(start, match.index + match[0].length));
+    } else {
+      starts.push(match.index);
+    }
+  }
+  return blocks;
+};
 
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json"));
 const definitionSource = read("src/data/documentationComponentRegistry.ts");
@@ -39,16 +53,68 @@ const tokenRegistry = read("src/data/documentationTokenRegistry.ts");
 const linkResolver = read("src/data/documentationLinkResolver.ts");
 const componentDetail = read("src/components/_internal/documentation/DsComponentDetail.astro");
 const componentRule = read("src/components/_internal/documentation/DsComponentRule.astro");
+const codeSnippet = read("src/components/_internal/documentation/DsCodeSnippet.astro");
 const documentationRule = read(".agentic-rules/components/documentation.md");
+const tableFrame = read("src/components/_internal/documentation/DsTableFrame.astro");
+const tableRow = read("src/components/_internal/documentation/DsTableRow.astro");
+const tableRowGroup = read("src/components/_internal/documentation/DsTableRowGroup.astro");
+const tableGroupSeparator = read("src/components/_internal/documentation/DsTableGroupSeparator.astro");
 const tableCell = read("src/components/_internal/documentation/DsTableCell.astro");
+const tableCopyCell = read("src/components/_internal/documentation/DsTableCopyCell.astro");
+const tableOverflow = read("src/lib/documentation/table-overflow.mjs");
+const colorModeCell = read("src/components/_internal/documentation/DsColorModeCell.astro");
+const colorRow = read("src/components/_internal/documentation/DsColorRow.astro");
+const spacingRow = read("src/components/_internal/documentation/DsSpacingRow.astro");
+const paletteBlock = read("src/components/_internal/documentation/DsPaletteBlock.astro");
+const componentColorReference = read("src/components/_internal/documentation/DsComponentColorReference.astro");
+const tableSampleCell = read("src/components/_internal/documentation/DsTableSampleCell.astro");
+const typographyFoundationBlock = read("src/components/_internal/documentation/DsTypographyFoundationBlock.astro");
+const typographyStylesBlock = read("src/components/_internal/documentation/DsTypographyStylesBlock.astro");
+const typographyStyleProfile = read("src/components/_internal/documentation/DsTypographyStyleProfile.astro");
+const componentReadiness = read("src/components/_internal/documentation/DsComponentReadiness.astro");
+const internalPartsPage = read("src/pages/design-system/workspace/internal-parts.astro");
+const foundationTableSources = [
+  "src/styles/tokens/design-system-components.css",
+  "src/components/_internal/documentation/DsAttributeBlock.astro",
+  "src/components/_internal/documentation/DsFoundationTokenGroups.astro",
+  "src/components/_internal/documentation/DsMotionTokenGroups.astro",
+  "src/components/_internal/documentation/DsPaletteBlock.astro",
+  "src/components/_internal/documentation/DsResponsiveStrategyReference.astro",
+  "src/components/_internal/documentation/DsTypographyFoundationBlock.astro",
+  "src/components/_internal/documentation/DsTypographyStylesBlock.astro",
+  "src/pages/design-system/foundations/elevation.astro",
+  "src/pages/design-system/foundations/layout.astro",
+  "src/pages/design-system/foundations/typography.astro",
+].map(read).join("\n");
 const figmaIcon = read("src/assets/documentation/figma.svg");
 const designSystemLayout = read("src/layouts/DesignSystemLayout.astro");
 const docHeader = read("src/components/_internal/documentation/DsDocHeader.astro");
 const documentationStyles = read("src/styles/documentation.css");
 const sectionHeading = read("src/components/_internal/documentation/DsSectionHeading.astro");
+const documentationBlockTitle = read("src/components/_internal/documentation/DsDocumentationBlockTitle.astro");
+const typographyFoundationPage = read("src/pages/design-system/foundations/typography.astro");
+const sizingFoundationPage = read("src/pages/design-system/foundations/sizing.astro");
+const materialSymbolsPage = read("src/pages/design-system/assets/material-symbols.astro");
+const socialIconsPage = read("src/pages/design-system/assets/social-icons.astro");
+const flagsPage = read("src/pages/design-system/assets/flags.astro");
+const documentationSidebar = read("src/components/_internal/documentation/DsDocumentationSidebar.astro");
+const documentationSearch = read("src/components/_internal/documentation/DsDocumentationSearch.astro");
+const documentationSearchResult = read("src/components/_internal/documentation/DsDocumentationSearchResult.astro");
+const documentationSearchRuntime = read("src/lib/documentation/search.mjs");
+const designSystemIndex = read("src/pages/design-system/index.astro");
+const documentationThemePicker = read("src/components/_internal/documentation/DsDocumentationThemePicker.astro");
+const documentationGuidesToggle = read("src/components/_internal/documentation/DsDocumentationGuidesToggle.astro");
+const documentationPager = read("src/components/_internal/documentation/DsDocumentationPager.astro");
+const tableOfContents = read("src/components/_internal/documentation/DsTableOfContents.astro");
+const documentationRegistry = read("src/data/documentationRegistry.ts");
+const baseComponentDetailRoute = read("src/pages/design-system/base-components/[familyKey]/[componentSlug]/index.astro");
+const websitePatternDetailRoute = read("src/pages/design-system/website-patterns/[familyKey]/[componentSlug]/index.astro");
+const componentDetailRoutes = `${baseComponentDetailRoute}\n${websitePatternDetailRoute}`;
+const componentInfoLayer = read("src/components/_internal/dev/ComponentInfoLayer.astro");
 const docSection = read("src/components/_internal/documentation/DsDocSection.astro");
 const interactivePreview = read("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
 const familyGallery = read("src/components/_internal/documentation/DsFamilyGallery.astro");
+const baseLayout = read("src/layouts/BaseLayout.astro");
 
 const definitionIds = Array.from(
   definitionSource.matchAll(/componentId:\s*"([^"]+)"/g),
@@ -62,6 +128,7 @@ if (duplicateDefinitionIds.length) {
 const implementedComponents = registry.components.filter((component) =>
   component.sourcePath
   && ["base-components", "website-patterns"].includes(component.categoryKey)
+  && !["internal", "part"].includes(component.role)
 );
 
 for (const component of implementedComponents) {
@@ -92,7 +159,9 @@ for (const componentId of definitionIds) {
     if (!content) errors.push(`${componentId} rule has an empty or missing section: ${heading}`);
   }
 
-  if (!component.figmaCanonicalNodeId || !registry.figma?.fileUrl) {
+  if (component.syncStatus === "astro-only" && component.figmaCanonicalNodeId) {
+    errors.push(`${componentId} is astro-only but declares a fictional canonical Figma node.`);
+  } else if (component.syncStatus !== "astro-only" && (!component.figmaCanonicalNodeId || !registry.figma?.fileUrl)) {
     errors.push(`${componentId} cannot build its canonical Figma link.`);
   }
 }
@@ -165,6 +234,9 @@ for (const absolutePage of collectAstroPages("src/pages/design-system")) {
   if (!/\bheader=\{/.test(page)) {
     errors.push(`${pagePath} does not pass the required header object to DesignSystemLayout.`);
   }
+  if (/header=\{\{(?:(?!\}\})[\s\S])*?\bdescription:/.test(page)) {
+    errors.push(`${pagePath} still passes a legacy description in its documentation header.`);
+  }
   if (/import\s+DsDocHeader\b|<DsDocHeader\b/.test(page)) {
     errors.push(`${pagePath} imports or renders DsDocHeader instead of delegating it to DesignSystemLayout.`);
   }
@@ -185,19 +257,49 @@ if (!designSystemLayout.includes('<DsDocHeader {...header} />')) {
 if (!designSystemLayout.includes('data-component-name="DesignSystemLayout"')) {
   errors.push("DesignSystemLayout does not expose its Guides identity.");
 }
+if (!documentationSearch.includes('"[data-search-input-control]"')
+  || documentationSearch.includes('"[data-search-input]"')) {
+  errors.push("Documentation search must read and observe the native SearchInput control, not its wrapper.");
+}
+if (!documentationSearch.includes("<DsDocumentationSearchResult")
+  || !documentationSearch.includes("rankDocumentationSearchRecords")
+  || !documentationSearch.includes('data-has-query="false"')
+  || !documentationSearch.includes("event.target === dialog")
+  || documentationSearch.includes("data-ds-search-close")
+  || documentationSearch.includes("ds-documentation-dialog__close")) {
+  errors.push("Documentation search must keep an input-only initial state, reuse its result helper and close without an adjacent Close control.");
+}
+if (!documentationSearch.includes('target?.closest<HTMLAnchorElement>(".ds-search-result__link")')
+  || !documentationSearch.includes("if (resultLink && dialog.contains(resultLink))")
+  || !/if \(selected\) \{\s*closeSearch\(\);\s*window\.location\.assign\(selected\.href\);/s.test(documentationSearch)) {
+  errors.push("Documentation search must close before pointer or keyboard navigation from a result.");
+}
+if (!documentationSearchResult.includes('data-component-name="DsDocumentationSearchResult"')
+  || !documentationSearchResult.includes("data-ds-search-result-template")
+  || !documentationSearchResult.includes("<CopyIconButton")
+  || !documentationSearchResult.includes("data-ds-search-result-variable-action-template")
+  || !documentationSearchResult.includes("documentationCategoryIcons")
+  || !documentationSearchRuntime.includes("getDocumentationHighlightSegments")
+  || !documentationSearchRuntime.includes("rankDocumentationSearchRecords")
+  || !documentationSearch.includes('record.kind === "Variable"')
+  || !documentationSearch.includes("data-clipboard-value")
+  || !documentationSearch.includes("ds-documentation-variable-copy-success")
+  || !documentationSearch.includes("ds-documentation-variable-copy-error")) {
+  errors.push("Documentation search results must use the reusable template, canonical category icons and shared safe search runtime.");
+}
 const docHeaderIndex = designSystemLayout.indexOf("<DsDocHeader {...header} />");
 const slotIndex = designSystemLayout.indexOf("<slot />", docHeaderIndex);
 if (docHeaderIndex < 0 || slotIndex < 0 || docHeaderIndex > slotIndex) {
   errors.push("DesignSystemLayout does not preserve DsDocHeader → page content slot order.");
 }
-if (!/\.ds-documentation-page-header__inner\s*\{[^}]*max-width:\s*var\(--ds-documentation-content-max-width\)[^}]*margin-inline:\s*auto\s*;/s.test(docHeader)) {
-  errors.push("DsDocHeader inner content does not align to the canonical page width.");
+if (!/\.ds-documentation-page-header__inner\s*\{[^}]*display:\s*grid[^}]*gap:\s*var\(--gap-small\)/s.test(docHeader)) {
+  errors.push("DsDocHeader does not use the compact rich-text flow.");
 }
 if (/\.ds-documentation-content__inner\s*>\s*\.page(?:--wide)?/.test(documentationStyles)) {
   errors.push("Documentation CSS still contains legacy .page width-wrapper selectors.");
 }
-if (!/\.ds-documentation-page-header\s*\{[^}]*grid-column:\s*full\s*;[^}]*padding:\s*var\(--component-padding-large\)\s+var\(--ds-documentation-content-inline-padding\)\s*;/s.test(documentationStyles)) {
-  errors.push("DsDocHeader does not render as the canonical padded full-width band.");
+if (/\.ds-documentation-page-header\s*\{[^}]*(?:background:|border(?:-bottom)?:|grid-column:\s*full)/s.test(documentationStyles)) {
+  errors.push("DsDocHeader must remain in the content flow without a separate band, background or divider.");
 }
 if (!documentationStyles.includes("--ds-documentation-content-max-width: 50rem")
   || !documentationStyles.includes("--ds-documentation-content-max-width: 88rem")) {
@@ -229,39 +331,263 @@ if (existsSync(join(projectRoot, "src/components/_internal/documentation/DsSecti
 if (!/<h1\b/.test(docHeader) || (docHeader.match(/<h1\b/g) ?? []).length !== 1) {
   errors.push("DsDocHeader must render exactly one canonical h1.");
 }
-if (!sectionHeading.includes("level: 2 | 3 | 4")
-  || !sectionHeading.includes("description?: string")
-  || !sectionHeading.includes("{description && <p")
-  || !sectionHeading.includes("data-ds-section-heading-level={level}")) {
-  errors.push("DsSectionHeading does not preserve the Level 2–4 contract with an optional description.");
+if (!docHeader.includes('import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro"')
+  || !docHeader.includes("summary: readonly DocumentationHeaderSegment[]")
+  || !docHeader.includes('segment.kind === "link"')
+  || !docHeader.includes("<a href={segment.href}")) {
+  errors.push("DsDocHeader must use the public Eyebrow and render typed, safe summary links.");
 }
-for (const requiredStyle of ["margin-block:", "border-bottom:", "padding-block:", ".ds-section-heading:first-child"]) {
+if (!documentationRegistry.includes("sourcePath?: string;")
+  || !documentationRegistry.includes("figmaHref?: string;")
+  || !docHeader.includes("ds-documentation-page-header__resources")
+  || !docHeader.includes('import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro"')
+  || !docHeader.includes('import CopyButton from "../../base-components/buttons/CopyButton.astro"')
+  || !docHeader.includes('import Toast from "../../base-components/toast-notification/Toast.astro"')
+  || !docHeader.includes("<ButtonGroup")
+  || !docHeader.includes("<CopyButton")
+  || !docHeader.includes('variant="primary"')
+  || !docHeader.includes('successToastId="ds-component-name-copy-success"')
+  || !docHeader.includes('errorToastId="ds-component-name-copy-error"')
+  || !docHeader.includes("ds-documentation-page-header__source-snippet")
+  || !docHeader.includes("<code>{sourcePath}</code>")
+  || !docHeader.includes("value={sourcePath}")
+  || docHeader.includes("Source: <code>{sourcePath}</code>")
+  || !docHeader.includes('aria-label={`Open ${title} in Figma`}')
+  || !docHeader.includes('target="_blank"')
+  || !docHeader.includes('rel="noreferrer"')
+  || !docHeader.includes('data-button-variant="secondary"')
+  || !docHeader.includes('data-control-size="small"')) {
+  errors.push("Component headers must expose a copyable source snippet and a ButtonGroup with primary CopyButton and optional Figma link.");
+}
+if (!/\.ds-documentation-page-header__inner \.heading-h1\s*\{[^}]*margin-block-end:\s*var\(--size-12\)/s.test(docHeader)
+  || !/\.ds-documentation-page-header__inner\s*>\s*p\s*\{[^}]*margin-block-end:\s*var\(--size-12\)/s.test(docHeader)
+  || !/\.ds-documentation-page-header__source-snippet\s*\{[^}]*margin-block-end:\s*var\(--size-12\)/s.test(docHeader)) {
+  errors.push("DsDocHeader must add 12px of breathing room after its heading, summary and source snippet.");
+}
+if ((componentDetailRoutes.match(/sourcePath:\s*component\.sourcePath\s*\?\?\s*undefined/g) ?? []).length !== 2
+  || (componentDetailRoutes.match(/figmaHref,/g) ?? []).length !== 2
+  || (componentDetailRoutes.match(/architecture\.figma\.fileUrl/g) ?? []).length !== 2
+  || (componentDetailRoutes.match(/figmaCanonicalNodeId\.replace\(":",\s*"-"\)/g) ?? []).length !== 2) {
+  errors.push("Both component detail routes must derive optional source and canonical Figma header resources from the registry.");
+}
+if (!sectionHeading.includes("level: 2 | 3;")
+  || sectionHeading.includes("description?: string")
+  || sectionHeading.includes("{description && <p")
+  || !sectionHeading.includes('2: "heading-h4"')
+  || !sectionHeading.includes('3: "body-medium-regular"')
+  || !sectionHeading.includes("data-ds-section-heading-level={level}")) {
+  errors.push("DsSectionHeading must preserve semantic H2/H3 with heading-h4/body-medium styling and no generated description.");
+}
+for (const requiredStyle of ["margin-block:", ".ds-section-heading:first-child"]) {
   if (!sectionHeading.includes(requiredStyle)) {
     errors.push(`DsSectionHeading is missing canonical spacing or divider ownership: ${requiredStyle}`);
   }
 }
 if (!/\.ds-section-heading\s*\{[^}]*margin-block:\s*var\(--space-large\)\s+var\(--space-regular\)/s.test(sectionHeading)
-  || !/data-ds-section-heading-level="2"\]\s*\{[^}]*margin-block:\s*var\(--space-large\)\s+var\(--space-regular\)/s.test(sectionHeading)
-  || !/data-ds-section-heading-level="4"\]\s*\{[^}]*margin-block:\s*var\(--space-medium\)\s+var\(--space-regular\)/s.test(sectionHeading)) {
-  errors.push("All HeaderLevel components must share the compact --space-regular bottom margin while preserving level-specific top spacing.");
+  || !/data-ds-section-heading-level="2"\]\s*\{[^}]*margin-block:\s*var\(--space-large\)\s+var\(--space-regular\)/s.test(sectionHeading)) {
+  errors.push("HeaderLevel components must share the compact --space-regular bottom margin.");
 }
-if (!/\.ds-section-heading\s*\{[^}]*border-bottom:\s*var\(--border-width-default\)\s+solid\s+var\(--color-border-subtle\)/s.test(sectionHeading)
-  || /border-bottom-color:/.test(sectionHeading)) {
-  errors.push("All HeaderLevel components must inherit the same lightest --color-border-subtle divider.");
+if (/border-bottom:|border-bottom-color:|padding-block:/.test(sectionHeading)) {
+  errors.push("HeaderLevel components must build hierarchy with typography and rhythm, without dividers or decorative block padding.");
+}
+if (!/data-ds-section-heading-level="3"\]\s+h3\s*\{[^}]*color:\s*var\(--color-text-primary\)[^}]*font-weight:\s*var\(--font-weight-emphasis\)/s.test(sectionHeading)) {
+  errors.push("DsSectionHeaderLevel3 must use primary text with the canonical heading emphasis weight.");
+}
+if (existsSync(join(projectRoot, "src/components/_internal/documentation/DsSectionHeaderLevel4.astro"))) {
+  errors.push("DsSectionHeaderLevel4 must not exist in the H1/H2/H3 documentation hierarchy.");
+}
+if (!documentationBlockTitle.includes('data-component-name="DsDocumentationBlockTitle"')
+  || !documentationBlockTitle.includes("body-small-regular")
+  || !documentationBlockTitle.includes("color: var(--color-text-accent)")
+  || !documentationBlockTitle.includes("font-weight: var(--font-weight-strong)")
+  || !documentationBlockTitle.includes("margin: 0")) {
+  errors.push("DsDocumentationBlockTitle must remain a compact, non-heading, accent strong label with a stable Guides identity.");
+}
+if (!componentColorReference.includes('<DsDocumentationBlockTitle id={`${id}-title`} title={group.title} />')
+  || !componentColorReference.includes('aria-labelledby={`${id}-title`}')) {
+  errors.push("Each component color reference must own its single accessible table title.");
+}
+for (const sectionBlock of collectRawElementBlocks(colorFoundationPage, "section")) {
+  const componentReferences = Array.from(
+    sectionBlock.matchAll(/<DsComponentColorReference\s+groupId="([^"]+)"/g),
+    (match) => match[1],
+  );
+  if (componentReferences.length === 0) continue;
+
+  const blockTitleCount = (sectionBlock.match(/<DsDocumentationBlockTitle\b/g) ?? []).length;
+  if (componentReferences.length === 1 && blockTitleCount > 0) {
+    errors.push(`Foundations / Color wraps the single ${componentReferences[0]} table in a second labelled section.`);
+  }
+
+  const sectionId = sectionBlock.match(/<section\b[^>]*\bid="([^"]+)"/)?.[1];
+  for (const groupId of componentReferences) {
+    if (sectionId === `colors-component-${groupId}`) {
+      errors.push(`The ${sectionId} group reuses its ${groupId} child table anchor.`);
+    }
+  }
+}
+if (typographyStyleProfile.includes('const Sample = row.className === "heading-h1"')
+  || typographyStyleProfile.includes("<Sample ")
+  || !typographyStyleProfile.includes('<span class:list={["ds-typography-style-profile__sample", row.className]}>')) {
+  errors.push("Typography style samples must remain non-heading spans so table content cannot pollute the documentation outline.");
+}
+for (const [pageName, page] of [
+  ["Color", colorFoundationPage],
+  ["Typography", typographyFoundationPage],
+]) {
+  if (page.includes("<DsSectionHeaderLevel3")) {
+    errors.push(`${pageName} must keep its flat table catalogue below Level 2 instead of adding table-only Level 3 headings.`);
+  }
+}
+if (typographyFoundationPage.includes("Global Text Styles")
+  || typographyFoundationPage.includes('title="Typography utilities"')) {
+  errors.push("Typography repeats a Level 2 title with a redundant Level 3 label.");
+}
+if (typographyFoundationPage.indexOf('id="typography-text-styles"')
+    > typographyFoundationPage.indexOf('id="typography-tokens"')
+  || foundationRegistry.indexOf('id: "typography-text-styles"')
+    > foundationRegistry.indexOf('id: "typography-tokens"')) {
+  errors.push("Typography must present Text Styles before Typography Tokens in content and canonical TOC data.");
+}
+for (const [pageName, page] of [
+  ["Color", colorFoundationPage],
+  ["Typography", typographyFoundationPage],
+  ["Sizing", sizingFoundationPage],
+]) {
+  if (/class="[^"]*ds-documentation-block-title/.test(page)) {
+    errors.push(`${pageName} renders a raw documentation block title instead of DsDocumentationBlockTitle.`);
+  }
+}
+
+for (const [name, source] of [
+  ["DsDocumentationSidebar", documentationSidebar],
+  ["DsDocumentationSearch", documentationSearch],
+  ["DsDocumentationSearchResult", documentationSearchResult],
+  ["DsDocumentationThemePicker", documentationThemePicker],
+  ["DsDocumentationGuidesToggle", documentationGuidesToggle],
+  ["DsDocumentationPager", documentationPager],
+  ["DsTableOfContents", tableOfContents],
+]) {
+  if (!source.includes(`data-component-name="${name}"`)) {
+    errors.push(`${name} does not expose a stable internal documentation identity.`);
+  }
+}
+for (const componentName of [
+  "DsDocumentationSidebar",
+  "DsDocumentationPager",
+  "DsTableOfContents",
+]) {
+  if (!designSystemLayout.includes(`<${componentName}`)) {
+    errors.push(`DesignSystemLayout does not compose ${componentName}.`);
+  }
+}
+if (documentationSidebar.includes("ds-documentation-status-dot")) {
+  errors.push("Documentation sidebar must not render status dots.");
+}
+if (!documentationSidebar.includes('category.categoryKey === "assets"')) {
+  errors.push("Asset documentation pages must remain leaf navigation items without nested component duplicates.");
+}
+for (const contract of [
+  "DsIconGallery",
+  "DsCopyableIconTile",
+  'title: "Flags"',
+  'label="Search flags"',
+  "flag.slug",
+]) {
+  if (!flagsPage.includes(contract)) {
+    errors.push(`Flags documentation is missing shared gallery contract: ${contract}.`);
+  }
+}
+if (flagsPage.includes("data-flag-search") || flagsPage.includes("Usage guidance")) {
+  errors.push("Flags documentation must not restore its legacy search control or guidance section.");
+}
+for (const [pageName, page] of [
+  ["Material Symbols", materialSymbolsPage],
+  ["Social icons", socialIconsPage],
+  ["Flags", flagsPage],
+]) {
+  if (page.includes("DsSectionHeaderLevel2") || page.includes("toc={")) {
+    errors.push(`${pageName} must flow directly from its page hero into search without a repeated Level 2 heading or local TOC.`);
+  }
+}
+if (!/\.ds-documentation-sidebar__component\[aria-current="page"\]::before\s*\{[^}]*background:\s*var\(--color-border-accent\)/s.test(documentationStyles)
+  || /\.ds-documentation-sidebar__component\[aria-current="page"\]\s*\{[^}]*border-left/s.test(documentationStyles)) {
+  errors.push("The active component must overlay the shared sidebar list border without adding or offsetting a second border.");
+}
+if (!/\.ds-table-of-contents a\s*\{[^}]*font-size:\s*var\(--font-size-body-tiny\)/s.test(documentationStyles)) {
+  errors.push("Documentation TOC links must use the 12px body-tiny token.");
+}
+if (!/\.ds-documentation-pager__link\s*\{[^}]*border-radius:\s*var\(--radius-button\)/s.test(documentationStyles)) {
+  errors.push("Documentation Previous/Next links must reuse the canonical Button radius.");
+}
+if (/\.ds-documentation-toc\s*\{[^}]*border-left:/s.test(documentationStyles)
+  || !/\.ds-documentation-toc\s*\{[^}]*padding-inline:\s*var\(--content-padding-medium\)\s+var\(--content-padding-large\)/s.test(documentationStyles)
+  || !/\.ds-table-of-contents a\[data-active="true"\]\s*\{[^}]*font-weight:\s*var\(--font-weight-strong\)/s.test(documentationStyles)) {
+  errors.push("The right TOC must be borderless, use expanded end padding and match the strong accent active state.");
+}
+if (!/\.ds-documentation-topbar__menu,\s*\n\.ds-documentation-topbar__mobile-brand\s*\{\s*display:\s*none/s.test(documentationStyles)
+  || !/@media \(width < 64rem\)[\s\S]*?\.ds-documentation-topbar__menu,[\s\S]*?display:\s*inline-grid/s.test(documentationStyles)) {
+  errors.push("The documentation hamburger must remain hidden on desktop and appear only below 64rem.");
+}
+if (!documentationRegistry.includes("export interface DocumentationNavigationRecord")
+  || !documentationRegistry.includes("export const getDocumentationNeighbors")
+  || !documentationRegistry.includes("export const documentationCategoryIcons")
+  || !documentationRegistry.includes("categoryKey: DocumentationCategoryKey")
+  || !documentationRegistry.includes("breadcrumb: readonly string[]")
+  || !documentationSidebar.includes("name={category.icon}")
+  || !designSystemIndex.includes("name={category.icon}")) {
+  errors.push("Documentation registry does not own typed navigation order, neighbors and category icons.");
+}
+if (!documentationThemePicker.includes('value: "system"')
+  || !documentationThemePicker.includes('value: "light"')
+  || !documentationThemePicker.includes('value: "dark"')
+  || !documentationThemePicker.includes('icon: "desktop_windows"')
+  || !documentationThemePicker.includes('icon: "light_mode"')
+  || !documentationThemePicker.includes('icon: "dark_mode"')) {
+  errors.push("Documentation theme picker must preserve icon-based System, Light and Dark preferences.");
+}
+if (!designSystemLayout.includes("<DsDocumentationGuidesToggle")
+  || !designSystemLayout.includes("showGuidesToggle={false}")
+  || !baseLayout.includes("showGuidesToggle?: boolean")
+  || !documentationGuidesToggle.includes("data-guides-button")
+  || !documentationGuidesToggle.includes("data-grid-toggle")
+  || !documentationGuidesToggle.includes('name="visibility"')
+  || !documentationGuidesToggle.includes('name="visibility_off"')) {
+  errors.push("Documentation Guides must use the private fixed icon button and disable the legacy SwitchLabel control.");
+}
+if (!componentInfoLayer.includes('`Component name: ${getComponentName(target)}`')
+  || !componentInfoLayer.includes("writeClipboardText(getClipboardText(target))")
+  || !componentInfoLayer.includes('"pointerdown"')
+  || !componentInfoLayer.includes('"beforeinput"')
+  || !componentInfoLayer.includes("preventGuidesInteraction(event)")
+  || componentInfoLayer.includes("if (isInteractiveTarget(event.target)) return;")) {
+  errors.push("Guides ComponentInfoLayer must copy the prefixed identity and suppress component activation while inspection is active.");
 }
 if (!docSection.includes("<DsSectionHeaderLevel2") || !docSection.includes("aria-labelledby={titleId}")) {
   errors.push("DsDocSection does not own a canonical accessible Level 2 heading.");
 }
-if (!interactivePreview.includes("<DsSectionHeaderLevel2")
-  || !componentRule.includes("<DsSectionHeaderLevel2")
+if (!componentRule.includes("<DsSectionHeaderLevel2")
   || !familyGallery.includes('title="Variants"')) {
-  errors.push("Preview, Component Rule or Family Gallery does not use the canonical Level 2 hierarchy.");
+  errors.push("Component Rule or Family Gallery does not use the canonical Level 2 hierarchy.");
+}
+if (interactivePreview.includes("<DsSectionHeaderLevel2")
+  || interactivePreview.includes("Inspect one canonical")
+  || componentDetail.includes('title="Preview"')
+  || componentDetail.includes("component-metadata")
+  || componentDetail.includes("Component metadata")
+  || definitionSource.includes('{ label: "Component metadata", href: "#component-metadata" }')
+  || definitionSource.includes('{ label: "Preview", href: "#preview" }')
+  || componentDetailRoutes.includes('{ label: "Component metadata", href: "#component-metadata" }')
+  || componentDetailRoutes.includes('{ label: "Preview", href: "#preview" }')) {
+  errors.push("Component details must omit the Metadata table, Preview heading, helper copy and their TOC entries.");
 }
 if (!/\.ds-interactive-component-preview__control-group\s*>\s*span\s*\{[^}]*font-family:\s*var\(--font-family-body\)[^}]*font-size:\s*var\(--font-size-body-tiny\)[^}]*font-weight:\s*var\(--font-weight-strong\)[^}]*text-transform:\s*var\(--text-transform-none\)/s.test(interactivePreview)) {
   errors.push("Interactive preview labels must use canonical body tiny strong typography without uppercase transformation.");
 }
 if (!interactivePreview.includes('role="group"')
   || !interactivePreview.includes("aria-pressed")
+  || !interactivePreview.includes('aria-label={`${title} interactive preview`}')
+  || !interactivePreview.includes('data-control-size="small"')
   || !interactivePreview.includes('preview.addEventListener("click"')
   || !interactivePreview.includes('preview.addEventListener("keydown"')
   || !/\.ds-interactive-component-preview__controls\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*wrap/s.test(interactivePreview)
@@ -271,12 +597,32 @@ if (!interactivePreview.includes('role="group"')
   || /\.ds-interactive-component-preview__controls\s*\{[^}]*(?:border:|padding:)/s.test(interactivePreview)) {
   errors.push("Interactive component previews must use accessible segmented groups in one horizontal wrapping controls bar.");
 }
-if (!/\.ds-component-detail__metadata dt\s*\{[^}]*font-family:\s*var\(--font-family-body\)[^}]*font-weight:\s*var\(--font-weight-strong\)/s.test(componentDetail)
-  || !/\.ds-component-detail__metadata dd\s*\{[^}]*font-family:\s*var\(--font-family-body\)[^}]*font-weight:\s*var\(--font-weight-normal\)/s.test(componentDetail)) {
-  errors.push("Component metadata labels and values do not use the canonical body strong/normal typography contract.");
+if (!/\.ds-interactive-component-preview__controls\s*\{[^}]*gap:\s*var\(--gap-small\)/s.test(interactivePreview)
+  || !/\.ds-interactive-component-preview__control-group\s*\{[^}]*border:\s*var\(--border-width-default\) solid var\(--color-border-subtle\)[^}]*border-radius:\s*var\(--radius-button\)[^}]*padding:\s*var\(--content-padding-xsmall\)/s.test(interactivePreview)) {
+  errors.push("Interactive preview axis groups must use the subtle bordered 8px group contract.");
+}
+const previewSceneIndex = interactivePreview.indexOf('<div class="ds-interactive-component-preview__scene"');
+const previewControlsIndex = interactivePreview.indexOf('<div class="ds-interactive-component-preview__controls"');
+if (previewSceneIndex < 0 || previewControlsIndex < 0 || previewSceneIndex > previewControlsIndex
+  || !/\.ds-interactive-component-preview__scene\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3/s.test(interactivePreview)
+  || /\.ds-interactive-component-preview__scene\s*\{[^}]*min-height:/s.test(interactivePreview)) {
+  errors.push("Interactive previews must render an exact 4:3 scene before their controls without a fixed minimum height.");
+}
+for (const requiredTabContract of [
+  "--control-min-height",
+  "--control-padding-block",
+  "--tab-border-default",
+  "--tab-background-hover",
+  "--tab-border-selected",
+  "--tab-text-selected",
+  "--radius-button",
+  "--effect-focused",
+]) {
+  if (!interactivePreview.includes(requiredTabContract)) {
+    errors.push(`Interactive preview controls are missing the small Tab visual contract: ${requiredTabContract}`);
+  }
 }
 for (const requiredHeading of [
-  'title="Component metadata"',
   'title="API"',
   'title="Dependencies"',
 ]) {
@@ -318,8 +664,9 @@ for (const absolutePage of standardDocumentationPages) {
   if (page.includes("ds-section-heading")) {
     errors.push(`${pagePath} overrides canonical HeaderLevel spacing or divider styles.`);
   }
-  if (page.includes("<DsSectionHeaderLevel4") && !page.includes("<DsSectionHeaderLevel3")) {
-    errors.push(`${pagePath} uses Level 4 without a Level 3 structural parent.`);
+  if (page.includes("<DsSectionHeaderLevel4")
+    || /<(?:DsDocSection|DsSectionHeaderLevel[23])\b[^>]*\bdescription=/s.test(page)) {
+    errors.push(`${pagePath} still uses the removed Level 4 or a generated HeaderLevel description.`);
   }
 }
 
@@ -331,8 +678,9 @@ for (const requiredContract of [
   "Full-screen responsive preview routes",
   "Canonical heading hierarchy",
   "Do not skip a level",
-  "Descriptions are optional",
-  "Raw semantic headings remain valid only for content titles",
+  "HeaderLevel components do not accept descriptions",
+  "DsDocumentationBlockTitle",
+  "exactly one `--space-regular` relationship",
   "Reserve `--font-family-mono` for code snippets",
   "do not uppercase them for visual hierarchy",
   "Foundations remain the only place that renders complete variable tables",
@@ -353,13 +701,13 @@ if (!definitionSource.includes("DocumentationLinkTarget") || /dependencies:[\s\S
   errors.push("Component dependencies must use typed documentation link targets, not internal href strings.");
 }
 if (!definitionSource.includes("typeReferences?:")
-  || !definitionSource.includes('sectionId: "sizing-attributes"')
+  || !definitionSource.includes('sectionId: "sizing-control-size"')
   || !definitionSource.includes('id: "button-primary"')
   || !definitionSource.includes('id: "button-secondary"')
   || !definitionSource.includes('id: "button-tertiary"')
   || !componentDetail.includes("typeParts")
   || !componentDetail.includes("resolveApiTypeParts")) {
-  errors.push("Component API values must use typed links to Component Size and canonical semantic color groups.");
+  errors.push("Control API values must use typed links to Control Size and canonical semantic color groups.");
 }
 if (!componentDetail.includes("resolveDocumentationLink")
   || !componentDetail.includes("Components that use ${component.name}")) {
@@ -382,10 +730,8 @@ if (!definitionSource.includes("foundationReferences:")
   || /\bvariables:\s*\{|#variables/.test(definitionSource)) {
   errors.push("Every component adapter must use typed foundationReferences and must not retain the legacy Variables model or TOC entry.");
 }
-if (!componentDetail.includes('kind: "component-color-group"')
-  || !componentDetail.includes("Color variables:")
-  || /DsComponent(?:Size|Color)Reference|id="variables"|title="Variables"/.test(componentDetail)) {
-  errors.push("Component detail must deep-link to canonical color groups from metadata without rendering a Variables section or Foundation tables.");
+if (/kind:\s*"component-color-group"|Color variables:|DsComponent(?:Size|Color)Reference|id="variables"|title="Variables"/.test(componentDetail)) {
+  errors.push("Component detail must not render metadata color links, Variables sections or Foundation tables.");
 }
 const referencedColorGroupIds = new Set(
   Array.from(definitionSource.matchAll(/colorGroups:\s*\[([^\]]*)\]/g))
@@ -405,11 +751,123 @@ if (!componentRule.includes('import DsCodeSnippet from "./DsCodeSnippet.astro"')
   || componentRule.includes("set:html")) {
   errors.push("Component UX rules must render as one copyable canonical Markdown code snippet.");
 }
+if (!codeSnippet.includes('import { codeToHtml, createCssVariablesTheme } from "shiki"')
+  || !codeSnippet.includes('variablePrefix: "--code-snippet-"')
+  || !codeSnippet.includes('import DsCopyButton from "./DsCopyButton.astro"')
+  || !codeSnippet.includes('data-component-name="DsCodeSnippet"')
+  || !codeSnippet.includes('overflow-wrap: anywhere')
+  || !codeSnippet.includes('white-space: pre-wrap')
+  || !codeSnippet.includes('return extension ? languageByExtension[extension] ?? "text" : "text"')
+  || !codeSnippet.includes("<Fragment set:html={highlightedCode} />")) {
+  errors.push("DsCodeSnippet must keep its typed Shiki theme, copy action, safe language fallback and line-wrapping contract.");
+}
 if (!componentDetail.includes("<DsTableFrame") || /ds-component-detail__table/.test(componentDetail)) {
   errors.push("Component API must use canonical documentation table primitives.");
 }
-if (!tableCell.includes('data-ds-table-cell-truncate={truncate ? "true" : undefined}')) {
-  errors.push("Documentation table-cell truncation must remain explicit.");
+if (!tableCell.includes('overflow?: "ellipsis" | "visual"')
+  || !tableCell.includes('overflow = "ellipsis"')
+  || !tableCell.includes('data-ds-table-overflow-target={overflow === "ellipsis" ? "true" : undefined}')
+  || !tableCell.includes('text-overflow: ellipsis')
+  || !tableCell.includes('white-space: nowrap')) {
+  errors.push("Documentation table cells must default to one-line ellipsis with an explicit non-text visual exception.");
+}
+if (!tableCell.includes('Astro.slots.has("actions")')
+  || !tableCell.includes('class="ds-table-cell__actions"')) {
+  errors.push("Documentation table-cell actions must remain outside the shrinkable text target.");
+}
+if (!tableFrame.includes('class="ds-table-frame__surface"')
+  || !tableFrame.includes('role="table"')
+  || !tableFrame.includes("overflow-x: auto")
+  || !tableFrame.includes("max-width: 100%")
+  || !tableFrame.includes("border: var(--border-width-default) solid var(--color-border-subtle)")
+  || !tableFrame.includes("width: max(100%, var(--ds-table-min-width, var(--ds-doc-table-min-width)))")) {
+  errors.push("Documentation tables must use one content-width scrollport with a stationary full border and an internally wide surface.");
+}
+if (!tableFrame.includes("ResizeObserver")
+  || !tableFrame.includes("MutationObserver")
+  || !tableOverflow.includes("target.scrollWidth > target.clientWidth + 1")
+  || !tableOverflow.includes('target.setAttribute("aria-describedby", tooltipId)')
+  || !tableFrame.includes("shouldDismissTableTooltip(event.key)")
+  || !tableOverflow.includes('key === "Escape"')
+  || !tableFrame.includes("activateAnchoredOverlay")
+  || !tableFrame.includes('tooltip.setAttribute("popover", "manual")')
+  || !tableFrame.includes("showPopoverSurface")
+  || !tableFrame.includes("hidePopoverSurface")
+  || tableFrame.includes("tooltip.style.left")
+  || tableFrame.includes("tooltip.style.top")) {
+  errors.push("Documentation tables must expose one overflow-aware tooltip manager through the canonical overlay runtime and Popover top layer.");
+}
+if (/inlineEndBleed|data-ds-doc-inline-end-bleed|50cqw/.test(`${tableFrame}\n${typographyStyleProfile}\n${documentationStyles}`)) {
+  errors.push("Documentation tables must not expose or implement inline-end bleed.");
+}
+if ([tableRow, tableRowGroup, tableGroupSeparator].some((source) => /width:\s*max\(100%/.test(source))) {
+  errors.push("Documentation table rows and groups must fill the shared surface instead of owning table width.");
+}
+if (!tableCopyCell.includes('slot="actions"')
+  || !tableCopyCell.includes('<slot name="actions" />')
+  || /\bnowrap\b|\btruncate\b/.test(tableCopyCell)) {
+  errors.push("Copyable documentation identifiers must use the shared ellipsis target and non-shrinking actions slot.");
+}
+if (!tableCopyCell.includes('id={tokenId}')
+  || !tableCopyCell.includes('data-ds-token-anchor={tokenId ? "true" : undefined}')
+  || !tableCopyCell.includes('const tokenId = anchor && value.startsWith("--")')
+  || /<DsTableCell\b[^>]*\bid=\{tokenId\}/s.test(tableCopyCell)
+  || [colorRow, spacingRow].some((source) => source.includes("id={tokenId}") || source.includes("const tokenId ="))
+  || !colorRow.includes("anchor={anchorToken}")
+  || !paletteBlock.includes("anchorToken={anchorTokens}")
+  || !componentColorReference.includes("anchorTokens={group.anchorTokens}")
+  || (foundationData.match(/anchorTokens:\s*false/g) ?? []).length !== 6
+  || !typographyFoundationPage.includes('<DsTableCopyCell anchor={false} role="cell" value={row.token} />')
+  || !documentationStyles.includes('[data-ds-token-anchor="true"][data-ds-search-target="true"]')
+  || !documentationStyles.includes("background: var(--color-background-accent-subtle)")
+  || !documentationStyles.includes("color: var(--color-text-accent)")
+  || !designSystemLayout.includes('window.addEventListener("hashchange", syncHashTarget, { signal })')
+  || !designSystemLayout.includes('inline: "nearest"')) {
+  errors.push("Variable deep links must own one inline token-name anchor with compact accent highlighting and repeatable hash navigation.");
+}
+if (!colorModeCell.includes('overflow={showSample ? "visual" : "ellipsis"}')
+  || !colorModeCell.includes('data-ds-table-overflow-target="true"')
+  || ![colorRow, tableSampleCell, typographyStyleProfile]
+    .every((source) => source.includes('overflow="visual"'))
+  || typographyFoundationBlock.includes('overflow="visual"')
+  || !typographyFoundationBlock.includes('tooltipText={row.sample ?? "Ag"}')
+  || !typographyFoundationBlock.includes("white-space: nowrap !important")
+  || !tableCell.includes('display: flex;\n    width: 100%;\n    align-self: stretch;')
+  || (colorRow.match(/\$\{resolvedSampleValue\}/g) ?? []).length < 3) {
+  errors.push("Non-text visual samples must opt out explicitly while reference-table text samples and mixed-cell values keep ellipsis.");
+}
+if (!typographyStylesBlock.includes("<DsTypographyStyleProfile")
+  || !typographyStylesBlock.includes("flex-direction: column")
+  || /grid-template-columns|@container/.test(typographyStylesBlock)
+  || !typographyStyleProfile.includes('aria-expanded="false"')
+  || !typographyStyleProfile.includes("aria-controls={detailsId}")
+  || !typographyStyleProfile.includes("data-ds-typography-style-details")
+  || !typographyStyleProfile.includes("ds-typography-style-profile__details.ds-table-row-group:not([hidden])")
+  || !typographyStyleProfile.includes("width: min(100%, 32ch)")
+  || !typographyStyleProfile.includes("min-height: 3lh")
+  || !typographyStyleProfile.includes('import IconButton from "../../base-components/buttons/IconButton.astro"')
+  || !typographyStyleProfile.includes('icon="add"')
+  || !typographyStyleProfile.includes('variant="secondary"')
+  || !typographyStyleProfile.includes("position: absolute")
+  || typographyStyleProfile.includes('>Sample</DsTableCell>')
+  || typographyStyleProfile.includes("ds-typography-style-profile__name-row")) {
+  errors.push("Text Style profiles must keep neutral Name and Class rows, an unlabelled sample box with a secondary add IconButton, independent disclosure and one vertical column.");
+}
+for (const absolutePath of headingAuditFiles) {
+  const sourcePath = absolutePath.slice(projectRoot.length + 1);
+  if (/<table\b/u.test(read(sourcePath))) {
+    errors.push(`${sourcePath} renders a raw table instead of the canonical documentation table primitives.`);
+  }
+}
+if (![componentReadiness, internalPartsPage].every((source) =>
+  source.includes("<DsTableFrame")
+  && source.includes("<DsTableRow")
+  && source.includes("<DsTableCell")
+)) {
+  errors.push("Component Readiness and Internal Parts must use the canonical documentation table primitives.");
+}
+if (/\b0\.\d+fr\b/.test(foundationTableSources)) {
+  errors.push("Foundation documentation table tracks must not use fractional factors below 1fr.");
 }
 if (!figmaIcon.includes("#F24E1E") || !figmaIcon.includes("#1ABCFE")) {
   errors.push("The local Figma icon asset is missing its canonical vector colors.");

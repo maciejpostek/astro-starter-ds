@@ -28,12 +28,12 @@ if ((registry.categories?.length ?? 0) !== 7) {
   errors.push("Architecture must define exactly seven Figma categories.");
 }
 if (
-  (registry.pages?.length ?? 0) +
+  (registry.pages?.filter((page) => page.figmaProjection !== false).length ?? 0) +
     (registry.categories?.length ?? 0) +
     (registry.navigationDividers?.length ?? 0) !==
   registry.figma?.expectedPageCount
 ) {
-  errors.push("Category, child-page, and navigation-divider count differs from figma.expectedPageCount.");
+  errors.push("Category, Figma-projected child-page, and navigation-divider count differs from figma.expectedPageCount.");
 }
 if ((registry.navigationDividers?.length ?? 0) !== (registry.categories?.length ?? 0) - 1) {
   errors.push("Architecture must define exactly one navigation divider between adjacent categories.");
@@ -45,7 +45,7 @@ for (const key of duplicates((registry.categories ?? []).map((entry) => entry.ca
 for (const key of duplicates((registry.pages ?? []).map((entry) => entry.pageKey))) {
   errors.push(`Duplicate pageKey: ${key}`);
 }
-for (const id of duplicates((registry.pages ?? []).map((entry) => entry.figmaPageId))) {
+for (const id of duplicates((registry.pages ?? []).map((entry) => entry.figmaPageId).filter(Boolean))) {
   errors.push(`Duplicate figmaPageId: ${id}`);
 }
 for (const id of duplicates((registry.navigationDividers ?? []).map((entry) => entry.figmaPageId))) {
@@ -79,7 +79,7 @@ for (const divider of registry.navigationDividers ?? []) {
   }
 }
 for (const page of registry.pages ?? []) {
-  if (!page.figmaPageName.startsWith("     ↪  ")) {
+  if (page.figmaProjection !== false && !page.figmaPageName?.startsWith("     ↪  ")) {
     errors.push(`${page.pageKey} does not use the exact five-space Figma child prefix.`);
   }
   const directory = join(projectRoot, page.sourceDirectory);
@@ -152,7 +152,7 @@ for (const root of emptyRoots) {
       const sourcePath = `${sourceDirectory}/${fileName}`;
       if (fileName === ".gitkeep") {
         errors.push(`${sourceDirectory} must remove .gitkeep after implementation.`);
-      } else if (!implementedSources.has(sourcePath)) {
+      } else if (/\.(?:astro|tsx?)$/u.test(fileName) && !implementedSources.has(sourcePath)) {
         errors.push(`Unregistered public component source: ${sourcePath}.`);
       }
     }
@@ -161,8 +161,9 @@ for (const root of emptyRoots) {
 
 const materialAstro = "src/components/assets/icons/MaterialSymbol.astro";
 const materialReact = "src/components/assets/icons/MaterialSymbol.tsx";
-for (const path of [materialAstro, materialReact]) {
-  if (!existsSync(join(projectRoot, path))) errors.push(`Missing MaterialSymbol renderer: ${path}`);
+const socialAstro = "src/components/assets/icons/SocialIcons.astro";
+for (const path of [materialAstro, materialReact, socialAstro]) {
+  if (!existsSync(join(projectRoot, path))) errors.push(`Missing icon renderer: ${path}`);
 }
 
 if (errors.length) fail();

@@ -1,0 +1,29 @@
+---
+import PaginationGroup from "../../base-components/pagination/PaginationGroup.astro";
+import PaginationItem from "../../base-components/pagination/PaginationItem.astro";
+---
+
+<div class="ds-pagination-group-preview" data-component-name="DsPaginationGroupPreview">
+  <nav aria-label="Pagination group example">
+    <PaginationGroup data-ds-preview-target>
+      <PaginationItem kind="previous" label="Previous page" href="?page=7#preview" />
+      <PaginationItem kind="page" page={7} label="Go to page 7" href="?page=7#preview" />
+      <PaginationItem kind="page" page={8} current label="Page 8, current page" href="?page=8#preview" />
+      <PaginationItem kind="page" page={9} label="Go to page 9" href="?page=9#preview" />
+      <PaginationItem kind="next" label="Next page" href="?page=9#preview" />
+    </PaginationGroup>
+  </nav>
+</div>
+
+<style>
+  .ds-pagination-group-preview {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    place-items: center;
+  }
+
+  .ds-pagination-group-preview nav {
+    max-inline-size: 100%;
+  }
+</style>

@@ -36,7 +36,7 @@ Navigate to another resource while using a compact, action-oriented visual treat
 ## Responsive behavior
 
 - Primary strategy: `intrinsic`
-- Mechanisms and references: natural inline sizing, text wrapping and the surrounding `.l-cluster` or content flow.
+- Mechanisms and references: `data-control-size` typography, gap and icon aliases, natural inline sizing and the surrounding `.l-cluster` or content flow.
 - Container queries: none.
 - Viewport queries: none.
 - Reflow, order and visibility: The label and fixed arrow remain in source order; the parent owns wrapping and ButtonLink never swaps to a second mobile rendering.
@@ -51,6 +51,10 @@ Navigate to another resource while using a compact, action-oriented visual treat
 
 - `Button` for non-navigation actions.
 - `ButtonGroup` for related actions and links.
+
+## Naming and token contract
+
+Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
 
 ## Core decision
 

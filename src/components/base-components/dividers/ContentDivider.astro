@@ -1,0 +1,123 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type ContentDividerTone = "subtle" | "default" | "strong";
+
+type ContentDividerAttributes = Omit<
+  HTMLAttributes<"div">,
+  "aria-orientation" | "class" | "role"
+>;
+
+interface ContentDividerSharedProps extends ContentDividerAttributes {
+  tone?: ContentDividerTone;
+  class?: string;
+}
+
+export type Props = ContentDividerSharedProps & (
+  | { variant?: "line"; text?: never }
+  | { variant: "text"; text: string }
+);
+
+const {
+  variant = "line",
+  text,
+  tone = "subtle",
+  class: className,
+  "aria-label": ariaLabel,
+  ...attributes
+} = Astro.props;
+
+const supportedVariants = new Set(["line", "text"]);
+const supportedTones = new Set(["subtle", "default", "strong"]);
+const normalizedText = text?.trim();
+
+if (!supportedVariants.has(variant)) {
+  throw new TypeError(`Unsupported ContentDivider variant: ${variant}`);
+}
+if (!supportedTones.has(tone)) {
+  throw new TypeError(`Unsupported ContentDivider tone: ${tone}`);
+}
+if (variant === "text" && !normalizedText) {
+  throw new TypeError('ContentDivider with variant="text" requires non-empty text.');
+}
+if (variant === "line" && text !== undefined) {
+  throw new TypeError('ContentDivider text is available only with variant="text".');
+}
+
+const accessibleLabel = ariaLabel ?? (variant === "text" ? normalizedText : undefined);
+---
+
+<div
+  {...attributes}
+  class:list={["content-divider", className]}
+  data-component-name="ContentDivider"
+  data-content-divider-tone={tone}
+  data-content-divider-variant={variant}
+  role="separator"
+  aria-orientation="horizontal"
+  aria-label={accessibleLabel}
+>
+  {variant === "text" && (
+    <span class="content-divider__text body-tiny-regular" aria-hidden="true">
+      {normalizedText}
+    </span>
+  )}
+</div>
+
+<style>
+  .content-divider {
+    display: flex;
+    inline-size: 100%;
+    min-block-size: var(--content-divider-min-height);
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--gap-small);
+    margin: 0;
+    color: var(--color-text-tertiary);
+  }
+
+  .content-divider::before,
+  .content-divider[data-content-divider-variant="text"]::after {
+    display: block;
+    min-inline-size: 0;
+    block-size: var(--border-width-default);
+    flex: 1 1 0;
+    background: var(--color-border-subtle);
+    content: "";
+  }
+
+  .content-divider[data-content-divider-tone="default"]::before,
+  .content-divider[data-content-divider-tone="default"]::after {
+    background: var(--color-border-default);
+  }
+
+  .content-divider[data-content-divider-tone="strong"]::before,
+  .content-divider[data-content-divider-tone="strong"]::after {
+    background: var(--color-border-strong);
+  }
+
+  .content-divider__text {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    flex: 0 1 auto;
+    color: var(--color-text-tertiary);
+    overflow-wrap: anywhere;
+    text-align: center;
+    text-transform: var(--text-transform-none);
+  }
+
+  @media (forced-colors: active) {
+    .content-divider {
+      color: CanvasText;
+    }
+
+    .content-divider::before,
+    .content-divider::after {
+      background: CanvasText;
+    }
+
+    .content-divider__text {
+      color: CanvasText;
+    }
+  }
+</style>

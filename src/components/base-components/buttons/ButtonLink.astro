@@ -24,69 +24,74 @@ const {
 <a
   {...attributes}
   aria-disabled={disabled ? "true" : undefined}
-  class:list={["ds-button-link", className]}
+  class:list={["button-link", className]}
   data-component-name="ButtonLink"
-  data-component-size={size}
+  data-control-size={size}
   href={disabled ? undefined : href}
   tabindex={disabled ? -1 : attributes.tabindex}
 >
-  <span class="ds-button-link__label"><slot /></span>
+  <span class="button-link__label"><slot /></span>
   {showIcon && (
     <MaterialSymbol
-      class="ds-button-link__icon"
+      class="button-link__icon"
       name="arrow_forward"
-      size="var(--component-icon-size)"
+      size="var(--control-icon-size)"
     />
   )}
 </a>
 
 <style>
-  .ds-button-link {
-    --ds-button-link-text: var(--button-link-text-default);
-    --ds-button-link-icon: var(--button-link-icon-default);
-
+  .button-link {
     display: inline-flex;
     align-items: center;
-    gap: var(--component-gap);
+    gap: var(--control-gap);
     padding: 0;
-    color: var(--ds-button-link-text);
+    color: var(--button-link-text-default);
     background: transparent;
     cursor: pointer;
     font-family: var(--font-family-body);
-    font-size: var(--component-font-size);
+    font-size: var(--control-font-size);
     font-weight: var(--font-weight-emphasis);
     letter-spacing: var(--letter-spacing-tight);
     line-height: var(--line-height-compact);
     text-decoration: none;
   }
 
-  .ds-button-link__label {
+  .button-link__label {
     white-space: nowrap;
   }
 
-  .ds-button-link__icon {
+  .button-link__icon {
     flex: 0 0 auto;
-    color: var(--ds-button-link-icon);
+    color: var(--button-link-icon-default);
   }
 
-  .ds-button-link:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
-    --ds-button-link-text: var(--button-link-text-hover);
-    --ds-button-link-icon: var(--button-link-icon-hover);
+  .button-link:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
+    color: var(--button-link-text-hover);
   }
 
-  .ds-button-link:not([aria-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) {
-    --ds-button-link-text: var(--button-link-text-pressed);
-    --ds-button-link-icon: var(--button-link-icon-pressed);
+  .button-link:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) .button-link__icon {
+    color: var(--button-link-icon-hover);
   }
 
-  .ds-button-link[aria-disabled="true"] {
-    --ds-button-link-text: var(--button-link-text-disabled);
-    --ds-button-link-icon: var(--button-link-icon-disabled);
+  .button-link:not([aria-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) {
+    color: var(--button-link-text-pressed);
+  }
 
+  .button-link:not([aria-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) .button-link__icon {
+    color: var(--button-link-icon-pressed);
+  }
+
+  .button-link[aria-disabled="true"] {
+    color: var(--button-link-text-disabled);
     cursor: not-allowed;
   }
 
-  .ds-button-link:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+  .button-link[aria-disabled="true"] .button-link__icon {
+    color: var(--button-link-icon-disabled);
+  }
+
+  .button-link:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
     box-shadow: var(--effect-focused);
     outline: var(--border-width-emphasis) solid transparent;
     outline-offset: var(--size-2);

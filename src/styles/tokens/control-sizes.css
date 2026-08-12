@@ -1,0 +1,99 @@
+/*
+ * Shared control size profiles.
+ *
+ * Buttons, inputs, search inputs, icon buttons and button links consume the
+ * same geometry contract. Future Select and Tab implementations should reuse
+ * this contract when they need to align with adjacent controls.
+ */
+
+:root {
+  /* Small profile
+   * Intended for compact buttons, tabs and secondary controls.
+   */
+  --control-size-small-min-height: var(--size-32);
+  --control-size-small-padding-inline: var(--size-12);
+  --control-size-small-padding-block: var(--size-0);
+  --control-size-small-icon-size: var(--size-14);
+  --control-size-small-gap: var(--size-4);
+  --control-size-small-font-size: var(--font-size-body-tiny);
+  --control-size-small-line-height: var(--line-height-none);
+
+  /* Medium profile
+   * Default profile for primary controls and form fields.
+   */
+  --control-size-medium-min-height: var(--size-48);
+  --control-size-medium-padding-inline: var(--size-20);
+  --control-size-medium-padding-block: var(--size-18);
+  --control-size-medium-icon-size: var(--size-16);
+  --control-size-medium-gap: var(--size-8);
+  --control-size-medium-font-size: var(--font-size-body-small);
+  --control-size-medium-line-height: var(--line-height-none);
+
+  /* Large profile
+   * Main control size for primary actions and prominent interface controls.
+   */
+  --control-size-large-min-height: var(--size-56);
+  --control-size-large-padding-inline: var(--size-24);
+  --control-size-large-padding-block: var(--size-24);
+  --control-size-large-icon-size: var(--size-18);
+  --control-size-large-gap: var(--size-10);
+  --control-size-large-font-size: var(--font-size-body-base);
+  --control-size-large-line-height: var(--line-height-none);
+}
+
+/* Attribute bridge
+ * The selected profile is exposed through stable local aliases. A FormField
+ * without an explicit profile infers it from its single sized control.
+ */
+:where(
+  [data-control-size="small"],
+  [data-component-name="FormField"]:not([data-control-size]):has(.form-field__control [data-control-size="small"])
+) {
+  --control-min-height: var(--control-size-small-min-height);
+  --control-padding-inline: var(--control-size-small-padding-inline);
+  --control-padding-block: var(--control-size-small-padding-block);
+  --control-icon-size: var(--control-size-small-icon-size);
+  --control-gap: var(--control-size-small-gap);
+  --control-font-size: var(--control-size-small-font-size);
+  --control-line-height: var(--control-size-small-line-height);
+}
+
+:where(
+  [data-control-size="medium"],
+  [data-component-name="FormField"]:not([data-control-size]):has(.form-field__control [data-control-size="medium"])
+) {
+  --control-min-height: var(--control-size-medium-min-height);
+  --control-padding-inline: var(--control-size-medium-padding-inline);
+  --control-padding-block: var(--control-size-medium-padding-block);
+  --control-icon-size: var(--control-size-medium-icon-size);
+  --control-gap: var(--control-size-medium-gap);
+  --control-font-size: var(--control-size-medium-font-size);
+  --control-line-height: var(--control-size-medium-line-height);
+}
+
+:where(
+  [data-control-size="large"],
+  [data-component-name="FormField"]:not([data-control-size]):has(.form-field__control [data-control-size="large"])
+) {
+  --control-min-height: var(--control-size-large-min-height);
+  --control-padding-inline: var(--control-size-large-padding-inline);
+  --control-padding-block: var(--control-size-large-padding-block);
+  --control-icon-size: var(--control-size-large-icon-size);
+  --control-gap: var(--control-size-large-gap);
+  --control-font-size: var(--control-size-large-font-size);
+  --control-line-height: var(--control-size-large-line-height);
+}
+
+/* An explicit FormField profile is authoritative for its one slotted control.
+ * Reusing the inherited bridge keeps nested control attributes intact while
+ * making their effective geometry match the complete field context.
+ */
+[data-component-name="FormField"][data-control-size] .form-field__control [data-control-size] {
+  --control-min-height: inherit;
+  --control-padding-inline: inherit;
+  --control-padding-block: inherit;
+  --control-icon-size: inherit;
+  --control-gap: inherit;
+  --control-font-size: inherit;
+  --control-line-height: inherit;
+}

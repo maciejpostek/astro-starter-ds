@@ -3,60 +3,64 @@
 Status: active.
 
 - Manifest id: `switch-button`
-- Figma canonical node: `206:166`
+- Figma canonical node: `206:166`; intentional difference while Figma retains the legacy visible label
 - Figma page key: `switch`
 - Astro source: `src/components/base-components/switch/SwitchButton.astro`
 - Role: atom
-- Sync status: mapped
+- Sync status: `intentional-difference`
 
 ## UX purpose
 
-Change one persistent binary setting between on and off while making the current value immediately visible.
+Expose the native on/off control for one persistent binary setting when another component or surrounding context owns its visible presentation.
 
 ## Use when
 
-- A setting takes effect immediately after the user changes it.
-- The choice has exactly two persistent values that can be understood as on and off.
-- The interface must show the current setting before the user interacts with it.
+- Building a reusable switch composition such as `SwitchLabel` or `SwitchCard`.
+- A compact bare control has an explicit accessible name through `aria-label` or `aria-labelledby`.
+- The setting takes effect immediately and has exactly two persistent values.
 
 ## Avoid when
 
-- The user must submit or confirm the change later; use a checkbox inside the form flow.
-- The user chooses one value from three or more options; use the relevant radio or select control.
-- Activation performs a one-time action rather than changing a setting; use [Button](/design-system/base-components/buttons/button).
+- A visible text label is required; use `SwitchLabel`.
+- The setting needs a bordered explanatory surface; use `SwitchCard`.
+- The user must submit the choice later; use a checkbox in the form flow.
 
 ## Content contract
 
-- Provide a concise, visible `label` that names the setting, not the interaction.
-- Prefer a positive label such as “Email notifications”; avoid labels such as “Enable” or “Switch”.
-- Do not use the label to describe both on and off outcomes. Supporting consequences belong in adjacent help text linked with `aria-describedby`.
+- Provide `aria-label` or `aria-labelledby` for every bare instance.
+- The deprecated `label` fallback exists only for migration and must not be used in new code.
+- Name the setting rather than the interaction; avoid labels such as “Enable” or “Switch”.
 
 ## Composition and placement
 
-- Keep the track and its visible label as one click target.
-- Place related switches in a clear vertical settings group with consistent label alignment.
-- Put dependent explanation outside SwitchButton and connect it through native input attributes when needed.
+- Keep the native checkbox, track and thumb as one control.
+- Prefer composition through `SwitchLabel` and `SwitchCard` instead of recreating switch geometry locally.
+- Do not place arbitrary icons, badges, descriptions or actions inside SwitchButton.
 
 ## Responsive behavior
 
 - Primary strategy: `intrinsic`
-- Mechanisms and references: Small component-size geometry, natural label wrapping and `min-inline-size: 0` on the label content area.
+- Mechanisms and references: fixed token-derived track geometry, a minimum `--size-24` interaction height, logical inset positioning and one non-wrapping control root.
 - Container queries: none.
 - Viewport queries: none.
-- Reflow, order and visibility: Track and label remain one source-ordered click target; the label may wrap without moving or duplicating the native input.
+- Reflow, order and visibility: the control retains one DOM representation and fixed geometry at every assigned width; parent compositions own surrounding content wrapping.
 
 ## Accessibility and required behavior
 
-- Render the native checkbox input with `role="switch"`; preserve Space-key toggling and the browser-managed checked state.
-- Keep the visible label meaningful and unique in its local context.
-- Use native `disabled` only when the setting cannot be changed, and provide nearby context when the reason is not obvious.
-- Preserve the visible `focus-visible` treatment and never communicate the checked value by color alone; thumb position must also change.
+- Render the native checkbox input with `role="switch"`; preserve Space-key toggling and browser-managed checked state.
+- Require an accessible name from `aria-label`, `aria-labelledby` or the deprecated migration label.
+- Use native `disabled`, preserve a visible `focus-visible` treatment and distinguish checked state through thumb position as well as color.
 
 ## Related components
 
-- [Button](/design-system/base-components/buttons/button) performs an immediate action without storing an on/off value.
-- Checkbox is the better pattern when a selection is collected and submitted with a form rather than applied immediately.
+- [SwitchLabel](/design-system/base-components/switch/switch-label) supplies a visible label and a larger click target.
+- [SwitchCard](/design-system/base-components/switch/switch-card) adds description and optional leading visual content inside a card surface.
+- [Button](/design-system/base-components/buttons/button) performs an action without storing an on/off value.
+
+## Naming and token contract
+
+Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
 
 ## Core decision
 
-Choose SwitchButton only for an immediately applied, persistent binary setting whose current on/off value must remain visible.
+Use SwitchButton as the accessible binary control primitive; choose SwitchLabel or SwitchCard whenever visible supporting content is part of the interface.

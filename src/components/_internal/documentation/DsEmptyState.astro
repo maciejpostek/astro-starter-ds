@@ -3,12 +3,14 @@ interface Props {
   title?: string;
   description?: string;
   path?: string;
+  status?: string;
 }
 
 const {
   title = "No documented implementation yet",
   description = "This family exists in the design-system architecture, but it does not contain a canonical Astro implementation yet.",
   path,
+  status = "Figma only",
 } = Astro.props;
 ---
 
@@ -16,7 +18,7 @@ const {
   class="ds-empty-state"
   data-component-name="DsEmptyState"
 >
-  <span class="ds-documentation-status">Figma only</span>
+  <span class="ds-documentation-status">{status}</span>
   <h3 class="heading-h4">{title}</h3>
   <p class="body-base-regular">{description}</p>
   {path && <code>{path}</code>}

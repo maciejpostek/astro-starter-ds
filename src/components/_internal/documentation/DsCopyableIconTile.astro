@@ -1,0 +1,105 @@
+---
+import CopyIconButton from "../../base-components/buttons/CopyIconButton.astro";
+
+interface Props {
+  id: string;
+  name: string;
+  copyValue: string;
+  copyLabel: string;
+  searchKeywords: string;
+  successToastId: string;
+  errorToastId: string;
+}
+
+const {
+  id,
+  name,
+  copyValue,
+  copyLabel,
+  searchKeywords,
+  successToastId,
+  errorToastId,
+} = Astro.props;
+---
+
+<article
+  class="ds-copyable-icon-tile"
+  id={id}
+  data-component-name="DsCopyableIconTile"
+  data-icon-gallery-keywords={searchKeywords.toLowerCase()}
+>
+  <div class="ds-copyable-icon-tile__visual" aria-hidden="true">
+    <slot />
+  </div>
+  <span class="ds-copyable-icon-tile__name">{name}</span>
+  <CopyIconButton
+    class="ds-copyable-icon-tile__action"
+    copyValue={copyValue}
+    label={copyLabel}
+    successToastId={successToastId}
+    errorToastId={errorToastId}
+    variant="tertiary"
+    size="small"
+  />
+</article>
+
+<style>
+  .ds-copyable-icon-tile {
+    position: relative;
+    min-width: 0;
+    aspect-ratio: 1;
+    isolation: isolate;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-input);
+    background: transparent;
+  }
+
+  .ds-copyable-icon-tile__visual {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    display: block;
+    width: var(--size-32);
+    height: var(--size-32);
+    color: var(--color-icon-primary);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .ds-copyable-icon-tile__visual :global(:is(svg, img)) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ds-copyable-icon-tile__name {
+    position: absolute;
+    z-index: 2;
+    inset-inline: var(--content-padding-small);
+    inset-block-end: var(--content-padding-small);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+    overflow-wrap: anywhere;
+    pointer-events: none;
+    text-align: center;
+  }
+
+  :global(.ds-copyable-icon-tile__action) {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+  }
+
+  :global(.ds-copyable-icon-tile__action > .icon-button__icon) {
+    position: absolute;
+    inset-block-start: var(--content-padding-small);
+    inset-inline-end: var(--content-padding-small);
+  }
+</style>

@@ -1,0 +1,116 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import SwitchButton from "./SwitchButton.astro";
+
+export type SwitchPosition = "start" | "end";
+
+export interface Props extends Omit<
+  HTMLAttributes<"input">,
+  "aria-label" | "aria-labelledby" | "checked" | "class" | "disabled" | "id" | "type"
+> {
+  id: string;
+  label: string;
+  checked?: boolean;
+  disabled?: boolean;
+  switchPosition?: SwitchPosition;
+  class?: string;
+}
+
+const {
+  id,
+  label,
+  checked = false,
+  disabled = false,
+  switchPosition = "start",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const labelId = `${id}-label`;
+---
+
+<label
+  class:list={["switch-label", className]}
+  data-component-name="SwitchLabel"
+  data-switch-disabled={disabled ? "true" : undefined}
+  data-switch-position={switchPosition}
+  for={id}
+>
+  <SwitchButton
+    {...attributes}
+    class="switch-label__control"
+    id={id}
+    aria-labelledby={labelId}
+    checked={checked}
+    disabled={disabled}
+  />
+  <span class="switch-label__text" id={labelId}>{label}</span>
+</label>
+
+<style>
+  .switch-label {
+    display: inline-flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--switch-label-text-default);
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-normal);
+  }
+
+  .switch-label[data-switch-position="end"] :global(.switch-label__control) {
+    order: 2;
+  }
+
+  .switch-label__text {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .switch-label[data-switch-disabled="true"] {
+    color: var(--switch-label-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .switch-label:not([data-switch-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) :global(.switch-button__track) {
+    border-color: var(--switch-track-off-border-hover);
+    background: var(--switch-track-off-background-hover);
+  }
+
+  .switch-label:not([data-switch-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]):has(.switch-button__input:checked) :global(.switch-button__track) {
+    border-color: var(--switch-track-on-border-hover);
+    background: var(--switch-track-on-background-hover);
+  }
+
+  .switch-label:not([data-switch-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) :global(.switch-button__thumb) {
+    background: var(--switch-handle-background-hover);
+  }
+
+  .switch-label:not([data-switch-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) :global(.switch-button__track) {
+    border-color: var(--switch-track-off-border-pressed);
+    background: var(--switch-track-off-background-pressed);
+  }
+
+  .switch-label:not([data-switch-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]):has(.switch-button__input:checked) :global(.switch-button__track) {
+    border-color: var(--switch-track-on-border-pressed);
+    background: var(--switch-track-on-background-pressed);
+  }
+
+  .switch-label:not([data-switch-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) :global(.switch-button__thumb) {
+    background: var(--switch-handle-background-pressed);
+  }
+
+  .switch-label:not([data-switch-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) :global(.switch-button__track) {
+    opacity: 0.88;
+  }
+
+  @media (forced-colors: active) {
+    .switch-label[data-switch-disabled="true"] {
+      color: GrayText;
+    }
+  }
+</style>

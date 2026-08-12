@@ -28,6 +28,7 @@ import {
   layoutStructureExamples,
   layoutStyleRows,
 } from "../../../data/design-system/layoutTokens";
+import layoutAgenticRules from "../../../../.agentic-rules/04-layout.md?raw";
 
 const canonicalLayoutToken = (tokenName: string, fallback: string, resolved = false) => {
   const token = documentationTokenMap.get(tokenName);
@@ -46,7 +47,6 @@ const foundationHeader = documentationFoundationHeader("layout");
     <DsDocSection
       id="layout-primitive-foundations"
       title="Layout Foundations"
-      description="Layout foundation tokens define the responsive references and role-bearing control points for the layout system: viewport range, breakpoints, site padding limits and container limits. Semantic layout tokens and layout classes should consume these values instead of hardcoding local measurements."
     >
       {
         layoutFoundationGroups.map((group) => (
@@ -58,13 +58,12 @@ const foundationHeader = documentationFoundationHeader("layout");
             <DsSectionHeaderLevel3
               id={`${group.id}-title`}
               title={group.title}
-              description={group.description}
             />
 
             <DsTableFrame
               label={`${group.title} layout foundation tokens`}
-              minWidth="74rem"
-              columns="minmax(18rem, 0.24fr) minmax(18rem, 0.22fr) minmax(16rem, 0.18fr) minmax(28rem, 0.36fr)"
+              minWidth="84rem"
+              columns="minmax(var(--ds-doc-table-token-column-min-width), 24fr) minmax(18rem, 22fr) minmax(16rem, 18fr) minmax(28rem, 36fr)"
               size="tiny"
             >
               <DsTableRow variant="header">
@@ -99,7 +98,6 @@ const foundationHeader = documentationFoundationHeader("layout");
     <DsDocSection
       id="layout-semantic-variables"
       title="Layout Semantic"
-      description="Semantic layout variables translate foundation viewport, padding and container values into reusable layout contracts. They are value contracts consumed by layout classes and data attributes, not the final public API by themselves."
     >
       {
         layoutSemanticGroups.map((group) => (
@@ -111,13 +109,12 @@ const foundationHeader = documentationFoundationHeader("layout");
             <DsSectionHeaderLevel3
               id={`${group.id}-title`}
               title={group.title}
-              description={group.description}
             />
 
             <DsTableFrame
               label={`${group.title} layout semantic tokens`}
-              minWidth="86rem"
-              columns="minmax(18rem, 0.22fr) minmax(24rem, 0.26fr) minmax(20rem, 0.22fr) minmax(30rem, 0.3fr)"
+              minWidth="96rem"
+              columns="minmax(var(--ds-doc-table-token-column-min-width), 22fr) minmax(24rem, 26fr) minmax(20rem, 22fr) minmax(30rem, 30fr)"
               size="tiny"
             >
               <DsTableRow variant="header">
@@ -152,7 +149,6 @@ const foundationHeader = documentationFoundationHeader("layout");
     <DsDocSection
       id="layout-responsive-strategy"
       title="Responsive strategy"
-      description="Use semantic and fluid foundations first, intrinsic breakpointless layout second, component-owned container queries third, and viewport queries only when the viewport owns the change."
     >
       <DsResponsiveStrategyReference />
     </DsDocSection>
@@ -160,7 +156,6 @@ const foundationHeader = documentationFoundationHeader("layout");
     <DsDocSection
       id="layout-grid-system"
       title="Grid system"
-      description="The grid system defines site composition, explicit columns, auto-fit wrapping and breakout layouts. Use .l-grid as the structural class, then select the grid behavior with data attributes."
     >
       <section
         id="layout-grid-visuals"
@@ -170,7 +165,6 @@ const foundationHeader = documentationFoundationHeader("layout");
         <DsSectionHeaderLevel3
           id="layout-grid-visuals-title"
           title="Grid visuals"
-          description="The site grid uses responsive 12/8/4 columns. Breakout grids add edge tracks before and after the content columns for full-width media or composition."
         />
 
         <DsDocGrid columns={2}>
@@ -187,13 +181,12 @@ const foundationHeader = documentationFoundationHeader("layout");
         <DsSectionHeaderLevel3
           id="layout-grid-attributes-title"
           title="Grid attributes"
-          description="Grid-specific attributes control grid mode, explicit columns, auto-fit minimum widths, gaps and child column spans."
         />
 
         <DsTableFrame
           label="Grid attributes"
-          minWidth="112rem"
-          columns="minmax(16rem, 0.14fr) minmax(18rem, 0.15fr) minmax(28rem, 0.24fr) minmax(14rem, 0.11fr) minmax(28rem, 0.23fr) minmax(34rem, 0.28fr)"
+          minWidth="138rem"
+          columns="minmax(16rem, 14fr) minmax(18rem, 15fr) minmax(28rem, 24fr) minmax(14rem, 11fr) minmax(28rem, 23fr) minmax(34rem, 28fr)"
           size="tiny"
         >
           <DsTableRow variant="header">
@@ -236,12 +229,15 @@ const foundationHeader = documentationFoundationHeader("layout");
         <DsSectionHeaderLevel3
           id="layout-grid-examples-title"
           title="Grid examples"
-          description="Copyable patterns for the three most important grid modes: site composition, auto-fit card grids and breakout grids."
         />
 
         {
           layoutGridExamples.map((example) => (
-            <DsCodeSnippet label={example.label} code={example.code} />
+            <DsCodeSnippet
+              label={example.label}
+              language={example.language}
+              code={example.code}
+            />
           ))
         }
       </section>
@@ -250,7 +246,6 @@ const foundationHeader = documentationFoundationHeader("layout");
     <DsDocSection
       id="layout-styles"
       title="Styles"
-      description="Layout style classes are the public role-based interface for page composition. Classes define what a layout object is; attributes define its variant."
     >
       <section
         id="layout-styles-classes"
@@ -260,13 +255,12 @@ const foundationHeader = documentationFoundationHeader("layout");
         <DsSectionHeaderLevel3
           id="layout-styles-classes-title"
           title="Layout classes"
-          description="Base layout objects for sections, containers, grids and grouped child flows."
         />
 
         <DsTableFrame
           label="Layout classes"
-          minWidth="132rem"
-          columns="minmax(14rem, 0.1fr) minmax(18rem, 0.14fr) minmax(10rem, 0.08fr) minmax(56rem, 0.42fr) minmax(22rem, 0.16fr) minmax(30rem, 0.22fr)"
+          minWidth="150rem"
+          columns="minmax(14rem, 10fr) minmax(18rem, 14fr) minmax(10rem, 8fr) minmax(56rem, 42fr) minmax(22rem, 16fr) minmax(30rem, 22fr)"
           size="tiny"
         >
           <DsTableRow variant="header">
@@ -307,7 +301,6 @@ const foundationHeader = documentationFoundationHeader("layout");
     <DsDocSection
       id="layout-attributes"
       title="Attributes"
-      description="Layout attributes are the variant API for layout objects. Use them to change section padding, container width, grid columns, gaps and alignment without creating additional utility classes."
     >
       <section
         id="layout-attributes-list"
@@ -317,13 +310,12 @@ const foundationHeader = documentationFoundationHeader("layout");
         <DsSectionHeaderLevel3
           id="layout-attributes-list-title"
           title="Layout attributes"
-          description="Variant controls for public layout classes. The class defines the role; the attribute defines the selected layout behavior."
         />
 
         <DsTableFrame
           label="Layout attributes"
-          minWidth="108rem"
-          columns="minmax(14rem, 0.13fr) minmax(16rem, 0.14fr) minmax(28rem, 0.24fr) minmax(14rem, 0.12fr) minmax(28rem, 0.24fr) minmax(32rem, 0.27fr)"
+          minWidth="132rem"
+          columns="minmax(14rem, 13fr) minmax(16rem, 14fr) minmax(28rem, 24fr) minmax(14rem, 12fr) minmax(28rem, 24fr) minmax(32rem, 27fr)"
           size="tiny"
         >
           <DsTableRow variant="header">
@@ -362,7 +354,6 @@ const foundationHeader = documentationFoundationHeader("layout");
     <DsDocSection
       id="layout-structure-examples"
       title="Layout structure examples"
-      description="Copyable markup patterns that show where classes and data attributes belong in semantic layout structure."
     >
       <section
         id="layout-structure-examples-list"
@@ -372,15 +363,29 @@ const foundationHeader = documentationFoundationHeader("layout");
         <DsSectionHeaderLevel3
           id="layout-structure-examples-title"
           title="Layout structure examples"
-          description="Copyable markup patterns that show where classes and data attributes belong in semantic layout structure."
         />
 
         {
           layoutStructureExamples.map((example) => (
-            <DsCodeSnippet label={example.label} code={example.code} />
+            <DsCodeSnippet
+              label={example.label}
+              language={example.language}
+              code={example.code}
+            />
           ))
         }
       </section>
+    </DsDocSection>
+
+    <DsDocSection
+      id="layout-agentic-rules"
+      title="Agentic Rules"
+    >
+      <DsCodeSnippet
+        filename=".agentic-rules/04-layout.md"
+        language="markdown"
+        code={layoutAgenticRules.trim()}
+      />
     </DsDocSection>
 </DesignSystemLayout>
 

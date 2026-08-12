@@ -15,7 +15,7 @@ Organize related actions into one clear decision area while preserving each chil
 
 ## Use when
 
-- Two or more Buttons, ButtonLinks, or IconButtons belong to the same local task.
+- Two or more Buttons, ButtonLinks, IconButtons, CopyButtons, CopyIconButtons, SocialButtons, or SocialIconButtons belong to the same local task.
 - Actions need consistent spacing and responsive wrapping.
 
 ## Avoid when
@@ -49,7 +49,11 @@ Organize related actions into one clear decision area while preserving each chil
 
 ## Related components
 
-- `Button`, `ButtonLink`, and `IconButton` are the preferred children.
+- `Button`, `ButtonLink`, `IconButton`, `CopyButton`, `CopyIconButton`, `SocialButton`, and `SocialIconButton` are the preferred children.
+
+## Naming and token contract
+
+Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
 
 ## Core decision
 

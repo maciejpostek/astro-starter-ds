@@ -30,6 +30,7 @@ they do not map to Astro folders, component records, Variables, or public APIs.
      ↪  ◆  Icons
      ↪  ◆  Logos
      ↪  ◆  Images
+     ↪  ◆  Flags
      ↪  ◆  Illustrations
 ---
 ❖  ・ Base Components
@@ -99,4 +100,4 @@ page order. Content `figmaCurrentIndex` values likewise exclude dividers, while
 divider records use physical Figma indices. Graphik-blocked differences must
 never be repaired by cloning or recreating a master.
 
-Current controlled order differences: 53.
+Current controlled order differences: 55.

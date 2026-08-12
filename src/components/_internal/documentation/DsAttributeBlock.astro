@@ -27,7 +27,7 @@ type Props = {
 
 const { groups, size = "tiny" } = Astro.props;
 const columns =
-  "minmax(13rem, 0.22fr) minmax(10rem, 0.16fr) minmax(18rem, 0.3fr) minmax(9rem, 0.16fr) minmax(9rem, 0.16fr)";
+  "minmax(18rem, 22fr) minmax(12rem, 16fr) minmax(var(--ds-doc-table-token-column-min-width), 30fr) var(--ds-doc-table-short-value-column-width) var(--ds-doc-table-short-value-column-width)";
 ---
 
 <DsTableFrame
@@ -35,7 +35,7 @@ const columns =
   columns={columns}
   componentName="DsAttributeBlock"
   label="Component size attributes"
-  minWidth="58rem"
+  minWidth="72rem"
   size={size}
 >
   <DsTableRow variant="header">
@@ -63,9 +63,12 @@ const columns =
                 <DsTableCell gridColumn={2} gridRow={rowIndex + 1} role="cell">
                   {row.property}
                 </DsTableCell>
-                <DsTableCell gridColumn={3} gridRow={rowIndex + 1} role="cell">
-                  <code>{row.token}</code>
-                </DsTableCell>
+                <DsTableCopyCell
+                  gridColumn={3}
+                  gridRow={rowIndex + 1}
+                  role="cell"
+                  value={row.token}
+                />
                 <DsTableCell gridColumn={4} gridRow={rowIndex + 1} role="cell" tone="secondary">
                   {row.valueRem}
                 </DsTableCell>

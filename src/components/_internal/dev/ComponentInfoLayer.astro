@@ -24,9 +24,6 @@ const isOverlay = mode === "overlay";
   const infoLayer = document.querySelector<HTMLElement>("[data-component-info-layer][data-component-info-mode='overlay']");
   const infoText = infoLayer?.querySelector<HTMLElement>("[data-component-info-text]");
   let activeComponent: HTMLElement | null = null;
-  let copyFeedbackTimer: number | undefined;
-
-  const copyFeedbackDuration = 1400;
 
   const canShowInfoLayer = () => document.documentElement.dataset.guides === "visible";
 
@@ -39,11 +36,20 @@ const isOverlay = mode === "overlay";
   const isGuidesToggle = (target: EventTarget | null) =>
     target instanceof Element && Boolean(target.closest("[data-grid-toggle]"));
 
-  const getComponentName = (target: HTMLElement) => target.dataset.componentName ?? "Component";
+  const isInteractiveTarget = (target: EventTarget | null) =>
+    target instanceof Element && Boolean(
+      target.closest(
+        'a[href], button, input, textarea, select, label, summary, [role="button"], [contenteditable="true"]'
+      )
+    );
 
-  const clearCopyFeedbackTimer = () => {
-    window.clearTimeout(copyFeedbackTimer);
-    copyFeedbackTimer = undefined;
+  const getComponentName = (target: HTMLElement) => target.dataset.componentName ?? "Component";
+  const getClipboardText = (target: HTMLElement) => `Component name: ${getComponentName(target)}`;
+
+  const preventGuidesInteraction = (event: Event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
   };
 
   const setInfoText = (text: string) => {
@@ -58,7 +64,6 @@ const isOverlay = mode === "overlay";
 
   const hideInfoLayer = () => {
     if (!infoLayer) return;
-    clearCopyFeedbackTimer();
     activeComponent = null;
     infoLayer.hidden = true;
   };
@@ -69,7 +74,6 @@ const isOverlay = mode === "overlay";
       return;
     }
     if (!infoLayer || !infoText) return;
-    clearCopyFeedbackTimer();
     activeComponent = target;
     setInfoText(getComponentName(target));
     infoLayer.hidden = false;
@@ -104,26 +108,20 @@ const isOverlay = mode === "overlay";
     }
   };
 
-  const showCopyFeedback = (target: HTMLElement, message: string) => {
-    if (!infoLayer) return;
-
-    clearCopyFeedbackTimer();
-    activeComponent = target;
-    setInfoText(message);
-    infoLayer.hidden = false;
-
-    copyFeedbackTimer = window.setTimeout(() => {
-      if (activeComponent !== target || !canShowInfoLayer() || infoLayer.hidden) return;
-      setInfoText(getComponentName(target));
-    }, copyFeedbackDuration);
+  const showToast = (id: string) => {
+    window.dispatchEvent(
+      new CustomEvent("astro-ds:toast-show", {
+        detail: { id }
+      })
+    );
   };
 
   const copyComponentName = async (target: HTMLElement) => {
     try {
-      await writeClipboardText(getComponentName(target));
-      showCopyFeedback(target, "copied!");
+      await writeClipboardText(getClipboardText(target));
+      showToast("ds-clipboard-copy-success");
     } catch {
-      showCopyFeedback(target, "Copy failed");
+      showToast("ds-clipboard-copy-error");
     }
   };
 
@@ -163,6 +161,51 @@ const isOverlay = mode === "overlay";
     if (target === activeComponent) hideInfoLayer();
   });
 
+  (["pointerdown", "pointerup", "auxclick", "dblclick", "contextmenu", "dragstart"] as const)
+    .forEach((eventName) => {
+      document.addEventListener(
+        eventName,
+        (event) => {
+          if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
+          if (!getComponentTarget(event.target)) return;
+
+          preventGuidesInteraction(event);
+        },
+        { capture: true }
+      );
+    });
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
+      if (!isInteractiveTarget(event.target)) return;
+
+      preventGuidesInteraction(event);
+    },
+    { capture: true }
+  );
+
+  document.addEventListener(
+    "beforeinput",
+    (event) => {
+      if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
+      if (!isInteractiveTarget(event.target)) return;
+
+      preventGuidesInteraction(event);
+    },
+    { capture: true }
+  );
+
+  document.addEventListener(
+    "submit",
+    (event) => {
+      if (!canShowInfoLayer()) return;
+      preventGuidesInteraction(event);
+    },
+    { capture: true }
+  );
+
   document.addEventListener(
     "click",
     (event) => {
@@ -172,9 +215,7 @@ const isOverlay = mode === "overlay";
       const target = getComponentTarget(event.target);
       if (!target) return;
 
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
+      preventGuidesInteraction(event);
 
       showInfoLayer(target, event.clientX, event.clientY);
       void copyComponentName(target);
@@ -192,8 +233,8 @@ const isOverlay = mode === "overlay";
 
 <style>
   .component-info-layer {
-    --component-info-purple-background: #f5f0ff;
-    --component-info-purple-border: #8b5cf6;
+    --ds-guide-highlight-background: #f5f0ff;
+    --ds-guide-highlight-border: #8b5cf6;
 
     z-index: 1000;
     top: 0;
@@ -202,9 +243,9 @@ const isOverlay = mode === "overlay";
     max-width: 18rem;
     align-items: center;
     gap: var(--size-4);
-    border: var(--border-width-default) solid var(--component-info-purple-border);
-    color: var(--component-info-purple-border);
-    background: var(--component-info-purple-background);
+    border: var(--border-width-default) solid var(--ds-guide-highlight-border);
+    color: var(--ds-guide-highlight-border);
+    background: var(--ds-guide-highlight-background);
     box-shadow: 0 var(--size-12) var(--size-40) rgb(0 0 0 / 0.1);
     padding: var(--size-6) var(--size-8);
     pointer-events: none;
@@ -220,8 +261,8 @@ const isOverlay = mode === "overlay";
 
   .component-info-layer[data-component-info-mode="static"] {
     position: absolute;
-    top: var(--component-info-static-inset, var(--component-padding-medium));
-    left: var(--component-info-static-inset, var(--component-padding-medium));
+    top: var(--content-padding-medium);
+    left: var(--content-padding-medium);
     transform: none;
   }
 

@@ -1,0 +1,101 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type {
+  FeedbackAction,
+  FeedbackEmphasis,
+  FeedbackStatus,
+} from "../../../lib/feedback/feedbackTypes";
+import {
+  getFeedbackIcon,
+  getFeedbackStatusLabel,
+  validateFeedbackContent,
+  validateFeedbackPresentation,
+} from "../../../lib/feedback/feedbackModel.mjs";
+import "../../../styles/components/feedback-messages.css";
+
+export interface Props extends Omit<HTMLAttributes<"article">, "class" | "title"> {
+  id: string;
+  title: string;
+  description?: string;
+  status?: FeedbackStatus;
+  emphasis?: FeedbackEmphasis;
+  actions?: FeedbackAction[];
+  showIcon?: boolean;
+  dismissible?: boolean;
+  dismissLabel?: string;
+  statusLabel?: string;
+  class?: string;
+}
+
+const {
+  id,
+  title,
+  description,
+  status = "info",
+  emphasis = "subtle",
+  actions = [],
+  showIcon = true,
+  dismissible = true,
+  dismissLabel = "Dismiss notification",
+  statusLabel = getFeedbackStatusLabel(status),
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (!id) throw new TypeError("Notification id is required.");
+validateFeedbackContent({ title, actions });
+validateFeedbackPresentation({ status, emphasis });
+const titleId = `${id}-title`;
+const descriptionId = description ? `${id}-description` : undefined;
+const iconName = getFeedbackIcon(status);
+---
+
+<article
+  {...attributes}
+  id={id}
+  class:list={["notification", className]}
+  data-component-name="Notification"
+  data-feedback-root
+  data-feedback-kind="Notification"
+  data-feedback-icon={showIcon ? "true" : "false"}
+  data-feedback-dismissible={dismissible ? "true" : "false"}
+  data-feedback-status={status}
+  data-feedback-emphasis={emphasis}
+  aria-labelledby={titleId}
+  aria-describedby={descriptionId}
+>
+  <div class="feedback-message__content">
+    <div class="feedback-message__header">
+      {showIcon && <MaterialSymbol class="feedback-message__icon" name={iconName} />}
+      <p class="feedback-message__title" id={titleId}>
+        <span class="feedback-message__status-label">{statusLabel}: </span>{title}
+      </p>
+      {dismissible && (
+        <button class="feedback-message__dismiss" type="button" aria-label={dismissLabel} data-feedback-dismiss>
+          <MaterialSymbol class="feedback-message__dismiss-icon" name="close" />
+        </button>
+      )}
+    </div>
+    {description && <p class="feedback-message__description" id={descriptionId}>{description}</p>}
+    {actions.length > 0 && (
+      <div class="feedback-message__actions">
+        {actions.map((action) => (
+          <a
+            class="feedback-message__action body-tiny-regular-underlined"
+            href={action.href}
+            target={action.target}
+            rel={action.rel ?? (action.target === "_blank" ? "noopener noreferrer" : undefined)}
+            download={action.download}
+          >{action.label}</a>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<script>
+  import { initializeFeedbackRuntime } from "../../../lib/feedback/feedback-runtime";
+  initializeFeedbackRuntime();
+  document.addEventListener("astro:page-load", initializeFeedbackRuntime);
+</script>

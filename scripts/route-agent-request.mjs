@@ -9,6 +9,16 @@ const values = (name) =>
   args
     .filter((argument) => argument.startsWith(`--${name}=`))
     .map((argument) => argument.slice(name.length + 3));
+const jsonValue = (name) => {
+  const raw = value(name);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    console.error(`--${name} must be valid JSON: ${error.message}`);
+    process.exit(1);
+  }
+};
 const value = (name) => values(name).at(-1);
 const explicitTargets = values("target").map((entry) => {
   const [kind, id, role = "primary"] = entry.split(":");
@@ -23,6 +33,8 @@ const task = routeAgentRequest({
   explicitTargets,
   targetFile: value("file"),
   intentOverride: value("intent"),
+  tokenNeed: jsonValue("token-need"),
+  tokenDraft: jsonValue("token-draft"),
   projectRoot
 });
 const errors = validateTaskContract(task);

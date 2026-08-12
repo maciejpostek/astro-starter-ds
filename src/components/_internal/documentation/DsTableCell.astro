@@ -13,7 +13,8 @@ interface Props {
   gridRow?: number | string;
   flushInline?: boolean;
   flushInlineStart?: boolean;
-  truncate?: boolean;
+  overflow?: "ellipsis" | "visual";
+  tooltipText?: string;
   componentName?: string;
   id?: string;
   variable?: string;
@@ -34,7 +35,8 @@ const {
   gridRow,
   flushInline = false,
   flushInlineStart = false,
-  truncate = false,
+  overflow = "ellipsis",
+  tooltipText,
   componentName = "DsTableCell",
   id,
   variable,
@@ -64,7 +66,7 @@ const style = [
   data-ds-table-cell-flush-inline={flushInline ? "true" : undefined}
   data-ds-table-cell-flush-inline-start={flushInlineStart ? "true" : undefined}
   data-ds-table-cell-tone={tone}
-  data-ds-table-cell-truncate={truncate ? "true" : undefined}
+  data-ds-table-cell-overflow={overflow}
   data-ds-table-cell-variant={variant}
   data-variable-row={variable}
   role={role}
@@ -72,7 +74,20 @@ const style = [
   scope={scope}
   style={style || undefined}
 >
-  <slot />
+  <span
+    class="ds-table-cell__content"
+    data-ds-table-overflow-target={overflow === "ellipsis" ? "true" : undefined}
+    data-ds-table-tooltip-text={tooltipText}
+  >
+    <slot />
+  </span>
+  {
+    Astro.slots.has("actions") && (
+      <span class="ds-table-cell__actions">
+        <slot name="actions" />
+      </span>
+    )
+  }
 </Tag>
 
 <style>
@@ -120,6 +135,38 @@ const style = [
     justify-content: space-between;
   }
 
+  .ds-table-cell__content {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 auto;
+    overflow: hidden;
+    font: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ds-table-cell__content :global(code) {
+    font: inherit;
+  }
+
+  .ds-table-cell__actions {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--gap-tiny);
+  }
+
+  .ds-table-cell[data-ds-table-cell-overflow="visual"] .ds-table-cell__content {
+    display: flex;
+    width: 100%;
+    align-self: stretch;
+    overflow: visible;
+    max-width: none;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
   .ds-table-cell[data-ds-table-cell-tone="secondary"] {
     color: var(--color-text-secondary);
   }
@@ -135,19 +182,4 @@ const style = [
     padding-inline: 0;
   }
 
-  .ds-table-cell :global(code),
-  .ds-table-cell :global(span) {
-    min-width: 0;
-    font: inherit;
-    color: inherit;
-    overflow-wrap: anywhere;
-    white-space: normal;
-  }
-
-  .ds-table-cell[data-ds-table-cell-truncate="true"] :global(code),
-  .ds-table-cell[data-ds-table-cell-truncate="true"] :global(span) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 </style>

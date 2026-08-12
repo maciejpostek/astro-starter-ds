@@ -1,0 +1,24 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import CheckboxCard from "../../base-components/checkbox-radio/CheckboxCard.astro";
+---
+
+<div
+  class="checkbox-card-preview"
+  data-component-name="DsCheckboxCardPreview"
+  data-ds-preview-target
+>
+  <CheckboxCard
+    id="ds-preview-checkbox-card"
+    label="Email notifications"
+    description="Receive a concise update when important account activity occurs."
+  >
+    <MaterialSymbol slot="leading" name="mail" size="var(--size-20)" />
+  </CheckboxCard>
+</div>
+
+<style>
+  .checkbox-card-preview {
+    inline-size: min(100%, var(--size-320));
+  }
+</style>

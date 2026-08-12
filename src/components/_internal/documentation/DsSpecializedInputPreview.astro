@@ -1,0 +1,48 @@
+---
+import CounterInput from "../../base-components/inputs/CounterInput.astro";
+import DateInput from "../../base-components/inputs/DateInput.astro";
+import FormField from "../../base-components/inputs/FormField.astro";
+import PasswordInput from "../../base-components/inputs/PasswordInput.astro";
+import ShareLinkInput from "../../base-components/inputs/ShareLinkInput.astro";
+import TextAreaInput from "../../base-components/inputs/TextAreaInput.astro";
+import UrlInput from "../../base-components/inputs/UrlInput.astro";
+
+interface Props {
+  kind: "url" | "date" | "password" | "share-link" | "counter" | "text-area";
+}
+
+const { kind } = Astro.props;
+const controlId = `specialized-${kind}-preview`;
+const descriptionId = `${controlId}-hint`;
+---
+
+<div
+  class="ds-specialized-input-preview"
+  data-component-name="DsSpecializedInputPreview"
+  data-control-size="medium"
+  data-ds-preview-target
+  data-ds-preview-state="default"
+>
+  <FormField
+    controlId={controlId}
+    descriptionId={descriptionId}
+    label="Label"
+    hint="Hint text"
+    size="medium"
+    required
+  >
+    {kind === "url" && <UrlInput id={controlId} aria-describedby={descriptionId} data-input-preview-control name="website" placeholder="example.com/path" />}
+    {kind === "date" && <DateInput id={controlId} aria-describedby={descriptionId} data-input-preview-control />}
+    {kind === "password" && <PasswordInput id={controlId} aria-describedby={descriptionId} autocomplete="current-password" data-input-preview-control value="correct horse" />}
+    {kind === "share-link" && <ShareLinkInput id={controlId} aria-describedby={descriptionId} data-input-preview-control value="https://example.com/share/astro" />}
+    {kind === "counter" && <CounterInput id={controlId} aria-describedby={descriptionId} data-input-preview-control min="0" max="12" step="0.5" value="2" />}
+    {kind === "text-area" && <TextAreaInput id={controlId} aria-describedby={descriptionId} data-input-preview-control maxLength={120} value="A concise description." />}
+  </FormField>
+</div>
+
+<style>
+  .ds-specialized-input-preview {
+    display: grid;
+    width: min(100%, 24rem);
+  }
+</style>

@@ -1,26 +1,57 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import SectionHeader from "../components/_internal/documentation/SectionHeader.astro";
+import Button from "../components/base-components/buttons/Button.astro";
+import Eyebrow from "../components/base-components/eyebrow/Eyebrow.astro";
 ---
 
-<BaseLayout title="Astro Design System Starter">
-  <main class="starter">
-    <SectionHeader
-      eyebrow="Astro Design System"
-      title="A clean family-first starter ready for canonical Figma components."
-      variant="hero"
-    />
-    <p class="body-large-regular">
-      The public component folders are intentionally empty. Build the library
-      one approved Figma node at a time and track every mapping in the shared
-      architecture manifest.
-    </p>
-    <a href="/design-system/base-components/buttons">Open the component catalog</a>
-  </main>
+<BaseLayout title="Astro Design System Starter" mainClass="home-page">
+  <section class="home-hero l-section" data-padding="none" data-theme="dark">
+    <div class="l-container" data-container="main">
+      <div class="l-grid" data-grid="site">
+        <div class="home-hero__content l-stack" data-align="center" data-gap="medium">
+          <Eyebrow text="Astro Starter" />
+          <h1 class="heading-h1">
+            Discover Astro Design System Starter documentation
+          </h1>
+          <Button
+            variant="primary"
+            size="large"
+            onclick="window.location.assign('/design-system')"
+          >
+            Explore Design System
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .starter { display:grid; gap:var(--gap-large); max-width:72rem; padding:var(--section-padding-large) 0; }
-  .starter p { max-width:64ch; color:var(--color-text-secondary); }
-  .starter a { color:var(--color-text-link); font-weight:var(--font-weight-emphasis); }
+  :global(.home-page) {
+    padding-block-start: 0;
+  }
+
+  .home-hero {
+    display: grid;
+    min-block-size: 100svh;
+    place-items: center;
+    color: var(--color-text-primary);
+    background: var(--color-background-canvas);
+  }
+
+  .home-hero__content {
+    grid-column: 5 / 9;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .home-hero__content :global(.eyebrow) {
+    margin-block-end: 0;
+  }
+
+  @media (width < 48rem) {
+    .home-hero__content {
+      grid-column: 1 / -1;
+    }
+  }
 </style>

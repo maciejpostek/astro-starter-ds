@@ -1,0 +1,91 @@
+/*
+ * Component size semantics.
+ *
+ * These contracts are owned by one registered component or use case. Public
+ * component CSS consumes them directly and must not create a local alias
+ * layer. Values may alias global semantics or primitives when the decision is
+ * intentionally component-specific.
+ */
+
+:root {
+  /* Content divider */
+  --content-divider-min-height: var(--size-12);
+
+  /* Eyebrow */
+  --eyebrow-marker-size: var(--size-8);
+
+  /* Switch */
+  --switch-thumb-size: var(--size-14);
+  --switch-track-padding: var(--size-2);
+  --switch-track-border-width: var(--border-width-default);
+  --switch-track-inline-size:
+    calc(
+      (var(--switch-thumb-size) * 2) +
+      (var(--switch-track-padding) * 2) +
+      (var(--switch-track-border-width) * 2)
+    );
+  --switch-track-block-size:
+    calc(
+      var(--switch-thumb-size) +
+      (var(--switch-track-padding) * 2) +
+      (var(--switch-track-border-width) * 2)
+    );
+
+  /* Tag */
+  --tag-min-height: var(--size-32);
+  --tag-padding-block: var(--size-0);
+  --tag-padding-inline-text: var(--size-12);
+  --tag-padding-inline-visual: var(--size-4);
+  --tag-icon-size: var(--size-14);
+  --tag-visual-target-size: var(--size-24);
+  --tag-gap: var(--size-4);
+  --tag-font-size: var(--font-size-body-tiny);
+
+  /* Pagination */
+  --pagination-control-size: var(--size-32);
+  --pagination-icon-size: var(--size-20);
+  --pagination-control-gap: var(--gap-small);
+  --pagination-control-padding-inline: var(--size-12);
+
+  /* Tooltip */
+  --tooltip-offset: var(--size-8);
+  --tooltip-viewport-padding: var(--size-8);
+  --tooltip-tail-size: var(--size-8);
+  --tooltip-compact-max-inline-size: var(--size-256);
+  --tooltip-rich-max-inline-size: var(--size-320);
+  --tooltip-rich-icon-size: var(--size-20);
+
+  /* Feedback */
+  --feedback-size-small-padding-block: var(--content-padding-xsmall);
+  --feedback-size-small-padding-inline: var(--content-padding-small);
+  --feedback-size-small-gap: var(--gap-small);
+  --feedback-size-small-icon-size: var(--size-16);
+  --feedback-size-medium-padding-block: var(--content-padding-small);
+  --feedback-size-medium-padding-inline: var(--size-16);
+  --feedback-size-medium-gap: var(--gap-small);
+  --feedback-size-medium-icon-size: var(--size-20);
+  --feedback-size-large-padding-block: var(--size-16);
+  --feedback-size-large-padding-inline: var(--size-20);
+  --feedback-size-large-gap: var(--gap-regular);
+  --feedback-size-large-icon-size: var(--size-24);
+  --feedback-alert-max-inline-size: var(--size-320);
+  --feedback-rich-padding-block-start: var(--content-padding-small);
+  --feedback-rich-padding-inline-end: var(--content-padding-small);
+  --feedback-rich-padding-block-end: var(--size-16);
+  --feedback-rich-padding-inline-start: var(--size-16);
+  --feedback-rich-header-gap: var(--gap-small);
+  --feedback-rich-icon-size: var(--size-16);
+  --feedback-copy-gap: var(--gap-tiny);
+  --feedback-content-gap: var(--gap-small);
+  --feedback-actions-gap: var(--gap-small);
+
+  /* Toast */
+  --toast-max-inline-size: var(--size-320);
+  --toast-viewport-inset: var(--content-padding-medium);
+  --toast-enter-offset: var(--gap-small);
+
+  /* Popup */
+  --popup-max-inline-size: calc(var(--size-320) + var(--size-112) + var(--size-8));
+  --popup-viewport-inset: var(--content-padding-medium);
+  --popup-icon-size: var(--size-24);
+}

@@ -1,0 +1,45 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type { DocumentationNavigationRecord } from "../../../data/documentationRegistry";
+
+interface Props {
+  previous?: DocumentationNavigationRecord;
+  next?: DocumentationNavigationRecord;
+}
+
+const { previous, next } = Astro.props;
+---
+
+{
+  (previous || next) && (
+    <nav
+      class="ds-documentation-pager"
+      data-component-name="DsDocumentationPager"
+      aria-label="Documentation pagination"
+    >
+      {previous ? (
+        <a class="ds-documentation-pager__link" data-direction="previous" href={previous.href}>
+          <MaterialSymbol name="chevron_left" size="var(--size-18)" />
+          <span class="ds-documentation-pager__copy">
+            <span class="ds-documentation-pager__direction">Previous</span>
+            <strong>{previous.label}</strong>
+            {previous.parent && <span class="ds-documentation-pager__parent">{previous.parent}</span>}
+          </span>
+        </a>
+      ) : (
+        <span aria-hidden="true"></span>
+      )}
+
+      {next && (
+        <a class="ds-documentation-pager__link" data-direction="next" href={next.href}>
+          <span class="ds-documentation-pager__copy">
+            <span class="ds-documentation-pager__direction">Next</span>
+            <strong>{next.label}</strong>
+            {next.parent && <span class="ds-documentation-pager__parent">{next.parent}</span>}
+          </span>
+          <MaterialSymbol name="chevron_right" size="var(--size-18)" />
+        </a>
+      )}
+    </nav>
+  )
+}

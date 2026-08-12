@@ -4,7 +4,7 @@ import {
   type DocumentationComponentColorGroupId,
 } from "../../../data/documentationFoundationData";
 import DsPaletteBlock from "./DsPaletteBlock.astro";
-import DsSectionHeaderLevel4 from "./DsSectionHeaderLevel4.astro";
+import DsDocumentationBlockTitle from "./DsDocumentationBlockTitle.astro";
 
 interface Props {
   groupId: DocumentationComponentColorGroupId;
@@ -22,12 +22,9 @@ const group = componentColorGroups[groupId];
   data-component-name="DsComponentColorReference"
   data-ds-component-color-group={groupId}
 >
-  <DsSectionHeaderLevel4
-    id={`${id}-title`}
-    title={group.title}
-    description={group.description}
-  />
+  <DsDocumentationBlockTitle id={`${id}-title`} title={group.title} />
   <DsPaletteBlock
+    anchorTokens={group.anchorTokens}
     name={group.tableName}
     description={group.tableDescription}
     rows={group.rows}
@@ -37,7 +34,9 @@ const group = componentColorGroups[groupId];
 
 <style>
   .ds-component-color-reference {
+    display: grid;
     min-width: 0;
+    gap: var(--space-regular);
     scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
   }
 </style>

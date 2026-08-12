@@ -28,11 +28,12 @@ const registry = JSON.parse(read("src/data/design-system/componentArchitecture.j
 const record = registry.components?.find((component) => component.id === "search-input");
 
 for (const contract of [
-  'import Input, { type InputSize } from "./Input.astro"',
+  'import Input, { type InputSize, type InputValidation } from "./Input.astro"',
   'name="search"',
   'name="close"',
   'type="search"',
   'type="button"',
+  'validation={validation}',
   "data-search-input-control",
   "data-search-input-clear",
   'input.dispatchEvent(new Event("input", { bubbles: true }))',
@@ -44,7 +45,7 @@ for (const contract of [
   if (!source.includes(contract)) errors.push(`SearchInput is missing contract: ${contract}`);
 }
 
-if (!input.includes('data-input-validation={validation}') || !input.includes('data-component-size={size}')) {
+if (!input.includes('data-input-validation={validation}') || !input.includes('data-control-size={size}')) {
   errors.push("SearchInput's canonical Input dependency is incomplete.");
 }
 if (/#[0-9a-f]{3,8}\b/iu.test(source) || /(?:min-height|gap|padding|font-size):\s*\d+(?:px|rem)/u.test(source)) {
@@ -64,7 +65,7 @@ if (!docs.includes('componentId: "search-input"') || !docs.includes('colorGroups
 for (const dependency of ['id: "input"', 'id: "material-symbol"']) {
   if (!docs.includes(dependency)) errors.push(`SearchInput documentation is missing dependency: ${dependency}`);
 }
-if (!preview.includes("<SearchInput") || !preview.includes("data-ds-input-preview-control")) {
+if (!preview.includes("<SearchInput") || !preview.includes("data-input-preview-control")) {
   errors.push("SearchInput preview does not render the canonical public component.");
 }
 if (!interaction.includes('axisId === "content"') || !interaction.includes('axisId === "clearState"')) {

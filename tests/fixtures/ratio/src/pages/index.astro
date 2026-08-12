@@ -1,0 +1,45 @@
+---
+import Ratio from "../../../../../src/components/base-components/ratio/Ratio.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const ratios = [
+  "16:9",
+  "1:1",
+  "2.39:1",
+  "2:1",
+  "2:3",
+  "3:2",
+  "3:4",
+  "4:3",
+  "4:5",
+  "5:4",
+] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ratio contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <Ratio
+        id="default-ratio"
+        class="ratio-contract-fixture"
+        data-contract="forwarded"
+        aria-label="Default ratio fixture"
+      >
+        <span data-slot-content>Slotted content</span>
+      </Ratio>
+
+      <section aria-label="Ratio presets">
+        {ratios.map((ratio) => (
+          <Ratio id={`ratio-${ratio.replaceAll(".", "-").replace(":", "-")}`} ratio={ratio} />
+        ))}
+      </section>
+    </main>
+  </body>
+</html>

@@ -14,20 +14,50 @@ const read = (path) => {
   return readFileSync(absolute, "utf8");
 };
 
-const sourcePath = "src/components/base-components/switch/SwitchButton.astro";
-const rulePath = ".agentic-rules/components/switch-button.md";
+const componentContracts = [
+  {
+    id: "switch-button",
+    name: "SwitchButton",
+    sourcePath: "src/components/base-components/switch/SwitchButton.astro",
+    rulePath: ".agentic-rules/components/switch-button.md",
+    syncStatus: "intentional-difference",
+    dependencies: [],
+  },
+  {
+    id: "switch-label",
+    name: "SwitchLabel",
+    sourcePath: "src/components/base-components/switch/SwitchLabel.astro",
+    rulePath: ".agentic-rules/components/switch-label.md",
+    syncStatus: "astro-only",
+    dependencies: ["switch-button"],
+  },
+  {
+    id: "switch-card",
+    name: "SwitchCard",
+    sourcePath: "src/components/base-components/switch/SwitchCard.astro",
+    rulePath: ".agentic-rules/components/switch-card.md",
+    syncStatus: "astro-only",
+    dependencies: ["switch-button"],
+  },
+];
+const sourcePath = componentContracts[0].sourcePath;
 const source = read(sourcePath);
 const tokens = read("src/styles/tokens/color-components.css");
-const rule = read(rulePath);
+const sizeTokens = read("src/styles/tokens/size-components.css");
 const docs = read("src/data/documentationComponentRegistry.ts");
 const foundationData = read("src/data/documentationFoundationData.ts");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
-const record = registry.components?.find((component) => component.id === "switch-button");
+const records = new Map((registry.components ?? []).map((component) => [component.id, component]));
 
 for (const contract of [
   'type="checkbox"',
   'role="switch"',
-  'data-component-size="small"',
+  'var(--switch-thumb-size)',
+  'var(--switch-track-padding)',
+  'var(--switch-track-border-width)',
+  'inset-block-start: 50%',
+  'translate: 0 -50%',
+  'min-block-size: var(--size-24)',
   'var(--elevation-control-thumb)',
   'var(--switch-track-off-background-default)',
   'var(--switch-track-on-background-default)',
@@ -36,14 +66,65 @@ for (const contract of [
   if (!source.includes(contract)) errors.push(`SwitchButton is missing contract: ${contract}`);
 }
 
-const sourceWithoutVisuallyHiddenMechanics = source
-  .replace(/\s+width:\s*1px;/u, "")
-  .replace(/\s+height:\s*1px;/u, "");
-if (/#[0-9a-f]{3,8}\b/iu.test(source) || /(?:width|height|gap|padding|font-size):\s*\d+(?:px|rem)/u.test(sourceWithoutVisuallyHiddenMechanics)) {
-  errors.push("SwitchButton contains raw visual values instead of canonical tokens.");
+for (const contract of [
+  '--switch-thumb-size: var(--size-14)',
+  '--switch-track-padding: var(--size-2)',
+  '--switch-track-border-width: var(--border-width-default)',
+  '--switch-track-inline-size:',
+  '--switch-track-block-size:',
+]) {
+  if (!sizeTokens.includes(contract)) errors.push(`Switch sizing is missing contract: ${contract}`);
 }
-if (/^\s+(?:state|size)\??:/mu.test(source)) {
-  errors.push("SwitchButton exposes a Figma documentation axis as a public Astro prop.");
+if (/^\s*--(?:_?ds-|switch-)[a-z0-9-]+\s*:/mu.test(source)) {
+  errors.push("SwitchButton must consume registered tokens without local custom-property aliases.");
+}
+
+if (source.includes("data-control-size")) {
+  errors.push("SwitchButton must own local geometry instead of consuming Control Size.");
+}
+const trackRule = source.match(/\.switch-button__track\s*\{(?<body>[\s\S]*?)\n\s*\}/u)?.groups?.body ?? "";
+if (trackRule.includes("overflow: hidden")) {
+  errors.push("SwitchButton track must not clip the control-thumb elevation.");
+}
+if (!source.includes('"aria-label": string') || !source.includes('"aria-labelledby": string')) {
+  errors.push("SwitchButton must type an accessible-name alternative for bare usage.");
+}
+
+for (const contract of componentContracts) {
+  const componentSource = read(contract.sourcePath);
+  if (/#[0-9a-f]{3,8}\b/iu.test(componentSource) || /(?:width|height|gap|padding|font-size):\s*\d+(?:px|rem)/u.test(componentSource)) {
+    errors.push(`${contract.name} contains raw visual values instead of canonical tokens.`);
+  }
+  if (/^\s+(?:state|size)\??:/mu.test(componentSource)) {
+    errors.push(`${contract.name} exposes a Figma documentation axis as a public Astro prop.`);
+  }
+  if (!componentSource.includes(`data-component-name="${contract.name}"`)) {
+    errors.push(`${contract.name} does not expose its canonical Guides identity.`);
+  }
+}
+
+const switchLabelSource = read(componentContracts[1].sourcePath);
+for (const contract of [
+  'id: string',
+  'label: string',
+  'switchPosition?: SwitchPosition',
+  'aria-labelledby={labelId}',
+  'data-switch-position={switchPosition}',
+]) {
+  if (!switchLabelSource.includes(contract)) errors.push(`SwitchLabel is missing contract: ${contract}`);
+}
+
+const switchCardSource = read(componentContracts[2].sourcePath);
+for (const contract of [
+  'id: string',
+  'label: string',
+  'description?: string',
+  'Astro.slots.has("leading")',
+  'aria-labelledby={labelId}',
+  'aria-describedby={descriptionId}',
+  'var(--card-border-selected)',
+]) {
+  if (!switchCardSource.includes(contract)) errors.push(`SwitchCard is missing contract: ${contract}`);
 }
 
 const tokenNames = [
@@ -63,19 +144,39 @@ for (const token of tokenNames) {
 if (!foundationData.includes('prefixes: ["--switch-"]')) {
   errors.push("SwitchButton documentation does not project its color tokens from the canonical CSS prefix.");
 }
-
-for (const { heading, content } of componentRuleSections(rule, componentRuleContract.headings)) {
-  if (!content) errors.push(`SwitchButton rule is missing: ${heading}`);
+if (!foundationData.includes('prefixes: ["--card-"]')) {
+  errors.push("SwitchCard documentation does not project the existing card color contract.");
 }
 
-if (!docs.includes('componentId: "switch-button"') || !docs.includes('colorGroups: ["switch-button"]')) {
-  errors.push("SwitchButton does not have a canonical V2 documentation adapter.");
+for (const contract of componentContracts) {
+  const rule = read(contract.rulePath);
+  for (const { heading, content } of componentRuleSections(rule, componentRuleContract.headings)) {
+    if (!content) errors.push(`${contract.name} rule is missing: ${heading}`);
+  }
 }
-if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePath || record.syncStatus !== "mapped") {
-  errors.push("SwitchButton registry mapping is incomplete.");
+
+for (const contract of componentContracts) {
+  if (!docs.includes(`componentId: "${contract.id}"`)) {
+    errors.push(`${contract.name} does not have a canonical V2 documentation adapter.`);
+  }
+  const record = records.get(contract.id);
+  if (
+    !record ||
+    record.sourcePath !== contract.sourcePath ||
+    record.agenticRule !== contract.rulePath ||
+    record.syncStatus !== contract.syncStatus ||
+    JSON.stringify(record.dependencies ?? []) !== JSON.stringify(contract.dependencies)
+  ) {
+    errors.push(`${contract.name} registry mapping is incomplete.`);
+  }
 }
-if (record?.figmaCanonicalNodeId !== "206:166") {
+if (records.get("switch-button")?.figmaCanonicalNodeId !== "206:166") {
   errors.push("SwitchButton registry does not preserve canonical Figma node 206:166.");
+}
+for (const id of ["switch-label", "switch-card"]) {
+  if (records.get(id)?.figmaCanonicalNodeId !== null) {
+    errors.push(`${id} must remain Astro-only until an explicit Figma task supplies a canonical node.`);
+  }
 }
 
 if (errors.length) {
@@ -85,5 +186,5 @@ if (errors.length) {
 }
 
 console.log(
-  `SwitchButton audit passed: native switch semantics, ${tokenNames.length} component color tokens, canonical Figma mapping, UX rule, and V2 documentation adapter.`,
+  `Switch family audit passed: native switch semantics, symmetric token geometry, ${tokenNames.length} component color tokens, three public contracts, UX rules, registry records, and V2 documentation adapters.`,
 );

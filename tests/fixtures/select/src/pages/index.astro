@@ -1,0 +1,52 @@
+---
+import CompactSelect from "../../../../../src/components/base-components/select/CompactSelect.astro";
+import InlineSelect from "../../../../../src/components/base-components/select/InlineSelect.astro";
+import Select, { type SelectOption } from "../../../../../src/components/base-components/select/Select.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const options: SelectOption[] = [
+  { value: "pl", label: "Poland", flag: "poland" },
+  { value: "de", label: "Germany", flag: "germany" },
+  { value: "us", label: "United States", flag: "united-states" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Select flag contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <Select
+        id="country-select"
+        label="Country"
+        name="country"
+        options={options}
+        purpose="country"
+        value="pl"
+      />
+      <CompactSelect
+        id="country-compact-select"
+        aria-label="Country"
+        name="compact-country"
+        options={options}
+        purpose="country"
+        value="de"
+      />
+      <p>
+        Availability for
+        <InlineSelect
+          id="country-inline-select"
+          aria-label="Country"
+          name="inline-country"
+          options={options}
+          value="us"
+        />
+      </p>
+    </main>
+  </body>
+</html>

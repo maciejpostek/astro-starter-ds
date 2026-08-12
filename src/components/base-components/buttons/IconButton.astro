@@ -2,11 +2,14 @@
 import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import type { ButtonSize } from "./Button.astro";
+import "../../../styles/components/button-controls.css";
 
-export type IconButtonVariant = "primary" | "secondary";
+export type IconButtonVariant = "primary" | "secondary" | "tertiary";
+export type IconButtonIcon = "arrow_forward" | "add";
 
 export interface Props extends Omit<HTMLAttributes<"button">, "aria-label" | "class" | "type"> {
   label: string;
+  icon?: IconButtonIcon;
   variant?: IconButtonVariant;
   size?: ButtonSize;
   class?: string;
@@ -15,6 +18,7 @@ export interface Props extends Omit<HTMLAttributes<"button">, "aria-label" | "cl
 
 const {
   label,
+  icon = "arrow_forward",
   variant = "secondary",
   size = "small",
   class: className,
@@ -27,83 +31,12 @@ const {
 <button
   {...attributes}
   aria-label={label}
-  class:list={["ds-icon-button", className]}
+  class:list={["icon-button", className]}
   data-button-variant={variant}
   data-component-name="IconButton"
-  data-component-size={size}
+  data-control-size={size}
   disabled={disabled}
   type={type}
 >
-  <MaterialSymbol name="arrow_forward" size="var(--component-icon-size)" />
+  <MaterialSymbol name={icon} size="var(--control-icon-size)" />
 </button>
-
-<style>
-  .ds-icon-button {
-    --ds-icon-button-background: var(--button-secondary-background-default);
-    --ds-icon-button-border: var(--button-secondary-border-default);
-    --ds-icon-button-icon: var(--button-secondary-icon-default);
-
-    display: inline-flex;
-    width: var(--component-min-height);
-    height: var(--component-min-height);
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: center;
-    border: var(--border-width-default) solid var(--ds-icon-button-border);
-    border-radius: var(--radius-button);
-    padding: 0;
-    color: var(--ds-icon-button-icon);
-    background: var(--ds-icon-button-background);
-    cursor: pointer;
-  }
-
-  .ds-icon-button[data-button-variant="primary"] {
-    --ds-icon-button-background: var(--button-primary-background-default);
-    --ds-icon-button-border: var(--button-primary-border-default);
-    --ds-icon-button-icon: var(--button-primary-icon-default);
-  }
-
-  .ds-icon-button:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
-    --ds-icon-button-background: var(--button-secondary-background-hover);
-    --ds-icon-button-border: var(--button-secondary-border-hover);
-    --ds-icon-button-icon: var(--button-secondary-icon-hover);
-  }
-
-  .ds-icon-button[data-button-variant="primary"]:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
-    --ds-icon-button-background: var(--button-primary-background-hover);
-    --ds-icon-button-border: var(--button-primary-border-hover);
-    --ds-icon-button-icon: var(--button-primary-icon-hover);
-  }
-
-  .ds-icon-button:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
-    --ds-icon-button-background: var(--button-secondary-background-pressed);
-    --ds-icon-button-border: var(--button-secondary-border-pressed);
-    --ds-icon-button-icon: var(--button-secondary-icon-pressed);
-  }
-
-  .ds-icon-button[data-button-variant="primary"]:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
-    --ds-icon-button-background: var(--button-primary-background-pressed);
-    --ds-icon-button-border: var(--button-primary-border-pressed);
-    --ds-icon-button-icon: var(--button-primary-icon-pressed);
-  }
-
-  .ds-icon-button:disabled {
-    --ds-icon-button-background: var(--button-secondary-background-disabled);
-    --ds-icon-button-border: var(--button-secondary-border-disabled);
-    --ds-icon-button-icon: var(--button-secondary-icon-disabled);
-
-    cursor: not-allowed;
-  }
-
-  .ds-icon-button[data-button-variant="primary"]:disabled {
-    --ds-icon-button-background: var(--button-primary-background-disabled);
-    --ds-icon-button-border: var(--button-primary-border-disabled);
-    --ds-icon-button-icon: var(--button-primary-icon-disabled);
-  }
-
-  .ds-icon-button:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
-    box-shadow: var(--effect-focused);
-    outline: var(--border-width-emphasis) solid transparent;
-    outline-offset: var(--size-2);
-  }
-</style>

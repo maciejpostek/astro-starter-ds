@@ -19,12 +19,17 @@
   --ds-doc-table-row-tiny-letter-spacing: var(--letter-spacing-none);
   --ds-doc-table-row-tiny-sample-track-min-height: var(--size-16);
   --ds-doc-table-row-tiny-sample-height: var(--size-8);
-  --ds-doc-table-tiny-min-width: 62rem;
+  --ds-doc-table-token-column-min-width: 22rem;
+  --ds-doc-table-sample-column-width: 8rem;
+  --ds-doc-table-short-value-column-width: 10rem;
+  --ds-doc-table-mode-column-min-width: 26rem;
+  --ds-doc-table-mode-sample-width: var(--size-80);
+  --ds-doc-table-tiny-min-width: 60rem;
   --ds-doc-table-tiny-grid-template-columns:
-    minmax(12rem, 0.22fr)
-    minmax(20rem, 0.34fr)
-    minmax(22rem, 0.34fr)
-    minmax(8rem, 0.1fr);
+    var(--ds-doc-table-sample-column-width)
+    minmax(var(--ds-doc-table-token-column-min-width), 1fr)
+    minmax(20rem, 1.25fr)
+    var(--ds-doc-table-short-value-column-width);
 
   /* Documentation table column title - tiny profile
    * Header cells for token/value documentation tables.
@@ -77,11 +82,5 @@
   :root {
     --ds-doc-table-row-tiny-padding-inline: var(--size-8);
     --ds-doc-table-column-title-tiny-padding-inline: var(--size-8);
-    --ds-doc-table-tiny-min-width: 46rem;
-    --ds-doc-table-tiny-grid-template-columns:
-      minmax(9rem, 0.24fr)
-      minmax(16rem, 0.34fr)
-      minmax(15rem, 0.3fr)
-      minmax(6rem, 0.12fr);
   }
 }

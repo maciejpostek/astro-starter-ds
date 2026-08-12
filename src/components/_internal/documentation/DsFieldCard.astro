@@ -28,7 +28,7 @@ const { number, title, href } = Astro.props;
     border-right: var(--border-width-default) solid var(--color-border-subtle);
     border-bottom: var(--border-width-default) solid var(--color-border-subtle);
     background: var(--color-background-canvas);
-    padding: var(--component-padding-medium);
+    padding: var(--content-padding-medium);
     color: var(--color-text-primary);
     text-decoration: none;
     transition:
@@ -57,11 +57,11 @@ const { number, title, href } = Astro.props;
 
   .ds-field-card__icon {
     position: absolute;
-    right: var(--component-padding-medium);
-    bottom: var(--component-padding-medium);
+    right: var(--content-padding-medium);
+    bottom: var(--content-padding-medium);
     display: inline-flex;
-    width: var(--component-icon-size);
-    height: var(--component-icon-size);
+    width: var(--size-16);
+    height: var(--size-16);
     align-items: center;
     justify-content: center;
     color: var(--color-icon-primary);

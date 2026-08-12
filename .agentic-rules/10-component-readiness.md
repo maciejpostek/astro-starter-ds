@@ -2,6 +2,10 @@
 
 Status: active.
 
+## Deterministic authoring gate
+
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
 This is the canonical code-first Definition of Done for reusable Astro
 components. The machine-readable projection is
 `architecture/component-readiness-contract.json`. Figma is an explicit,
@@ -52,10 +56,14 @@ documentation-only state as a public prop.
 
 ### 5. Variables and tokens
 
-Consume existing semantic or component CSS variables for color, typography,
-sizing, spacing, radius, border, and motion. Do not replace an existing token
-with a local raw value. A new public token requires a separate explicit design
-system extension.
+Resolve each need through `tokenArchitecture.json`: component, dependency,
+use case, then global semantics. Primitives are only candidate sources for an
+approved semantic alias. Consume the single existing semantic match. Stop on
+an ambiguous match. A confirmed gap requires a proposed `tokenDraft` and
+explicit approval before implementation. Extend the existing owner group
+before proposing a new group. Public component CSS declares no custom
+properties and never invents a namespace; `--control-*` remains the only
+registered shared attribute bridge.
 
 ### 6. Responsive behavior
 
@@ -97,9 +105,10 @@ Standard documentation routes use the canonical
 `DesignSystemLayout` → `DsDocHeader` → page content slot anatomy; pages do not
 render their own header, width wrapper, or page-level maximum width. The page
 has exactly one `h1` from `DsDocHeader`; structural sections follow the
-canonical `DsSectionHeaderLevel2` → `DsSectionHeaderLevel3` →
-`DsSectionHeaderLevel4` hierarchy without skipped levels or page-local heading
-spacing and dividers. A Figma-only record must not receive fictional Astro
+canonical `DsSectionHeaderLevel2` → `DsSectionHeaderLevel3` hierarchy without
+skipped levels, generated heading descriptions, or page-local heading spacing
+and dividers. Level 2 uses semantic `h2` with `heading-h4`; Level 3 uses
+semantic `h3` with `heading-h6`. A Figma-only record must not receive fictional Astro
 preview or API data.
 
 ### 11. Guides
@@ -114,7 +123,8 @@ closest named component.
 
 ### 12. Validation
 
-Run `npm run audit:component-readiness` plus only the family and scope audits
+Run `npm run audit:component-authoring`, `npm run audit:component-readiness`
+plus only the family and scope audits
 selected by the router. Run browser validation for visual, interactive, or
 responsive changes. Set `readiness.validation` to `passed` only after the
 required checks succeed. Figma parity is not one of these checks.

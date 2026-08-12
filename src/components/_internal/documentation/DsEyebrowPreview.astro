@@ -1,0 +1,34 @@
+---
+import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro";
+import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+---
+
+<div
+  class="eyebrow-preview"
+  data-component-name="DsEyebrowPreview"
+  data-ds-preview-target
+>
+  <div class="eyebrow-preview__composition">
+    <Eyebrow text="Case studies" />
+    <DsSectionHeaderLevel3 title="Selected work" />
+  </div>
+</div>
+
+<style>
+  .eyebrow-preview {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+  }
+
+  .eyebrow-preview__composition {
+    display: grid;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+  }
+
+  .eyebrow-preview__composition > :global([data-component-name="DsSectionHeaderLevel3"]) {
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+</style>

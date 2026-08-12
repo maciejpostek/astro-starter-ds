@@ -6,6 +6,9 @@ components are rebuilt one-by-one from approved Figma nodes.
 ## Source layout
 
 ```text
+src/assets/
+  flags/                        active curated 24×24 flag SVGs
+
 src/components/
   assets/icons/                 active MaterialSymbol renderers
   base-components/             global reusable building blocks
@@ -19,6 +22,11 @@ src/components/
 
 Every empty public family folder contains only `.gitkeep`. Do not add a README
 or placeholder source file.
+
+The Flags asset family is represented by `src/assets/flags/`, mapped to the
+canonical Figma nodes in `src/data/design-system/flagLibrary.json`, and exposed
+through the searchable `Assets / Flags` documentation page. Each supplied flag
+is a local 24×24 SVG; no runtime renderer or network dependency is required.
 
 ## Canonical mapping
 

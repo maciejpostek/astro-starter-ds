@@ -4,6 +4,7 @@ import DsFamilyGallery from "../../../../components/_internal/documentation/DsFa
 import {
   architecture,
   componentsByPage,
+  createDocumentationSummary,
   type ArchitecturePage,
 } from "../../../../data/documentationRegistry";
 
@@ -17,16 +18,21 @@ interface Props { page: ArchitecturePage; }
 const { page } = Astro.props;
 const components = componentsByPage.get(`website-patterns/${page.pageKey}`) ?? [];
 const availableCount = components.filter((component) => Boolean(component.sourcePath)).length;
+const pageToc = [{ label: "Variants", href: "#variants" }];
 ---
 
 <DesignSystemLayout
   title={`${page.pageLabel} - Website Patterns`}
   pageType="family-gallery"
-  toc={[{ label: "Variants", href: "#variants" }]}
+  toc={pageToc}
   header={{
     eyebrow: "Website Patterns",
     title: page.pageLabel,
-    description: "Compare canonical section identities in this family. Responsive preview is enabled only for implemented Astro patterns with a registered preview adapter.",
+    summary: createDocumentationSummary(
+      `This family contains ${components.length} canonical website-pattern identities, including ${availableCount} implemented Astro records. Compare`,
+      pageToc,
+      "to inspect responsive previews only where a registered implementation adapter exists.",
+    ),
     status: availableCount ? "Partially available" : components.length ? "Figma only" : "Empty family",
   }}
 >

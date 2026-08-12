@@ -1,5 +1,6 @@
 ---
 import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsCodeSnippet from "../../../components/_internal/documentation/DsCodeSnippet.astro";
 import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
 import DsTableCell from "../../../components/_internal/documentation/DsTableCell.astro";
 import DsTableCopyCell from "../../../components/_internal/documentation/DsTableCopyCell.astro";
@@ -17,6 +18,7 @@ import {
   documentationTokenMap,
   getDocumentationTokenValue,
 } from "../../../data/documentationTokenRegistry";
+import elevationAgenticRules from "../../../../.agentic-rules/07-elevation.md?raw";
 
 const canonicalTokenValue = (tokenName: string, fallback: string) => {
   const token = documentationTokenMap.get(tokenName);
@@ -34,7 +36,6 @@ const foundationHeader = documentationFoundationHeader("elevation");
     <DsDocSection
       id="elevation-visual-roles"
       title="Elevation Roles"
-      description="Elevation communicates a surface relationship. The examples use the semantic contracts that reusable components consume."
     >
       <div class="ds-elevation-preview-grid">
         <article class="ds-elevation-preview" data-elevation="subtle">
@@ -73,7 +74,6 @@ const foundationHeader = documentationFoundationHeader("elevation");
         <DsDocSection
           id={group.id}
           title={group.title}
-          description={group.description}
         >
           <section
             class="ds-elevation-topic"
@@ -82,12 +82,11 @@ const foundationHeader = documentationFoundationHeader("elevation");
             <DsSectionHeaderLevel3
               id={`${group.id}-details-title`}
               title={index === 0 ? "Reference values" : index === 1 ? "Reusable roles" : "Owned contracts"}
-              description="Every row maps to a canonical CSS Variable in elevation-foundations.css."
             />
             <DsTableFrame
               label={`${group.title} elevation tokens`}
-              minWidth="72rem"
-              columns="minmax(22rem, 0.28fr) minmax(24rem, 0.3fr) minmax(34rem, 0.42fr)"
+              minWidth="80rem"
+              columns="minmax(var(--ds-doc-table-token-column-min-width), 28fr) minmax(24rem, 30fr) minmax(34rem, 42fr)"
               size="tiny"
             >
               <DsTableRow variant="header">
@@ -108,6 +107,17 @@ const foundationHeader = documentationFoundationHeader("elevation");
       ))
     }
 
+    <DsDocSection
+      id="elevation-agentic-rules"
+      title="Agentic Rules"
+    >
+      <DsCodeSnippet
+        filename=".agentic-rules/07-elevation.md"
+        language="markdown"
+        code={elevationAgenticRules.trim()}
+      />
+    </DsDocSection>
+
 </DesignSystemLayout>
 
 <style>
@@ -120,7 +130,7 @@ const foundationHeader = documentationFoundationHeader("elevation");
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--gap-large);
-    padding: var(--component-padding-large);
+    padding: var(--content-padding-large);
     background: var(--color-background-muted);
   }
 
@@ -128,7 +138,7 @@ const foundationHeader = documentationFoundationHeader("elevation");
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--gap-large);
-    padding: 0 var(--component-padding-large) var(--component-padding-large);
+    padding: 0 var(--content-padding-large) var(--content-padding-large);
     background: var(--color-background-muted);
   }
 
@@ -138,7 +148,7 @@ const foundationHeader = documentationFoundationHeader("elevation");
     align-content: center;
     gap: var(--gap-small);
     background: var(--color-background-canvas);
-    padding: var(--component-padding-large);
+    padding: var(--content-padding-large);
   }
 
   .ds-elevation-preview[data-elevation="subtle"] {
@@ -164,13 +174,13 @@ const foundationHeader = documentationFoundationHeader("elevation");
     align-content: center;
     gap: var(--gap-regular);
     background: var(--color-background-canvas);
-    padding: var(--component-padding-large);
+    padding: var(--content-padding-large);
   }
 
   .ds-elevation-control-preview button {
     border: var(--border-width-default) solid var(--color-border-default);
     border-radius: var(--radius-small);
-    padding: var(--component-padding-small) var(--component-padding-medium);
+    padding: var(--content-padding-small) var(--content-padding-medium);
     color: var(--color-text-primary);
     background: var(--color-background-surface);
     box-shadow: var(--elevation-control-raised);
@@ -219,7 +229,7 @@ const foundationHeader = documentationFoundationHeader("elevation");
     display: grid;
     gap: var(--gap-tiny);
     border-left: var(--border-width-emphasis) solid var(--color-border-accent);
-    padding: var(--component-padding-medium);
+    padding: var(--content-padding-medium);
     background: var(--color-background-surface);
   }
 

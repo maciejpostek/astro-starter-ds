@@ -1,0 +1,63 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type {
+  FeedbackEmphasis,
+  FeedbackLive,
+  FeedbackSize,
+  FeedbackStatus,
+} from "../../../lib/feedback/feedbackTypes";
+import {
+  getFeedbackIcon,
+  getFeedbackStatusLabel,
+  resolveFeedbackRole,
+  validateFeedbackContent,
+  validateFeedbackPresentation,
+} from "../../../lib/feedback/feedbackModel.mjs";
+import "../../../styles/components/feedback-messages.css";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class" | "title" | "role" | "aria-live"> {
+  title: string;
+  status?: FeedbackStatus;
+  emphasis?: FeedbackEmphasis;
+  size?: FeedbackSize;
+  statusLabel?: string;
+  live?: FeedbackLive;
+  class?: string;
+}
+
+const {
+  title,
+  status = "info",
+  emphasis = "subtle",
+  size = "medium",
+  statusLabel = getFeedbackStatusLabel(status),
+  live = "off",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+validateFeedbackContent({ title });
+validateFeedbackPresentation({ status, emphasis, size });
+const role = resolveFeedbackRole(live);
+const iconName = getFeedbackIcon(status);
+---
+
+<div
+  {...attributes}
+  class:list={["alert", className]}
+  data-component-name="Alert"
+  data-feedback-root
+  data-feedback-kind="Alert"
+  data-feedback-status={status}
+  data-feedback-emphasis={emphasis}
+  data-feedback-size={size}
+  role={role}
+  aria-live={live === "off" ? undefined : live}
+  aria-atomic={live === "off" ? undefined : "true"}
+>
+  <MaterialSymbol class="feedback-message__icon" name={iconName} />
+  <p class="feedback-message__title">
+    <span class="feedback-message__status-label">{statusLabel}: </span>{title}
+  </p>
+</div>

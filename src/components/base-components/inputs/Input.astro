@@ -40,9 +40,9 @@ const ariaInvalid = validation === "invalid"
   multiline ? (
     <textarea
       {...attributes}
-      class:list={["ds-input", "ds-input--textarea", className]}
+      class:list={["input", "input--textarea", className]}
       data-component-name="Input"
-      data-component-size={size}
+      data-control-size={size}
       data-input-validation={validation}
       disabled={disabled}
       aria-invalid={ariaInvalid}
@@ -50,9 +50,9 @@ const ariaInvalid = validation === "invalid"
   ) : (
     <input
       {...attributes}
-      class:list={["ds-input", className]}
+      class:list={["input", className]}
       data-component-name="Input"
-      data-component-size={size}
+      data-control-size={size}
       data-input-validation={validation}
       disabled={disabled}
       aria-invalid={ariaInvalid}
@@ -63,83 +63,96 @@ const ariaInvalid = validation === "invalid"
 }
 
 <style>
-  .ds-input {
+  .input {
     display: block;
     width: 100%;
     min-width: 0;
-    min-height: var(--component-min-height);
+    min-height: var(--control-min-height);
     appearance: none;
     border: var(--border-width-default) solid var(--input-border-default);
     border-radius: var(--radius-input);
-    padding: var(--component-padding-block) var(--component-padding-inline);
+    padding: var(--control-padding-block) var(--control-padding-inline);
     color: var(--input-text-default);
     background: var(--input-background-default);
+    box-shadow: var(--elevation-control-raised);
     font-family: var(--font-family-body);
-    font-size: var(--component-font-size);
+    font-size: var(--control-font-size);
     font-weight: var(--font-weight-normal);
     letter-spacing: var(--letter-spacing-tight);
-    line-height: var(--component-line-height);
+    line-height: var(--control-line-height);
     transition:
       background-color var(--motion-transition),
       border-color var(--motion-transition),
       box-shadow var(--motion-transition);
   }
 
-  .ds-input::placeholder {
+  .input::placeholder {
     color: var(--input-placeholder-default);
     opacity: 1;
   }
 
-  .ds-input--textarea {
+  .input--textarea {
     min-height: var(--size-128);
     resize: vertical;
   }
 
-  .ds-input:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+  .input--textarea[data-control-size="small"] {
+    padding-block: var(--control-padding-inline);
+  }
+
+  :global([data-component-name="FormField"][data-control-size="small"]) .input--textarea {
+    padding-block: var(--control-padding-inline);
+  }
+
+  :global([data-component-name="FormField"]:is([data-control-size="medium"], [data-control-size="large"])) .input--textarea {
+    padding-block: var(--control-padding-block);
+  }
+
+  .input:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
     border-color: var(--input-border-hover);
     background: var(--input-background-hover);
   }
 
-  .ds-input:not(:disabled):is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+  .input:not(:disabled):is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
     border-color: var(--input-border-focus);
     background: var(--input-background-focus);
     outline: none;
     box-shadow: var(--effect-focused);
   }
 
-  .ds-input:is([data-input-validation="invalid"], :user-invalid) {
+  .input:is([data-input-validation="invalid"], :user-invalid) {
     border-color: var(--input-border-invalid);
   }
 
-  .ds-input[data-input-validation="valid"] {
+  .input[data-input-validation="valid"] {
     border-color: var(--input-border-valid);
   }
 
-  .ds-input:disabled {
+  .input:disabled {
     border-color: var(--input-border-disabled);
     color: var(--input-text-disabled);
     background: var(--input-background-disabled);
     cursor: not-allowed;
   }
 
-  .ds-input:disabled::placeholder {
+  .input:disabled::placeholder {
     color: var(--input-placeholder-disabled);
   }
 
   @media (forced-colors: active) {
-    .ds-input {
+    .input {
       border-color: FieldText;
       color: FieldText;
       background: Field;
     }
 
-    .ds-input:not(:disabled):is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    .input:not(:disabled):is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
       outline: var(--border-width-strong) solid Highlight;
       outline-offset: var(--size-2);
       box-shadow: none;
     }
 
-    .ds-input:is([data-input-validation="invalid"], :user-invalid) {
+    .input:is([data-input-validation="invalid"], :user-invalid) {
       border-color: Mark;
     }
   }

@@ -2,15 +2,17 @@
 import DsCopyButton from "./DsCopyButton.astro";
 import DsEmptyState from "./DsEmptyState.astro";
 import DsSectionHeaderLevel2 from "./DsSectionHeaderLevel2.astro";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import type { ArchitectureComponent, ArchitecturePage } from "../../../data/documentationRegistry";
 import { documentationComponentHref } from "../../../data/documentationRegistry";
 
 interface Props {
   page: ArchitecturePage;
   components: ArchitectureComponent[];
+  showcaseRenderer?: AstroComponentFactory;
 }
 
-const { page, components } = Astro.props;
+const { page, components, showcaseRenderer: ShowcaseRenderer } = Astro.props;
 ---
 
 <section
@@ -22,8 +24,12 @@ const { page, components } = Astro.props;
   <DsSectionHeaderLevel2
     id="variants-title"
     title="Variants"
-    description={`Canonical records available in the ${page.pageLabel} family.`}
   />
+  {ShowcaseRenderer && (
+    <div class="ds-family-gallery__showcase">
+      <ShowcaseRenderer />
+    </div>
+  )}
   {
     components.length === 0 ? (
       <DsEmptyState path={page.sourceDirectory} />
@@ -72,13 +78,19 @@ const { page, components } = Astro.props;
     gap: var(--gap-medium);
   }
 
+  .ds-family-gallery__showcase {
+    inline-size: 100%;
+    min-inline-size: 0;
+    margin-block-end: var(--gap-large);
+  }
+
   .ds-family-card {
     display: grid;
     align-content: start;
     gap: var(--gap-medium);
     border: var(--border-width-default) solid var(--color-border-subtle);
     background: var(--color-background-canvas);
-    padding: var(--component-padding-medium);
+    padding: var(--content-padding-medium);
   }
 
   .ds-family-card__preview {
@@ -88,7 +100,7 @@ const { page, components } = Astro.props;
     gap: var(--gap-small);
     border: var(--border-width-default) solid var(--color-border-default);
     background: var(--color-background-surface);
-    padding: var(--component-padding-large);
+    padding: var(--content-padding-large);
   }
 
   .ds-family-card__preview span {
@@ -130,7 +142,7 @@ const { page, components } = Astro.props;
   .ds-family-card__actions {
     align-items: center;
     border-top: var(--border-width-default) solid var(--color-border-subtle);
-    padding-top: var(--component-padding-small);
+    padding-top: var(--content-padding-small);
   }
 
   .ds-family-card__actions a {

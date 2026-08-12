@@ -26,6 +26,7 @@
  * Component-specific colors, interaction effects and shared size profiles.
  */
 @import "./color-components.css";
+@import "./size-components.css";
 @import "./interaction-effects.css";
-@import "./component-sizes.css";
+@import "./control-sizes.css";
 @import "./design-system-components.css";

@@ -1,0 +1,274 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { OverlayPlacement } from "../../../lib/overlays/overlay-types";
+import { validateTooltipContract } from "../../../lib/overlays/overlay-contract.mjs";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export type TooltipSize = "small" | "medium";
+export type { OverlayPlacement } from "../../../lib/overlays/overlay-types";
+
+export interface Props extends Omit<HTMLAttributes<"span">, "class" | "id"> {
+  text: string;
+  label: string;
+  size?: TooltipSize;
+  placement?: OverlayPlacement;
+  id?: string;
+  class?: string;
+}
+
+const {
+  text,
+  label,
+  size = "medium",
+  placement = "top",
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+validateTooltipContract({ text, label, size, placement, id });
+
+const rootId = id ?? `tooltip-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+---
+
+<span
+  {...attributes}
+  id={rootId}
+  class:list={["tooltip", className]}
+  data-component-name="Tooltip"
+  data-overlay-mode="tooltip"
+  data-overlay-placement={placement}
+  data-overlay-root
+  data-tooltip-size={size}
+>
+  <button
+    class="tooltip__trigger"
+    type="button"
+    aria-label={label}
+    aria-describedby={contentId}
+    data-control-size="small"
+    data-overlay-trigger
+    data-tooltip-trigger
+  >
+    <MaterialSymbol name="info" size="var(--control-icon-size)" />
+  </button>
+  <span
+    id={contentId}
+    class:list={[
+      "tooltip__content",
+      size === "small" ? "body-tiny-regular" : "body-small-regular",
+    ]}
+    role="tooltip"
+    popover="manual"
+    hidden
+    data-overlay-surface
+    data-tooltip-content
+  >
+    <span class="tooltip__tail" aria-hidden="true" data-overlay-tail></span>
+    {text}
+  </span>
+</span>
+
+<script>
+  import {
+    activateOverlay,
+    deactivateOverlay,
+    hidePopoverSurface,
+    isPopoverOpen,
+    showPopoverSurface,
+  } from "../../../lib/overlays/overlay-runtime";
+
+  declare global {
+    interface Window {
+      __astroDesignSystemTooltipReady?: boolean;
+    }
+  }
+
+  type TooltipElement = HTMLElement & {
+    hidePopover?: () => void;
+    showPopover?: () => void;
+  };
+
+  const getRoot = (trigger: Element) =>
+    trigger.closest<HTMLElement>('[data-component-name="Tooltip"]');
+
+  const showTooltip = (root: HTMLElement) => {
+    const content = root.querySelector<TooltipElement>("[data-tooltip-content]");
+    if (!content || isPopoverOpen(content)) return;
+
+    showPopoverSurface(content);
+    activateOverlay(root);
+  };
+
+  const hideTooltip = (root: HTMLElement) => {
+    const content = root.querySelector<TooltipElement>("[data-tooltip-content]");
+    if (!content) return;
+
+    deactivateOverlay(root);
+    hidePopoverSurface(content);
+  };
+
+  if (!window.__astroDesignSystemTooltipReady) {
+    window.__astroDesignSystemTooltipReady = true;
+
+    document.addEventListener("pointerover", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const trigger = event.target.closest("[data-tooltip-trigger]");
+      const root = trigger ? getRoot(trigger) : null;
+      if (root) showTooltip(root);
+    });
+
+    document.addEventListener("pointerout", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const trigger = event.target.closest("[data-tooltip-trigger]");
+      if (!trigger) return;
+      const relatedTarget = event.relatedTarget;
+      if (relatedTarget instanceof Node && trigger.contains(relatedTarget)) return;
+      const root = getRoot(trigger);
+      if (root) hideTooltip(root);
+    });
+
+    document.addEventListener("focusin", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const trigger = event.target.closest("[data-tooltip-trigger]");
+      const root = trigger ? getRoot(trigger) : null;
+      if (root) showTooltip(root);
+    });
+
+    document.addEventListener("focusout", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const trigger = event.target.closest("[data-tooltip-trigger]");
+      const root = trigger ? getRoot(trigger) : null;
+      if (root) hideTooltip(root);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      document
+        .querySelectorAll<HTMLElement>('[data-component-name="Tooltip"]')
+        .forEach(hideTooltip);
+    });
+  }
+</script>
+
+<style>
+  .tooltip {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .tooltip__trigger {
+    display: inline-grid;
+    inline-size: var(--control-min-height);
+    block-size: var(--control-min-height);
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-small);
+    background: transparent;
+    padding: 0;
+    color: var(--color-icon-secondary);
+    cursor: help;
+    transition: color var(--motion-transition), background-color var(--motion-transition);
+  }
+
+  .tooltip__trigger:hover {
+    background: var(--color-background-subtle);
+    color: var(--color-icon-primary);
+  }
+
+  .tooltip__trigger:active {
+    background: var(--color-background-muted);
+  }
+
+  .tooltip__trigger:focus-visible {
+    outline: none;
+    box-shadow: var(--effect-focused);
+  }
+
+  .tooltip__content {
+    position: fixed;
+    inset: auto;
+    box-sizing: border-box;
+    inline-size: max-content;
+    max-inline-size:
+      min(
+        var(--tooltip-compact-max-inline-size),
+        calc(100vw - (var(--tooltip-viewport-padding) * 2))
+      );
+    margin: 0;
+    border: var(--border-width-default) solid var(--color-border-inverse);
+    border-radius: var(--radius-small);
+    background: var(--color-background-inverse);
+    color: var(--color-text-inverse);
+    opacity: 0;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+    transition: opacity var(--motion-transition);
+  }
+
+  .tooltip[data-tooltip-size="small"] .tooltip__content {
+    padding: var(--content-padding-tiny) var(--content-padding-xsmall);
+  }
+
+  .tooltip[data-tooltip-size="medium"] .tooltip__content {
+    padding: var(--content-padding-xsmall) var(--content-padding-small);
+  }
+
+  .tooltip__content.is-visible {
+    opacity: 1;
+  }
+
+  .tooltip__tail {
+    position: absolute;
+    inline-size: var(--tooltip-tail-size);
+    block-size: var(--tooltip-tail-size);
+    background: var(--color-background-inverse);
+  }
+
+  .tooltip__content[data-overlay-resolved-placement="top"] .tooltip__tail {
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .tooltip__content[data-overlay-resolved-placement="bottom"] .tooltip__tail {
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+
+  .tooltip__content[data-overlay-resolved-placement="left"] .tooltip__tail {
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  .tooltip__content[data-overlay-resolved-placement="right"] .tooltip__tail {
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tooltip__trigger,
+    .tooltip__content {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .tooltip__trigger {
+      color: ButtonText;
+    }
+
+    .tooltip__trigger:focus-visible {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+      box-shadow: none;
+    }
+
+    .tooltip__content {
+      border-color: CanvasText;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .tooltip__tail {
+      background: Canvas;
+    }
+  }
+</style>

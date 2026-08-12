@@ -75,7 +75,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: var(--border-width-strong) solid var(--component-focus-ring);
+  outline: var(--border-width-strong) solid var(--color-state-focus-ring);
   outline-offset: var(--size-2);
   box-shadow: var(--effect-focused);
 }

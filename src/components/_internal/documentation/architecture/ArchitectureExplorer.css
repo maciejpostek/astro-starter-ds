@@ -43,7 +43,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--gap-small);
-  padding: var(--component-padding-small);
+  padding: var(--content-padding-small);
 }
 
 .architecture-explorer__view-controls,
@@ -78,7 +78,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding-inline: var(--component-padding-small);
+  padding-inline: var(--content-padding-small);
   cursor: pointer;
 }
 
@@ -93,12 +93,12 @@
 .architecture-explorer select:focus-visible,
 .architecture-explorer input:focus-visible,
 .architecture-node:focus-visible {
-  outline: var(--component-focus-ring);
+  outline: var(--color-state-focus-ring);
   outline-offset: 2px;
 }
 
 .architecture-explorer select {
-  padding-inline: var(--component-padding-small) var(--component-padding-large);
+  padding-inline: var(--content-padding-small) var(--content-padding-large);
   cursor: pointer;
 }
 
@@ -109,7 +109,7 @@
   min-height: var(--size-40);
   align-items: center;
   gap: var(--gap-tiny);
-  padding-inline-start: var(--component-padding-small);
+  padding-inline-start: var(--content-padding-small);
   border: var(--border-width-default) solid var(--color-border-default);
   border-radius: var(--radius-small);
   background: var(--color-background-surface);
@@ -126,7 +126,7 @@
 
 .architecture-explorer__search button {
   min-height: 2rem;
-  padding-inline: var(--component-padding-tiny);
+  padding-inline: var(--content-padding-tiny);
   border: 0;
 }
 
@@ -135,7 +135,7 @@
   min-width: 0;
   align-items: baseline;
   gap: var(--gap-small);
-  padding: var(--component-padding-small) var(--component-padding-medium);
+  padding: var(--content-padding-small) var(--content-padding-medium);
   color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
   line-height: var(--line-height-normal);
@@ -163,7 +163,7 @@
   display: flex;
   align-items: center;
   gap: var(--gap-small);
-  padding: var(--component-padding-tiny) var(--component-padding-medium);
+  padding: var(--content-padding-tiny) var(--content-padding-medium);
   color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
 }
@@ -218,7 +218,7 @@
   height: 100%;
   align-content: start;
   gap: var(--gap-small);
-  padding: var(--component-padding-medium);
+  padding: var(--content-padding-medium);
   overflow: hidden;
   border: var(--border-width-emphasis) solid var(--architecture-node-border, var(--color-border-default));
   border-radius: var(--radius-medium);
@@ -384,7 +384,7 @@
   width: min(26rem, 42%);
   align-content: start;
   gap: var(--gap-medium);
-  padding: var(--component-padding-large);
+  padding: var(--content-padding-large);
   overflow-y: auto;
   border-inline-start: var(--border-width-default) solid var(--color-border-default);
   background: var(--color-background-surface);
@@ -438,7 +438,7 @@
 .architecture-explorer__details ul {
   display: grid;
   gap: var(--gap-tiny);
-  padding-inline-start: var(--component-padding-medium);
+  padding-inline-start: var(--content-padding-medium);
 }
 
 .architecture-explorer__facts {
@@ -473,7 +473,7 @@
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--gap-tiny);
-  padding: var(--component-padding-tiny);
+  padding: var(--content-padding-tiny);
   border: var(--border-width-default) solid var(--color-border-subtle);
   border-radius: var(--radius-small);
 }
@@ -487,25 +487,6 @@
 .architecture-explorer__paths button {
   min-height: var(--size-32);
   font-size: var(--font-size-body-tiny);
-}
-
-.architecture-explorer__status {
-  position: absolute;
-  z-index: 8;
-  inset-block-end: var(--gap-small);
-  inset-inline-start: 50%;
-  min-height: 1px;
-  padding: var(--component-padding-tiny) var(--component-padding-small);
-  transform: translateX(-50%);
-  border-radius: var(--radius-small);
-  background: var(--color-background-inverse);
-  color: var(--color-text-inverse);
-  font-size: var(--font-size-body-tiny);
-  pointer-events: none;
-}
-
-.architecture-explorer__status:empty {
-  display: none;
 }
 
 .architecture-explorer--loading,

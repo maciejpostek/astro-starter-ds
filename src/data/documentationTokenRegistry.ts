@@ -1,7 +1,7 @@
 import colorComponents from "../styles/tokens/color-components.css?raw";
 import colorPrimitives from "../styles/tokens/color-primitives.css?raw";
 import colorSemantic from "../styles/tokens/color-semantic.css?raw";
-import componentSizes from "../styles/tokens/component-sizes.css?raw";
+import controlSizes from "../styles/tokens/control-sizes.css?raw";
 import designSystemComponents from "../styles/tokens/design-system-components.css?raw";
 import elevationFoundations from "../styles/tokens/elevation-foundations.css?raw";
 import interactionEffects from "../styles/tokens/interaction-effects.css?raw";
@@ -9,6 +9,7 @@ import layoutFoundations from "../styles/tokens/layout-foundations.css?raw";
 import layoutSemantic from "../styles/tokens/layout-semantic.css?raw";
 import layoutStyles from "../styles/tokens/layout-styles.css?raw";
 import motionFoundations from "../styles/tokens/motion-foundations.css?raw";
+import sizeComponents from "../styles/tokens/size-components.css?raw";
 import sizePrimitives from "../styles/tokens/size-primitives.css?raw";
 import sizeSemantic from "../styles/tokens/size-semantic.css?raw";
 import typographyFoundations from "../styles/tokens/typography-foundations.css?raw";
@@ -25,7 +26,8 @@ const sources = [
   ["color-components.css", colorComponents],
   ["size-primitives.css", sizePrimitives],
   ["size-semantic.css", sizeSemantic],
-  ["component-sizes.css", componentSizes],
+  ["size-components.css", sizeComponents],
+  ["control-sizes.css", controlSizes],
   ["typography-foundations.css", typographyFoundations],
   ["typography-styles.css", typographyStyles],
   ["layout-foundations.css", layoutFoundations],
@@ -88,7 +90,7 @@ export const selectDocumentationTokens = ({
 
 export const documentationFoundationForTokenSource = (sourceFile: string) => {
   if (sourceFile.startsWith("color-")) return "color";
-  if (sourceFile.startsWith("size-") || sourceFile === "component-sizes.css") return "sizing";
+  if (sourceFile.startsWith("size-") || sourceFile === "control-sizes.css") return "sizing";
   if (sourceFile.startsWith("typography-")) return "typography";
   if (sourceFile.startsWith("layout-")) return "layout";
   if (sourceFile.startsWith("motion-")) return "motion";

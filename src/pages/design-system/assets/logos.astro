@@ -1,0 +1,112 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsIconGallery from "../../../components/_internal/documentation/DsIconGallery.astro";
+import DsLogoCard from "../../../components/_internal/documentation/DsLogoCard.astro";
+import { slugifyDocumentationValue } from "../../../data/documentationRegistry";
+
+interface LogoAsset {
+  fileName: string;
+  src: string;
+  isFull: boolean;
+  hasExportSuffix: boolean;
+}
+
+interface LogoRecord {
+  name: string;
+  mark?: LogoAsset;
+  full?: LogoAsset;
+  files: LogoAsset[];
+}
+
+const logoAssetUrls = import.meta.glob<string>(
+  "../../../assets/logos/*.svg",
+  { query: "?url", import: "default", eager: true },
+);
+
+const getLogoAsset = ([path, src]: [string, string]): LogoAsset => {
+  const fileName = path.split("/").at(-1) ?? path;
+  const stem = fileName.replace(/\.svg$/i, "");
+
+  return {
+    fileName,
+    src,
+    isFull: /_full(?:-\d+)?$/i.test(stem),
+    hasExportSuffix: /-\d+$/.test(stem),
+  };
+};
+
+const getBrandName = (asset: LogoAsset) =>
+  asset.fileName
+    .replace(/\.svg$/i, "")
+    .replace(/_full(?=-\d+$|$)/i, "")
+    .replace(/-\d+$/, "");
+
+const assets = Object.entries(logoAssetUrls).map(getLogoAsset);
+const groupedAssets = new Map<string, LogoAsset[]>();
+
+for (const asset of assets) {
+  const brandName = getBrandName(asset);
+  const current = groupedAssets.get(brandName) ?? [];
+  current.push(asset);
+  groupedAssets.set(brandName, current);
+}
+
+const preferCanonicalAsset = (first: LogoAsset, second: LogoAsset) =>
+  Number(first.hasExportSuffix) - Number(second.hasExportSuffix) ||
+  first.fileName.localeCompare(second.fileName, "en", { sensitivity: "base" });
+
+const logos: LogoRecord[] = Array.from(groupedAssets, ([name, files]) => {
+  const sortedFiles = files.slice().sort(preferCanonicalAsset);
+  const markCandidates = sortedFiles.filter((asset) => !asset.isFull);
+  const fullCandidates = sortedFiles.filter((asset) => asset.isFull);
+  const mark = markCandidates[0] ?? sortedFiles.find((asset) => asset !== fullCandidates[0]);
+  const full = fullCandidates[0] ?? sortedFiles.find((asset) => asset !== mark);
+
+  return { name, mark, full, files: sortedFiles };
+}).sort((first, second) =>
+  first.name.localeCompare(second.name, "en", { numeric: true, sensitivity: "base" })
+);
+
+const successToastId = "logo-copy-success";
+const errorToastId = "logo-copy-error";
+---
+
+<DesignSystemLayout
+  title="Logos - Astro Design System"
+  pageType="asset-gallery"
+  header={{
+    eyebrow: "Assets",
+    title: "Logos",
+    summary: [{
+      kind: "text",
+      text: `Browse ${logos.length} brands across ${assets.length} local SVG assets. Select a card to copy its brand name.`,
+    }],
+  }}
+>
+  <div id="logo-catalog" data-ds-doc-section>
+    <DsIconGallery
+      label="Search logos by brand"
+      clearLabel="Clear logo search"
+      placeholder="Search logos"
+      emptyMessage="No logo matches this search."
+      successToastId={successToastId}
+      successToastTitle="Brand name copied"
+      errorToastId={errorToastId}
+      errorToastTitle="Brand name could not be copied"
+      layout="wide"
+    >
+      {logos.map((logo) => (
+        <DsLogoCard
+          id={`logo-${slugifyDocumentationValue(logo.name)}`}
+          name={logo.name}
+          markSrc={logo.mark?.src}
+          fullSrc={logo.full?.src}
+          copyLabel={`Copy ${logo.name} brand name`}
+          searchKeywords={`${logo.name} ${logo.files.map((asset) => asset.fileName).join(" ")} logo brand`}
+          successToastId={successToastId}
+          errorToastId={errorToastId}
+        />
+      ))}
+    </DsIconGallery>
+  </div>
+</DesignSystemLayout>

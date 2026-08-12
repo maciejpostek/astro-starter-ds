@@ -1,7 +1,11 @@
 ---
 import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
 import DsSectionHeaderLevel2 from "../../../components/_internal/documentation/DsSectionHeaderLevel2.astro";
+import DsTableCell from "../../../components/_internal/documentation/DsTableCell.astro";
+import DsTableFrame from "../../../components/_internal/documentation/DsTableFrame.astro";
+import DsTableRow from "../../../components/_internal/documentation/DsTableRow.astro";
 import architecture from "../../../data/design-system/componentArchitecture.json";
+import { createDocumentationSummary } from "../../../data/documentationRegistry";
 
 const figmaOnly = architecture.components.filter(
   (record) => record.syncStatus === "figma-only"
@@ -12,15 +16,20 @@ const intentional = architecture.components.filter(
 const mapped = architecture.components.filter(
   (record) => record.syncStatus === "mapped"
 );
----
-
-<DesignSystemLayout title="Internal Parts - Astro Design System" pageType="workspace" toc={[
+const pageToc = [
   { label: "Readiness overview", href: "#readiness-overview" },
   { label: "Canonical records", href: "#canonical-records" },
-]} header={{
+];
+---
+
+<DesignSystemLayout title="Internal Parts - Astro Design System" pageType="workspace" toc={pageToc} header={{
   eyebrow: "Workspace",
   title: "Internal Parts",
-  description: "Operational inventory of canonical component identities and their current Figma–Astro readiness.",
+  summary: createDocumentationSummary(
+    "This operational inventory tracks canonical component identities and their current Figma–Astro readiness. Start with",
+    pageToc,
+    "to understand aggregate status before locating an individual source record.",
+  ),
 }}>
 
     <section class="readiness-overview" id="readiness-overview" aria-labelledby="readiness-overview-title" data-ds-doc-section>
@@ -34,32 +43,38 @@ const mapped = architecture.components.filter(
 
     <section class="inventory" id="canonical-records" aria-labelledby="canonical-records-title" data-ds-doc-section>
       <DsSectionHeaderLevel2 id="canonical-records-title" title="Canonical records" />
-      <table>
-        <thead><tr><th>Name</th><th>Page</th><th>Role</th><th>Status</th><th>Astro source</th></tr></thead>
-        <tbody>
-          {architecture.components.map((record) => (
-            <tr>
-              <th scope="row">{record.name}</th>
-              <td>{record.pageLabel}</td>
-              <td><code>{record.role}</code></td>
-              <td><code>{record.syncStatus}</code></td>
-              <td><code>{record.sourcePath ?? "—"}</code></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DsTableFrame
+        label="Canonical component records"
+        minWidth="72rem"
+        columns="minmax(14rem, 20fr) minmax(14rem, 18fr) minmax(10rem, 12fr) minmax(14rem, 18fr) minmax(24rem, 32fr)"
+      >
+        <DsTableRow variant="header">
+          <DsTableCell role="columnheader" variant="header">Name</DsTableCell>
+          <DsTableCell role="columnheader" variant="header">Page</DsTableCell>
+          <DsTableCell role="columnheader" variant="header">Role</DsTableCell>
+          <DsTableCell role="columnheader" variant="header">Status</DsTableCell>
+          <DsTableCell role="columnheader" variant="header">Astro source</DsTableCell>
+        </DsTableRow>
+        {architecture.components.map((record) => (
+          <DsTableRow>
+            <DsTableCell role="rowheader">{record.name}</DsTableCell>
+            <DsTableCell role="cell">{record.pageLabel}</DsTableCell>
+            <DsTableCell role="cell"><code>{record.role}</code></DsTableCell>
+            <DsTableCell role="cell"><code>{record.syncStatus}</code></DsTableCell>
+            <DsTableCell role="cell"><code>{record.sourcePath ?? "—"}</code></DsTableCell>
+          </DsTableRow>
+        ))}
+      </DsTableFrame>
     </section>
 </DesignSystemLayout>
 
 <style>
   .readiness-overview { display:grid; }
   .metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap-small); margin-bottom:var(--section-padding-small); }
-  .metrics article, .inventory { border:var(--border-width-default) solid var(--color-border-subtle); padding:var(--component-padding-large); }
+  .metrics article { border:var(--border-width-default) solid var(--color-border-subtle); padding:var(--content-padding-large); }
   .metrics article { display:grid; gap:var(--gap-small); }
   .metrics span { color:var(--color-text-secondary); }
   .metrics strong { font-size:var(--font-size-h4); }
-  .inventory { display:grid; gap:var(--gap-large); overflow:auto; }
-  table { width:100%; border-collapse:collapse; }
-  th, td { border-bottom:var(--border-width-default) solid var(--color-border-subtle); padding:var(--component-padding-small); text-align:left; vertical-align:top; }
+  .inventory { display:grid; gap:var(--gap-large); }
   @media (width < 64rem) { .metrics { grid-template-columns:1fr; } }
 </style>

@@ -9,7 +9,7 @@ The token system is integrated with the Astro prototype.
 - `tokens.css` is imported before `src/styles/global.css` in `BaseLayout.astro`.
 - Global colors, typography, spacing, radii and borders consume design tokens.
 - Light and dark themes use the same semantic and component contracts.
-- Shared controls select geometry through `data-component-size`.
+- Shared controls select geometry through `data-control-size`.
 - Product-specific widths and composition decisions remain local to the
   prototype instead of expanding the global design-system foundations.
 
@@ -30,7 +30,8 @@ The token system is integrated with the Astro prototype.
 @import "./elevation-foundations.css";
 
 @import "./color-components.css";
-@import "./component-sizes.css";
+@import "./size-components.css";
+@import "./control-sizes.css";
 @import "./design-system-components.css";
 ```
 
@@ -66,6 +67,17 @@ alias:
 - a global semantic token when the role is shared,
 - a primitive when the decision belongs only to that component.
 
+Every published group is registered in
+`src/data/design-system/tokenArchitecture.json`. Styling work must resolve an
+existing component, dependency, use-case, or global group before proposing a
+new token. A missing role extends the existing owner group first. A confirmed
+gap produces a proposed `tokenDraft`; no CSS definition is added until the
+draft is explicitly approved.
+
+Public components consume these variables directly. They do not declare local
+custom-property aliases. Names with `--ds-*`, `--_ds-*`, or `--component-*`
+are forbidden outside the private documentation token contract.
+
 ## File Map
 
 ### Colors
@@ -80,8 +92,10 @@ alias:
 - `size-primitives.css`: fixed dimension scale.
 - `size-semantic.css`: section spacing, component padding, gaps, radius,
   and border widths.
-- `component-sizes.css`: shared `small`, `medium` and `large`
-  geometry profiles exposed through `data-component-size`.
+- `size-components.css`: registered component sizing for Switch, Tag,
+  Pagination and Tooltip.
+- `control-sizes.css`: shared `small`, `medium` and `large`
+  control geometry profiles exposed through `data-control-size`.
 
 ### Typography
 
@@ -186,7 +200,7 @@ layers below, while Figma-specific simplifications are documented in
 | `color-components.css` | `Color Semantic / Component` |
 | `size-primitives.css` | `Sizing Primitives` |
 | `size-semantic.css` | `Sizing Semantic` |
-| `component-sizes.css` | `Component Size` |
+| `control-sizes.css` | Pending — the existing Figma `Component Size` collection is unchanged in this Astro-only update |
 | `typography-foundations.css` | `Typography Foundations` |
 | `typography-styles.css` | Figma Text Styles (separate synchronization follow-up) |
 | `layout-foundations.css` | `Layout Foundations` |
@@ -199,39 +213,47 @@ Do not add a project-name prefix to these collection names. Every Figma
 variable that maps directly to CSS should use Web code syntax in the form
 `var(--token-name)`.
 
-## Shared Component Sizes
+## Shared Control Sizes
 
-Compact controls share one geometry contract:
+Controls that align in action groups, form rows and toolbars share one geometry contract:
 
 ```html
-<button data-component-size="small">Action</button>
-<input data-component-size="medium" />
+<button data-control-size="small">Action</button>
+<input data-control-size="medium" />
 ```
 
 Component CSS consumes:
 
 ```css
-min-height: var(--component-min-height);
-padding: var(--component-padding-block) var(--component-padding-inline);
-gap: var(--component-gap);
-font-size: var(--component-font-size);
-line-height: var(--component-line-height);
+min-height: var(--control-min-height);
+padding: var(--control-padding-block) var(--control-padding-inline);
+gap: var(--control-gap);
+font-size: var(--control-font-size);
+line-height: var(--control-line-height);
 ```
 
-Not every component must support every profile. Form inputs should normally use
-`medium` or `large`; `small` is the minimum supported component size for compact controls.
+Button, ButtonLink, IconButton, Input and SearchInput are the current consumers.
+Future Select and Tab implementations should reuse Control Size when they align
+with adjacent controls. Form inputs should normally use `medium` or `large`;
+`small` is the minimum supported control size.
 
-`SearchInput` reuses the Input color and Component Size contracts. Its fixed
+`SearchInput` reuses the Input color and Control Size contracts. Its fixed
 search glyph and clear action use `--input-icon-*`; it does not own a separate
 component color group.
 
-`Tag` is the default component for short categorical values such as service
-scope, process activities, tech stack, industries and project metadata. Use
-`small` by default; larger tag sizes require an explicit UI reason.
+`Tag`, `SwitchButton`, Label, Badge and other components with different UX and
+geometry do not consume Control Size. `Tag` owns one fixed local geometry and
+uses `data-tag-leading` and `data-tag-removable` only to switch logical edge
+padding between the text and visual values. Both edge visuals use the same
+24px target around a 14px glyph so the 4px visual edge padding remains
+optically balanced on either side. `SwitchButton` also owns one fixed local
+geometry contract. A second shared family should be introduced only after
+at least three semantically related components prove the same geometry.
 
 For applied filters, Tag may expose one nested close action. The shell remains
-non-interactive, the close action inherits the tone through `currentColor`, and
-its runtime states use native opacity plus the shared focus treatment.
+non-interactive, and the close action inherits the exact text color and opacity
+through `currentColor` while the shell projects its native interaction and
+shared focus treatment.
 
 ## Responsive Strategy
 

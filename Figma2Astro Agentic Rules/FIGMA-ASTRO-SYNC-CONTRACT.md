@@ -63,7 +63,7 @@ Allowed sync statuses: `figma-only`, `astro-only`, `mapped`,
 
 The curated icon contract is `src/data/design-system/iconLibrary.json`.
 
-- Figma keeps 45 `Icon/Material/<google_snake_case_name>` masters.
+- Figma keeps 49 `Icon/Material/<google_snake_case_name>` masters.
 - Astro renders local inline SVG through
   `src/components/assets/icons/MaterialSymbol.astro` or `.tsx`.
 - Active profile: Sharp, optical size 20, weight 400, grade 0, fill 0.
@@ -79,6 +79,27 @@ The curated icon contract is `src/data/design-system/iconLibrary.json`.
   name props. A documented Boolean may hide an icon.
 - Change the glyph only in the consumer master, then verify color and size
   bindings. Astro hardcodes the same MaterialSymbol name.
+
+## Social Icons
+
+The canonical social icon contract is the `social` section of
+`src/data/design-system/iconLibrary.json`.
+
+- Figma keeps one `Social Icons` ComponentSet (`964:9411`) with 26 Platform
+  values and Color=Original|Negative, for 52 variants.
+- Astro renders one typed `SocialIcons.astro` component. The required
+  `platform` prop uses stable lowercase slugs.
+- Figma Original maps to Astro `variant="brand"`; its exported platform
+  paints remain fixed local asset data.
+- Figma Negative maps to Astro `variant="monochrome"`; all drawable paints
+  inherit `currentColor`.
+- Astro does not preserve Figma's default Facebook platform. Callers must
+  choose a platform explicitly.
+- Figma's fixed 15.692 px presentation canvas is representational metadata.
+  Astro fills the width and height owned by the parent and preserves the source
+  aspect ratio.
+- Do not turn platform colors into project color tokens or load social artwork
+  from a runtime URL.
 
 ## Node-to-Astro workflow
 

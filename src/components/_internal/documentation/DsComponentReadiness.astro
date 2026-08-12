@@ -1,4 +1,8 @@
 ---
+import DsTableCell from "./DsTableCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+
 interface Readiness {
   visual: string;
   validation: string;
@@ -88,67 +92,64 @@ const statusLabel = (value: string) =>
     Showing <strong data-readiness-count>{records.length}</strong> of {records.length} components.
   </p>
 
-  <div class="ds-component-readiness__table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Component</th>
-          <th scope="col">Family / layer</th>
-          <th scope="col">Implementation</th>
-          <th scope="col">Visual</th>
-          <th scope="col">Validation</th>
-          <th scope="col">Source</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          records.map((record) => (
-            <tr
-              data-readiness-row
-              data-name={record.name.toLowerCase()}
-              data-family={record.family}
-              data-status={record.status}
-              data-visual={record.readiness.visual}
-              data-validation={record.readiness.validation}
+  <DsTableFrame
+    class="ds-component-readiness__table"
+    label="Component readiness"
+    minWidth="88rem"
+    columns="minmax(20rem, 26fr) minmax(12rem, 16fr) minmax(10rem, 13fr) minmax(9rem, 11fr) minmax(9rem, 11fr) minmax(20rem, 28fr)"
+  >
+    <DsTableRow variant="header">
+      <DsTableCell role="columnheader" variant="header">Component</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Family / layer</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Implementation</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Visual</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Validation</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Source</DsTableCell>
+    </DsTableRow>
+
+    {
+      records.map((record) => (
+        <DsTableRow
+          data-readiness-row
+          data-name={record.name.toLowerCase()}
+          data-family={record.family}
+          data-status={record.status}
+          data-visual={record.readiness.visual}
+          data-validation={record.readiness.validation}
+        >
+          <DsTableCell role="rowheader" tooltipText={`${record.name} — ${record.description}`}>
+            <a href={record.href}>{record.name}</a>
+            <span class="ds-component-readiness__description"> — {record.description}</span>
+          </DsTableCell>
+          <DsTableCell role="cell" tooltipText={`${statusLabel(record.family)} / ${statusLabel(record.layer)}`}>
+            <span>{statusLabel(record.family)} / {statusLabel(record.layer)}</span>
+          </DsTableCell>
+          <DsTableCell role="cell">
+            <span class="ds-component-readiness__status" data-status={record.status}>
+              {statusLabel(record.status)}
+            </span>
+          </DsTableCell>
+          <DsTableCell role="cell">
+            <span
+              class="ds-component-readiness__status"
+              data-status={record.readiness.visual}
             >
-              <th scope="row">
-                <a href={record.href}>
-                  {record.name}
-                </a>
-                <span>{record.description}</span>
-              </th>
-              <td>
-                <span>{statusLabel(record.family)}</span>
-                <small>{statusLabel(record.layer)}</small>
-              </td>
-              <td>
-                <span class="ds-component-readiness__status" data-status={record.status}>
-                  {statusLabel(record.status)}
-                </span>
-              </td>
-              <td>
-                <span
-                  class="ds-component-readiness__status"
-                  data-status={record.readiness.visual}
-                >
-                  {statusLabel(record.readiness.visual)}
-                </span>
-              </td>
-              <td>
-                <span
-                  class="ds-component-readiness__status"
-                  data-status={record.readiness.validation}
-                >
-                  {statusLabel(record.readiness.validation)}
-                </span>
-              </td>
-              <td><code>{record.sourcePath}</code></td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
+              {statusLabel(record.readiness.visual)}
+            </span>
+          </DsTableCell>
+          <DsTableCell role="cell">
+            <span
+              class="ds-component-readiness__status"
+              data-status={record.readiness.validation}
+            >
+              {statusLabel(record.readiness.validation)}
+            </span>
+          </DsTableCell>
+          <DsTableCell role="cell"><code>{record.sourcePath}</code></DsTableCell>
+        </DsTableRow>
+      ))
+    }
+  </DsTableFrame>
 
   <p class="ds-component-readiness__empty" data-readiness-empty hidden>
     No components match the selected filters.
@@ -168,7 +169,7 @@ const statusLabel = (value: string) =>
           ...root.querySelectorAll<HTMLSelectElement>("[data-readiness-filter]")
         ];
         const rows = [
-          ...root.querySelectorAll<HTMLTableRowElement>("[data-readiness-row]")
+          ...root.querySelectorAll<HTMLElement>("[data-readiness-row]")
         ];
         const count = root.querySelector<HTMLElement>("[data-readiness-count]");
         const empty = root.querySelector<HTMLElement>("[data-readiness-empty]");
@@ -237,12 +238,12 @@ const statusLabel = (value: string) =>
   input,
   select {
     width: 100%;
-    min-height: var(--component-min-height);
+    min-height: var(--control-size-medium-min-height);
     border: var(--border-width-default) solid var(--color-border-default);
     border-radius: var(--radius-small);
     background: var(--color-background-surface);
     color: var(--color-text-primary);
-    padding-inline: var(--component-padding-small);
+    padding-inline: var(--content-padding-small);
     font: inherit;
     font-weight: var(--font-weight-normal);
   }
@@ -250,7 +251,7 @@ const statusLabel = (value: string) =>
   input:focus-visible,
   select:focus-visible,
   a:focus-visible {
-    outline: var(--component-focus-ring);
+    outline: var(--color-state-focus-ring);
     outline-offset: var(--size-2);
   }
 
@@ -261,60 +262,12 @@ const statusLabel = (value: string) =>
     font-size: var(--font-size-body-small);
   }
 
-  .ds-component-readiness__table-wrap {
-    max-width: 100%;
-    overflow-x: auto;
-    border: var(--border-width-default) solid var(--color-border-subtle);
-  }
-
-  table {
-    width: 100%;
-    min-width: 70rem;
-    border-collapse: collapse;
-    text-align: left;
-  }
-
-  th,
-  td {
-    padding: var(--component-padding-small);
-    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
-    vertical-align: top;
-  }
-
-  thead th {
+  .ds-component-readiness__description {
     color: var(--color-text-secondary);
-    background: var(--color-background-canvas);
+  }
+
+  :global(.ds-component-readiness__table code) {
     font-size: var(--font-size-body-tiny);
-    text-transform: uppercase;
-  }
-
-  tbody tr:last-child > * {
-    border-bottom: 0;
-  }
-
-  tbody th {
-    min-width: 16rem;
-    font-size: var(--font-size-body-small);
-  }
-
-  tbody th a,
-  tbody th span,
-  td > span,
-  td > small {
-    display: block;
-  }
-
-  tbody th span,
-  td > small {
-    margin-top: var(--gap-tiny);
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body-tiny);
-    font-weight: var(--font-weight-normal);
-  }
-
-  code {
-    font-size: var(--font-size-body-tiny);
-    overflow-wrap: anywhere;
   }
 
   .ds-component-readiness__status {

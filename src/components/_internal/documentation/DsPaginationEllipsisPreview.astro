@@ -1,0 +1,21 @@
+---
+import PaginationEllipsis from "../../base-components/pagination/PaginationEllipsis.astro";
+import PaginationGroup from "../../base-components/pagination/PaginationGroup.astro";
+---
+
+<div class="ds-pagination-ellipsis-preview" data-component-name="DsPaginationEllipsisPreview">
+  <nav aria-label="Pagination ellipsis example">
+    <PaginationGroup>
+      <PaginationEllipsis data-ds-preview-target />
+    </PaginationGroup>
+  </nav>
+</div>
+
+<style>
+  .ds-pagination-ellipsis-preview {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    place-items: center;
+  }
+</style>

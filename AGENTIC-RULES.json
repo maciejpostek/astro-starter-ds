@@ -10,6 +10,8 @@
     "flow": [
       "classify",
       "resolve-context",
+      "resolve-token-groups",
+      "approve-drafts",
       "execute",
       "validate",
       "result"
@@ -20,6 +22,8 @@
   },
   "sources": {
     "componentIndex": "src/data/design-system/componentArchitecture.json",
+    "tokenGroupIndex": "src/data/design-system/tokenArchitecture.json",
+    "componentAuthoringContract": "architecture/component-authoring-contract.json",
     "componentSourceRoot": "src/components",
     "tokenSourceRoot": "src/styles/tokens",
     "categoryRuleRoot": ".agentic-rules",
@@ -54,6 +58,22 @@
     "primaryTargetOnly": true,
     "dependenciesDoNotBlockWhenPresent": true,
     "approvedNameRequired": true
+  },
+  "tokenGate": {
+    "resolutionOrder": [
+      "component",
+      "dependency",
+      "use-case",
+      "global",
+      "primitive-as-approved-alias-source"
+    ],
+    "outcomes": ["reuse", "ambiguous", "gap"],
+    "ambiguousOutcome": "blocked-for-human-decision",
+    "gapOutcome": "blocked-with-tokenDraft",
+    "approvalRequired": true,
+    "reuseAndComposeCanCreateTokens": false,
+    "extendExistingOwnerBeforeNewGroup": true,
+    "primitiveAndGlobalSemanticRequireSeparateApproval": true
   },
   "contextBudgets": {
     "tiny": 4096,
@@ -100,6 +120,8 @@
       "reads": [
         "named component records",
         "direct dependencies",
+        "component authoring contract",
+        "registered token groups for the named components",
         "compact layout contract",
         "compact intrinsic-first responsive contract",
         "matching approved brand rules when applicable",
@@ -118,7 +140,9 @@
       "reads": [
         "component source",
         "direct dependencies",
-        "matching family rule"
+        "matching family rule",
+        "component authoring contract",
+        "registered token groups"
       ],
       "skips": [
         "unrelated families",
@@ -132,7 +156,9 @@
       "reads": [
         "component source and API",
         "matching family and category rules",
-        "affected tokens and documentation"
+        "affected tokens and documentation",
+        "component authoring contract",
+        "token resolution and approved tokenDraft when a gap exists"
       ],
       "skips": [
         "unrelated families",
@@ -145,7 +171,8 @@
       "budget": "large",
       "reads": [
         "phase 1: gap evidence, creation rules, dependencies, Brand Contract status",
-        "phase 2: selected family rule, responsive strategy and declared registry/Guides projections"
+        "phase 2: registered token groups and proposed tokenDraft when needed",
+        "phase 3: selected family rule, responsive strategy and declared registry/Guides projections after approvals"
       ],
       "skips": [
         "Figma unless explicitly requested"
@@ -238,10 +265,14 @@
       "declaredSourceBytes",
       "sourceLimitBytes",
       "phase",
-      "nextStep"
+      "nextStep",
+      "tokenNeed",
+      "tokenResolution",
+      "tokenDraft"
     ],
     "createPhases": [
       "create-planning",
+      "token-planning",
       "create-family-resolution"
     ]
   }

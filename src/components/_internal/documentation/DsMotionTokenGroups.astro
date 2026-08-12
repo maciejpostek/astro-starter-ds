@@ -3,7 +3,7 @@ import DsTableCell from "./DsTableCell.astro";
 import DsTableCopyCell from "./DsTableCopyCell.astro";
 import DsTableFrame from "./DsTableFrame.astro";
 import DsTableRow from "./DsTableRow.astro";
-import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+import DsDocumentationBlockTitle from "./DsDocumentationBlockTitle.astro";
 import type { MotionTokenGroup } from "../../../data/design-system/motionTokens";
 import {
   documentationTokenMap,
@@ -26,15 +26,14 @@ const { groups, label } = Astro.props as Props;
       aria-labelledby={`${group.id}-title`}
       data-component-name="DsMotionTokenGroups"
     >
-      <DsSectionHeaderLevel3
+      <DsDocumentationBlockTitle
         id={`${group.id}-title`}
         title={group.title}
-        description={group.description}
       />
       <DsTableFrame
         label={`${group.title} ${label}`}
-        minWidth="76rem"
-        columns="minmax(20rem, 0.24fr) minmax(16rem, 0.18fr) minmax(16rem, 0.18fr) minmax(30rem, 0.4fr)"
+        minWidth="84rem"
+        columns="minmax(var(--ds-doc-table-token-column-min-width), 24fr) minmax(16rem, 18fr) minmax(16rem, 18fr) minmax(30rem, 40fr)"
         size="tiny"
       >
         <DsTableRow variant="header">
@@ -64,6 +63,6 @@ const { groups, label } = Astro.props as Props;
 <style>
   .ds-motion-topic {
     display: grid;
-    gap: var(--gap-medium);
+    gap: var(--space-regular);
   }
 </style>

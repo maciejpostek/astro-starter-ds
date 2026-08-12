@@ -1,0 +1,20 @@
+---
+import CompactSelect, { type SelectOption } from "../../base-components/select/CompactSelect.astro";
+
+const options: SelectOption[] = [
+  { value: "pl", label: "Poland", flag: "poland" },
+  { value: "de", label: "Germany", flag: "germany" },
+  { value: "us", label: "United States", flag: "united-states" },
+];
+---
+
+<div class="ds-compact-select-preview" data-component-name="DsCompactSelectPreview" data-ds-preview-target>
+  <CompactSelect
+    id="compact-select-preview-control"
+    name="compact-country"
+    aria-label="Country"
+    options={options}
+    purpose="country"
+    value="pl"
+  />
+</div>

@@ -1,11 +1,20 @@
 ---
-import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import FigmaIcon from "../../../assets/documentation/figma.svg";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import CopyButton from "../../base-components/buttons/CopyButton.astro";
+import Toast from "../../base-components/toast-notification/Toast.astro";
+import DsCopyButton from "./DsCopyButton.astro";
+import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro";
+import type { DocumentationHeaderSegment } from "../../../data/documentationRegistry";
+import "../../../styles/components/button-controls.css";
 
 interface Props {
   eyebrow: string;
   title: string;
-  description: string;
+  summary: readonly DocumentationHeaderSegment[];
   copyValue?: string;
+  sourcePath?: string;
+  figmaHref?: string;
   status?: string;
   componentName?: string;
 }
@@ -13,8 +22,10 @@ interface Props {
 const {
   eyebrow,
   title,
-  description,
+  summary,
   copyValue,
+  sourcePath,
+  figmaHref,
   status,
   componentName = "DsDocHeader",
 } = Astro.props;
@@ -26,25 +37,72 @@ const {
 >
   <div class="ds-documentation-page-header__inner">
     <div class="ds-documentation-page-header__meta">
-      <span class="ds-documentation-page-header__eyebrow">{eyebrow}</span>
+      <Eyebrow class="ds-documentation-page-header__eyebrow" text={eyebrow} />
       {status && <span class="ds-documentation-status">{status}</span>}
     </div>
     <h1 class="heading-h1">{title}</h1>
-    <p class="body-base-regular">{description}</p>
-    {
-      copyValue && (
-        <button
-          aria-label={`Copy component name ${copyValue}`}
-          class="ds-documentation-page-header__component-copy"
-          data-copied-label="Component name copied to clipboard"
-          data-copy-value={copyValue}
-          type="button"
-        >
-          <span>{copyValue}</span>
-          <MaterialSymbol name="content_copy" size="var(--size-16)" />
-        </button>
-      )
-    }
+    <p class="body-base-regular">
+      {
+        summary.map((segment) =>
+          segment.kind === "link"
+            ? <a href={segment.href}>{segment.text}</a>
+            : segment.text
+        )
+      }
+    </p>
+    {sourcePath && (
+      <div class="ds-documentation-page-header__source-snippet">
+        <code>{sourcePath}</code>
+        <DsCopyButton
+          value={sourcePath}
+          label={`Copy source path ${sourcePath}`}
+        />
+      </div>
+    )}
+    {(copyValue || figmaHref) && (
+      <div class="ds-documentation-page-header__resources">
+        <ButtonGroup aria-label={`${title} component actions`}>
+          {copyValue && (
+            <CopyButton
+              copyValue={copyValue}
+              successToastId="ds-component-name-copy-success"
+              errorToastId="ds-component-name-copy-error"
+              variant="primary"
+              size="small"
+            >
+              {copyValue}
+            </CopyButton>
+          )}
+          {figmaHref && (
+            <a
+              class="icon-button ds-documentation-page-header__figma-link"
+              href={figmaHref}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Open ${title} in Figma`}
+              data-button-variant="secondary"
+              data-control-size="small"
+            >
+              <FigmaIcon aria-hidden="true" />
+            </a>
+          )}
+        </ButtonGroup>
+      </div>
+    )}
+    {copyValue && (
+      <>
+        <Toast
+          id="ds-component-name-copy-success"
+          title={`${copyValue} component name copied`}
+          status="success"
+        />
+        <Toast
+          id="ds-component-name-copy-error"
+          title={`${copyValue} component name could not be copied`}
+          status="error"
+        />
+      </>
+    )}
   </div>
 </header>
 
@@ -52,9 +110,7 @@ const {
   .ds-documentation-page-header__inner {
     display: grid;
     width: 100%;
-    max-width: var(--ds-documentation-content-max-width);
-    margin-inline: auto;
-    gap: var(--gap-medium);
+    gap: var(--gap-small);
   }
 
   .ds-documentation-page-header__meta {
@@ -64,42 +120,58 @@ const {
     gap: var(--gap-medium);
   }
 
-  .ds-documentation-page-header__component-copy {
-    --component-info-purple-background: #f5f0ff;
-    --component-info-purple-border: #8b5cf6;
+  .ds-documentation-page-header__meta :global(.ds-documentation-page-header__eyebrow) {
+    margin-block-end: 0;
+  }
 
+  .ds-documentation-page-header__inner .heading-h1 {
+    min-inline-size: 0;
+    margin-block-end: var(--size-12);
+    overflow-wrap: anywhere;
+  }
+
+  .ds-documentation-page-header__inner > p a {
+    color: var(--link-text-default);
+  }
+
+  .ds-documentation-page-header__inner > p {
+    margin-block-end: var(--size-12);
+  }
+
+  .ds-documentation-page-header__inner > p a:is(:hover, :focus-visible) {
+    color: var(--link-text-hover);
+  }
+
+  .ds-documentation-page-header__resources {
+    min-inline-size: 0;
+  }
+
+  .ds-documentation-page-header__source-snippet {
     display: inline-flex;
     width: fit-content;
     max-width: 100%;
     align-items: center;
     gap: var(--size-4);
-    border: var(--border-width-default) solid var(--component-info-purple-border);
-    background: var(--component-info-purple-background);
-    box-shadow: 0 var(--size-12) var(--size-40) rgb(0 0 0 / 0.1);
-    color: var(--component-info-purple-border);
-    cursor: pointer;
+    margin-block-end: var(--size-12);
+    border: var(--border-width-default) solid var(--code-snippet-border);
+    border-radius: var(--radius-button);
+    background: var(--code-snippet-background);
+    color: var(--code-snippet-foreground);
     font-size: var(--font-size-body-tiny);
-    font-weight: var(--font-weight-emphasis);
     line-height: var(--line-height-compact);
-    padding: var(--size-6) var(--size-8);
-    white-space: nowrap;
+    padding-inline-start: var(--content-padding-small);
   }
 
-  .ds-documentation-page-header__component-copy:hover {
-    box-shadow: 0 var(--size-12) var(--size-40) rgb(0 0 0 / 0.16);
+  .ds-documentation-page-header__source-snippet code {
+    min-inline-size: 0;
+    color: inherit;
+    font-family: var(--font-family-mono);
+    font-size: inherit;
+    overflow-wrap: anywhere;
   }
 
-  .ds-documentation-page-header__component-copy:focus-visible {
-    outline: var(--border-width-strong) solid var(--color-border-accent);
-    outline-offset: var(--size-4);
+  .ds-documentation-page-header__figma-link {
+    text-decoration: none;
   }
 
-  .ds-documentation-page-header__component-copy span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .ds-documentation-page-header__component-copy :global(svg) {
-    flex: 0 0 auto;
-  }
 </style>

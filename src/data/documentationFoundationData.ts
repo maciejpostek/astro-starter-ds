@@ -39,6 +39,7 @@ export interface DocumentationComponentColorGroup {
   tableName: string;
   tableDescription: string;
   rows: DocumentationColorRow[];
+  anchorTokens: boolean;
 }
 
 type DocumentationToken = (typeof documentationTokens)[number];
@@ -55,14 +56,33 @@ const sampleTypeForToken = (token: string): DocumentationColorSampleType => {
   return "fill";
 };
 
-const sampleSurfaceForToken = (token: string) => {
-  if (token.includes("disabled")) return "var(--color-state-disabled-background)";
+export const resolveDocumentationColorSampleSurface = (token: string) => {
+  const componentForeground = token.match(/^(--.+)-(?:text|icon)-([a-z0-9-]+)$/);
+  if (componentForeground) {
+    const matchingBackground = `${componentForeground[1]}-background-${componentForeground[2]}`;
+    if (documentationTokens.some((entry) => entry.name === matchingBackground)) {
+      return `var(${matchingBackground})`;
+    }
+  }
+
   if (token.includes("text-inverse") || token.includes("icon-inverse")) {
     return "var(--color-background-inverse)";
   }
-  if (token.includes("on-accent") || token.includes("primary-text") || token.includes("primary-icon")) {
+  if (token.includes("on-accent") || token === "--color-on-accent") {
     return "var(--color-background-accent)";
   }
+  if (token.includes("disabled")) return "var(--color-state-disabled-background)";
+  if (token.includes("success")) return "var(--color-status-success-background)";
+  if (token.includes("warning")) return "var(--color-status-warning-background)";
+  if (token.includes("error") || token.includes("invalid")) {
+    return "var(--color-status-error-background)";
+  }
+  if (token.includes("info")) return "var(--color-status-info-background)";
+  if (token.includes("feature")) return "var(--color-status-feature-background)";
+  if (token.includes("on-media") || token.includes("content-on-media")) {
+    return "var(--color-background-media-overlay)";
+  }
+  if (token.includes("selected")) return "var(--color-background-inverse)";
   return "var(--color-background-canvas)";
 };
 
@@ -81,7 +101,7 @@ export const createDocumentationColorRows = (
     darkValue: hasModes ? darkValue : undefined,
     sampleType,
     sampleValue: `var(${token.name})`,
-    sampleSurfaceValue: sampleSurfaceForToken(token.name),
+    sampleSurfaceValue: resolveDocumentationColorSampleSurface(token.name),
     label: sampleType === "text" ? (token.name.includes("icon") ? "Icon" : "Aa") : undefined,
   };
 });
@@ -96,19 +116,19 @@ const sizeProfileProperties = [
   ["line-height", "line-height"],
 ] as const;
 
-export const componentSizeAttributeProfiles: DocumentationAttributeProfile[] = [
+export const controlSizeAttributeProfiles: DocumentationAttributeProfile[] = [
   ["Small", "small"],
   ["Medium", "medium"],
   ["Large", "large"],
 ].map(([name, value]) => ({
   name,
-  attribute: "data-component-size",
+  attribute: "data-control-size",
   value,
   rows: sizeProfileProperties.map(([property, suffix]) => {
     const token = selectDocumentationTokens({
-      names: [`--component-size-${value}-${suffix}`],
+      names: [`--control-size-${value}-${suffix}`],
     })[0];
-    if (!token) throw new Error(`Missing Component Size token: --component-size-${value}-${suffix}`);
+    if (!token) throw new Error(`Missing Control Size token: --control-size-${value}-${suffix}`);
     const resolved = getDocumentationResolvedValue(token);
     return {
       property,
@@ -124,17 +144,20 @@ const colorGroup = ({
   title,
   description,
   prefixes,
+  anchorTokens = true,
 }: {
   id: string;
   title: string;
   description: string;
   prefixes: string[];
+  anchorTokens?: boolean;
 }): DocumentationComponentColorGroup => ({
   id,
   title,
   description,
   tableName: `${title} colors`,
   tableDescription: `${title} theme-aware color contract.`,
+  anchorTokens,
   rows: createDocumentationColorRows(selectDocumentationTokens({
     sourceFile: "color-components.css",
     prefixes,
@@ -146,17 +169,20 @@ const namedColorGroup = ({
   title,
   description,
   names,
+  anchorTokens = true,
 }: {
   id: string;
   title: string;
   description: string;
   names: string[];
+  anchorTokens?: boolean;
 }): DocumentationComponentColorGroup => ({
   id,
   title,
   description,
   tableName: `${title} colors`,
   tableDescription: `${title} theme-aware color contract.`,
+  anchorTokens,
   rows: createDocumentationColorRows(selectDocumentationTokens({ names })),
 });
 
@@ -188,8 +214,9 @@ export const componentColorGroups = {
   "icon-button": colorGroup({
     id: "icon-button",
     title: "IconButton",
-    description: "IconButton reuses Button primary and secondary color contracts for icon-only actions.",
-    prefixes: ["--button-primary-", "--button-secondary-"],
+    description: "IconButton reuses Button primary, secondary and tertiary color contracts for icon-only actions.",
+    prefixes: ["--button-primary-", "--button-secondary-", "--button-tertiary-"],
+    anchorTokens: false,
   }),
   "switch-button": colorGroup({
     id: "switch-button",
@@ -197,11 +224,107 @@ export const componentColorGroups = {
     description: "Persistent binary setting with state-specific off, on, thumb and label contracts.",
     prefixes: ["--switch-"],
   }),
+  card: colorGroup({
+    id: "card",
+    title: "Card",
+    description: "Reusable card surfaces with default, hover and selected background and border states.",
+    prefixes: ["--card-"],
+  }),
   input: colorGroup({
     id: "input",
     title: "Input",
     description: "Native text-entry colors for interaction, validation and disabled states.",
     prefixes: ["--input-"],
+  }),
+  eyebrow: colorGroup({
+    id: "eyebrow",
+    title: "Eyebrow",
+    description: "Subtle section prelabels with matching accent text and marker colors.",
+    prefixes: ["--eyebrow-"],
+  }),
+  "content-divider": namedColorGroup({
+    id: "content-divider",
+    title: "ContentDivider",
+    description: "ContentDivider composes the three established neutral border strengths and tertiary text without introducing component-specific color tokens.",
+    names: [
+      "--color-border-subtle",
+      "--color-border-default",
+      "--color-border-strong",
+      "--color-text-tertiary",
+    ],
+    anchorTokens: false,
+  }),
+  ratio: namedColorGroup({
+    id: "ratio",
+    title: "Ratio",
+    description: "Ratio reuses the global surface color behind its canonical checkerboard placeholder.",
+    names: ["--color-background-surface"],
+    anchorTokens: false,
+  }),
+  breadcrumb: namedColorGroup({
+    id: "breadcrumb",
+    title: "Breadcrumb",
+    description: "Breadcrumb composes existing semantic text, icon and focus roles without introducing component-specific color tokens.",
+    names: [
+      "--color-text-primary",
+      "--color-text-secondary",
+      "--color-text-tertiary",
+      "--color-icon-secondary",
+      "--color-state-focus-ring",
+      "--color-state-focus-ring-offset",
+    ],
+    anchorTokens: false,
+  }),
+  pagination: namedColorGroup({
+    id: "pagination",
+    title: "Pagination",
+    description: "Pagination composes established canvas, text, border, state and inverse semantic roles without introducing a separate public token family.",
+    names: [
+      "--color-background-canvas",
+      "--color-background-subtle",
+      "--color-background-muted",
+      "--color-background-inverse",
+      "--color-text-primary",
+      "--color-text-secondary",
+      "--color-text-tertiary",
+      "--color-text-inverse",
+      "--color-border-default",
+      "--color-border-strong",
+      "--color-border-inverse",
+      "--color-state-disabled-background",
+      "--color-state-disabled-border",
+      "--color-state-disabled-text",
+    ],
+    anchorTokens: false,
+  }),
+  tab: namedColorGroup({
+    id: "tab",
+    title: "Tab",
+    description: "Neutral tab-button surfaces and text states mapped to the canonical local Tab contract.",
+    names: [
+      "--tab-background-default",
+      "--tab-background-hover",
+      "--tab-background-selected",
+      "--tab-background-disabled",
+      "--tab-border-default",
+      "--tab-border-hover",
+      "--tab-border-selected",
+      "--tab-border-disabled",
+      "--tab-text-default",
+      "--tab-text-hover",
+      "--tab-text-selected",
+      "--tab-text-disabled",
+      "--tab-icon-default",
+      "--tab-icon-hover",
+      "--tab-icon-selected",
+      "--tab-icon-disabled",
+    ],
+  }),
+  "tab-menu": colorGroup({
+    id: "tab-menu",
+    title: "TabMenu",
+    description: "Quiet horizontal anchor navigation with a semantic current-location indicator.",
+    prefixes: ["--tab-menu-"],
   }),
   "tag-tones": namedColorGroup({
     id: "tag-tones",
@@ -228,6 +351,13 @@ export const componentColorGroups = {
       "--color-background-inverse",
       "--color-text-inverse",
     ],
+    anchorTokens: false,
+  }),
+  feedback: colorGroup({
+    id: "feedback",
+    title: "Feedback emphasis",
+    description: "Shared contrast-checked solid and soft status surfaces consumed by Alert, Notification and Toast.",
+    prefixes: ["--feedback-"],
   }),
 } satisfies Record<string, DocumentationComponentColorGroup>;
 

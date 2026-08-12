@@ -29,6 +29,7 @@ const {
   class={showSample ? "ds-color-mode-cell ds-color-mode-cell--with-sample" : "ds-color-mode-cell"}
   componentName="DsColorModeCell"
   flushInlineStart={showSample}
+  overflow={showSample ? "visual" : "ellipsis"}
   role="cell"
   tone="secondary"
 >
@@ -67,7 +68,12 @@ const {
             </span>
           )
         }
-        <code>{value}</code>
+        <span
+          class="ds-color-mode-cell__text"
+          data-ds-table-overflow-target="true"
+        >
+          <code>{value}</code>
+        </span>
       </span>
     ) : (
       <code>{value}</code>
@@ -89,7 +95,7 @@ const {
     content: "";
     position: absolute;
     inset-block: 0;
-    inset-inline-start: var(--size-80);
+    inset-inline-start: var(--ds-doc-table-mode-sample-width);
     width: var(--size-1);
     background: var(--color-border-subtle);
     pointer-events: none;
@@ -104,14 +110,29 @@ const {
     gap: var(--gap-small);
   }
 
-  .ds-color-mode-cell__value code {
+  .ds-color-mode-cell__text {
+    display: block;
+    min-width: 0;
+    flex: 1 1 auto;
+    align-self: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ds-color-mode-cell__text code {
+    font: inherit;
+  }
+
+  .ds-color-mode-cell__value > code {
     align-self: center;
   }
 
   .ds-color-mode-cell__sample-frame {
     display: flex;
-    width: var(--size-80);
-    min-width: var(--size-80);
+    width: var(--ds-doc-table-mode-sample-width);
+    min-width: var(--ds-doc-table-mode-sample-width);
+    flex: 0 0 var(--ds-doc-table-mode-sample-width);
     min-height: 100%;
   }
 

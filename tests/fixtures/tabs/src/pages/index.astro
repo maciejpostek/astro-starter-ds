@@ -1,0 +1,63 @@
+---
+import Tab from "../../../../../src/components/base-components/tabs/Tab.astro";
+import Tabs, { type TabsItems } from "../../../../../src/components/base-components/tabs/Tabs.astro";
+import TabMenu, { type TabMenuItems } from "../../../../../src/components/base-components/tabs/TabMenu.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const tabsItems: TabsItems = [
+  { id: "monthly", label: "Monthly" },
+  { id: "archived", label: "Archived", disabled: true },
+  { id: "yearly", label: "Yearly" },
+];
+
+const menuItems: TabMenuItems = [
+  { label: "Overview", href: "#overview" },
+  { label: "Pricing", href: "#pricing" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabs contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div role="tablist" aria-label="Standalone atom fixture">
+        <Tab id="standalone-tab" controls="standalone-panel" selected size="large">
+          Standalone
+        </Tab>
+      </div>
+      <div id="standalone-panel" role="tabpanel" aria-labelledby="standalone-tab">
+        Atom panel
+      </div>
+
+      <Tabs
+        id="pricing-tabs"
+        class="tabs-contract-fixture"
+        items={tabsItems}
+        initialTab="yearly"
+        aria-label="Billing period"
+        data-contract="pricing"
+      >
+        <p slot="monthly">Monthly billing</p>
+        <p slot="archived">Archived billing</p>
+        <div slot="yearly"><strong>Yearly billing</strong></div>
+      </Tabs>
+
+      <div class="sticky-shell">
+        <TabMenu
+          class="tab-menu-contract-fixture"
+          items={menuItems}
+          aria-label="On this page"
+          data-contract="anchors"
+        />
+      </div>
+      <section id="overview"><h2>Overview</h2></section>
+      <section id="pricing"><h2>Pricing</h2></section>
+    </main>
+  </body>
+</html>

@@ -1,198 +1,37 @@
 ---
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import { materialSymbolNames } from "../../../lib/icons/materialSymbols";
-import DsCopyButton from "./DsCopyButton.astro";
 import { slugifyDocumentationValue } from "../../../data/documentationRegistry";
+import DsCopyableIconTile from "./DsCopyableIconTile.astro";
+import DsIconGallery from "./DsIconGallery.astro";
+
+const successToastId = "material-symbol-copy-success";
+const errorToastId = "material-symbol-copy-error";
 ---
 
-<section
-  class="material-symbol-library"
-  data-component-name="MaterialSymbolLibrary"
-  data-material-symbol-library
->
-  <div class="material-symbol-library__profile">
-    <div>
-      <strong>Google Material Symbols Sharp</strong>
-      <p class="body-small-regular">
-        Optical size 20 · weight 400 · grade 0 · fill 0. Astro renders curated inline SVG
-        with <code>currentColor</code>; no runtime font or network request is required.
-      </p>
-    </div>
-    <span>45 curated symbols</span>
-  </div>
-  <header class="material-symbol-library__header">
-    <label>
-      <span>Search curated Material Symbols</span>
-      <input
-        type="search"
-        placeholder="e.g. search, verified, upload"
-        data-material-symbol-search
-      />
-    </label>
-    <output data-material-symbol-count>{materialSymbolNames.length} icons</output>
-  </header>
-
-  <div class="material-symbol-library__grid" data-material-symbol-grid>
-    {
-      materialSymbolNames.map((name) => (
-        <article
-          class="material-symbol-library__item"
-          id={`icon-${slugifyDocumentationValue(name)}`}
-          data-icon-name={name}
-        >
-          <MaterialSymbol name={name} size={20} />
-          <div>
-            <span>{name}</span>
-            <DsCopyButton value={name} />
-          </div>
-        </article>
-      ))
-    }
-  </div>
-
-  <p class="material-symbol-library__empty" data-material-symbol-empty hidden>
-    No curated icon matches this query.
-  </p>
+<section data-component-name="MaterialSymbolLibrary" data-material-symbol-library>
+  <DsIconGallery
+    label="Search curated Material Symbols"
+    clearLabel="Clear Material Symbols search"
+    placeholder="Search Material Symbols"
+    emptyMessage="No curated Material Symbol matches this search."
+    successToastId={successToastId}
+    successToastTitle="Material Symbol name copied"
+    errorToastId={errorToastId}
+    errorToastTitle="Material Symbol name could not be copied"
+  >
+    {materialSymbolNames.map((name) => (
+      <DsCopyableIconTile
+        id={`icon-${slugifyDocumentationValue(name)}`}
+        name={name}
+        copyValue={name}
+        copyLabel={`Copy Material Symbol ${name}`}
+        searchKeywords={`${name} material symbol icon`}
+        successToastId={successToastId}
+        errorToastId={errorToastId}
+      >
+        <MaterialSymbol name={name} size="var(--size-32)" />
+      </DsCopyableIconTile>
+    ))}
+  </DsIconGallery>
 </section>
-
-<script>
-  type MaterialSymbolLibraryWindow = Window & {
-    __astroDsMaterialSymbolLibraryReady?: boolean;
-  };
-  const libraryWindow = window as MaterialSymbolLibraryWindow;
-
-  if (!libraryWindow.__astroDsMaterialSymbolLibraryReady) {
-    libraryWindow.__astroDsMaterialSymbolLibraryReady = true;
-    document.addEventListener("input", (event) => {
-      const input = event.target instanceof HTMLInputElement &&
-        event.target.matches("[data-material-symbol-search]")
-        ? event.target
-        : null;
-      const library = input?.closest<HTMLElement>("[data-material-symbol-library]");
-      if (!input || !library) return;
-
-      const query = input.value.trim().toLowerCase();
-      const items = Array.from(
-        library.querySelectorAll<HTMLElement>("[data-icon-name]")
-      );
-      let visibleCount = 0;
-
-      for (const item of items) {
-        const visible = item.dataset.iconName?.includes(query) ?? false;
-        item.hidden = !visible;
-        if (visible) visibleCount += 1;
-      }
-
-      const count = library.querySelector<HTMLOutputElement>("[data-material-symbol-count]");
-      const empty = library.querySelector<HTMLElement>("[data-material-symbol-empty]");
-      if (count) count.value = `${visibleCount} icons`;
-      if (empty) empty.hidden = visibleCount > 0;
-    });
-  }
-</script>
-
-<style>
-  .material-symbol-library {
-    display: grid;
-    gap: var(--gap-medium);
-    width: 100%;
-  }
-
-  .material-symbol-library__header {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: var(--gap-medium);
-  }
-
-  .material-symbol-library__profile {
-    display: flex;
-    align-items: start;
-    justify-content: space-between;
-    gap: var(--gap-large);
-    border: var(--border-width-default) solid var(--color-border-subtle);
-    background: var(--color-background-surface);
-    padding: var(--component-padding-large);
-  }
-
-  .material-symbol-library__profile div {
-    display: grid;
-    gap: var(--gap-small);
-  }
-
-  .material-symbol-library__profile > span {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body-small);
-    line-height: var(--line-height-relaxed);
-  }
-
-  .material-symbol-library__profile p {
-    color: var(--color-text-secondary);
-  }
-
-  label {
-    display: grid;
-    flex: 1;
-    gap: var(--gap-tiny);
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-body-tiny);
-  }
-
-  input {
-    min-height: var(--component-size-medium-min-height);
-    border: var(--border-width-default) solid var(--input-border-default);
-    border-radius: var(--radius-input);
-    background: var(--input-background-default);
-    color: var(--input-text-default);
-    padding-inline: var(--component-size-medium-padding-inline);
-    font: inherit;
-  }
-
-  output {
-    color: var(--color-text-tertiary);
-    font-family: var(--font-family-mono);
-    font-size: var(--font-size-body-tiny);
-    white-space: nowrap;
-  }
-
-  .material-symbol-library__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-    gap: var(--gap-small);
-  }
-
-  .material-symbol-library__item {
-    display: grid;
-    min-width: 0;
-    min-height: var(--size-96);
-    place-items: center;
-    gap: var(--gap-small);
-    border: var(--border-width-default) solid var(--color-border-subtle);
-    background: var(--color-background-surface);
-    padding: var(--component-padding-small);
-    color: var(--color-icon-primary);
-    text-align: center;
-  }
-
-  .material-symbol-library__item > div {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: var(--gap-tiny);
-  }
-
-  .material-symbol-library__item span,
-  .material-symbol-library__empty {
-    color: var(--color-text-secondary);
-    font-family: var(--font-family-mono);
-    font-size: var(--font-size-body-tiny);
-    overflow-wrap: anywhere;
-  }
-
-  @media (max-width: 40rem) {
-    .material-symbol-library__header {
-      align-items: stretch;
-      flex-direction: column;
-    }
-  }
-</style>

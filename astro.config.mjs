@@ -7,6 +7,10 @@ export default defineConfig({
   output: "static",
   trailingSlash: "never",
 
+  redirects: {
+    "/design-system/assets/icons": "/design-system/assets/material-symbols"
+  },
+
   vite: {
     server: {
       host: "127.0.0.1"

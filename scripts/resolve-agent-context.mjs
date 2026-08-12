@@ -19,6 +19,16 @@ const values = (name) =>
   args
     .filter((argument) => argument.startsWith(`--${name}=`))
     .map((argument) => argument.slice(name.length + 3));
+const jsonValue = (name) => {
+  const raw = value(name);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    console.error(`--${name} must be valid JSON: ${error.message}`);
+    process.exit(1);
+  }
+};
 const projectRoot = resolve(value("root") ?? ".");
 let prompt = value("prompt") ?? "";
 let intent;
@@ -52,6 +62,8 @@ const task = routeAgentRequest({
   }),
   targetFile: value("file"),
   intentOverride: intent,
+  tokenNeed: jsonValue("token-need"),
+  tokenDraft: jsonValue("token-draft"),
   projectRoot
 });
 

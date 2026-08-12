@@ -2,6 +2,10 @@
 
 Status: active.
 
+## Deterministic authoring gate
+
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
 This file is the global operating manual for AI agents working inside the
 AI-native Astro framework. It should be read when a task touches reusable
 UI, design-system architecture, component APIs, tokens, documentation patterns
@@ -149,7 +153,7 @@ Classes define stable identity.
 Good:
 
 ```html
-<button class="button" data-variant="primary" data-component-size="small">
+<button class="button" data-variant="primary" data-control-size="small">
   ...
 </button>
 ```
@@ -167,7 +171,7 @@ Attributes define controlled variation.
 Use attributes for:
 
 - `data-variant`
-- `data-component-size`
+- `data-control-size`
 - `data-state`
 - `data-tone`
 - `data-status`

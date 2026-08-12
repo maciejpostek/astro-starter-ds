@@ -37,9 +37,9 @@ Color Semantic
 already expresses that layer.
 
 Tag intentionally consumes existing accent, status and inverse roles directly.
-Its nested close action inherits the current tone, uses native opacity for
-interaction feedback and the shared Focused Effect Style for keyboard focus;
-there is no `Component/tag/*` Variable group.
+Its nested close action inherits the exact current text color and opacity,
+projects interaction feedback on the shell and uses the shared Focused Effect
+Style for keyboard focus; there is no `Component/tag/*` Variable group.
 
 Component masters, variants, nested instances, and internal frames do not set
 an explicit `Color Semantic` mode. Theme is set only on a composition parent,

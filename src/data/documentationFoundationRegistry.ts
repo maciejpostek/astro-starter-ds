@@ -2,6 +2,7 @@ import {
   documentationTokens,
   selectDocumentationTokens,
 } from "./documentationTokenRegistry";
+import { createDocumentationSummary } from "./documentationRegistry";
 
 export type DocumentationFoundationKey =
   | "color"
@@ -96,12 +97,13 @@ export const documentationFoundationDefinitions: Record<
           group({ id: "color-components-all", title: "Component contracts", description: "All canonical component color variables.", sourceFile: "color-components.css", presentation: "color" }),
         ],
       },
+      { id: "colors-agentic-rules", title: "Agentic Rules", description: "Canonical operational rules for color decisions.", groups: [] },
     ],
   },
   sizing: {
     key: "sizing",
     title: "Sizing",
-    description: "Primitive dimensions, semantic spacing and shared component-size profiles.",
+    description: "Primitive dimensions, semantic spacing and shared control-size profiles.",
     sections: [
       {
         id: "sizing-primitive-tokens",
@@ -116,11 +118,12 @@ export const documentationFoundationDefinitions: Record<
         groups: [group({ id: "sizing-semantic-all", title: "Semantic sizing", description: "Canonical reusable sizing roles.", sourceFile: "size-semantic.css" })],
       },
       {
-        id: "sizing-attributes",
-        title: "Component size attributes",
-        description: "Shared Small, Medium and Large profiles selected through data-component-size.",
+        id: "sizing-control-size",
+        title: "Control Size",
+        description: "Shared Small, Medium and Large control profiles selected through data-control-size.",
         groups: [],
       },
+      { id: "sizing-agentic-rules", title: "Agentic Rules", description: "Canonical operational rules for sizing decisions.", groups: [] },
     ],
   },
   typography: {
@@ -128,9 +131,10 @@ export const documentationFoundationDefinitions: Record<
     title: "Typography",
     description: "Typography tokens, public Text Style classes and focused utilities.",
     sections: [
-      { id: "typography-tokens", title: "Typography Tokens", description: "Families, weights, sizes, line heights, letter spacing and wrapping inputs.", groups: [group({ id: "typography-foundations-all", title: "Foundation tokens", description: "Canonical typography inputs.", sourceFile: "typography-foundations.css" })] },
       { id: "typography-text-styles", title: "Text Styles", description: "Twenty-one complete class-based typography contracts.", groups: [] },
+      { id: "typography-tokens", title: "Typography Tokens", description: "Families, weights, sizes, line heights, letter spacing and wrapping inputs.", groups: [group({ id: "typography-foundations-all", title: "Foundation tokens", description: "Canonical typography inputs.", sourceFile: "typography-foundations.css" })] },
       { id: "typography-utilities", title: "Utilities", description: "Focused font-style, transform and wrapping overrides.", groups: [] },
+      { id: "typography-agentic-rules", title: "Agentic Rules", description: "Canonical operational rules for typography decisions.", groups: [] },
     ],
   },
   layout: {
@@ -145,6 +149,7 @@ export const documentationFoundationDefinitions: Record<
       { id: "layout-styles", title: "Layout styles", description: "Reusable layout classes and attribute contracts.", groups: [] },
       { id: "layout-attributes", title: "Attributes", description: "Public data-attribute variants for layout objects.", groups: [] },
       { id: "layout-structure-examples", title: "Structure examples", description: "Canonical semantic layout compositions.", groups: [] },
+      { id: "layout-agentic-rules", title: "Agentic Rules", description: "Canonical operational rules for layout decisions.", groups: [] },
     ],
   },
   motion: {
@@ -154,6 +159,7 @@ export const documentationFoundationDefinitions: Record<
     sections: [
       { id: "motion-foundation-tokens", title: "Motion foundations", description: "Canonical easing curves.", groups: [group({ id: "motion-foundations-easing", title: "Easing curves", description: "Shared interaction curves.", sourceFile: "motion-foundations.css", prefixes: ["--motion-ease-"], presentation: "motion" })] },
       { id: "motion-semantic-tokens", title: "Motion semantic", description: "Reusable durations and transition roles.", groups: [group({ id: "motion-semantic-timing", title: "Interaction timing", description: "Default and Reduced Motion values.", sourceFile: "motion-foundations.css", prefixes: ["--motion-duration-", "--motion-transition"], presentation: "motion" })] },
+      { id: "motion-agentic-rules", title: "Agentic Rules", description: "Canonical operational rules for motion decisions.", groups: [] },
     ],
   },
   elevation: {
@@ -169,6 +175,11 @@ export const documentationFoundationDefinitions: Record<
         group({ id: "elevation-semantic-all", title: "Semantic elevation", description: "Surface and compact-control roles.", sourceFile: "elevation-foundations.css", prefixes: ["--elevation-surface-", "--elevation-control-"] }),
         group({ id: "interaction-effects-all", title: "Interaction effects", description: "Canonical focus effect contract.", sourceFile: "interaction-effects.css" }),
       ],
+    }, {
+      id: "elevation-agentic-rules",
+      title: "Agentic Rules",
+      description: "Canonical operational rules for elevation decisions.",
+      groups: [],
     }],
   },
 };
@@ -176,11 +187,46 @@ export const documentationFoundationDefinitions: Record<
 export const getDocumentationFoundationDefinition = (key: DocumentationFoundationKey) =>
   documentationFoundationDefinitions[key];
 
-export const documentationFoundationHeader = (key: DocumentationFoundationKey) => ({
-  eyebrow: "Foundations",
-  title: documentationFoundationDefinitions[key].title,
-  description: documentationFoundationDefinitions[key].description,
-});
+const documentationFoundationSummaryCopy: Record<
+  DocumentationFoundationKey,
+  { introduction: string; conclusion: string }
+> = {
+  color: {
+    introduction: "Color moves from raw palette references into theme-aware semantic roles and finally into component-owned contracts. Explore",
+    conclusion: "to understand which layer should own a visual color decision before consuming a variable.",
+  },
+  sizing: {
+    introduction: "Sizing separates fixed reference values from intent-based spacing and the shared geometry used by adjacent controls. Review",
+    conclusion: "to choose dimensions by role instead of borrowing an unrelated spacing token.",
+  },
+  typography: {
+    introduction: "Typography keeps semantic HTML independent from visual style while exposing a controlled set of complete text contracts. Use",
+    conclusion: "to select a public style first and reserve narrow utilities for explicit overrides.",
+  },
+  layout: {
+    introduction: "Layout combines canonical control points with intrinsic composition, grid contracts and responsive exceptions. Follow",
+    conclusion: "to move from foundations to the smallest layout mechanism that owns the behavior.",
+  },
+  motion: {
+    introduction: "Motion defines shared easing and duration intent while preserving an explicit reduced-motion path. Compare",
+    conclusion: "before assigning timing to an interaction or removing non-essential movement.",
+  },
+  elevation: {
+    introduction: "Elevation describes the visual relationship between surfaces, controls and interaction focus without embedding raw shadows in components. Inspect",
+    conclusion: "to resolve the semantic role that matches the rendered layer.",
+  },
+};
+
+export const documentationFoundationHeader = (key: DocumentationFoundationKey) => {
+  const definition = documentationFoundationDefinitions[key];
+  const copy = documentationFoundationSummaryCopy[key];
+  const toc = documentationFoundationToc(key);
+  return {
+    eyebrow: "Foundations",
+    title: definition.title,
+    summary: createDocumentationSummary(copy.introduction, toc, copy.conclusion),
+  };
+};
 
 export const documentationFoundationToc = (key: DocumentationFoundationKey) =>
   documentationFoundationDefinitions[key].sections.map((section) => ({

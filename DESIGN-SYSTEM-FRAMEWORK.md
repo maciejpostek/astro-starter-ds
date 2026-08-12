@@ -31,6 +31,26 @@ semantic visual contract, while `h1-h6` and `p` remain neutral document
 semantics. This exception does not apply to colors; semantic and component
 color variables remain mandatory contracts.
 
+### Deterministic Component And Token Authoring
+
+AI authoring is registry-driven. The naming policy is
+`architecture/component-authoring-contract.json`; token ownership is recorded
+in `src/data/design-system/tokenArchitecture.json`, while CSS remains the
+source of values.
+
+Every styling need follows one sequence:
+
+```text
+resolve component → dependency → use case → global
+reuse one match → prove a gap → draft → approve → implement
+```
+
+An ambiguous semantic match blocks implementation. A gap extends the current
+owner group before any new group is proposed. The proposed `tokenDraft`
+records exact names, aliases, consumers and source paths and must be explicitly
+approved. Public components do not declare custom properties or local alias
+layers; `.ds-*` and `--ds-*` are reserved for private documentation UI.
+
 ### Astro Components Are The Main Interface
 
 Astro components are the primary way to compose pages. A page should prefer existing components and documented props before adding local markup and styles.
@@ -65,7 +85,7 @@ The core selector model is:
 Preferred examples:
 
 ```html
-<button class="button" data-component-size="small" data-variant="primary">
+<button class="button" data-control-size="small" data-variant="primary">
   Action
 </button>
 

@@ -1,6 +1,6 @@
 ---
 import DsColorRow from "./DsColorRow.astro";
-import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+import DsDocumentationBlockTitle from "./DsDocumentationBlockTitle.astro";
 import DsTableCell from "./DsTableCell.astro";
 import DsTableFrame from "./DsTableFrame.astro";
 import DsTableRow from "./DsTableRow.astro";
@@ -25,6 +25,7 @@ interface Props {
   name: string;
   description: string;
   rows: Row[];
+  anchorTokens?: boolean;
   flushSampleInline?: boolean;
   showHeader?: boolean;
   showModeSamples?: boolean;
@@ -34,6 +35,7 @@ const {
   name,
   description,
   rows,
+  anchorTokens = true,
   flushSampleInline = false,
   showHeader = true,
   showModeSamples = true,
@@ -60,9 +62,9 @@ const normalizedRows = rows.map((row) => {
 });
 const hasModeValues = normalizedRows.some((row) => row.lightValue || row.darkValue);
 const columns = hasModeValues
-  ? "minmax(18rem, 0.36fr) minmax(18rem, 0.32fr) minmax(18rem, 0.32fr)"
-  : "minmax(18rem, 0.38fr) minmax(10rem, 0.2fr) minmax(18rem, 0.42fr)";
-const minWidth = hasModeValues ? "58rem" : "46rem";
+  ? "minmax(var(--ds-doc-table-token-column-min-width), 36fr) minmax(var(--ds-doc-table-mode-column-min-width), 32fr) minmax(var(--ds-doc-table-mode-column-min-width), 32fr)"
+  : "minmax(var(--ds-doc-table-token-column-min-width), 1fr) var(--ds-doc-table-sample-column-width) var(--ds-doc-table-short-value-column-width)";
+const minWidth = hasModeValues ? "74rem" : "40rem";
 ---
 
 <section
@@ -73,11 +75,13 @@ const minWidth = hasModeValues ? "58rem" : "46rem";
   data-ds-doc-table-size="tiny"
 >
   {showHeader && (
-    <DsSectionHeaderLevel3
-      id={`${id}-title`}
-      title={name}
-      description={description}
-    />
+    <>
+      <DsDocumentationBlockTitle
+        id={`${id}-title`}
+        title={name}
+      />
+      <p class="ds-palette-block__description body-small-regular">{description}</p>
+    </>
   )}
 
   <DsTableFrame
@@ -105,6 +109,7 @@ const minWidth = hasModeValues ? "58rem" : "46rem";
     {
       normalizedRows.map((row) => (
         <DsColorRow
+          anchorToken={anchorTokens}
           darkValue={row.darkValue}
           hasModeValues={hasModeValues}
           label={row.label}
@@ -125,7 +130,12 @@ const minWidth = hasModeValues ? "58rem" : "46rem";
 <style>
   .ds-palette-block {
     display: grid;
-    gap: var(--gap-medium);
+    gap: var(--space-regular);
+  }
+
+  .ds-palette-block__description {
+    margin-block-start: calc(var(--gap-medium) * -1);
+    color: var(--color-text-tertiary);
   }
 
 </style>

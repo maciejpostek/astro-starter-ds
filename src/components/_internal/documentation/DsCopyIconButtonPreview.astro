@@ -1,0 +1,30 @@
+---
+import CopyIconButton from "../../base-components/buttons/CopyIconButton.astro";
+import Toast from "../../base-components/toast-notification/Toast.astro";
+---
+
+<div
+  class="ds-preview-renderer-boundary"
+  data-component-name="DsCopyIconButtonPreview"
+>
+  <CopyIconButton
+    copyValue="https://example.com"
+    data-ds-preview-target
+    data-ds-preview-state="default"
+    errorToastId="copy-icon-button-preview-error"
+    label="Copy URL"
+    size="small"
+    successToastId="copy-icon-button-preview-success"
+    variant="tertiary"
+  />
+  <Toast
+    id="copy-icon-button-preview-success"
+    title="URL copied to clipboard"
+    status="success"
+  />
+  <Toast
+    id="copy-icon-button-preview-error"
+    title="URL could not be copied"
+    status="error"
+  />
+</div>

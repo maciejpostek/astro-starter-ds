@@ -93,8 +93,8 @@ const { text, label = "Agentic Rule", name = label } = Astro.props;
 
   .ds-tooltip__trigger {
     display: inline-flex;
-    width: var(--component-size-small-min-height);
-    height: var(--component-size-small-min-height);
+    width: var(--control-size-small-min-height);
+    height: var(--control-size-small-min-height);
     align-items: center;
     justify-content: center;
     border: 0;
@@ -124,9 +124,7 @@ const { text, label = "Agentic Rule", name = label } = Astro.props;
     font-size: var(--font-size-body-tiny);
     line-height: var(--line-height-compact);
     opacity: 0;
-    padding:
-      var(--component-size-small-padding-inline)
-      var(--component-size-small-padding-inline);
+    padding: var(--content-padding-small);
     pointer-events: none;
     transform: translateY(var(--space-tiny));
     transition:

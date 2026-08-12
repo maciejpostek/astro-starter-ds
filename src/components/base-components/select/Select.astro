@@ -1,0 +1,56 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import SelectControl from "../../_internal/behaviors/SelectControl.astro";
+import type { InputSize, InputValidation } from "../inputs/Input.astro";
+
+import type {
+  SelectOption as SharedSelectOption,
+  SelectOptionImageVisual as SharedSelectOptionImageVisual,
+  SelectOptionTextVisual as SharedSelectOptionTextVisual,
+  SelectOptionVisual as SharedSelectOptionVisual,
+  SelectPurpose as SharedSelectPurpose,
+} from "../../../lib/select/selectTypes";
+
+export type SelectOption = SharedSelectOption;
+export type SelectOptionImageVisual = SharedSelectOptionImageVisual;
+export type SelectOptionTextVisual = SharedSelectOptionTextVisual;
+export type SelectOptionVisual = SharedSelectOptionVisual;
+export type SelectPurpose = SharedSelectPurpose;
+
+type NativeSelectAttributes = Omit<
+  HTMLAttributes<"select">,
+  | "aria-describedby"
+  | "aria-invalid"
+  | "aria-label"
+  | "aria-labelledby"
+  | "class"
+  | "disabled"
+  | "id"
+  | "multiple"
+  | "size"
+  | "value"
+>;
+
+export interface Props extends NativeSelectAttributes {
+  id: string;
+  options: SharedSelectOption[];
+  purpose?: SharedSelectPurpose;
+  label?: string;
+  hint?: string;
+  value?: string;
+  size?: InputSize;
+  validation?: InputValidation;
+  disabled?: boolean;
+  class?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: HTMLAttributes<"select">["aria-invalid"];
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+}
+---
+
+<SelectControl
+  {...Astro.props}
+  componentName="Select"
+  kind="standard"
+/>

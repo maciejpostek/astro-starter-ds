@@ -64,6 +64,8 @@ const router = readJson("AGENTIC-RULES.json");
 const routerSource = read("AGENTIC-RULES.json");
 const registry = readJson("src/data/design-system/componentArchitecture.json");
 const readinessContract = readJson("architecture/component-readiness-contract.json");
+const authoringContract = readJson("architecture/component-authoring-contract.json");
+const tokenArchitecture = readJson("src/data/design-system/tokenArchitecture.json");
 if (Buffer.byteLength(routerSource, "utf8") > 8 * 1024) {
   errors.push("AGENTIC-RULES.json must remain within the 8 KB routing budget.");
 }
@@ -88,6 +90,24 @@ if (router.sources?.componentReadiness !== ".agentic-rules/10-component-readines
 if (router.sources?.componentReadinessContract !== "architecture/component-readiness-contract.json") {
   errors.push("Router must expose the machine-readable Component Readiness contract.");
 }
+if (router.sources?.tokenGroupIndex !== "src/data/design-system/tokenArchitecture.json") {
+  errors.push("Router must expose the canonical token group registry.");
+}
+if (router.sources?.componentAuthoringContract !== "architecture/component-authoring-contract.json") {
+  errors.push("Router must expose the deterministic component authoring contract.");
+}
+if (JSON.stringify(router.tokenGate?.resolutionOrder) !== JSON.stringify(authoringContract.resolutionOrder)) {
+  errors.push("Router and authoring contract use different token resolution orders.");
+}
+if (router.tokenGate?.gapOutcome !== "blocked-with-tokenDraft") {
+  errors.push("Token gaps must block with a tokenDraft.");
+}
+if (router.tokenGate?.reuseAndComposeCanCreateTokens !== false) {
+  errors.push("Reuse and compose must not create tokens.");
+}
+if (!Array.isArray(tokenArchitecture.groups) || tokenArchitecture.groups.length === 0) {
+  errors.push("Token architecture must contain registered groups.");
+}
 if (readinessContract.figmaPolicy !== "explicit-only") {
   errors.push("Component Readiness must keep Figma explicit-only.");
 }
@@ -96,7 +116,7 @@ for (const scope of ["component-contract", "component-creation"]) {
     errors.push(`${scope} must route the Component Readiness audit.`);
   }
 }
-for (const contract of ["Classify the request as","Reuse existing tokens and components by default","Use Figma rules and tools only"]) {
+for (const contract of ["Classify the request as","Reuse existing tokens and components by default","tokenDraft","Use Figma rules and tools only"]) {
   if (!agents.includes(contract)) errors.push(`AGENTS.md is missing: ${contract}`);
 }
 for (const contract of [".agentic-rules/10-component-readiness.md", "data-component-name"]) {

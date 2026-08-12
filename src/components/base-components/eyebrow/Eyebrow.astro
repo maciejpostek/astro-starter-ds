@@ -1,0 +1,64 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"p">, "class"> {
+  text: string;
+  class?: string;
+}
+
+const {
+  text,
+  class: className,
+  ...attributes
+} = Astro.props;
+---
+
+<p
+  {...attributes}
+  class:list={["eyebrow", className]}
+  data-component-name="Eyebrow"
+>
+  <span class="eyebrow__marker" aria-hidden="true"></span>
+  <span class="eyebrow__text">{text}</span>
+</p>
+
+<style>
+  .eyebrow {
+    display: flex;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    align-items: center;
+    gap: var(--gap-small);
+    margin: 0 0 var(--space-eyebrow-bottom);
+    color: var(--eyebrow-text-default);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-normal);
+    text-transform: var(--text-transform-none);
+  }
+
+  .eyebrow__marker {
+    inline-size: var(--eyebrow-marker-size);
+    flex: 0 0 var(--eyebrow-marker-size);
+    aspect-ratio: 1;
+    border-radius: var(--radius-full);
+    background: var(--eyebrow-marker-default);
+  }
+
+  .eyebrow__text {
+    min-inline-size: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  @media (forced-colors: active) {
+    .eyebrow {
+      color: CanvasText;
+    }
+
+    .eyebrow__marker {
+      background: CanvasText;
+    }
+  }
+</style>

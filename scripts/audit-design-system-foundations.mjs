@@ -29,11 +29,12 @@ const references = (source) =>
 
 const canonicalFiles = {
   "color-primitives.css": 69,
-  "color-semantic.css": 54,
-  "color-components.css": 141,
-  "size-primitives.css": 25,
+  "color-semantic.css": 58,
+  "color-components.css": 210,
+  "size-primitives.css": 27,
   "size-semantic.css": 52,
-  "component-sizes.css": 28,
+  "size-components.css": 53,
+  "control-sizes.css": 28,
   "typography-foundations.css": 72,
   "layout-foundations.css": 7,
   "layout-semantic.css": 11,
@@ -88,8 +89,9 @@ const expectedImports = [
   "motion-foundations.css",
   "elevation-foundations.css",
   "color-components.css",
+  "size-components.css",
   "interaction-effects.css",
-  "component-sizes.css",
+  "control-sizes.css",
   "design-system-components.css"
 ];
 
@@ -118,8 +120,8 @@ for (const contract of [
   }
 }
 
-const componentSizes = sources.get("component-sizes.css") ?? "";
-const componentSizeProperties = [
+const controlSizes = sources.get("control-sizes.css") ?? "";
+const controlSizeProperties = [
   "min-height",
   "padding-inline",
   "padding-block",
@@ -129,20 +131,20 @@ const componentSizeProperties = [
   "line-height"
 ];
 for (const size of ["small", "medium", "large"]) {
-  for (const property of componentSizeProperties) {
+  for (const property of controlSizeProperties) {
     if (
-      !componentSizes.includes(`--component-size-${size}-${property}:`)
+      !controlSizes.includes(`--control-size-${size}-${property}:`)
     ) {
-      fail(`Missing ${size} component-size property: ${property}`);
+      fail(`Missing ${size} control-size property: ${property}`);
     }
   }
-  if (!componentSizes.includes(`[data-component-size="${size}"]`)) {
-    fail(`Missing data-component-size bridge for ${size}.`);
+  if (!controlSizes.includes(`[data-control-size="${size}"]`)) {
+    fail(`Missing data-control-size bridge for ${size}.`);
   }
 }
-for (const property of componentSizeProperties) {
-  if (!componentSizes.includes(`--component-${property}:`)) {
-    fail(`Missing stable component-size alias: --component-${property}`);
+for (const property of controlSizeProperties) {
+  if (!controlSizes.includes(`--control-${property}:`)) {
+    fail(`Missing stable control-size alias: --control-${property}`);
   }
 }
 
@@ -288,11 +290,41 @@ for (const documentationPath of [
   read(join(projectRoot, documentationPath));
 }
 
+const documentationFoundationData = read(join(
+  projectRoot,
+  "src/data/documentationFoundationData.ts",
+));
+const colorFoundationPage = read(join(
+  projectRoot,
+  "src/pages/design-system/foundations/color.astro",
+));
+const documentationColorRow = read(join(
+  projectRoot,
+  "src/components/_internal/documentation/DsColorRow.astro",
+));
+if (!documentationFoundationData.includes("export const resolveDocumentationColorSampleSurface")
+  || !documentationFoundationData.includes("matchingBackground")
+  || !documentationFoundationData.includes("documentationTokens.some")
+  || !documentationFoundationData.includes("resolveDocumentationColorSampleSurface(token.name)")) {
+  fail("Foundation color samples must use one shared resolver with component foreground/background state pairing.");
+}
+if (!colorFoundationPage.includes("resolveDocumentationColorSampleSurface")
+  || colorFoundationPage.includes("function getColorSampleSurfaceValue")) {
+  fail("The Color Foundation page must consume the shared sample-surface resolver without a local heuristic.");
+}
+if ((documentationColorRow.match(/\$\{resolvedSampleValue\}/g) ?? []).length < 3) {
+  fail("Foundation fill, border and text samples must render the resolved canonical color value.");
+}
+
 const sectionHeading = read(join(
   projectRoot,
   "src/components/_internal/documentation/DsSectionHeading.astro",
 ));
-for (const level of [2, 3, 4]) {
+const documentationHeadingStyles = new Map([
+  [2, "heading-h4"],
+  [3, "heading-h6"],
+]);
+for (const [level, textStyle] of documentationHeadingStyles) {
   const wrapperPath = `src/components/_internal/documentation/DsSectionHeaderLevel${level}.astro`;
   const wrapper = read(join(projectRoot, wrapperPath));
   if (!new RegExp(`<DsSectionHeading[\\s\\S]*?level=\\{${level}\\}`, "u").test(wrapper)) {
@@ -301,9 +333,15 @@ for (const level of [2, 3, 4]) {
   if (!sectionHeading.includes(`"h${level}"`)) {
     fail(`DsSectionHeading must support semantic h${level}.`);
   }
-  if (!sectionHeading.includes(`${level}: "heading-h${level}"`)) {
-    fail(`DsSectionHeading must map semantic h${level} to .heading-h${level}.`);
+  if (!sectionHeading.includes(`${level}: "${textStyle}"`)) {
+    fail(`DsSectionHeading must map semantic h${level} to .${textStyle}.`);
   }
+}
+if (existsSync(join(
+  projectRoot,
+  "src/components/_internal/documentation/DsSectionHeaderLevel4.astro",
+))) {
+  fail("The documentation hierarchy must not restore DsSectionHeaderLevel4.");
 }
 
 for (const rulePath of [

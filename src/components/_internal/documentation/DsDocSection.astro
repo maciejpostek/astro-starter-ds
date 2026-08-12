@@ -4,14 +4,12 @@ import DsSectionHeaderLevel2 from "./DsSectionHeaderLevel2.astro";
 interface Props {
   id: string;
   title: string;
-  description?: string;
   class?: string;
 }
 
 const {
   id,
   title,
-  description,
   class: className,
 } = Astro.props as Props;
 const titleId = `${id}-title`;
@@ -27,7 +25,6 @@ const titleId = `${id}-title`;
   <DsSectionHeaderLevel2
     id={titleId}
     title={title}
-    description={description}
   />
 
   <div class="ds-doc-section__body">

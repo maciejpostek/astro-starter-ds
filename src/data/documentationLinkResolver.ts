@@ -87,7 +87,7 @@ export const resolveDocumentationLink = (
     throw new Error(`Documentation link references unknown icon: ${target.name}`);
   }
   return {
-    href: `/design-system/assets/icons#icon-${slugifyDocumentationValue(target.name)}`,
+    href: `/design-system/assets/material-symbols#icon-${slugifyDocumentationValue(target.name)}`,
     label: target.name,
     copyValue: target.name,
   };

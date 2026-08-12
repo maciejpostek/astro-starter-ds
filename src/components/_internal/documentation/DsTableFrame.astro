@@ -25,22 +25,288 @@ const style = [
 ---
 
 <div
-  aria-label={label}
   class:list={["ds-table-frame", className]}
   data-component-name={componentName}
   data-ds-doc-table-size={size}
-  role="table"
   style={style || undefined}
 >
-  <slot />
+  <div
+    aria-label={label}
+    class="ds-table-frame__surface"
+    role="table"
+  >
+    <slot />
+  </div>
 </div>
 
 <style>
   .ds-table-frame {
+    box-sizing: border-box;
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    border-top: var(--size-1) solid var(--color-border-subtle);
-    border-left: var(--size-1) solid var(--color-border-subtle);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-small);
+    overscroll-behavior-inline: contain;
+  }
+
+  .ds-table-frame__surface {
+    box-sizing: border-box;
+    width: max(100%, var(--ds-table-min-width, var(--ds-doc-table-min-width)));
+    min-width: var(--ds-table-min-width, var(--ds-doc-table-min-width));
+  }
+
+  .ds-table-frame__surface :global(.ds-table-row > .ds-table-cell:last-child),
+  .ds-table-frame__surface :global(.ds-table-group-separator) {
+    border-right: 0;
+  }
+
+  .ds-table-frame__surface > :global(.ds-table-row:last-child > .ds-table-cell),
+  .ds-table-frame__surface > :global(.ds-table-row-group:last-child .ds-table-row:last-child > .ds-table-cell) {
+    border-bottom: 0;
   }
 </style>
+
+<style is:global>
+  .ds-table-overflow-tooltip-root {
+    display: contents;
+  }
+
+  .ds-table-overflow-tooltip {
+    position: fixed;
+    inset: auto;
+    box-sizing: border-box;
+    width: max-content;
+    max-width:
+      min(
+        var(--tooltip-compact-max-inline-size),
+        calc(100vw - (var(--tooltip-viewport-padding) * 2))
+      );
+    border: var(--border-width-default) solid var(--color-border-inverse);
+    border-radius: var(--radius-small);
+    background: var(--color-background-inverse);
+    color: var(--color-text-inverse);
+    font-family: var(--font-family-body);
+    margin: 0;
+    opacity: 0;
+    overflow-wrap: anywhere;
+    padding: var(--content-padding-tiny) var(--content-padding-xsmall);
+    pointer-events: none;
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-normal);
+    transition: opacity var(--motion-transition);
+  }
+
+  .ds-table-overflow-tooltip.is-visible {
+    opacity: 1;
+  }
+
+  .ds-table-overflow-tooltip__tail {
+    position: absolute;
+    width: var(--tooltip-tail-size);
+    height: var(--tooltip-tail-size);
+    background: var(--color-background-inverse);
+  }
+
+  .ds-table-overflow-tooltip[data-overlay-resolved-placement="top"] .ds-table-overflow-tooltip__tail {
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .ds-table-overflow-tooltip[data-overlay-resolved-placement="bottom"] .ds-table-overflow-tooltip__tail {
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+
+  .ds-table-overflow-tooltip[data-overlay-resolved-placement="left"] .ds-table-overflow-tooltip__tail {
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  .ds-table-overflow-tooltip[data-overlay-resolved-placement="right"] .ds-table-overflow-tooltip__tail {
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  }
+
+  .ds-table-overflow-tooltip[hidden] {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ds-table-overflow-tooltip {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .ds-table-overflow-tooltip {
+      border-color: CanvasText;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .ds-table-overflow-tooltip__tail {
+      background: Canvas;
+    }
+  }
+</style>
+
+<script>
+  import {
+    activateAnchoredOverlay,
+    deactivateOverlay,
+    hidePopoverSurface,
+    showPopoverSurface,
+  } from "../../../lib/overlays/overlay-runtime";
+  import {
+    resolveTableCellTooltipText,
+    shouldDismissTableTooltip,
+    syncTableCellOverflowState,
+  } from "../../../lib/documentation/table-overflow.mjs";
+
+  const TOOLTIP_ID = "ds-table-overflow-tooltip";
+  const TARGET_SELECTOR = '[data-ds-table-overflow-target="true"]';
+
+  type TableTooltipElement = HTMLElement & {
+    hidePopover?: () => void;
+    showPopover?: () => void;
+  };
+
+  declare global {
+    interface Window {
+      __astroDsTableOverflowCleanup?: () => void;
+      __astroDsTableOverflowPageLoadReady?: boolean;
+      __astroDsTableOverflowSetup?: () => void;
+    }
+  }
+
+  const setupTableOverflowManager = () => {
+    window.__astroDsTableOverflowCleanup?.();
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    document.getElementById(TOOLTIP_ID)?.closest(".ds-table-overflow-tooltip-root")?.remove();
+
+    const tooltipRoot = document.createElement("span");
+    tooltipRoot.className = "ds-table-overflow-tooltip-root";
+    tooltipRoot.dataset.overlayRoot = "true";
+
+    const tooltip = document.createElement("span") as TableTooltipElement;
+    tooltip.id = TOOLTIP_ID;
+    tooltip.className = "ds-table-overflow-tooltip";
+    tooltip.dataset.overlaySurface = "true";
+    tooltip.setAttribute("popover", "manual");
+    tooltip.setAttribute("role", "tooltip");
+    tooltip.hidden = true;
+
+    const tail = document.createElement("span");
+    tail.className = "ds-table-overflow-tooltip__tail";
+    tail.dataset.overlayTail = "true";
+    tail.setAttribute("aria-hidden", "true");
+
+    const tooltipText = document.createElement("span");
+    tooltipText.className = "ds-table-overflow-tooltip__text";
+    tooltip.append(tail, tooltipText);
+    tooltipRoot.append(tooltip);
+    document.body.append(tooltipRoot);
+
+    let activeTarget: HTMLElement | null = null;
+    const observedTargets = new WeakSet<Element>();
+    const resizeObserver = new ResizeObserver((entries) => {
+      entries.forEach(({ target }) => evaluateTarget(target as HTMLElement));
+    });
+
+    const hideTooltip = () => {
+      activeTarget = null;
+      deactivateOverlay(tooltipRoot);
+      hidePopoverSurface(tooltip);
+    };
+
+    const showTooltip = (target: HTMLElement) => {
+      if (target.dataset.dsTableOverflowing !== "true") return;
+      if (activeTarget && activeTarget !== target) hideTooltip();
+      activeTarget = target;
+      tooltipText.textContent = resolveTableCellTooltipText(target);
+      showPopoverSurface(tooltip);
+      activateAnchoredOverlay({
+        root: tooltipRoot,
+        trigger: target,
+        surface: tooltip,
+        tail,
+        preferredPlacement: "top",
+      });
+    };
+
+    function evaluateTarget(target: HTMLElement) {
+      const overflowing = syncTableCellOverflowState(target, TOOLTIP_ID);
+      if (!overflowing && activeTarget === target) hideTooltip();
+    }
+
+    const registerTarget = (target: HTMLElement) => {
+      evaluateTarget(target);
+      if (!observedTargets.has(target)) {
+        resizeObserver.observe(target);
+        observedTargets.add(target);
+      }
+    };
+
+    const registerTargets = (scope: ParentNode = document) => {
+      scope.querySelectorAll<HTMLElement>(TARGET_SELECTOR).forEach((target) => {
+        registerTarget(target);
+      });
+      if (scope instanceof HTMLElement && scope.matches(TARGET_SELECTOR)) {
+        registerTarget(scope);
+      }
+    };
+
+    const mutationObserver = new MutationObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) registerTargets(node);
+        });
+      });
+    });
+    const contentRoot = document.querySelector("[data-ds-documentation-content]") ?? document.body;
+    mutationObserver.observe(contentRoot, { childList: true, subtree: true });
+
+    document.addEventListener("pointerover", (event) => {
+      const target = (event.target as Element | null)?.closest<HTMLElement>(TARGET_SELECTOR);
+      if (target) showTooltip(target);
+    }, { signal });
+    document.addEventListener("pointerout", (event) => {
+      if (!activeTarget) return;
+      const nextTarget = event.relatedTarget as Node | null;
+      if (!nextTarget || !activeTarget.contains(nextTarget)) hideTooltip();
+    }, { signal });
+    document.addEventListener("focusin", (event) => {
+      const target = (event.target as Element | null)?.closest<HTMLElement>(TARGET_SELECTOR);
+      if (target) showTooltip(target);
+    }, { signal });
+    document.addEventListener("focusout", (event) => {
+      if (!activeTarget) return;
+      const nextTarget = event.relatedTarget as Node | null;
+      if (!nextTarget || !activeTarget.contains(nextTarget)) hideTooltip();
+    }, { signal });
+    document.addEventListener("keydown", (event) => {
+      if (shouldDismissTableTooltip(event.key)) hideTooltip();
+    }, { signal });
+    window.addEventListener("resize", () => registerTargets(), { signal });
+    document.fonts?.ready.then(() => registerTargets());
+    registerTargets();
+
+    window.__astroDsTableOverflowCleanup = () => {
+      controller.abort();
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+      if (activeTarget) deactivateOverlay(tooltipRoot);
+      tooltipRoot.remove();
+    };
+  };
+
+  window.__astroDsTableOverflowSetup = setupTableOverflowManager;
+  setupTableOverflowManager();
+  if (!window.__astroDsTableOverflowPageLoadReady) {
+    window.__astroDsTableOverflowPageLoadReady = true;
+    document.addEventListener("astro:page-load", () => {
+      window.__astroDsTableOverflowSetup?.();
+    });
+  }
+</script>

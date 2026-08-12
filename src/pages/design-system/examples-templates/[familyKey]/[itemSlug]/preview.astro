@@ -22,6 +22,6 @@ const PreviewComponent = adapter.component;
     title={adapter.componentId}
     backHref={`/design-system/examples-templates/${adapter.pageKey}`}
   >
-    <PreviewComponent />
+    <PreviewComponent {...adapter.props} />
   </DsResponsivePreview>
 </BaseLayout>

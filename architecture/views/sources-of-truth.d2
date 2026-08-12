@@ -20,6 +20,24 @@ source_component_registry: "Component Registry and Readiness\\nsource of truth\\
   style.border-radius: 8
 }
 
+source_token_group_registry: "Token Group Registry\\nsource of truth\\ntokenArchitecture.json" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+artifact_component_authoring_contract: "Component Authoring Contract\\nartifact\\ncomponent-authoring-contract.json" {
+  shape: page
+  style.fill: "#ccfbf1"
+  style.stroke: "#0f766e"
+  style.font-color: "#134e4a"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
 source_astro_components: "Astro Component Sources\\nsource of truth\\ncomponents" {
   shape: cylinder
   style.fill: "#d1fae5"
@@ -66,6 +84,12 @@ source_git_history: "Git History\\nsource of truth\\n.git" {
 }
 
 source_git_history -> source_component_registry: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+source_css_variables -> source_token_group_registry: "required by" {
   style.stroke: "#475569"
   style.font-color: "#475569"
   style.stroke-width: 2

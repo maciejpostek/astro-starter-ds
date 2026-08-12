@@ -7,6 +7,7 @@ interface Props {
   variable?: string;
   componentName?: string;
   class?: string;
+  [attribute: string]: unknown;
 }
 
 const {
@@ -17,10 +18,12 @@ const {
   variable,
   componentName = "DsTableRow",
   class: className,
+  ...attributes
 } = Astro.props as Props;
 ---
 
 <div
+  {...attributes}
   id={id}
   class:list={["ds-table-row", className]}
   data-component-name={componentName}
@@ -35,10 +38,10 @@ const {
 <style>
   .ds-table-row {
     display: grid;
-    width: max(100%, var(--ds-table-min-width, var(--ds-doc-table-min-width)));
+    width: 100%;
     grid-template-columns:
       var(--ds-table-grid-template-columns, var(--ds-doc-table-grid-template-columns));
-    min-width: var(--ds-table-min-width, var(--ds-doc-table-min-width));
+    min-width: 0;
   }
 
   .ds-table-row[data-ds-table-row-variant="header"] {
@@ -47,5 +50,9 @@ const {
 
   .ds-table-row[data-ds-table-row-variant="body"] {
     min-height: var(--ds-doc-table-row-min-height);
+  }
+
+  .ds-table-row[hidden] {
+    display: none;
   }
 </style>

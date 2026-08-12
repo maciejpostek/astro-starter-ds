@@ -7,13 +7,14 @@ import "../styles/global.css";
 import GridVisualizer from "../components/_internal/dev/GridVisualizer.astro";
 import ComponentInfoLayer from "../components/_internal/dev/ComponentInfoLayer.astro";
 import ClipboardCopy from "../components/_internal/behaviors/ClipboardCopy.astro";
-import SwitchButton from "../components/base-components/switch/SwitchButton.astro";
+import SwitchLabel from "../components/base-components/switch/SwitchLabel.astro";
 
 interface Props {
   title: string;
   description?: string;
   showGridVisualizer?: boolean;
   showComponentInfo?: boolean;
+  showGuidesToggle?: boolean;
   mainClass?: string;
 }
 
@@ -22,13 +23,14 @@ const {
   description = "Astro Starter provides a reusable, token-driven component system with operational documentation for people and AI.",
   showGridVisualizer = true,
   showComponentInfo = true,
+  showGuidesToggle = true,
   mainClass,
 } = Astro.props;
 const activePath = Astro.url.pathname;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light" data-grid="visible" data-guides="visible">
+<html lang="en" data-theme="light" data-theme-preference="system" data-grid="visible" data-guides="visible">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,8 +40,16 @@ const activePath = Astro.url.pathname;
     <title>{title}</title>
     <script is:inline>
       const storedTheme = localStorage.getItem("astro-ds-theme");
-      document.documentElement.dataset.theme =
-        storedTheme === "dark" || storedTheme === "light" ? storedTheme : "light";
+      const themePreference = storedTheme === "dark" || storedTheme === "light" || storedTheme === "system"
+        ? storedTheme
+        : "system";
+      const resolvedTheme = themePreference === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : themePreference;
+      document.documentElement.dataset.themePreference = themePreference;
+      document.documentElement.dataset.theme = resolvedTheme;
       const storedGuides = localStorage.getItem("astro-ds-guides");
       const storedGrid = localStorage.getItem("astro-ds-grid");
       const guidesState = storedGuides === "hidden" || storedGuides === "visible"
@@ -61,11 +71,11 @@ const activePath = Astro.url.pathname;
       </div>
     </div>
     {showComponentInfo && <ComponentInfoLayer />}
-    {(showGridVisualizer || showComponentInfo) && (
+    {(showGridVisualizer || showComponentInfo) && showGuidesToggle && (
       <div class="guides-toggle" data-grid-toggle>
-        <SwitchButton
+        <SwitchLabel
+          id="ds-guides-toggle"
           label="Guides"
-          aria-label="Disable guides"
           checked
           data-guides-switch
         />
@@ -84,7 +94,8 @@ const activePath = Astro.url.pathname;
 
       const root = document.documentElement;
       const guidesSwitches = document.querySelectorAll<HTMLInputElement>("[data-guides-switch]");
-      const syncGuidesSwitch = () => {
+      const guidesButtons = document.querySelectorAll<HTMLButtonElement>("[data-guides-button]");
+      const syncGuidesControls = () => {
         const isVisible = root.dataset.guides !== "hidden";
         guidesSwitches.forEach((guidesSwitch) => {
           guidesSwitch.checked = isVisible;
@@ -93,13 +104,21 @@ const activePath = Astro.url.pathname;
             isVisible ? "Disable guides" : "Enable guides"
           );
         });
+        guidesButtons.forEach((guidesButton) => {
+          guidesButton.setAttribute("aria-pressed", String(isVisible));
+          guidesButton.setAttribute("aria-label", isVisible ? "Disable guides" : "Enable guides");
+          const visibleIcon = guidesButton.querySelector("[data-guides-visible-icon]");
+          const hiddenIcon = guidesButton.querySelector("[data-guides-hidden-icon]");
+          visibleIcon?.toggleAttribute("hidden", !isVisible);
+          hiddenIcon?.toggleAttribute("hidden", isVisible);
+        });
       };
       const setGuidesState = (next: "visible" | "hidden") => {
         root.dataset.guides = next;
         root.dataset.grid = next;
         localStorage.setItem("astro-ds-guides", next);
         localStorage.setItem("astro-ds-grid", next);
-        syncGuidesSwitch();
+        syncGuidesControls();
       };
       const isTypingContext = (event: KeyboardEvent) => {
         const element = event.target as HTMLElement | null;
@@ -107,12 +126,22 @@ const activePath = Astro.url.pathname;
         const tag = element.tagName.toLowerCase();
         return tag === "input" || tag === "textarea" || tag === "select" || element.isContentEditable;
       };
-      syncGuidesSwitch();
+      syncGuidesControls();
       guidesSwitches.forEach((guidesSwitch) => {
         guidesSwitch.addEventListener(
           "change",
           () => {
             setGuidesState(guidesSwitch.checked ? "visible" : "hidden");
+          },
+          { signal: shellSignal }
+        );
+      });
+      guidesButtons.forEach((guidesButton) => {
+        guidesButton.addEventListener(
+          "click",
+          () => {
+            const next = root.dataset.guides === "hidden" ? "visible" : "hidden";
+            setGuidesState(next);
           },
           { signal: shellSignal }
         );
@@ -146,7 +175,7 @@ const activePath = Astro.url.pathname;
         box-shadow: var(--elevation-surface-floating);
       }
 
-      .guides-toggle :global(.ds-switch-button__label) {
+      .guides-toggle :global(.switch-label__text) {
         position: absolute;
         width: 1px;
         height: 1px;

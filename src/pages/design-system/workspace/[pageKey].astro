@@ -1,6 +1,10 @@
 ---
 import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
-import { architecture, type ArchitecturePage } from "../../../data/documentationRegistry";
+import {
+  architecture,
+  createDocumentationSummary,
+  type ArchitecturePage,
+} from "../../../data/documentationRegistry";
 
 export function getStaticPaths() {
   return architecture.pages
@@ -10,14 +14,17 @@ export function getStaticPaths() {
 
 interface Props { page: ArchitecturePage; }
 const { page } = Astro.props;
+const pageToc = [{ label: "Workspace", href: "#workspace-canvas" }];
 ---
 
-<DesignSystemLayout title={`${page.pageLabel} - Workspace`} pageType="workspace" toc={[
-  { label: "Workspace", href: "#workspace-canvas" },
-]} header={{
+<DesignSystemLayout title={`${page.pageLabel} - Workspace`} pageType="workspace" toc={pageToc} header={{
   eyebrow: "Workspace",
   title: page.pageLabel,
-  description: "Internal documentation workspace. Content here is intentionally separate from public design-system components.",
+  summary: createDocumentationSummary(
+    "This internal documentation workspace is intentionally separate from public design-system components. Open",
+    pageToc,
+    "to inspect the experimental canvas without treating it as a reusable API.",
+  ),
   status: "Workspace",
 }}>
   <section id="workspace-canvas" data-ds-doc-section class="workspace-canvas">

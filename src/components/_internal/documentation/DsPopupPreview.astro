@@ -1,0 +1,129 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import Button from "../../base-components/buttons/Button.astro";
+import Popup from "../../website-patterns/modal/Popup.astro";
+import type { PopupStatus } from "../../../lib/popup/popupTypes";
+
+interface Props {
+  initialOpen?: boolean;
+  longContent?: boolean;
+  direction?: "ltr" | "rtl";
+}
+
+const { initialOpen = false, longContent = false, direction = "ltr" } = Astro.props;
+const description = longContent
+  ? "This update will be visible to everyone with access to the project. Review ownership, permissions and release timing before continuing. The Popup body remains the only scrollable region when content exceeds the viewport. Confirm the affected audience, check the final labels and verify that every dependent workflow is ready. This extended fixture intentionally repeats decision context so the responsive preview can validate a stable footer and reachable actions at narrow widths and short viewport heights."
+  : "This update will be visible to everyone with access to the project. You can review the result before publishing.";
+const statuses: PopupStatus[] = ["error", "warning", "success", "info"];
+const statusIcons = {
+  error: "error",
+  warning: "warning",
+  success: "check_circle",
+  info: "info",
+} as const;
+const statusLabels = {
+  error: "Error",
+  warning: "Warning",
+  success: "Success",
+  info: "Information",
+} as const;
+---
+
+<div
+  class="popup-preview"
+  data-component-name="DsPopupPreview"
+  data-popup-preview
+  data-ds-preview-target
+>
+  <Button
+    variant="primary"
+    size="small"
+    type="button"
+    showIcon={false}
+    data-popup-preview-open
+  >
+    Open Popup
+  </Button>
+
+  <Popup
+    id="documentation-popup-preview"
+    title="Confirm this change"
+    description={description}
+    initialOpen={initialOpen}
+    dir={direction}
+  />
+
+  <div hidden data-popup-preview-templates>
+    {statuses.map((status) => (
+      <template
+        data-popup-icon-template={status}
+        data-popup-status-label={statusLabels[status]}
+      >
+        <MaterialSymbol
+          class="popup__status-icon"
+          name={statusIcons[status]}
+          size="var(--popup-icon-size)"
+        />
+      </template>
+    ))}
+  </div>
+</div>
+
+<script>
+  const initializePopupPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-popup-preview]").forEach((preview) => {
+      if (preview.dataset.popupPreviewReady === "true") return;
+      preview.dataset.popupPreviewReady = "true";
+
+      const popup = preview.querySelector<HTMLDialogElement>("dialog[data-popup]");
+      preview.querySelector("[data-popup-preview-open]")?.addEventListener("click", () => {
+        if (!popup) return;
+        window.dispatchEvent(new CustomEvent("astro-ds:popup-open", {
+          detail: { id: popup.dataset.popupId },
+        }));
+      });
+
+      preview.closest("[data-ds-interactive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent) || !popup) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const value = String(event.detail?.value ?? "");
+
+        if (axisId === "popupStatus") {
+          const template = preview.querySelector<HTMLTemplateElement>(
+            `template[data-popup-icon-template="${value}"]`,
+          );
+          const currentIcon = popup.querySelector<SVGElement>(".popup__status-icon");
+          const nextIcon = template?.content.querySelector<SVGElement>(".popup__status-icon");
+          const statusLabel = popup.querySelector<HTMLElement>(".popup__status-label");
+          popup.dataset.popupStatus = value;
+          if (currentIcon && nextIcon) currentIcon.replaceWith(nextIcon.cloneNode(true));
+          if (statusLabel && template?.dataset.popupStatusLabel) {
+            statusLabel.textContent = `${template.dataset.popupStatusLabel}: `;
+          }
+        }
+        if (axisId === "popupAlignment") popup.dataset.popupAlignment = value;
+        if (axisId === "popupDismissible") popup.dataset.popupDismissible = String(value === "true");
+        if (axisId === "popupCancel") {
+          const cancel = popup.querySelector<HTMLButtonElement>("[data-popup-cancel]");
+          if (cancel) cancel.hidden = value === "hidden";
+        }
+        if (axisId === "popupPreference") {
+          const preference = popup.querySelector<HTMLElement>(".popup__preference");
+          if (preference) preference.hidden = value === "hidden";
+        }
+      });
+    });
+  };
+
+  initializePopupPreviews();
+  document.addEventListener("astro:page-load", initializePopupPreviews);
+</script>
+
+<style>
+  .popup-preview {
+    display: grid;
+    min-block-size: var(--size-320);
+    inline-size: 100%;
+    place-items: center;
+  }
+</style>

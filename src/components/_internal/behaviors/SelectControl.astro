@@ -1,0 +1,1088 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type { InputSize, InputValidation } from "../../base-components/inputs/Input.astro";
+import { resolveSelectFlag } from "../../../lib/select/selectFlags";
+import type {
+  SelectOption,
+  SelectOptionVisual,
+  SelectPurpose,
+} from "../../../lib/select/selectTypes";
+
+export type SelectKind = "standard" | "compact" | "inline";
+
+type NativeSelectAttributes = Omit<
+  HTMLAttributes<"select">,
+  | "aria-describedby"
+  | "aria-invalid"
+  | "aria-label"
+  | "aria-labelledby"
+  | "class"
+  | "disabled"
+  | "id"
+  | "multiple"
+  | "size"
+  | "value"
+>;
+
+export interface Props extends NativeSelectAttributes {
+  componentName: "Select" | "CompactSelect" | "InlineSelect";
+  kind: SelectKind;
+  id: string;
+  options: SelectOption[];
+  purpose?: SelectPurpose;
+  label?: string;
+  hint?: string;
+  value?: string;
+  size?: InputSize;
+  validation?: InputValidation;
+  disabled?: boolean;
+  class?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: HTMLAttributes<"select">["aria-invalid"];
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+}
+
+const {
+  componentName,
+  kind,
+  id,
+  options,
+  label,
+  hint,
+  value,
+  purpose = "basic",
+  size: requestedSize,
+  validation = "default",
+  disabled = false,
+  class: className,
+  required = false,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  ...attributes
+} = Astro.props as Props;
+
+if (!id) throw new Error("Select requires a stable id.");
+if (!options.length) throw new Error(`Select "${id}" requires at least one option.`);
+if (kind === "standard" && !label && !ariaLabel && !ariaLabelledBy) {
+  throw new Error(`Select "${id}" requires label, aria-label or aria-labelledby.`);
+}
+if (kind !== "standard" && !ariaLabel && !ariaLabelledBy) {
+  throw new Error(`${componentName} "${id}" requires aria-label or aria-labelledby.`);
+}
+
+const size = requestedSize ?? (kind === "standard" ? "medium" : "small");
+const selectedOption = options.find((option) => option.value === value) ?? options[0];
+const selectedIndex = options.indexOf(selectedOption);
+const optionVisuals = options.map((option): SelectOptionVisual | undefined => {
+  const runtimeOption = option as {
+    value: string;
+    flag?: string;
+    visual?: SelectOptionVisual;
+  };
+
+  if (runtimeOption.flag !== undefined && runtimeOption.visual !== undefined) {
+    throw new Error(
+      `Select "${id}" option "${runtimeOption.value}" cannot define both flag and visual.`,
+    );
+  }
+
+  if (runtimeOption.flag !== undefined) {
+    return {
+      kind: "image",
+      src: resolveSelectFlag({
+        slug: runtimeOption.flag,
+        selectId: id,
+        optionValue: runtimeOption.value,
+      }),
+      alt: "",
+    };
+  }
+
+  return runtimeOption.visual;
+});
+const selectedOptionVisual = optionVisuals[selectedIndex];
+const labelId = `${id}-label`;
+const hintId = `${id}-hint`;
+const valueId = `${id}-value`;
+const listboxId = `${id}-listbox`;
+const describedBy = [ariaDescribedBy, hint ? hintId : undefined].filter(Boolean).join(" ") || undefined;
+const resolvedAriaInvalid = validation === "invalid" ? "true" : ariaInvalid;
+const triggerLabelledBy = ariaLabel
+  ? undefined
+  : [label ? labelId : ariaLabelledBy, valueId].filter(Boolean).join(" ") || undefined;
+const triggerAriaLabel = ariaLabel ? `${ariaLabel}: ${selectedOption.label}` : undefined;
+const listboxLabelledBy = label ? labelId : ariaLabelledBy;
+---
+
+<span
+  class:list={[
+    "select-control",
+    kind === "standard" ? "select" : kind === "compact" ? "compact-select" : "inline-select",
+    className,
+  ]}
+  data-component-name={componentName}
+  data-control-size={size}
+  data-select
+  data-select-kind={kind}
+  data-select-base-aria-invalid={resolvedAriaInvalid === "true" ? "true" : undefined}
+  data-select-base-validation={validation}
+  data-select-disabled={disabled ? "true" : undefined}
+  data-select-purpose={purpose}
+  data-select-validation={validation}
+>
+  {label && (
+    <label class="select__label" id={labelId} for={id} data-select-label>
+      <span>{label}</span>
+      {required && <span class="select__required" aria-hidden="true">*</span>}
+    </label>
+  )}
+
+  <span class="select-control__native-shell" data-select-native-shell>
+    <select
+      {...attributes}
+      class="select-control__native"
+      id={id}
+      aria-describedby={describedBy}
+      aria-invalid={resolvedAriaInvalid}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      data-select-native
+      disabled={disabled}
+      required={required}
+    >
+      {options.map((option, index) => (
+        <option
+          value={option.value}
+          disabled={option.disabled}
+          selected={index === selectedIndex}
+        >
+          {option.label}
+        </option>
+      ))}
+    </select>
+    <MaterialSymbol
+      class="select-control__native-chevron"
+      name="arrow_drop_down"
+      size="var(--control-icon-size)"
+    />
+  </span>
+
+  <button
+    class="select-control__trigger"
+    type="button"
+    aria-controls={listboxId}
+    aria-describedby={describedBy}
+    aria-expanded="false"
+    aria-haspopup="listbox"
+    aria-invalid={resolvedAriaInvalid}
+    aria-label={triggerAriaLabel}
+    aria-labelledby={triggerLabelledBy}
+    data-select-base-label={ariaLabel}
+    data-select-trigger
+    disabled={disabled}
+    hidden
+  >
+    <span class="select-control__leading" data-select-leading aria-hidden="true">
+      <span class="select-control__purpose-icon select-control__purpose-icon--language">
+        <MaterialSymbol name="language" size="var(--control-icon-size)" />
+      </span>
+      <span class="select-control__purpose-icon select-control__purpose-icon--phone">
+        <MaterialSymbol name="call" size="var(--control-icon-size)" />
+      </span>
+      <span
+        class="select-control__selected-visual"
+        data-select-selected-visual
+        data-select-selected-flag={selectedOption.flag !== undefined ? "true" : undefined}
+      >
+        {selectedOptionVisual?.kind === "image" && (
+          <img src={selectedOptionVisual.src} alt={selectedOptionVisual.alt ?? ""} />
+        )}
+        {selectedOptionVisual?.kind === "text" && <span>{selectedOptionVisual.text}</span>}
+      </span>
+    </span>
+    <span class="select-control__content">
+      <span class="select-control__value" id={valueId} data-select-value>{selectedOption.label}</span>
+      <MaterialSymbol
+        class="select-control__chevron"
+        name="arrow_drop_down"
+        size="var(--control-icon-size)"
+      />
+    </span>
+  </button>
+
+  <span
+    class="select-control__listbox"
+    id={listboxId}
+    role="listbox"
+    aria-label={ariaLabel}
+    aria-labelledby={listboxLabelledBy}
+    data-select-listbox
+    popover="manual"
+    tabindex="-1"
+  >
+    {options.map((option, index) => (
+      <span
+        class="select-control__option"
+        id={`${id}-option-${index}`}
+        role="option"
+        aria-disabled={option.disabled ? "true" : undefined}
+        aria-selected={index === selectedIndex ? "true" : "false"}
+        data-select-option
+        data-select-option-index={index}
+        data-select-option-label={option.label}
+        data-select-option-flag={option.flag !== undefined ? "true" : undefined}
+      >
+        <span class="select-control__option-visual" data-select-option-visual aria-hidden="true">
+          {optionVisuals[index]?.kind === "image" && (
+            <img src={optionVisuals[index].src} alt={optionVisuals[index].alt ?? ""} />
+          )}
+          {optionVisuals[index]?.kind === "text" && <span>{optionVisuals[index].text}</span>}
+        </span>
+        <span class="select-control__option-label">{option.label}</span>
+        <MaterialSymbol
+          class="select-control__option-check"
+          name="check"
+          size="var(--control-icon-size)"
+        />
+      </span>
+    ))}
+  </span>
+
+  {hint && (
+    <span class="select__hint" id={hintId} data-select-hint data-select-hint-tone={validation}>
+      <MaterialSymbol class="select__hint-icon select__hint-icon--default" name="info" size="var(--control-icon-size)" />
+      <MaterialSymbol class="select__hint-icon select__hint-icon--valid" name="check_circle" size="var(--control-icon-size)" />
+      <MaterialSymbol class="select__hint-icon select__hint-icon--invalid" name="error" size="var(--control-icon-size)" />
+      <span>{hint}</span>
+    </span>
+  )}
+</span>
+
+<script>
+  const setupSelect = (root: HTMLElement) => {
+    if (root.dataset.selectReady === "true") return;
+
+    const native = root.querySelector<HTMLSelectElement>("[data-select-native]");
+    const trigger = root.querySelector<HTMLButtonElement>("[data-select-trigger]");
+    const listbox = root.querySelector<HTMLElement>("[data-select-listbox]");
+    const value = root.querySelector<HTMLElement>("[data-select-value]");
+    const selectedVisual = root.querySelector<HTMLElement>("[data-select-selected-visual]");
+    const hint = root.querySelector<HTMLElement>("[data-select-hint]");
+    const options = Array.from(root.querySelectorAll<HTMLElement>("[data-select-option]"));
+
+    if (!native || !trigger || !listbox || !value || !selectedVisual) return;
+    if (typeof listbox.showPopover !== "function" || typeof listbox.hidePopover !== "function") return;
+
+    root.dataset.selectReady = "true";
+    root.dataset.selectEnhanced = "true";
+    native.setAttribute("aria-hidden", "true");
+    native.tabIndex = -1;
+    trigger.hidden = false;
+
+    let activeIndex = native.selectedIndex;
+    let openDirection = "selected";
+    let positionFrame = 0;
+    let typeahead = "";
+    let typeaheadTimer = 0;
+
+    const isOpen = () => listbox.matches(":popover-open");
+    const isEnabled = (index: number) => {
+      const option = options[index];
+      return Boolean(option) && option.getAttribute("aria-disabled") !== "true";
+    };
+    const enabledIndices = () => options.map((_, index) => index).filter(isEnabled);
+
+    const syncPosition = () => {
+      if (!isOpen()) return;
+
+      const rect = trigger.getBoundingClientRect();
+      const styles = getComputedStyle(root);
+      const viewportPadding = Number.parseFloat(styles.getPropertyValue("--size-8")) || 8;
+      const gap = Number.parseFloat(styles.getPropertyValue("--size-4")) || 4;
+      const below = window.innerHeight - rect.bottom - viewportPadding - gap;
+      const above = rect.top - viewportPadding - gap;
+      const openAbove = below < listbox.scrollHeight && above > below;
+      const availableHeight = Math.max(openAbove ? above : below, rect.height);
+      const width = Math.min(
+        Math.max(rect.width, listbox.scrollWidth),
+        window.innerWidth - viewportPadding * 2,
+      );
+      const height = Math.min(listbox.scrollHeight, availableHeight);
+      const left = Math.min(
+        Math.max(rect.left, viewportPadding),
+        window.innerWidth - width - viewportPadding,
+      );
+      const top = openAbove
+        ? Math.max(viewportPadding, rect.top - height - gap)
+        : Math.min(rect.bottom + gap, window.innerHeight - height - viewportPadding);
+
+      listbox.style.left = `${left}px`;
+      listbox.style.top = `${top}px`;
+      listbox.style.width = `${width}px`;
+      listbox.style.maxHeight = `${availableHeight}px`;
+    };
+
+    const schedulePosition = (event?: Event) => {
+      if (event?.target === listbox || positionFrame) return;
+      positionFrame = window.requestAnimationFrame(() => {
+        positionFrame = 0;
+        syncPosition();
+      });
+    };
+
+    const setActive = (index: number, scroll = true) => {
+      if (!isEnabled(index)) return;
+      activeIndex = index;
+      options.forEach((option, optionIndex) => {
+        if (optionIndex === index) option.dataset.selectActive = "true";
+        else delete option.dataset.selectActive;
+      });
+      listbox.setAttribute("aria-activedescendant", options[index].id);
+      if (scroll) options[index].scrollIntoView({ block: "nearest" });
+    };
+
+    const syncValidity = () => {
+      const previewState = root.dataset.dsPreviewState;
+      const previewValidation = previewState === "valid" || previewState === "invalid" ? previewState : undefined;
+      const baseValidation = previewValidation
+        ?? (root.dataset.selectBaseAriaInvalid === "true" ? "invalid" : root.dataset.selectBaseValidation)
+        ?? "default";
+      const validation = native.validity.valid ? baseValidation : "invalid";
+      root.dataset.selectValidation = validation;
+      trigger.setAttribute("aria-invalid", validation === "invalid" ? "true" : "false");
+      native.setAttribute("aria-invalid", validation === "invalid" ? "true" : "false");
+      if (hint) hint.dataset.selectHintTone = validation;
+    };
+
+    const syncSelected = () => {
+      const selectedIndex = Math.max(native.selectedIndex, 0);
+      const selectedNativeOption = native.options[selectedIndex];
+      const selectedListboxOption = options[selectedIndex];
+      if (!selectedNativeOption || !selectedListboxOption) return;
+
+      value.textContent = selectedNativeOption.text;
+      options.forEach((option, optionIndex) => {
+        option.setAttribute("aria-selected", String(optionIndex === selectedIndex));
+      });
+
+      selectedVisual.replaceChildren();
+      const optionVisual = selectedListboxOption.querySelector<HTMLElement>("[data-select-option-visual]");
+      if (optionVisual) {
+        selectedVisual.append(...Array.from(optionVisual.childNodes).map((node) => node.cloneNode(true)));
+      }
+      if (selectedListboxOption.dataset.selectOptionFlag === "true") {
+        selectedVisual.dataset.selectSelectedFlag = "true";
+      } else {
+        delete selectedVisual.dataset.selectSelectedFlag;
+      }
+
+      const baseLabel = trigger.dataset.selectBaseLabel;
+      if (baseLabel) trigger.setAttribute("aria-label", `${baseLabel}: ${selectedNativeOption.text}`);
+      setActive(selectedIndex, false);
+      syncValidity();
+    };
+
+    const closeListbox = (restoreFocus: boolean) => {
+      if (isOpen()) listbox.hidePopover();
+      trigger.setAttribute("aria-expanded", "false");
+      if (restoreFocus) trigger.focus();
+    };
+
+    const openListbox = (direction = "selected") => {
+      if (native.disabled || isOpen()) return;
+      openDirection = direction;
+      listbox.showPopover();
+    };
+
+    const selectIndex = (index: number) => {
+      if (!isEnabled(index)) return;
+      native.selectedIndex = index;
+      syncSelected();
+      native.dispatchEvent(new Event("input", { bubbles: true }));
+      native.dispatchEvent(new Event("change", { bubbles: true }));
+      closeListbox(true);
+    };
+
+    const moveActive = (step: number) => {
+      const enabled = enabledIndices();
+      if (!enabled.length) return;
+      const current = enabled.indexOf(activeIndex);
+      const next = enabled[(Math.max(current, 0) + step + enabled.length) % enabled.length];
+      setActive(next);
+    };
+
+    const moveFocusFromTrigger = (reverse: boolean) => {
+      const focusable = Array.from(document.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )).filter((element) => (
+        element.getAttribute("aria-hidden") !== "true" && element.getClientRects().length > 0
+      ));
+      const current = focusable.indexOf(trigger);
+      if (current < 0 || focusable.length < 2) return;
+      const offset = reverse ? -1 : 1;
+      focusable[(current + offset + focusable.length) % focusable.length]?.focus();
+    };
+
+    trigger.addEventListener("click", (event) => {
+      const clickId = String(event.timeStamp);
+      if (root.dataset.selectClickId === clickId) return;
+      root.dataset.selectClickId = clickId;
+      if (isOpen()) closeListbox(false);
+      else openListbox();
+    });
+
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        openListbox(event.key === "ArrowDown" ? "first" : "last");
+      }
+    });
+
+    listbox.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const option = target.closest<HTMLElement>("[data-select-option]");
+      if (!option) return;
+      selectIndex(Number(option.dataset.selectOptionIndex));
+    });
+
+    listbox.addEventListener("pointermove", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const option = target.closest<HTMLElement>("[data-select-option]");
+      const index = Number(option?.dataset.selectOptionIndex);
+      if (option && isEnabled(index)) setActive(index, false);
+    });
+
+    listbox.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        moveActive(event.key === "ArrowDown" ? 1 : -1);
+        return;
+      }
+      if (event.key === "Home" || event.key === "End") {
+        event.preventDefault();
+        const enabled = enabledIndices();
+        const next = event.key === "Home" ? enabled[0] : enabled.at(-1);
+        if (next !== undefined) setActive(next);
+        return;
+      }
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectIndex(activeIndex);
+        return;
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeListbox(true);
+        return;
+      }
+      if (event.key === "Tab") {
+        event.preventDefault();
+        closeListbox(false);
+        moveFocusFromTrigger(event.shiftKey);
+        return;
+      }
+      if (event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey) {
+        window.clearTimeout(typeaheadTimer);
+        typeahead += event.key.toLocaleLowerCase();
+        typeaheadTimer = window.setTimeout(() => { typeahead = ""; }, 500);
+        const match = options.findIndex((option, index) => (
+          isEnabled(index) && (option.dataset.selectOptionLabel ?? "").toLocaleLowerCase().startsWith(typeahead)
+        ));
+        if (match >= 0) setActive(match);
+      }
+    });
+
+    listbox.addEventListener("toggle", () => {
+      const open = isOpen();
+      trigger.setAttribute("aria-expanded", String(open));
+      if (!open) {
+        openDirection = "selected";
+        return;
+      }
+
+      const enabled = enabledIndices();
+      const next = openDirection === "first"
+        ? enabled[0]
+        : openDirection === "last"
+          ? enabled.at(-1)
+          : isEnabled(native.selectedIndex)
+            ? native.selectedIndex
+            : enabled[0];
+      if (next !== undefined) setActive(next, false);
+      openDirection = "selected";
+      syncPosition();
+      listbox.focus();
+      options[activeIndex]?.scrollIntoView({ block: "nearest" });
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target;
+      if (!isOpen() || !(target instanceof Node)) return;
+      if (!trigger.contains(target) && !listbox.contains(target)) closeListbox(false);
+    });
+
+    native.addEventListener("input", syncSelected);
+    native.addEventListener("change", syncSelected);
+    native.addEventListener("focus", () => trigger.focus());
+    native.addEventListener("invalid", (event) => {
+      event.preventDefault();
+      syncValidity();
+      window.requestAnimationFrame(() => trigger.focus({ preventScroll: true }));
+    });
+
+    native.form?.addEventListener("reset", () => {
+      window.requestAnimationFrame(syncSelected);
+    });
+
+    root.addEventListener("astro-select:refresh", () => {
+      trigger.disabled = native.disabled;
+      root.dataset.selectDisabled = native.disabled ? "true" : "false";
+      syncSelected();
+      syncPosition();
+    });
+    window.addEventListener("resize", schedulePosition);
+    window.addEventListener("scroll", schedulePosition, { passive: true, capture: true });
+
+    syncSelected();
+  };
+
+  const setupSelects = () => {
+    document.querySelectorAll<HTMLElement>("[data-select]").forEach(setupSelect);
+  };
+
+  setupSelects();
+  document.addEventListener("astro:page-load", setupSelects);
+</script>
+
+<style>
+  .select-control {
+    display: grid;
+    min-width: 0;
+    gap: var(--gap-small);
+  }
+
+  .select {
+    width: 100%;
+  }
+
+  .compact-select,
+  .inline-select {
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .inline-select {
+    display: inline-grid;
+    gap: 0;
+    vertical-align: baseline;
+  }
+
+  .select__label {
+    display: inline-flex;
+    min-width: 0;
+    align-items: baseline;
+    gap: var(--gap-tiny);
+    color: var(--input-label-default);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-strong);
+    line-height: var(--line-height-compact);
+  }
+
+  .select__required {
+    color: var(--input-helper-invalid);
+  }
+
+  .select-control__native-shell {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .select-control__native,
+  .select-control__trigger {
+    width: 100%;
+    min-width: 0;
+    min-height: var(--control-min-height);
+    border: var(--border-width-default) solid var(--input-border-default);
+    border-radius: var(--radius-input);
+    color: var(--input-text-default);
+    background: var(--input-background-default);
+    box-shadow: var(--elevation-control-raised);
+    font-family: var(--font-family-body);
+    font-size: var(--control-font-size);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--control-line-height);
+    transition:
+      background-color var(--motion-transition),
+      border-color var(--motion-transition),
+      box-shadow var(--motion-transition);
+  }
+
+  .select-control__native {
+    display: block;
+    appearance: none;
+    padding:
+      var(--control-padding-block)
+      calc(var(--control-padding-inline) + var(--control-icon-size) + var(--control-gap))
+      var(--control-padding-block)
+      var(--control-padding-inline);
+  }
+
+  .select-control__native-chevron {
+    position: absolute;
+    top: 50%;
+    right: var(--control-padding-inline);
+    color: var(--input-icon-default);
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  .select-control__trigger {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .select-control__trigger[hidden] {
+    display: none;
+  }
+
+  .select-control[data-select-enhanced="true"] .select-control__native-shell {
+    position: absolute;
+    width: var(--size-1);
+    height: var(--size-1);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .compact-select :is(.select-control__native, .select-control__trigger) {
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .inline-select :is(.select-control__native, .select-control__trigger) {
+    width: max-content;
+    max-width: 100%;
+    min-height: auto;
+    border-color: transparent;
+    border-radius: var(--radius-none);
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    box-shadow: none;
+    font: inherit;
+  }
+
+  .select-control__content {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--control-gap);
+    padding: var(--control-padding-block) var(--control-padding-inline);
+  }
+
+  .inline-select .select-control__content {
+    gap: var(--gap-tiny);
+    padding: 0;
+  }
+
+  .inline-select .select-control__leading:has(
+    .select-control__selected-visual[data-select-selected-flag="true"]
+  ) {
+    display: inline-flex;
+    align-self: center;
+    border-inline-end: 0;
+    margin-inline-end: var(--gap-tiny);
+    padding: 0;
+  }
+
+  .select-control__value {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .compact-select .select-control__trigger .select-control__value {
+    position: absolute;
+    width: var(--size-1);
+    height: var(--size-1);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .select-control__leading,
+  .select-control__purpose-icon,
+  .select-control__selected-visual,
+  .select-control__option-visual {
+    display: none;
+    flex: 0 0 auto;
+    width: var(--control-icon-size);
+    height: var(--control-icon-size);
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .select-control__leading {
+    width: auto;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    align-self: stretch;
+    box-sizing: border-box;
+    border-inline-end: var(--border-width-default) solid var(--input-border-default);
+    padding: 0;
+  }
+
+  .compact-select .select-control__content {
+    aspect-ratio: 1 / 1;
+    align-self: stretch;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+  }
+
+  .select-control:not(.inline-select):is(
+    [data-select-purpose="language"],
+    [data-select-purpose="phone"],
+    [data-select-purpose="country"],
+    [data-select-purpose="brand"],
+    [data-select-purpose="company"]
+  ) .select-control__leading,
+  .select-control[data-select-purpose="language"] .select-control__purpose-icon--language,
+  .select-control[data-select-purpose="phone"] .select-control__purpose-icon--phone,
+  .select-control:is(
+    [data-select-purpose="country"],
+    [data-select-purpose="brand"],
+    [data-select-purpose="company"]
+  ) .select-control__selected-visual,
+  .select-control__option-visual:not(:empty) {
+    display: inline-flex;
+  }
+
+  .select-control__selected-visual :is(img, span),
+  .select-control__option-visual :is(img, span) {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    object-fit: contain;
+  }
+
+  .select-control__selected-visual span,
+  .select-control__option-visual span {
+    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    background: var(--color-background-surface);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-none);
+  }
+
+  .inline-select .select-control__selected-visual[data-select-selected-flag="true"] {
+    display: inline-flex;
+  }
+
+  .select-control__chevron {
+    flex: 0 0 auto;
+    color: var(--input-icon-default);
+    transition: transform var(--motion-transition);
+  }
+
+  .select-control__trigger[aria-expanded="true"] .select-control__chevron {
+    transform: rotate(180deg);
+  }
+
+  .select-control:not(.inline-select, [data-select-disabled="true"]) :is(
+    .select-control__native,
+    .select-control__trigger
+  ):is(
+    :hover,
+    [data-ds-preview-state="hover"]
+  ) {
+    border-color: var(--input-border-hover);
+    background: var(--input-background-hover);
+  }
+
+  .select-control:not(.inline-select, [data-select-disabled="true"]) :is(
+    .select-control__native,
+    .select-control__trigger
+  ):is(
+    :focus-visible,
+    [data-ds-preview-state="focus-visible"]
+  ),
+  .select-control:not(.inline-select) .select-control__trigger[aria-expanded="true"] {
+    border-color: var(--input-border-focus);
+    background: var(--input-background-focus);
+    outline: none;
+    box-shadow: var(--effect-focused);
+  }
+
+  .inline-select:not([data-select-disabled="true"]) :is(
+    .select-control__native,
+    .select-control__trigger
+  ):is(:hover, :focus-visible, [data-ds-preview-state="hover"], [data-ds-preview-state="focus-visible"]),
+  .inline-select .select-control__trigger[aria-expanded="true"] {
+    border-color: transparent;
+    color: var(--color-text-accent);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .inline-select:not([data-select-disabled="true"]) :is(
+    .select-control__native,
+    .select-control__trigger
+  ):is(:hover, :focus-visible, [data-ds-preview-state="hover"], [data-ds-preview-state="focus-visible"])
+  .select-control__chevron,
+  .inline-select .select-control__trigger[aria-expanded="true"] .select-control__chevron {
+    color: var(--color-icon-accent);
+  }
+
+  .inline-select:not([data-select-disabled="true"]) :is(
+    .select-control__native,
+    .select-control__trigger
+  ):is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    outline: var(--border-width-strong) solid var(--input-border-focus);
+    outline-offset: var(--size-2);
+  }
+
+  .select-control[data-select-validation="invalid"] :is(.select-control__native, .select-control__trigger) {
+    border-color: var(--input-border-invalid);
+  }
+
+  .select-control[data-select-validation="valid"] :is(.select-control__native, .select-control__trigger) {
+    border-color: var(--input-border-valid);
+  }
+
+  .select-control:not(.inline-select)[data-select-validation="invalid"] .select-control__leading {
+    border-color: var(--input-border-invalid);
+  }
+
+  .select-control:not(.inline-select)[data-select-validation="valid"] .select-control__leading {
+    border-color: var(--input-border-valid);
+  }
+
+  .select-control:not(
+    .inline-select,
+    [data-select-disabled="true"],
+    [data-select-validation="valid"],
+    [data-select-validation="invalid"]
+  ):has(
+    :is(.select-control__native, .select-control__trigger):hover
+  ) .select-control__leading {
+    border-color: var(--input-border-hover);
+  }
+
+  .select-control:not(
+    .inline-select,
+    [data-select-disabled="true"],
+    [data-select-validation="valid"],
+    [data-select-validation="invalid"]
+  ):has(
+    :is(.select-control__native, .select-control__trigger):focus-visible
+  ) .select-control__leading,
+  .select-control:not(
+    .inline-select,
+    [data-select-validation="valid"],
+    [data-select-validation="invalid"]
+  ) .select-control__trigger[aria-expanded="true"] .select-control__leading {
+    border-color: var(--input-border-focus);
+  }
+
+  .select-control[data-select-disabled="true"] :is(.select-control__native, .select-control__trigger) {
+    border-color: var(--input-border-disabled);
+    color: var(--input-text-disabled);
+    background: var(--input-background-disabled);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .select-control[data-select-disabled="true"] :is(
+    .select-control__native-chevron,
+    .select-control__chevron
+  ) {
+    color: var(--input-icon-disabled);
+  }
+
+  .select-control[data-select-disabled="true"] .select__label {
+    color: var(--input-label-disabled);
+  }
+
+  .select-control__listbox {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    display: grid;
+    width: max-content;
+    max-width: calc(100vw - var(--size-16));
+    max-height: min(20rem, 50vh);
+    gap: var(--gap-tiny);
+    overflow-y: auto;
+    border: var(--border-width-default) solid var(--color-border-default);
+    border-radius: var(--radius-input);
+    margin: 0;
+    padding: var(--gap-tiny);
+    color: var(--color-text-primary);
+    background: var(--color-background-canvas);
+    box-shadow: var(--elevation-surface-floating);
+  }
+
+  .select-control__listbox:not(:popover-open) {
+    display: none;
+  }
+
+  .select-control__listbox:focus {
+    outline: none;
+  }
+
+  .select-control__option {
+    display: flex;
+    min-width: 0;
+    min-height: max(var(--control-min-height), var(--control-size-medium-min-height));
+    align-items: center;
+    gap: max(var(--control-gap), var(--control-size-medium-gap));
+    border-radius: var(--radius-small);
+    padding: var(--control-padding-block) var(--control-padding-inline);
+    cursor: pointer;
+  }
+
+  .select-control__option-visual,
+  .select-control__option-check {
+    width: max(var(--control-icon-size), var(--control-size-medium-icon-size));
+    height: max(var(--control-icon-size), var(--control-size-medium-icon-size));
+  }
+
+  .select-control__option:is(:hover, [data-select-active="true"]) {
+    background: var(--color-background-surface);
+  }
+
+  .select-control__option[aria-selected="true"] {
+    color: var(--color-text-accent);
+  }
+
+  .select-control__option[aria-disabled="true"] {
+    color: var(--input-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .select-control__option-label {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    font-family: var(--font-family-body);
+    font-size: var(--control-font-size);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--control-line-height);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .select-control__option-check {
+    flex: 0 0 auto;
+    opacity: 0;
+  }
+
+  .select-control__option[aria-selected="true"] .select-control__option-check {
+    opacity: 1;
+  }
+
+  .select__hint {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    gap: var(--gap-tiny);
+    margin: 0;
+    color: var(--input-helper-default);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+  }
+
+  .select__hint[data-select-hint-tone="valid"] {
+    color: var(--input-helper-valid);
+  }
+
+  .select__hint[data-select-hint-tone="invalid"] {
+    color: var(--input-helper-invalid);
+  }
+
+  .select-control[data-select-disabled="true"] .select__hint {
+    color: var(--input-text-disabled);
+  }
+
+  .select__hint-icon {
+    display: none;
+    flex: 0 0 auto;
+  }
+
+  .select__hint[data-select-hint-tone="default"] .select__hint-icon--default,
+  .select__hint[data-select-hint-tone="valid"] .select__hint-icon--valid,
+  .select__hint[data-select-hint-tone="invalid"] .select__hint-icon--invalid {
+    display: block;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (forced-colors: active) {
+    .select-control :is(
+      .select-control__native,
+      .select-control__trigger,
+      .select-control__listbox,
+      .select-control__option
+    ) {
+      border-color: FieldText;
+      color: FieldText;
+      background: Field;
+      box-shadow: none;
+    }
+
+    .select-control:not([data-select-disabled="true"]) :is(
+      .select-control__native,
+      .select-control__trigger
+    ):is(
+      :focus-visible,
+      [data-ds-preview-state="focus-visible"]
+    ),
+    .select-control__trigger[aria-expanded="true"],
+    .select-control__option[data-select-active="true"] {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+    }
+
+    .select-control[data-select-disabled="true"] :is(
+      .select-control__native,
+      .select-control__trigger,
+      .select__label,
+      .select__hint,
+      .select-control__option[aria-disabled="true"]
+    ) {
+      color: GrayText;
+    }
+
+    .select-control__option[aria-selected="true"] {
+      color: HighlightText;
+      background: Highlight;
+    }
+  }
+</style>

@@ -22,18 +22,21 @@ const rule = read(rulePath);
 const docs = read("src/data/documentationComponentRegistry.ts");
 const foundationData = read("src/data/documentationFoundationData.ts");
 const preview = read("src/components/_internal/documentation/DsInputPreview.astro");
+const formFieldPreview = read("src/components/_internal/documentation/DsFormFieldPreview.astro");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
 const record = registry.components?.find((component) => component.id === "input");
 
 for (const contract of [
   '<textarea',
   '<input',
-  'data-component-size={size}',
+  'data-control-size={size}',
   'data-input-validation={validation}',
   'aria-invalid={ariaInvalid}',
   'var(--input-background-default)',
   'var(--input-border-invalid)',
   'var(--input-placeholder-disabled)',
+  '.input--textarea[data-control-size="small"]',
+  'padding-block: var(--control-padding-inline)',
 ]) {
   if (!source.includes(contract)) errors.push(`Input is missing contract: ${contract}`);
 }
@@ -67,8 +70,14 @@ for (const { heading, content } of componentRuleSections(rule, componentRuleCont
 if (!docs.includes('componentId: "input"') || !docs.includes('colorGroups: ["input"]')) {
   errors.push("Input does not have a canonical reusable documentation adapter.");
 }
-if (!preview.includes("data-ds-input-preview-control") || !preview.includes("multiline")) {
+if (!preview.includes("data-input-preview-control") || !preview.includes("multiline")) {
   errors.push("Input preview does not cover both native control types.");
+}
+if (preview.includes("FormField") || preview.includes("<Label") || preview.includes("<Hint")) {
+  errors.push("Input preview must render the standalone Input control without Label, Hint or FormField composition.");
+}
+if (!formFieldPreview.includes("<FormField") || !formFieldPreview.includes("label=\"Label\"") || !formFieldPreview.includes("hint=\"Hint text\"")) {
+  errors.push("FormField preview must remain the canonical Label, control and Hint composition.");
 }
 if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePath || record.syncStatus !== "mapped") {
   errors.push("Input registry mapping is incomplete.");

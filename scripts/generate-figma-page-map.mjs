@@ -19,7 +19,7 @@ const contentRows = [
     currentOrder: category.figmaCurrentIndex,
     label: category.label
   })),
-  ...architecture.pages.map((page) => ({
+  ...architecture.pages.filter((page) => page.figmaProjection !== false).map((page) => ({
     id: page.figmaPageId,
     order: page.targetOrder,
     currentOrder: page.figmaCurrentIndex,

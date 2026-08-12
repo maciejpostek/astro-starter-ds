@@ -152,7 +152,7 @@ const { title, backHref } = Astro.props;
     gap: var(--gap-large);
     border-bottom: var(--border-width-default) solid var(--color-border-default);
     background: var(--color-background-canvas);
-    padding-inline: var(--component-padding-medium);
+    padding-inline: var(--content-padding-medium);
   }
 
   .ds-responsive-preview__controls {
@@ -163,15 +163,17 @@ const { title, backHref } = Astro.props;
 
   button,
   output {
-    min-height: var(--component-size-small-min-height);
     border: var(--border-width-default) solid var(--color-border-default);
     background: var(--color-background-surface);
-    padding-inline: var(--component-size-small-padding-inline);
   }
 
-  button { cursor: pointer; }
+  button {
+    min-height: var(--control-size-small-min-height);
+    padding-inline: var(--control-size-small-padding-inline);
+    cursor: pointer;
+  }
   button[aria-pressed="true"] { border-color: var(--color-border-accent); color: var(--color-text-accent); }
-  output { display:flex; min-width:5.5rem; align-items:center; color:var(--color-text-tertiary); font-family:var(--font-family-mono); font-size:var(--font-size-body-tiny); }
+  output { display:flex; min-width:5.5rem; min-height:var(--size-32); align-items:center; padding-inline:var(--content-padding-small); color:var(--color-text-tertiary); font-family:var(--font-family-mono); font-size:var(--font-size-body-tiny); }
 
   .ds-responsive-preview__workspace {
     display: flex;
@@ -179,7 +181,7 @@ const { title, backHref } = Astro.props;
     align-items: flex-start;
     justify-content: center;
     overflow: auto;
-    padding: var(--component-padding-large);
+    padding: var(--content-padding-large);
   }
 
   .ds-responsive-preview__viewport {

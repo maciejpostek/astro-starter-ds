@@ -153,8 +153,9 @@ CSS alias layer.
 - Do not alias `Component Size` to technical profiles in `Sizing`.
 - Do not hardcode Figma values in component CSS.
 - Do not add local `[data-component-size]` rules to individual components.
-- Do not create `.button--small` or `.tag--large`; use the public prop and
-  `data-component-size`.
+- Do not create `.button--small`; use the public control-size prop and
+  `data-control-size`. Tag intentionally owns one fixed Astro geometry even
+  though its current Figma projection retains size modes.
 - Do not assume the Figma default mode is every component's default prop.
 
 ## Validation checklist

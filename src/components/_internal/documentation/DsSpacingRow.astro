@@ -1,6 +1,6 @@
 ---
-import DsCopyButton from "./DsCopyButton.astro";
 import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
 import DsTableRow from "./DsTableRow.astro";
 import DsTableSampleCell from "./DsTableSampleCell.astro";
 import DsTooltip from "./DsTooltip.astro";
@@ -30,13 +30,11 @@ const sourceSize = Number.parseFloat(source);
 const samplePercent = Number.isFinite(sourceSize)
   ? `${Math.min(Math.max((sourceSize / 320) * 100, 0), 100)}%`
   : "100%";
-const tokenId = `token-${token.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`;
 ---
 
 <DsTableRow
   class="spacing-row"
   componentName="DsSpacingRow"
-  id={tokenId}
   variable={token}
 >
   <DsTableSampleCell
@@ -47,21 +45,18 @@ const tokenId = `token-${token.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-")
     sampleValue={sampleValue}
   />
 
-  <DsTableCell class="spacing-row__token-cell" justify="between" role="cell">
-    <code>{token}</code>
-    <span class="spacing-row__token-actions">
-      {
-        agenticRule && (
-          <DsTooltip
-            label="Agentic Rule"
-            name={`${token} usage`}
-            text={agenticRule}
-          />
-        )
-      }
-      <DsCopyButton label={`Copy ${token}`} value={token} />
-    </span>
-  </DsTableCell>
+  <DsTableCopyCell class="spacing-row__token-cell" role="cell" value={token}>
+    {
+      agenticRule && (
+        <DsTooltip
+          slot="actions"
+          label="Agentic Rule"
+          name={`${token} usage`}
+          text={agenticRule}
+        />
+      )
+    }
+  </DsTableCopyCell>
 
   <DsTableCell role="cell" tone="secondary">
     <code>{output}</code>
@@ -71,13 +66,3 @@ const tokenId = `token-${token.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-")
     <code>{source}</code>
   </DsTableCell>
 </DsTableRow>
-
-<style>
-  .spacing-row__token-actions {
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
-    gap: var(--gap-tiny);
-  }
-
-</style>

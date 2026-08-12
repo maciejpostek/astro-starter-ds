@@ -1,0 +1,79 @@
+---
+import Pagination from "../../../../../src/components/base-components/pagination/Pagination.astro";
+import PaginationEllipsis from "../../../../../src/components/base-components/pagination/PaginationEllipsis.astro";
+import PaginationGroup from "../../../../../src/components/base-components/pagination/PaginationGroup.astro";
+import PaginationItem from "../../../../../src/components/base-components/pagination/PaginationItem.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const getPageHref = (page: number) => `/results?page=${page}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pagination contract fixture</title>
+  </head>
+  <body>
+    <main class="pagination-fixtures">
+      <section class="pagination-fixture" data-theme="light">
+        <Pagination
+          aria-label="Result pages"
+          class="pagination-contract-fixture"
+          currentPage={1}
+          data-contract="start"
+          getPageHref={getPageHref}
+          labels={{ first: "Start" }}
+          totalPages={3}
+        />
+      </section>
+
+      <section class="pagination-fixture" data-theme="dark">
+        <Pagination
+          currentPage={3}
+          data-contract="end"
+          getPageHref={getPageHref}
+          totalPages={3}
+        />
+      </section>
+
+      <section class="pagination-fixture" data-theme="light">
+        <nav aria-label="Custom result pages" data-contract="custom">
+          <PaginationGroup class="custom-pagination-group" data-group="manual">
+            <PaginationItem kind="first" label="First" href={getPageHref(1)} />
+            <PaginationItem kind="previous" label="Previous page" disabled />
+            <PaginationItem
+              kind="page"
+              page={2}
+              current
+              label="Page 2, current page"
+              href={getPageHref(2)}
+              class="custom-pagination-item"
+              data-item="current"
+              linkAttributes={{ rel: "bookmark", "data-link": "forwarded" }}
+            />
+            <PaginationEllipsis class="custom-pagination-ellipsis" data-gap="end" />
+            <PaginationItem kind="next" label="Next page" href={getPageHref(3)} />
+            <PaginationItem kind="last" label="Last" href={getPageHref(3)} />
+          </PaginationGroup>
+        </nav>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  .pagination-fixtures {
+    display: grid;
+    gap: var(--space-large);
+    padding: var(--space-large);
+  }
+
+  .pagination-fixture {
+    min-width: 0;
+    padding: var(--space-large);
+    background: var(--color-background-canvas);
+  }
+</style>

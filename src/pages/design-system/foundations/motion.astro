@@ -11,6 +11,7 @@ import {
   documentationFoundationHeader,
   documentationFoundationToc,
 } from "../../../data/documentationFoundationRegistry";
+import motionAgenticRules from "../../../../.agentic-rules/06-motion.md?raw";
 
 const foundationHeader = documentationFoundationHeader("motion");
 ---
@@ -24,7 +25,6 @@ const foundationHeader = documentationFoundationHeader("motion");
     <DsDocSection
       id="motion-foundation-tokens"
       title="Motion Foundations"
-      description="Motion foundations define reusable easing curves. Code and CSS Variables remain the source of truth; Figma records the same values as a representational two-mode collection."
     >
       <DsMotionTokenGroups groups={motionFoundationGroups} label="foundation tokens" />
     </DsDocSection>
@@ -32,7 +32,6 @@ const foundationHeader = documentationFoundationHeader("motion");
     <DsDocSection
       id="motion-semantic-tokens"
       title="Motion Semantic"
-      description="Semantic motion variables describe repeated interaction intent. They are the preferred component-facing contract."
     >
       <DsMotionTokenGroups groups={motionSemanticGroups} label="semantic tokens" />
     </DsDocSection>
@@ -40,10 +39,10 @@ const foundationHeader = documentationFoundationHeader("motion");
     <DsDocSection
       id="motion-reduced-mode"
       title="Reduced Motion"
-      description="The Reduced Motion mode is controlled by the browser preference. Reusable durations and delays collapse to zero; components remove remaining transform or keyframe movement when necessary."
     >
       <DsCodeSnippet
         label="Reduced Motion contract"
+        language="css"
         code={`@media (prefers-reduced-motion: reduce) {
   :root {
     --motion-duration-fast: 0ms;
@@ -51,6 +50,17 @@ const foundationHeader = documentationFoundationHeader("motion");
     --motion-transition: 0ms var(--motion-ease-standard);
   }
 }`}
+      />
+    </DsDocSection>
+
+    <DsDocSection
+      id="motion-agentic-rules"
+      title="Agentic Rules"
+    >
+      <DsCodeSnippet
+        filename=".agentic-rules/06-motion.md"
+        language="markdown"
+        code={motionAgenticRules.trim()}
       />
     </DsDocSection>
 
@@ -69,7 +79,7 @@ const foundationHeader = documentationFoundationHeader("motion");
     display: grid;
     gap: var(--gap-tiny);
     border-left: var(--border-width-emphasis) solid var(--color-border-accent);
-    padding: var(--component-padding-medium);
+    padding: var(--content-padding-medium);
     background: var(--color-background-surface);
   }
 

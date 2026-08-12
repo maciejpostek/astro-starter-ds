@@ -4,8 +4,8 @@
   "modelVersion": "1.1.0",
   "title": "AI-Native Design System V1.1 Architecture",
   "status": "active",
-  "capturedAt": "2026-07-29",
-  "description": "Canonical graph of the implemented role-aware reuse-first runtime with flow-specific Context Packs. Architecture documentation is excluded from normal prompt execution.",
+  "capturedAt": "2026-08-11",
+  "description": "Canonical graph of the implemented role-aware reuse-first runtime with deterministic token resolution, approval-gated token drafts and flow-specific Context Packs. Architecture documentation is excluded from normal prompt execution.",
   "languagePolicy": {
     "artifacts": "en",
     "conversation": "pl"
@@ -249,7 +249,10 @@
           "declaredSourceBytes",
           "sourceLimitBytes",
           "phase",
-          "nextStep"
+          "nextStep",
+          "tokenNeed",
+          "tokenResolution",
+          "tokenDraft"
         ]
       }
     },
@@ -287,6 +290,58 @@
           "component-discovery",
           "component-readiness"
         ]
+      }
+    },
+    {
+      "id": "source.token-group-registry",
+      "title": "Token Group Registry",
+      "type": "source-of-truth",
+      "scope": "framework",
+      "concerns": [
+        "design-values",
+        "token-resolution"
+      ],
+      "status": "current",
+      "architectureState": "current",
+      "sourcePaths": [
+        "src/data/design-system/tokenArchitecture.json"
+      ],
+      "ownership": {
+        "owner": "AI-native runtime",
+        "readers": ["AI agent", "Design engineer"],
+        "writers": ["Repository maintainers"],
+        "validatorNodeIds": ["validator.agent-runtime"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "Styling needs require deterministic semantic ownership, source paths and consumer evidence before implementation.",
+        "primaryFor": ["token-resolution", "token-ownership"]
+      }
+    },
+    {
+      "id": "artifact.component-authoring-contract",
+      "title": "Component Authoring Contract",
+      "type": "artifact",
+      "scope": "framework",
+      "concerns": [
+        "component-authoring",
+        "token-resolution"
+      ],
+      "status": "current",
+      "architectureState": "current",
+      "sourcePaths": [
+        "architecture/component-authoring-contract.json"
+      ],
+      "ownership": {
+        "owner": "AI-native runtime",
+        "readers": ["AI agent", "Design engineer"],
+        "writers": ["Repository maintainers"],
+        "validatorNodeIds": ["validator.agent-runtime"],
+        "contextCost": "low"
+      },
+      "metadata": {
+        "problem": "AI needs one exact naming, location, resolution and approval policy without local invention.",
+        "primaryFor": ["component-authoring", "token-approval"]
       }
     },
     {
@@ -1339,6 +1394,29 @@
       "condition": "component target"
     },
     {
+      "id": "edge.token-groups-resolver",
+      "source": "router.context-resolver",
+      "target": "source.token-group-registry",
+      "type": "reads",
+      "architectureState": "current",
+      "condition": "styling need"
+    },
+    {
+      "id": "edge.authoring-contract-resolver",
+      "source": "router.context-resolver",
+      "target": "artifact.component-authoring-contract",
+      "type": "reads",
+      "architectureState": "current",
+      "condition": "compose, repair, extend, or create"
+    },
+    {
+      "id": "edge.token-groups-css",
+      "source": "source.token-group-registry",
+      "target": "source.css-variables",
+      "type": "depends-on",
+      "architectureState": "current"
+    },
+    {
       "id": "edge.tokens-resolver",
       "source": "router.context-resolver",
       "target": "source.css-variables",
@@ -2179,6 +2257,8 @@
         "artifact.task-contract",
         "router.context-resolver",
         "source.component-registry",
+        "source.token-group-registry",
+        "artifact.component-authoring-contract",
         "source.css-variables",
         "source.astro-components",
         "source.category-rules",
@@ -3661,9 +3741,11 @@
       "architectureStates": [
         "current"
       ],
-      "description": "Registry owns discovery and readiness, Astro owns API/runtime, CSS Variables own values, contract.json owns approved visual intent, and Git owns history.",
+      "description": "Component registry owns discovery, token registry owns semantic group resolution, the authoring contract owns naming and approval, Astro owns API/runtime, CSS Variables own values, contract.json owns approved visual intent, and Git owns history.",
       "nodeIds": [
         "source.component-registry",
+        "source.token-group-registry",
+        "artifact.component-authoring-contract",
         "source.astro-components",
         "source.css-variables",
         "source.brand-contract",
@@ -3671,7 +3753,8 @@
         "source.git-history"
       ],
       "edgeIds": [
-        "edge.registry-git"
+        "edge.registry-git",
+        "edge.token-groups-css"
       ],
       "direction": "right"
     },

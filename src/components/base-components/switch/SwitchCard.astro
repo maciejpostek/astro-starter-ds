@@ -1,0 +1,251 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import SwitchButton from "./SwitchButton.astro";
+
+export interface Props extends Omit<
+  HTMLAttributes<"input">,
+  "aria-describedby" | "aria-label" | "aria-labelledby" | "checked" | "class" | "disabled" | "id" | "type"
+> {
+  id: string;
+  label: string;
+  description?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  label,
+  description,
+  checked = false,
+  disabled = false,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const labelId = `${id}-label`;
+const descriptionId = description ? `${id}-description` : undefined;
+const hasLeading = Astro.slots.has("leading");
+---
+
+<label
+  class:list={["switch-card", className]}
+  data-component-name="SwitchCard"
+  data-switch-disabled={disabled ? "true" : undefined}
+  data-switch-leading={hasLeading ? "true" : "false"}
+  for={id}
+>
+  <span class="switch-card__header">
+    {hasLeading && (
+      <span class="switch-card__leading" aria-hidden="true">
+        <span class="switch-card__leading-content">
+          <slot name="leading" />
+        </span>
+      </span>
+    )}
+
+    <span class="switch-card__label" id={labelId}>{label}</span>
+
+    <SwitchButton
+      {...attributes}
+      class="switch-card__control"
+      id={id}
+      aria-labelledby={labelId}
+      aria-describedby={descriptionId}
+      checked={checked}
+      disabled={disabled}
+    />
+  </span>
+
+  {description && (
+    <span class="switch-card__description" id={descriptionId}>{description}</span>
+  )}
+</label>
+
+<style>
+  .switch-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    inline-size: 100%;
+    min-inline-size: 0;
+    column-gap: var(--gap-regular);
+    row-gap: var(--gap-tiny);
+    border: var(--border-width-default) solid var(--card-border-default);
+    border-radius: var(--radius-medium);
+    padding: var(--content-padding-medium);
+    color: var(--color-text-primary);
+    background: var(--card-background-default);
+    cursor: pointer;
+    transition:
+      background-color var(--motion-transition),
+      border-color var(--motion-transition),
+      box-shadow var(--motion-transition);
+  }
+
+  .switch-card[data-switch-leading="true"] {
+    grid-template-columns: max-content minmax(0, 1fr) max-content;
+  }
+
+  .switch-card__header {
+    display: contents;
+  }
+
+  .switch-card__leading {
+    display: grid;
+    grid-column: 1;
+    grid-row: 1;
+    inline-size: max-content;
+    block-size: max-content;
+    align-self: center;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--radius-medium);
+    pointer-events: none;
+  }
+
+  .switch-card__leading-content {
+    display: grid;
+    inline-size: 100%;
+    block-size: 100%;
+    place-items: center;
+    line-height: 0;
+  }
+
+  .switch-card__leading-content :global(> *) {
+    max-inline-size: 100%;
+    max-block-size: 100%;
+  }
+
+  .switch-card__label {
+    grid-column: 1;
+    grid-row: 1;
+    min-inline-size: 0;
+    align-self: center;
+    color: inherit;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-normal);
+    overflow-wrap: anywhere;
+  }
+
+  .switch-card__description {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-inline-size: 0;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    overflow-wrap: anywhere;
+  }
+
+  .switch-card[data-switch-leading="true"] .switch-card__label,
+  .switch-card[data-switch-leading="true"] .switch-card__description {
+    grid-column-start: 2;
+  }
+
+  .switch-card :global(.switch-card__control) {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .switch-card[data-switch-leading="true"] :global(.switch-card__control) {
+    grid-column: 3;
+  }
+
+  .switch-card:not([data-switch-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
+    border-color: var(--card-border-hover);
+    background: var(--card-background-hover);
+  }
+
+  .switch-card:not([data-switch-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) :global(.switch-button__track) {
+    border-color: var(--switch-track-off-border-hover);
+    background: var(--switch-track-off-background-hover);
+  }
+
+  .switch-card:not([data-switch-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]):has(.switch-button__input:checked) :global(.switch-button__track) {
+    border-color: var(--switch-track-on-border-hover);
+    background: var(--switch-track-on-background-hover);
+  }
+
+  .switch-card:not([data-switch-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) :global(.switch-button__thumb) {
+    background: var(--switch-handle-background-hover);
+  }
+
+  .switch-card:not([data-switch-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) :global(.switch-button__track) {
+    border-color: var(--switch-track-off-border-pressed);
+    background: var(--switch-track-off-background-pressed);
+  }
+
+  .switch-card:not([data-switch-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]):has(.switch-button__input:checked) :global(.switch-button__track) {
+    border-color: var(--switch-track-on-border-pressed);
+    background: var(--switch-track-on-background-pressed);
+  }
+
+  .switch-card:not([data-switch-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) :global(.switch-button__thumb) {
+    background: var(--switch-handle-background-pressed);
+  }
+
+  .switch-card:not([data-switch-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) :global(.switch-button__track) {
+    opacity: 0.88;
+  }
+
+  .switch-card:has(.switch-button__input:checked) {
+    border-color: var(--card-border-selected);
+    background: var(--card-background-selected);
+  }
+
+  .switch-card:has(.switch-button__input:is(:focus-visible, [data-ds-preview-state="focus-visible"])) {
+    outline: none;
+    box-shadow: var(--effect-focused);
+  }
+
+  .switch-card:has(.switch-button__input:is(:focus-visible, [data-ds-preview-state="focus-visible"])) :global(.switch-button__track) {
+    box-shadow: none;
+  }
+
+  .switch-card[data-switch-disabled="true"] {
+    border-color: var(--color-state-disabled-border);
+    color: var(--color-state-disabled-text);
+    background: var(--color-state-disabled-background);
+    cursor: not-allowed;
+  }
+
+  .switch-card[data-switch-disabled="true"] .switch-card__description {
+    color: var(--color-state-disabled-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .switch-card {
+      transition-duration: 0ms;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .switch-card {
+      border-color: ButtonText;
+      background: Canvas;
+    }
+
+    .switch-card:has(.switch-button__input:checked) {
+      border-color: Highlight;
+    }
+
+    .switch-card:has(.switch-button__input:is(:focus-visible, [data-ds-preview-state="focus-visible"])) {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+      box-shadow: none;
+    }
+
+    .switch-card[data-switch-disabled="true"],
+    .switch-card[data-switch-disabled="true"] .switch-card__description {
+      border-color: GrayText;
+      color: GrayText;
+    }
+  }
+</style>

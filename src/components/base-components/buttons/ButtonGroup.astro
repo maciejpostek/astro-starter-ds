@@ -10,7 +10,7 @@ const { class: className, ...attributes } = Astro.props;
 
 <div
   {...attributes}
-  class:list={["ds-button-group", className]}
+  class:list={["button-group", className]}
   data-component-name="ButtonGroup"
   role="group"
 >
@@ -18,7 +18,7 @@ const { class: className, ...attributes } = Astro.props;
 </div>
 
 <style>
-  .ds-button-group {
+  .button-group {
     display: flex;
     flex-wrap: wrap;
     align-items: center;

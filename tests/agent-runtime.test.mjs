@@ -7,6 +7,7 @@ import test from "node:test";
 import {
   resolveAgentContext,
   resolveBrandRules,
+  resolveTokenNeed,
   routeAgentRequest,
   validateTaskContract
 } from "../scripts/lib/agent-runtime.mjs";
@@ -88,7 +89,7 @@ test("named section composition resolves only selected components and dependenci
   assert.equal(context.status, "ready");
   assert.deepEqual(
     context.components.map((component) => component.name).sort(),
-    ["Accordion", "Form", "SectionHeader"]
+    ["Accordion", "FormField", "SectionHeader"]
   );
   assert.ok(context.dependencies.length > 0);
   assert.ok(
@@ -135,7 +136,18 @@ test("open-ended page composition requires approved brand context without enabli
     { kind: "scope", id: "page", exists: true, role: "context" }
   ]);
 
-  const context = resolveAgentContext({ task, projectRoot });
+  const context = resolveAgentContext({
+    task,
+    projectRoot,
+    contractOverride: {
+      version: "1.0.0",
+      status: "scaffold",
+      projectId: "runtime-test",
+      owner: "Runtime test",
+      approvedAt: null,
+      rules: []
+    }
+  });
   assert.equal(context.status, "blocked");
   assert.match(context.missing.join(" "), /No approved Brand\/Composition/u);
 });
@@ -311,6 +323,8 @@ test("create family resolution narrows reads to the family and projections", () 
   assert.deepEqual(
     context.readPlan.map(({ reason }) => reason),
     [
+      "deterministic-authoring-contract",
+      "token-group-registry",
       "component-readiness-rule",
       "component-readiness-contract",
       "component-category-rule",
@@ -397,15 +411,29 @@ test("Figma creation context is loaded only after an explicit Figma request", ()
   );
 });
 
-test("figma-only repair and extend avoid stale source reads", () => {
+test("mapped FormField repair loads its primary source and implemented dependencies", () => {
   const repairTask = routeAgentRequest({
     prompt: "Repair Form without changing its API.",
     projectRoot
   });
   const repair = resolveAgentContext({ task: repairTask, projectRoot });
-  assert.equal(repair.components[0].sourcePath, null);
-  assert.equal(repair.components[0].syncStatus, "figma-only");
-  assert.deepEqual(repair.requiredReads, []);
+  assert.equal(
+    repair.components[0].sourcePath,
+    "src/components/base-components/inputs/FormField.astro"
+  );
+  assert.equal(repair.components[0].syncStatus, "mapped");
+  assert.deepEqual(repair.requiredReads, [
+    "architecture/component-authoring-contract.json",
+    "src/data/design-system/tokenArchitecture.json",
+    "src/components/base-components/inputs/FormField.astro",
+    "src/components/base-components/inputs/Label.astro",
+    "src/components/base-components/hint/Hint.astro",
+    ".agentic-rules/components/form-field.md"
+  ]);
+  assert.equal(
+    repair.readPlan.some((read) => read.reason === "direct-dependency-source"),
+    true
+  );
   assert.equal(
     repair.readPlan.some((read) => read.reason === "registry-projection"),
     false
@@ -423,6 +451,164 @@ test("figma-only repair and extend avoid stale source reads", () => {
     extend.readPlan.some((read) => read.reason === "guides-projection")
   );
   assert.equal(extend.declaredSourceBytes <= extend.sourceLimitBytes, true);
+});
+
+test("token resolver reuses the registered component group", () => {
+  const resolution = resolveTokenNeed({
+    owner: "switch",
+    scope: "component",
+    domain: "size",
+    property: "thumb-size",
+    consumer: "switch-button"
+  }, projectRoot);
+
+  assert.equal(resolution.status, "reuse");
+  assert.equal(resolution.selectedGroup.id, "switch-size");
+  assert.equal(resolution.tokenDraft, null);
+});
+
+test("token resolver extends an existing owner before proposing a new group", () => {
+  const resolution = resolveTokenNeed({
+    owner: "switch",
+    scope: "component",
+    domain: "size",
+    property: "travel-distance",
+    consumer: "switch-button",
+    proposedAliasSource: "--size-16"
+  }, projectRoot);
+
+  assert.equal(resolution.status, "gap");
+  assert.equal(resolution.extensionTarget.id, "switch-size");
+  assert.equal(resolution.tokenDraft.extensionTarget, "switch-size");
+  assert.equal(resolution.tokenDraft.proposedGroup, null);
+  assert.deepEqual(resolution.tokenDraft.proposedTokens, [{
+    name: "--switch-travel-distance",
+    aliasSource: "--size-16"
+  }]);
+});
+
+test("token resolver reports ambiguous semantic matches", async () => {
+  const fixtureRoot = await mkdtemp(join(tmpdir(), "token-resolution-ambiguous-"));
+  try {
+    await mkdir(join(fixtureRoot, "src/data/design-system"), { recursive: true });
+    await mkdir(join(fixtureRoot, "architecture"), { recursive: true });
+    await writeFile(
+      join(fixtureRoot, "src/data/design-system/tokenArchitecture.json"),
+      JSON.stringify({ groups: [
+        {
+          id: "surface-a",
+          scope: "use-case",
+          owner: "surface-a",
+          domain: "color",
+          properties: ["background"],
+          variants: [],
+          states: ["hover"],
+          consumers: ["demo"]
+        },
+        {
+          id: "surface-b",
+          scope: "use-case",
+          owner: "surface-b",
+          domain: "color",
+          properties: ["background"],
+          variants: [],
+          states: ["hover"],
+          consumers: ["demo"]
+        }
+      ] })
+    );
+    await writeFile(
+      join(fixtureRoot, "architecture/component-authoring-contract.json"),
+      JSON.stringify({ tokenDomains: { color: "src/styles/tokens/color-components.css" } })
+    );
+
+    const resolution = resolveTokenNeed({
+      owner: "demo",
+      scope: "component",
+      domain: "color",
+      property: "background",
+      state: "hover",
+      consumer: "demo"
+    }, fixtureRoot);
+    assert.equal(resolution.status, "ambiguous");
+    assert.deepEqual(resolution.candidates.map(({ id }) => id), ["surface-a", "surface-b"]);
+  } finally {
+    await rm(fixtureRoot, { recursive: true, force: true });
+  }
+});
+
+test("a missing token group produces a proposed draft in the canonical domain source", () => {
+  const resolution = resolveTokenNeed({
+    owner: "keycap",
+    scope: "component",
+    domain: "size",
+    property: "min-height",
+    consumer: "keycap",
+    proposedAliasSource: "--size-24"
+  }, projectRoot);
+
+  assert.equal(resolution.status, "gap");
+  assert.equal(resolution.extensionTarget, null);
+  assert.equal(resolution.tokenDraft.approvalStatus, "proposed");
+  assert.equal(resolution.tokenDraft.proposedGroup.id, "keycap-size");
+  assert.equal(resolution.tokenDraft.sourcePath, "src/styles/tokens/size-components.css");
+});
+
+test("token gaps block until the exact draft is approved and then resume", () => {
+  const tokenNeed = {
+    owner: "switch",
+    scope: "component",
+    domain: "size",
+    property: "travel-distance",
+    consumer: "switch-button",
+    proposedAliasSource: "--size-16"
+  };
+  const blockedTask = routeAgentRequest({
+    prompt: "Extend SwitchButton geometry.",
+    tokenNeed,
+    projectRoot
+  });
+  const blocked = resolveAgentContext({ task: blockedTask, projectRoot });
+  assert.equal(blocked.status, "blocked");
+  assert.equal(blocked.phase, "token-planning");
+  assert.match(blocked.missing.join(" "), /approved tokenDraft/u);
+
+  const approvedDraft = {
+    ...blocked.tokenResolution.tokenDraft,
+    approvalStatus: "approved",
+    approvedBy: "design-system-owner",
+    approvedAt: "2026-08-11"
+  };
+  const approvedTask = routeAgentRequest({
+    prompt: "Extend SwitchButton geometry.",
+    tokenNeed,
+    tokenDraft: approvedDraft,
+    projectRoot
+  });
+  assert.deepEqual(validateTaskContract(approvedTask), []);
+  const resumed = resolveAgentContext({ task: approvedTask, projectRoot });
+  assert.equal(resumed.status, "ready");
+  assert.equal(resumed.phase, "normal");
+});
+
+test("reuse and compose cannot create or extend token groups", () => {
+  const tokenNeed = {
+    owner: "keycap",
+    scope: "component",
+    domain: "size",
+    property: "min-height",
+    consumer: "keycap",
+    proposedAliasSource: "--size-24"
+  };
+  for (const { prompt, intentOverride } of [
+    { prompt: "Reuse Button.", intentOverride: "reuse" },
+    { prompt: "Compose a section with Button.", intentOverride: "compose" }
+  ]) {
+    const task = routeAgentRequest({ prompt, intentOverride, tokenNeed, projectRoot });
+    const context = resolveAgentContext({ task, projectRoot });
+    assert.equal(context.status, "blocked");
+    assert.match(context.missing.join(" "), /cannot create or extend token groups/u);
+  }
 });
 
 test("materialized source overruns block at the read that crosses the limit", async () => {

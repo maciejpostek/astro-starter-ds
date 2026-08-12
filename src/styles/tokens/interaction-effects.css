@@ -8,5 +8,5 @@
    */
   --effect-focused:
     0 0 0 var(--size-2) var(--color-state-focus-ring-offset),
-    0 0 0 var(--size-4) var(--component-focus-ring);
+    0 0 0 var(--size-4) var(--color-state-focus-ring);
 }

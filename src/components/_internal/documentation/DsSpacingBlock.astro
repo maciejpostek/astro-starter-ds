@@ -1,6 +1,6 @@
 ---
 import DsSpacingRow from "./DsSpacingRow.astro";
-import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+import DsDocumentationBlockTitle from "./DsDocumentationBlockTitle.astro";
 import DsTableCell from "./DsTableCell.astro";
 import DsTableFrame from "./DsTableFrame.astro";
 import DsTableRow from "./DsTableRow.astro";
@@ -51,11 +51,13 @@ const id = `spacing-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   data-ds-doc-table-size={size}
 >
   {showHeader && (
-    <DsSectionHeaderLevel3
-      id={`${id}-title`}
-      title={name}
-      description={description}
-    />
+    <>
+      <DsDocumentationBlockTitle
+        id={`${id}-title`}
+        title={name}
+      />
+      <p class="ds-spacing-block__description body-small-regular">{description}</p>
+    </>
   )}
 
   <DsTableFrame label={`${name} sizing tokens`} size={size}>
@@ -85,7 +87,12 @@ const id = `spacing-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 <style>
   .ds-spacing-block {
     display: grid;
-    gap: var(--gap-medium);
+    gap: var(--space-regular);
+  }
+
+  .ds-spacing-block__description {
+    margin-block-start: calc(var(--gap-medium) * -1);
+    color: var(--color-text-tertiary);
   }
 
 </style>

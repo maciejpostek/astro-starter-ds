@@ -1,14 +1,16 @@
 ---
 import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsCodeSnippet from "../../../components/_internal/documentation/DsCodeSnippet.astro";
 import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
-import DsComponentSizeReference from "../../../components/_internal/documentation/DsComponentSizeReference.astro";
+import DsControlSizeReference from "../../../components/_internal/documentation/DsControlSizeReference.astro";
+import DsDocumentationBlockTitle from "../../../components/_internal/documentation/DsDocumentationBlockTitle.astro";
 import DsSpacingBlock from "../../../components/_internal/documentation/DsSpacingBlock.astro";
 import DsSectionHeaderLevel3 from "../../../components/_internal/documentation/DsSectionHeaderLevel3.astro";
-import DsSectionHeaderLevel4 from "../../../components/_internal/documentation/DsSectionHeaderLevel4.astro";
 import {
   documentationFoundationHeader,
   documentationFoundationToc,
 } from "../../../data/documentationFoundationRegistry";
+import sizingAgenticRules from "../../../../.agentic-rules/01-sizing.md?raw";
 
 type SpacingRow = {
   token: string;
@@ -28,7 +30,9 @@ const primitiveSizeRows = [
   { token: "--size-4", output: "0.25rem", source: "4px", sampleValue: "var(--size-4)" },
   { token: "--size-6", output: "0.375rem", source: "6px", sampleValue: "var(--size-6)" },
   { token: "--size-8", output: "0.5rem", source: "8px", sampleValue: "var(--size-8)" },
+  { token: "--size-10", output: "0.625rem", source: "10px", sampleValue: "var(--size-10)" },
   { token: "--size-12", output: "0.75rem", source: "12px", sampleValue: "var(--size-12)" },
+  { token: "--size-14", output: "0.875rem", source: "14px", sampleValue: "var(--size-14)" },
   { token: "--size-16", output: "1rem", source: "16px", sampleValue: "var(--size-16)" },
   { token: "--size-18", output: "1.125rem", source: "18px", sampleValue: "var(--size-18)" },
   { token: "--size-20", output: "1.25rem", source: "20px", sampleValue: "var(--size-20)" },
@@ -76,56 +80,92 @@ const sectionPaddingRows = [
   },
 ];
 
+const componentDimensionRows = [
+  {
+    token: "--eyebrow-marker-size",
+    output: "var(--size-8)",
+    source: "8px",
+    sampleValue: "var(--eyebrow-marker-size)",
+    agenticRule: "Use for both dimensions of the decorative Eyebrow marker; keep its aspect ratio at 1:1.",
+  },
+  { token: "--feedback-size-small-icon-size", output: "var(--size-16)", source: "16px", sampleValue: "var(--feedback-size-small-icon-size)", agenticRule: "Compact Alert icon size for small messages." },
+  { token: "--feedback-size-medium-icon-size", output: "var(--size-20)", source: "20px", sampleValue: "var(--feedback-size-medium-icon-size)", agenticRule: "Fixed feedback glyph size for medium messages." },
+  { token: "--feedback-size-large-icon-size", output: "var(--size-24)", source: "24px", sampleValue: "var(--feedback-size-large-icon-size)", agenticRule: "Compact Alert icon size for large messages." },
+  { token: "--feedback-alert-max-inline-size", output: "var(--size-320)", source: "20rem", sampleValue: "var(--feedback-alert-max-inline-size)", agenticRule: "Caps compact Alert width while preserving fluid shrinkage." },
+  { token: "--feedback-rich-icon-size", output: "var(--size-16)", source: "1rem", sampleValue: "var(--feedback-rich-icon-size)", agenticRule: "Fixed Notification and Toast icon size." },
+  { token: "--toast-max-inline-size", output: "var(--size-320)", source: "20rem", sampleValue: "var(--toast-max-inline-size)", agenticRule: "Caps the global floating Toast width." },
+  { token: "--popup-max-inline-size", output: "calc(var(--size-320) + var(--size-112) + var(--size-8))", source: "27.5rem", sampleValue: "var(--popup-max-inline-size)", agenticRule: "Caps Popup surfaces at 440px while preserving fluid shrinkage." },
+  { token: "--popup-icon-size", output: "var(--size-24)", source: "24px", sampleValue: "var(--popup-icon-size)", agenticRule: "Keeps the semantic Popup status glyph at a stable size." },
+];
+
 const componentPaddingRows = [
   {
-    token: "--component-padding-none",
+    token: "--popup-viewport-inset",
+    output: "var(--content-padding-medium)",
+    source: "global semantic alias",
+    sampleValue: "var(--popup-viewport-inset)",
+    agenticRule: "Maintains the minimum Popup inset from every viewport edge.",
+  },
+  {
+    token: "--content-padding-none",
     output: "0",
     source: "0px",
-    sampleValue: "var(--component-padding-none)",
+    sampleValue: "var(--content-padding-none)",
     agenticRule: "Use when a component surface must remove internal padding completely.",
   },
   {
-    token: "--component-padding-tiny",
+    token: "--content-padding-tiny",
     output: "0.25rem",
     source: "4px",
-    sampleValue: "var(--component-padding-tiny)",
+    sampleValue: "var(--content-padding-tiny)",
     agenticRule: "Use for very compact internal padding in tiny UI parts such as small labels or metadata controls.",
   },
   {
-    token: "--component-padding-xsmall",
+    token: "--content-padding-xsmall",
     output: "0.5rem",
     source: "8px",
-    sampleValue: "var(--component-padding-xsmall)",
+    sampleValue: "var(--content-padding-xsmall)",
     agenticRule: "Use for compact internal padding when tiny is too tight but the component should still feel dense.",
   },
   {
-    token: "--component-padding-small",
+    token: "--content-padding-small",
     output: "0.75rem",
     source: "12px",
-    sampleValue: "var(--component-padding-small)",
+    sampleValue: "var(--content-padding-small)",
     agenticRule: "Use for small component interiors such as compact cards, table cells or secondary controls.",
   },
   {
-    token: "--component-padding-medium",
+    token: "--content-padding-medium",
     output: "clamp(1rem, 0.8571rem + 0.7143vw, 1.5rem)",
     source: "16-24px",
-    sampleValue: "var(--component-padding-medium)",
+    sampleValue: "var(--content-padding-medium)",
     agenticRule: "Use as the default inner padding for reusable cards, panels and composed UI blocks.",
   },
   {
-    token: "--component-padding-large",
+    token: "--content-padding-large",
     output: "clamp(1.5rem, 1.2143rem + 1.4286vw, 2.5rem)",
     source: "24-40px",
-    sampleValue: "var(--component-padding-large)",
+    sampleValue: "var(--content-padding-large)",
     agenticRule: "Use for prominent component surfaces that need more internal breathing room.",
   },
   {
-    token: "--component-padding-xlarge",
+    token: "--content-padding-xlarge",
     output: "clamp(2rem, 1.4286rem + 2.8571vw, 3.5rem)",
     source: "32-56px",
-    sampleValue: "var(--component-padding-xlarge)",
+    sampleValue: "var(--content-padding-xlarge)",
     agenticRule: "Use for large editorial or dashboard surfaces where the component itself defines a major content zone.",
   },
+  { token: "--feedback-size-small-padding-block", output: "var(--content-padding-xsmall)", source: "8px", sampleValue: "var(--feedback-size-small-padding-block)", agenticRule: "Small feedback block padding." },
+  { token: "--feedback-size-small-padding-inline", output: "var(--content-padding-small)", source: "12px", sampleValue: "var(--feedback-size-small-padding-inline)", agenticRule: "Small compact Alert inline padding." },
+  { token: "--feedback-size-medium-padding-block", output: "var(--content-padding-small)", source: "12px", sampleValue: "var(--feedback-size-medium-padding-block)", agenticRule: "Medium compact Alert block padding." },
+  { token: "--feedback-size-medium-padding-inline", output: "var(--size-16)", source: "16px", sampleValue: "var(--feedback-size-medium-padding-inline)", agenticRule: "Medium compact Alert inline padding." },
+  { token: "--feedback-size-large-padding-block", output: "var(--size-16)", source: "16px", sampleValue: "var(--feedback-size-large-padding-block)", agenticRule: "Large compact Alert block padding." },
+  { token: "--feedback-size-large-padding-inline", output: "var(--size-20)", source: "20px", sampleValue: "var(--feedback-size-large-padding-inline)", agenticRule: "Large compact Alert inline padding." },
+  { token: "--feedback-rich-padding-block-start", output: "var(--content-padding-small)", source: "0.75rem", sampleValue: "var(--feedback-rich-padding-block-start)", agenticRule: "Optical rich-feedback padding at block start." },
+  { token: "--feedback-rich-padding-inline-end", output: "var(--content-padding-small)", source: "0.75rem", sampleValue: "var(--feedback-rich-padding-inline-end)", agenticRule: "Optical rich-feedback padding at inline end." },
+  { token: "--feedback-rich-padding-block-end", output: "var(--size-16)", source: "1rem", sampleValue: "var(--feedback-rich-padding-block-end)", agenticRule: "Optical rich-feedback padding at block end." },
+  { token: "--feedback-rich-padding-inline-start", output: "var(--size-16)", source: "1rem", sampleValue: "var(--feedback-rich-padding-inline-start)", agenticRule: "Optical rich-feedback padding at inline start." },
+  { token: "--toast-viewport-inset", output: "var(--content-padding-medium)", source: "1–1.5rem", sampleValue: "var(--toast-viewport-inset)", agenticRule: "Logical viewport inset for the global Toast." },
 ];
 
 const globalGapRows = [
@@ -173,6 +213,14 @@ const componentGapRows = [
     sampleValue: "var(--gap-input-group)",
     agenticRule: "Use on a parent that groups related inputs or an input with an attached control.",
   },
+  { token: "--feedback-size-small-gap", output: "var(--gap-small)", source: "8px", sampleValue: "var(--feedback-size-small-gap)", agenticRule: "Small feedback anatomy gap." },
+  { token: "--feedback-size-medium-gap", output: "var(--gap-small)", source: "8px", sampleValue: "var(--feedback-size-medium-gap)", agenticRule: "Medium feedback anatomy gap." },
+  { token: "--feedback-size-large-gap", output: "var(--gap-regular)", source: "12px", sampleValue: "var(--feedback-size-large-gap)", agenticRule: "Large feedback anatomy gap." },
+  { token: "--feedback-rich-header-gap", output: "var(--gap-small)", source: "0.5rem", sampleValue: "var(--feedback-rich-header-gap)", agenticRule: "Gap between rich feedback status icon, title and close control." },
+  { token: "--feedback-copy-gap", output: "var(--gap-tiny)", source: "4px", sampleValue: "var(--feedback-copy-gap)", agenticRule: "Gap between feedback title and description." },
+  { token: "--feedback-content-gap", output: "var(--gap-small)", source: "8px", sampleValue: "var(--feedback-content-gap)", agenticRule: "Gap between feedback copy and actions." },
+  { token: "--feedback-actions-gap", output: "var(--gap-small)", source: "8px", sampleValue: "var(--feedback-actions-gap)", agenticRule: "Gap between feedback text actions." },
+  { token: "--toast-enter-offset", output: "var(--gap-small)", source: "0.5rem", sampleValue: "var(--toast-enter-offset)", agenticRule: "Entry-motion offset for the global Toast." },
 ];
 
 const globalSpaceRows = [
@@ -189,8 +237,8 @@ const globalSpaceRows = [
 const componentSpaceRows = [
   {
     token: "--space-eyebrow-bottom",
-    output: "var(--space-medium)",
-    source: "24px",
+    output: "var(--space-regular)",
+    source: "12px",
     sampleValue: "var(--space-eyebrow-bottom)",
     agenticRule: "Use as margin-bottom on an eyebrow when it sits above a heading.",
   },
@@ -315,7 +363,6 @@ const borderRows: SpacingRow[] = [
     <DsDocSection
       id="sizing-primitive-tokens"
       title="Sizing Primitives"
-      description="Primitive size tokens encode pixel-equivalent values as rem variables. They are the source scale for semantic sizing tokens and dimension decisions such as width, height, min-width, max-width, min-height and max-height."
     >
         <section
           id="sizing-primitive-size-scale"
@@ -325,7 +372,6 @@ const borderRows: SpacingRow[] = [
           <DsSectionHeaderLevel3
             id="sizing-primitive-size-scale-title"
             title="Primitive size tokens"
-            description="The fixed reference scale used to build semantic tokens and width/height decisions across the system."
           />
 
           <DsSpacingBlock
@@ -340,8 +386,25 @@ const borderRows: SpacingRow[] = [
     <DsDocSection
       id="sizing-semantic-tokens"
       title="Sizing Semantic"
-      description="Semantic sizing tokens translate primitive values into intent. Each group separates global size-based tokens from component-based contracts when a repeated use case needs a stable name."
     >
+        <section
+          id="sizing-semantic-component-dimensions"
+          class="ds-sizing-topic"
+          aria-labelledby="sizing-semantic-component-dimensions-title"
+        >
+          <DsSectionHeaderLevel3
+            id="sizing-semantic-component-dimensions-title"
+            title="Component dimensions"
+          />
+
+          <DsSpacingBlock
+            name="Component dimension tokens"
+            description="Exact dimensions owned by one registered component contract."
+            rows={componentDimensionRows}
+            showHeader={false}
+          />
+        </section>
+
         <section
           id="sizing-semantic-component-padding"
           class="ds-sizing-topic"
@@ -350,7 +413,6 @@ const borderRows: SpacingRow[] = [
           <DsSectionHeaderLevel3
             id="sizing-semantic-component-padding-title"
             title="Component padding"
-            description="Inner spacing inside cards, panels, controls and composed components. Padding tokens describe space inside an element, not distance between children or external margins."
           />
 
           <DsSpacingBlock
@@ -369,7 +431,6 @@ const borderRows: SpacingRow[] = [
           <DsSectionHeaderLevel3
             id="sizing-semantic-section-padding-title"
             title="Section padding"
-            description="Vertical padding inside page sections and major content zones. These tokens define section rhythm without acting as child gaps or component margins."
           />
 
           <DsSpacingBlock
@@ -388,16 +449,11 @@ const borderRows: SpacingRow[] = [
           <DsSectionHeaderLevel3
             id="sizing-semantic-gap-title"
             title="Gap"
-            description="Gap tokens define distance between children on a flex, grid or inline parent. Global gaps describe size only; component-based gaps cover repeated groups such as buttons, tags and form fields."
           />
 
           <div class="ds-sizing-subsections">
             <section aria-labelledby="sizing-semantic-gap-global-title">
-              <DsSectionHeaderLevel4
-                id="sizing-semantic-gap-global-title"
-                title="Global"
-                description="Use global gap tokens when the spacing decision is only about size and is not dedicated to one component or use case."
-              />
+              <DsDocumentationBlockTitle id="sizing-semantic-gap-global-title" title="Global" />
 
               <DsSpacingBlock
                 name="Global gap tokens"
@@ -408,11 +464,7 @@ const borderRows: SpacingRow[] = [
             </section>
 
             <section aria-labelledby="sizing-semantic-gap-component-title">
-              <DsSectionHeaderLevel4
-                id="sizing-semantic-gap-component-title"
-                title="Component-based"
-                description="Use component-based gap tokens for repeated parent-child group patterns that need one shared contract across the system."
-              />
+              <DsDocumentationBlockTitle id="sizing-semantic-gap-component-title" title="Component-based" />
 
               <DsSpacingBlock
                 name="Component gap tokens"
@@ -432,16 +484,11 @@ const borderRows: SpacingRow[] = [
           <DsSectionHeaderLevel3
             id="sizing-semantic-space-title"
             title="Space"
-            description="Space tokens define margin and block flow between elements. Global spaces describe reusable margin sizes; component-based spaces cover critical repeated relationships such as eyebrow-to-heading or section-header-to-content."
           />
 
           <div class="ds-sizing-subsections">
             <section aria-labelledby="sizing-semantic-space-global-title">
-              <DsSectionHeaderLevel4
-                id="sizing-semantic-space-global-title"
-                title="Global"
-                description="Use global space tokens for margins and vertical flow when the spacing decision is only about size."
-              />
+              <DsDocumentationBlockTitle id="sizing-semantic-space-global-title" title="Global" />
 
               <DsSpacingBlock
                 name="Global space tokens"
@@ -452,11 +499,7 @@ const borderRows: SpacingRow[] = [
             </section>
 
             <section aria-labelledby="sizing-semantic-space-component-title">
-              <DsSectionHeaderLevel4
-                id="sizing-semantic-space-component-title"
-                title="Component-based"
-                description="Use component-based space tokens for repeated margin relationships that need exact shared control."
-              />
+              <DsDocumentationBlockTitle id="sizing-semantic-space-component-title" title="Component-based" />
 
               <DsSpacingBlock
                 name="Component space tokens"
@@ -476,16 +519,11 @@ const borderRows: SpacingRow[] = [
           <DsSectionHeaderLevel3
             id="sizing-semantic-radius-title"
             title="Radius"
-            description="Radius tokens describe surface shape. Global radius tokens describe generic corner sizes; component-based radius tokens lock repeated UI surfaces to one shared shape contract."
           />
 
           <div class="ds-sizing-subsections">
             <section aria-labelledby="sizing-semantic-radius-global-title">
-              <DsSectionHeaderLevel4
-                id="sizing-semantic-radius-global-title"
-                title="Global"
-                description="Use global radius tokens when the decision is only about corner size and is not dedicated to one component."
-              />
+              <DsDocumentationBlockTitle id="sizing-semantic-radius-global-title" title="Global" />
 
               <DsSpacingBlock
                 name="Global radius tokens"
@@ -496,11 +534,7 @@ const borderRows: SpacingRow[] = [
             </section>
 
             <section aria-labelledby="sizing-semantic-radius-component-title">
-              <DsSectionHeaderLevel4
-                id="sizing-semantic-radius-component-title"
-                title="Component-based"
-                description="Use component-based radius tokens for repeated component surfaces that need one shared shape rule."
-              />
+              <DsDocumentationBlockTitle id="sizing-semantic-radius-component-title" title="Component-based" />
 
               <DsSpacingBlock
                 name="Component radius tokens"
@@ -520,7 +554,6 @@ const borderRows: SpacingRow[] = [
           <DsSectionHeaderLevel3
             id="sizing-semantic-border-title"
             title="Border"
-            description="Border-width tokens describe stroke thickness. Use default for standard dividers and strong only for deliberate emphasis or focus treatments."
           />
 
           <DsSpacingBlock
@@ -533,11 +566,21 @@ const borderRows: SpacingRow[] = [
     </DsDocSection>
 
     <DsDocSection
-      id="sizing-attributes"
-      title="Component Size"
-      description="Size attributes are the component sizing API. They connect semantic variables to repeatable component geometry through stable attributes such as data-component-size."
+      id="sizing-control-size"
+      title="Control Size"
     >
-        <DsComponentSizeReference />
+        <DsControlSizeReference />
+    </DsDocSection>
+
+    <DsDocSection
+      id="sizing-agentic-rules"
+      title="Agentic Rules"
+    >
+      <DsCodeSnippet
+        filename=".agentic-rules/01-sizing.md"
+        language="markdown"
+        code={sizingAgenticRules.trim()}
+      />
     </DsDocSection>
 
 </DesignSystemLayout>
@@ -549,10 +592,14 @@ const borderRows: SpacingRow[] = [
   }
 
   .ds-sizing-topic {
+    display: grid;
+    gap: var(--space-regular);
     scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
   }
 
   .ds-sizing-subsections > :global(section) {
+    display: grid;
+    gap: var(--space-regular);
     scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
   }
 

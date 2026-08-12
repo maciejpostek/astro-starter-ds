@@ -10,8 +10,22 @@ work:
 2. Classify the request as `exact-edit`, `reuse`, `compose`, `repair`,
    `extend`, or `create`.
 3. Resolve the smallest context pack with `npm run agent:context`.
-4. Reuse existing tokens and components by default.
-5. Run only the validators selected for the affected scope.
+4. Resolve every styling need against `tokenArchitecture.json` in the order
+   component → dependency → use case → global → primitive as an approved
+   alias source.
+5. Reuse the single semantic match. Stop on `ambiguous`. On `gap`, prepare a
+   `tokenDraft` and wait for explicit approval before changing CSS or registry
+   sources.
+6. Run only the validators selected for the affected scope.
+
+The machine-readable naming and token contract is
+`architecture/component-authoring-contract.json`. Public components must not
+declare custom properties, invent namespaces, use `.ds-*` classes, or create
+tokens during `reuse` or `compose`. `--control-*` is the only approved shared
+attribute bridge. An approved `tokenDraft` is exact: implementation may add
+only its recorded names, aliases, consumers, source paths and projections.
+Reuse existing tokens and components by default; resolution evidence decides
+whether a draft is allowed.
 
 Treat targets as `primary`, `dependency`, or `context`. Keep negated creation
 requests in `constraints.prohibitedCreations`; they are not missing targets.
@@ -49,6 +63,10 @@ Resolve `create` in two phases. Planning reads gap evidence, creation rules,
 existing dependencies, and Brand Contract status. After an approved
 `creationDraft`, family resolution reads only the selected family rule and the
 declared registry and Guides projections.
+
+Token planning precedes both phases whenever styling is involved. Component
+approval does not approve primitive or global-semantic creation; those layers
+always require a separate explicit token approval.
 
 For open-ended or brand-sensitive composition, use only approved rules from
 `project-context/brand-foundations/brand-expression/contract.json`. A missing

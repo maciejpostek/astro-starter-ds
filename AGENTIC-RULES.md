@@ -8,7 +8,9 @@ machine-readable router is `AGENTIC-RULES.json`.
 ```text
 Prompt
   -> Classify
-  -> Resolve Context
+  -> Resolve components and token groups
+  -> Reuse or prove a gap
+  -> Approve drafts when required
   -> Execute
   -> Validate
   -> Accepted or Blocked
@@ -30,6 +32,11 @@ Every request is classified as:
 
 The result is a Task Contract validated against
 `architecture/agent-task.schema.json`.
+
+For styling work the contract can carry `tokenNeed`, `tokenResolution`, and
+`tokenDraft`. The deterministic naming rules live in
+`architecture/component-authoring-contract.json`; registered groups and their
+CSS sources live in `src/data/design-system/tokenArchitecture.json`.
 
 Task Contract V1.1 assigns every target a `primary`, `dependency`, or
 `context` role. Negated creation phrases are preserved separately as
@@ -81,6 +88,22 @@ create     768 KB
 
 ## 3. Execute
 
+Before any styling edit, resolve the need in this strict order:
+
+```text
+component group
+  -> direct dependency group
+  -> family / use-case group
+  -> global semantic group
+  -> primitive only as the source of an approved semantic alias
+```
+
+`reuse` selects one semantically valid group. `ambiguous` blocks until a human
+chooses the owner. `gap` first extends an existing owner group; a new group is
+proposed only when no component, use-case, or section owner exists. The
+generated `tokenDraft` remains `proposed` and blocks implementation until an
+exact approved copy is supplied. `reuse` and `compose` never create tokens.
+
 ### Exact edit
 
 Read the exact definition and change only its owning file. Skip component,
@@ -121,6 +144,10 @@ the canonical Component Readiness rule, and only the affected registry and
 Guides projections. Repair also reads Component Readiness when the prompt
 concerns readiness, Guides identity, or a reusable component boundary.
 
+Both routes pass styling needs through the token resolver. `repair` or
+`extend` may implement a gap only after the corresponding `tokenDraft` is
+approved.
+
 ### Create
 
 `create` requires explicit reusable-component intent, one approved primary
@@ -135,6 +162,10 @@ Creation is resolved in two phases:
 2. `create-family-resolution` accepts a `creationDraft` and reads only the
    selected family rule, Component Readiness, the responsive strategy, and
    declared registry and Guides projections.
+
+If token resolution returns a gap, `token-planning` runs before component
+implementation. Approval of `creationDraft` does not imply approval of a
+token draft, primitive, or global semantic.
 
 Figma context is added only when the prompt explicitly requests a Figma
 operation. Code-first component creation does not read or validate Figma.

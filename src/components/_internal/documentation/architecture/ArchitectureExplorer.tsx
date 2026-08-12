@@ -209,7 +209,6 @@ const ExplorerCanvas = ({
     null
   );
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
   const [flowInstance, setFlowInstance] =
     useState<ReactFlowInstance<Node<ExplorerNodeData>, Edge> | null>(null);
   const explorerRef = useRef<HTMLDivElement>(null);
@@ -505,12 +504,6 @@ const ExplorerCanvas = ({
     (connection) => connection.sourceInstanceId === selectedInstanceId
   );
 
-  const copyText = async (text: string, feedback: string) => {
-    await navigator.clipboard.writeText(text);
-    setCopyFeedback(feedback);
-    window.setTimeout(() => setCopyFeedback(null), 1800);
-  };
-
   const openSearchResult = (instance: ArchitectureNodeInstance) => {
     setMode({ kind: "stage", id: instance.stageId });
     setSelectedInstanceId(instance.id);
@@ -655,7 +648,10 @@ const ExplorerCanvas = ({
           </button>
           <button
             type="button"
-            onClick={() => copyText(window.location.href, "Link copied")}
+            data-clipboard-copy
+            data-clipboard-source="current-url"
+            data-clipboard-success-toast="ds-clipboard-copy-success"
+            data-clipboard-error-toast="ds-clipboard-copy-error"
             aria-label="Copy link to current architecture view"
             title="Copy link"
           >
@@ -856,7 +852,10 @@ const ExplorerCanvas = ({
                       <code>{path}</code>
                       <button
                         type="button"
-                        onClick={() => copyText(path, "Path copied")}
+                        data-clipboard-copy
+                        data-clipboard-value={path}
+                        data-clipboard-success-toast="ds-clipboard-copy-success"
+                        data-clipboard-error-toast="ds-clipboard-copy-error"
                         aria-label={`Copy ${path}`}
                       >
                         Copy
@@ -890,9 +889,6 @@ const ExplorerCanvas = ({
         ) : null}
       </div>
 
-      <div className="architecture-explorer__status" aria-live="polite">
-        {copyFeedback}
-      </div>
     </div>
   );
 };

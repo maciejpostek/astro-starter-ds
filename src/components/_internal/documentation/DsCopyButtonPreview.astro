@@ -1,0 +1,31 @@
+---
+import CopyButton from "../../base-components/buttons/CopyButton.astro";
+import Toast from "../../base-components/toast-notification/Toast.astro";
+---
+
+<div
+  class="ds-preview-renderer-boundary"
+  data-component-name="DsCopyButtonPreview"
+>
+  <CopyButton
+    copyValue="hello@example.com"
+    data-ds-preview-target
+    data-ds-preview-state="default"
+    errorToastId="copy-button-preview-error"
+    size="small"
+    successToastId="copy-button-preview-success"
+    variant="primary"
+  >
+    Copy email
+  </CopyButton>
+  <Toast
+    id="copy-button-preview-success"
+    title="Email copied to clipboard"
+    status="success"
+  />
+  <Toast
+    id="copy-button-preview-error"
+    title="Email could not be copied"
+    status="error"
+  />
+</div>
