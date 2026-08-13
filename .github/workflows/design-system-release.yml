@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,8 +15,6 @@ env:
 jobs:
   static-contracts:
     runs-on: ubuntu-latest
-    env:
-      SITE_URL: ${{ vars.SITE_URL }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,6 +24,20 @@ jobs:
       - run: npm ci
       - run: npm run validate
       - run: npm run audit:runtime:v1.1
+      - run: npm run audit:release-artifacts
+
+  production-release:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: ${{ vars.SITE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
       - run: npm run audit:release-readiness
       - run: npm run build:release
 
