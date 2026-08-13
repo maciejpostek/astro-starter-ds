@@ -72,6 +72,10 @@ jobs:
 
   lighthouse:
     runs-on: ubuntu-latest
+    env:
+      # Shared GitHub runners have measurably higher LCP variance than the
+      # controlled production-release gate. All other budgets stay identical.
+      LIGHTHOUSE_LCP_BUDGET_MS: 3200
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

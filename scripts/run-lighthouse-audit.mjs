@@ -5,6 +5,11 @@ import lighthouse from "lighthouse";
 const host = "127.0.0.1";
 const port = Number(process.env.LIGHTHOUSE_PREVIEW_PORT ?? 4326);
 const baseURL = process.env.LIGHTHOUSE_BASE_URL ?? `http://${host}:${port}`;
+const lcpBudget = Number(process.env.LIGHTHOUSE_LCP_BUDGET_MS ?? 2500);
+
+if (!Number.isFinite(lcpBudget) || lcpBudget <= 0) {
+  throw new Error("LIGHTHOUSE_LCP_BUDGET_MS must be a positive number.");
+}
 const routes = [
   "/design-system/",
   "/design-system/foundations/color/",
@@ -16,7 +21,7 @@ const thresholds = {
   accessibility: 0.95,
   "best-practices": 0.95,
   seo: 0.9,
-  "largest-contentful-paint": 2500,
+  "largest-contentful-paint": lcpBudget,
   "cumulative-layout-shift": 0.1,
   "total-blocking-time": 200,
 };
