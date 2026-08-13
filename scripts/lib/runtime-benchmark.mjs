@@ -701,6 +701,12 @@ const approvedBrandContract = (includeMatchingRule = false) => ({
     : []
 });
 
+const unapprovedBrandContract = () => ({
+  ...approvedBrandContract(false),
+  status: "draft",
+  approvedAt: null,
+});
+
 export const applyFixtureOperations = async (
   workspaceRoot,
   operations,
@@ -743,6 +749,12 @@ export const applyFixtureOperations = async (
         path,
         writeJson(approvedBrandContract(operation.includeMatchingRule))
       );
+    } else if (operation.type === "set-unapproved-brand-contract") {
+      const path = join(
+        workspaceRoot,
+        "project-context/brand-foundations/brand-expression/contract.json"
+      );
+      await writeFile(path, writeJson(unapprovedBrandContract()));
     } else if (operation.type === "patch") {
       const patchPath = isAbsolute(operation.path)
         ? operation.path
@@ -3101,12 +3113,19 @@ const deterministicContextErrors = ({
       errors.push("create family resolution is not ready");
     } else {
       const familyReasons = familyContext.readPlan.map((read) => read.reason);
+      const requiredFamilyReasons = [
+        "component-readiness-rule",
+        "component-readiness-contract",
+        "creation-family-rule",
+        "registry-projection",
+        "guides-projection",
+        "responsive-strategy-rule",
+      ];
       if (
         familyContext.phase !== "create-family-resolution" ||
-        familyReasons.join("|") !==
-          "creation-family-rule|registry-projection|guides-projection"
+        requiredFamilyReasons.some((reason) => !familyReasons.includes(reason))
       ) {
-        errors.push("create family phase is not narrowed to family and projections");
+        errors.push("create family phase omitted readiness, family, responsive, or projection context");
       }
     }
   }

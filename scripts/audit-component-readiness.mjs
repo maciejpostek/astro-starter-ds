@@ -10,6 +10,7 @@ import {
   readComponentRuleContract,
   responsiveRuleFields,
 } from "./lib/component-rule-contract.mjs";
+import { hasComponentIdentity } from "./lib/component-identity.mjs";
 
 const projectRoot = resolve(process.argv[2] ?? ".");
 const errors = [];
@@ -47,15 +48,6 @@ const collectAstro = (directory) => {
 };
 const escapeRegExp = (value) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const identityEvidence = (source, name) => {
-  const escaped = escapeRegExp(name);
-  return (
-    new RegExp(`data-component-name\\s*=\\s*["']${escaped}["']`, "u").test(source) ||
-    new RegExp(`componentName\\s*=\\s*["']${escaped}["']`, "u").test(source) ||
-    (source.includes("data-component-name={componentName}") &&
-      new RegExp(`componentName\\s*=\\s*["']${escaped}["']`, "u").test(source))
-  );
-};
 
 const contract = readJson("architecture/component-readiness-contract.json");
 const componentRuleContract = readComponentRuleContract(projectRoot);
@@ -126,7 +118,7 @@ for (const component of implementedVisualRecords) {
       `${component.id} identity differs between filename, name, and astroComponent.`,
     );
   }
-  if (!identityEvidence(source, component.name)) {
+  if (!hasComponentIdentity(source, component.name)) {
     errors.push(
       `${component.sourcePath} does not expose canonical Guides identity ${component.name}.`,
     );
@@ -135,6 +127,12 @@ for (const component of implementedVisualRecords) {
 
 for (const component of publicComponents) {
   const componentErrors = [];
+  if (component.readiness?.validation !== "passed") {
+    componentErrors.push(`readiness.validation=${component.readiness?.validation ?? "missing"}`);
+  }
+  if (!["review", "approved"].includes(component.readiness?.visual)) {
+    componentErrors.push(`readiness.visual=${component.readiness?.visual ?? "missing"}`);
+  }
   if (!component.agenticRule || !existsSync(join(projectRoot, component.agenticRule))) {
     componentErrors.push("canonical component rule");
   } else {
@@ -175,7 +173,7 @@ for (const path of internalFiles) {
   if ((contract.nonVisualInternals ?? []).includes(path)) continue;
   const name = basename(path, ".astro");
   const source = read(path);
-  if (!identityEvidence(source, name)) {
+  if (!hasComponentIdentity(source, name)) {
     errors.push(`${path} does not expose or delegate Guides identity ${name}.`);
   }
 }
@@ -193,7 +191,7 @@ for (const name of contract.delegatedIdentityComponents ?? []) {
 }
 for (const name of contract.previewBoundaryComponents ?? []) {
   const path = internalFiles.find((candidate) => basename(candidate, ".astro") === name);
-  if (!path || !identityEvidence(read(path), name)) {
+  if (!path || !hasComponentIdentity(read(path), name)) {
     errors.push(`${name} does not own a preview Guides boundary.`);
   }
 }

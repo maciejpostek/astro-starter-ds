@@ -64,6 +64,21 @@ a {
   text-decoration: none;
 }
 
+p a,
+[data-ds-doc-section] li a {
+  color: var(--link-text-default);
+  text-decoration-color: var(--link-underline-default);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--border-width-default);
+  text-underline-offset: 0.14em;
+}
+
+p a:is(:hover, :focus-visible),
+[data-ds-doc-section] li a:is(:hover, :focus-visible) {
+  color: var(--link-text-hover);
+  text-decoration-color: var(--link-underline-hover);
+}
+
 ul,
 ol {
   margin: 0;

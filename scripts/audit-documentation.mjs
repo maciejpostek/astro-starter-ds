@@ -374,9 +374,9 @@ if (!sectionHeading.includes("level: 2 | 3;")
   || sectionHeading.includes("description?: string")
   || sectionHeading.includes("{description && <p")
   || !sectionHeading.includes('2: "heading-h4"')
-  || !sectionHeading.includes('3: "body-medium-regular"')
+  || !sectionHeading.includes('3: "heading-h6"')
   || !sectionHeading.includes("data-ds-section-heading-level={level}")) {
-  errors.push("DsSectionHeading must preserve semantic H2/H3 with heading-h4/body-medium styling and no generated description.");
+  errors.push("DsSectionHeading must preserve semantic H2/H3 with heading-h4/heading-h6 styling and no generated description.");
 }
 for (const requiredStyle of ["margin-block:", ".ds-section-heading:first-child"]) {
   if (!sectionHeading.includes(requiredStyle)) {
@@ -390,8 +390,9 @@ if (!/\.ds-section-heading\s*\{[^}]*margin-block:\s*var\(--space-large\)\s+var\(
 if (/border-bottom:|border-bottom-color:|padding-block:/.test(sectionHeading)) {
   errors.push("HeaderLevel components must build hierarchy with typography and rhythm, without dividers or decorative block padding.");
 }
-if (!/data-ds-section-heading-level="3"\]\s+h3\s*\{[^}]*color:\s*var\(--color-text-primary\)[^}]*font-weight:\s*var\(--font-weight-emphasis\)/s.test(sectionHeading)) {
-  errors.push("DsSectionHeaderLevel3 must use primary text with the canonical heading emphasis weight.");
+if (!/data-ds-section-heading-level="3"\]\s+h3\s*\{[^}]*color:\s*var\(--color-text-primary\)/s.test(sectionHeading)
+  || /data-ds-section-heading-level="3"\]\s+h3\s*\{[^}]*font-weight:/s.test(sectionHeading)) {
+  errors.push("DsSectionHeaderLevel3 must use primary text while heading-h6 owns its typography.");
 }
 if (existsSync(join(projectRoot, "src/components/_internal/documentation/DsSectionHeaderLevel4.astro"))) {
   errors.push("DsSectionHeaderLevel4 must not exist in the H1/H2/H3 documentation hierarchy.");

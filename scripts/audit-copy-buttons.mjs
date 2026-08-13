@@ -4,6 +4,7 @@ import {
   componentRuleSections,
   readComponentRuleContract,
 } from "./lib/component-rule-contract.mjs";
+import { hasComponentIdentity } from "./lib/component-identity.mjs";
 
 const projectRoot = resolve(process.argv[2] ?? ".");
 const errors = [];
@@ -57,7 +58,6 @@ for (const [name, source, expected] of [
     "Astro.slots.has(\"default\")",
   ]],
   ["CopyIconButton", copyIconButton, [
-    'data-component-name="CopyIconButton"',
     'class:list={["icon-button", "copy-icon-button", className]}',
     'name="content_copy"',
     'class="icon-button__icon"',
@@ -70,6 +70,9 @@ for (const [name, source, expected] of [
     "aria-label={label.trim()}",
   ]],
 ]) {
+  if (!hasComponentIdentity(source, name)) {
+    errors.push(`${name} is missing its owned or delegated component identity.`);
+  }
   for (const contract of expected) {
     requireContract(source, contract, `${name} is missing contract: ${contract}`);
   }

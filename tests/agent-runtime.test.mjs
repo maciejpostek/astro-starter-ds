@@ -327,7 +327,7 @@ test("create family resolution narrows reads to the family and projections", () 
       "token-group-registry",
       "component-readiness-rule",
       "component-readiness-contract",
-      "component-category-rule",
+      "creation-family-rule",
       "registry-projection",
       "guides-projection",
       "responsive-strategy-rule"

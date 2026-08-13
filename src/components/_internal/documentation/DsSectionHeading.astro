@@ -15,7 +15,7 @@ const {
 const Heading = `h${level}` as "h2" | "h3";
 const headingClass = {
   2: "heading-h4",
-  3: "body-medium-regular",
+  3: "heading-h6",
 }[level];
 ---
 
@@ -47,6 +47,5 @@ const headingClass = {
 
   .ds-section-heading[data-ds-section-heading-level="3"] h3 {
     color: var(--color-text-primary);
-    font-weight: var(--font-weight-emphasis);
   }
 </style>

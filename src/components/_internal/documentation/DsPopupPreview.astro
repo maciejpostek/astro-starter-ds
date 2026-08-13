@@ -76,10 +76,11 @@ const statusLabels = {
       preview.dataset.popupPreviewReady = "true";
 
       const popup = preview.querySelector<HTMLDialogElement>("dialog[data-popup]");
-      preview.querySelector("[data-popup-preview-open]")?.addEventListener("click", () => {
+      const opener = preview.querySelector<HTMLElement>("[data-popup-preview-open]");
+      opener?.addEventListener("click", () => {
         if (!popup) return;
         window.dispatchEvent(new CustomEvent("astro-ds:popup-open", {
-          detail: { id: popup.dataset.popupId },
+          detail: { id: popup.dataset.popupId, returnFocus: opener },
         }));
       });
 

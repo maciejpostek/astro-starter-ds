@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "repairs": [
+    {
+      "id": "primary-controls-contrast-2026-08-12",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-12",
+      "requestedFor": "Restore WCAG AA contrast and deterministic interaction progression for primary controls.",
+      "extensionTarget": "button-color",
+      "sourcePath": "src/styles/tokens/color-components.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#button-color",
+      "proposedTokens": [
+        { "name": "--button-primary-background-default", "aliasSource": "--color-accent-700" },
+        { "name": "--button-primary-border-default", "aliasSource": "--color-accent-700" },
+        { "name": "--button-primary-background-hover", "aliasSource": "--color-accent-800" },
+        { "name": "--button-primary-border-hover", "aliasSource": "--color-accent-800" },
+        { "name": "--button-primary-background-pressed", "aliasSource": "--color-accent-900" },
+        { "name": "--button-primary-border-pressed", "aliasSource": "--color-accent-900" }
+      ],
+      "removedThemeOverrides": [
+        "--button-primary-background-hover: --color-accent-400",
+        "--button-primary-background-pressed: --color-accent-300",
+        "--button-primary-border-hover: --color-accent-400",
+        "--button-primary-border-pressed: --color-accent-300"
+      ],
+      "consumers": [
+        "button",
+        "button-link",
+        "icon-button",
+        "copy-button",
+        "copy-icon-button",
+        "social-button",
+        "social-icon-button",
+        "file-upload",
+        "checkbox",
+        "checkbox-card",
+        "radio",
+        "radio-card"
+      ]
+    }
+  ]
+}

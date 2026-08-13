@@ -287,7 +287,7 @@ Use Align UI as a bounded quality benchmark for feedback status coverage, emphas
 
 ### Activation
 
-- Components: Alert, Notification, Toast, ToastRegion
+- Components: Alert, Notification, Toast
 - Scopes: base-components/alerts, base-components/toast-notification
 - Themes: none
 
@@ -312,36 +312,31 @@ Use Align UI as a bounded quality benchmark for feedback status coverage, emphas
 - `--feedback-size-small-padding-block`
 - `--feedback-size-medium-padding-block`
 - `--feedback-size-large-padding-block`
-- `--toast-region-max-inline-size`
-- `--toast-region-inset`
-- `--toast-region-gap`
 
 #### Classes
 
 - `alert`
 - `notification`
 - `toast`
-- `toast-region`
 
 #### Attributes
 
-- `data-component-name`: `Alert | Notification | Toast | ToastRegion`
+- `data-component-name`: `Alert | Notification | Toast`
 - `data-feedback-status`: `error | warning | success | info | feature`
 - `data-feedback-emphasis`: `solid | soft | subtle | outline`
 - `data-feedback-size`: `small | medium | large`
-- `data-toast-state`: `closed | queued | visible`
+- `data-toast-state`: `closed | visible`
 
 #### CSS declarations
 
 - `Feedback surfaces`: `approved global status colors plus feedback-color emphasis aliases`
-- `Feedback geometry`: `approved feedback-size and toast-region-size aliases`
+- `Feedback geometry`: `approved feedback-size aliases`
 - `Interaction`: `existing focus, elevation, motion, typography and radius semantics`
 
 #### Runtime behaviors
 
 - Alert and Notification may dismiss through one delegated native-button behavior.
 - Toast is prerendered by Astro and opens or closes through typed custom events without runtime HTML creation.
-- ToastRegion enforces a 1–5 visible limit, FIFO overflow and pausable timers with safe focus restoration.
 
 ### Required
 
@@ -353,7 +348,7 @@ Use Align UI as a bounded quality benchmark for feedback status coverage, emphas
 
 - Copying Align UI code, API, tokens, raw values, content or proprietary assets.
 - Arbitrary icon props, icon slots, runtime markup injection, framework islands or data persistence.
-- Propagation of this benchmark rule outside Alert, Notification, Toast and ToastRegion.
+- Propagation of this benchmark rule outside Alert, Notification and Toast.
 
 ### Validation
 

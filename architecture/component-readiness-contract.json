@@ -3,6 +3,10 @@
   "canonicalRule": ".agentic-rules/10-component-readiness.md",
   "componentRuleContract": "architecture/component-rule-contract.json",
   "figmaPolicy": "explicit-only",
+  "readinessStatuses": {
+    "visual": ["review", "approved"],
+    "validation": ["not-run", "partial", "passed", "failed"]
+  },
   "identity": {
     "attribute": "data-component-name",
     "format": "^[A-Z][A-Za-z0-9]*$",

@@ -39,7 +39,10 @@ function emitResult(dialog: HTMLDialogElement, action: PopupAction) {
 function restorePreviousFocus(dialog: HTMLDialogElement) {
   const previous = previousFocus.get(dialog);
   previousFocus.delete(dialog);
-  if (previous?.isConnected) previous.focus({ preventScroll: true });
+  if (!previous?.isConnected) return;
+  window.requestAnimationFrame(() => {
+    if (previous.isConnected) previous.focus({ preventScroll: true });
+  });
 }
 
 function closePopup(dialog: HTMLDialogElement, action: PopupAction) {
@@ -48,12 +51,12 @@ function closePopup(dialog: HTMLDialogElement, action: PopupAction) {
   dialog.close(action);
 }
 
-function openPopup(dialog: HTMLDialogElement) {
+function openPopup(dialog: HTMLDialogElement, returnFocus?: HTMLElement) {
   if (dialog.open) return;
   const current = getOpenPopup(dialog);
   if (current) closePopup(current, "superseded");
 
-  const activeElement = document.activeElement;
+  const activeElement = returnFocus ?? document.activeElement;
   if (activeElement instanceof HTMLElement) previousFocus.set(dialog, activeElement);
   pendingActions.delete(dialog);
   dialog.returnValue = "";
@@ -112,9 +115,10 @@ function bindGlobalRuntime() {
   window.__astroDesignSystemPopupReady = true;
 
   window.addEventListener("astro-ds:popup-open", (event) => {
-    const id = (event as CustomEvent<{ id?: string }>).detail?.id;
+    const detail = (event as CustomEvent<{ id?: string; returnFocus?: HTMLElement }>).detail;
+    const id = detail?.id;
     const dialog = id ? findPopup(id) : undefined;
-    if (dialog) openPopup(dialog);
+    if (dialog) openPopup(dialog, detail?.returnFocus);
   });
 
   window.addEventListener("astro-ds:popup-close", (event) => {

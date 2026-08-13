@@ -709,6 +709,11 @@
   scroll-margin-top: calc(var(--ds-documentation-topbar-height) + var(--content-padding-large));
 }
 
+[data-ds-doc-section] {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 32rem;
+}
+
 [data-ds-search-target="true"] {
   outline: var(--border-width-strong) solid var(--color-border-accent);
   outline-offset: var(--size-4);

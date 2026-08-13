@@ -126,8 +126,20 @@ const componentAliases = (record) =>
     record.name,
     record.astroComponent,
     ...(record.variants ?? [])
-      .filter((variant) => typeof variant === "object")
-      .map((variant) => variant.name)
+      .flatMap((variant) =>
+        typeof variant === "string"
+          ? [variant, `${record.name}.${variant}`]
+          : [variant.name, `${record.name}.${variant.name}`]
+      )
+  ]);
+
+const componentPromptAliases = (record) =>
+  unique([
+    record.name,
+    record.astroComponent,
+    ...(record.variants ?? []).map((variant) =>
+      `${record.name}.${typeof variant === "string" ? variant : variant.name}`
+    )
   ]);
 
 const resolveComponentRecord = (id, records) => {
@@ -586,7 +598,7 @@ export const routeAgentRequest = ({
   const registry = readComponentRegistry(projectRoot);
   const records = registry.components ?? [];
   const registryMentions = records.flatMap((record) => {
-    const matches = componentAliases(record)
+    const matches = componentPromptAliases(record)
       .flatMap((alias) =>
         indexedMatches(
           prompt,
@@ -1269,6 +1281,25 @@ const resolveCreationDraft = (draft, registry, projectRoot) => {
   };
 };
 
+const resolveCreationFamilyRule = (pageKey, records, projectRoot) => {
+  const familyRecords = records.filter(
+    (record) => record.pageKey === pageKey && record.agenticRule
+  );
+  const singularPageKey = pageKey?.endsWith("s") ? pageKey.slice(0, -1) : pageKey;
+  const directFamilyRule = singularPageKey
+    ? `.agentic-rules/components/${singularPageKey}.md`
+    : null;
+  return (
+    familyRecords.find((record) => record.id === pageKey)?.agenticRule ??
+    familyRecords.find((record) => record.id === singularPageKey)?.agenticRule ??
+    familyRecords[0]?.agenticRule ??
+    (directFamilyRule && existsSync(join(projectRoot, directFamilyRule))
+      ? directFamilyRule
+      : null) ??
+    null
+  );
+};
+
 export const resolveAgentContext = ({
   task,
   projectRoot = ".",
@@ -1520,7 +1551,14 @@ export const resolveAgentContext = ({
         "figma-astro-sync-contract"
       );
     }
-    addRead(".agentic-rules/05-components.md", "component-category-rule");
+    addRead(
+      resolveCreationFamilyRule(
+        draftResolution.draft?.pageKey,
+        records,
+        absoluteRoot,
+      ),
+      "creation-family-rule",
+    );
     addRead(
       "src/data/design-system/componentArchitecture.json",
       "registry-projection"

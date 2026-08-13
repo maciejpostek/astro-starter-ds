@@ -1739,7 +1739,7 @@
       "states": ["default", "hover", "focus-visible", "filled", "valid", "invalid", "disabled", "pressed"],
       "tokens": ["--control-*", "--input-*", "--effect-focused"],
       "tokenGroups": ["control-size", "input-color", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "not-run" }
+      "readiness": { "visual": "review", "validation": "passed" }
     },
     {
       "id": "share-link-input",
@@ -1770,7 +1770,7 @@
       "states": ["default", "hover", "focus-visible", "valid", "invalid", "disabled", "copy-success", "copy-error"],
       "tokens": ["--control-*", "--input-*", "--effect-focused"],
       "tokenGroups": ["control-size", "input-color", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "not-run" }
+      "readiness": { "visual": "review", "validation": "passed" }
     },
     {
       "id": "counter-input",
@@ -1876,7 +1876,7 @@
       "tokenGroups": ["selection-control-color", "global-size"],
       "readiness": {
         "visual": "review",
-        "validation": "partial"
+        "validation": "passed"
       }
     },
     {
@@ -2539,7 +2539,7 @@
       "tokenGroups": ["global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
       "readiness": {
         "visual": "review",
-        "validation": "partial"
+        "validation": "passed"
       }
     },
     {
@@ -2878,7 +2878,7 @@
       "tokenGroups": ["global-color", "global-size", "interaction-effect"],
       "readiness": {
         "visual": "review",
-        "validation": "not-run"
+        "validation": "passed"
       }
     },
     {
@@ -3226,7 +3226,7 @@
       "states": ["default"],
       "tokens": ["--feedback-*", "--color-status-*", "--effect-focused", "--motion-*"],
       "tokenGroups": ["feedback-color", "feedback-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "passed", "validation": "passed" }
+      "readiness": { "visual": "approved", "validation": "passed" }
     },
     {
       "id": "notification",
@@ -3261,7 +3261,7 @@
       "states": ["default", "dismissed"],
       "tokens": ["--feedback-*", "--color-status-*", "--effect-focused", "--elevation-surface-floating"],
       "tokenGroups": ["feedback-color", "feedback-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "passed", "validation": "passed" }
+      "readiness": { "visual": "approved", "validation": "passed" }
     },
     {
       "id": "toast",
@@ -3296,7 +3296,7 @@
       "states": ["closed", "queued", "visible", "paused", "dismissed"],
       "tokens": ["--feedback-*", "--color-status-*", "--effect-focused", "--elevation-surface-floating", "--motion-*"],
       "tokenGroups": ["feedback-color", "feedback-size", "toast-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "passed", "validation": "passed" }
+      "readiness": { "visual": "approved", "validation": "passed" }
     },
     {
       "id": "popup",

@@ -12,14 +12,14 @@
   /* Primary button
    * High-emphasis action using the accent surface.
    */
-  --button-primary-background-default: var(--color-background-accent);
-  --button-primary-background-hover: var(--color-accent-700);
-  --button-primary-background-pressed: var(--color-accent-800);
+  --button-primary-background-default: var(--color-accent-700);
+  --button-primary-background-hover: var(--color-accent-800);
+  --button-primary-background-pressed: var(--color-accent-900);
   --button-primary-background-disabled:
     var(--color-state-disabled-background);
-  --button-primary-border-default: var(--color-border-accent);
-  --button-primary-border-hover: var(--color-accent-700);
-  --button-primary-border-pressed: var(--color-accent-800);
+  --button-primary-border-default: var(--color-accent-700);
+  --button-primary-border-hover: var(--color-accent-800);
+  --button-primary-border-pressed: var(--color-accent-900);
   --button-primary-border-disabled: var(--color-state-disabled-border);
   --button-primary-text-default: var(--color-text-on-accent);
   --button-primary-text-hover: var(--color-text-on-accent);
@@ -288,11 +288,6 @@
  */
 [data-theme="dark"] {
   --feedback-feature-background-soft: var(--color-accent-900);
-
-  --button-primary-background-hover: var(--color-accent-400);
-  --button-primary-background-pressed: var(--color-accent-300);
-  --button-primary-border-hover: var(--color-accent-400);
-  --button-primary-border-pressed: var(--color-accent-300);
 
   --button-link-text-hover: var(--color-accent-400);
   --button-link-text-pressed: var(--color-accent-100);
