@@ -1,0 +1,65 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsCopyableIconTile from "../../../components/_internal/documentation/DsCopyableIconTile.astro";
+import DsIconGallery from "../../../components/_internal/documentation/DsIconGallery.astro";
+import flagLibrary from "../../../data/design-system/flagLibrary.json";
+
+const flagAssetUrls = import.meta.glob<string>(
+  "../../../assets/flags/*.svg",
+  { query: "?url", import: "default", eager: true }
+);
+
+const flags = flagLibrary.flags.map((flag) => ({
+  ...flag,
+  src: flagAssetUrls[`../../../assets/flags/${flag.slug}.svg`],
+}));
+const missingFlags = flags.filter((flag) => !flag.src);
+if (missingFlags.length > 0) {
+  throw new Error(
+    `Missing flag assets: ${missingFlags.map((flag) => flag.slug).join(", ")}`
+  );
+}
+
+const successToastId = "flag-copy-success";
+const errorToastId = "flag-copy-error";
+---
+
+<DesignSystemLayout
+  title="Flags - Astro Design System"
+  pageType="asset-gallery"
+  header={{
+    eyebrow: "Assets",
+    title: "Flags",
+    summary: [{
+      kind: "text",
+      text: `Browse and copy ${flags.length} canonical local flag slugs rendered from SVG assets.`,
+    }],
+  }}
+>
+  <div id="flag-catalog" data-ds-doc-section>
+    <DsIconGallery
+      label="Search flags"
+      clearLabel="Clear flags search"
+      placeholder="Search flags"
+      emptyMessage="No flag matches this search."
+      successToastId={successToastId}
+      successToastTitle="Flag slug copied"
+      errorToastId={errorToastId}
+      errorToastTitle="Flag slug could not be copied"
+    >
+      {flags.map((flag) => (
+        <DsCopyableIconTile
+          id={`flag-${flag.slug}`}
+          name={flag.label}
+          copyValue={flag.slug}
+          copyLabel={`Copy ${flag.label} flag slug`}
+          searchKeywords={`${flag.slug} ${flag.label} ${flag.sourceName} flag`}
+          successToastId={successToastId}
+          errorToastId={errorToastId}
+        >
+          <img src={flag.src} alt="" width="32" height="32" loading="lazy" />
+        </DsCopyableIconTile>
+      ))}
+    </DsIconGallery>
+  </div>
+</DesignSystemLayout>

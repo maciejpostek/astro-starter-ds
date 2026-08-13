@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astro-design-system.local/project-context/brand-expression-contract.schema.json",
+  "title": "Brand and Composition Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "version",
+    "status",
+    "projectId",
+    "owner",
+    "approvedAt",
+    "rules"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "status": {
+      "enum": [
+        "not-configured",
+        "draft",
+        "review",
+        "approved",
+        "deprecated"
+      ]
+    },
+    "projectId": {
+      "type": ["string", "null"]
+    },
+    "owner": {
+      "type": ["string", "null"]
+    },
+    "approvedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "appliesTo",
+        "purpose",
+        "implementation",
+        "requires",
+        "forbids",
+        "validation"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "status": {
+          "enum": ["draft", "review", "approved", "deprecated"]
+        },
+        "appliesTo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["components", "scopes", "themes"],
+          "properties": {
+            "components": {
+              "$ref": "#/$defs/stringList"
+            },
+            "scopes": {
+              "$ref": "#/$defs/stringList"
+            },
+            "themes": {
+              "$ref": "#/$defs/stringList"
+            }
+          }
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tokens",
+            "classes",
+            "attributes",
+            "cssDeclarations",
+            "runtimeBehaviors"
+          ],
+          "properties": {
+            "tokens": {
+              "$ref": "#/$defs/stringList"
+            },
+            "classes": {
+              "$ref": "#/$defs/stringList"
+            },
+            "attributes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "cssDeclarations": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "runtimeBehaviors": {
+              "$ref": "#/$defs/stringList"
+            }
+          }
+        },
+        "requires": {
+          "$ref": "#/$defs/stringList"
+        },
+        "forbids": {
+          "$ref": "#/$defs/stringList"
+        },
+        "validation": {
+          "$ref": "#/$defs/stringList"
+        }
+      }
+    }
+  }
+}

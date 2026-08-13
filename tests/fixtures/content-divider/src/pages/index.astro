@@ -1,0 +1,51 @@
+---
+import ContentDivider from "../../../../../src/components/base-components/dividers/ContentDivider.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const tones = ["subtle", "default", "strong"] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ContentDivider contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <ContentDivider
+        id="default-divider"
+        class="content-divider-contract-fixture"
+        data-contract="forwarded"
+      />
+
+      <section aria-label="Line tones">
+        {tones.map((tone) => (
+          <ContentDivider id={`line-${tone}`} tone={tone} />
+        ))}
+      </section>
+
+      <section aria-label="Text tones">
+        {tones.map((tone) => (
+          <ContentDivider
+            id={`text-${tone}`}
+            variant="text"
+            tone={tone}
+            text="Divider text"
+          />
+        ))}
+      </section>
+
+      <section data-theme="dark" aria-label="Dark theme">
+        <ContentDivider
+          id="dark-divider"
+          variant="text"
+          text="Alternative"
+          aria-label="Custom accessible separator"
+        />
+      </section>
+    </main>
+  </body>
+</html>

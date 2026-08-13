@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "1.0.0",
+  "canonicalRule": ".agentic-rules/10-component-readiness.md",
+  "componentRuleContract": "architecture/component-rule-contract.json",
+  "figmaPolicy": "explicit-only",
+  "readinessStatuses": {
+    "visual": ["review", "approved"],
+    "validation": ["not-run", "partial", "passed", "failed"]
+  },
+  "identity": {
+    "attribute": "data-component-name",
+    "format": "^[A-Z][A-Za-z0-9]*$",
+    "forbidVariantStateOrSize": true,
+    "nestedResolution": "closest",
+    "rootStrategies": [
+      "owned",
+      "delegated",
+      "conditional",
+      "multi-root"
+    ]
+  },
+  "profiles": {
+    "public-component": {
+      "requiredGates": [
+        "classification-and-reuse",
+        "stable-identity",
+        "semantic-structure",
+        "typed-api",
+        "variables-and-tokens",
+        "responsive-behavior",
+        "accessibility",
+        "ux-and-content-contract",
+        "dependencies-and-composition",
+        "documentation",
+        "guides",
+        "validation"
+      ],
+      "requiresRegistry": true,
+      "requiresComponentRule": true,
+      "requiresDocumentation": true,
+      "requiresGuideIdentity": true
+    },
+    "internal-reusable": {
+      "requiredGates": [
+        "stable-identity",
+        "semantic-structure",
+        "typed-api",
+        "variables-and-tokens",
+        "responsive-behavior",
+        "accessibility",
+        "guides",
+        "validation"
+      ],
+      "requiresRegistry": false,
+      "requiresComponentRule": false,
+      "requiresDocumentation": false,
+      "requiresGuideIdentity": true
+    },
+    "local-composition": {
+      "requiredGates": [
+        "semantic-structure",
+        "variables-and-tokens",
+        "responsive-behavior",
+        "accessibility"
+      ],
+      "requiresRegistry": false,
+      "requiresComponentRule": false,
+      "requiresDocumentation": false,
+      "requiresGuideIdentity": false
+    }
+  },
+  "publicComponentCategories": [
+    "base-components",
+    "website-patterns",
+    "examples-templates"
+  ],
+  "internalVisualRoots": [
+    "src/components/_internal/documentation",
+    "src/components/_internal/dev"
+  ],
+  "nonVisualInternals": [
+    "src/components/_internal/behaviors/ClipboardCopy.astro",
+    "src/components/_internal/behaviors/LocomotiveScroll.astro"
+  ],
+  "delegatedIdentityComponents": [
+    "DsAttributeBlock",
+    "DsColorModeCell",
+    "DsColorRow",
+    "DsCopyButton",
+    "DsSectionHeaderLevel2",
+    "DsSectionHeaderLevel3",
+    "DsSpacingRow",
+    "DsTableCopyCell",
+    "DsTableSampleCell"
+  ],
+  "previewBoundaryComponents": [
+    "DsAccordionPreview",
+    "DsBreadcrumbPreview",
+    "DsButtonGroupPreview",
+    "DsButtonLinkPreview",
+    "DsButtonPreview",
+    "DsCopyButtonPreview",
+    "DsCopyIconButtonPreview",
+    "DsCheckboxCardPreview",
+    "DsCheckboxLabelPreview",
+    "DsCheckboxPreview",
+    "DsCompactSelectPreview",
+    "DsIconButtonPreview",
+    "DsInlineSelectPreview",
+    "DsInfoPopoverPreview",
+    "DsPaginationEllipsisPreview",
+    "DsPaginationGroupPreview",
+    "DsPaginationItemPreview",
+    "DsPaginationPreview",
+    "DsPopupPreview",
+    "DsRadioCardPreview",
+    "DsRadioLabelPreview",
+    "DsRadioPreview",
+    "DsSelectPreview",
+    "DsSocialButtonPreview",
+    "DsSocialIconButtonPreview",
+    "DsSwitchButtonPreview",
+    "DsTabMenuPreview",
+    "DsTabPreview",
+    "DsTabsPreview",
+    "DsTagPreview",
+    "DsTooltipPreview"
+  ],
+  "validation": {
+    "command": "npm run audit:component-readiness",
+    "publicComponentValidators": [
+      "audit:components",
+      "audit:documentation",
+      "audit:responsive",
+      "matching-family-audit",
+      "build"
+    ],
+    "internalReusableValidators": [
+      "audit:component-readiness",
+      "audit:documentation",
+      "build"
+    ],
+    "browserValidation": "visual-interactive-or-responsive-changes-only"
+  }
+}

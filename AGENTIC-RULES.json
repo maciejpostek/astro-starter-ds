@@ -1,536 +1,279 @@
 {
-  "version": "0.1.0",
-  "name": "Astro Design System Agentic Rules Router",
-  "description": "Entry router for AI agents working inside the Astro design system. Read this file before design-system, UI, component, layout, token or documentation changes.",
-  "required_entrypoint": true,
-  "architecture": {
-    "overview_path": "AGENTIC-RULES.md",
-    "framework_strategy_path": "DESIGN-SYSTEM-FRAMEWORK.md",
-    "figma_to_astro_rules_path": "Figma2Astro Agentic Rules/README.md",
-    "css_naming_path": "CSS-NAMING-CONVENTIONS.md",
-    "roadmap_path": "src/data/design-system-roadmap.json",
-    "roadmap_audit_path": "scripts/audit-design-system-roadmap.mjs",
-    "foundation_audit_path": "scripts/audit-design-system-foundations.mjs",
-    "actions_audit_path": "scripts/audit-actions-family.mjs",
-    "forms_core_audit_path": "scripts/audit-forms-core-family.mjs",
-    "data_display_audit_path": "scripts/audit-data-display-family.mjs",
-    "visual_audit_path": "scripts/audit-visual-family.mjs",
-    "project_context_path": "project-context/README.md",
-    "art_direction_knowledge_path": "art-direction/README.md",
-    "brand_expression_contract_path": "project-context/brand-foundations/brand-expression/contract.md",
-    "brand_expression_rule_path": ".agentic-rules/08-brand-expression.md",
-    "brand_expression_audit_path": "scripts/audit-brand-expression.mjs"
+  "version": "1.1.0",
+  "name": "AI-Native Design System V1.1 Role-Aware Router",
+  "description": "Compact role-aware router. Classify once, preserve constraints, resolve a flow-specific bounded Context Pack, reuse by default, validate the affected scope, and return an accepted or blocked result.",
+  "taskContractSchema": "architecture/agent-task.schema.json",
+  "runtime": {
+    "routeCommand": "npm run agent:route -- --prompt=<request>",
+    "contextCommand": "npm run agent:context -- <component|token|compose|brand> <targets>",
+    "auditCommand": "npm run audit:agent-runtime",
+    "flow": [
+      "classify",
+      "resolve-context",
+      "resolve-token-groups",
+      "approve-drafts",
+      "execute",
+      "validate",
+      "result"
+    ],
+    "singleAgent": true,
+    "additionalModelRouter": false,
+    "deterministicGateCommand": "npm run audit:runtime:v1.1"
   },
-  "core_model": {
-    "class": "type_or_role",
-    "data_attributes": "variant_size_state_tone_status_mode",
-    "css_variables": "values_and_design_decisions",
-    "astro_components": "primary_ui_authoring_interface",
-    "documentation": "human_and_ai_operational_context"
+  "sources": {
+    "componentIndex": "src/data/design-system/componentArchitecture.json",
+    "tokenGroupIndex": "src/data/design-system/tokenArchitecture.json",
+    "componentAuthoringContract": "architecture/component-authoring-contract.json",
+    "componentSourceRoot": "src/components",
+    "tokenSourceRoot": "src/styles/tokens",
+    "categoryRuleRoot": ".agentic-rules",
+    "brandContract": "project-context/brand-foundations/brand-expression/contract.json",
+    "projectContext": "project-context/README.md",
+    "frameworkStrategy": "DESIGN-SYSTEM-FRAMEWORK.md",
+    "responsiveStrategy": ".agentic-rules/09-responsive.md",
+    "componentReadiness": ".agentic-rules/10-component-readiness.md",
+    "componentReadinessContract": "architecture/component-readiness-contract.json",
+    "figmaRouter": "Figma2Astro Agentic Rules/README.md",
+    "figmaSyncContract": "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
+    "iconManifest": "src/data/design-system/iconLibrary.json",
+    "architectureModel": "architecture/system-map.json"
   },
-  "workflow": [
-    "Read AGENTIC-RULES.json first.",
-    "Read AGENTIC-RULES.md when the task changes design-system architecture, reusable components, global styles, tokens or documentation patterns.",
-    "Read DESIGN-SYSTEM-FRAMEWORK.md when making strategic or structural decisions.",
-    "Read currentFocus and the selected item in src/data/design-system-roadmap.json before starting design-system implementation.",
-    "Do not advance beyond a roadmap checkpoint that requires user acceptance.",
-    "Before brand, content, information-architecture or page-composition work, read project-context/README.md and the relevant populated context folders.",
-    "If required project context is empty, report the missing input instead of inventing a brand, audience, offer or business model.",
-    "Before brand-sensitive visual design, read art-direction/README.md, .agentic-rules/08-brand-expression.md and the project Brand Expression Contract.",
-    "Treat a Brand Expression Contract that is not approved as an explicit visual-direction input gap.",
-    "For a new or substantially changed visual direction, calibrate representative components and obtain human visual approval before system-wide propagation.",
-    "For Figma MCP design generation, Astro implementation or reconciliation tasks, read Figma2Astro Agentic Rules/README.md and the relevant numbered mapping rule.",
-    "Identify touched categories: sizing, colors, typography, layout, motion, elevation, components or documentation.",
-    "Read the full rule pack only for touched categories unless the task is global or architectural.",
-    "Use existing tokens, components and documentation components before creating new ones.",
-    "Update code and design-system documentation together when token or component contracts change.",
-    "Update src/data/design-system-roadmap.json when a design-system area changes status.",
-    "Run npm run audit:foundations after changing foundation tokens, styles, documentation or Figma mapping contracts.",
-    "Run npm run audit:actions after changing Button, IconButton, ButtonGroup, SwitchButton, their documentation, or their Figma mapping contract.",
-    "Run npm run audit:forms-core after changing Input, Label, Checkbox, Radio, their documentation, or their Figma mapping contract.",
-    "Run npm run audit:data-display after changing Tag, AvailableLabel, TimezoneLabel, TrustBadge, Alert, ComparisonTable, their documentation, or their Figma mapping contract.",
-    "Run npm run audit:roadmap after roadmap scope, dependencies, checks or status changes.",
-    "Run npm run build after structural changes; skip build for narrow documentation or copy-only changes."
-  ],
-  "always_required_rules": [
-    {
-      "id": "framework",
-      "title": "Framework Rules",
-      "path": ".agentic-rules/00-framework.md",
-      "status": "active",
-      "required_for": [
-        "global architecture",
-        "reusable components",
-        "design-system documentation",
-        "new UI patterns",
-        "agentic workflow changes"
-      ]
-    }
-  ],
-  "category_rules": [
-    {
-      "id": "sizing",
-      "title": "Agentic Sizing Rules",
-      "path": ".agentic-rules/01-sizing.md",
-      "status": "active",
-      "read_when": [
-        "spacing",
-        "gap",
-        "space",
-        "padding",
-        "radius",
-        "border width",
-        "component size",
-        "dimension",
-        "layout density"
-      ],
-      "summary": [
-        "Use sizing primitives as raw values.",
-        "Use semantic global tokens for generic repeated sizes.",
-        "Use component-based tokens for stable repeated component contracts.",
-        "Use data attributes for sizing variants."
-      ]
-    },
-    {
-      "id": "colors",
-      "title": "Agentic Color Rules",
-      "path": ".agentic-rules/02-colors.md",
-      "status": "active",
-      "read_when": [
-        "color",
-        "background",
-        "text color",
-        "border color",
-        "icon color",
-        "status",
-        "tone",
-        "theme",
-        "component color contract"
-      ],
-      "summary": [
-        "Use primitive colors only as raw reference palettes.",
-        "Use global semantic tokens for generic UI roles.",
-        "Use component-based color tokens for reusable components with their own contract.",
-        "Do not create broad color utility classes by default."
-      ]
-    },
-    {
-      "id": "typography",
-      "title": "Agentic Typography Rules",
-      "path": ".agentic-rules/03-typography.md",
-      "status": "active",
-      "read_when": [
-        "font",
-        "type scale",
-        "heading",
-        "body text",
-        "label",
-        "eyebrow",
-        "line height",
-        "font weight",
-        "text style"
-      ],
-      "summary": [
-        "Use typography classes as the public text style interface.",
-        "Keep HTML heading tags semantic and visually neutral.",
-        "Use semantic typography variables inside text style classes.",
-        "Use utility typography classes only for font-style, casing and wrapping."
-      ]
-    },
-    {
-      "id": "layout",
-      "title": "Agentic Layout Rules",
-      "path": ".agentic-rules/04-layout.md",
-      "status": "active",
-      "read_when": [
-        "grid",
-        "section layout",
-        "page layout",
-        "container",
-        "columns",
-        "responsive layout",
-        "composition"
-      ],
-      "summary": [
-        "Use documented layout primitives and grid rules.",
-        "Avoid one-off local layout structures when a reusable layout primitive exists."
-      ]
-    },
-    {
-      "id": "components",
-      "title": "Agentic Component Rules",
-      "path": ".agentic-rules/05-components.md",
-      "status": "active",
-      "read_when": [
-        "Astro component",
-        "component API",
-        "props",
-        "data attributes",
-        "component state",
-        "component variant",
-        "component documentation",
-        "component folder architecture",
-        "atomic design",
-        "component family"
-      ],
-      "summary": [
-        "Source folders use Atomic Design first and component family second.",
-        "Components documentation uses family-first grouping for developer workflow.",
-        "Props should render predictable classes, data attributes and token-backed styles.",
-        "Do not use global, shared, common or misc as catch-all component families."
-      ]
-    },
-    {
-      "id": "motion",
-      "title": "Agentic Motion Rules",
-      "path": ".agentic-rules/06-motion.md",
-      "status": "active",
-      "read_when": [
-        "motion",
-        "transition",
-        "animation",
-        "duration",
-        "delay",
-        "easing",
-        "keyframes",
-        "reduced motion"
-      ],
-      "summary": [
-        "Use foundation, semantic and component-level timing contracts.",
-        "Every reusable duration and delay must define a Reduced Motion value.",
-        "Runtime motion remains code-owned while Figma mirrors values and modes."
-      ]
-    },
-    {
-      "id": "elevation",
-      "title": "Agentic Elevation Rules",
-      "path": ".agentic-rules/07-elevation.md",
-      "status": "active",
-      "read_when": [
-        "elevation",
-        "shadow",
-        "raised surface",
-        "floating surface",
-        "popover",
-        "overlay",
-        "toast"
-      ],
-      "summary": [
-        "Select elevation by surface relationship.",
-        "Keep focus rings, borders, status rings and colored halos outside elevation.",
-        "Use semantic roles or stable component aliases instead of copied shadows."
-      ]
-    },
-    {
-      "id": "brand-expression",
-      "title": "Brand Expression Agentic Rules",
-      "path": ".agentic-rules/08-brand-expression.md",
-      "status": "active",
-      "read_when": [
-        "art direction",
-        "brand expression",
-        "visual language",
-        "visual redesign",
-        "visual polish",
-        "creative direction",
-        "design reference",
-        "moodboard",
-        "brand-sensitive component",
-        "Figma visual exploration",
-        "Swiss International Style"
-      ],
-      "summary": [
-        "Separate universal design knowledge from approved project-specific visual direction.",
-        "Do not implement subjective adjectives without observable rules, references, counterexamples and human approval.",
-        "Use Figma or browser pilots for calibration, then encode approved shared decisions in CSS Variables and Astro.",
-        "Technical parity does not replace the human visual-quality gate."
-      ]
-    }
-  ],
-  "decision_checklist": [
-    {
-      "id": "scope",
-      "question": "Which design-system categories does this change touch?"
-    },
-    {
-      "id": "source_of_truth",
-      "question": "Is the change represented in code tokens/components first, with docs reflecting code?"
-    },
-    {
-      "id": "reuse",
-      "question": "Can an existing token, component, attribute or documentation component solve this?"
-    },
-    {
-      "id": "api",
-      "question": "Should this be a component prop, data attribute, semantic token or component-based token?"
-    },
-    {
-      "id": "classes",
-      "question": "Is this class describing type/role, not variant/value?"
-    },
-    {
-      "id": "attributes",
-      "question": "Are variants, states, tone, status, sizing or mode expressed through data attributes?"
-    },
-    {
-      "id": "documentation",
-      "question": "Does the design-system page document the changed code contract?"
-    },
-    {
-      "id": "brand_expression",
-      "question": "Is this visual decision supported by an approved Brand Expression Contract and approved references?"
-    },
-    {
-      "id": "visual_approval",
-      "question": "Does the affected propagation scope have recorded human visual approval?"
-    },
-    {
-      "id": "component_agentic_rule",
-      "question": "If this touches a reusable component, does .agentic-rules/components/<component-name>.md need an update?"
-    },
-    {
-      "id": "roadmap",
-      "question": "Does src/data/design-system-roadmap.json need a status update?"
-    }
-  ],
-  "component_rules": {
-    "template_path": ".agentic-rules/components/_component-rule-template.md",
-    "directory": ".agentic-rules/components",
-    "rules": [
-      {
-        "id": "button",
-        "title": "Button Component Agentic Rule",
-        "path": ".agentic-rules/components/button.md",
-        "status": "active",
-        "components": [
-          "Button.Primary",
-          "Button.Secondary",
-          "Button.Link",
-          "IconButton.Primary",
-          "IconButton.Secondary",
-          "ButtonGroup",
-          "SwitchButton"
-        ],
-        "read_when": [
-          "button",
-          "icon button",
-          "IconButton",
-          "ButtonGroup",
-          "button group",
-          "CTA",
-          "action",
-          "primary action",
-          "secondary action",
-          "link action",
-          "form submit",
-          "card action"
-        ],
-        "figmaAdapter": "Figma2Astro Agentic Rules/06-actions-components.md"
-      },
-      {
-        "id": "icons",
-        "title": "Icons Component Agentic Rule",
-        "path": ".agentic-rules/components/icons.md",
-        "status": "active",
-        "components": [
-          "Icon/*"
-        ],
-        "read_when": [
-          "icon",
-          "Lucide",
-          "@lucide/astro",
-          "instance swap",
-          "icon library",
-          "icon slot"
-        ]
-      },
-      {
-        "id": "navigation",
-        "title": "Navigation Component Agentic Rule",
-        "path": ".agentic-rules/components/navigation.md",
-        "status": "active",
-        "components": [
-          "MenuLink",
-          "NavItemLink",
-          "NavigationTooltip",
-          "TopNavbar",
-          "NavSidebar",
-          "GlobalHeader",
-          "Breadcrumbs",
-          "Dropdown",
-          "DropdownItem",
-          "NavBanner",
-          "MobileNavigation",
-          "MegaMenu",
-          "MarketingNavbar",
-          "Subnavigation",
-          "Footer",
-          "Pagination"
-        ],
-        "read_when": [
-          "navigation",
-          "menu link",
-          "MenuLink",
-          "mobile menu",
-          "nav item",
-          "sidebar navigation",
-          "top navbar",
-          "global header",
-          "breadcrumbs",
-          "dropdown",
-          "navigation banner",
-          "mobile navigation",
-          "navigation drawer",
-          "fullscreen navigation",
-          "mega menu",
-          "grouped navigation",
-          "marketing navbar",
-          "marketing navigation",
-          "subnavigation",
-          "sibling page navigation",
-          "footer",
-          "contentinfo",
-          "footer navigation",
-          "pagination",
-          "app shell navigation"
-        ],
-        "figmaAdapter": "Figma2Astro Agentic Rules/15-navigation-components.md"
-      },
-      {
-        "id": "forms",
-        "title": "Forms Component Agentic Rule",
-        "path": ".agentic-rules/components/forms.md",
-        "status": "active",
-        "components": ["Input", "Label", "Checkbox", "Radio", "Fieldset", "ConsentField", "FileUpload", "Select", "SearchInput", "FormField", "Form", "CalComEmbed"],
-        "read_when": ["form", "input", "label", "checkbox", "radio", "fieldset", "consent field", "file upload", "select", "search input", "form field", "repeatable form fields", "Figma slot", "validation", "Cal.com"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/08-forms-components.md"
-      },
-      {
-        "id": "data-display",
-        "title": "Data Display Component Agentic Rule",
-        "path": ".agentic-rules/components/data-display.md",
-        "status": "active",
-        "components": ["Tag", "AvailableLabel", "TimezoneLabel", "TrustBadge", "Alert", "Rating", "ComparisonTable"],
-        "read_when": ["tag", "status label", "availability", "timezone", "trust badge", "security claim", "compliance claim", "award claim", "rating", "score", "review count", "alert", "notification", "toast", "comparison table", "comparison columns", "comparison rows", "Figma slot"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/09-data-display-components.md"
-      },
-      {
-        "id": "text",
-        "title": "Text Component Agentic Rule",
-        "path": ".agentic-rules/components/text.md",
-        "status": "active",
-        "components": ["Eyebrow", "DivideBlock", "ContentDivider", "SectionHeader", "PageHeader"],
-        "read_when": ["eyebrow", "divider", "section header", "page header", "text component", "text component slot", "Figma text component"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/10-text-components.md"
-      },
-      {
-        "id": "content",
-        "title": "Content Component Agentic Rule",
-        "path": ".agentic-rules/components/content.md",
-        "status": "active",
-        "components": ["BulletPoint", "ContentBlock", "QuoteBlock", "RichText"],
-        "read_when": ["bullet point", "content block", "quote block", "rich text", "long-form content", "legal content", "editorial quotation", "attribution", "editorial content", "content composition", "content slot", "Figma content component"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/11-content-components.md"
-      },
-      {
-        "id": "disclosure",
-        "title": "Disclosure Component Agentic Rule",
-        "path": ".agentic-rules/components/disclosure.md",
-        "status": "active",
-        "components": ["Tab", "Tabs", "Accordion", "Tooltip"],
-        "read_when": ["tab", "tabs", "tablist", "tabpanel", "accordion", "tooltip", "disclosure", "expandable content", "accordion items", "tooltip trigger", "Figma disclosure component", "Figma slot"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/12-disclosure-components.md"
-      },
-      {
-        "id": "media",
-        "title": "Media Component Agentic Rule",
-        "path": ".agentic-rules/components/media.md",
-        "status": "active",
-        "components": ["Logo", "MediaRatio", "ImageEffectOverlay", "Avatar", "VideoPlayer", "SwiperStarter", "Carousel", "MediaGallery", "BeforeAfterSlider"],
-        "read_when": ["media", "logo", "brand artwork", "wordmark", "aspect ratio", "image overlay", "avatar", "video", "carousel", "before after", "media slot", "Figma media component"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/13-media-components.md"
-      },
-      {
-        "id": "visual",
-        "title": "Visual Component Agentic Rule",
-        "path": ".agentic-rules/components/visual.md",
-        "status": "active",
-        "components": ["PanelPatternVisualSystem"],
-        "read_when": ["panel pattern", "visual system", "deterministic illustration", "Figma visual component"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/14-visual-components.md"
-      },
-      {
-        "id": "cards",
-        "title": "Cards Component Agentic Rule",
-        "path": ".agentic-rules/components/cards.md",
-        "status": "active",
-        "components": ["FieldCard", "FeatureCard", "UseCaseCard", "IntegrationCard", "TeamMemberCard", "JobCard", "ArticleCard", "ResourceCard", "ProjectCard", "CaseStudyCard", "CalloutCard", "ServiceCard", "PricingCard", "TestimonialCard", "AgencyPartnerCard", "ProjectRowCard", "UiKitCard", "StatCard", "BulletPointCard"],
-        "read_when": ["card", "feature card", "use case card", "integration card", "integrations directory", "team member card", "job card", "careers", "article card", "editorial listing", "blog card", "resource card", "guide", "ebook", "webinar", "resource library", "project card", "case study card", "service card", "pricing card", "testimonial", "stat card", "callout card"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/16-cards-components.md"
-      },
-      {
-        "id": "sidepanels",
-        "title": "Sidepanels Component Agentic Rule",
-        "path": ".agentic-rules/components/sidepanels.md",
-        "status": "active",
-        "components": ["ProjectModal", "ProjectDrawer", "StageDrawer", "Popup"],
-        "read_when": ["modal", "drawer", "sidepanel", "popup", "overlay"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/17-sidepanels-components.md"
-      },
-      {
-        "id": "timeline",
-        "title": "Timeline Component Agentic Rule",
-        "path": ".agentic-rules/components/timeline.md",
-        "status": "active",
-        "components": ["Timeline", "TimelineField", "TimelineModal", "TimelineLayoutWrapper"],
-        "read_when": ["timeline", "timeline field", "timeline modal", "project stages"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/18-timeline-components.md"
-      },
-      {
-        "id": "documentation",
-        "title": "Documentation Component Agentic Rule",
-        "path": ".agentic-rules/components/documentation.md",
-        "status": "active",
-        "components": ["DsCallout", "DsTableOfContents", "DsSectionHeader", "DsCodeSnippet", "DsTableFrame", "DsColorRow", "DsAutomatedTokenDocumentation"],
-        "read_when": ["design-system documentation", "Ds component", "token documentation", "documentation table"]
-      },
-      {
-        "id": "dev-tools",
-        "title": "Development Tools Component Agentic Rule",
-        "path": ".agentic-rules/components/dev-tools.md",
-        "status": "active",
-        "components": ["GridVisualizer", "ComponentsGuide"],
-        "read_when": ["grid visualizer", "component guide", "development tool", "inspection overlay"]
-      },
-      {
-        "id": "sections",
-        "title": "Sections Component Agentic Rule",
-        "path": ".agentic-rules/components/sections.md",
-        "status": "active",
-        "components": ["AnnouncementBarSection", "MarketingNavigationSection", "SubnavigationSection", "FooterSection", "CookieConsentSection", "HeroSection", "PageHeaderSection", "LogoCloudSection", "TrustSignalsSection", "TestimonialSection", "CaseStudySection", "FeatureSection", "ProductDemoSection", "ProcessSection", "UseCasesSection", "StatsSection", "DataStorySection", "PricingSection", "PricingComparisonSection", "PricingFaqSection", "IntegrationsSection", "DeveloperSection", "TrustSection", "CtaSection", "LeadCaptureSection", "CompanyStorySection", "TeamSection", "CareersSection", "CompanyContactSection", "FaqSection", "ContentListingSection", "ResourceLibrarySection", "EventsSection", "ChangelogSection", "ProductComparisonSection", "ProductAnnouncementSection"],
-        "read_when": ["section component", "website section", "reusable page section", "global shell", "announcement bar", "marketing navigation section", "subnavigation section", "hero section", "page header section", "hero and headers", "logo cloud section", "trust signals section", "testimonial section", "case study section", "feature section", "product demo section", "process section", "how it works section", "use cases section", "stats section", "data story section", "benchmark section", "customer results section", "ROI result section", "customer proof section", "pricing section", "pricing tiers", "pricing toggle", "usage based pricing", "pricing comparison section", "feature matrix", "pricing add ons", "enterprise CTA", "pricing FAQ section", "commercial questions", "pricing and comparison", "integrations section", "integration directory", "integration ecosystem", "developer section", "API section", "developer quickstart", "trust section", "security claims", "compliance claims", "trust center", "security architecture", "call to action section", "CTA section", "conversion banner", "conversion card", "full bleed CTA", "lead capture section", "newsletter section", "lead form", "contact form section", "demo booking section", "waitlist section", "app download section", "company story section", "about section", "mission section", "values section", "company timeline", "team section", "team directory", "leadership section", "leadership profiles", "company contact section", "company locations section", "company press contacts", "FAQ section", "frequently asked questions", "stacked FAQ", "split FAQ", "product comparison section", "product alternatives section", "capability comparison", "comparison matrix", "product announcement section", "product launch section", "product promotion section", "product status section", "release announcement", "conversion", "company", "content and resources", "product communication", "integrations and security", "brand and social proof", "features and product demo", "how it works and use cases", "stats and customer proof", "organisms sections", "Figma website section"],
-        "figmaAdapter": "Figma2Astro Agentic Rules/22-website-sections.md"
-      }
+  "defaults": {
+    "reuseFirst": true,
+    "allowNewComponents": false,
+    "figma": "explicit-only",
+    "browserValidation": "visual-runtime-changes-only",
+    "historyOwner": "git",
+    "terminalStates": [
+      "accepted",
+      "blocked"
     ]
   },
-  "behavior_rules": {
-    "directory": ".agentic-rules/behaviors",
-    "rules": [
-      {
-        "id": "clipboard-copy",
-        "title": "Clipboard Copy Behavior Agentic Rule",
-        "path": ".agentic-rules/behaviors/clipboard-copy.md",
-        "status": "active",
-        "source": "src/components/global-scripts/ClipboardCopy.astro",
-        "read_when": [
-          "copy to clipboard",
-          "clipboard",
-          "copy email",
-          "copy link",
-          "share link",
-          "data-clipboard-copy"
-        ]
-      }
+  "creationGate": {
+    "default": "blocked",
+    "requires": "An explicit request for a new reusable or design-system component.",
+    "pageOrSectionCreationIsNotComponentAuthorization": true,
+    "existingComponentOutcome": "reuse-or-explicit-extend",
+    "missingComponentOutcome": "blocked-with-alternatives-and-suggested-prompt",
+    "primaryTargetOnly": true,
+    "dependenciesDoNotBlockWhenPresent": true,
+    "approvedNameRequired": true
+  },
+  "tokenGate": {
+    "resolutionOrder": [
+      "component",
+      "dependency",
+      "use-case",
+      "global",
+      "primitive-as-approved-alias-source"
+    ],
+    "outcomes": ["reuse", "ambiguous", "gap"],
+    "ambiguousOutcome": "blocked-for-human-decision",
+    "gapOutcome": "blocked-with-tokenDraft",
+    "approvalRequired": true,
+    "reuseAndComposeCanCreateTokens": false,
+    "extendExistingOwnerBeforeNewGroup": true,
+    "primitiveAndGlobalSemanticRequireSeparateApproval": true
+  },
+  "contextBudgets": {
+    "tiny": 4096,
+    "small": 12288,
+    "medium": 40960,
+    "large": 102400
+  },
+  "profiles": {
+    "exact-edit": {
+      "budget": "tiny",
+      "reads": [
+        "exact target definitions",
+        "referenced aliases"
+      ],
+      "skips": [
+        "component registry",
+        "family rules",
+        "brand contract",
+        "art direction",
+        "Figma",
+        "full build"
+      ],
+      "validation": "token",
+      "maxRepairAttempts": 1
+    },
+    "reuse": {
+      "budget": "small",
+      "reads": [
+        "one component context record",
+        "component source",
+        "target file"
+      ],
+      "skips": [
+        "family rules",
+        "brand contract",
+        "art direction",
+        "Figma"
+      ],
+      "validation": "component-use",
+      "maxRepairAttempts": 1
+    },
+    "compose": {
+      "budget": "medium",
+      "reads": [
+        "named component records",
+        "direct dependencies",
+        "component authoring contract",
+        "registered token groups for the named components",
+        "compact layout contract",
+        "compact intrinsic-first responsive contract",
+        "matching approved brand rules when applicable",
+        "target file"
+      ],
+      "skips": [
+        "full component registry",
+        "creation rules",
+        "Figma"
+      ],
+      "validation": "page-composition",
+      "maxRepairAttempts": 2
+    },
+    "repair": {
+      "budget": "small",
+      "reads": [
+        "component source",
+        "direct dependencies",
+        "matching family rule",
+        "component authoring contract",
+        "registered token groups"
+      ],
+      "skips": [
+        "unrelated families",
+        "Figma"
+      ],
+      "validation": "component-repair",
+      "maxRepairAttempts": 2
+    },
+    "extend": {
+      "budget": "large",
+      "reads": [
+        "component source and API",
+        "matching family and category rules",
+        "affected tokens and documentation",
+        "component authoring contract",
+        "token resolution and approved tokenDraft when a gap exists"
+      ],
+      "skips": [
+        "unrelated families",
+        "Figma"
+      ],
+      "validation": "component-contract",
+      "maxRepairAttempts": 2
+    },
+    "create": {
+      "budget": "large",
+      "reads": [
+        "phase 1: gap evidence, creation rules, dependencies, Brand Contract status",
+        "phase 2: registered token groups and proposed tokenDraft when needed",
+        "phase 3: selected family rule, responsive strategy and declared registry/Guides projections after approvals"
+      ],
+      "skips": [
+        "Figma unless explicitly requested"
+      ],
+      "validation": "component-creation",
+      "maxRepairAttempts": 2
+    }
+  },
+  "brandActivation": {
+    "skip": [
+      "exact token edit",
+      "named existing component reuse"
+    ],
+    "approvedOnly": [
+      "composition with named components",
+      "extension that applies existing visual rules"
+    ],
+    "required": [
+      "open-ended composition",
+      "new visual component",
+      "new or changed visual direction"
+    ],
+    "unapprovedOutcome": "blocked-for-creative-interpretation",
+    "humanApproval": "required-for-new-direction-or-propagation"
+  },
+  "validationRouting": {
+    "token": [
+      "affected foundation audit"
+    ],
+    "component-use": [
+      "targeted component API or Astro check"
+    ],
+    "page-composition": [
+      "Astro check or build",
+      "browser validation when visual or responsive behavior changed"
+    ],
+    "component-repair": [
+      "matching family audit"
+    ],
+    "component-contract": [
+      "component readiness audit",
+      "component registry audit",
+      "matching family audit",
+      "build"
+    ],
+    "component-creation": [
+      "component readiness audit",
+      "component registry audit",
+      "agent runtime audit",
+      "matching family audit",
+      "documentation validation",
+      "build"
+    ]
+  },
+  "resultContract": {
+    "fields": [
+      "status",
+      "intent",
+      "reused",
+      "createdComponents",
+      "changedFiles",
+      "readinessGates",
+      "validation",
+      "missingInput"
+    ],
+    "trackedRunHistory": false
+  },
+  "targetSemantics": {
+    "roles": [
+      "primary",
+      "dependency",
+      "context"
+    ],
+    "negations": "constraints.prohibitedCreations",
+    "targetFile": "validated repository-relative existing file"
+  },
+  "materializedSourceBudgets": {
+    "exact-edit": 16384,
+    "reuse": 65536,
+    "compose": 262144,
+    "repair": 196608,
+    "extend": 524288,
+    "create": 786432
+  },
+  "contextPack": {
+    "version": "1.1.0",
+    "fields": [
+      "requiredReads",
+      "readPlan",
+      "declaredSourceBytes",
+      "sourceLimitBytes",
+      "phase",
+      "nextStep",
+      "tokenNeed",
+      "tokenResolution",
+      "tokenDraft"
+    ],
+    "createPhases": [
+      "create-planning",
+      "token-planning",
+      "create-family-resolution"
     ]
   }
 }

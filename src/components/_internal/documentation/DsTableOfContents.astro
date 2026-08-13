@@ -1,0 +1,24 @@
+---
+interface Item {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  title?: string;
+  items: Item[];
+}
+
+const { title = "On this page", items } = Astro.props;
+---
+
+<nav
+  class="ds-table-of-contents"
+  data-component-name="DsTableOfContents"
+  aria-label={title}
+>
+  <strong class="ds-table-of-contents__title">{title}</strong>
+  <ol class="ds-table-of-contents__list">
+    {items.map((item) => <li><a href={item.href} data-ds-toc-link>{item.label}</a></li>)}
+  </ol>
+</nav>

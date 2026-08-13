@@ -1,0 +1,54 @@
+---
+import {
+  getMaterialSymbol,
+  type MaterialSymbolName
+} from "../../../lib/icons/materialSymbols";
+
+type Props = {
+  name: MaterialSymbolName;
+  size?: number | string;
+  label?: string;
+  class?: string;
+  rotate?: number;
+  [attribute: string]: unknown;
+};
+
+const {
+  name,
+  size = "1em",
+  label,
+  class: className,
+  rotate,
+  ...attributes
+} = Astro.props;
+const icon = getMaterialSymbol(name);
+
+if (!icon) {
+  throw new Error(`Unknown Material Symbol: ${name}`);
+}
+
+const normalizedSize = typeof size === "number" ? `${size}px` : size;
+const style = {
+  width: normalizedSize,
+  height: normalizedSize,
+  ...(rotate === undefined ? {} : { transform: `rotate(${rotate}deg)` }),
+};
+---
+
+<svg
+  aria-hidden={label ? undefined : "true"}
+  aria-label={label}
+  class={className}
+  data-material-symbol={name}
+  fill="currentColor"
+  focusable="false"
+  preserveAspectRatio="xMidYMid meet"
+  role={label ? "img" : undefined}
+  style={style}
+  viewBox={icon.viewBox}
+  xmlns="http://www.w3.org/2000/svg"
+  {...attributes}
+  data-component-name="MaterialSymbol"
+>
+  {icon.paths.map((path) => <path d={path} />)}
+</svg>

@@ -1,0 +1,122 @@
+---
+import SearchInput from "../../base-components/inputs/SearchInput.astro";
+import Toast from "../../base-components/toast-notification/Toast.astro";
+
+interface Props {
+  label: string;
+  clearLabel: string;
+  placeholder: string;
+  emptyMessage: string;
+  successToastId: string;
+  successToastTitle: string;
+  errorToastId: string;
+  errorToastTitle: string;
+  layout?: "compact" | "wide";
+}
+
+const {
+  label,
+  clearLabel,
+  placeholder,
+  emptyMessage,
+  successToastId,
+  successToastTitle,
+  errorToastId,
+  errorToastTitle,
+  layout = "compact",
+} = Astro.props;
+---
+
+<div
+  class="ds-icon-gallery"
+  data-component-name="DsIconGallery"
+  data-icon-gallery
+  data-icon-gallery-layout={layout}
+>
+  <SearchInput
+    label={label}
+    clearLabel={clearLabel}
+    placeholder={placeholder}
+    data-icon-gallery-search
+  />
+
+  <div class="ds-icon-gallery__grid" data-icon-gallery-grid>
+    <slot />
+  </div>
+
+  <p
+    class="ds-icon-gallery__empty body-small-regular"
+    data-icon-gallery-empty
+    role="status"
+    aria-live="polite"
+    hidden
+  >
+    {emptyMessage}
+  </p>
+
+  <Toast id={successToastId} title={successToastTitle} status="success" />
+  <Toast id={errorToastId} title={errorToastTitle} status="error" />
+</div>
+
+<script>
+  type IconGalleryWindow = Window & {
+    __astroDsIconGalleryReady?: boolean;
+  };
+
+  const galleryWindow = window as IconGalleryWindow;
+
+  if (!galleryWindow.__astroDsIconGalleryReady) {
+    galleryWindow.__astroDsIconGalleryReady = true;
+    document.addEventListener("input", (event) => {
+      const input = event.target instanceof HTMLInputElement &&
+        event.target.matches("[data-icon-gallery-search]")
+        ? event.target
+        : null;
+      const gallery = input?.closest<HTMLElement>("[data-icon-gallery]");
+      if (!input || !gallery) return;
+
+      const query = input.value.trim().toLowerCase();
+      const items = Array.from(
+        gallery.querySelectorAll<HTMLElement>("[data-icon-gallery-keywords]")
+      );
+      let visibleCount = 0;
+
+      for (const item of items) {
+        const visible = item.dataset.iconGalleryKeywords?.includes(query) ?? false;
+        item.hidden = !visible;
+        if (visible) visibleCount += 1;
+      }
+
+      const empty = gallery.querySelector<HTMLElement>("[data-icon-gallery-empty]");
+      if (empty) empty.hidden = visibleCount > 0;
+    });
+  }
+</script>
+
+<style>
+  .ds-icon-gallery {
+    display: grid;
+    width: 100%;
+    gap: var(--gap-medium);
+  }
+
+  .ds-icon-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(min(100%, var(--size-128)), 1fr)
+    );
+    gap: var(--gap-small);
+  }
+
+  .ds-icon-gallery[data-icon-gallery-layout="wide"] .ds-icon-gallery__grid {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(min(100%, var(--size-256)), 1fr)
+    );
+  }
+
+  .ds-icon-gallery__empty {
+    color: var(--color-text-secondary);
+  }
+</style>

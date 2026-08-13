@@ -1,0 +1,103 @@
+---
+import Pagination from "../../base-components/pagination/Pagination.astro";
+import PaginationEllipsis from "../../base-components/pagination/PaginationEllipsis.astro";
+import PaginationGroup from "../../base-components/pagination/PaginationGroup.astro";
+import PaginationItem from "../../base-components/pagination/PaginationItem.astro";
+import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+
+const componentPath = "/design-system/base-components/pagination/pagination";
+const getPageHref = (page: number) => `${componentPath}?page=${page}#variants`;
+---
+
+<div class="ds-pagination-family-showcase" data-component-name="DsPaginationFamilyShowcase">
+  <DsSectionHeaderLevel3
+    title="Building blocks"
+  />
+
+  <div class="ds-pagination-family-showcase__examples">
+    <div class="ds-pagination-family-showcase__example">
+      <p class="body-small-regular">Items and ellipsis</p>
+      <nav aria-label="Pagination item kinds, first row">
+        <PaginationGroup>
+          <PaginationItem kind="first" label="First" href={getPageHref(1)} />
+          <PaginationItem kind="previous" label="Previous page" href={getPageHref(7)} />
+          <PaginationItem kind="page" page={8} current label="Page 8, current page" href={getPageHref(8)} />
+        </PaginationGroup>
+      </nav>
+      <nav aria-label="Pagination item kinds, second row">
+        <PaginationGroup>
+          <PaginationEllipsis />
+          <PaginationItem kind="next" label="Next page" href={getPageHref(9)} />
+          <PaginationItem kind="last" label="Last" href={getPageHref(16)} />
+        </PaginationGroup>
+      </nav>
+    </div>
+
+    <div class="ds-pagination-family-showcase__example">
+      <p class="body-small-regular">Minimal group</p>
+      <nav aria-label="Minimal pagination example">
+        <PaginationGroup>
+          <PaginationItem kind="previous" label="Previous page" href={getPageHref(7)} />
+          <PaginationItem kind="next" label="Next page" href={getPageHref(9)} />
+        </PaginationGroup>
+      </nav>
+    </div>
+
+    <div class="ds-pagination-family-showcase__example">
+      <p class="body-small-regular">Numbered group</p>
+      <nav aria-label="Numbered pagination example">
+        <PaginationGroup>
+          <PaginationItem kind="page" page={7} label="Go to page 7" href={getPageHref(7)} />
+          <PaginationItem kind="page" page={8} current label="Page 8, current page" href={getPageHref(8)} />
+          <PaginationItem kind="page" page={9} label="Go to page 9" href={getPageHref(9)} />
+        </PaginationGroup>
+      </nav>
+    </div>
+
+    <div class="ds-pagination-family-showcase__example ds-pagination-family-showcase__example--full">
+      <p class="body-small-regular">Generated set</p>
+      <Pagination currentPage={8} totalPages={16} getPageHref={getPageHref} />
+    </div>
+  </div>
+</div>
+
+<style>
+  .ds-pagination-family-showcase {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    gap: var(--gap-medium);
+  }
+
+  .ds-pagination-family-showcase__examples,
+  .ds-pagination-family-showcase__example {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    place-items: center;
+  }
+
+  .ds-pagination-family-showcase__examples {
+    gap: var(--gap-medium);
+  }
+
+  .ds-pagination-family-showcase__example {
+    gap: var(--gap-small);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+    padding: var(--content-padding-medium);
+  }
+
+  .ds-pagination-family-showcase__example p {
+    margin: 0;
+    color: var(--color-text-tertiary);
+  }
+
+  .ds-pagination-family-showcase__example nav {
+    max-inline-size: 100%;
+  }
+
+  .ds-pagination-family-showcase__example--full :global(.pagination) {
+    inline-size: 100%;
+  }
+</style>

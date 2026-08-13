@@ -1,51 +1,77 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import DsFieldCard from "../../components/design-system/DsFieldCard.astro";
-import SectionHeader from "../../components/molecules/text/SectionHeader.astro";
+import DesignSystemLayout from "../../layouts/DesignSystemLayout.astro";
+import MaterialSymbol from "../../components/assets/icons/MaterialSymbol.astro";
+import {
+  createDocumentationSummary,
+  documentationCategories,
+  documentationPageHref,
+} from "../../data/documentationRegistry";
 
-const fields = [
-  { number: "Field 1", title: "Sizing", href: "/design-system/sizing" },
-  { number: "Field 2", title: "Color", href: "/design-system/color" },
-  { number: "Field 3", title: "Typography", href: "/design-system/typography" },
-  { number: "Field 4", title: "Layout", href: "/design-system/layout" },
-  { number: "Field 5", title: "Components", href: "/design-system/components" },
-  { number: "Roadmap", title: "System roadmap", href: "/design-system/roadmap" }
-];
 ---
 
-<BaseLayout title="Astro Design System">
-  <div class="page">
-    <SectionHeader
-      eyebrow="Design System"
-      title="A working source of truth for the interface, tokens and reusable components."
-      variant="hero"
-    />
-
-    <section class="design-system-fields" aria-label="Design system fields">
-      {
-        fields.map((field) => (
-          <DsFieldCard
-            number={field.number}
-            title={field.title}
-            href={field.href}
-          />
-        ))
-      }
-    </section>
-  </div>
-</BaseLayout>
+<DesignSystemLayout
+  title="Astro Design System"
+  pageType="family-gallery"
+  header={{
+    eyebrow: "Design system documentation",
+    title: "Code-backed foundations, components and website patterns.",
+    summary: createDocumentationSummary(
+      "Browse the canonical Astro architecture across foundations, assets and reusable UI families. The category cards below lead into each area, while registry status keeps implemented code distinct from the Figma backlog.",
+      [],
+      "Use the left navigation or search to move directly to a documented record.",
+    ),
+  }}
+>
+  <section class="documentation-categories" aria-label="Documentation categories">
+    {
+      documentationCategories.map((category) => (
+        <article>
+          <span><MaterialSymbol name={category.icon} size="var(--size-24)" /></span>
+          <div>
+            <h2 class="heading-h4">{category.displayLabel}</h2>
+            <p class="body-small-regular">{category.pages.length} pages</p>
+          </div>
+          {category.pages[0] && (
+            <a href={documentationPageHref(category.categoryKey, category.pages[0].pageKey)}>
+              Browse category
+            </a>
+          )}
+        </article>
+      ))
+    }
+  </section>
+</DesignSystemLayout>
 
 <style>
-  .design-system-fields {
+  .documentation-categories {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: var(--border-width-default) solid var(--color-border-subtle);
-    border-left: var(--border-width-default) solid var(--color-border-subtle);
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: var(--gap-medium);
   }
 
-  @media (width < 48rem) {
-    .design-system-fields {
-      grid-template-columns: 1fr;
-    }
+  article {
+    display: grid;
+    min-height: 15rem;
+    align-content: space-between;
+    gap: var(--gap-large);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+    padding: var(--content-padding-large);
+  }
+
+  article > span {
+    color: var(--color-icon-accent);
+    font-size: var(--font-size-h4);
+  }
+
+
+  p {
+    margin-top: var(--gap-small);
+    color: var(--color-text-secondary);
+  }
+
+  a {
+    color: var(--color-text-accent);
+    font-weight: var(--font-weight-emphasis);
   }
 </style>

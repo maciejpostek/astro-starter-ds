@@ -146,6 +146,9 @@ Components do not need a prefix.
 .section-header {}
 ```
 
+The public root class must equal the registry ID. Public Base Components must
+never use `.ds-*`; that prefix is reserved for documentation UI.
+
 ### Layout Classes
 
 Use `l-` for reusable layout primitives.
@@ -177,6 +180,21 @@ Use `u-` only for small, generic escape hatches.
 
 Avoid creating a large utility class API for spacing, radius, typography, or colors unless the design system explicitly approves it.
 
+Typography uses a small approved class API rather than a utility scale:
+
+```css
+.heading-h1 {}
+.body-base-regular {}
+.body-base-regular-underlined {}
+.body-base-semibold {}
+```
+
+These Text Style classes are complete semantic typography contracts. HTML tags
+still own document hierarchy, so `<h3 class="heading-h1">` is valid. Do not
+create standalone size aliases such as `.body-base`, partial font-size
+utilities or `--text-style-*` token aliases. This naming decision does not
+change semantic color-token conventions.
+
 ### Design System Documentation Classes
 
 Use `ds-` for documentation-only UI.
@@ -189,6 +207,25 @@ Use `ds-` for documentation-only UI.
 ```
 
 These classes are for the `/design-system` documentation interface, not production page components.
+
+## CSS Variable Names And Ownership
+
+Token names are registered system API, not a local component implementation
+technique. Before using or adding one, resolve its semantic owner in
+`src/data/design-system/tokenArchitecture.json`.
+
+- Component tokens use the owner directly: `--switch-track-off-background-hover`.
+- Do not use `ds`, `_ds`, `component`, or a project name in public token names.
+- Do not declare custom properties inside public component files.
+- Do not create a private alias only to shorten an existing token name.
+- `--control-*` is the sole approved shared attribute bridge and is defined in
+  `src/styles/tokens/control-sizes.css`.
+- Runtime position and measurement values use native `element.style`
+  properties. They are not documented as design tokens.
+
+When no registered group satisfies a need, stop after producing a
+`tokenDraft`. New names and CSS sources may be implemented only after that
+exact draft is approved.
 
 ### State Classes
 
@@ -211,7 +248,7 @@ Use `is-*` or `has-*` only for JS-driven state when an attribute is not practica
 Use lowercase kebab-case for data attribute names.
 
 ```html
-data-component-size
+data-control-size
 data-variant
 data-state
 data-gap
@@ -222,7 +259,7 @@ data-radius
 Use short lowercase values.
 
 ```html
-data-component-size="small"
+data-control-size="small"
 data-gap="regular"
 data-padding="large"
 data-state="open"
@@ -244,7 +281,7 @@ Good:
 ```html
 <div class="l-stack" data-gap="medium">
 <article class="card" data-radius="medium">
-<button class="button" data-component-size="small">
+<button class="button" data-control-size="small">
 ```
 
 Bad:
@@ -252,7 +289,7 @@ Bad:
 ```html
 <div data-gap="medium">
 <article data-radius="medium">
-<button data-component-size="small">
+<button data-control-size="small">
 ```
 
 The class defines the object. The attribute modifies that object.
@@ -322,7 +359,7 @@ data-tone="accent"
 For components:
 
 ```html
-<button class="button" data-component-size="small" data-variant="primary">
+<button class="button" data-control-size="small" data-variant="primary">
   <span class="button__label">Action</span>
   <span class="button__icon">...</span>
 </button>

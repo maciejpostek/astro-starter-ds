@@ -1,325 +1,989 @@
 {
-  "schemaVersion": 1,
-  "package": {
-    "name": "@lucide/astro",
-    "version": "1.21.0",
-    "license": "ISC",
-    "licensePath": "node_modules/@lucide/astro/LICENSE",
-    "repository": "https://github.com/lucide-icons/lucide"
+  "schemaVersion": 2,
+  "provider": {
+    "id": "google-material-symbols",
+    "name": "Material Symbols",
+    "family": "Material Symbols Sharp",
+    "repository": "https://github.com/google/material-design-icons",
+    "documentation": "https://developers.google.com/fonts/docs/material_symbols",
+    "license": "Apache-2.0",
+    "licensePath": "LICENSES/material-symbols-Apache-2.0.txt"
+  },
+  "profile": {
+    "style": "sharp",
+    "opticalSize": 20,
+    "weight": 400,
+    "grade": 0,
+    "fill": 0,
+    "runtime": "local-inline-svg"
   },
   "figma": {
     "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
     "pageId": "184:2",
-    "documentationFrameId": "184:3",
-    "namingPattern": "Icon/<LucidePascalName>",
-    "opticalCanvas": 24
+    "sectionId": "1009:333",
+    "namingPattern": "Icon/Material/<google_snake_case_name>",
+    "opticalCanvas": 20,
+    "innerGroupAspectRatio": "locked-1:1",
+    "innerGroupHorizontalSizing": "fill-container",
+    "iconColorVariableId": "VariableID:7:91",
+    "iconColorVariableName": "Color Semantic / Global/icon/primary",
+    "legacyLucideFrameId": "184:3",
+    "legacyLucideFrameDeleted": true
   },
-  "icons": [
-    {
-      "importName": "ArrowDownRight",
-      "figmaName": "Icon/ArrowDownRight",
-      "figmaNodeId": "184:9",
-      "requiredBySource": true
+  "astro": {
+    "component": "src/components/assets/icons/MaterialSymbol.astro",
+    "reactComponent": "src/components/assets/icons/MaterialSymbol.tsx",
+    "rendering": "inline-svg",
+    "networkRequestsAtRuntime": 0,
+    "fontFilesAtRuntime": 0,
+    "colorInheritance": "currentColor",
+    "defaultSize": "1em",
+    "sizingOwner": "consumer-parent",
+    "preserveAspectRatio": "xMidYMid meet"
+  },
+  "icons": {
+    "add": {
+      "figmaName": "Icon/Material/add",
+      "figmaNodeId": "1050:2",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M9.25 10.75H5V9.25H9.25V5H10.75V9.25H15V10.75H10.75V15H9.25V10.75Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/add/default/20px.svg"
     },
-    {
-      "importName": "ArrowLeft",
-      "figmaName": "Icon/ArrowLeft",
-      "figmaNodeId": "184:15",
-      "requiredBySource": true
+    "arrow_back": {
+      "figmaName": "Icon/Material/arrow_back",
+      "figmaNodeId": "1130:28",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M6.875 10.75L11.0625 14.9375L10 16L4 10L10 4L11.0625 5.0625L6.875 9.25H16V10.75H6.875Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/arrow_back/default/20px.svg"
     },
-    {
-      "importName": "ArrowRight",
-      "figmaName": "Icon/ArrowRight",
-      "figmaNodeId": "184:21",
-      "requiredBySource": true
+    "arrow_drop_down": {
+      "figmaName": "Icon/Material/arrow_drop_down",
+      "figmaNodeId": "1007:18",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10 12L6 8H14L10 12Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/arrow_drop_down/default/20px.svg"
     },
-    {
-      "importName": "Award",
-      "figmaName": "Icon/Award",
-      "figmaNodeId": "520:39",
-      "requiredBySource": true
+    "arrow_forward": {
+      "figmaName": "Icon/Material/arrow_forward",
+      "figmaNodeId": "962:3911",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M13.125 10.75H4V9.25H13.125L8.9375 5.0625L10 4L16 10L10 16L8.9375 14.9375L13.125 10.75Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/arrow_forward/default/20px.svg"
     },
-    {
-      "importName": "BadgeCheck",
-      "figmaName": "Icon/BadgeCheck",
-      "figmaNodeId": "520:30",
-      "requiredBySource": true
+    "calendar_month": {
+      "figmaName": "Icon/Material/calendar_month",
+      "figmaNodeId": "1127:4",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M9.25 12V10.5H10.75V12H9.25ZM6 12V10.5H7.5V12H6ZM12.5 12V10.5H14V12H12.5ZM9.25 15V13.5H10.75V15H9.25ZM6 15V13.5H7.5V15H6ZM12.5 15V13.5H14V15H12.5ZM3 18V4H6V2H7.5V4H12.5V2H14V4H17V18H3ZM4.5 16.5H15.5V9H4.5V16.5ZM4.5 7.5H15.5V5.5H4.5V7.5Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/calendar_month/default/20px.svg"
     },
-    {
-      "importName": "Braces",
-      "figmaName": "Icon/Braces",
-      "figmaNodeId": "185:3",
-      "requiredBySource": false
+    "call": {
+      "figmaName": "Icon/Material/call",
+      "figmaNodeId": "1008:321",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M16 17.0104C14.4722 17.0104 12.9306 16.6563 11.375 15.9479C9.81944 15.2396 8.38889 14.2326 7.08333 12.9271C5.77778 11.6215 4.77083 10.191 4.0625 8.63543C3.35417 7.07987 3 5.53126 3 3.98959V2.98959H7.60417L8.39583 6.53126L5.95833 8.98959C6.27778 9.53126 6.62153 10.0451 6.98958 10.5313C7.35764 11.0174 7.74618 11.4617 8.15521 11.8642C8.53785 12.2533 8.95833 12.625 9.41667 12.9792C9.875 13.3333 10.3889 13.684 10.9583 14.0313L13.4583 11.5938L17 12.3438V17.0104H16ZM5.27083 7.57293L6.77083 6.05209L6.40667 4.48959H4.5C4.55556 5.01737 4.64583 5.54168 4.77083 6.06251C4.89583 6.58334 5.0625 7.08682 5.27083 7.57293ZM12.4583 14.6563C12.875 14.8507 13.3507 15.0243 13.8854 15.1771C14.4201 15.3299 14.9583 15.441 15.5 15.5104V13.5521L13.9375 13.2188L12.4583 14.6563Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/call/default/20px.svg"
     },
-    {
-      "importName": "CalendarDays",
-      "figmaName": "Icon/CalendarDays",
-      "figmaNodeId": "184:27",
-      "requiredBySource": true
+    "center_focus_strong": {
+      "figmaName": "Icon/Material/center_focus_strong",
+      "figmaNodeId": "1050:32",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M3 17V12H4.5V15.5H8V17H3ZM12 17V15.5H15.5V12H17V17H12ZM3 8V3H8V4.5H4.5V8H3ZM15.5 8V4.5H12V3H17V8H15.5ZM7.16667 12.8285C6.38889 12.0477 6 11.1033 6 9.99521C6 8.88729 6.39049 7.94444 7.17146 7.16667C7.95229 6.38889 8.89674 6 10.0048 6C11.1127 6 12.0556 6.39049 12.8333 7.17146C13.6111 7.95229 14 8.89674 14 10.0048C14 11.1127 13.6095 12.0556 12.8285 12.8333C12.0477 13.6111 11.1033 14 9.99521 14C8.88729 14 7.94444 13.6095 7.16667 12.8285ZM11.7708 11.7708C12.2569 11.2847 12.5 10.6944 12.5 10C12.5 9.30556 12.2569 8.71528 11.7708 8.22917C11.2847 7.74306 10.6944 7.5 10 7.5C9.30556 7.5 8.71528 7.74306 8.22917 8.22917C7.74306 8.71528 7.5 9.30556 7.5 10C7.5 10.6944 7.74306 11.2847 8.22917 11.7708C8.71528 12.2569 9.30556 12.5 10 12.5C10.6944 12.5 11.2847 12.2569 11.7708 11.7708Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/center_focus_strong/default/20px.svg"
     },
-    {
-      "importName": "Check",
-      "figmaName": "Icon/Check",
-      "figmaNodeId": "184:41",
-      "requiredBySource": true
+    "check": {
+      "figmaName": "Icon/Material/check",
+      "figmaNodeId": "1007:64",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M8.10417 14.4375L4.0625 10.4167L5.125 9.33333L8.10417 12.3125L14.875 5.5625L15.9375 6.625L8.10417 14.4375Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/check/default/20px.svg"
     },
-    {
-      "importName": "ChevronDown",
-      "figmaName": "Icon/ChevronDown",
-      "figmaNodeId": "184:46",
-      "requiredBySource": true
+    "check_circle": {
+      "figmaName": "Icon/Material/check_circle",
+      "figmaNodeId": "1130:64",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M8.9375 13L13.8958 8.0625L12.8333 7L8.9375 10.875L7.16667 9.125L6.10417 10.1875L8.9375 13ZM10 18C8.90278 18 7.86806 17.7917 6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0764 2.625 13.1042C2.20833 12.1319 2 11.0972 2 10C2 8.88889 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92361 3.04167 6.89583 2.625C7.86806 2.20833 8.90278 2 10 2C11.1111 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92014 17.375 6.88542C17.7917 7.85069 18 8.88889 18 10C18 11.0972 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0799 16.9583 13.1146 17.375C12.1493 17.7917 11.1111 18 10 18ZM10 16.5C11.8056 16.5 13.3403 15.8681 14.6042 14.6042C15.8681 13.3403 16.5 11.8056 16.5 10C16.5 8.19444 15.8681 6.65972 14.6042 5.39583C13.3403 4.13194 11.8056 3.5 10 3.5C8.19444 3.5 6.65972 4.13194 5.39583 5.39583C4.13194 6.65972 3.5 8.19444 3.5 10C3.5 11.8056 4.13194 13.3403 5.39583 14.6042C6.65972 15.8681 8.19444 16.5 10 16.5Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/check_circle/default/20px.svg"
     },
-    {
-      "importName": "ChevronLeft",
-      "figmaName": "Icon/ChevronLeft",
-      "figmaNodeId": "184:51",
-      "requiredBySource": true
+    "chevron_left": {
+      "figmaName": "Icon/Material/chevron_left",
+      "figmaNodeId": "1130:4",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M11.9688 15L6.96875 10L11.9688 5L13.0312 6.0625L9.09375 10L13.0312 13.9375L11.9688 15Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/chevron_left/default/20px.svg"
     },
-    {
-      "importName": "ChevronRight",
-      "figmaName": "Icon/ChevronRight",
-      "figmaNodeId": "184:56",
-      "requiredBySource": true
+    "chevron_right": {
+      "figmaName": "Icon/Material/chevron_right",
+      "figmaNodeId": "1130:10",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10.9062 10L6.96875 6.0625L8.03125 5L13.0312 10L8.03125 15L6.96875 13.9375L10.9062 10Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/chevron_right/default/20px.svg"
     },
-    {
-      "importName": "ChevronUp",
-      "figmaName": "Icon/ChevronUp",
-      "figmaNodeId": "184:61",
-      "requiredBySource": true
+    "close": {
+      "figmaName": "Icon/Material/close",
+      "figmaNodeId": "1050:12",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M6.0625 15L5 13.9375L8.9375 10L5 6.0625L6.0625 5L10 8.9375L13.9375 5L15 6.0625L11.0625 10L15 13.9375L13.9375 15L10 11.0625L6.0625 15Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/close/default/20px.svg"
     },
-    {
-      "importName": "CircleAlert",
-      "figmaName": "Icon/CircleAlert",
-      "figmaNodeId": "184:66",
-      "requiredBySource": true
+    "content_copy": {
+      "figmaName": "Icon/Material/content_copy",
+      "figmaNodeId": "1007:98",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M6 15V2H17V15H6ZM7.5 13.5H15.5V3.5H7.5V13.5ZM3 18V5H4.5V16.5H14V18H3Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/content_copy/default/20px.svg"
     },
-    {
-      "importName": "CircleCheck",
-      "figmaName": "Icon/CircleCheck",
-      "figmaNodeId": "184:73",
-      "requiredBySource": true
+    "dehaze": {
+      "figmaName": "Icon/Material/dehaze",
+      "figmaNodeId": "1007:81",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M3 6V4.5H17V6H3ZM3 15.5V14H17V15.5H3ZM3 10.75V9.25H17V10.75H3Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/dehaze/default/20px.svg"
     },
-    {
-      "importName": "CircleMinus",
-      "figmaName": "Icon/CircleMinus",
-      "figmaNodeId": "185:9",
-      "requiredBySource": true
+    "delete": {
+      "figmaName": "Icon/Material/delete",
+      "figmaNodeId": "1130:40",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M5 17V5.5H4V4H8V3H12V4H16V5.5H15V17H5ZM6.5 15.5H13.5V5.5H6.5V15.5ZM8 14H9.5V7H8V14ZM10.5 14H12V7H10.5V14Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/delete/default/20px.svg"
     },
-    {
-      "importName": "Component",
-      "figmaName": "Icon/Component",
-      "figmaNodeId": "565:8",
-      "requiredBySource": true
+    "desktop_windows": {
+      "figmaName": "Icon/Material/desktop_windows",
+      "figmaNodeId": "1302:4",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M7 17V15.5H8.5V14H2V3H18V14H11.5V15.5H13V17H7ZM3.5 12.5H16.5V4.5H3.5V12.5Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/desktop_windows/default/20px.svg"
     },
-    {
-      "importName": "Copy",
-      "figmaName": "Icon/Copy",
-      "figmaNodeId": "184:79",
-      "requiredBySource": true
+    "description": {
+      "figmaName": "Icon/Material/description",
+      "figmaNodeId": "1288:6",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M7 15H13V13.5H7V15ZM7 12H13V10.5H7V12ZM4 18V2H12L16 6V18H4ZM11 7V3.5H5.5V16.5H14.5V7H11Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/description/default/20px.svg"
     },
-    {
-      "importName": "Ellipsis",
-      "figmaName": "Icon/Ellipsis",
-      "figmaNodeId": "185:15",
-      "requiredBySource": true
+    "dark_mode": {
+      "figmaName": "Icon/Material/dark_mode",
+      "figmaNodeId": "1304:9",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M9.99917 17C8.05528 17 6.40278 16.3194 5.04167 14.9583C3.68056 13.5972 3 11.9444 3 10C3 8.05556 3.68007 6.40278 5.04021 5.04167C6.40035 3.68056 8.05194 3 9.995 3C10.1764 3 10.3545 3.00694 10.5294 3.02083C10.7042 3.03472 10.8819 3.05556 11.0625 3.08333C10.5208 3.48611 10.0903 3.98611 9.77083 4.58333C9.45139 5.18056 9.29167 5.81944 9.29167 6.5C9.29167 7.68056 9.69792 8.67708 10.5104 9.48958C11.3229 10.3021 12.3194 10.7083 13.5 10.7083C14.1806 10.7083 14.8194 10.5486 15.4167 10.2292C16.0139 9.90972 16.5139 9.47917 16.9167 8.9375C16.9444 9.11806 16.9653 9.29576 16.9792 9.47062C16.9931 9.64549 17 9.82361 17 10.005C17 11.9481 16.3192 13.5997 14.9575 14.9598C13.5958 16.3199 11.9431 17 9.99917 17ZM10 15.5C11.1389 15.5 12.1721 15.1731 13.0996 14.5194C14.0269 13.8655 14.709 13.0118 15.1458 11.9583C14.8681 12.0278 14.5926 12.0868 14.3194 12.1354C14.0463 12.184 13.7732 12.2083 13.5 12.2083C11.9186 12.2083 10.5719 11.6523 9.45979 10.5402C8.34771 9.42812 7.79167 8.08139 7.79167 6.5C7.79167 6.22681 7.81597 5.95368 7.86458 5.68062C7.91319 5.40743 7.97222 5.13194 8.04167 4.85417C6.98819 5.29097 6.13451 5.97306 5.48063 6.90042C4.82688 7.82792 4.5 8.86111 4.5 10C4.5 11.5278 5.03472 12.8264 6.10417 13.8958C7.17361 14.9653 8.47222 15.5 10 15.5Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/dark_mode/default/20px.svg"
     },
-    {
-      "importName": "ExternalLink",
-      "figmaName": "Icon/ExternalLink",
-      "figmaNodeId": "184:85",
-      "requiredBySource": true
+    "download": {
+      "figmaName": "Icon/Material/download",
+      "figmaNodeId": "1130:34",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10 13.5L6 9.5L7.0625 8.4375L9.25 10.625V3.5H10.75V10.625L12.9375 8.4375L14 9.5L10 13.5ZM4 16.5V13.5H5.5V15H14.5V13.5H16V16.5H4Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/download/default/20px.svg"
     },
-    {
-      "importName": "Eye",
-      "figmaName": "Icon/Eye",
-      "figmaNodeId": "184:92",
-      "requiredBySource": true
+    "error": {
+      "figmaName": "Icon/Material/error",
+      "figmaNodeId": "1008:327",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10.5312 13.7856C10.6771 13.6427 10.75 13.4656 10.75 13.2544C10.75 13.0431 10.6785 12.8646 10.5356 12.7188C10.3927 12.5729 10.2156 12.5 10.0044 12.5C9.79312 12.5 9.61458 12.5715 9.46875 12.7144C9.32292 12.8573 9.25 13.0344 9.25 13.2456C9.25 13.4569 9.32146 13.6354 9.46438 13.7812C9.60729 13.9271 9.78438 14 9.99563 14C10.2069 14 10.3854 13.9285 10.5312 13.7856ZM9.25 11H10.75V6H9.25V11ZM10.0058 18C8.90472 18 7.86806 17.7917 6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0767 2.625 13.105C2.20833 12.1333 2 11.0951 2 9.99042C2 8.88569 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92333 3.04167 6.895 2.625C7.86667 2.20833 8.90486 2 10.0096 2C11.1143 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92167 17.375 6.89C17.7917 7.85847 18 8.89319 18 9.99417C18 11.0953 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0783 16.9583 13.11 17.375C12.1415 17.7917 11.1068 18 10.0058 18ZM10 16.5C11.8056 16.5 13.3403 15.8681 14.6042 14.6042C15.8681 13.3403 16.5 11.8056 16.5 10C16.5 8.19444 15.8681 6.65972 14.6042 5.39583C13.3403 4.13194 11.8056 3.5 10 3.5C8.19444 3.5 6.65972 4.13194 5.39583 5.39583C4.13194 6.65972 3.5 8.19444 3.5 10C3.5 11.8056 4.13194 13.3403 5.39583 14.6042C6.65972 15.8681 8.19444 16.5 10 16.5Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/error/default/20px.svg"
     },
-    {
-      "importName": "FileText",
-      "figmaName": "Icon/FileText",
-      "figmaNodeId": "185:22",
-      "requiredBySource": true
+    "expand_less": {
+      "figmaName": "Icon/Material/expand_less",
+      "figmaNodeId": "1130:22",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M6.0625 13.0312L5 11.9688L10 6.96875L15 11.9688L13.9375 13.0312L10 9.09375L6.0625 13.0312Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/expand_less/default/20px.svg"
     },
-    {
-      "importName": "Folder",
-      "figmaName": "Icon/Folder",
-      "figmaNodeId": "185:31",
-      "requiredBySource": false
+    "expand_more": {
+      "figmaName": "Icon/Material/expand_more",
+      "figmaNodeId": "1130:16",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10 13.0312L5 8.03125L6.0625 6.96875L10 10.9062L13.9375 6.96875L15 8.03125L10 13.0312Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/expand_more/default/20px.svg"
     },
-    {
-      "importName": "Grid3x3",
-      "figmaName": "Icon/Grid3x3",
-      "figmaNodeId": "185:36",
-      "requiredBySource": true
+    "filter_list": {
+      "figmaName": "Icon/Material/filter_list",
+      "figmaNodeId": "1130:70",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M8 14.5V13H12V14.5H8ZM5 10.75V9.25H15V10.75H5ZM3 7V5.5H17V7H3Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/filter_list/default/20px.svg"
     },
-    {
-      "importName": "House",
-      "figmaName": "Icon/House",
-      "figmaNodeId": "565:20",
-      "requiredBySource": true
+    "flag_2": {
+      "figmaName": "Icon/Material/flag_2",
+      "figmaNodeId": "1008:326",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M3.75 17.5V2.5H16.25L13.75 6.5L16.25 10.5H5.25V17.5H3.75ZM5.25 9H13.5417L11.9792 6.5L13.5417 4H5.25V9Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/flag_2/default/20px.svg"
     },
-    {
-      "importName": "Info",
-      "figmaName": "Icon/Info",
-      "figmaNodeId": "184:98",
-      "requiredBySource": true
+    "gpp_bad": {
+      "figmaName": "Icon/Material/gpp_bad",
+      "figmaNodeId": "1008:331",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M8.29167 12.75L10 11.0417L11.7083 12.75L12.75 11.7083L11.0417 10L12.75 8.29167L11.7083 7.25L10 8.95833L8.29167 7.25L7.25 8.29167L8.95833 10L7.25 11.7083L8.29167 12.75ZM10 18C8.125 17.5417 6.57292 16.4792 5.34375 14.8125C4.11458 13.1458 3.5 11.2986 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.2986 15.8854 13.1458 14.6562 14.8125C13.4271 16.4792 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9931 12.6389 15.0972 13.5833 13.75C14.5278 12.4028 15 10.9097 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9097 5.47222 12.4028 6.41667 13.75C7.36111 15.0972 8.55556 15.9931 10 16.4375Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/gpp_bad/default/20px.svg"
     },
-    {
-      "importName": "Layers",
-      "figmaName": "Icon/Layers",
-      "figmaNodeId": "185:45",
-      "requiredBySource": true
+    "gpp_maybe": {
+      "figmaName": "Icon/Material/gpp_maybe",
+      "figmaNodeId": "1008:329",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10.5312 12.7856C10.6771 12.6427 10.75 12.4656 10.75 12.2544C10.75 12.0431 10.6785 11.8646 10.5356 11.7188C10.3927 11.5729 10.2156 11.5 10.0044 11.5C9.79313 11.5 9.61458 11.5715 9.46875 11.7144C9.32292 11.8573 9.25 12.0344 9.25 12.2456C9.25 12.4569 9.32146 12.6354 9.46438 12.7812C9.60729 12.9271 9.78438 13 9.99563 13C10.2069 13 10.3854 12.9285 10.5312 12.7856ZM9.25 10H10.75V6H9.25V10ZM10 18C8.125 17.5417 6.57292 16.4803 5.34375 14.8158C4.11458 13.1513 3.5 11.3029 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.3029 15.8854 13.1513 14.6562 14.8158C13.4271 16.4803 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9896 12.6389 15.0938 13.5833 13.75C14.5278 12.4062 15 10.9132 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9132 5.47222 12.4062 6.41667 13.75C7.36111 15.0938 8.55556 15.9896 10 16.4375Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/gpp_maybe/default/20px.svg"
     },
-    {
-      "importName": "Link2",
-      "figmaName": "Icon/Link2",
-      "figmaNodeId": "185:52",
-      "requiredBySource": true
+    "info": {
+      "figmaName": "Icon/Material/info",
+      "figmaNodeId": "1008:323",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M9.25 14H10.75V9H9.25V14ZM10.5312 7.28563C10.6771 7.14271 10.75 6.96563 10.75 6.75438C10.75 6.54313 10.6785 6.36458 10.5356 6.21875C10.3927 6.07292 10.2156 6 10.0044 6C9.79312 6 9.61458 6.07146 9.46875 6.21437C9.32292 6.35729 9.25 6.53437 9.25 6.74562C9.25 6.95687 9.32146 7.13542 9.46438 7.28125C9.60729 7.42708 9.78438 7.5 9.99563 7.5C10.2069 7.5 10.3854 7.42854 10.5312 7.28563ZM10.0058 18C8.90472 18 7.86806 17.7917 6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0767 2.625 13.105C2.20833 12.1333 2 11.0951 2 9.99042C2 8.88569 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92333 3.04167 6.895 2.625C7.86667 2.20833 8.90486 2 10.0096 2C11.1143 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92167 17.375 6.89C17.7917 7.85847 18 8.89319 18 9.99417C18 11.0953 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0783 16.9583 13.11 17.375C12.1415 17.7917 11.1068 18 10.0058 18ZM10 16.5C11.8056 16.5 13.3403 15.8681 14.6042 14.6042C15.8681 13.3403 16.5 11.8056 16.5 10C16.5 8.19444 15.8681 6.65972 14.6042 5.39583C13.3403 4.13194 11.8056 3.5 10 3.5C8.19444 3.5 6.65972 4.13194 5.39583 5.39583C4.13194 6.65972 3.5 8.19444 3.5 10C3.5 11.8056 4.13194 13.3403 5.39583 14.6042C6.65972 15.8681 8.19444 16.5 10 16.5Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/info/default/20px.svg"
     },
-    {
-      "importName": "MapPin",
-      "figmaName": "Icon/MapPin",
-      "figmaNodeId": "185:59",
-      "requiredBySource": false
+    "language": {
+      "figmaName": "Icon/Material/language",
+      "figmaNodeId": "1008:320",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M6.89583 17.375C5.92361 16.9583 5.07292 16.3854 4.34375 15.6562C3.61458 14.9271 3.04167 14.0764 2.625 13.1042C2.20833 12.1319 2 11.0938 2 9.98958C2 8.88542 2.20833 7.85069 2.625 6.88542C3.04167 5.92014 3.61458 5.07292 4.34375 4.34375C5.07292 3.61458 5.92361 3.04167 6.89583 2.625C7.86806 2.20833 8.90625 2 10.0104 2C11.1146 2 12.1493 2.20833 13.1146 2.625C14.0799 3.04167 14.9271 3.61458 15.6562 4.34375C16.3854 5.07292 16.9583 5.92014 17.375 6.88542C17.7917 7.85069 18 8.88542 18 9.98958C18 11.0938 17.7917 12.1319 17.375 13.1042C16.9583 14.0764 16.3854 14.9271 15.6562 15.6562C14.9271 16.3854 14.0799 16.9583 13.1146 17.375C12.1493 17.7917 11.1146 18 10.0104 18C8.90625 18 7.86806 17.7917 6.89583 17.375ZM10 16.4375C10.2361 16.2014 10.4722 15.7604 10.7083 15.1146C10.9444 14.4688 11.125 13.7639 11.25 13H8.75C8.875 13.7639 9.05556 14.4688 9.29167 15.1146C9.52778 15.7604 9.76389 16.2014 10 16.4375ZM8.10417 16.2292C7.90972 15.8125 7.73958 15.3333 7.59375 14.7917C7.44792 14.25 7.32639 13.6528 7.22917 13H4.25C4.65278 13.7917 5.1875 14.4688 5.85417 15.0312C6.52083 15.5938 7.27083 15.9931 8.10417 16.2292ZM11.8958 16.2292C12.7292 15.9931 13.4792 15.5938 14.1458 15.0312C14.8125 14.4688 15.3472 13.7917 15.75 13H12.7708C12.6736 13.6528 12.5521 14.25 12.4062 14.7917C12.2604 15.3333 12.0903 15.8125 11.8958 16.2292ZM3.6875 11.5H7.04167C7.01389 11.2361 6.99653 10.9757 6.98958 10.7188C6.98264 10.4618 6.97917 10.2083 6.97917 9.95833C6.97917 9.70833 6.98264 9.46181 6.98958 9.21875C6.99653 8.97569 7.01389 8.73611 7.04167 8.5H3.6875C3.61806 8.76389 3.56944 9.01736 3.54167 9.26042C3.51389 9.50347 3.5 9.75 3.5 10C3.5 10.25 3.51389 10.4965 3.54167 10.7396C3.56944 10.9826 3.61806 11.2361 3.6875 11.5ZM8.5625 11.5H11.4375C11.4653 11.2222 11.4826 10.9618 11.4896 10.7188C11.4965 10.4757 11.5 10.2361 11.5 10C11.5 9.76389 11.4965 9.52083 11.4896 9.27083C11.4826 9.02083 11.4653 8.76389 11.4375 8.5H8.5625C8.53472 8.76389 8.51736 9.02083 8.51042 9.27083C8.50347 9.52083 8.5 9.76389 8.5 10C8.5 10.2361 8.50347 10.4792 8.51042 10.7292C8.51736 10.9792 8.53472 11.2361 8.5625 11.5ZM12.9583 11.5H16.3125C16.3819 11.2361 16.4306 10.9826 16.4583 10.7396C16.4861 10.4965 16.5 10.25 16.5 10C16.5 9.75 16.4861 9.5 16.4583 9.25C16.4306 9 16.3819 8.75 16.3125 8.5H12.9583C12.9861 8.76389 13.0035 9.02431 13.0104 9.28125C13.0174 9.53819 13.0208 9.79167 13.0208 10.0417C13.0208 10.2917 13.0174 10.5382 13.0104 10.7812C13.0035 11.0243 12.9861 11.2639 12.9583 11.5ZM12.7708 7H15.75C15.3472 6.20833 14.8125 5.53125 14.1458 4.96875C13.4792 4.40625 12.7292 4.00694 11.8958 3.77083C12.0903 4.1875 12.2604 4.66667 12.4062 5.20833C12.5521 5.75 12.6736 6.34722 12.7708 7ZM8.75 7H11.25C11.125 6.23611 10.9444 5.53125 10.7083 4.88542C10.4722 4.23958 10.2361 3.79861 10 3.5625C9.76389 3.79861 9.52778 4.23958 9.29167 4.88542C9.05556 5.53125 8.875 6.23611 8.75 7ZM4.25 7H7.22917C7.32639 6.34722 7.44792 5.75 7.59375 5.20833C7.73958 4.66667 7.90972 4.1875 8.10417 3.77083C7.27083 4.00694 6.52083 4.40625 5.85417 4.96875C5.1875 5.53125 4.65278 6.20833 4.25 7Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/language/default/20px.svg"
     },
-    {
-      "importName": "Menu",
-      "figmaName": "Icon/Menu",
-      "figmaNodeId": "184:105",
-      "requiredBySource": true
+    "light_mode": {
+      "figmaName": "Icon/Material/light_mode",
+      "figmaNodeId": "1304:4",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M11.7708 11.7708C12.2569 11.2847 12.5 10.6944 12.5 10C12.5 9.30556 12.2569 8.71528 11.7708 8.22917C11.2847 7.74306 10.6944 7.5 10 7.5C9.30556 7.5 8.71528 7.74306 8.22917 8.22917C7.74306 8.71528 7.5 9.30556 7.5 10C7.5 10.6944 7.74306 11.2847 8.22917 11.7708C8.71528 12.2569 9.30556 12.5 10 12.5C10.6944 12.5 11.2847 12.2569 11.7708 11.7708ZM7.16667 12.8333C6.38889 12.0556 6 11.1111 6 10C6 8.88889 6.38889 7.94444 7.16667 7.16667C7.94444 6.38889 8.88889 6 10 6C11.1111 6 12.0556 6.38889 12.8333 7.16667C13.6111 7.94444 14 8.88889 14 10C14 11.1111 13.6111 12.0556 12.8333 12.8333C12.0556 13.6111 11.1111 14 10 14C8.88889 14 7.94444 13.6111 7.16667 12.8333ZM4.5 10.75H1V9.25H4.5V10.75ZM19 10.75H15.5V9.25H19V10.75ZM9.25 4.5V1H10.75V4.5H9.25ZM9.25 19V15.5H10.75V19H9.25ZM5.60417 6.625L3.45833 4.54167L4.52083 3.39583L6.64583 5.5625L5.60417 6.625ZM15.4792 16.5208L13.375 14.4167L14.3958 13.3542L16.5417 15.4583L15.4792 16.5208ZM13.3333 5.60417L15.4583 3.5L16.5208 4.52083L14.4375 6.66667L13.3333 5.60417ZM3.39583 15.4792L5.58333 13.4167L6.60417 14.3958L4.5625 16.5625L3.39583 15.4792Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/light_mode/default/20px.svg"
     },
-    {
-      "importName": "MessageCircle",
-      "figmaName": "Icon/MessageCircle",
-      "figmaNodeId": "184:112",
-      "requiredBySource": true
+    "link": {
+      "figmaName": "Icon/Material/link",
+      "figmaNodeId": "1007:134",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M9 14H6C4.89333 14 3.95 13.6095 3.17 12.8285C2.39 12.0477 2 11.1033 2 9.99521C2 8.88729 2.39 7.94444 3.17 7.16667C3.95 6.38889 4.89333 6 6 6H9V7.5H6C5.30556 7.5 4.71528 7.74306 4.22917 8.22917C3.74306 8.71528 3.5 9.30556 3.5 10C3.5 10.6944 3.74306 11.2847 4.22917 11.7708C4.71528 12.2569 5.30556 12.5 6 12.5H9V14ZM7 10.75V9.25H13V10.75H7ZM11 14V12.5H14C14.6944 12.5 15.2847 12.2569 15.7708 11.7708C16.2569 11.2847 16.5 10.6944 16.5 10C16.5 9.30556 16.2569 8.71528 15.7708 8.22917C15.2847 7.74306 14.6944 7.5 14 7.5H11V6H14C15.1067 6 16.05 6.39049 16.83 7.17146C17.61 7.95229 18 8.89674 18 10.0048C18 11.1127 17.61 12.0556 16.83 12.8333C16.05 13.6111 15.1067 14 14 14H11Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/link/default/20px.svg"
     },
-    {
-      "importName": "Minus",
-      "figmaName": "Icon/Minus",
-      "figmaNodeId": "185:65",
-      "requiredBySource": true
+    "location_on": {
+      "figmaName": "Icon/Material/location_on",
+      "figmaNodeId": "1008:319",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M11.0625 9.5625C11.3542 9.27083 11.5 8.91667 11.5 8.5C11.5 8.08333 11.3542 7.72917 11.0625 7.4375C10.7708 7.14583 10.4167 7 10 7C9.58333 7 9.22917 7.14583 8.9375 7.4375C8.64583 7.72917 8.5 8.08333 8.5 8.5C8.5 8.91667 8.64583 9.27083 8.9375 9.5625C9.22917 9.85417 9.58333 10 10 10C10.4167 10 10.7708 9.85417 11.0625 9.5625ZM10 16.0208C11.6528 14.5347 12.8993 13.1667 13.7396 11.9167C14.5799 10.6667 15 9.54861 15 8.5625C15 7.10417 14.5243 5.89583 13.5729 4.9375C12.6215 3.97917 11.4306 3.5 10 3.5C8.56944 3.5 7.37847 3.97917 6.42708 4.9375C5.47569 5.89583 5 7.10417 5 8.5625C5 9.54861 5.42014 10.6667 6.26042 11.9167C7.10069 13.1667 8.34722 14.5347 10 16.0208ZM10 18C7.81944 16.1806 6.19097 14.4896 5.11458 12.9271C4.03819 11.3646 3.5 9.90972 3.5 8.5625C3.5 6.70139 4.11806 5.14236 5.35417 3.88542C6.59028 2.62847 8.13889 2 10 2C11.8472 2 13.3924 2.62847 14.6354 3.88542C15.8785 5.14236 16.5 6.70139 16.5 8.5625C16.5 9.90972 15.9653 11.3611 14.8958 12.9167C13.8264 14.4722 12.1944 16.1667 10 18Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/location_on/default/20px.svg"
     },
-    {
-      "importName": "Moon",
-      "figmaName": "Icon/Moon",
-      "figmaNodeId": "185:70",
-      "requiredBySource": true
+    "mail": {
+      "figmaName": "Icon/Material/mail",
+      "figmaNodeId": "1008:328",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M2 16V4H18V16H2ZM10 11L3.5 7.27083V14.5H16.5V7.27083L10 11ZM10 9.25L16.4792 5.5H3.54167L10 9.25ZM3.5 7.27083V5.5V14.5V7.27083Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/mail/default/20px.svg"
     },
-    {
-      "importName": "PanelsTopLeft",
-      "figmaName": "Icon/PanelsTopLeft",
-      "figmaNodeId": "185:75",
-      "requiredBySource": true
+    "open_in_full": {
+      "figmaName": "Icon/Material/open_in_full",
+      "figmaNodeId": "1050:22",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M3 17V11H4.5V14.4375L14.4375 4.5H11V3H17V9H15.5V5.5625L5.5625 15.5H9V17H3Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/open_in_full/default/20px.svg"
     },
-    {
-      "importName": "RotateCcw",
-      "figmaName": "Icon/RotateCcw",
-      "figmaNodeId": "185:82",
-      "requiredBySource": false
+    "open_in_new": {
+      "figmaName": "Icon/Material/open_in_new",
+      "figmaNodeId": "1050:27",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M3 17V3H10V4.5H4.5V15.5H15.5V10H17V17H3ZM8.0625 13L7 11.9375L14.4375 4.5H12V3H17V8H15.5V5.5625L8.0625 13Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/open_in_new/default/20px.svg"
     },
-    {
-      "importName": "Ruler",
-      "figmaName": "Icon/Ruler",
-      "figmaNodeId": "565:30",
-      "requiredBySource": true
+    "pause": {
+      "figmaName": "Icon/Material/pause",
+      "figmaNodeId": "1130:82",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M11 16V4H16V16H11ZM4 16V4H9V16H4ZM12.5 14.5H14.5V5.5H12.5V14.5ZM5.5 14.5H7.5V5.5H5.5V14.5Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/pause/default/20px.svg"
     },
-    {
-      "importName": "Search",
-      "figmaName": "Icon/Search",
-      "figmaNodeId": "184:117",
-      "requiredBySource": true
+    "play_arrow": {
+      "figmaName": "Icon/Material/play_arrow",
+      "figmaNodeId": "1130:76",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M5.75 15.5V4.5L14.25 10L5.75 15.5ZM7.25 12.75L11.5 10L7.25 7.25V12.75Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/play_arrow/default/20px.svg"
     },
-    {
-      "importName": "Send",
-      "figmaName": "Icon/Send",
-      "figmaNodeId": "184:123",
-      "requiredBySource": true
+    "refresh": {
+      "figmaName": "Icon/Material/refresh",
+      "figmaNodeId": "1050:37",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10 16C8.33333 16 6.91667 15.4167 5.75 14.25C4.58333 13.0833 4 11.6667 4 10C4 8.33333 4.58333 6.91667 5.75 5.75C6.91667 4.58333 8.33333 4 10 4C10.9028 4 11.7396 4.1875 12.5104 4.5625C13.2812 4.9375 13.9444 5.4375 14.5 6.0625V4H16V9H11V7.5H13.7292C13.3264 6.88889 12.7986 6.40278 12.1458 6.04167C11.4931 5.68056 10.7778 5.5 10 5.5C8.75 5.5 7.6875 5.9375 6.8125 6.8125C5.9375 7.6875 5.5 8.75 5.5 10C5.5 11.25 5.9375 12.3125 6.8125 13.1875C7.6875 14.0625 8.75 14.5 10 14.5C11.1667 14.5 12.1667 14.1146 13 13.3438C13.8333 12.5729 14.3125 11.625 14.4375 10.5H15.9792C15.8542 12.0556 15.2222 13.3611 14.0833 14.4167C12.9444 15.4722 11.5833 16 10 16Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/refresh/default/20px.svg"
     },
-    {
-      "importName": "ShieldCheck",
-      "figmaName": "Icon/ShieldCheck",
-      "figmaNodeId": "520:21",
-      "requiredBySource": true
+    "remove": {
+      "figmaName": "Icon/Material/remove",
+      "figmaNodeId": "1050:7",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M4.83334 10.75V9.25H15.1667V10.75H4.83334Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/remove/default/20px.svg"
     },
-    {
-      "importName": "Sparkles",
-      "figmaName": "Icon/Sparkles",
-      "figmaNodeId": "185:88",
-      "requiredBySource": false
+    "search": {
+      "figmaName": "Icon/Material/search",
+      "figmaNodeId": "1007:35",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M15.9375 17L10.9583 12.0208C10.5417 12.3264 10.0848 12.566 9.58771 12.7396C9.09062 12.9132 8.5616 13 8.00063 13C6.61132 13 5.43056 12.5139 4.45833 11.5417C3.48611 10.5694 3 9.38889 3 8C3 6.61111 3.48611 5.43056 4.45833 4.45833C5.43056 3.48611 6.61111 3 8 3C9.38889 3 10.5694 3.48611 11.5417 4.45833C12.5139 5.43056 13 6.61132 13 8.00063C13 8.5616 12.9132 9.09062 12.7396 9.58771C12.566 10.0848 12.3264 10.5417 12.0208 10.9583L17 15.9375L15.9375 17ZM8 11.5C8.97222 11.5 9.79861 11.1597 10.4792 10.4792C11.1597 9.79861 11.5 8.97222 11.5 8C11.5 7.02778 11.1597 6.20139 10.4792 5.52083C9.79861 4.84028 8.97222 4.5 8 4.5C7.02778 4.5 6.20139 4.84028 5.52083 5.52083C4.84028 6.20139 4.5 7.02778 4.5 8C4.5 8.97222 4.84028 9.79861 5.52083 10.4792C6.20139 11.1597 7.02778 11.5 8 11.5Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/search/default/20px.svg"
     },
-    {
-      "importName": "SquareCheck",
-      "figmaName": "Icon/SquareCheck",
-      "figmaNodeId": "185:96",
-      "requiredBySource": true
+    "shield_lock": {
+      "figmaName": "Icon/Material/shield_lock",
+      "figmaNodeId": "1008:330",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M10 18C8.125 17.5417 6.57292 16.4803 5.34375 14.8158C4.11458 13.1513 3.5 11.3029 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.3029 15.8854 13.1513 14.6562 14.8158C13.4271 16.4803 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9896 12.6389 15.0938 13.5833 13.75C14.5278 12.4062 15 10.9132 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9132 5.47222 12.4062 6.41667 13.75C7.36111 15.0938 8.55556 15.9896 10 16.4375ZM7.5 12.5H12.5V8.5H11.5V8C11.5 7.5875 11.3527 7.23438 11.0581 6.94063C10.7635 6.64688 10.4094 6.5 9.99563 6.5C9.58187 6.5 9.22917 6.64688 8.9375 6.94063C8.64583 7.23438 8.5 7.5875 8.5 8V8.5H7.5V12.5ZM9.25 8.5V8C9.25 7.7875 9.32146 7.60937 9.46438 7.46562C9.60729 7.32187 9.78438 7.25 9.99563 7.25C10.2069 7.25 10.3854 7.32187 10.5312 7.46562C10.6771 7.60937 10.75 7.7875 10.75 8V8.5H9.25Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/shield_lock/default/20px.svg"
     },
-    {
-      "importName": "Star",
-      "figmaName": "Icon/Star",
-      "figmaNodeId": "524:3",
-      "requiredBySource": true
+    "star_rate": {
+      "figmaName": "Icon/Material/star_rate",
+      "figmaNodeId": "1008:325",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M7.875 13.9792L10 12.3542L12.125 13.9792L11.3333 11.3958L13.7083 9.5H10.8542L10 6.875L9.16667 9.5H6.29167L8.6875 11.3958L7.875 13.9792ZM5.0625 18L6.9375 11.9375L2 8H8.0625L10 2L11.9375 8H18L13.0625 11.9375L14.9375 18L10 14.25L5.0625 18Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/star_rate/default/20px.svg"
     },
-    {
-      "importName": "Sun",
-      "figmaName": "Icon/Sun",
-      "figmaNodeId": "185:102",
-      "requiredBySource": true
+    "trending_down": {
+      "figmaName": "Icon/Material/trending_down",
+      "figmaNodeId": "1050:47",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M13 14.8229V13.3229H15.4375L11.0208 8.92709L7.85417 12.0938L2 6.23959L3.0625 5.17709L7.85417 9.96876L11.0208 6.80209L16.5 12.2604V9.82293H18V14.8229H13Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/trending_down/default/20px.svg"
     },
-    {
-      "importName": "SwatchBook",
-      "figmaName": "Icon/SwatchBook",
-      "figmaNodeId": "565:43",
-      "requiredBySource": true
+    "trending_up": {
+      "figmaName": "Icon/Material/trending_up",
+      "figmaNodeId": "1050:42",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M3.0625 14.8229L2 13.7604L7.85417 7.90626L11.0208 11.0729L15.4375 6.67709H13V5.17709H18V10.1771H16.5V7.73959L11.0208 13.1979L7.85417 10.0313L3.0625 14.8229Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/trending_up/default/20px.svg"
     },
-    {
-      "importName": "TrendingDown",
-      "figmaName": "Icon/TrendingDown",
-      "figmaNodeId": "185:115",
-      "requiredBySource": true
+    "upload": {
+      "figmaName": "Icon/Material/upload",
+      "figmaNodeId": "1050:17",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M9.25 13.5V6.375L7.0625 8.5625L6 7.5L10 3.5L14 7.5L12.9375 8.5625L10.75 6.375V13.5H9.25ZM4 16.5V13.5H5.5V15H14.5V13.5H16V16.5H4Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/upload/default/20px.svg"
     },
-    {
-      "importName": "TrendingUp",
-      "figmaName": "Icon/TrendingUp",
-      "figmaNodeId": "185:121",
-      "requiredBySource": true
+    "verified": {
+      "figmaName": "Icon/Material/verified",
+      "figmaNodeId": "1008:324",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M7.22917 18.5L5.66667 15.9167L2.72917 15.25L3 12.25L1 10L3 7.75L2.72917 4.75L5.66667 4.08333L7.22917 1.5L10 2.6875L12.7708 1.5L14.3333 4.08333L17.2708 4.75L17 7.75L19 10L17 12.25L17.2708 15.25L14.3333 15.9167L12.7708 18.5L10 17.3125L7.22917 18.5ZM7.83333 16.6042L10 15.6875L12.1667 16.6042L13.375 14.5833L15.6667 14.0625L15.4583 11.75L17 10L15.4583 8.25L15.6667 5.9375L13.375 5.41667L12.1667 3.39583L10 4.3125L7.83333 3.39583L6.625 5.41667L4.33333 5.91667L4.54167 8.25L3 10L4.5625 11.75L4.33333 14.0833L6.625 14.6042L7.83333 16.6042ZM8.9375 13L13.8958 8.0625L12.8333 7L8.9375 10.875L7.16667 9.125L6.10417 10.1875L8.9375 13Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/verified/default/20px.svg"
     },
-    {
-      "importName": "TriangleAlert",
-      "figmaName": "Icon/TriangleAlert",
-      "figmaNodeId": "184:129",
-      "requiredBySource": true
+    "verified_user": {
+      "figmaName": "Icon/Material/verified_user",
+      "figmaNodeId": "1008:322",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M9.125 12.9375L13.7083 8.33333L12.6458 7.27083L9.125 10.8125L7.35417 9.04167L6.29167 10.1042L9.125 12.9375ZM10 18C8.125 17.5417 6.57292 16.4803 5.34375 14.8158C4.11458 13.1513 3.5 11.3029 3.5 9.27083V4.5L10 2L16.5 4.5V9.27083C16.5 11.3029 15.8854 13.1513 14.6562 14.8158C13.4271 16.4803 11.875 17.5417 10 18ZM10 16.4375C11.4444 15.9896 12.6389 15.0938 13.5833 13.75C14.5278 12.4062 15 10.9132 15 9.27083V5.52083L10 3.60417L5 5.52083V9.27083C5 10.9132 5.47222 12.4062 6.41667 13.75C7.36111 15.0938 8.55556 15.9896 10 16.4375Z"
+      ],
+      "requiredBySource": false,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/verified_user/default/20px.svg"
     },
-    {
-      "importName": "Upload",
-      "figmaName": "Icon/Upload",
-      "figmaNodeId": "184:136",
-      "requiredBySource": true
+    "visibility": {
+      "figmaName": "Icon/Material/visibility",
+      "figmaNodeId": "1130:46",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M12.4792 12.4792C13.1597 11.7986 13.5 10.9722 13.5 10C13.5 9.02778 13.1597 8.20139 12.4792 7.52083C11.7986 6.84028 10.9722 6.5 10 6.5C9.02778 6.5 8.20139 6.84028 7.52083 7.52083C6.84028 8.20139 6.5 9.02778 6.5 10C6.5 10.9722 6.84028 11.7986 7.52083 12.4792C8.20139 13.1597 9.02778 13.5 10 13.5C10.9722 13.5 11.7986 13.1597 12.4792 12.4792ZM8.58333 11.4167C8.19444 11.0278 8 10.5556 8 10C8 9.44444 8.19444 8.97222 8.58333 8.58333C8.97222 8.19444 9.44444 8 10 8C10.5556 8 11.0278 8.19444 11.4167 8.58333C11.8056 8.97222 12 9.44444 12 10C12 10.5556 11.8056 11.0278 11.4167 11.4167C11.0278 11.8056 10.5556 12 10 12C9.44444 12 8.97222 11.8056 8.58333 11.4167ZM4.58333 14.3646C2.95833 13.2743 1.76389 11.8194 1 10C1.76389 8.18056 2.95833 6.72569 4.58333 5.63542C6.20833 4.54514 8.01389 4 10 4C11.9861 4 13.7917 4.54514 15.4167 5.63542C17.0417 6.72569 18.2361 8.18056 19 10C18.2361 11.8194 17.0417 13.2743 15.4167 14.3646C13.7917 15.4549 11.9861 16 10 16C8.01389 16 6.20833 15.4549 4.58333 14.3646ZM14.3125 13.2917C15.6319 12.4861 16.6458 11.3889 17.3542 10C16.6458 8.61111 15.6319 7.51389 14.3125 6.70833C12.9931 5.90278 11.5556 5.5 10 5.5C8.44444 5.5 7.00694 5.90278 5.6875 6.70833C4.36806 7.51389 3.35417 8.61111 2.64583 10C3.35417 11.3889 4.36806 12.4861 5.6875 13.2917C7.00694 14.0972 8.44444 14.5 10 14.5C11.5556 14.5 12.9931 14.0972 14.3125 13.2917Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/visibility/default/20px.svg"
     },
-    {
-      "importName": "UserRound",
-      "figmaName": "Icon/UserRound",
-      "figmaNodeId": "185:127",
-      "requiredBySource": false
+    "visibility_off": {
+      "figmaName": "Icon/Material/visibility_off",
+      "figmaNodeId": "1130:52",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M13.2708 10.625L11.9792 9.33334C12.0347 8.80557 11.875 8.35071 11.5 7.96876C11.125 7.58682 10.6736 7.42362 10.1458 7.47918L8.85417 6.18751C9.03472 6.11807 9.22222 6.06598 9.41667 6.03126C9.61111 5.99654 9.80556 5.97918 10 5.97918C10.9722 5.97918 11.7986 6.31945 12.4792 7.00001C13.1597 7.68057 13.5 8.50695 13.5 9.47918C13.5 9.67362 13.4826 9.86807 13.4479 10.0625C13.4132 10.257 13.3542 10.4445 13.2708 10.625ZM16.0417 13.3958L14.9583 12.3125C15.4583 11.9236 15.9132 11.4965 16.3229 11.0313C16.7326 10.566 17.0764 10.0486 17.3542 9.47918C16.6736 8.0764 15.6701 6.9757 14.3438 6.17709C13.0174 5.37848 11.5694 4.97918 10 4.97918C9.63889 4.97918 9.28472 5.00001 8.9375 5.04168C8.59028 5.08334 8.25 5.15279 7.91667 5.25001L6.70833 4.04168C7.23611 3.83334 7.77431 3.68751 8.32292 3.60418C8.87153 3.52084 9.43056 3.47918 10 3.47918C11.9861 3.47918 13.8021 4.01737 15.4479 5.09376C17.0938 6.17015 18.2778 7.63195 19 9.47918C18.6944 10.2708 18.2882 10.9896 17.7812 11.6354C17.2743 12.2813 16.6944 12.8681 16.0417 13.3958ZM16 17.6042L13.2917 14.8958C12.7639 15.0903 12.2257 15.2361 11.6771 15.3333C11.1285 15.4306 10.5694 15.4792 10 15.4792C8.01389 15.4792 6.19792 14.941 4.55208 13.8646C2.90625 12.7882 1.72222 11.3264 1 9.47918C1.30556 8.68751 1.70833 7.96529 2.20833 7.31251C2.70833 6.65973 3.29167 6.06945 3.95833 5.54168L1.875 3.45834L2.9375 2.39584L17.0625 16.5417L16 17.6042ZM5.02083 6.62501C4.53472 7.0139 4.08333 7.44098 3.66667 7.90626C3.25 8.37154 2.90972 8.89584 2.64583 9.47918C3.32639 10.882 4.32986 11.9826 5.65625 12.7813C6.98264 13.5799 8.43056 13.9792 10 13.9792C10.3611 13.9792 10.7153 13.9549 11.0625 13.9063C11.4097 13.8576 11.7569 13.7917 12.1042 13.7083L11.1667 12.7708C10.9722 12.8403 10.7778 12.8924 10.5833 12.9271C10.3889 12.9618 10.1944 12.9792 10 12.9792C9.02778 12.9792 8.20139 12.6389 7.52083 11.9583C6.84028 11.2778 6.5 10.4514 6.5 9.47918C6.5 9.28473 6.52431 9.09029 6.57292 8.89584C6.62153 8.7014 6.66667 8.50696 6.70833 8.31251L5.02083 6.62501Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/visibility_off/default/20px.svg"
     },
-    {
-      "importName": "Users",
-      "figmaName": "Icon/Users",
-      "figmaNodeId": "185:133",
-      "requiredBySource": false
-    },
-    {
-      "importName": "Workflow",
-      "figmaName": "Icon/Workflow",
-      "figmaNodeId": "185:141",
-      "requiredBySource": false
-    },
-    {
-      "importName": "X",
-      "figmaName": "Icon/X",
-      "figmaNodeId": "184:143",
-      "requiredBySource": true
+    "warning": {
+      "figmaName": "Icon/Material/warning",
+      "figmaNodeId": "1130:58",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M1 17.5L10 2.5L19 17.5H1ZM3.64583 16H16.3542L10 5.41667L3.64583 16ZM10.5312 14.7856C10.6771 14.6427 10.75 14.4656 10.75 14.2544C10.75 14.0431 10.6785 13.8646 10.5356 13.7188C10.3927 13.5729 10.2156 13.5 10.0044 13.5C9.79312 13.5 9.61458 13.5715 9.46875 13.7144C9.32292 13.8573 9.25 14.0344 9.25 14.2456C9.25 14.4569 9.32146 14.6354 9.46438 14.7812C9.60729 14.9271 9.78438 15 9.99563 15C10.2069 15 10.3854 14.9285 10.5312 14.7856ZM9.25 12.5H10.75V8.5H9.25V12.5Z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/warning/default/20px.svg"
     }
-  ]
+  },
+  "social": {
+    "provider": {
+      "id": "canonical-figma-social-icons",
+      "name": "Social Icons",
+      "source": "Canonical project Figma component set",
+      "license": "project-supplied"
+    },
+    "figma": {
+      "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
+      "pageId": "184:2",
+      "componentSetId": "964:9411",
+      "componentSetName": "Social Icons",
+      "platformProperty": "Platform",
+      "colorProperty": "Color",
+      "originalVariant": "Original",
+      "monochromeSourceVariant": "Negative",
+      "platformCount": 26,
+      "variantCount": 52
+    },
+    "astro": {
+      "component": "src/components/assets/icons/SocialIcons.astro",
+      "rendering": "local-inline-svg",
+      "networkRequestsAtRuntime": 0,
+      "colorVariants": [
+        "brand",
+        "monochrome"
+      ],
+      "defaultVariant": "brand",
+      "monochromeColorInheritance": "currentColor",
+      "sizingOwner": "consumer-parent",
+      "width": "100%",
+      "height": "100%",
+      "preserveAspectRatio": "xMidYMid meet"
+    },
+    "platforms": {
+      "facebook": {
+        "label": "Facebook",
+        "figmaPlatform": "Facebook",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9565",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-facebook-brand-Platform=Facebook, Color=Original\" clip-path=\"url(#social-facebook-brand-clip0_964_9565)\">\n<path id=\"social-facebook-brand-c\" d=\"M15.6923 7.84615C15.6923 3.51288 12.1794 0 7.84615 0C3.51288 0 0 3.51288 0 7.84615C0 11.5257 2.53337 14.6133 5.95084 15.4613V10.2439H4.33296V7.84615H5.95084V6.81297C5.95084 4.14246 7.15946 2.90465 9.78133 2.90465C10.2785 2.90465 11.1362 3.00225 11.4871 3.09954V5.27293C11.3019 5.25347 10.9802 5.24374 10.5807 5.24374C9.29424 5.24374 8.79711 5.73114 8.79711 6.99814V7.84615H11.36L10.9196 10.2439H8.79711V15.6349C12.6822 15.1657 15.6926 11.8577 15.6926 7.84615H15.6923Z\" fill=\"#0866FF\"/>\n<path id=\"social-facebook-brand-d\" d=\"M10.9193 10.2439L11.3597 7.84614H8.79679V6.99813C8.79679 5.73113 9.29392 5.24373 10.5804 5.24373C10.9799 5.24373 11.3016 5.25346 11.4868 5.27292V3.09953C11.1359 3.00192 10.2781 2.90463 9.78101 2.90463C7.15914 2.90463 5.95052 4.14244 5.95052 6.81296V7.84614H4.33264V10.2439H5.95052V15.4613C6.5575 15.6119 7.19241 15.6923 7.84584 15.6923C8.16753 15.6923 8.48483 15.6725 8.79648 15.6349V10.2439H10.919H10.9193Z\" fill=\"white\"/>\n</g>\n<defs>\n<clipPath id=\"social-facebook-brand-clip0_964_9565\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9466",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-facebook-monochrome-Platform=Facebook, Color=Negative\" clip-path=\"url(#social-facebook-monochrome-clip0_964_9466)\">\n<path id=\"social-facebook-monochrome-Vector\" d=\"M7.84615 0C3.51288 0 0 3.51288 0 7.84615C0 11.5257 2.53337 14.6133 5.95084 15.4613V10.2439H4.33296V7.84615H5.95084V6.81297C5.95084 4.14246 7.15946 2.90465 9.78133 2.90465C10.2785 2.90465 11.1362 3.00225 11.4871 3.09954V5.27293C11.3019 5.25347 10.9802 5.24374 10.5807 5.24374C9.29424 5.24374 8.79711 5.73114 8.79711 6.99814V7.84615H11.36L10.9196 10.2439H8.79711V15.6349C12.6822 15.1657 15.6926 11.8577 15.6926 7.84615C15.6923 3.51288 12.1794 0 7.84615 0Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-facebook-monochrome-clip0_964_9466\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "x": {
+        "label": "X (Twitter)",
+        "figmaPlatform": "X (Twitter)",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9563",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-x-brand-Platform=X (Twitter), Color=Original\">\n<path id=\"social-x-brand-Vector\" d=\"M11.9825 1.24487H14.1883L9.36939 6.75254L15.0384 14.2472H10.5996L7.12299 9.70174L3.14493 14.2472H0.93786L6.09213 8.35617L0.653809 1.24487H5.2053L8.34787 5.39963L11.9825 1.24487ZM11.2084 12.927H12.4306L4.54118 2.49577H3.22961L11.2084 12.927Z\" fill=\"black\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9464",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-x-monochrome-Platform=X (Twitter), Color=Negative\">\n<path id=\"social-x-monochrome-Vector\" d=\"M11.9825 1.24487H14.1883L9.36939 6.75254L15.0384 14.2472H10.5996L7.12299 9.70174L3.14493 14.2472H0.93786L6.09213 8.35616L0.653809 1.24487H5.2053L8.34788 5.39963L11.9825 1.24487ZM11.2084 12.927H12.4306L4.54118 2.49577H3.22961L11.2084 12.927Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "instagram": {
+        "label": "Instagram",
+        "figmaPlatform": "Instagram",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9559",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-instagram-brand-Platform=Instagram, Color=Original\" clip-path=\"url(#social-instagram-brand-clip0_964_9559)\">\n<path id=\"social-instagram-brand-Vector\" d=\"M7.84615 1.41292C9.94255 1.41292 10.1908 1.42212 11.0153 1.45889C11.7815 1.49261 12.1953 1.62133 12.4711 1.72861C12.8358 1.86959 13.0994 2.04123 13.3722 2.314C13.648 2.58984 13.8166 2.85036 13.9576 3.21508C14.0648 3.49093 14.1936 3.90775 14.2273 4.67091C14.2641 5.49844 14.2733 5.74669 14.2733 7.84002C14.2733 9.93642 14.2641 10.1847 14.2273 11.0091C14.1936 11.7754 14.0648 12.1891 13.9576 12.465C13.8166 12.8297 13.645 13.0933 13.3722 13.366C13.0963 13.6419 12.8358 13.8105 12.4711 13.9514C12.1953 14.0587 11.7784 14.1874 11.0153 14.2212C10.1877 14.2579 9.93948 14.2671 7.84615 14.2671C5.74976 14.2671 5.5015 14.2579 4.67704 14.2212C3.91082 14.1874 3.49706 14.0587 3.22121 13.9514C2.85649 13.8105 2.59291 13.6388 2.32013 13.366C2.04429 13.0902 1.87572 12.8297 1.73474 12.465C1.62746 12.1891 1.49874 11.7723 1.46502 11.0091C1.42825 10.1816 1.41905 9.93335 1.41905 7.84002C1.41905 5.74363 1.42825 5.49537 1.46502 4.67091C1.49874 3.90469 1.62746 3.49093 1.73474 3.21508C1.87572 2.85036 2.04736 2.58678 2.32013 2.314C2.59597 2.03816 2.85649 1.86959 3.22121 1.72861C3.49706 1.62133 3.91388 1.49261 4.67704 1.45889C5.5015 1.42212 5.74976 1.41292 7.84615 1.41292ZM7.84615 0C5.71605 0 5.4494 0.00919471 4.61268 0.0459736C3.77903 0.0827524 3.20589 0.217608 2.70938 0.410697C2.19141 0.612981 1.75313 0.879627 1.31791 1.31791C0.879627 1.75312 0.612981 2.19141 0.410697 2.70631C0.217608 3.20589 0.0827524 3.77596 0.0459736 4.60962C0.00919471 5.4494 0 5.71605 0 7.84615C0 9.97626 0.00919471 10.2429 0.0459736 11.0796C0.0827524 11.9133 0.217608 12.4864 0.410697 12.9829C0.612981 13.5009 0.879627 13.9392 1.31791 14.3744C1.75313 14.8096 2.19141 15.0793 2.70631 15.2785C3.20589 15.4716 3.77596 15.6065 4.60962 15.6433C5.44633 15.68 5.71298 15.6892 7.84309 15.6892C9.9732 15.6892 10.2398 15.68 11.0766 15.6433C11.9102 15.6065 12.4834 15.4716 12.9799 15.2785C13.4948 15.0793 13.9331 14.8096 14.3683 14.3744C14.8035 13.9392 15.0732 13.5009 15.2724 12.986C15.4655 12.4864 15.6004 11.9163 15.6371 11.0827C15.6739 10.246 15.6831 9.97933 15.6831 7.84922C15.6831 5.71911 15.6739 5.45246 15.6371 4.61575C15.6004 3.78209 15.4655 3.20895 15.2724 2.71244C15.0793 2.19141 14.8127 1.75312 14.3744 1.31791C13.9392 0.882692 13.5009 0.612981 12.986 0.413762C12.4864 0.220673 11.9163 0.0858173 11.0827 0.0490385C10.2429 0.00919471 9.97626 0 7.84615 0Z\" fill=\"#000100\"/>\n<path id=\"social-instagram-brand-Vector_2\" d=\"M7.84614 3.8158C5.62102 3.8158 3.8158 5.62102 3.8158 7.84614C3.8158 10.0713 5.62102 11.8765 7.84614 11.8765C10.0713 11.8765 11.8765 10.0713 11.8765 7.84614C11.8765 5.62102 10.0713 3.8158 7.84614 3.8158ZM7.84614 10.4605C6.40257 10.4605 5.23178 9.28971 5.23178 7.84614C5.23178 6.40257 6.40257 5.23178 7.84614 5.23178C9.28971 5.23178 10.4605 6.40257 10.4605 7.84614C10.4605 9.28971 9.28971 10.4605 7.84614 10.4605Z\" fill=\"#000100\"/>\n<path id=\"social-instagram-brand-Vector_3\" d=\"M12.9768 3.65644C12.9768 4.17748 12.5539 4.59737 12.0359 4.59737C11.5149 4.59737 11.095 4.17441 11.095 3.65644C11.095 3.13541 11.5179 2.71552 12.0359 2.71552C12.5539 2.71552 12.9768 3.13847 12.9768 3.65644Z\" fill=\"#000100\"/>\n</g>\n<defs>\n<clipPath id=\"social-instagram-brand-clip0_964_9559\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9460",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-instagram-monochrome-Platform=Instagram, Color=Negative\" clip-path=\"url(#social-instagram-monochrome-clip0_964_9460)\">\n<path id=\"social-instagram-monochrome-Vector\" d=\"M7.84615 1.41292C9.94255 1.41292 10.1908 1.42212 11.0153 1.45889C11.7815 1.49261 12.1953 1.62133 12.4711 1.72861C12.8358 1.86959 13.0994 2.04123 13.3722 2.314C13.648 2.58984 13.8166 2.85036 13.9576 3.21508C14.0648 3.49093 14.1936 3.90775 14.2273 4.67091C14.2641 5.49844 14.2733 5.74669 14.2733 7.84002C14.2733 9.93642 14.2641 10.1847 14.2273 11.0091C14.1936 11.7754 14.0648 12.1891 13.9576 12.465C13.8166 12.8297 13.645 13.0933 13.3722 13.366C13.0963 13.6419 12.8358 13.8105 12.4711 13.9514C12.1953 14.0587 11.7784 14.1874 11.0153 14.2212C10.1877 14.2579 9.93948 14.2671 7.84615 14.2671C5.74976 14.2671 5.5015 14.2579 4.67704 14.2212C3.91082 14.1874 3.49706 14.0587 3.22121 13.9514C2.85649 13.8105 2.59291 13.6388 2.32013 13.366C2.04429 13.0902 1.87572 12.8297 1.73474 12.465C1.62746 12.1891 1.49874 11.7723 1.46502 11.0091C1.42825 10.1816 1.41905 9.93335 1.41905 7.84002C1.41905 5.74363 1.42825 5.49537 1.46502 4.67091C1.49874 3.90469 1.62746 3.49093 1.73474 3.21508C1.87572 2.85036 2.04736 2.58678 2.32013 2.314C2.59597 2.03816 2.85649 1.86959 3.22121 1.72861C3.49706 1.62133 3.91388 1.49261 4.67704 1.45889C5.5015 1.42212 5.74976 1.41292 7.84615 1.41292ZM7.84615 0C5.71605 0 5.4494 0.00919471 4.61268 0.0459736C3.77903 0.0827524 3.20589 0.217608 2.70938 0.410697C2.19141 0.612981 1.75313 0.879627 1.31791 1.31791C0.879627 1.75312 0.612981 2.19141 0.410697 2.70631C0.217608 3.20589 0.0827524 3.77596 0.0459736 4.60962C0.00919471 5.4494 0 5.71605 0 7.84615C0 9.97626 0.00919471 10.2429 0.0459736 11.0796C0.0827524 11.9133 0.217608 12.4864 0.410697 12.9829C0.612981 13.5009 0.879627 13.9392 1.31791 14.3744C1.75313 14.8096 2.19141 15.0793 2.70631 15.2785C3.20589 15.4716 3.77596 15.6065 4.60962 15.6433C5.44633 15.68 5.71298 15.6892 7.84309 15.6892C9.9732 15.6892 10.2398 15.68 11.0766 15.6433C11.9102 15.6065 12.4834 15.4716 12.9799 15.2785C13.4948 15.0793 13.9331 14.8096 14.3683 14.3744C14.8035 13.9392 15.0732 13.5009 15.2724 12.986C15.4655 12.4864 15.6004 11.9163 15.6371 11.0827C15.6739 10.246 15.6831 9.97933 15.6831 7.84922C15.6831 5.71911 15.6739 5.45246 15.6371 4.61575C15.6004 3.78209 15.4655 3.20895 15.2724 2.71244C15.0793 2.19141 14.8127 1.75312 14.3744 1.31791C13.9392 0.882692 13.5009 0.612981 12.986 0.413762C12.4864 0.220673 11.9163 0.0858173 11.0827 0.0490385C10.2429 0.00919471 9.97626 0 7.84615 0Z\" fill=\"currentColor\"/>\n<path id=\"social-instagram-monochrome-Vector_2\" d=\"M7.84614 3.8158C5.62102 3.8158 3.8158 5.62102 3.8158 7.84614C3.8158 10.0713 5.62102 11.8765 7.84614 11.8765C10.0713 11.8765 11.8765 10.0713 11.8765 7.84614C11.8765 5.62102 10.0713 3.8158 7.84614 3.8158ZM7.84614 10.4605C6.40257 10.4605 5.23178 9.28971 5.23178 7.84614C5.23178 6.40257 6.40257 5.23178 7.84614 5.23178C9.28971 5.23178 10.4605 6.40257 10.4605 7.84614C10.4605 9.28971 9.28971 10.4605 7.84614 10.4605Z\" fill=\"currentColor\"/>\n<path id=\"social-instagram-monochrome-Vector_3\" d=\"M12.9768 3.65641C12.9768 4.17745 12.5539 4.59734 12.0359 4.59734C11.5149 4.59734 11.095 4.17438 11.095 3.65641C11.095 3.13538 11.5179 2.71548 12.0359 2.71548C12.5539 2.71548 12.9768 3.13844 12.9768 3.65641Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-instagram-monochrome-clip0_964_9460\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "linkedin": {
+        "label": "LinkedIn",
+        "figmaPlatform": "LinkedIn",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9557",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-linkedin-brand-Platform=LinkedIn, Color=Original\" clip-path=\"url(#social-linkedin-brand-clip0_964_9557)\">\n<path id=\"social-linkedin-brand-Vector\" d=\"M14.5339 0H1.1584C0.851171 0 0.556529 0.122045 0.339287 0.339287C0.122045 0.556529 0 0.851171 0 1.1584V14.5339C0 14.8411 0.122045 15.1358 0.339287 15.353C0.556529 15.5703 0.851171 15.6923 1.1584 15.6923H14.5339C14.8411 15.6923 15.1358 15.5703 15.353 15.353C15.5703 15.1358 15.6923 14.8411 15.6923 14.5339V1.1584C15.6923 0.851171 15.5703 0.556529 15.353 0.339287C15.1358 0.122045 14.8411 0 14.5339 0ZM4.67718 13.3679H2.31789V5.87372H4.67718V13.3679ZM3.4959 4.83519C3.22828 4.83369 2.9671 4.75294 2.74533 4.60313C2.52355 4.45333 2.35113 4.24119 2.2498 3.99349C2.14848 3.74578 2.12281 3.47362 2.17602 3.21134C2.22923 2.94905 2.35895 2.70841 2.54879 2.51978C2.73864 2.33115 2.98011 2.20298 3.24273 2.15145C3.50535 2.09993 3.77734 2.12735 4.02439 2.23026C4.27144 2.33317 4.48247 2.50696 4.63084 2.72968C4.77922 2.95241 4.85829 3.21411 4.85808 3.48173C4.8606 3.66091 4.82703 3.83876 4.75935 4.00468C4.69168 4.1706 4.5913 4.3212 4.46418 4.4475C4.33707 4.57381 4.18582 4.67322 4.01947 4.73983C3.85312 4.80644 3.67505 4.83887 3.4959 4.83519ZM13.3733 13.3744H11.0151V9.28026C11.0151 8.07282 10.5019 7.70013 9.8393 7.70013C9.13968 7.70013 8.45314 8.22756 8.45314 9.31077V13.3744H6.09385V5.87917H8.36269V6.91769H8.39321C8.62096 6.45673 9.41865 5.66885 10.6359 5.66885C11.9523 5.66885 13.3744 6.45019 13.3744 8.73865L13.3733 13.3744Z\" fill=\"#0A66C2\"/>\n</g>\n<defs>\n<clipPath id=\"social-linkedin-brand-clip0_964_9557\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9458",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-linkedin-monochrome-Platform=LinkedIn, Color=Negative\" clip-path=\"url(#social-linkedin-monochrome-clip0_964_9458)\">\n<path id=\"social-linkedin-monochrome-Vector\" d=\"M14.5307 0H1.15853C0.517969 0 0 0.505709 0 1.13095V14.5583C0 15.1835 0.517969 15.6923 1.15853 15.6923H14.5307C15.1713 15.6923 15.6923 15.1835 15.6923 14.5614V1.13095C15.6923 0.505709 15.1713 0 14.5307 0ZM4.65559 13.3722H2.32626V5.88155H4.65559V13.3722ZM3.49093 4.86094C2.74309 4.86094 2.1393 4.25715 2.1393 3.51238C2.1393 2.76761 2.74309 2.16382 3.49093 2.16382C4.2357 2.16382 4.83948 2.76761 4.83948 3.51238C4.83948 4.25409 4.2357 4.86094 3.49093 4.86094ZM13.3722 13.3722H11.0459V9.73107C11.0459 8.8637 11.0306 7.74501 9.83528 7.74501C8.62464 7.74501 8.44074 8.69207 8.44074 9.66977V13.3722H6.11755V5.88155H8.3488V6.90523H8.37945C8.689 6.31677 9.4491 5.69459 10.58 5.69459C12.937 5.69459 13.3722 7.24543 13.3722 9.26214V13.3722Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-linkedin-monochrome-clip0_964_9458\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "google": {
+        "label": "Google",
+        "figmaPlatform": "Google",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9544",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-google-brand-Platform=Google, Color=Original\">\n<mask id=\"social-google-brand-mask0_964_9544\" style=\"mask-type:luminance\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"16\" height=\"16\">\n<g id=\"social-google-brand-i\">\n<path id=\"social-google-brand-Vector\" d=\"M15.5416 6.39051H8.01329V9.4071H12.3391C12.2696 9.83402 12.1134 10.254 11.8848 10.637C11.6228 11.0757 11.2989 11.4097 10.9669 11.6641C9.97252 12.4261 8.81319 12.5819 8.00804 12.5819C5.97413 12.5819 4.23629 11.2674 3.56354 9.48114C3.53639 9.41633 3.51836 9.34936 3.49641 9.28318C3.34774 8.82856 3.26651 8.34708 3.26651 7.84665C3.26651 7.32584 3.35447 6.82729 3.51485 6.35643C4.14747 4.49938 5.92449 3.11235 8.0095 3.11235C8.42888 3.11235 8.83273 3.16227 9.21571 3.26183C10.091 3.48938 10.7101 3.93754 11.0895 4.29203L13.3785 2.0503C11.9861 0.773609 10.1709 1.93027e-09 8.0057 1.93027e-09C6.27473 -3.72557e-05 4.67663 0.53928 3.36705 1.45074C2.30501 2.18992 1.43399 3.17957 0.846158 4.32895C0.29939 5.39466 0 6.57567 0 7.84547C0 9.11534 0.299848 10.3086 0.846618 11.3645V11.3716C1.42414 12.4925 2.26868 13.4577 3.29513 14.1934C4.19184 14.8362 5.79972 15.6923 8.0057 15.6923C9.27429 15.6923 10.3986 15.4636 11.3902 15.035C12.1055 14.7257 12.7392 14.3224 13.313 13.8041C14.0712 13.1192 14.665 12.2721 15.0702 11.2975C15.4755 10.3228 15.6923 9.22067 15.6923 8.02574C15.6923 7.46925 15.6364 6.9041 15.5416 6.39045V6.39051Z\" fill=\"white\"/>\n</g>\n</mask>\n<g mask=\"url(#social-google-brand-mask0_964_9544)\">\n<g id=\"social-google-brand-Group\">\n<g id=\"social-google-brand-Vector_2\" filter=\"url(#social-google-brand-filter0_f_964_9544)\">\n<path d=\"M-0.0905762 7.87958C-0.082255 9.1294 0.273878 10.4189 0.812944 11.4599V11.467C1.20244 12.223 1.73478 12.8202 2.3411 13.4119L6.00313 12.0757C5.31029 11.7238 5.20457 11.5081 4.70793 11.1146C4.2004 10.6028 3.82213 10.0153 3.58656 9.3264H3.57707L3.58656 9.31924C3.43158 8.86432 3.41629 8.38143 3.41058 7.87958H-0.0905762Z\" fill=\"url(#social-google-brand-paint0_radial_964_9544)\"/>\n</g>\n<g id=\"social-google-brand-Vector_3\" filter=\"url(#social-google-brand-filter1_f_964_9544)\">\n<path d=\"M8.03823 -0.0762634C7.67627 1.19533 7.81467 2.43136 8.03823 3.15054C8.4562 3.15085 8.85884 3.20068 9.24063 3.29993C10.1159 3.52748 10.7349 3.97565 11.1143 4.33014L13.462 2.03114C12.0712 0.755972 10.3975 -0.0742543 8.03823 -0.0762634Z\" fill=\"url(#social-google-brand-paint1_radial_964_9544)\"/>\n</g>\n<g id=\"social-google-brand-Vector_4\" filter=\"url(#social-google-brand-filter2_f_964_9544)\">\n<path d=\"M8.0304 -0.0863037C6.255 -0.0863421 4.61588 0.466821 3.27267 1.40169C2.77394 1.7488 2.31626 2.14978 1.90873 2.59567C1.80197 3.59728 2.70794 4.82835 4.50204 4.81816C5.37253 3.80558 6.65996 3.15045 8.09288 3.15045C8.09419 3.15045 8.09546 3.15055 8.09677 3.15056L8.03825 -0.0860746C8.0356 -0.0860763 8.03304 -0.0863037 8.0304 -0.0863037Z\" fill=\"url(#social-google-brand-paint2_radial_964_9544)\"/>\n</g>\n<g id=\"social-google-brand-Vector_5\" filter=\"url(#social-google-brand-filter3_f_964_9544)\">\n<path d=\"M13.8902 8.24201L12.3055 9.33066C12.236 9.75758 12.0798 10.1776 11.8511 10.5605C11.5891 10.9993 11.2653 11.3333 10.9333 11.5877C9.94094 12.3481 8.78467 12.5047 7.97973 12.5053C7.14775 13.9223 7.00189 14.6321 8.03825 15.7757C9.32064 15.7748 10.4575 15.5433 11.4603 15.1098C12.1852 14.7965 12.8275 14.3877 13.409 13.8625C14.1773 13.1684 14.7791 12.3099 15.1898 11.3222C15.6006 10.3344 15.8202 9.21754 15.8202 8.00659L13.8902 8.24201Z\" fill=\"url(#social-google-brand-paint3_radial_964_9544)\"/>\n</g>\n<g id=\"social-google-brand-Vector_6\" filter=\"url(#social-google-brand-filter4_f_964_9544)\">\n<path d=\"M7.92126 6.25671V9.50253H15.5455C15.6125 9.05801 15.8343 8.48278 15.8343 8.00658C15.8343 7.45009 15.7784 6.77036 15.6836 6.25671H7.92126Z\" fill=\"#3086FF\"/>\n</g>\n<g id=\"social-google-brand-Vector_7\" filter=\"url(#social-google-brand-filter5_f_964_9544)\">\n<path d=\"M1.94511 2.48108C1.47461 2.99586 1.07267 3.57205 0.753973 4.19519C0.207214 5.2609 -0.0921631 6.5565 -0.0921631 7.82631C-0.0921631 7.8442 -0.0906821 7.86171 -0.0905627 7.87957C0.15158 8.34385 3.25421 8.25495 3.41059 7.87957C3.41039 7.86206 3.40842 7.84498 3.40842 7.82743C3.40842 7.30661 3.49641 6.92273 3.65679 6.45187C3.85464 5.87108 4.16443 5.33625 4.56057 4.87544C4.65037 4.7608 4.8899 4.51433 4.95978 4.3665C4.9864 4.31019 4.91145 4.27858 4.90726 4.25876C4.90257 4.23659 4.80208 4.25442 4.77957 4.23791C4.70809 4.18548 4.56654 4.1581 4.48059 4.13376C4.29688 4.08174 3.99241 3.96703 3.8233 3.84812C3.28875 3.47223 2.45454 3.02324 1.94511 2.48108Z\" fill=\"url(#social-google-brand-paint4_radial_964_9544)\"/>\n</g>\n<g id=\"social-google-brand-Vector_8\" filter=\"url(#social-google-brand-filter6_f_964_9544)\">\n<path d=\"M3.83475 4.26099C5.07431 5.01186 5.43079 3.88198 6.25493 3.52842L4.82131 0.555481C4.29395 0.777131 3.7957 1.05251 3.33339 1.37427C2.64299 1.85479 2.0333 2.44116 1.52966 3.10846L3.83475 4.26099Z\" fill=\"url(#social-google-brand-paint5_radial_964_9544)\"/>\n</g>\n<g id=\"social-google-brand-Vector_9\" filter=\"url(#social-google-brand-filter7_f_964_9544)\">\n<path d=\"M4.33934 11.846C2.67539 12.4467 2.41489 12.4683 2.26172 13.4995C2.55441 13.7851 2.86889 14.0493 3.20307 14.2889C4.09978 14.9317 5.82467 15.7877 8.03064 15.7877C8.03323 15.7877 8.03571 15.7875 8.0383 15.7875V12.448C8.03663 12.448 8.03471 12.4481 8.03304 12.4481C7.20698 12.4481 6.54688 12.2312 5.87007 11.8539C5.70319 11.7608 5.40044 12.0106 5.24654 11.899C5.03428 11.7449 4.52345 12.0317 4.33934 11.846Z\" fill=\"url(#social-google-brand-paint6_radial_964_9544)\"/>\n</g>\n<g id=\"social-google-brand-Vector_10\" opacity=\"0.5\" filter=\"url(#social-google-brand-filter8_f_964_9544)\">\n<path d=\"M7.06372 12.3428V15.7297C7.37237 15.7658 7.69359 15.7877 8.03056 15.7877C8.36836 15.7877 8.69516 15.7704 9.01271 15.7385V12.3657C8.65685 12.4265 8.32168 12.4481 8.03296 12.4481C7.70044 12.4481 7.37706 12.4094 7.06372 12.3428Z\" fill=\"url(#social-google-brand-paint7_linear_964_9544)\"/>\n</g>\n</g>\n</g>\n</g>\n<defs>\n<filter id=\"social-google-brand-filter0_f_964_9544\" x=\"-0.560656\" y=\"7.4095\" width=\"7.03391\" height=\"6.47248\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"0.23504\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<filter id=\"social-google-brand-filter1_f_964_9544\" x=\"7.34559\" y=\"-0.546343\" width=\"6.5864\" height=\"5.34656\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"0.23504\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<filter id=\"social-google-brand-filter2_f_964_9544\" x=\"1.43019\" y=\"-0.556383\" width=\"7.13669\" height=\"5.84467\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"0.23504\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<filter id=\"social-google-brand-filter3_f_964_9544\" x=\"6.8379\" y=\"7.53651\" width=\"9.45237\" height=\"8.70932\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"0.23504\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<filter id=\"social-google-brand-filter4_f_964_9544\" x=\"7.45119\" y=\"5.78663\" width=\"8.85324\" height=\"4.18598\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"0.23504\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<filter id=\"social-google-brand-filter5_f_964_9544\" x=\"-0.562242\" y=\"2.011\" width=\"5.99778\" height=\"6.65439\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"0.23504\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<filter id=\"social-google-brand-filter6_f_964_9544\" x=\"-1.77519\" y=\"-2.74937\" width=\"11.3349\" height=\"10.5676\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"1.65243\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<filter id=\"social-google-brand-filter7_f_964_9544\" x=\"1.79164\" y=\"11.3626\" width=\"6.71677\" height=\"4.89524\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"0.23504\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<filter id=\"social-google-brand-filter8_f_964_9544\" x=\"6.59364\" y=\"11.8728\" width=\"2.88913\" height=\"4.38507\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"0.23504\" result=\"effect1_foregroundBlur_964_9544\"/>\n</filter>\n<radialGradient id=\"social-google-brand-paint0_radial_964_9544\" cx=\"0\" cy=\"0\" r=\"1\" gradientTransform=\"matrix(-0.326087 -7.81471 11.7242 -0.468954 5.92982 13.2941)\" gradientUnits=\"userSpaceOnUse\">\n<stop offset=\"0.141612\" stop-color=\"#1ABD4D\"/>\n<stop offset=\"0.247515\" stop-color=\"#6EC30D\"/>\n<stop offset=\"0.311547\" stop-color=\"#8AC502\"/>\n<stop offset=\"0.366013\" stop-color=\"#A2C600\"/>\n<stop offset=\"0.445673\" stop-color=\"#C8C903\"/>\n<stop offset=\"0.540305\" stop-color=\"#EBCB03\"/>\n<stop offset=\"0.615636\" stop-color=\"#F7CD07\"/>\n<stop offset=\"0.699345\" stop-color=\"#FDCD04\"/>\n<stop offset=\"0.771242\" stop-color=\"#FDCE05\"/>\n<stop offset=\"0.860566\" stop-color=\"#FFCE0A\"/>\n</radialGradient>\n<radialGradient id=\"social-google-brand-paint1_radial_964_9544\" cx=\"0\" cy=\"0\" r=\"1\" gradientTransform=\"matrix(5.53786 -1.33095e-05 -7.78368e-06 7.00221 13.2423 4.1638)\" gradientUnits=\"userSpaceOnUse\">\n<stop offset=\"0.408458\" stop-color=\"#FB4E5A\"/>\n<stop offset=\"1\" stop-color=\"#FF4540\"/>\n</radialGradient>\n<radialGradient id=\"social-google-brand-paint2_radial_964_9544\" cx=\"0\" cy=\"0\" r=\"1\" gradientTransform=\"matrix(-7.75894 4.20745 5.83149 10.3085 10.2181 -1.0999)\" gradientUnits=\"userSpaceOnUse\">\n<stop offset=\"0.231273\" stop-color=\"#FF4541\"/>\n<stop offset=\"0.311547\" stop-color=\"#FF4540\"/>\n<stop offset=\"0.457516\" stop-color=\"#FF4640\"/>\n<stop offset=\"0.540305\" stop-color=\"#FF473F\"/>\n<stop offset=\"0.699346\" stop-color=\"#FF5138\"/>\n<stop offset=\"0.771242\" stop-color=\"#FF5B33\"/>\n<stop offset=\"0.860566\" stop-color=\"#FF6C29\"/>\n<stop offset=\"1\" stop-color=\"#FF8C18\"/>\n</radialGradient>\n<radialGradient id=\"social-google-brand-paint3_radial_964_9544\" cx=\"0\" cy=\"0\" r=\"1\" gradientTransform=\"matrix(-14.0711 -17.9839 -6.78015 5.0853 8.1536 14.7601)\" gradientUnits=\"userSpaceOnUse\">\n<stop offset=\"0.131546\" stop-color=\"#0CBA65\"/>\n<stop offset=\"0.209784\" stop-color=\"#0BB86D\"/>\n<stop offset=\"0.297297\" stop-color=\"#09B479\"/>\n<stop offset=\"0.396257\" stop-color=\"#08AD93\"/>\n<stop offset=\"0.477124\" stop-color=\"#0AA6A9\"/>\n<stop offset=\"0.568425\" stop-color=\"#0D9CC6\"/>\n<stop offset=\"0.667385\" stop-color=\"#1893DD\"/>\n<stop offset=\"0.768727\" stop-color=\"#258BF1\"/>\n<stop offset=\"0.858506\" stop-color=\"#3086FF\"/>\n</radialGradient>\n<radialGradient id=\"social-google-brand-paint4_radial_964_9544\" cx=\"0\" cy=\"0\" r=\"1\" gradientTransform=\"matrix(-0.995777 8.40334 11.8674 1.34802 7.35063 1.39578)\" gradientUnits=\"userSpaceOnUse\">\n<stop offset=\"0.366013\" stop-color=\"#FF4E3A\"/>\n<stop offset=\"0.457516\" stop-color=\"#FF8A1B\"/>\n<stop offset=\"0.540305\" stop-color=\"#FFA312\"/>\n<stop offset=\"0.615636\" stop-color=\"#FFB60C\"/>\n<stop offset=\"0.771242\" stop-color=\"#FFCD0A\"/>\n<stop offset=\"0.860566\" stop-color=\"#FECF0A\"/>\n<stop offset=\"0.915033\" stop-color=\"#FECF08\"/>\n<stop offset=\"1\" stop-color=\"#FDCD01\"/>\n</radialGradient>\n<radialGradient id=\"social-google-brand-paint5_radial_964_9544\" cx=\"0\" cy=\"0\" r=\"1\" gradientTransform=\"matrix(-2.87831 3.11674 -8.97875 -7.94854 5.95027 1.30862)\" gradientUnits=\"userSpaceOnUse\">\n<stop offset=\"0.315904\" stop-color=\"#FF4C3C\"/>\n<stop offset=\"0.603818\" stop-color=\"#FF692C\"/>\n<stop offset=\"0.726837\" stop-color=\"#FF7825\"/>\n<stop offset=\"0.884534\" stop-color=\"#FF8D1B\"/>\n<stop offset=\"1\" stop-color=\"#FF9F13\"/>\n</radialGradient>\n<radialGradient id=\"social-google-brand-paint6_radial_964_9544\" cx=\"0\" cy=\"0\" r=\"1\" gradientTransform=\"matrix(-7.75894 -4.20745 5.83149 -10.3085 10.2182 16.7536)\" gradientUnits=\"userSpaceOnUse\">\n<stop offset=\"0.231273\" stop-color=\"#0FBC5F\"/>\n<stop offset=\"0.311547\" stop-color=\"#0FBC5F\"/>\n<stop offset=\"0.366013\" stop-color=\"#0FBC5E\"/>\n<stop offset=\"0.457516\" stop-color=\"#0FBC5D\"/>\n<stop offset=\"0.540305\" stop-color=\"#12BC58\"/>\n<stop offset=\"0.699346\" stop-color=\"#28BF3C\"/>\n<stop offset=\"0.771242\" stop-color=\"#38C02B\"/>\n<stop offset=\"0.860566\" stop-color=\"#52C218\"/>\n<stop offset=\"0.915033\" stop-color=\"#67C30F\"/>\n<stop offset=\"1\" stop-color=\"#86C504\"/>\n</radialGradient>\n<linearGradient id=\"social-google-brand-paint7_linear_964_9544\" x1=\"7.06372\" y1=\"14.0653\" x2=\"9.01271\" y2=\"14.0653\" gradientUnits=\"userSpaceOnUse\">\n<stop stop-color=\"#0FBC5C\"/>\n<stop offset=\"1\" stop-color=\"#0CBA65\"/>\n</linearGradient>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9456",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-google-monochrome-Platform=Google, Color=Negative\" clip-path=\"url(#social-google-monochrome-clip0_964_9456)\">\n<path id=\"social-google-monochrome-Vector\" d=\"M15.5416 6.39051H8.01329V9.4071H12.3391C12.2696 9.83402 12.1134 10.254 11.8848 10.637C11.6228 11.0757 11.2989 11.4097 10.9669 11.6641C9.97252 12.4261 8.81319 12.5819 8.00804 12.5819C5.97413 12.5819 4.23629 11.2674 3.56354 9.48114C3.53639 9.41633 3.51836 9.34936 3.49641 9.28318C3.34774 8.82856 3.26651 8.34708 3.26651 7.84665C3.26651 7.32584 3.35447 6.82729 3.51485 6.35643C4.14747 4.49938 5.92449 3.11235 8.0095 3.11235C8.42888 3.11235 8.83273 3.16227 9.21571 3.26183C10.091 3.48938 10.7101 3.93754 11.0895 4.29203L13.3785 2.0503C11.9861 0.773609 10.1709 1.93027e-09 8.0057 1.93027e-09C6.27473 -3.72557e-05 4.67663 0.53928 3.36705 1.45074C2.30501 2.18992 1.43399 3.17957 0.846158 4.32895C0.29939 5.39466 0 6.57567 0 7.84547C0 9.11534 0.299848 10.3086 0.846618 11.3645V11.3716C1.42414 12.4925 2.26868 13.4577 3.29513 14.1934C4.19184 14.8362 5.79972 15.6923 8.0057 15.6923C9.27429 15.6923 10.3986 15.4636 11.3902 15.035C12.1055 14.7257 12.7392 14.3224 13.313 13.8041C14.0712 13.1192 14.665 12.2721 15.0702 11.2975C15.4755 10.3228 15.6923 9.22067 15.6923 8.02574C15.6923 7.46925 15.6364 6.9041 15.5416 6.39045V6.39051Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-google-monochrome-clip0_964_9456\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "youtube": {
+        "label": "YouTube",
+        "figmaPlatform": "YouTube",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9541",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-youtube-brand-Platform=YouTube, Color=Original\" clip-path=\"url(#social-youtube-brand-clip0_964_9541)\">\n<path id=\"social-youtube-brand-Vector\" d=\"M15.3797 4.04433C15.291 3.71049 15.1161 3.4058 14.8727 3.16076C14.6292 2.91572 14.3256 2.73893 13.9924 2.64807C12.7655 2.31818 7.86166 2.31818 7.86166 2.31818C7.86166 2.31818 2.95781 2.31818 1.73096 2.64807C1.39769 2.73893 1.09413 2.91572 0.850653 3.16076C0.607179 3.4058 0.432333 3.71049 0.343615 4.04433C0.015503 5.27653 0.0155029 7.84615 0.0155029 7.84615C0.0155029 7.84615 0.015503 10.4158 0.343615 11.648C0.432333 11.9818 0.607179 12.2865 0.850653 12.5315C1.09413 12.7766 1.39769 12.9534 1.73096 13.0442C2.95781 13.3741 7.86166 13.3741 7.86166 13.3741C7.86166 13.3741 12.7655 13.3741 13.9924 13.0442C14.3256 12.9534 14.6292 12.7766 14.8727 12.5315C15.1161 12.2865 15.291 11.9818 15.3797 11.648C15.7078 10.4158 15.7078 7.84615 15.7078 7.84615C15.7078 7.84615 15.7078 5.27653 15.3797 4.04433Z\" fill=\"#FF0302\"/>\n<path id=\"social-youtube-brand-Vector_2\" d=\"M6.25684 10.1795V5.51285L10.3582 7.84619L6.25684 10.1795Z\" fill=\"#FEFEFE\"/>\n</g>\n<defs>\n<clipPath id=\"social-youtube-brand-clip0_964_9541\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9454",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-youtube-monochrome-Platform=YouTube, Color=Negative\" clip-path=\"url(#social-youtube-monochrome-clip0_964_9454)\">\n<path id=\"social-youtube-monochrome-Vector\" d=\"M15.536 4.70772C15.536 4.70772 15.3828 3.62581 14.9108 3.15075C14.3131 2.52551 13.645 2.52245 13.3385 2.48567C11.144 2.32629 7.84922 2.32629 7.84922 2.32629H7.84309C7.84309 2.32629 4.54832 2.32629 2.35385 2.48567C2.04736 2.52245 1.37921 2.52551 0.78155 3.15075C0.309555 3.62581 0.159375 4.70772 0.159375 4.70772C0.159375 4.70772 0 5.97966 0 7.24853V8.43771C0 9.70658 0.15631 10.9785 0.15631 10.9785C0.15631 10.9785 0.309555 12.0604 0.778486 12.5355C1.37614 13.1607 2.16076 13.1393 2.51016 13.2067C3.76677 13.3262 7.84615 13.363 7.84615 13.363C7.84615 13.363 11.144 13.3569 13.3385 13.2006C13.645 13.1638 14.3131 13.1607 14.9108 12.5355C15.3828 12.0604 15.536 10.9785 15.536 10.9785C15.536 10.9785 15.6923 9.70965 15.6923 8.43771V7.24853C15.6923 5.97966 15.536 4.70772 15.536 4.70772ZM6.22482 9.88128V5.47089L10.4636 7.68375L6.22482 9.88128Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-youtube-monochrome-clip0_964_9454\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "apple": {
+        "label": "Apple",
+        "figmaPlatform": "Apple",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9539",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-apple-brand-Platform=Apple, Color=Original\" clip-path=\"url(#social-apple-brand-clip0_964_9539)\">\n<path id=\"social-apple-brand-Vector\" d=\"M14.2486 12.2293C14.0113 12.7775 13.7304 13.2822 13.405 13.7461C12.9613 14.3787 12.5981 14.8165 12.3182 15.0596C11.8842 15.4587 11.4193 15.6631 10.9214 15.6747C10.564 15.6747 10.1329 15.573 9.63118 15.3667C9.12778 15.1613 8.66516 15.0596 8.24216 15.0596C7.79853 15.0596 7.32274 15.1613 6.81382 15.3667C6.30413 15.573 5.89352 15.6805 5.57959 15.6911C5.10215 15.7115 4.62627 15.5013 4.15125 15.0596C3.84807 14.7952 3.46885 14.3418 3.01456 13.6996C2.52715 13.0139 2.12643 12.2186 1.81249 11.312C1.47628 10.3327 1.30774 9.38439 1.30774 8.46632C1.30774 7.41467 1.53498 6.50765 1.99014 5.74756C2.34785 5.13703 2.82374 4.65543 3.41935 4.30188C4.01496 3.94833 4.65852 3.76816 5.35158 3.75664C5.73079 3.75664 6.22809 3.87394 6.84608 4.10447C7.46232 4.33578 7.858 4.45308 8.03148 4.45308C8.16118 4.45308 8.60075 4.31592 9.34591 4.04248C10.0506 3.78889 10.6453 3.68389 11.1326 3.72525C12.4528 3.8318 13.4447 4.35225 14.1043 5.28988C12.9236 6.00531 12.3395 7.00736 12.3511 8.29284C12.3617 9.29411 12.725 10.1273 13.4389 10.7889C13.7624 11.096 14.1237 11.3333 14.5257 11.5018C14.4385 11.7546 14.3465 11.9968 14.2486 12.2293ZM11.2207 0.314119C11.2207 1.09891 10.934 1.83167 10.3625 2.50991C9.67283 3.3162 8.83864 3.78211 7.93404 3.70859C7.92251 3.61444 7.91583 3.51535 7.91583 3.41122C7.91583 2.65782 8.24381 1.85153 8.82624 1.19228C9.11703 0.85849 9.48685 0.580948 9.93533 0.359547C10.3828 0.14145 10.8061 0.0208375 11.2042 0.000183105C11.2159 0.105098 11.2207 0.210019 11.2207 0.314109V0.314119Z\" fill=\"black\"/>\n</g>\n<defs>\n<clipPath id=\"social-apple-brand-clip0_964_9539\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9452",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-apple-monochrome-Platform=Apple, Color=Negative\" clip-path=\"url(#social-apple-monochrome-clip0_964_9452)\">\n<path id=\"social-apple-monochrome-Vector\" d=\"M14.2486 12.2293C14.0113 12.7775 13.7304 13.2822 13.405 13.7461C12.9613 14.3787 12.5981 14.8165 12.3182 15.0596C11.8842 15.4587 11.4193 15.6631 10.9214 15.6747C10.564 15.6747 10.1329 15.573 9.63118 15.3667C9.12778 15.1613 8.66516 15.0596 8.24216 15.0596C7.79853 15.0596 7.32274 15.1613 6.81382 15.3667C6.30413 15.573 5.89352 15.6805 5.57959 15.6911C5.10215 15.7115 4.62627 15.5013 4.15125 15.0596C3.84807 14.7952 3.46885 14.3418 3.01456 13.6996C2.52715 13.0139 2.12643 12.2186 1.81249 11.312C1.47628 10.3327 1.30774 9.38439 1.30774 8.46632C1.30774 7.41467 1.53498 6.50765 1.99014 5.74756C2.34785 5.13703 2.82374 4.65543 3.41935 4.30188C4.01496 3.94833 4.65852 3.76816 5.35158 3.75664C5.73079 3.75664 6.22809 3.87394 6.84608 4.10447C7.46232 4.33578 7.858 4.45308 8.03148 4.45308C8.16118 4.45308 8.60075 4.31592 9.34591 4.04248C10.0506 3.78889 10.6453 3.68389 11.1326 3.72525C12.4528 3.8318 13.4447 4.35225 14.1043 5.28988C12.9236 6.00531 12.3395 7.00736 12.3511 8.29284C12.3617 9.29411 12.725 10.1273 13.4389 10.7889C13.7624 11.096 14.1237 11.3333 14.5257 11.5018C14.4385 11.7546 14.3465 11.9968 14.2486 12.2293ZM11.2207 0.314119C11.2207 1.09891 10.934 1.83167 10.3625 2.50991C9.67283 3.3162 8.83864 3.78211 7.93404 3.70859C7.92251 3.61444 7.91583 3.51535 7.91583 3.41122C7.91583 2.65782 8.24381 1.85153 8.82624 1.19228C9.11703 0.85849 9.48685 0.580948 9.93533 0.359547C10.3828 0.14145 10.8061 0.0208375 11.2042 0.000183105C11.2159 0.105098 11.2207 0.210019 11.2207 0.314109V0.314119Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-apple-monochrome-clip0_964_9452\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "snapchat": {
+        "label": "Snapchat",
+        "figmaPlatform": "Snapchat",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9536",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-snapchat-brand-Platform=Snapchat, Color=Original\">\n<path id=\"social-snapchat-brand-Vector\" d=\"M14.579 11.5598C12.1489 10.3831 11.7616 8.56636 11.7444 8.4316C11.7235 8.26837 11.6999 8.14004 11.8799 7.974C12.0535 7.81358 12.8237 7.33673 13.0374 7.18754C13.3906 6.94049 13.5462 6.69384 13.4315 6.39065C13.3513 6.18089 13.1561 6.10189 12.9504 6.10189C12.8855 6.10208 12.8209 6.10935 12.7576 6.12354C12.3695 6.20776 11.9926 6.40228 11.7745 6.45481C11.7483 6.46157 11.7213 6.46521 11.6943 6.46564C11.578 6.46564 11.5339 6.41391 11.5451 6.27394C11.5724 5.84962 11.6301 5.02145 11.5632 4.24782C11.4714 3.18342 11.1282 2.65604 10.7212 2.18961C10.5244 1.96342 9.61023 0.991669 7.84612 0.991669C6.08202 0.991669 5.16909 1.96342 4.97344 2.18681C4.56529 2.65323 4.22249 3.18062 4.13148 4.24501C4.06452 5.01864 4.12466 5.84642 4.14952 6.27113C4.15754 6.40428 4.11664 6.46283 4.00037 6.46283C3.97331 6.46237 3.9464 6.45874 3.92019 6.45201C3.70248 6.39947 3.3256 6.20496 2.9375 6.12074C2.87419 6.10654 2.80953 6.09928 2.74465 6.09908C2.53817 6.09908 2.34372 6.17929 2.26353 6.38784C2.14886 6.69103 2.30362 6.93768 2.65805 7.18473C2.87175 7.33392 3.64194 7.81037 3.81554 7.97119C3.99516 8.13723 3.97191 8.26557 3.95106 8.4288C3.93382 8.56556 3.54611 10.3823 1.11646 11.557C0.974128 11.626 0.731965 11.772 1.15896 12.0078C1.82932 12.3784 2.27556 12.3387 2.62236 12.562C2.91665 12.7517 2.74264 13.1608 2.95674 13.3084C3.21976 13.4901 3.99716 13.2956 5.0015 13.6272C5.84346 13.9048 6.35505 14.6888 7.84813 14.6888C9.3412 14.6888 9.86763 13.9012 10.6948 13.6272C11.6971 13.2956 12.4761 13.4901 12.7395 13.3084C12.9532 13.1608 12.7796 12.7517 13.0739 12.562C13.4207 12.3387 13.8665 12.3784 14.5373 12.0078C14.9635 11.7748 14.7213 11.6288 14.579 11.5598Z\" fill=\"white\"/>\n<path id=\"social-snapchat-brand-Vector_2\" d=\"M15.6362 11.4217C15.5272 11.1249 15.3195 10.9661 15.0829 10.8346C15.0384 10.8085 14.9975 10.7876 14.9626 10.7716C14.8921 10.7351 14.8199 10.6998 14.7481 10.6625C14.0108 10.2715 13.4351 9.77818 13.0358 9.19345C12.9224 9.02883 12.824 8.85434 12.7419 8.67208C12.7078 8.57462 12.7094 8.51928 12.7339 8.46875C12.7581 8.42981 12.7902 8.39635 12.8281 8.37049C12.9548 8.28667 13.0855 8.20164 13.1741 8.14429C13.332 8.04203 13.4571 7.96101 13.5377 7.90366C13.8404 7.69191 14.0521 7.46692 14.1844 7.21546C14.2767 7.04172 14.3306 6.85014 14.3423 6.65374C14.354 6.45735 14.3232 6.26073 14.2522 6.07727C14.0517 5.54948 13.5534 5.22182 12.9496 5.22182C12.8222 5.2217 12.6952 5.23514 12.5707 5.26193C12.5374 5.26915 12.5041 5.27676 12.4716 5.28519C12.4773 4.92424 12.4692 4.54324 12.4372 4.16825C12.3233 2.84999 11.8618 2.15898 11.3807 1.60793C11.0726 1.26262 10.7097 0.970482 10.3066 0.743262C9.5765 0.326166 8.74858 0.11441 7.84607 0.11441C6.94357 0.11441 6.11966 0.326166 5.38876 0.743262C4.98466 0.970551 4.62103 1.26328 4.31265 1.60954C3.83153 2.16058 3.37006 2.8528 3.25619 4.16986C3.22412 4.54484 3.2161 4.92785 3.22131 5.28679C3.18884 5.27837 3.15596 5.27075 3.12268 5.26353C2.99817 5.23675 2.87116 5.2233 2.7438 5.22342C2.13959 5.22342 1.64043 5.55109 1.44077 6.07887C1.3694 6.26241 1.33837 6.45917 1.34978 6.65577C1.3612 6.85238 1.41479 7.04422 1.50692 7.21826C1.63963 7.46972 1.85132 7.69471 2.15403 7.90647C2.23421 7.96262 2.35971 8.04363 2.51767 8.1471C2.60307 8.20245 2.72776 8.28346 2.85005 8.36447C2.89283 8.39214 2.9292 8.42865 2.9567 8.47155C2.98236 8.52409 2.98316 8.58064 2.94507 8.68491C2.86405 8.86334 2.76731 9.0342 2.656 9.19545C2.26549 9.76695 1.70659 10.2514 0.992924 10.6392C0.614844 10.8398 0.22193 10.9737 0.0559435 11.4249C-0.0691476 11.7654 0.0126426 12.1528 0.330583 12.4793C0.447269 12.6011 0.582608 12.7036 0.731516 12.7829C1.04135 12.9532 1.37082 13.085 1.7126 13.1755C1.78313 13.1937 1.85009 13.2237 1.91066 13.2641C2.02653 13.3656 2.01009 13.5184 2.16445 13.7422C2.24194 13.8578 2.34039 13.958 2.45473 14.0374C2.77868 14.2612 3.14273 14.2752 3.52843 14.29C3.87684 14.3033 4.27176 14.3185 4.72281 14.4673C4.90964 14.5291 5.10369 14.6486 5.32862 14.7881C5.86867 15.1202 6.60799 15.5746 7.84527 15.5746C9.08255 15.5746 9.82709 15.1178 10.3712 14.7845C10.5945 14.6474 10.7873 14.5291 10.9689 14.4689C11.42 14.3197 11.8149 14.3049 12.1633 14.2916C12.549 14.2768 12.9131 14.2628 13.237 14.039C13.3724 13.9445 13.4853 13.8213 13.5674 13.678C13.6785 13.4891 13.6756 13.3572 13.7799 13.2649C13.8367 13.2264 13.8996 13.1977 13.9659 13.1799C14.3124 13.0892 14.6463 12.9561 14.9602 12.7837C15.1184 12.6988 15.2608 12.5873 15.3812 12.454L15.3852 12.4492C15.6835 12.13 15.7585 11.7538 15.6362 11.4217ZM14.5364 12.0129C13.8657 12.3834 13.4198 12.3437 13.073 12.5671C12.7784 12.7568 12.9528 13.1659 12.7387 13.3135C12.4756 13.4951 11.6982 13.3006 10.6939 13.6323C9.86558 13.9062 9.33714 14.6939 7.84728 14.6939C6.35741 14.6939 5.84141 13.9078 4.99945 13.6303C3.99712 13.2986 3.2181 13.4931 2.95469 13.3115C2.74099 13.1639 2.9146 12.7548 2.62031 12.5651C2.2731 12.3417 1.82727 12.3814 1.15691 12.0129C0.729912 11.777 0.972076 11.631 1.11441 11.5621C3.54406 10.3854 3.93176 8.56861 3.949 8.43385C3.96985 8.27063 3.99311 8.14229 3.81349 7.97625C3.63988 7.81583 2.86969 7.33898 2.656 7.18979C2.30237 6.94274 2.14681 6.69609 2.26148 6.39289C2.34166 6.18314 2.53732 6.10414 2.7426 6.10414C2.80747 6.10434 2.87214 6.1116 2.93545 6.12579C3.32355 6.21002 3.70043 6.40453 3.91813 6.45706C3.94435 6.46379 3.97126 6.46743 3.99832 6.46789C4.11459 6.46789 4.15549 6.40934 4.14747 6.27619C4.12261 5.85147 4.06247 5.0237 4.12942 4.25007C4.22124 3.18567 4.56404 2.65829 4.97138 2.19187C5.16704 1.96768 6.08638 0.995925 7.84447 0.995925C9.60256 0.995925 10.5243 1.96367 10.72 2.18705C11.1277 2.65348 11.4709 3.18086 11.5619 4.24526C11.6289 5.01889 11.5711 5.84706 11.5439 6.27138C11.5347 6.41134 11.5768 6.46308 11.693 6.46308C11.7201 6.46265 11.747 6.45901 11.7732 6.45225C11.9913 6.39971 12.3682 6.2052 12.7563 6.12098C12.8196 6.10678 12.8843 6.09952 12.9492 6.09932C13.1556 6.09932 13.3501 6.17953 13.4303 6.38808C13.5449 6.69128 13.3902 6.93793 13.0362 7.18497C12.8225 7.33417 12.0523 7.81062 11.8787 7.97144C11.6986 8.13748 11.7223 8.26581 11.7431 8.42904C11.7604 8.5658 12.1477 10.3826 14.5777 11.5573C14.7213 11.629 14.9634 11.775 14.5364 12.0129Z\" fill=\"black\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9450",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-snapchat-monochrome-Platform=Snapchat, Color=Negative\">\n<path id=\"social-snapchat-monochrome-Vector\" d=\"M15.6356 11.4146C15.5274 11.1181 15.319 10.9578 15.0826 10.8295C15.0385 10.8055 14.9984 10.7815 14.9624 10.7654C14.8902 10.7294 14.8181 10.6933 14.746 10.6572C14.0087 10.2645 13.4316 9.77566 13.0349 9.19061C12.9227 9.02632 12.8226 8.85001 12.7424 8.66968C12.7063 8.57351 12.7104 8.51741 12.7344 8.46532C12.7584 8.42525 12.7905 8.39319 12.8306 8.36514C12.9588 8.28099 13.087 8.19684 13.1752 8.14074C13.3315 8.03655 13.4597 7.95641 13.5398 7.90031C13.8404 7.68793 14.0527 7.46353 14.185 7.21108C14.3733 6.85845 14.3974 6.44571 14.2531 6.07305C14.0527 5.5441 13.5559 5.21952 12.9508 5.21952C12.8226 5.21952 12.6983 5.23155 12.5701 5.2596C12.538 5.26761 12.502 5.27562 12.4699 5.28364C12.4739 4.923 12.4659 4.54232 12.4339 4.16564C12.3217 2.84729 11.8568 2.15806 11.376 1.60908C11.0674 1.26446 10.7068 0.971941 10.3021 0.743534C9.57275 0.32679 8.74327 0.11441 7.84166 0.11441C6.94005 0.11441 6.11458 0.32679 5.38528 0.743534C4.98055 0.971941 4.61991 1.26446 4.31136 1.60908C3.8305 2.15806 3.36968 2.8513 3.25347 4.16564C3.22141 4.54232 3.2134 4.923 3.21741 5.28364C3.18535 5.27562 3.15329 5.26761 3.11723 5.2596C2.99301 5.23155 2.86478 5.21952 2.74055 5.21952C2.13547 5.21952 1.63859 5.54811 1.43823 6.07305C1.29397 6.44571 1.31801 6.85845 1.50635 7.21108C1.63859 7.46353 1.85097 7.68793 2.1515 7.90031C2.23165 7.95641 2.35587 8.03655 2.51615 8.14074C2.6003 8.19684 2.72453 8.27698 2.84875 8.35713C2.89283 8.38518 2.92889 8.42124 2.95694 8.46532C2.98098 8.51741 2.98499 8.57351 2.94492 8.6777C2.86478 8.85401 2.7686 9.02632 2.6564 9.18661C2.26771 9.75562 1.70671 10.2405 0.993435 10.6292C0.616763 10.8295 0.224062 10.9618 0.0557613 11.4146C-0.0684605 11.7552 0.0116826 12.1399 0.328248 12.4685C0.444455 12.5887 0.580699 12.6929 0.728963 12.773C1.03751 12.9413 1.3661 13.0735 1.71072 13.1657C1.78284 13.1857 1.84696 13.2138 1.90707 13.2539C2.02327 13.354 2.00725 13.5063 2.15952 13.7307C2.23565 13.8469 2.33583 13.9471 2.44803 14.0272C2.77261 14.2516 3.13726 14.2637 3.52195 14.2797C3.87057 14.2917 4.26327 14.3078 4.71608 14.456C4.90442 14.5161 5.09676 14.6363 5.32116 14.7766C5.86213 15.1092 6.59944 15.562 7.83765 15.562C9.07586 15.562 9.81719 15.1052 10.3622 14.7726C10.5866 14.6363 10.7789 14.5161 10.9592 14.456C11.408 14.3078 11.8047 14.2917 12.1534 14.2797C12.538 14.2637 12.9027 14.2516 13.2273 14.0272C13.3635 13.9311 13.4757 13.8109 13.5559 13.6666C13.6681 13.4783 13.6641 13.346 13.7682 13.2539C13.8243 13.2138 13.8885 13.1857 13.9526 13.1697C14.2972 13.0776 14.6338 12.9453 14.9463 12.773C15.1026 12.6889 15.2469 12.5767 15.3671 12.4444L15.3711 12.4404C15.6837 12.1198 15.7598 11.7432 15.6356 11.4146ZM14.5376 12.0036C13.8684 12.3723 13.4196 12.3322 13.075 12.5566C12.7785 12.745 12.9548 13.1537 12.7424 13.302C12.4779 13.4823 11.7006 13.2899 10.6988 13.6225C9.86928 13.895 9.34434 14.6844 7.85368 14.6844C6.36302 14.6844 5.85011 13.899 5.0086 13.6225C4.00682 13.2899 3.22943 13.4863 2.96496 13.302C2.75258 13.1537 2.92488 12.745 2.63236 12.5566C2.28374 12.3322 1.83895 12.3723 1.16975 12.0036C0.740985 11.7672 0.985421 11.623 1.12567 11.5548C3.55401 10.3807 3.9427 8.5655 3.95873 8.42925C3.97876 8.26496 4.00281 8.13673 3.82249 7.97244C3.65018 7.81215 2.8808 7.3353 2.66442 7.18704C2.31179 6.93859 2.15551 6.69416 2.27172 6.38961C2.35186 6.18124 2.54821 6.1011 2.75258 6.1011C2.81669 6.1011 2.8808 6.10911 2.94492 6.12113C3.33361 6.20528 3.71029 6.39763 3.92667 6.45373C3.95472 6.46174 3.97877 6.46575 4.00682 6.46575C4.12302 6.46575 4.16309 6.40564 4.15508 6.27341C4.13104 5.84865 4.07093 5.02317 4.13905 4.24979C4.23122 3.1879 4.57182 2.65895 4.98055 2.19412C5.1769 1.96972 6.09454 0.999991 7.85368 0.999991C9.61282 0.999991 10.5305 1.96572 10.7268 2.19012C11.1355 2.65495 11.4761 3.18389 11.5683 4.24579C11.6364 5.01917 11.5763 5.84464 11.5483 6.2694C11.5403 6.40965 11.5803 6.46174 11.6965 6.46174C11.7246 6.46174 11.7486 6.45773 11.7767 6.44972C11.9931 6.39763 12.3697 6.20128 12.7584 6.11713C12.8226 6.1011 12.8867 6.09709 12.9508 6.09709C13.1551 6.09709 13.3515 6.17723 13.4316 6.38561C13.5478 6.69015 13.3916 6.93459 13.0389 7.18303C12.8266 7.33129 12.0572 7.80815 11.8809 7.96843C11.7006 8.13273 11.7246 8.26095 11.7446 8.42525C11.7607 8.56149 12.1494 10.3767 14.5777 11.5508C14.7219 11.619 14.9624 11.7672 14.5376 12.0036Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "pinterest": {
+        "label": "Pinterest",
+        "figmaPlatform": "Pinterest",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9533",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-pinterest-brand-Platform=Pinterest, Color=Original\" clip-path=\"url(#social-pinterest-brand-clip0_964_9533)\">\n<path id=\"social-pinterest-brand-Vector\" d=\"M7.84615 15.6923C12.1795 15.6923 15.6923 12.1795 15.6923 7.84615C15.6923 3.51284 12.1795 0 7.84615 0C3.51284 0 0 3.51284 0 7.84615C0 12.1795 3.51284 15.6923 7.84615 15.6923Z\" fill=\"white\"/>\n<path id=\"social-pinterest-brand-Vector_2\" d=\"M7.84615 0C3.51301 0 0 3.51301 0 7.84615C0 11.1719 2.06648 14.0133 4.98537 15.1563C4.91434 14.5364 4.85622 13.5806 5.01121 12.9026C5.15328 12.2891 5.92821 9.00209 5.92821 9.00209C5.92821 9.00209 5.69573 8.53067 5.69573 7.8397C5.69573 6.74834 6.32858 5.93466 7.11643 5.93466C7.78803 5.93466 8.11092 6.43837 8.11092 7.03894C8.11092 7.71054 7.68471 8.71795 7.45869 9.65432C7.27142 10.4357 7.85261 11.075 8.62108 11.075C10.016 11.075 11.0879 9.60266 11.0879 7.48452C11.0879 5.60532 9.73827 4.2944 7.80741 4.2944C5.57303 4.2944 4.26211 5.96695 4.26211 7.69763C4.26211 8.36923 4.52042 9.0925 4.8433 9.48642C4.90788 9.56391 4.91434 9.63495 4.89497 9.71244C4.83685 9.95783 4.70123 10.4938 4.6754 10.6036C4.64312 10.7457 4.55916 10.778 4.41064 10.7069C3.42906 10.2484 2.81557 8.82127 2.81557 7.66534C2.81557 5.19202 4.61083 2.9189 8.00114 2.9189C10.7198 2.9189 12.838 4.85622 12.838 7.45223C12.838 10.158 11.1331 12.3343 8.76961 12.3343C7.97531 12.3343 7.22621 11.921 6.97436 11.4302C6.97436 11.4302 6.58044 12.9284 6.48357 13.2965C6.30921 13.981 5.83134 14.8334 5.50845 15.3565C6.24463 15.5825 7.01956 15.7052 7.83324 15.7052C12.1664 15.7052 15.6794 12.1922 15.6794 7.85907C15.6923 3.51301 12.1793 0 7.84615 0Z\" fill=\"#E60019\"/>\n</g>\n<defs>\n<clipPath id=\"social-pinterest-brand-clip0_964_9533\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9448",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-pinterest-monochrome-Platform=Pinterest, Color=Negative\" clip-path=\"url(#social-pinterest-monochrome-clip0_964_9448)\">\n<path id=\"social-pinterest-monochrome-Vector\" d=\"M7.84615 0C3.51238 0 0 3.51238 0 7.84615C0 11.1716 2.06881 14.0097 4.9866 15.1529C4.91917 14.5307 4.85481 13.5806 5.01418 12.9032C5.15823 12.2903 5.93365 9.00469 5.93365 9.00469C5.93365 9.00469 5.69766 8.53576 5.69766 7.84002C5.69766 6.74892 6.32903 5.93365 7.11671 5.93365C7.78486 5.93365 8.10974 6.4363 8.10974 7.04008C8.10974 7.71436 7.68065 8.71965 7.45998 9.65138C7.27608 10.4329 7.85228 11.0704 8.62157 11.0704C10.0161 11.0704 11.0888 9.59928 11.0888 7.47837C11.0888 5.59958 9.74026 4.28474 7.81244 4.28474C5.58119 4.28474 4.26941 5.95817 4.26941 7.68984C4.26941 8.36412 4.52993 9.08744 4.85481 9.47975C4.91917 9.55637 4.92837 9.62686 4.90998 9.70349C4.85174 9.95174 4.71689 10.485 4.69237 10.5923C4.65865 10.7364 4.57897 10.767 4.42879 10.6965C3.44802 10.2398 2.83504 8.80853 2.83504 7.65613C2.83504 5.17969 4.63413 2.90859 8.01779 2.90859C10.7394 2.90859 12.8542 4.84868 12.8542 7.44159C12.8542 10.1448 11.1501 12.3209 8.78401 12.3209C7.9902 12.3209 7.24237 11.9072 6.98492 11.4198C6.98492 11.4198 6.59261 12.9186 6.4976 13.2864C6.31983 13.9668 5.84171 14.8219 5.52296 15.3429C6.25853 15.5697 7.03702 15.6923 7.84615 15.6923C12.1799 15.6923 15.6923 12.1799 15.6923 7.84615C15.6923 3.51238 12.1799 0 7.84615 0Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-pinterest-monochrome-clip0_964_9448\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "medium": {
+        "label": "Medium",
+        "figmaPlatform": "Medium",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9529",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-medium-brand-Platform=Medium, Color=Original\" clip-path=\"url(#social-medium-brand-clip0_964_9529)\">\n<path id=\"social-medium-brand-Vector\" d=\"M15.6923 7.73349C15.6923 9.81227 15.3439 11.4985 14.914 11.4985C14.4841 11.4985 14.1359 9.81272 14.1359 7.73349C14.1359 5.65425 14.4843 3.96848 14.914 3.96848C15.3437 3.96848 15.6923 5.6541 15.6923 7.73349Z\" fill=\"black\"/>\n<path id=\"social-medium-brand-Vector_2\" d=\"M13.7064 7.73349C13.7064 10.0542 12.7157 11.9363 11.4935 11.9363C10.2714 11.9363 9.28064 10.0542 9.28064 7.73349C9.28064 5.41279 10.2712 3.53073 11.4934 3.53073C12.7155 3.53073 13.7063 5.41218 13.7063 7.73349\" fill=\"black\"/>\n<path id=\"social-medium-brand-Vector_3\" d=\"M8.8514 7.73349C8.8514 10.199 6.86992 12.1976 4.42578 12.1976C1.98163 12.1976 0 10.1985 0 7.73349C0 5.26847 1.98148 3.26923 4.42578 3.26923C6.87007 3.26923 8.8514 5.26802 8.8514 7.73349Z\" fill=\"black\"/>\n</g>\n<defs>\n<clipPath id=\"social-medium-brand-clip0_964_9529\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9444",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-medium-monochrome-Platform=Medium, Color=Negative\" clip-path=\"url(#social-medium-monochrome-clip0_964_9444)\">\n<path id=\"social-medium-monochrome-Vector\" d=\"M15.6923 7.73349C15.6923 9.81227 15.3439 11.4985 14.914 11.4985C14.4841 11.4985 14.1359 9.81272 14.1359 7.73349C14.1359 5.65425 14.4843 3.96848 14.914 3.96848C15.3437 3.96848 15.6923 5.6541 15.6923 7.73349Z\" fill=\"currentColor\"/>\n<path id=\"social-medium-monochrome-Vector_2\" d=\"M13.7064 7.73349C13.7064 10.0542 12.7157 11.9363 11.4935 11.9363C10.2714 11.9363 9.28064 10.0542 9.28064 7.73349C9.28064 5.41279 10.2712 3.53073 11.4934 3.53073C12.7155 3.53073 13.7063 5.41218 13.7063 7.73349\" fill=\"currentColor\"/>\n<path id=\"social-medium-monochrome-Vector_3\" d=\"M8.8514 7.73349C8.8514 10.199 6.86992 12.1976 4.42578 12.1976C1.98163 12.1976 0 10.1985 0 7.73349C0 5.26847 1.98148 3.26923 4.42578 3.26923C6.87007 3.26923 8.8514 5.26802 8.8514 7.73349Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-medium-monochrome-clip0_964_9444\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "github": {
+        "label": "GitHub",
+        "figmaPlatform": "Github",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9527",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-github-brand-Platform=Github, Color=Original\" clip-path=\"url(#social-github-brand-clip0_964_9527)\">\n<path id=\"social-github-brand-Vector\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7.85265 0C3.51034 0 0 3.53621 0 7.91099C0 11.408 2.24919 14.3681 5.36942 15.4158C5.75953 15.4946 5.90242 15.2456 5.90242 15.0361C5.90242 14.8527 5.88956 14.2241 5.88956 13.5691C3.70515 14.0407 3.25026 12.6261 3.25026 12.6261C2.89921 11.7092 2.37907 11.4736 2.37907 11.4736C1.66411 10.9889 2.43115 10.9889 2.43115 10.9889C3.22422 11.0413 3.64037 11.801 3.64037 11.801C4.34231 13.0059 5.47342 12.6654 5.92846 12.4558C5.9934 11.945 6.20156 11.5914 6.42257 11.395C4.68034 11.2116 2.8473 10.5305 2.8473 7.49179C2.8473 6.62735 3.15913 5.9201 3.65323 5.37006C3.57527 5.17364 3.30218 4.36144 3.73135 3.27437C3.73135 3.27437 4.39439 3.06477 5.8894 4.08642C6.52947 3.91325 7.18957 3.82516 7.85265 3.82442C8.51569 3.82442 9.19159 3.9162 9.81573 4.08642C11.3109 3.06477 11.9739 3.27437 11.9739 3.27437C12.4031 4.36144 12.1299 5.17364 12.0519 5.37006C12.559 5.9201 12.858 6.62735 12.858 7.49179C12.858 10.5305 11.025 11.1984 9.2697 11.395C9.55581 11.6438 9.80271 12.1152 9.80271 12.8619C9.80271 13.9227 9.78985 14.7741 9.78985 15.036C9.78985 15.2456 9.9329 15.4946 10.3229 15.416C13.4431 14.368 15.6923 11.408 15.6923 7.91099C15.7051 3.53621 12.1819 0 7.85265 0Z\" fill=\"#24292F\"/>\n</g>\n<defs>\n<clipPath id=\"social-github-brand-clip0_964_9527\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9442",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-github-monochrome-Platform=Github, Color=Negative\" clip-path=\"url(#social-github-monochrome-clip0_964_9442)\">\n<path id=\"social-github-monochrome-Vector\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7.85265 0C3.51034 0 0 3.53621 0 7.91099C0 11.408 2.24919 14.3681 5.36942 15.4158C5.75953 15.4946 5.90242 15.2456 5.90242 15.0361C5.90242 14.8527 5.88956 14.2241 5.88956 13.5691C3.70515 14.0407 3.25026 12.6261 3.25026 12.6261C2.89921 11.7092 2.37907 11.4736 2.37907 11.4736C1.66411 10.9889 2.43115 10.9889 2.43115 10.9889C3.22422 11.0413 3.64037 11.801 3.64037 11.801C4.34231 13.0059 5.47342 12.6654 5.92846 12.4558C5.9934 11.945 6.20156 11.5914 6.42257 11.395C4.68034 11.2116 2.8473 10.5305 2.8473 7.49179C2.8473 6.62735 3.15913 5.9201 3.65323 5.37006C3.57527 5.17364 3.30218 4.36144 3.73135 3.27437C3.73135 3.27437 4.39439 3.06477 5.8894 4.08642C6.52947 3.91325 7.18957 3.82516 7.85265 3.82442C8.51569 3.82442 9.19159 3.9162 9.81573 4.08642C11.3109 3.06477 11.9739 3.27437 11.9739 3.27437C12.4031 4.36144 12.1299 5.17364 12.0519 5.37006C12.559 5.9201 12.858 6.62735 12.858 7.49179C12.858 10.5305 11.025 11.1984 9.2697 11.395C9.55581 11.6438 9.80271 12.1152 9.80271 12.8619C9.80271 13.9227 9.78985 14.7741 9.78985 15.036C9.78985 15.2456 9.9329 15.4946 10.3229 15.416C13.4431 14.368 15.6923 11.408 15.6923 7.91099C15.7051 3.53621 12.1819 0 7.85265 0Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-github-monochrome-clip0_964_9442\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "threads": {
+        "label": "Threads",
+        "figmaPlatform": "Threads",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9525",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-threads-brand-Platform=Threads, Color=Original\" clip-path=\"url(#social-threads-brand-clip0_964_9525)\">\n<path id=\"social-threads-brand-Vector\" d=\"M11.5679 7.27308C11.5003 7.24068 11.4317 7.2095 11.3621 7.17965C11.241 4.94783 10.0215 3.67012 7.97381 3.65704C7.96453 3.65699 7.95531 3.65699 7.94603 3.65699C6.72124 3.65699 5.70261 4.17979 5.07564 5.13111L6.20181 5.90364C6.67018 5.19303 7.40523 5.04155 7.94657 5.04155C7.95282 5.04155 7.9591 5.04155 7.96528 5.0416C8.63951 5.0459 9.14829 5.24193 9.47758 5.62422C9.71722 5.90254 9.87749 6.28714 9.95685 6.77252C9.35907 6.67092 8.71258 6.63968 8.02147 6.67931C6.07461 6.79145 4.82302 7.9269 4.90708 9.50463C4.94974 10.3049 5.34844 10.9934 6.02969 11.4432C6.60568 11.8234 7.34751 12.0094 8.11851 11.9673C9.13668 11.9114 9.93544 11.523 10.4927 10.8127C10.9159 10.2732 11.1835 9.57419 11.3017 8.69337C11.787 8.98622 12.1466 9.37158 12.3452 9.83483C12.6829 10.6223 12.7026 11.9163 11.6467 12.9713C10.7216 13.8955 9.60958 14.2954 7.92899 14.3077C6.06477 14.2939 4.65488 13.696 3.73821 12.5307C2.87982 11.4395 2.43621 9.86343 2.41966 7.84615C2.43621 5.82886 2.87982 4.25275 3.73821 3.16157C4.65488 1.99627 6.06474 1.39841 7.92896 1.38456C9.80671 1.39852 11.2412 1.99925 12.1929 3.17017C12.6596 3.74438 13.0115 4.46649 13.2434 5.30844L14.5631 4.95633C14.282 3.91999 13.8396 3.02696 13.2375 2.28634C12.0174 0.785161 10.2329 0.0159496 7.93357 0H7.92436C5.62975 0.0158942 3.86522 0.788032 2.67981 2.29494C1.62496 3.63591 1.08084 5.50176 1.06256 7.84064L1.0625 7.84615L1.06256 7.85167C1.08084 10.1905 1.62496 12.0564 2.67981 13.3974C3.86522 14.9043 5.62975 15.6765 7.92436 15.6923H7.93357C9.97361 15.6782 11.4116 15.1441 12.5962 13.9605C14.146 12.4121 14.0994 10.4713 13.5886 9.27979C13.2221 8.42538 12.5234 7.73142 11.5679 7.27308ZM8.04562 10.5847C7.19235 10.6328 6.30589 10.2498 6.26218 9.42944C6.22978 8.8212 6.69504 8.14251 8.09798 8.06166C8.25865 8.05239 8.41631 8.04787 8.57119 8.04787C9.08078 8.04787 9.55751 8.09737 9.99093 8.19212C9.82927 10.211 8.88103 10.5389 8.04562 10.5847Z\" fill=\"black\"/>\n</g>\n<defs>\n<clipPath id=\"social-threads-brand-clip0_964_9525\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9440",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-threads-monochrome-Platform=Threads, Color=Negative\" clip-path=\"url(#social-threads-monochrome-clip0_964_9440)\">\n<path id=\"social-threads-monochrome-Vector\" d=\"M11.5679 7.27308C11.5003 7.24068 11.4317 7.2095 11.3621 7.17965C11.241 4.94783 10.0215 3.67012 7.97381 3.65704C7.96453 3.65699 7.95531 3.65699 7.94603 3.65699C6.72124 3.65699 5.70261 4.17979 5.07564 5.13111L6.20181 5.90364C6.67018 5.19303 7.40523 5.04155 7.94657 5.04155C7.95282 5.04155 7.9591 5.04155 7.96528 5.0416C8.63951 5.0459 9.14829 5.24193 9.47758 5.62422C9.71722 5.90254 9.87749 6.28714 9.95685 6.77252C9.35907 6.67092 8.71258 6.63968 8.02147 6.67931C6.07461 6.79145 4.82302 7.9269 4.90708 9.50463C4.94974 10.3049 5.34844 10.9934 6.02969 11.4432C6.60568 11.8234 7.34751 12.0094 8.11851 11.9673C9.13668 11.9114 9.93544 11.523 10.4927 10.8127C10.9159 10.2732 11.1835 9.57419 11.3017 8.69337C11.787 8.98622 12.1466 9.37158 12.3452 9.83483C12.6829 10.6223 12.7026 11.9163 11.6467 12.9713C10.7216 13.8955 9.60958 14.2954 7.92899 14.3077C6.06477 14.2939 4.65488 13.696 3.73821 12.5307C2.87982 11.4395 2.43621 9.86343 2.41966 7.84615C2.43621 5.82886 2.87982 4.25275 3.73821 3.16157C4.65488 1.99627 6.06474 1.39841 7.92896 1.38456C9.80671 1.39852 11.2412 1.99925 12.1929 3.17017C12.6596 3.74438 13.0115 4.46649 13.2434 5.30844L14.5631 4.95633C14.282 3.91999 13.8396 3.02696 13.2375 2.28634C12.0174 0.785161 10.2329 0.0159496 7.93357 0H7.92436C5.62975 0.0158942 3.86522 0.788032 2.67981 2.29494C1.62496 3.63591 1.08084 5.50176 1.06256 7.84064L1.0625 7.84615L1.06256 7.85167C1.08084 10.1905 1.62496 12.0564 2.67981 13.3974C3.86522 14.9043 5.62975 15.6765 7.92436 15.6923H7.93357C9.97361 15.6782 11.4116 15.1441 12.5962 13.9605C14.146 12.4121 14.0994 10.4713 13.5886 9.27979C13.2221 8.42538 12.5234 7.73142 11.5679 7.27308ZM8.04562 10.5847C7.19235 10.6328 6.30589 10.2498 6.26218 9.42944C6.22978 8.8212 6.69504 8.14251 8.09798 8.06166C8.25865 8.05239 8.41631 8.04787 8.57119 8.04787C9.08078 8.04787 9.55751 8.09737 9.99093 8.19212C9.82927 10.211 8.88103 10.5389 8.04562 10.5847Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-threads-monochrome-clip0_964_9440\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "whatsapp": {
+        "label": "WhatsApp",
+        "figmaPlatform": "WhatsApp",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9523",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-whatsapp-brand-Platform=WhatsApp, Color=Original\">\n<path id=\"social-whatsapp-brand-Vector\" d=\"M0 15.6923L1.10304 11.6626C0.422384 10.4831 0.0647306 9.14598 0.0653845 7.77487C0.067346 3.48826 3.55561 0 7.84156 0C9.92144 0.000653845 11.8738 0.810767 13.3424 2.28061C14.8102 3.75045 15.6184 5.70414 15.6177 7.78206C15.6158 12.0693 12.1275 15.5576 7.84156 15.5576C6.54041 15.5569 5.25822 15.2307 4.12249 14.6108L0 15.6923ZM4.31341 13.2031C5.40926 13.8537 6.45541 14.2434 7.83894 14.244C11.4011 14.244 14.3029 11.3449 14.3048 7.78075C14.3061 4.20945 11.4181 1.31423 7.84417 1.31292C4.27941 1.31292 1.37961 4.21207 1.3783 7.77552C1.37765 9.23032 1.80396 10.3196 2.51992 11.4593L1.86673 13.8445L4.31341 13.2031ZM11.7587 9.63048C11.7104 9.5494 11.5809 9.50102 11.3861 9.40359C11.1919 9.30617 10.2366 8.83606 10.0581 8.77133C9.88025 8.7066 9.75078 8.6739 9.62067 8.86875C9.49121 9.06294 9.11852 9.50102 9.0054 9.63048C8.89229 9.75994 8.77852 9.77629 8.58433 9.67886C8.39013 9.58144 7.76375 9.37679 7.02164 8.71444C6.44429 8.19921 6.05395 7.56302 5.94083 7.36818C5.82772 7.17398 5.92906 7.06871 6.02583 6.97195C6.11345 6.88498 6.22002 6.74506 6.31745 6.63129C6.41618 6.51883 6.44822 6.43775 6.5136 6.30764C6.57833 6.17818 6.54629 6.06441 6.49725 5.96699C6.44822 5.87022 6.05983 4.91364 5.89833 4.52461C5.7401 4.14603 5.57991 4.19703 5.46091 4.19114L5.08822 4.18461C4.95876 4.18461 4.74822 4.23299 4.57037 4.42784C4.39253 4.62268 3.89038 5.09214 3.89038 6.04872C3.89038 7.00529 4.58672 7.92917 4.68349 8.05864C4.78091 8.1881 6.05329 10.1509 8.0024 10.9924C8.46598 11.1925 8.82821 11.3122 9.11002 11.4017C9.57555 11.5495 9.99925 11.5286 10.334 11.4789C10.7074 11.4233 11.4835 11.0088 11.6456 10.555C11.8078 10.1006 11.8078 9.71155 11.7587 9.63048Z\" fill=\"#25D366\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9438",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-whatsapp-monochrome-Platform=WhatsApp, Color=Negative\">\n<path id=\"social-whatsapp-monochrome-Vector\" d=\"M0 15.6923L1.10304 11.6626C0.422384 10.4831 0.0647306 9.14598 0.0653845 7.77487C0.067346 3.48826 3.55561 0 7.84156 0C9.92144 0.000653845 11.8738 0.810767 13.3424 2.28061C14.8102 3.75045 15.6184 5.70414 15.6177 7.78206C15.6158 12.0693 12.1275 15.5576 7.84156 15.5576C6.54041 15.5569 5.25822 15.2307 4.12249 14.6108L0 15.6923ZM4.31341 13.2031C5.40926 13.8537 6.45541 14.2434 7.83894 14.244C11.4011 14.244 14.3029 11.3449 14.3048 7.78075C14.3061 4.20945 11.4181 1.31423 7.84417 1.31292C4.27941 1.31292 1.37961 4.21207 1.3783 7.77552C1.37765 9.23032 1.80396 10.3196 2.51992 11.4593L1.86673 13.8445L4.31341 13.2031ZM11.7587 9.63048C11.7104 9.5494 11.5809 9.50102 11.3861 9.40359C11.1919 9.30617 10.2366 8.83606 10.0581 8.77133C9.88025 8.7066 9.75078 8.6739 9.62067 8.86875C9.49121 9.06294 9.11852 9.50102 9.0054 9.63048C8.89229 9.75994 8.77852 9.77629 8.58433 9.67886C8.39013 9.58144 7.76375 9.37679 7.02164 8.71444C6.44429 8.19921 6.05395 7.56302 5.94083 7.36818C5.82772 7.17398 5.92906 7.06871 6.02583 6.97195C6.11345 6.88498 6.22002 6.74506 6.31745 6.63129C6.41618 6.51883 6.44822 6.43775 6.5136 6.30764C6.57833 6.17818 6.54629 6.06441 6.49725 5.96699C6.44822 5.87022 6.05983 4.91364 5.89833 4.52461C5.7401 4.14603 5.57991 4.19703 5.46091 4.19114L5.08822 4.18461C4.95876 4.18461 4.74822 4.23299 4.57037 4.42784C4.39253 4.62268 3.89038 5.09214 3.89038 6.04872C3.89038 7.00529 4.58672 7.92917 4.68349 8.05864C4.78091 8.1881 6.05329 10.1509 8.0024 10.9924C8.46598 11.1925 8.82821 11.3122 9.11002 11.4017C9.57555 11.5495 9.99925 11.5286 10.334 11.4789C10.7074 11.4233 11.4835 11.0088 11.6456 10.555C11.8078 10.1006 11.8078 9.71155 11.7587 9.63048Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "figma": {
+        "label": "Figma",
+        "figmaPlatform": "Figma",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9517",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-figma-brand-Platform=Figma, Color=Original\" clip-path=\"url(#social-figma-brand-clip0_964_9517)\">\n<path id=\"social-figma-brand-Vector\" d=\"M5.23078 15.6923C6.67449 15.6923 7.84621 14.5206 7.84621 13.0769V10.4615H5.23078C3.78708 10.4615 2.61536 11.6332 2.61536 13.0769C2.61536 14.5206 3.78708 15.6923 5.23078 15.6923Z\" fill=\"#0ACF83\"/>\n<path id=\"social-figma-brand-Vector_2\" d=\"M2.61536 7.84615C2.61536 6.40246 3.78708 5.23074 5.23078 5.23074H7.84621V10.4615H5.23078C3.78708 10.4616 2.61536 9.28984 2.61536 7.84615Z\" fill=\"#A259FF\"/>\n<path id=\"social-figma-brand-Vector_3\" d=\"M2.61536 2.61541C2.61536 1.17171 3.78708 0 5.23078 0H7.84621V5.23075H5.23078C3.78708 5.23075 2.61536 4.0591 2.61536 2.61541Z\" fill=\"#F24E1E\"/>\n<path id=\"social-figma-brand-Vector_4\" d=\"M7.84607 0H10.4615C11.9052 0 13.0769 1.17171 13.0769 2.61541C13.0769 4.0591 11.9052 5.23075 10.4615 5.23075H7.84607V0Z\" fill=\"#FF7262\"/>\n<path id=\"social-figma-brand-Vector_5\" d=\"M13.0769 7.84615C13.0769 9.28984 11.9052 10.4616 10.4615 10.4616C9.01779 10.4616 7.84607 9.28984 7.84607 7.84615C7.84607 6.40246 9.01779 5.23074 10.4615 5.23074C11.9052 5.23074 13.0769 6.40246 13.0769 7.84615Z\" fill=\"#1ABCFE\"/>\n</g>\n<defs>\n<clipPath id=\"social-figma-brand-clip0_964_9517\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9436",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-figma-monochrome-Platform=Figma, Color=Negative\">\n<path id=\"social-figma-monochrome-Vector\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M5.3354 0H10.3569C11.9161 0 13.1815 1.26536 13.1815 2.82464C13.1815 3.91734 12.5601 4.86567 11.6516 5.33536C12.5601 5.80507 13.1815 6.75343 13.1815 7.84613C13.1815 9.40541 11.9161 10.6708 10.3569 10.6708C9.46988 10.6708 8.67801 10.2613 8.16005 9.62127V12.8677C8.16005 14.427 6.89468 15.6923 5.3354 15.6923C3.77611 15.6923 2.51074 14.427 2.51074 12.8677C2.51074 11.775 3.13215 10.8266 4.04065 10.3569C3.13215 9.8872 2.51074 8.93883 2.51074 7.84613C2.51074 6.75343 3.13214 5.80507 4.04063 5.33536C3.13215 4.86567 2.51074 3.91734 2.51074 2.82464C2.51074 1.26536 3.77611 0 5.3354 0ZM3.13843 2.82464C3.13843 1.61203 4.12277 0.627692 5.3354 0.627692H7.5322V5.0215H5.3354L5.32859 5.02151C4.11908 5.01783 3.13843 4.03496 3.13843 2.82464ZM7.53236 7.81626C7.53225 7.82621 7.5322 7.83616 7.5322 7.84613C7.5322 7.8561 7.53225 7.86606 7.53236 7.87601V10.043H5.33538C4.12277 10.0431 3.13843 9.05875 3.13843 7.84613C3.13843 6.63578 4.11912 5.65285 5.32864 5.6492L5.3354 5.64921H7.5322L7.53236 7.81626ZM8.16005 7.87245V7.81982C8.17413 6.62231 9.14814 5.65403 10.3479 5.64921H10.3569C10.3591 5.64921 10.3614 5.64921 10.3636 5.6492C11.5731 5.65285 12.5538 6.63578 12.5538 7.84613C12.5538 9.05875 11.5695 10.0431 10.3569 10.0431C9.15302 10.0431 8.17417 9.07295 8.16005 7.87245ZM8.58187 5.64921C8.4269 5.7746 8.28545 5.91604 8.16005 6.071V5.64921H8.58187ZM10.3637 5.02151C10.3614 5.0215 10.3591 5.0215 10.3569 5.0215C10.3534 5.0215 10.35 5.02151 10.3466 5.02152H8.16005V0.627692H10.3569C11.5695 0.627692 12.5538 1.61203 12.5538 2.82464C12.5538 4.03496 11.5732 5.01783 10.3637 5.02151ZM5.3354 10.6707C4.12277 10.6707 3.13843 11.6551 3.13843 12.8677C3.13843 14.0803 4.12277 15.0646 5.3354 15.0646C6.54802 15.0646 7.53236 14.0803 7.53236 12.8677V10.6707H5.3354Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "dribbble": {
+        "label": "Dribbble",
+        "figmaPlatform": "Dribbble",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9515",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-dribbble-brand-Platform=Dribbble, Color=Original\">\n<path id=\"social-dribbble-brand-Union\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7.84615 0C3.51182 0 0 3.51437 0 7.84473C0 11.9611 3.17571 15.3398 7.20971 15.664V15.6923H7.84615C12.1805 15.6923 15.6923 12.1779 15.6923 7.84758C15.6923 3.51753 12.1808 0 7.84615 0ZM9.5799 14.1886C9.08766 14.3228 8.57239 14.4013 8.0413 14.4168H7.84615C6.96055 14.4168 6.11567 14.2414 5.34438 13.9235C6.09116 11.2327 8.11558 9.30537 10.4327 8.44416C10.8326 10.3821 10.5423 12.4589 9.5799 14.1886ZM10.0799 7.21848C7.43527 8.17101 5.12558 10.3166 4.19754 13.3112C2.43452 12.132 1.27287 10.1231 1.27287 7.84473C1.27287 7.03678 1.41881 6.26274 1.68578 5.54757C2.48155 5.94407 3.33247 6.22455 4.20752 6.38052C5.32221 6.58488 6.46429 6.57809 7.57575 6.3777C8.2084 6.26348 8.82603 6.08156 9.41823 5.83913C9.68183 6.27733 9.90353 6.73909 10.0799 7.21848ZM11.6596 8.09386C12.0417 9.85786 11.9259 11.7272 11.316 13.4302C13.1255 12.3034 14.3471 10.3217 14.4163 8.05139C13.5168 7.88831 12.5792 7.90822 11.6596 8.09386ZM14.3279 6.74845C13.3317 6.60854 12.3073 6.65401 11.3066 6.86776C11.1095 6.31486 10.8608 5.78223 10.5644 5.27648C11.3865 4.80165 12.1373 4.20402 12.7828 3.50717C13.5721 4.40466 14.1208 5.51888 14.3279 6.74845ZM4.43241 5.12788C3.67224 4.99254 2.93387 4.74856 2.24483 4.4042C2.83744 3.44193 3.67116 2.64376 4.66189 2.09409L4.66954 2.09649L4.66982 2.09658L4.66986 2.09659L4.66987 2.0966C4.77781 2.13057 4.88085 2.16299 4.98007 2.19861C5.01668 2.21259 5.05253 2.22618 5.08756 2.23946L5.08812 2.23967L5.08814 2.23968L5.08816 2.23969C5.24906 2.30069 5.39273 2.35517 5.51275 2.41081L5.54701 2.42793L5.55517 2.43173C5.63096 2.46698 5.74017 2.51903 5.83859 2.56596C5.89089 2.59092 5.94017 2.61441 5.97977 2.63315L5.98124 2.63395C6.01434 2.65173 6.04215 2.66666 6.06806 2.68211C6.08915 2.69579 6.10798 2.70687 6.11808 2.71278C6.13655 2.7236 6.15552 2.73429 6.17117 2.74299C6.18453 2.75042 6.19765 2.75765 6.20748 2.76305L6.21243 2.76577L6.2229 2.77156L6.22423 2.77232C6.23882 2.78073 6.25652 2.79083 6.2767 2.80235C6.31997 2.82704 6.37468 2.85826 6.43475 2.89342C6.47709 2.91823 6.51672 2.94189 6.54903 2.96192C6.57306 2.97685 6.58612 2.9855 6.59108 2.9888L6.59138 2.98899C6.59341 2.99035 6.59388 2.99067 6.59307 2.99004L6.62097 3.01118L6.65196 3.0296C6.69923 3.05765 6.74582 3.08988 6.80395 3.1301L6.80396 3.13011L6.80398 3.13013L6.80423 3.1303C6.83076 3.14866 6.85972 3.16869 6.89223 3.19076L6.91432 3.20574L6.9331 3.21634C6.93309 3.21636 6.93341 3.21658 6.93409 3.21704C6.93452 3.21734 6.9351 3.21773 6.93583 3.21822C6.94088 3.22162 6.95315 3.22989 6.97451 3.24519C7.0074 3.26873 7.04709 3.29828 7.09079 3.33113L7.14252 3.37012C7.16912 3.3902 7.19609 3.41055 7.21905 3.42772C7.24935 3.4504 7.28642 3.47793 7.31989 3.50113C7.8083 3.87466 8.25475 4.30118 8.6522 4.77131C8.22933 4.92604 7.79348 5.04515 7.34971 5.12528C6.38233 5.29968 5.39423 5.30439 4.43575 5.12849L4.43408 5.12817L4.43241 5.12788ZM7.84615 1.27264C9.35491 1.27264 10.7448 1.78151 11.8542 2.63668C11.2725 3.26593 10.5915 3.80183 9.84571 4.22121C9.33299 3.56953 8.73981 2.9828 8.07847 2.47902L8.06248 2.46686L8.04591 2.4558L8.0414 2.45266C8.03786 2.45017 8.03316 2.4468 8.02712 2.44242C8.01491 2.43354 7.99979 2.42235 7.98164 2.40876C7.96106 2.39336 7.94042 2.37778 7.91824 2.36105L7.9182 2.36102L7.91365 2.35759C7.89568 2.34401 7.87665 2.32965 7.85581 2.31399C7.81074 2.2801 7.76131 2.24324 7.7159 2.21071C7.68418 2.18796 7.63857 2.1558 7.59198 2.12744L7.56244 2.107L7.56227 2.10688L7.56226 2.10687C7.50167 2.06491 7.41078 2.00195 7.32808 1.95117C7.25082 1.89701 7.14642 1.83531 7.07801 1.79526C7.01178 1.75647 6.94046 1.71577 6.89618 1.6905L6.89583 1.6903L6.86229 1.67112C6.85414 1.66636 6.84705 1.66241 6.84412 1.66077L6.84411 1.66077L6.84395 1.66068L6.84356 1.66046L6.82637 1.65096L6.82056 1.64775C6.81068 1.64232 6.8008 1.63688 6.79052 1.63115C6.77875 1.62461 6.76924 1.61921 6.7623 1.61517L6.75752 1.61182L6.74063 1.6015C6.6795 1.56415 6.61581 1.53004 6.58123 1.51152L6.58049 1.51113L6.56845 1.50467L6.55367 1.49672L6.53849 1.48955C6.50811 1.47521 6.46321 1.45382 6.41223 1.42952C6.87378 1.32682 7.35363 1.27264 7.84615 1.27264Z\" fill=\"#060318\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9434",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-dribbble-monochrome-Platform=Dribbble, Color=Negative\">\n<path id=\"social-dribbble-monochrome-Union\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M7.84615 0C3.51182 0 0 3.51437 0 7.84473C0 11.9611 3.17571 15.3398 7.20971 15.664V15.6923H7.84615C12.1805 15.6923 15.6923 12.1779 15.6923 7.84758C15.6923 3.51753 12.1808 0 7.84615 0ZM9.57989 14.1886C9.08765 14.3229 8.57239 14.4013 8.0413 14.4168H7.84615C6.96055 14.4168 6.11567 14.2414 5.34438 13.9235C6.09116 11.2327 8.11558 9.30538 10.4327 8.44417C10.8326 10.3821 10.5423 12.4589 9.57989 14.1886ZM10.0799 7.21848C7.43528 8.17102 5.12559 10.3166 4.19754 13.3112C2.43452 12.132 1.27287 10.1231 1.27287 7.84473C1.27287 7.03678 1.41881 6.26274 1.68578 5.54757C2.48155 5.94407 3.33247 6.22455 4.20752 6.38052C5.32221 6.58488 6.46429 6.57809 7.57575 6.3777C8.2084 6.26348 8.82603 6.08156 9.41823 5.83913C9.68184 6.27733 9.90354 6.73909 10.0799 7.21848ZM11.6596 8.09387C12.0417 9.85787 11.9259 11.7272 11.316 13.4302C13.1255 12.3034 14.3471 10.3217 14.4163 8.0514C13.5168 7.88832 12.5792 7.90823 11.6596 8.09387ZM14.3279 6.74846C13.3317 6.60855 12.3073 6.65402 11.3066 6.86777C11.1095 6.31487 10.8608 5.78224 10.5644 5.27648C11.3865 4.80165 12.1373 4.20402 12.7828 3.50717C13.5721 4.40466 14.1208 5.51888 14.3279 6.74846ZM4.43241 5.12788C3.67224 4.99254 2.93387 4.74856 2.24483 4.4042C2.83744 3.44192 3.67117 2.64376 4.6619 2.09408L4.66954 2.09648L4.66982 2.09657L4.66986 2.09658L4.66987 2.09659C4.77781 2.13056 4.88085 2.16298 4.98007 2.1986C5.01668 2.21258 5.05253 2.22617 5.08756 2.23945L5.08812 2.23966L5.08814 2.23967L5.08816 2.23968C5.24906 2.30068 5.39273 2.35516 5.51275 2.4108L5.54701 2.42792L5.55517 2.43172C5.63096 2.46697 5.74017 2.51902 5.83859 2.56595C5.89089 2.59091 5.94017 2.6144 5.97977 2.63314L5.98124 2.63394C6.01434 2.65172 6.04215 2.66665 6.06806 2.6821C6.08915 2.69578 6.10798 2.70687 6.11808 2.71277C6.13655 2.72359 6.15552 2.73428 6.17117 2.74298C6.18453 2.75041 6.19765 2.75764 6.20748 2.76304L6.21243 2.76576L6.2229 2.77155L6.22423 2.77231C6.23882 2.78072 6.25652 2.79082 6.2767 2.80234C6.31997 2.82703 6.37468 2.85825 6.43475 2.89341C6.47709 2.91822 6.51672 2.94188 6.54903 2.96191C6.57306 2.97684 6.58612 2.98549 6.59108 2.98879L6.59138 2.98898C6.59341 2.99034 6.59388 2.99066 6.59307 2.99003L6.62097 3.01117L6.65196 3.02959C6.69923 3.05764 6.74582 3.08987 6.80395 3.13009L6.80396 3.1301L6.80398 3.13012L6.80423 3.13029C6.83076 3.14865 6.85972 3.16868 6.89223 3.19075L6.91432 3.20573L6.9331 3.21633C6.93308 3.21636 6.93396 3.21695 6.93583 3.21821C6.94088 3.22161 6.95315 3.22988 6.97451 3.24518C7.0074 3.26872 7.04709 3.29827 7.09079 3.33112L7.14252 3.37011C7.16912 3.39019 7.19609 3.41054 7.21905 3.42771C7.24935 3.45039 7.28642 3.47792 7.31989 3.50112C7.8083 3.87465 8.25475 4.30118 8.6522 4.77131C8.22934 4.92603 7.79348 5.04515 7.34971 5.12528C6.38233 5.29968 5.39423 5.30439 4.43575 5.12849L4.43408 5.12817L4.43241 5.12788ZM7.84615 1.27264C9.35491 1.27264 10.7448 1.78151 11.8542 2.63668C11.2725 3.26593 10.5915 3.80182 9.84572 4.2212C9.333 3.56952 8.73981 2.9828 8.07847 2.47901L8.06248 2.46685L8.04591 2.45579L8.0414 2.45265C8.03786 2.45016 8.03316 2.44679 8.02712 2.44241C8.01491 2.43353 7.99979 2.42234 7.98164 2.40875C7.96106 2.39335 7.94042 2.37777 7.91824 2.36104L7.9182 2.36101L7.91365 2.35758C7.89568 2.344 7.87665 2.32964 7.85581 2.31398C7.81074 2.28009 7.76131 2.24323 7.7159 2.2107C7.68418 2.18795 7.63857 2.15579 7.59198 2.12743L7.56244 2.10699L7.56227 2.10687L7.56226 2.10686C7.50167 2.0649 7.41078 2.00194 7.32808 1.95116C7.25082 1.897 7.14642 1.8353 7.07801 1.79525C7.01178 1.75646 6.94046 1.71576 6.89618 1.69049L6.89583 1.69029L6.86229 1.67111C6.85398 1.66626 6.84677 1.66224 6.84395 1.66067L6.84356 1.66045L6.82637 1.65095L6.82056 1.64774C6.81068 1.64231 6.8008 1.63687 6.79052 1.63114C6.77875 1.6246 6.76924 1.6192 6.7623 1.61516L6.75752 1.61181L6.74063 1.60149C6.6795 1.56414 6.61581 1.53003 6.58123 1.51151L6.58049 1.51112L6.56845 1.50467L6.55367 1.49671L6.53849 1.48954C6.50812 1.4752 6.46322 1.45381 6.41225 1.42951C6.87379 1.32681 7.35364 1.27264 7.84615 1.27264Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "reddit": {
+        "label": "Reddit",
+        "figmaPlatform": "Reddit",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9496",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-reddit-brand-Platform=Reddit, Color=Original\" clip-path=\"url(#social-reddit-brand-clip0_964_9496)\">\n<g id=\"social-reddit-brand-Group 1\">\n<path id=\"social-reddit-brand-Vector\" d=\"M7.84615 0C3.51299 0 0 3.51299 0 7.84615C0 10.013 0.878402 11.9746 2.29806 13.3942L0.803618 14.8887C0.506935 15.1854 0.717188 15.6923 1.13647 15.6923H7.84615C12.1793 15.6923 15.6923 12.1793 15.6923 7.84615C15.6923 3.51299 12.1793 0 7.84615 0Z\" fill=\"#FF4500\"/>\n<path id=\"social-reddit-brand-Vector_2\" d=\"M12.294 9.41171C13.3059 9.41171 14.1262 8.59141 14.1262 7.57951C14.1262 6.56762 13.3059 5.74731 12.294 5.74731C11.2821 5.74731 10.4618 6.56762 10.4618 7.57951C10.4618 8.59141 11.2821 9.41171 12.294 9.41171Z\" fill=\"url(#social-reddit-brand-paint0_radial_964_9496)\"/>\n<path id=\"social-reddit-brand-Vector_3\" d=\"M3.39836 9.41171C4.41026 9.41171 5.23056 8.59141 5.23056 7.57951C5.23056 6.56762 4.41026 5.74731 3.39836 5.74731C2.38647 5.74731 1.56616 6.56762 1.56616 7.57951C1.56616 8.59141 2.38647 9.41171 3.39836 9.41171Z\" fill=\"url(#social-reddit-brand-paint1_radial_964_9496)\"/>\n<path id=\"social-reddit-brand-Vector_4\" d=\"M7.85044 13.0767C10.7392 13.0767 13.081 11.3203 13.081 9.15364C13.081 6.98698 10.7392 5.23056 7.85044 5.23056C4.96168 5.23056 2.61987 6.98698 2.61987 9.15364C2.61987 11.3203 4.96168 13.0767 7.85044 13.0767Z\" fill=\"url(#social-reddit-brand-paint2_radial_964_9496)\"/>\n<path id=\"social-reddit-brand-Vector_5\" d=\"M6.30385 8.77237C6.2732 9.43684 5.83185 9.67836 5.31879 9.67836C4.80572 9.67836 4.41341 9.33815 4.44406 8.67368C4.47471 8.00921 4.91606 7.56909 5.42912 7.56909C5.94219 7.56909 6.3345 8.1079 6.30385 8.77237Z\" fill=\"#842123\"/>\n<path id=\"social-reddit-brand-Vector_6\" d=\"M11.2567 8.67307C11.2874 9.33754 10.8957 9.67775 10.382 9.67775C9.86833 9.67775 9.42698 9.43685 9.39695 8.77176C9.3663 8.10729 9.75799 7.56848 10.2717 7.56848C10.7853 7.56848 11.2267 8.00799 11.2567 8.67307Z\" fill=\"#842123\"/>\n<path id=\"social-reddit-brand-Vector_7\" d=\"M9.39697 8.83C9.42578 9.45217 9.83832 9.67775 10.3189 9.67775C10.7995 9.67775 11.166 9.34 11.1372 8.71782C11.1084 8.09565 10.6959 7.68863 10.2153 7.68863C9.73473 7.68863 9.36816 8.20782 9.39697 8.83Z\" fill=\"url(#social-reddit-brand-paint3_radial_964_9496)\"/>\n<path id=\"social-reddit-brand-Vector_8\" d=\"M6.30446 8.83C6.27565 9.45217 5.86312 9.67775 5.38254 9.67775C4.90196 9.67775 4.5354 9.34 4.56421 8.71782C4.59302 8.09565 5.00556 7.68863 5.48613 7.68863C5.96671 7.68863 6.33327 8.20782 6.30446 8.83Z\" fill=\"url(#social-reddit-brand-paint4_radial_964_9496)\"/>\n<path id=\"social-reddit-brand-Vector_9\" d=\"M7.85039 10.1215C7.20186 10.1215 6.58029 10.1528 6.00532 10.2098C5.90724 10.2196 5.84472 10.3195 5.88272 10.409C6.20454 11.1636 6.96402 11.6938 7.85039 11.6938C8.73676 11.6938 9.49563 11.1636 9.81806 10.409C9.85606 10.3195 9.79415 10.2196 9.69546 10.2098C9.12048 10.1528 8.49892 10.1215 7.85039 10.1215Z\" fill=\"#BBCFDA\"/>\n<path id=\"social-reddit-brand-Vector_10\" d=\"M7.85043 10.2656C7.20373 10.2656 6.58401 10.2975 6.01087 10.3557C5.9128 10.3655 5.85088 10.4673 5.88889 10.558C6.21009 11.3248 6.96712 11.863 7.84981 11.863C8.73251 11.863 9.49015 11.3242 9.81135 10.558C9.84936 10.4673 9.78745 10.3655 9.68937 10.3557C9.11623 10.2975 8.49651 10.2656 7.84981 10.2656H7.85043Z\" fill=\"white\"/>\n<path id=\"social-reddit-brand-Vector_11\" d=\"M7.85044 10.1908C7.21417 10.1908 6.60425 10.2221 6.0397 10.2791C5.94346 10.2889 5.88216 10.3888 5.91955 10.4783C6.23524 11.2329 6.98062 11.7631 7.85044 11.7631C8.72026 11.7631 9.46503 11.2329 9.78133 10.4783C9.81872 10.3888 9.75742 10.2889 9.66119 10.2791C9.09724 10.2221 8.48733 10.1908 7.85044 10.1908Z\" fill=\"url(#social-reddit-brand-paint5_radial_964_9496)\"/>\n<path id=\"social-reddit-brand-Vector_12\" d=\"M10.7155 4.69726C11.4326 4.69726 12.0138 4.116 12.0138 3.39897C12.0138 2.68194 11.4326 2.10068 10.7155 2.10068C9.9985 2.10068 9.41724 2.68194 9.41724 3.39897C9.41724 4.116 9.9985 4.69726 10.7155 4.69726Z\" fill=\"url(#social-reddit-brand-paint6_radial_964_9496)\"/>\n<path id=\"social-reddit-brand-Vector_13\" d=\"M7.83202 5.39608C7.67632 5.39608 7.55066 5.3311 7.55066 5.23057C7.55066 4.06714 8.4971 3.12131 9.65993 3.12131C9.81562 3.12131 9.94128 3.24758 9.94128 3.40267C9.94128 3.55775 9.81501 3.68402 9.65993 3.68402C8.80727 3.68402 8.11338 4.37792 8.11338 5.23057C8.11338 5.3311 7.9871 5.39608 7.83202 5.39608Z\" fill=\"url(#social-reddit-brand-paint7_radial_964_9496)\"/>\n<path id=\"social-reddit-brand-Vector_14\" d=\"M5.96243 9.1377C5.96243 9.3786 5.7062 9.48649 5.39051 9.48649C5.07483 9.48649 4.8186 9.3786 4.8186 9.1377C4.8186 8.8968 5.07483 8.70187 5.39051 8.70187C5.7062 8.70187 5.96243 8.8968 5.96243 9.1377Z\" fill=\"#FF6101\"/>\n<path id=\"social-reddit-brand-Vector_15\" d=\"M10.8828 9.1377C10.8828 9.3786 10.6266 9.48649 10.3109 9.48649C9.99524 9.48649 9.73901 9.3786 9.73901 9.1377C9.73901 8.8968 9.99524 8.70187 10.3109 8.70187C10.6266 8.70187 10.8828 8.8968 10.8828 9.1377Z\" fill=\"#FF6101\"/>\n<path id=\"social-reddit-brand-Vector_16\" d=\"M5.7853 8.48426C5.89769 8.48426 5.98881 8.38492 5.98881 8.26237C5.98881 8.13981 5.89769 8.04047 5.7853 8.04047C5.6729 8.04047 5.58179 8.13981 5.58179 8.26237C5.58179 8.38492 5.6729 8.48426 5.7853 8.48426Z\" fill=\"#FFC49C\"/>\n<path id=\"social-reddit-brand-Vector_17\" d=\"M10.6223 8.48426C10.7347 8.48426 10.8258 8.38492 10.8258 8.26237C10.8258 8.13981 10.7347 8.04047 10.6223 8.04047C10.5099 8.04047 10.4188 8.13981 10.4188 8.26237C10.4188 8.38492 10.5099 8.48426 10.6223 8.48426Z\" fill=\"#FFC49C\"/>\n</g>\n</g>\n<defs>\n<radialGradient id=\"social-reddit-brand-paint0_radial_964_9496\" cx=\"0\" cy=\"0\" r=\"1\" gradientUnits=\"userSpaceOnUse\" gradientTransform=\"translate(12.3217 6.59307) scale(3.67185 3.2031)\">\n<stop stop-color=\"#FEFFFF\"/>\n<stop offset=\"0.4\" stop-color=\"#FEFFFF\"/>\n<stop offset=\"0.51\" stop-color=\"#F9FCFC\"/>\n<stop offset=\"0.62\" stop-color=\"#EDF3F5\"/>\n<stop offset=\"0.7\" stop-color=\"#DEE9EC\"/>\n<stop offset=\"0.72\" stop-color=\"#D8E4E8\"/>\n<stop offset=\"0.76\" stop-color=\"#CCD8DF\"/>\n<stop offset=\"0.8\" stop-color=\"#C8D5DD\"/>\n<stop offset=\"0.83\" stop-color=\"#CCD6DE\"/>\n<stop offset=\"0.85\" stop-color=\"#D8DBE2\"/>\n<stop offset=\"0.88\" stop-color=\"#EDE3E9\"/>\n<stop offset=\"0.9\" stop-color=\"#FFEBEF\"/>\n</radialGradient>\n<radialGradient id=\"social-reddit-brand-paint1_radial_964_9496\" cx=\"0\" cy=\"0\" r=\"1\" gradientUnits=\"userSpaceOnUse\" gradientTransform=\"translate(3.42606 6.59307) scale(3.67185 3.2031)\">\n<stop stop-color=\"#FEFFFF\"/>\n<stop offset=\"0.4\" stop-color=\"#FEFFFF\"/>\n<stop offset=\"0.51\" stop-color=\"#F9FCFC\"/>\n<stop offset=\"0.62\" stop-color=\"#EDF3F5\"/>\n<stop offset=\"0.7\" stop-color=\"#DEE9EC\"/>\n<stop offset=\"0.72\" stop-color=\"#D8E4E8\"/>\n<stop offset=\"0.76\" stop-color=\"#CCD8DF\"/>\n<stop offset=\"0.8\" stop-color=\"#C8D5DD\"/>\n<stop offset=\"0.83\" stop-color=\"#CCD6DE\"/>\n<stop offset=\"0.85\" stop-color=\"#D8DBE2\"/>\n<stop offset=\"0.88\" stop-color=\"#EDE3E9\"/>\n<stop offset=\"0.9\" stop-color=\"#FFEBEF\"/>\n</radialGradient>\n<radialGradient id=\"social-reddit-brand-paint2_radial_964_9496\" cx=\"0\" cy=\"0\" r=\"1\" gradientUnits=\"userSpaceOnUse\" gradientTransform=\"translate(7.99003 6.07929) scale(11.0758 7.77659)\">\n<stop stop-color=\"#FEFFFF\"/>\n<stop offset=\"0.4\" stop-color=\"#FEFFFF\"/>\n<stop offset=\"0.51\" stop-color=\"#F9FCFC\"/>\n<stop offset=\"0.62\" stop-color=\"#EDF3F5\"/>\n<stop offset=\"0.7\" stop-color=\"#DEE9EC\"/>\n<stop offset=\"0.72\" stop-color=\"#D8E4E8\"/>\n<stop offset=\"0.76\" stop-color=\"#CCD8DF\"/>\n<stop offset=\"0.8\" stop-color=\"#C8D5DD\"/>\n<stop offset=\"0.83\" stop-color=\"#CCD6DE\"/>\n<stop offset=\"0.85\" stop-color=\"#D8DBE2\"/>\n<stop offset=\"0.88\" stop-color=\"#EDE3E9\"/>\n<stop offset=\"0.9\" stop-color=\"#FFEBEF\"/>\n</radialGradient>\n<radialGradient id=\"social-reddit-brand-paint3_radial_964_9496\" cx=\"0\" cy=\"0\" r=\"1\" gradientUnits=\"userSpaceOnUse\" gradientTransform=\"translate(10.1313 9.25426) rotate(180) scale(0.92538 1.35854)\">\n<stop stop-color=\"#FF6600\"/>\n<stop offset=\"0.5\" stop-color=\"#FF4500\"/>\n<stop offset=\"0.7\" stop-color=\"#FC4301\"/>\n<stop offset=\"0.82\" stop-color=\"#F43F07\"/>\n<stop offset=\"0.92\" stop-color=\"#E53812\"/>\n<stop offset=\"1\" stop-color=\"#D4301F\"/>\n</radialGradient>\n<radialGradient id=\"social-reddit-brand-paint4_radial_964_9496\" cx=\"0\" cy=\"0\" r=\"1\" gradientUnits=\"userSpaceOnUse\" gradientTransform=\"translate(5.52846 9.25426) scale(0.92538 1.35854)\">\n<stop stop-color=\"#FF6600\"/>\n<stop offset=\"0.5\" stop-color=\"#FF4500\"/>\n<stop offset=\"0.7\" stop-color=\"#FC4301\"/>\n<stop offset=\"0.82\" stop-color=\"#F43F07\"/>\n<stop offset=\"0.92\" stop-color=\"#E53812\"/>\n<stop offset=\"1\" stop-color=\"#D4301F\"/>\n</radialGradient>\n<radialGradient id=\"social-reddit-brand-paint5_radial_964_9496\" cx=\"0\" cy=\"0\" r=\"1\" gradientUnits=\"userSpaceOnUse\" gradientTransform=\"translate(7.86874 11.9475) scale(3.26303 2.15221)\">\n<stop stop-color=\"#172E35\"/>\n<stop offset=\"0.29\" stop-color=\"#0E1C21\"/>\n<stop offset=\"0.73\" stop-color=\"#030708\"/>\n<stop offset=\"1\"/>\n</radialGradient>\n<radialGradient id=\"social-reddit-brand-paint6_radial_964_9496\" cx=\"0\" cy=\"0\" r=\"1\" gradientUnits=\"userSpaceOnUse\" gradientTransform=\"translate(10.7463 2.09063) scale(2.8643)\">\n<stop stop-color=\"#FEFFFF\"/>\n<stop offset=\"0.4\" stop-color=\"#FEFFFF\"/>\n<stop offset=\"0.51\" stop-color=\"#F9FCFC\"/>\n<stop offset=\"0.62\" stop-color=\"#EDF3F5\"/>\n<stop offset=\"0.7\" stop-color=\"#DEE9EC\"/>\n<stop offset=\"0.72\" stop-color=\"#D8E4E8\"/>\n<stop offset=\"0.76\" stop-color=\"#CCD8DF\"/>\n<stop offset=\"0.8\" stop-color=\"#C8D5DD\"/>\n<stop offset=\"0.83\" stop-color=\"#CCD6DE\"/>\n<stop offset=\"0.85\" stop-color=\"#D8DBE2\"/>\n<stop offset=\"0.88\" stop-color=\"#EDE3E9\"/>\n<stop offset=\"0.9\" stop-color=\"#FFEBEF\"/>\n</radialGradient>\n<radialGradient id=\"social-reddit-brand-paint7_radial_964_9496\" cx=\"0\" cy=\"0\" r=\"1\" gradientUnits=\"userSpaceOnUse\" gradientTransform=\"translate(9.55266 5.21316) scale(2.34773)\">\n<stop offset=\"0.48\" stop-color=\"#7A9299\"/>\n<stop offset=\"0.67\" stop-color=\"#172E35\"/>\n<stop offset=\"0.75\"/>\n<stop offset=\"0.82\" stop-color=\"#172E35\"/>\n</radialGradient>\n<clipPath id=\"social-reddit-brand-clip0_964_9496\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9432",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-reddit-monochrome-Platform=Reddit, Color=Negative\">\n<path id=\"social-reddit-monochrome-Vector\" d=\"M9.44235 3.69994C9.57844 4.27675 10.0964 4.70645 10.7149 4.70645C11.437 4.70645 12.0224 4.12106 12.0224 3.39896C12.0224 2.67687 11.437 2.09148 10.7149 2.09148C10.0835 2.09148 9.55698 2.53895 9.43439 3.13416C8.37699 3.24756 7.55131 4.14435 7.55131 5.23116C7.55131 5.23362 7.55131 5.23545 7.55131 5.23791C6.40136 5.28633 5.35132 5.61366 4.51767 6.13041C4.20811 5.89073 3.81948 5.74791 3.39775 5.74791C2.38572 5.74791 1.56555 6.56808 1.56555 7.58011C1.56555 8.31446 1.99709 8.94705 2.62049 9.23944C2.68118 11.3665 4.99886 13.0773 7.84983 13.0773C10.7008 13.0773 13.0215 11.3646 13.0792 9.23577C13.6977 8.94154 14.1255 8.31078 14.1255 7.58072C14.1255 6.56869 13.3054 5.74852 12.2933 5.74852C11.8734 5.74852 11.4866 5.89012 11.1777 6.12795C10.3367 5.60753 9.27501 5.2802 8.11341 5.23668C8.11341 5.23484 8.11341 5.23362 8.11341 5.23178C8.11341 4.45329 8.69207 3.80721 9.44235 3.70116V3.69994ZM4.44411 8.74293C4.47476 8.07846 4.9161 7.56846 5.42917 7.56846C5.94223 7.56846 6.33454 8.10727 6.30389 8.77174C6.27324 9.43621 5.89013 9.67773 5.37645 9.67773C4.86278 9.67773 4.41346 9.4074 4.44411 8.74293ZM10.2711 7.56846C10.7848 7.56846 11.2261 8.07846 11.2562 8.74293C11.2868 9.4074 10.8369 9.67773 10.3238 9.67773C9.81076 9.67773 9.42703 9.43683 9.39638 8.77174C9.36573 8.10727 9.75743 7.56846 10.2711 7.56846ZM9.66058 10.2803C9.75681 10.2901 9.81811 10.39 9.78072 10.4795C9.46503 11.2341 8.71965 11.7643 7.84983 11.7643C6.98001 11.7643 6.23524 11.2341 5.91894 10.4795C5.88155 10.39 5.94285 10.2901 6.03908 10.2803C6.60303 10.2233 7.21294 10.192 7.84983 10.192C8.48672 10.192 9.09602 10.2233 9.66058 10.2803Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "discord": {
+        "label": "Discord",
+        "figmaPlatform": "Discord",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9494",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-discord-brand-Platform=Discord, Color=Original\" clip-path=\"url(#social-discord-brand-clip0_964_9494)\">\n<path id=\"social-discord-brand-Vector\" d=\"M13.2842 2.71712C12.284 2.25819 11.2115 1.92008 10.0901 1.72643C10.0697 1.72269 10.0493 1.73203 10.0387 1.75071C9.90081 1.99604 9.74802 2.3161 9.64102 2.56766C8.43488 2.38709 7.23493 2.38709 6.05352 2.56766C5.9465 2.31051 5.78816 1.99604 5.64961 1.75071C5.63909 1.73265 5.61869 1.72331 5.59826 1.72643C4.47748 1.91946 3.40494 2.25758 2.40415 2.71712C2.39549 2.72085 2.38806 2.72709 2.38313 2.73517C0.348756 5.77449 -0.208544 8.7391 0.0648485 11.6669C0.0660856 11.6813 0.0741264 11.695 0.0852602 11.7037C1.42748 12.6894 2.72765 13.2878 4.00368 13.6844C4.0241 13.6907 4.04574 13.6832 4.05874 13.6664C4.36058 13.2542 4.62965 12.8195 4.86035 12.3625C4.87396 12.3357 4.86097 12.3039 4.83314 12.2934C4.40636 12.1315 3.99997 11.9341 3.60905 11.7099C3.57813 11.6919 3.57566 11.6476 3.6041 11.6265C3.68637 11.5648 3.76865 11.5007 3.8472 11.4359C3.86141 11.4241 3.88122 11.4216 3.89792 11.4291C6.46607 12.6016 9.24639 12.6016 11.7842 11.4291C11.8009 11.421 11.8208 11.4235 11.8356 11.4353C11.9142 11.5001 11.9964 11.5648 12.0793 11.6265C12.1077 11.6476 12.1059 11.6919 12.075 11.7099C11.684 11.9384 11.2777 12.1315 10.8503 12.2927C10.8224 12.3033 10.8101 12.3357 10.8237 12.3625C11.0593 12.8189 11.3284 13.2535 11.6247 13.6658C11.637 13.6832 11.6593 13.6907 11.6797 13.6844C12.9619 13.2878 14.2621 12.6894 15.6043 11.7037C15.6161 11.695 15.6235 11.6819 15.6247 11.6676C15.9519 8.28265 15.0767 5.34235 13.3046 2.73579C13.3003 2.72709 13.2929 2.72085 13.2842 2.71712ZM5.24386 9.88419C4.47067 9.88419 3.83359 9.17435 3.83359 8.30258C3.83359 7.43082 4.45832 6.72098 5.24386 6.72098C6.03557 6.72098 6.66649 7.43705 6.65411 8.30258C6.65411 9.17435 6.02938 9.88419 5.24386 9.88419ZM10.4581 9.88419C9.68494 9.88419 9.04785 9.17435 9.04785 8.30258C9.04785 7.43082 9.67256 6.72098 10.4581 6.72098C11.2498 6.72098 11.8807 7.43705 11.8684 8.30258C11.8684 9.17435 11.2498 9.88419 10.4581 9.88419Z\" fill=\"#5865F2\"/>\n</g>\n<defs>\n<clipPath id=\"social-discord-brand-clip0_964_9494\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9430",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-discord-monochrome-Platform=Discord, Color=Negative\" clip-path=\"url(#social-discord-monochrome-clip0_964_9430)\">\n<path id=\"social-discord-monochrome-Vector\" d=\"M13.2842 2.71712C12.284 2.25819 11.2115 1.92008 10.0901 1.72643C10.0697 1.72269 10.0493 1.73203 10.0387 1.75071C9.90081 1.99604 9.74802 2.3161 9.64102 2.56766C8.43488 2.38709 7.23493 2.38709 6.05352 2.56766C5.9465 2.31051 5.78816 1.99604 5.64961 1.75071C5.63909 1.73265 5.61869 1.72331 5.59826 1.72643C4.47748 1.91946 3.40494 2.25758 2.40415 2.71712C2.39549 2.72085 2.38806 2.72709 2.38313 2.73517C0.348756 5.77449 -0.208544 8.7391 0.0648485 11.6669C0.0660856 11.6813 0.0741265 11.695 0.0852602 11.7037C1.42748 12.6894 2.72765 13.2878 4.00368 13.6844C4.0241 13.6907 4.04574 13.6832 4.05874 13.6664C4.36058 13.2542 4.62965 12.8195 4.86035 12.3625C4.87396 12.3357 4.86097 12.3039 4.83314 12.2934C4.40636 12.1315 3.99997 11.9341 3.60905 11.7099C3.57813 11.6919 3.57566 11.6476 3.6041 11.6265C3.68637 11.5648 3.76865 11.5007 3.8472 11.4359C3.86141 11.4241 3.88122 11.4216 3.89793 11.4291C6.46607 12.6016 9.24639 12.6016 11.7842 11.4291C11.8009 11.421 11.8208 11.4235 11.8356 11.4353C11.9142 11.5001 11.9964 11.5648 12.0793 11.6265C12.1077 11.6476 12.1059 11.6919 12.075 11.7099C11.6841 11.9384 11.2777 12.1315 10.8503 12.2927C10.8224 12.3033 10.8101 12.3357 10.8237 12.3625C11.0593 12.8189 11.3284 13.2535 11.6247 13.6658C11.637 13.6832 11.6593 13.6907 11.6797 13.6844C12.9619 13.2878 14.2621 12.6894 15.6043 11.7037C15.6161 11.695 15.6235 11.6819 15.6247 11.6676C15.9519 8.28265 15.0767 5.34235 13.3046 2.73579C13.3003 2.72709 13.2929 2.72085 13.2842 2.71712ZM5.24386 9.88419C4.47067 9.88419 3.83359 9.17435 3.83359 8.30258C3.83359 7.43082 4.45832 6.72098 5.24386 6.72098C6.03557 6.72098 6.66649 7.43705 6.65411 8.30258C6.65411 9.17435 6.02938 9.88419 5.24386 9.88419ZM10.4581 9.88419C9.68494 9.88419 9.04785 9.17435 9.04785 8.30258C9.04785 7.43082 9.67256 6.72098 10.4581 6.72098C11.2498 6.72098 11.8807 7.43705 11.8684 8.30258C11.8684 9.17435 11.2498 9.88419 10.4581 9.88419Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-discord-monochrome-clip0_964_9430\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "tiktok": {
+        "label": "TikTok",
+        "figmaPlatform": "TikTok",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9490",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-tiktok-brand-Platform=TikTok, Color=Original\">\n<path id=\"social-tiktok-brand-Vector\" d=\"M11.2308 5.66459C12.2399 6.38851 13.4761 6.81446 14.8113 6.81446V4.23603C14.5586 4.23609 14.3066 4.20964 14.0594 4.15708V6.18667C12.7243 6.18667 11.4883 5.76073 10.4789 5.03686V10.2987C10.4789 12.9309 8.35263 15.0646 5.72992 15.0646C4.75132 15.0646 3.84176 14.7677 3.08618 14.2585C3.94855 15.1434 5.15118 15.6923 6.48169 15.6923C9.10456 15.6923 11.2309 13.5586 11.2309 10.9263V5.66459H11.2308ZM12.1584 3.06328C11.6427 2.49786 11.3041 1.76715 11.2308 0.959325V0.627686H10.5183C10.6976 1.65443 11.3094 2.53163 12.1584 3.06328ZM4.74505 12.2386C4.45691 11.8594 4.30121 11.3956 4.3019 10.9188C4.3019 9.71488 5.27444 8.73875 6.47428 8.73875C6.69789 8.7387 6.92016 8.77306 7.13326 8.84092V6.20487C6.88423 6.17062 6.63289 6.15608 6.38165 6.16141V8.21318C6.1684 8.14532 5.94602 8.11086 5.72236 8.11107C4.52251 8.11107 3.55003 9.08709 3.55003 10.2911C3.55003 11.1425 4.03614 11.8795 4.74505 12.2386Z\" fill=\"#FF004F\"/>\n<path id=\"social-tiktok-brand-Vector_2\" d=\"M10.4789 5.03681C11.4883 5.76067 12.7243 6.18661 14.0594 6.18661V4.15703C13.3142 3.99772 12.6544 3.6069 12.1584 3.06328C11.3093 2.53157 10.6976 1.65438 10.5182 0.627686H8.64655V10.9262C8.64232 12.1268 7.67144 13.0989 6.47417 13.0989C5.76864 13.0989 5.14185 12.7614 4.74488 12.2386C4.03603 11.8795 3.54992 11.1424 3.54992 10.2912C3.54992 9.08725 4.5224 8.11112 5.72225 8.11112C5.95213 8.11112 6.1737 8.14705 6.38154 8.21323V6.16146C3.80491 6.21489 1.73267 8.32773 1.73267 10.9262C1.73267 12.2234 2.2487 13.3993 3.08623 14.2585C3.84181 14.7677 4.75137 15.0646 5.72997 15.0646C8.35273 15.0646 10.4789 12.9308 10.4789 10.2987V5.03681H10.4789Z\" fill=\"black\"/>\n<path id=\"social-tiktok-brand-Vector_3\" d=\"M14.0593 4.15702V3.60824C13.3873 3.60926 12.7285 3.42039 12.1583 3.06323C12.663 3.61777 13.3276 4.00014 14.0593 4.15702ZM10.5182 0.627681C10.5011 0.529557 10.4879 0.430787 10.4788 0.33164V0H7.89449V10.2986C7.89036 11.499 6.91955 12.4712 5.72217 12.4712C5.37063 12.4712 5.03873 12.3874 4.74481 12.2386C5.14177 12.7614 5.76856 13.0989 6.47409 13.0989C7.67126 13.0989 8.64229 12.1268 8.64647 10.9262V0.627681H10.5182ZM6.38157 6.16146V5.57724C6.16563 5.54762 5.94792 5.53275 5.72994 5.53286C3.10697 5.53281 0.980713 7.6666 0.980713 10.2986C0.980713 11.9487 1.81637 13.403 3.08621 14.2584C2.24868 13.3993 1.73264 12.2233 1.73264 10.9262C1.73264 8.32773 3.80483 6.21488 6.38157 6.16146Z\" fill=\"#00F2EA\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9428",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-tiktok-monochrome-Platform=TikTok, Color=Negative\" clip-path=\"url(#social-tiktok-monochrome-clip0_964_9428)\">\n<path id=\"social-tiktok-monochrome-Vector\" d=\"M11.1629 0H8.51823V10.6889C8.51823 11.9626 7.5011 13.0087 6.2353 13.0087C4.9695 13.0087 3.95234 11.9626 3.95234 10.6889C3.95234 9.43814 4.9469 8.4147 6.1675 8.36923V5.68563C3.47767 5.73109 1.30774 7.93713 1.30774 10.6889C1.30774 13.4636 3.52288 15.6923 6.25791 15.6923C8.9929 15.6923 11.208 13.4408 11.208 10.6889V5.20802C12.2026 5.93579 13.4232 6.3679 14.7116 6.39065V3.70702C12.7225 3.6388 11.1629 2.00134 11.1629 0Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-tiktok-monochrome-clip0_964_9428\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "tumblr": {
+        "label": "Tumblr",
+        "figmaPlatform": "Tumblr",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9488",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-tumblr-brand-Platform=Tumblr, Color=Original\">\n<path id=\"social-tumblr-brand-Vector\" d=\"M9.54621 15.6923C7.19236 15.6923 5.42698 14.4827 5.42698 11.5731V6.93077H3.26929V4.41346C5.62313 3.79231 6.6039 1.76538 6.73467 0H9.1866V3.98846H12.0308V6.93077H9.1866V10.9846C9.1866 12.1942 9.80775 12.6192 10.7885 12.6192H12.1616V15.6923H9.54621Z\" fill=\"#001935\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9426",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-tumblr-monochrome-Platform=Tumblr, Color=Negative\">\n<path id=\"social-tumblr-monochrome-Vector\" d=\"M9.54621 15.6923C7.19236 15.6923 5.42698 14.4827 5.42698 11.5731V6.93077H3.26929V4.41346C5.62313 3.79231 6.6039 1.76538 6.73467 0H9.1866V3.98846H12.0308V6.93077H9.1866V10.9846C9.1866 12.1942 9.80775 12.6192 10.7885 12.6192H12.1616V15.6923H9.54621Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "telegram": {
+        "label": "Telegram",
+        "figmaPlatform": "Telegram",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9485",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-telegram-brand-Platform=Telegram, Color=Original\" clip-path=\"url(#social-telegram-brand-clip0_964_9485)\">\n<path id=\"social-telegram-brand-Vector\" d=\"M7.84615 15.6923C12.1795 15.6923 15.6923 12.1795 15.6923 7.84615C15.6923 3.51284 12.1795 0 7.84615 0C3.51284 0 0 3.51284 0 7.84615C0 12.1795 3.51284 15.6923 7.84615 15.6923Z\" fill=\"url(#social-telegram-brand-paint0_linear_964_9485)\"/>\n<path id=\"social-telegram-brand-Vector_2\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M3.55159 7.76333C5.8389 6.76679 7.36414 6.1098 8.12729 5.79238C10.3063 4.88608 10.759 4.72864 11.0541 4.72344C11.119 4.7223 11.2642 4.73839 11.3582 4.81467C11.4375 4.87908 11.4594 4.96608 11.4698 5.02715C11.4803 5.08822 11.4933 5.22733 11.483 5.33603C11.3649 6.57669 10.854 9.58744 10.594 10.977C10.484 11.565 10.2675 11.7621 10.0578 11.7814C9.60217 11.8233 9.25618 11.4803 8.81487 11.191C8.1243 10.7383 7.73418 10.4566 7.06387 10.0148C6.28921 9.50434 6.79139 9.22376 7.23286 8.76523C7.3484 8.64523 9.35597 6.8192 9.39482 6.65355C9.39968 6.63283 9.40419 6.5556 9.35831 6.51483C9.31244 6.47405 9.24473 6.48799 9.19586 6.49908C9.1266 6.5148 8.02342 7.24397 5.88631 8.68657C5.57317 8.9016 5.28955 9.00636 5.03542 9.00087C4.75528 8.99482 4.21638 8.84247 3.81577 8.71225C3.32441 8.55252 2.93388 8.46808 2.96788 8.19682C2.9856 8.05553 3.18017 7.91103 3.55159 7.76333Z\" fill=\"white\"/>\n</g>\n<defs>\n<linearGradient id=\"social-telegram-brand-paint0_linear_964_9485\" x1=\"7.84615\" y1=\"0\" x2=\"7.84615\" y2=\"15.5759\" gradientUnits=\"userSpaceOnUse\">\n<stop stop-color=\"#2AABEE\"/>\n<stop offset=\"1\" stop-color=\"#229ED9\"/>\n</linearGradient>\n<clipPath id=\"social-telegram-brand-clip0_964_9485\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9424",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-telegram-monochrome-Platform=Telegram, Color=Negative\" clip-path=\"url(#social-telegram-monochrome-clip0_964_9424)\">\n<path id=\"social-telegram-monochrome-Vector\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M15.6923 7.84615C15.6923 12.1795 12.1795 15.6923 7.84615 15.6923C3.51284 15.6923 0 12.1795 0 7.84615C0 3.51284 3.51284 0 7.84615 0C12.1795 0 15.6923 3.51284 15.6923 7.84615ZM8.12732 5.79238C7.36417 6.1098 5.83894 6.76678 3.55162 7.76333C3.1802 7.91103 2.98563 8.05552 2.96792 8.19681C2.93798 8.43559 3.237 8.52962 3.64419 8.65766C3.69958 8.67507 3.75697 8.69312 3.81581 8.71224C4.21642 8.84247 4.75531 8.99481 5.03546 9.00087C5.28958 9.00636 5.57321 8.90159 5.88634 8.68657C8.02345 7.24396 9.12663 6.5148 9.1959 6.49908C9.24476 6.48799 9.31247 6.47404 9.35835 6.51482C9.40422 6.5556 9.39971 6.63282 9.39485 6.65354C9.36523 6.77982 8.19147 7.87106 7.58404 8.43578C7.39468 8.61183 7.26036 8.7367 7.2329 8.76522C7.17139 8.82911 7.1087 8.88954 7.04845 8.94762C6.67627 9.30641 6.39717 9.57546 7.0639 10.0148C7.3843 10.226 7.64069 10.4006 7.89647 10.5747C8.17581 10.765 8.45442 10.9547 8.8149 11.191C8.90674 11.2512 8.99446 11.3137 9.07989 11.3747C9.40497 11.6064 9.69703 11.8146 10.0578 11.7814C10.2675 11.7621 10.4841 11.565 10.5941 10.977C10.854 9.58744 11.3649 6.57668 11.483 5.33602C11.4933 5.22732 11.4803 5.08821 11.4699 5.02714C11.4594 4.96608 11.4376 4.87907 11.3582 4.81466C11.2642 4.73838 11.1191 4.7223 11.0542 4.72344C10.7591 4.72864 10.3063 4.88607 8.12732 5.79238Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-telegram-monochrome-clip0_964_9424\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "bluesky": {
+        "label": "Bluesky",
+        "figmaPlatform": "Bluesky",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9483",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-bluesky-brand-Platform=Bluesky, Color=Original\" clip-path=\"url(#social-bluesky-brand-clip0_964_9483)\">\n<path id=\"social-bluesky-brand-Vector\" d=\"M3.54962 1.98406C5.28875 3.30816 7.15938 5.99289 7.84618 7.43367C8.53303 5.99299 10.4036 3.30813 12.1427 1.98406C13.3976 1.02864 15.4308 0.289391 15.4308 2.64172C15.4308 3.11151 15.1652 6.58822 15.0094 7.15265C14.468 9.115 12.4949 9.6155 10.7398 9.31257C13.8077 9.8421 14.5881 11.5961 12.9027 13.35C9.70169 16.6812 8.30193 12.5143 7.9431 11.4465C7.87735 11.2508 7.84659 11.1592 7.84613 11.2371C7.84568 11.1592 7.81491 11.2508 7.74916 11.4465C7.39049 12.5143 5.99076 16.6813 2.78961 13.35C1.10415 11.5961 1.88456 9.84199 4.95245 9.31257C3.19732 9.6155 1.22422 9.11499 0.682839 7.15265C0.527062 6.58817 0.261475 3.11146 0.261475 2.64172C0.261475 0.289391 2.29473 1.02864 3.54954 1.98406H3.54962Z\" fill=\"#1185FE\"/>\n</g>\n<defs>\n<clipPath id=\"social-bluesky-brand-clip0_964_9483\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9568",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-bluesky-monochrome-Platform=Bluesky, Color=Negative\" clip-path=\"url(#social-bluesky-monochrome-clip0_964_9568)\">\n<path id=\"social-bluesky-monochrome-Vector\" d=\"M3.54962 1.98407C5.28875 3.30818 7.15938 5.9929 7.84618 7.43368C8.53303 5.99301 10.4036 3.30815 12.1427 1.98407C13.3976 1.02866 15.4308 0.289406 15.4308 2.64174C15.4308 3.11153 15.1652 6.58823 15.0094 7.15266C14.468 9.11501 12.4949 9.61552 10.7398 9.31259C13.8077 9.84211 14.5881 11.5961 12.9027 13.3501C9.70169 16.6812 8.30193 12.5143 7.9431 11.4465C7.87735 11.2508 7.84659 11.1592 7.84613 11.2371C7.84568 11.1592 7.81491 11.2508 7.74916 11.4465C7.39049 12.5143 5.99076 16.6813 2.78961 13.3501C1.10415 11.5961 1.88456 9.84201 4.95245 9.31259C3.19732 9.61552 1.22422 9.11501 0.682839 7.15266C0.527062 6.58818 0.261475 3.11147 0.261475 2.64174C0.261475 0.289406 2.29473 1.02866 3.54954 1.98407H3.54962Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-bluesky-monochrome-clip0_964_9568\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "signal": {
+        "label": "Signal",
+        "figmaPlatform": "Signal",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9481",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-signal-brand-Platform=Signal, Color=Original\">\n<path id=\"social-signal-brand-Vector\" d=\"M5.9625 0.229056L6.1386 0.942394C5.44452 1.11393 4.78021 1.38898 4.16801 1.75827L3.79128 1.12742C4.46514 0.719331 5.1973 0.416395 5.9625 0.229056ZM9.72981 0.229056L9.55371 0.942394C10.2478 1.11393 10.9121 1.38898 11.5243 1.75827L11.9055 1.12742C11.2299 0.719689 10.4963 0.416792 9.72981 0.229056ZM1.12741 3.78906C0.719702 4.46391 0.416799 5.19674 0.229047 5.96251L0.942385 6.13861C1.11393 5.44453 1.38897 4.78022 1.75826 4.16802L1.12741 3.78906ZM0.735071 7.84616C0.735017 7.48947 0.761843 7.13328 0.815321 6.78062L0.0886087 6.66916C-0.0295362 7.44863 -0.0295362 8.24146 0.0886087 9.02094L0.815321 8.91171C0.761927 8.55904 0.735101 8.20285 0.735071 7.84616ZM11.901 14.5627L11.5243 13.9341C10.9131 14.3037 10.2494 14.5788 9.55593 14.7499L9.73204 15.4633C10.4963 15.2741 11.2276 14.9705 11.901 14.5627ZM14.9572 7.84616C14.9572 8.20285 14.9304 8.55904 14.877 8.91171L15.6037 9.02094C15.7218 8.24146 15.7218 7.44863 15.6037 6.66916L14.877 6.78062C14.9305 7.13328 14.9573 7.48947 14.9572 7.84616ZM15.4633 9.72759L14.7499 9.55149C14.5788 10.2464 14.3037 10.9115 13.934 11.5243L14.5649 11.9033C14.973 11.2278 15.2759 10.4942 15.4633 9.72759ZM8.9117 14.877C8.20537 14.984 7.48694 14.984 6.78061 14.877L6.67138 15.6037C7.4501 15.7219 8.2422 15.7219 9.02093 15.6037L8.9117 14.877ZM13.5707 12.0638C13.147 12.6383 12.639 13.1456 12.0638 13.5685L12.5007 14.1614C13.1342 13.695 13.6947 13.1368 14.1637 12.5051L13.5707 12.0638ZM12.0638 2.12163C12.639 2.54529 13.147 3.05331 13.5707 3.62856L14.1637 3.18718C13.6964 2.55494 13.1374 1.99595 12.5051 1.52867L12.0638 2.12163ZM2.12162 3.62856C2.54528 3.05331 3.0533 2.54529 3.62855 2.12163L3.18717 1.52867C2.55493 1.99595 1.99594 2.55494 1.52866 3.18718L2.12162 3.62856ZM14.5649 3.78906L13.934 4.16802C14.3037 4.77925 14.5788 5.44288 14.7499 6.13638L15.4633 5.96028C15.2755 5.19522 14.9726 4.46312 14.5649 3.78906ZM6.78061 0.815331C7.48694 0.708317 8.20537 0.708317 8.9117 0.815331L9.02093 0.0886181C8.2422 -0.0295394 7.4501 -0.0295394 6.67138 0.0886181L6.78061 0.815331ZM2.49835 14.3576L0.980281 14.7098L1.33472 13.1917L0.619153 13.0245L0.264714 14.5426C0.242537 14.6367 0.239134 14.7343 0.254699 14.8297C0.270263 14.9252 0.304491 15.0166 0.355423 15.0988C0.406356 15.181 0.472993 15.2523 0.551525 15.3088C0.630056 15.3652 0.71894 15.4056 0.813092 15.4276C0.923202 15.4521 1.03736 15.4521 1.14747 15.4276L2.66554 15.0776L2.49835 14.3576ZM0.770738 12.3692L1.48853 12.5341L1.73374 11.482C1.37566 10.8813 1.10895 10.2307 0.942385 9.55149L0.229047 9.72759C0.389499 10.3777 0.632209 11.0047 0.951301 11.5934L0.770738 12.3692ZM4.20367 13.9608L3.1515 14.206L3.31869 14.9238L4.09222 14.7432C4.68048 15.0633 5.3076 15.3061 5.95804 15.4655L6.13414 14.7522C5.45708 14.5834 4.80877 14.3152 4.21036 13.9563L4.20367 13.9608ZM7.84615 1.47071C4.32405 1.47294 1.47293 4.32852 1.47293 7.84839C1.47487 9.04727 1.81399 10.2214 2.45154 11.2367L1.83851 13.8538L4.45334 13.2408C7.43376 15.1155 11.3705 14.2216 13.2452 11.2434C15.12 8.26525 14.2283 4.32852 11.2501 2.45155C10.2305 1.81039 9.05056 1.47038 7.84615 1.47071Z\" fill=\"#3A76F0\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9422",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-signal-monochrome-Platform=Signal, Color=Negative\">\n<path id=\"social-signal-monochrome-Vector\" d=\"M5.9625 0.229056L6.1386 0.942394C5.44452 1.11393 4.78021 1.38898 4.16801 1.75827L3.79128 1.12742C4.46514 0.719331 5.1973 0.416395 5.9625 0.229056ZM9.72981 0.229056L9.55371 0.942394C10.2478 1.11393 10.9121 1.38898 11.5243 1.75827L11.9055 1.12742C11.2299 0.719689 10.4963 0.416792 9.72981 0.229056ZM1.12741 3.78906C0.719702 4.46391 0.416799 5.19674 0.229047 5.96251L0.942385 6.13861C1.11393 5.44453 1.38897 4.78022 1.75826 4.16802L1.12741 3.78906ZM0.735071 7.84616C0.735017 7.48947 0.761843 7.13328 0.815321 6.78062L0.0886087 6.66916C-0.0295362 7.44863 -0.0295362 8.24146 0.0886087 9.02094L0.815321 8.91171C0.761927 8.55904 0.735101 8.20285 0.735071 7.84616ZM11.901 14.5627L11.5243 13.9341C10.9131 14.3037 10.2494 14.5788 9.55593 14.7499L9.73204 15.4633C10.4963 15.2741 11.2276 14.9705 11.901 14.5627ZM14.9572 7.84616C14.9572 8.20285 14.9304 8.55904 14.877 8.91171L15.6037 9.02094C15.7218 8.24146 15.7218 7.44863 15.6037 6.66916L14.877 6.78062C14.9305 7.13328 14.9573 7.48947 14.9572 7.84616ZM15.4633 9.72759L14.7499 9.55149C14.5788 10.2464 14.3037 10.9115 13.934 11.5243L14.5649 11.9033C14.973 11.2278 15.2759 10.4942 15.4633 9.72759ZM8.9117 14.877C8.20537 14.984 7.48694 14.984 6.78061 14.877L6.67138 15.6037C7.4501 15.7219 8.2422 15.7219 9.02093 15.6037L8.9117 14.877ZM13.5707 12.0638C13.147 12.6383 12.639 13.1456 12.0638 13.5685L12.5007 14.1614C13.1342 13.695 13.6947 13.1368 14.1637 12.5051L13.5707 12.0638ZM12.0638 2.12163C12.639 2.54529 13.147 3.05331 13.5707 3.62856L14.1637 3.18718C13.6964 2.55494 13.1374 1.99595 12.5051 1.52867L12.0638 2.12163ZM2.12162 3.62856C2.54528 3.05331 3.0533 2.54529 3.62855 2.12163L3.18717 1.52867C2.55493 1.99595 1.99594 2.55494 1.52866 3.18718L2.12162 3.62856ZM14.5649 3.78906L13.934 4.16802C14.3037 4.77925 14.5788 5.44288 14.7499 6.13638L15.4633 5.96028C15.2755 5.19522 14.9726 4.46312 14.5649 3.78906ZM6.78061 0.815331C7.48694 0.708317 8.20537 0.708317 8.9117 0.815331L9.02093 0.0886181C8.2422 -0.0295394 7.4501 -0.0295394 6.67138 0.0886181L6.78061 0.815331ZM2.49835 14.3576L0.980281 14.7098L1.33472 13.1917L0.619153 13.0245L0.264714 14.5426C0.242537 14.6367 0.239134 14.7343 0.254699 14.8297C0.270263 14.9252 0.304491 15.0166 0.355423 15.0988C0.406356 15.181 0.472993 15.2523 0.551525 15.3088C0.630056 15.3652 0.71894 15.4056 0.813092 15.4276C0.923202 15.4521 1.03736 15.4521 1.14747 15.4276L2.66554 15.0776L2.49835 14.3576ZM0.770738 12.3692L1.48853 12.5341L1.73374 11.482C1.37566 10.8813 1.10895 10.2307 0.942385 9.55149L0.229047 9.72759C0.389499 10.3777 0.632209 11.0047 0.951301 11.5934L0.770738 12.3692ZM4.20367 13.9608L3.1515 14.206L3.31869 14.9238L4.09222 14.7432C4.68048 15.0633 5.3076 15.3061 5.95804 15.4655L6.13414 14.7522C5.45708 14.5834 4.80877 14.3152 4.21036 13.9563L4.20367 13.9608ZM7.84615 1.47071C4.32405 1.47294 1.47293 4.32852 1.47293 7.84839C1.47487 9.04727 1.81399 10.2214 2.45154 11.2367L1.83851 13.8538L4.45334 13.2408C7.43376 15.1155 11.3705 14.2216 13.2452 11.2434C15.12 8.26525 14.2283 4.32852 11.2501 2.45155C10.2305 1.81039 9.05056 1.47038 7.84615 1.47071Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "vk": {
+        "label": "VK",
+        "figmaPlatform": "VK",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9478",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-vk-brand-Platform=VK, Color=Original\" clip-path=\"url(#social-vk-brand-clip0_964_9478)\">\n<path id=\"social-vk-brand-Vector\" d=\"M0 7.53231C0 3.98153 0 2.20616 1.10308 1.10308C2.20616 0 3.98153 0 7.53231 0H8.16C11.7108 0 13.4861 0 14.5892 1.10308C15.6923 2.20616 15.6923 3.98153 15.6923 7.53231V8.16C15.6923 11.7108 15.6923 13.4861 14.5892 14.5892C13.4861 15.6923 11.7108 15.6923 8.16 15.6923H7.53231C3.98153 15.6923 2.20616 15.6923 1.10308 14.5892C0 13.4861 0 11.7108 0 8.16V7.53231Z\" fill=\"#0077FF\"/>\n<path id=\"social-vk-brand-Vector_2\" d=\"M8.34958 11.305C4.77304 11.305 2.73307 8.8531 2.64807 4.7731H4.43961C4.49846 7.76772 5.81919 9.03618 6.86535 9.29772V4.7731H8.55233V7.35579C9.58541 7.24464 10.6707 6.06772 11.0368 4.7731H12.7238C12.4426 6.36849 11.2657 7.54541 10.4288 8.02926C11.2657 8.42156 12.6061 9.4481 13.1161 11.305H11.2592C10.8603 10.0627 9.86657 9.10156 8.55233 8.97079V11.305H8.34958Z\" fill=\"white\"/>\n</g>\n<defs>\n<clipPath id=\"social-vk-brand-clip0_964_9478\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9420",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-vk-monochrome-Platform=VK, Color=Negative\" clip-path=\"url(#social-vk-monochrome-clip0_964_9420)\">\n<path id=\"social-vk-monochrome-Vector\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M1.10308 1.10308C0 2.20616 0 3.98153 0 7.53231V8.16C0 11.7108 0 13.4861 1.10308 14.5892C2.20616 15.6923 3.98153 15.6923 7.53231 15.6923H8.16C11.7108 15.6923 13.4861 15.6923 14.5892 14.5892C15.6923 13.4861 15.6923 11.7108 15.6923 8.16V7.53231C15.6923 3.98153 15.6923 2.20616 14.5892 1.10308C13.4861 0 11.7108 0 8.16 0H7.53231C3.98153 0 2.20616 0 1.10308 1.10308ZM2.64812 4.77311C2.73312 8.85311 4.77311 11.305 8.34965 11.305H8.55237V8.9708C9.8666 9.10157 10.8604 10.0627 11.2592 11.305H13.1162C12.6062 9.44811 11.2657 8.42157 10.4288 8.02926C11.2657 7.54542 12.4427 6.36849 12.7238 4.77311H11.0369C10.6707 6.06772 9.58545 7.24465 8.55237 7.3558V4.77311H6.86538V9.29772C5.81923 9.03619 4.49849 7.76772 4.43965 4.77311H2.64812Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-vk-monochrome-clip0_964_9420\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "spotify": {
+        "label": "Spotify",
+        "figmaPlatform": "Spotify",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9476",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-spotify-brand-Platform=Spotify, Color=Original\">\n<path id=\"social-spotify-brand-Vector\" d=\"M7.82215 0C3.50219 0 0 3.50209 0 7.82205C0 12.1422 3.50219 15.644 7.82215 15.644C12.1426 15.644 15.6444 12.1422 15.6444 7.82205C15.6444 3.50237 12.1426 0.000373624 7.82206 0.000373624L7.82215 0ZM11.4093 11.2816C11.2692 11.5114 10.9685 11.5843 10.7387 11.4432C8.90212 10.3214 6.59012 10.0674 3.86731 10.6895C3.60493 10.7492 3.3434 10.5848 3.28362 10.3224C3.22356 10.0599 3.3873 9.79835 3.65033 9.73857C6.63 9.05754 9.18588 9.35093 11.2477 10.611C11.4775 10.752 11.5504 11.0519 11.4093 11.2816ZM12.3668 9.15151C12.1902 9.43874 11.8147 9.52934 11.528 9.3528C9.42538 8.06015 6.22032 7.68587 3.73337 8.44078C3.41084 8.5382 3.07018 8.35643 2.97229 8.03446C2.87515 7.71193 3.05701 7.37193 3.37898 7.27385C6.21976 6.4119 9.75137 6.82942 12.1659 8.31319C12.4527 8.48973 12.5433 8.86513 12.3668 9.15151ZM12.4489 6.93367C9.92791 5.43626 5.76851 5.29858 3.36152 6.02912C2.975 6.14634 2.56625 5.92814 2.44912 5.54163C2.33199 5.15492 2.55 4.74646 2.9368 4.62895C5.69986 3.79016 10.2931 3.95222 13.1956 5.67529C13.544 5.88163 13.658 6.33063 13.4516 6.67782C13.2461 7.02548 12.7959 7.14009 12.4493 6.93367H12.4489Z\" fill=\"#1ED760\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9418",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-spotify-monochrome-Platform=Spotify, Color=Negative\">\n<path id=\"social-spotify-monochrome-Vector\" d=\"M7.82215 0C3.50219 0 0 3.50209 0 7.82205C0 12.1422 3.50219 15.644 7.82215 15.644C12.1426 15.644 15.6444 12.1422 15.6444 7.82205C15.6444 3.50237 12.1426 0.000373624 7.82206 0.000373624L7.82215 0ZM11.4093 11.2816C11.2692 11.5114 10.9685 11.5843 10.7387 11.4432C8.90212 10.3214 6.59012 10.0674 3.86731 10.6895C3.60493 10.7492 3.3434 10.5848 3.28362 10.3224C3.22356 10.0599 3.3873 9.79835 3.65033 9.73857C6.63 9.05754 9.18588 9.35093 11.2477 10.611C11.4775 10.752 11.5504 11.0519 11.4093 11.2816ZM12.3668 9.15151C12.1902 9.43874 11.8147 9.52934 11.528 9.3528C9.42538 8.06015 6.22032 7.68587 3.73337 8.44078C3.41084 8.5382 3.07018 8.35643 2.97229 8.03446C2.87515 7.71193 3.05701 7.37193 3.37898 7.27385C6.21976 6.4119 9.75137 6.82942 12.1659 8.31319C12.4527 8.48973 12.5433 8.86513 12.3668 9.15151ZM12.4489 6.93367C9.92791 5.43626 5.76851 5.29858 3.36152 6.02912C2.975 6.14634 2.56625 5.92814 2.44912 5.54163C2.33199 5.15492 2.55 4.74646 2.9368 4.62895C5.69986 3.79016 10.2931 3.95222 13.1956 5.67529C13.544 5.88163 13.658 6.33063 13.4516 6.67782C13.2461 7.02548 12.7959 7.14009 12.4493 6.93367H12.4489Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      },
+      "twitch": {
+        "label": "Twitch",
+        "figmaPlatform": "Twitch",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9471",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-twitch-brand-Platform=Twitch, Color=Original\" clip-path=\"url(#social-twitch-brand-clip0_964_9471)\">\n<path id=\"social-twitch-brand-Vector\" d=\"M13.451 7.28572L11.2093 9.52748H8.96753L7.00599 11.489V9.52748H4.48401V1.12088H13.451V7.28572Z\" fill=\"white\"/>\n<path id=\"social-twitch-brand-Vector_2\" d=\"M3.92354 0L1.12134 2.8022V12.8901H4.48397V15.6923L7.28617 12.8901H9.52793L14.5719 7.84615V0H3.92354ZM13.451 7.28571L11.2092 9.52747H8.96749L7.00595 11.489V9.52747H4.48397V1.12088H13.451V7.28571Z\" fill=\"#9146FF\"/>\n<path id=\"social-twitch-brand-Vector_3\" d=\"M11.7697 3.08243H10.6488V6.44507H11.7697V3.08243Z\" fill=\"#9146FF\"/>\n<path id=\"social-twitch-brand-Vector_4\" d=\"M8.68729 3.08243H7.56641V6.44507H8.68729V3.08243Z\" fill=\"#9146FF\"/>\n</g>\n<defs>\n<clipPath id=\"social-twitch-brand-clip0_964_9471\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"white\"/>\n</clipPath>\n</defs>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9414",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-twitch-monochrome-Platform=Twitch, Color=Negative\" clip-path=\"url(#social-twitch-monochrome-clip0_964_9414)\">\n<path id=\"social-twitch-monochrome-Vector\" d=\"M3.92354 0L1.12134 2.8022V12.8901H4.48397V15.6923L7.28617 12.8901H9.52793L14.5719 7.84615V0H3.92354ZM13.451 7.28571L11.2092 9.52747H8.96749L7.00595 11.489V9.52747H4.48397V1.12088H13.451V7.28571Z\" fill=\"currentColor\"/>\n<path id=\"social-twitch-monochrome-Vector_2\" d=\"M11.7697 3.08241H10.6488V6.44505H11.7697V3.08241Z\" fill=\"currentColor\"/>\n<path id=\"social-twitch-monochrome-Vector_3\" d=\"M8.68729 3.08243H7.56641V6.44507H8.68729V3.08243Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"social-twitch-monochrome-clip0_964_9414\">\n<rect width=\"15.6923\" height=\"15.6923\" fill=\"currentColor\"/>\n</clipPath>\n</defs>"
+          }
+        }
+      },
+      "messenger": {
+        "label": "Messenger",
+        "figmaPlatform": "Messenger",
+        "variants": {
+          "brand": {
+            "figmaNodeId": "964:9468",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-messenger-brand-Platform=Messenger, Color=Original\">\n<path id=\"social-messenger-brand-Vector\" d=\"M15.6923 7.61077C15.6923 11.9839 12.266 15.2215 7.84615 15.2215C7.05244 15.2215 6.29073 15.1167 5.57485 14.9199C5.43582 14.8813 5.28799 14.8923 5.15586 14.9504L3.59856 15.638C3.19119 15.8178 2.7314 15.5282 2.71791 15.0831L2.67522 13.6871C2.66989 13.5152 2.59268 13.3545 2.46432 13.2399C0.937458 11.8747 0 9.89839 0 7.61077C0 3.23764 3.42626 0 7.84615 0C12.266 0 15.6923 3.23764 15.6923 7.61077Z\" fill=\"#0866FF\"/>\n<path id=\"social-messenger-brand-Vector_2\" d=\"M9.9764 9.80166L12.7081 5.57985C12.9827 5.15553 12.474 4.66155 12.0578 4.94871L9.20623 6.91556C9.11019 6.98178 8.9834 6.98367 8.88548 6.92027L6.35434 5.28264C6.13999 5.14392 5.85408 5.20544 5.71567 5.41948L2.98367 9.64128C2.70906 10.0656 3.2178 10.5596 3.63395 10.2724L6.48615 8.30526C6.58219 8.23904 6.70898 8.23715 6.8069 8.30055L9.33741 9.93787C9.55177 10.0766 9.83768 10.0151 9.9764 9.80103V9.80166Z\" fill=\"white\"/>\n</g>"
+          },
+          "monochrome": {
+            "figmaNodeId": "964:9412",
+            "viewBox": "0 0 16 16",
+            "innerSvg": "<g id=\"social-messenger-monochrome-Platform=Messenger, Color=Negative\">\n<path id=\"social-messenger-monochrome-Vector\" d=\"M7.84614 0.0312653C3.44386 0.0312653 0.03125 3.256 0.03125 7.61171C0.03125 9.89022 0.964974 11.8586 2.48544 13.2187C2.61329 13.3328 2.69019 13.4932 2.6955 13.6642L2.73802 15.0546C2.75146 15.4979 3.20972 15.7864 3.61516 15.6073L5.16626 14.9224C5.29786 14.8646 5.4451 14.8536 5.58358 14.8921C6.29661 15.0881 7.05496 15.1925 7.84583 15.1925C12.2481 15.1925 15.6607 11.9677 15.6607 7.61203C15.6607 3.25632 12.2484 0.0312653 7.84614 0.0312653ZM12.6889 5.58891L9.96804 9.79394C9.82988 10.0074 9.5451 10.0684 9.3316 9.93024L6.81114 8.29942C6.71361 8.23628 6.58732 8.23815 6.49167 8.30411L3.6508 10.2635C3.23629 10.5492 2.72958 10.0575 3.0031 9.63483L5.72424 5.42979C5.86241 5.21629 6.14719 5.15533 6.36038 5.2935L8.88146 6.92463C8.97899 6.98777 9.10528 6.9859 9.20093 6.91994L12.0412 4.9609C12.4557 4.67488 12.9624 5.1669 12.6889 5.58953V5.58891Z\" fill=\"currentColor\"/>\n</g>"
+          }
+        }
+      }
+    }
+  }
 }

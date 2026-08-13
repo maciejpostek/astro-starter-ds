@@ -1,0 +1,223 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Tab, { type TabSize } from "./Tab.astro";
+import { normalizeTabsState } from "../../../lib/tabs/tabs-model.mjs";
+
+export interface TabsItem {
+  id: string;
+  label: string;
+  disabled?: boolean;
+}
+
+export type TabsItems = readonly [TabsItem, ...TabsItem[]];
+
+type AccessibleName =
+  | { "aria-label": string; "aria-labelledby"?: never }
+  | { "aria-label"?: never; "aria-labelledby": string };
+
+export type Props = Omit<HTMLAttributes<"div">, "class" | "id"> & AccessibleName & {
+  items: TabsItems;
+  initialTab?: string;
+  size?: TabSize;
+  id?: string;
+  class?: string;
+};
+
+const {
+  items,
+  initialTab,
+  size = "small",
+  id,
+  class: className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  ...attributes
+} = Astro.props;
+
+if (!ariaLabel?.trim() && !ariaLabelledby?.trim()) {
+  throw new TypeError("Tabs requires aria-label or aria-labelledby.");
+}
+if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
+  throw new TypeError("Tabs id must be a non-empty string when provided.");
+}
+
+const normalized = normalizeTabsState(items, initialTab);
+for (const item of normalized.items) {
+  if (!Astro.slots.has(item.id)) {
+    throw new TypeError(`Tabs requires a named panel slot for item "${item.id}".`);
+  }
+}
+
+const rootId = id ?? `tabs-${crypto.randomUUID()}`;
+const panels = await Promise.all(normalized.items.map(async (item: TabsItem, index: number) => ({
+  ...item,
+  tabId: `${rootId}-tab-${index + 1}`,
+  panelId: `${rootId}-panel-${index + 1}`,
+  html: await Astro.slots.render(item.id),
+})));
+---
+
+<div
+  {...attributes}
+  id={rootId}
+  class:list={["tabs", className]}
+  data-component-name="Tabs"
+  data-tabs-root
+>
+  <div
+    class="tabs__list"
+    role="tablist"
+    aria-label={ariaLabel}
+    aria-labelledby={ariaLabelledby}
+    aria-orientation="horizontal"
+  >
+    {panels.map((item) => (
+      <Tab
+        id={item.tabId}
+        controls={item.panelId}
+        selected={item.id === normalized.activeId}
+        disabled={item.disabled}
+        size={size}
+        data-tabs-trigger
+        data-tab-id={item.id}
+      >
+        {item.label}
+      </Tab>
+    ))}
+  </div>
+
+  {panels.map((item) => (
+    <div
+      id={item.panelId}
+      class="tabs__panel"
+      role="tabpanel"
+      aria-labelledby={item.tabId}
+      tabindex="0"
+      hidden={item.id !== normalized.activeId}
+      data-tabs-panel
+      data-tab-id={item.id}
+    >
+      <Fragment set:html={item.html} />
+    </div>
+  ))}
+</div>
+
+<script>
+  declare global {
+    interface Window {
+      __astroDesignSystemTabsReady?: boolean;
+    }
+  }
+
+  const initializeTabs = () => {
+    document.querySelectorAll<HTMLElement>("[data-tabs-root]").forEach((root) => {
+      if (root.dataset.tabsReady === "true") return;
+      root.dataset.tabsReady = "true";
+
+      const getTabs = () => Array.from(
+        root.querySelectorAll<HTMLButtonElement>("[data-tabs-trigger]"),
+      );
+      const getEnabledTabs = () => getTabs().filter((tab) => !tab.disabled);
+
+      const setActive = (nextTab: HTMLButtonElement, emitChange = true) => {
+        if (nextTab.disabled) return;
+        const nextId = nextTab.dataset.tabId;
+        if (!nextId) return;
+
+        const currentTab = getTabs().find((tab) => tab.getAttribute("aria-selected") === "true");
+        const previousId = currentTab?.dataset.tabId;
+
+        getTabs().forEach((tab) => {
+          const isSelected = tab === nextTab;
+          tab.setAttribute("aria-selected", String(isSelected));
+          tab.tabIndex = isSelected ? 0 : -1;
+        });
+
+        root.querySelectorAll<HTMLElement>("[data-tabs-panel]").forEach((panel) => {
+          panel.hidden = panel.dataset.tabId !== nextId;
+        });
+
+        if (emitChange && previousId !== nextId) {
+          root.dispatchEvent(new CustomEvent("astro-ds:tabs-change", {
+            bubbles: true,
+            detail: { id: nextId, previousId },
+          }));
+        }
+      };
+
+      root.addEventListener("focusin", (event) => {
+        if (!(event.target instanceof HTMLButtonElement)) return;
+        if (!event.target.matches("[data-tabs-trigger]")) return;
+        setActive(event.target);
+      });
+
+      root.addEventListener("click", (event) => {
+        if (!(event.target instanceof Element)) return;
+        const tab = event.target.closest<HTMLButtonElement>("[data-tabs-trigger]");
+        if (tab?.closest("[data-tabs-root]") === root) setActive(tab);
+      });
+
+      root.addEventListener("keydown", (event) => {
+        if (!(event.target instanceof HTMLButtonElement)) return;
+        if (!event.target.matches("[data-tabs-trigger]")) return;
+
+        const tabs = getEnabledTabs();
+        const currentIndex = tabs.indexOf(event.target);
+        if (currentIndex < 0) return;
+
+        const isRtl = getComputedStyle(root).direction === "rtl";
+        let targetIndex;
+        if (event.key === "ArrowRight") {
+          targetIndex = (currentIndex + (isRtl ? -1 : 1) + tabs.length) % tabs.length;
+        }
+        if (event.key === "ArrowLeft") {
+          targetIndex = (currentIndex + (isRtl ? 1 : -1) + tabs.length) % tabs.length;
+        }
+        if (event.key === "Home") targetIndex = 0;
+        if (event.key === "End") targetIndex = tabs.length - 1;
+        if (targetIndex === undefined) return;
+
+        event.preventDefault();
+        tabs[targetIndex]?.focus();
+      });
+    });
+  };
+
+  if (!window.__astroDesignSystemTabsReady) {
+    window.__astroDesignSystemTabsReady = true;
+    document.addEventListener("astro:page-load", initializeTabs);
+  }
+  initializeTabs();
+</script>
+
+<style>
+  .tabs {
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .tabs__list {
+    display: flex;
+    min-inline-size: 0;
+    gap: var(--gap-small);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+
+  .tabs__panel {
+    min-inline-size: 0;
+    margin-block-start: var(--space-regular);
+  }
+
+  .tabs__panel:focus-visible {
+    outline: var(--border-width-strong) solid var(--color-state-focus-ring);
+    outline-offset: var(--size-2);
+  }
+
+  @media (forced-colors: active) {
+    .tabs__panel:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+</style>

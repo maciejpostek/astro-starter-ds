@@ -1,0 +1,184 @@
+---
+interface Props {
+  variant: "container" | "grid" | "breakout" | "responsive";
+  label: string;
+}
+
+const { variant, label } = Astro.props;
+---
+
+<figure
+  class="ds-layout-preview"
+  data-component-name="DsLayoutPreview"
+  data-variant={variant}
+>
+  <figcaption>{label}</figcaption>
+  <div class="ds-layout-preview__canvas" aria-hidden="true">
+    {
+      variant === "container" && (
+        <div class="ds-layout-preview__container">
+          <span class="ds-layout-preview__padding" />
+          <span class="ds-layout-preview__content" />
+          <span class="ds-layout-preview__padding" />
+        </div>
+      )
+    }
+
+    {
+      variant === "grid" && (
+        <div class="ds-layout-preview__grid">
+          {Array.from({ length: 12 }).map((_, index) => (
+            <span>{index + 1}</span>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      variant === "breakout" && (
+        <div class="ds-layout-preview__breakout">
+          <span class="ds-layout-preview__edge">E</span>
+          {Array.from({ length: 12 }).map((_, index) => (
+            <span class:list={["ds-layout-preview__track", index >= 4 && index <= 7 && "is-accent"]}>
+              {index + 1}
+            </span>
+          ))}
+          <span class="ds-layout-preview__edge">E</span>
+        </div>
+      )
+    }
+
+    {
+      variant === "responsive" && (
+        <div class="ds-layout-preview__responsive">
+          <span class="is-desktop" />
+          <span class="is-tablet" />
+          <span class="is-mobile" />
+        </div>
+      )
+    }
+  </div>
+</figure>
+
+<style>
+  .ds-layout-preview {
+    display: grid;
+    overflow: hidden;
+    border: var(--size-1) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+  }
+
+  .ds-layout-preview figcaption {
+    display: flex;
+    min-height: var(--size-32);
+    align-items: center;
+    border-bottom: var(--size-1) solid var(--color-border-subtle);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-none);
+    padding: 0 var(--content-padding-small);
+    text-transform: uppercase;
+  }
+
+  .ds-layout-preview__canvas {
+    display: grid;
+    min-height: var(--size-192);
+    align-items: stretch;
+    padding: var(--content-padding-medium);
+  }
+
+  .ds-layout-preview__container {
+    display: grid;
+    grid-template-columns: var(--site-padding-inline) minmax(0, 1fr) var(--site-padding-inline);
+    min-height: 100%;
+  }
+
+  .ds-layout-preview__padding {
+    background: color-mix(in oklab, var(--color-background-subtle) 70%, transparent);
+  }
+
+  .ds-layout-preview__content {
+    border-right: var(--size-1) solid var(--color-border-accent);
+    border-left: var(--size-1) solid var(--color-border-accent);
+    background:
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--color-accent-500) 10%, transparent) 0,
+        color-mix(in oklab, var(--color-accent-500) 10%, transparent) var(--size-24),
+        transparent var(--size-24),
+        transparent var(--size-48)
+      );
+  }
+
+  .ds-layout-preview__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--site-grid-column-gap);
+  }
+
+  .ds-layout-preview__grid span {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    background: color-mix(in oklab, var(--color-accent-500) 14%, transparent);
+    color: var(--color-text-accent);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    padding-bottom: var(--size-8);
+  }
+
+  .ds-layout-preview__breakout {
+    display: grid;
+    grid-template-columns: minmax(var(--size-24), 0.45fr) repeat(12, minmax(0, 1fr)) minmax(var(--size-24), 0.45fr);
+    gap: var(--size-8);
+  }
+
+  .ds-layout-preview__edge,
+  .ds-layout-preview__track {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    padding-bottom: var(--size-8);
+  }
+
+  .ds-layout-preview__edge {
+    background: var(--color-background-subtle);
+  }
+
+  .ds-layout-preview__track {
+    background: color-mix(in oklab, var(--color-background-subtle) 72%, transparent);
+  }
+
+  .ds-layout-preview__track.is-accent {
+    background: var(--color-background-accent);
+  }
+
+  .ds-layout-preview__responsive {
+    display: grid;
+    grid-template-columns: 12fr 8fr 4fr;
+    align-items: end;
+    gap: var(--gap-button-group);
+  }
+
+  .ds-layout-preview__responsive span {
+    display: block;
+    background: color-mix(in oklab, var(--color-accent-500) 12%, transparent);
+  }
+
+  .ds-layout-preview__responsive .is-desktop {
+    height: 100%;
+  }
+
+  .ds-layout-preview__responsive .is-tablet {
+    height: 66%;
+  }
+
+  .ds-layout-preview__responsive .is-mobile {
+    height: 34%;
+    background: var(--color-background-accent);
+  }
+</style>

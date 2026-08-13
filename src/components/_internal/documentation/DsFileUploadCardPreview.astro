@@ -1,0 +1,40 @@
+---
+import FileUploadCard from "../../base-components/file-upload/FileUploadCard.astro";
+---
+
+<div class="file-upload-card-preview" data-component-name="DsFileUploadCardPreview" data-ds-preview-target>
+  <div data-card-preview-state="uploading">
+    <FileUploadCard fileId="preview-file" fileName="brand-guidelines.final.pdf" state="uploading" progress={42} loadedBytes={50400} totalBytes={120000} />
+  </div>
+  <div data-card-preview-state="uploading-indeterminate" hidden>
+    <FileUploadCard fileId="preview-file-indeterminate" fileName="brand-guidelines.final.pdf" state="uploading" totalBytes={120000} />
+  </div>
+  <div data-card-preview-state="success" hidden>
+    <FileUploadCard fileId="preview-file-success" fileName="brand-guidelines.final.pdf" state="success" totalBytes={120000} />
+  </div>
+  <div data-card-preview-state="error" hidden>
+    <FileUploadCard fileId="preview-file-error" fileName="brand-guidelines.final.pdf" state="error" loadedBytes={50400} totalBytes={120000} />
+  </div>
+</div>
+
+<script>
+  const initializeFileUploadCardPreviews = () => {
+    document.querySelectorAll<HTMLElement>('[data-component-name="DsFileUploadCardPreview"]').forEach((preview) => {
+      if (preview.dataset.fileUploadCardPreviewReady === "true") return;
+      preview.dataset.fileUploadCardPreviewReady = "true";
+      preview.closest("[data-ds-interactive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent) || event.detail?.axisId !== "state") return;
+        const value = String(event.detail.value);
+        preview.querySelectorAll<HTMLElement>("[data-card-preview-state]").forEach((candidate) => {
+          candidate.hidden = candidate.dataset.cardPreviewState !== value;
+        });
+      });
+    });
+  };
+  initializeFileUploadCardPreviews();
+  document.addEventListener("astro:page-load", initializeFileUploadCardPreviews);
+</script>
+
+<style>
+  .file-upload-card-preview { inline-size: min(100%, var(--size-320)); }
+</style>

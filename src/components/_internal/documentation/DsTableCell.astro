@@ -1,0 +1,185 @@
+---
+interface Props {
+  as?: "div" | "span" | "td" | "th";
+  variant?: "header" | "body";
+  role?: "cell" | "columnheader" | "rowheader";
+  scope?: string;
+  colspan?: number | string;
+  rowspan?: number | string;
+  tone?: "primary" | "secondary";
+  justify?: "start" | "between";
+  gridRowSpan?: number | string;
+  gridColumn?: number | string;
+  gridRow?: number | string;
+  flushInline?: boolean;
+  flushInlineStart?: boolean;
+  overflow?: "ellipsis" | "visual";
+  tooltipText?: string;
+  componentName?: string;
+  id?: string;
+  variable?: string;
+  class?: string;
+}
+
+const {
+  as = "div",
+  variant = "body",
+  role,
+  scope,
+  colspan,
+  rowspan,
+  tone = "primary",
+  justify = "start",
+  gridRowSpan,
+  gridColumn,
+  gridRow,
+  flushInline = false,
+  flushInlineStart = false,
+  overflow = "ellipsis",
+  tooltipText,
+  componentName = "DsTableCell",
+  id,
+  variable,
+  class: className,
+} = Astro.props as Props;
+const Tag = as;
+const style = [
+  gridColumn && `grid-column: ${gridColumn}`,
+  gridRow && `grid-row: ${gridRow}`,
+  gridRowSpan && `grid-row: span ${gridRowSpan}`,
+  flushInline && "padding-left: 0",
+  flushInline && "padding-right: 0",
+  flushInline && "padding-inline: 0",
+  flushInlineStart && "padding-left: 0",
+  flushInlineStart && "padding-inline-start: 0",
+]
+  .filter(Boolean)
+  .join("; ");
+---
+
+<Tag
+  id={id}
+  class:list={["ds-table-cell", className]}
+  colspan={colspan}
+  data-component-name={componentName}
+  data-ds-table-cell-justify={justify}
+  data-ds-table-cell-flush-inline={flushInline ? "true" : undefined}
+  data-ds-table-cell-flush-inline-start={flushInlineStart ? "true" : undefined}
+  data-ds-table-cell-tone={tone}
+  data-ds-table-cell-overflow={overflow}
+  data-ds-table-cell-variant={variant}
+  data-variable-row={variable}
+  role={role}
+  rowspan={rowspan}
+  scope={scope}
+  style={style || undefined}
+>
+  <span
+    class="ds-table-cell__content"
+    data-ds-table-overflow-target={overflow === "ellipsis" ? "true" : undefined}
+    data-ds-table-tooltip-text={tooltipText}
+  >
+    <slot />
+  </span>
+  {
+    Astro.slots.has("actions") && (
+      <span class="ds-table-cell__actions">
+        <slot name="actions" />
+      </span>
+    )
+  }
+</Tag>
+
+<style>
+  .ds-table-cell {
+    min-width: 0;
+    border-right: var(--size-1) solid var(--color-border-subtle);
+    border-bottom: var(--size-1) solid var(--color-border-subtle);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .ds-table-cell[data-ds-table-cell-variant="header"] {
+    display: flex;
+    min-height: var(--ds-doc-table-column-title-min-height);
+    align-items: center;
+    background: var(--color-background-surface);
+    padding:
+      var(--ds-doc-table-column-title-padding-block)
+      var(--ds-doc-table-column-title-padding-inline);
+    color: var(--color-text-tertiary);
+    font-family: var(--ds-doc-table-column-title-font-family);
+    font-size: var(--ds-doc-table-column-title-font-size);
+    font-weight: var(--ds-doc-table-column-title-font-weight);
+    line-height: var(--ds-doc-table-column-title-line-height);
+    letter-spacing: var(--ds-doc-table-column-title-letter-spacing);
+  }
+
+  .ds-table-cell[data-ds-table-cell-variant="body"] {
+    display: flex;
+    min-height: var(--ds-doc-table-row-min-height);
+    align-items: center;
+    gap: var(--gap-small);
+    padding:
+      var(--ds-doc-table-row-padding-block)
+      var(--ds-doc-table-row-padding-inline);
+    color: var(--color-text-primary);
+    font-family: var(--ds-doc-table-row-font-family);
+    font-size: var(--ds-doc-table-row-font-size);
+    font-weight: var(--ds-doc-table-row-font-weight);
+    line-height: var(--ds-doc-table-row-line-height);
+    letter-spacing: var(--ds-doc-table-row-letter-spacing);
+  }
+
+  .ds-table-cell[data-ds-table-cell-justify="between"] {
+    justify-content: space-between;
+  }
+
+  .ds-table-cell__content {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 auto;
+    overflow: hidden;
+    font: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ds-table-cell__content :global(code) {
+    font: inherit;
+  }
+
+  .ds-table-cell__actions {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--gap-tiny);
+  }
+
+  .ds-table-cell[data-ds-table-cell-overflow="visual"] .ds-table-cell__content {
+    display: flex;
+    width: 100%;
+    align-self: stretch;
+    overflow: visible;
+    max-width: none;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
+  .ds-table-cell[data-ds-table-cell-tone="secondary"] {
+    color: var(--color-text-secondary);
+  }
+
+  .ds-table-cell[data-ds-table-cell-variant="body"][data-ds-table-cell-flush-inline-start="true"] {
+    padding-left: 0;
+    padding-inline-start: 0;
+  }
+
+  .ds-table-cell[data-ds-table-cell-variant="body"][data-ds-table-cell-flush-inline="true"] {
+    padding-left: 0;
+    padding-right: 0;
+    padding-inline: 0;
+  }
+
+</style>

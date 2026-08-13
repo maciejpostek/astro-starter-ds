@@ -1,0 +1,412 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import Tooltip from "../tooltip/Tooltip.astro";
+import { normalizeAccordionState } from "../../../lib/accordion/accordion-model.mjs";
+
+export type AccordionMode = "single" | "multiple";
+export type AccordionInitialOpen = "none" | "first" | readonly string[];
+
+export interface AccordionItem {
+  id: string;
+  title: string;
+  content: string;
+  helpText?: string;
+  helpLabel?: string;
+  disabled?: boolean;
+}
+
+export type AccordionItems = readonly [AccordionItem, ...AccordionItem[]];
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class" | "id"> {
+  items: AccordionItems;
+  mode?: AccordionMode;
+  initialOpen?: AccordionInitialOpen;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  id?: string;
+  class?: string;
+}
+
+const {
+  items,
+  mode = "single",
+  initialOpen = "none",
+  headingLevel = 3,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("Accordion headingLevel must be an integer from 2 to 6.");
+}
+
+if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
+  throw new TypeError("Accordion id must be a non-empty string when provided.");
+}
+
+const { openIds } = normalizeAccordionState(items, mode, initialOpen);
+const rootId = id ?? `accordion-${crypto.randomUUID()}`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+const initialOpenAttribute = Array.isArray(initialOpen)
+  ? initialOpen.join(" ")
+  : initialOpen;
+---
+
+<div
+  {...attributes}
+  id={rootId}
+  class:list={["accordion", className]}
+  data-component-name="Accordion"
+  data-accordion-mode={mode}
+  data-accordion-initial-open={initialOpenAttribute}
+>
+  {items.map((item, index) => {
+    const isOpen = openIds.has(item.id);
+    const triggerId = `${rootId}-trigger-${index + 1}`;
+    const panelId = `${rootId}-panel-${index + 1}`;
+
+    return (
+      <section
+        class="accordion__item"
+        data-accordion-item
+        data-accordion-state={isOpen ? "open" : "closed"}
+        data-accordion-help={item.helpText ? "true" : "false"}
+        data-accordion-disabled={item.disabled ? "true" : undefined}
+      >
+        <div class:list={["accordion__row", { "accordion__row--with-help": item.helpText }]}>
+          {item.helpText && (
+            <Tooltip
+              data-accordion-help-trigger
+              text={item.helpText}
+              label={item.helpLabel ?? `More information about ${item.title}`}
+              size="small"
+            />
+          )}
+          <div class="accordion__body">
+            <HeadingTag class="accordion__heading">
+              <button
+                id={triggerId}
+                class="accordion__trigger"
+                type="button"
+                aria-expanded={isOpen ? "true" : "false"}
+                aria-controls={panelId}
+                disabled={item.disabled}
+                data-accordion-trigger
+              >
+                <span class="accordion__title body-base-semibold">{item.title}</span>
+                <span class="accordion__indicator" aria-hidden="true">
+                  <MaterialSymbol name="arrow_drop_down" size="var(--size-20)" />
+                </span>
+              </button>
+            </HeadingTag>
+            <div
+              id={panelId}
+              class="accordion__panel"
+              role="region"
+              aria-labelledby={triggerId}
+              aria-hidden={isOpen ? "false" : "true"}
+              hidden={!isOpen}
+              data-accordion-panel
+            >
+              <div class="accordion__panel-inner">
+                <p class="accordion__content body-base-regular">{item.content}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  })}
+</div>
+
+<script>
+  declare global {
+    interface Window {
+      __astroDesignSystemAccordionReady?: boolean;
+    }
+  }
+
+  const panelAnimations = new WeakMap<HTMLElement, Animation>();
+
+  const parseTime = (value: string) => {
+    const normalized = value.trim();
+    const amount = Number.parseFloat(normalized);
+    if (!Number.isFinite(amount)) return 0;
+    return normalized.endsWith("ms") ? amount : amount * 1000;
+  };
+
+  const getMotion = (root: HTMLElement) => {
+    const styles = getComputedStyle(root);
+    return {
+      duration: parseTime(styles.getPropertyValue("--motion-duration-surface-enter")),
+      easing: styles.getPropertyValue("--motion-ease-premium-out").trim() || "ease-out",
+    };
+  };
+
+  const cancelPanelAnimation = (panel: HTMLElement) => {
+    panelAnimations.get(panel)?.cancel();
+    panelAnimations.delete(panel);
+  };
+
+  const setAccordionItemOpen = (trigger: HTMLButtonElement, open: boolean) => {
+    const item = trigger.closest<HTMLElement>("[data-accordion-item]");
+    const root = trigger.closest<HTMLElement>('[data-component-name="Accordion"]');
+    const panelId = trigger.getAttribute("aria-controls");
+    const panel = panelId ? document.getElementById(panelId) : null;
+    if (!item || !root || !(panel instanceof HTMLElement)) return;
+
+    const currentHeight = panel.hidden ? 0 : panel.getBoundingClientRect().height;
+    const currentOpacity = panel.hidden
+      ? 0
+      : Number.parseFloat(getComputedStyle(panel).opacity) || 0;
+
+    cancelPanelAnimation(panel);
+    trigger.setAttribute("aria-expanded", String(open));
+    panel.setAttribute("aria-hidden", String(!open));
+    item.dataset.accordionState = open ? "open" : "closed";
+
+    const { duration, easing } = getMotion(root);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || duration === 0 || typeof panel.animate !== "function") {
+      panel.hidden = !open;
+      return;
+    }
+
+    if (open) panel.hidden = false;
+    const targetHeight = open ? panel.scrollHeight : 0;
+    const animation = panel.animate(
+      [
+        { height: `${currentHeight}px`, opacity: currentOpacity },
+        { height: `${targetHeight}px`, opacity: open ? 1 : 0 },
+      ],
+      { duration, easing, fill: "both" },
+    );
+
+    panelAnimations.set(panel, animation);
+    animation.onfinish = () => {
+      if (panelAnimations.get(panel) !== animation) return;
+      panelAnimations.delete(panel);
+      animation.cancel();
+      panel.hidden = !open;
+    };
+  };
+
+  const getActiveTriggers = (root: HTMLElement) =>
+    Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-accordion-trigger]:not(:disabled)"),
+    );
+
+  if (!window.__astroDesignSystemAccordionReady) {
+    window.__astroDesignSystemAccordionReady = true;
+
+    document.addEventListener("click", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const trigger = event.target.closest<HTMLButtonElement>("[data-accordion-trigger]");
+      const root = trigger?.closest<HTMLElement>('[data-component-name="Accordion"]');
+      if (!trigger || !root || trigger.disabled) return;
+
+      const shouldOpen = trigger.getAttribute("aria-expanded") !== "true";
+      if (shouldOpen && root.dataset.accordionMode === "single") {
+        getActiveTriggers(root).forEach((candidate) => {
+          if (candidate !== trigger) setAccordionItemOpen(candidate, false);
+        });
+      }
+      setAccordionItemOpen(trigger, shouldOpen);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (!(event.target instanceof Element)) return;
+      const trigger = event.target.closest<HTMLButtonElement>("[data-accordion-trigger]");
+      const root = trigger?.closest<HTMLElement>('[data-component-name="Accordion"]');
+      if (!trigger || !root) return;
+
+      const triggers = getActiveTriggers(root);
+      const currentIndex = triggers.indexOf(trigger);
+      if (currentIndex < 0) return;
+
+      let targetIndex;
+      if (event.key === "ArrowDown") targetIndex = (currentIndex + 1) % triggers.length;
+      if (event.key === "ArrowUp") targetIndex = (currentIndex - 1 + triggers.length) % triggers.length;
+      if (event.key === "Home") targetIndex = 0;
+      if (event.key === "End") targetIndex = triggers.length - 1;
+      if (targetIndex === undefined) return;
+
+      event.preventDefault();
+      triggers[targetIndex]?.focus();
+    });
+  }
+</script>
+
+<style>
+  .accordion {
+    display: grid;
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    gap: var(--gap-none);
+    border: var(--border-width-default) solid var(--color-border-default);
+    border-radius: var(--radius-small);
+  }
+
+  .accordion__item {
+    min-inline-size: 0;
+    border-block-end: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+    color: var(--color-text-primary);
+    transition: background-color var(--motion-transition), color var(--motion-transition);
+  }
+
+  .accordion__item:last-child {
+    border-block-end: 0;
+  }
+
+  .accordion__item:first-child {
+    border-start-start-radius: var(--radius-small);
+    border-start-end-radius: var(--radius-small);
+  }
+
+  .accordion__item:last-child {
+    border-end-start-radius: var(--radius-small);
+    border-end-end-radius: var(--radius-small);
+  }
+
+  .accordion__row {
+    min-inline-size: 0;
+    padding: var(--content-padding-medium);
+  }
+
+  .accordion__row--with-help {
+    display: grid;
+    grid-template-columns: var(--size-32) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--gap-small);
+  }
+
+  .accordion__row--with-help > .accordion__body {
+    grid-column: 2;
+  }
+
+  .accordion__row--with-help:has(> [data-accordion-help-trigger][hidden]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .accordion__row--with-help:has(> [data-accordion-help-trigger][hidden]) > .accordion__body {
+    grid-column: 1;
+  }
+
+  .accordion__body {
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .accordion__heading {
+    min-inline-size: 0;
+    flex: 1 1 auto;
+    margin: 0;
+  }
+
+  .accordion__trigger {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: var(--size-32);
+    gap: var(--gap-small);
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .accordion__title {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .accordion__indicator {
+    display: inline-grid;
+    inline-size: var(--size-32);
+    block-size: var(--size-32);
+    flex: 0 0 auto;
+    place-items: center;
+    color: inherit;
+    transition:
+      color var(--motion-transition),
+      transform var(--motion-duration-surface-enter) var(--motion-ease-premium-out);
+  }
+
+  .accordion__panel {
+    min-inline-size: 0;
+    overflow: clip;
+    opacity: 1;
+  }
+
+  .accordion__panel-inner {
+    min-inline-size: 0;
+    min-block-size: 0;
+    overflow: hidden;
+  }
+
+  .accordion__content {
+    min-inline-size: 0;
+    margin: 0;
+    padding-block-start: var(--content-padding-xsmall);
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+  }
+
+  .accordion__item:has(.accordion__trigger:hover),
+  .accordion[data-ds-preview-state="hover"] .accordion__item:first-child {
+    background: var(--color-background-subtle);
+  }
+
+  .accordion__item:has(.accordion__trigger:focus-visible),
+  .accordion[data-ds-preview-state="focus-visible"] .accordion__item:first-child {
+    position: relative;
+    box-shadow: var(--effect-focused);
+  }
+
+  .accordion__trigger:focus-visible {
+    outline: none;
+  }
+
+  .accordion__item[data-accordion-state="open"] .accordion__indicator {
+    color: var(--color-icon-accent);
+    transform: rotate(180deg);
+  }
+
+  .accordion__item[data-accordion-disabled="true"] {
+    background: var(--color-state-disabled-background);
+    color: var(--color-state-disabled-text);
+  }
+
+  .accordion__trigger:disabled {
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion__item,
+    .accordion__indicator {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .accordion,
+    .accordion__item {
+      border-color: CanvasText;
+    }
+
+    .accordion__item:has(.accordion__trigger:focus-visible),
+    .accordion[data-ds-preview-state="focus-visible"] .accordion__item:first-child {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: calc(var(--size-2) * -1);
+      box-shadow: none;
+    }
+  }
+</style>

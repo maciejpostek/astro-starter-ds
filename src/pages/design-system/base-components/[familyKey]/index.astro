@@ -1,0 +1,46 @@
+---
+import DesignSystemLayout from "../../../../layouts/DesignSystemLayout.astro";
+import DsFamilyGallery from "../../../../components/_internal/documentation/DsFamilyGallery.astro";
+import {
+  architecture,
+  componentsByPage,
+  createDocumentationSummary,
+  type ArchitecturePage,
+} from "../../../../data/documentationRegistry";
+import { getFamilyDocumentationAdapter } from "../../../../data/documentationComponentRegistry";
+
+export function getStaticPaths() {
+  return architecture.pages
+    .filter((page) => page.categoryKey === "base-components" && page.documentationVisible !== false)
+    .map((page) => ({ params: { familyKey: page.pageKey }, props: { page } }));
+}
+
+interface Props { page: ArchitecturePage; }
+const { page } = Astro.props;
+const components = componentsByPage.get(`base-components/${page.pageKey}`) ?? [];
+const availableCount = components.filter((component) => Boolean(component.sourcePath)).length;
+const familyAdapter = getFamilyDocumentationAdapter("base-components", page.pageKey);
+const pageToc = [{ label: "Variants", href: "#variants" }];
+---
+
+<DesignSystemLayout
+  title={`${page.pageLabel} - Base Components`}
+  pageType="family-gallery"
+  toc={pageToc}
+  header={{
+    eyebrow: "Base Components",
+    title: page.pageLabel,
+    summary: createDocumentationSummary(
+      `${page.pageLabel} contains ${components.length} canonical component identities, including ${availableCount} with an Astro source implementation. Compare`,
+      pageToc,
+      "to distinguish production previews from registry-backed Figma identities without inventing unavailable APIs.",
+    ),
+    status: availableCount ? "Partially available" : "Figma only",
+  }}
+>
+  <DsFamilyGallery
+    page={page}
+    components={components}
+    showcaseRenderer={familyAdapter?.showcase.renderer}
+  />
+</DesignSystemLayout>

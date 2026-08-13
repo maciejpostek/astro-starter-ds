@@ -1,0 +1,40 @@
+---
+import DesignSystemLayout from "../../../../layouts/DesignSystemLayout.astro";
+import DsFamilyGallery from "../../../../components/_internal/documentation/DsFamilyGallery.astro";
+import {
+  architecture,
+  componentsByPage,
+  createDocumentationSummary,
+  type ArchitecturePage,
+} from "../../../../data/documentationRegistry";
+
+export function getStaticPaths() {
+  return architecture.pages
+    .filter((page) => page.categoryKey === "website-patterns")
+    .map((page) => ({ params: { familyKey: page.pageKey }, props: { page } }));
+}
+
+interface Props { page: ArchitecturePage; }
+const { page } = Astro.props;
+const components = componentsByPage.get(`website-patterns/${page.pageKey}`) ?? [];
+const availableCount = components.filter((component) => Boolean(component.sourcePath)).length;
+const pageToc = [{ label: "Variants", href: "#variants" }];
+---
+
+<DesignSystemLayout
+  title={`${page.pageLabel} - Website Patterns`}
+  pageType="family-gallery"
+  toc={pageToc}
+  header={{
+    eyebrow: "Website Patterns",
+    title: page.pageLabel,
+    summary: createDocumentationSummary(
+      `This family contains ${components.length} canonical website-pattern identities, including ${availableCount} implemented Astro records. Compare`,
+      pageToc,
+      "to inspect responsive previews only where a registered implementation adapter exists.",
+    ),
+    status: availableCount ? "Partially available" : components.length ? "Figma only" : "Empty family",
+  }}
+>
+  <DsFamilyGallery page={page} components={components} />
+</DesignSystemLayout>

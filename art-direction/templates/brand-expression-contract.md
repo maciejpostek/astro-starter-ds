@@ -138,7 +138,7 @@ Reference `reference-manifest.json`. Do not paste untraceable inspiration.
 ## 17. Calibration Set
 
 Link approved Figma nodes or browser routes for Button, Input or FormField, Tag,
-ContentBlock or SectionHeader, Card, Navigation, and one Hero or section.
+SectionHeader, Card, Navigation, and one Hero or section.
 
 ## 18. Validation And Approval
 

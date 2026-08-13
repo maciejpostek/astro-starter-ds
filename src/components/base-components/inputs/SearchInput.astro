@@ -1,0 +1,198 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import Input, { type InputSize, type InputValidation } from "./Input.astro";
+
+export interface Props extends Omit<HTMLAttributes<"input">, "class" | "disabled" | "size" | "type"> {
+  label: string;
+  size?: InputSize;
+  disabled?: boolean;
+  validation?: InputValidation;
+  clearLabel?: string;
+  class?: string;
+}
+
+const {
+  label,
+  size = "medium",
+  disabled = false,
+  validation = "default",
+  clearLabel = "Clear search",
+  class: className,
+  placeholder = "Search",
+  value,
+  "aria-label": ariaLabel,
+  ...attributes
+} = Astro.props;
+
+const inputLabel = ariaLabel ?? (attributes["aria-labelledby"] ? undefined : label);
+const hasInitialValue = value !== undefined && String(value).length > 0;
+---
+
+<div
+  class:list={["search-input", className]}
+  data-component-name="SearchInput"
+  data-control-size={size}
+  data-search-input
+  data-search-input-content={hasInitialValue ? "filled" : "empty"}
+  data-search-input-disabled={disabled ? "true" : undefined}
+>
+  <MaterialSymbol
+    class="search-input__search-icon"
+    name="search"
+    size="var(--control-icon-size)"
+  />
+
+  <Input
+    {...attributes}
+    class="search-input__field"
+    aria-label={inputLabel}
+    data-search-input-control
+    disabled={disabled}
+    placeholder={placeholder}
+    size={size}
+    validation={validation}
+    type="search"
+    value={value}
+  />
+
+  <button
+    class="search-input__clear"
+    type="button"
+    aria-label={clearLabel}
+    data-search-input-clear
+    disabled={disabled}
+    hidden={!hasInitialValue}
+  >
+    <MaterialSymbol name="close" size="var(--control-icon-size)" />
+  </button>
+</div>
+
+<script>
+  const setupSearchInput = (root: HTMLElement) => {
+    if (root.dataset.searchInputReady === "true") return;
+
+    const input = root.querySelector<HTMLInputElement>("[data-search-input-control]");
+    const clear = root.querySelector<HTMLButtonElement>("[data-search-input-clear]");
+    if (!input || !clear) return;
+
+    root.dataset.searchInputReady = "true";
+
+    const syncContentState = () => {
+      const hasValue = input.value.length > 0;
+      root.dataset.searchInputContent = hasValue ? "filled" : "empty";
+      clear.hidden = !hasValue;
+      clear.disabled = input.disabled;
+    };
+
+    input.addEventListener("input", syncContentState);
+    clear.addEventListener("click", () => {
+      if (input.disabled) return;
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+    });
+
+    syncContentState();
+  };
+
+  const setupSearchInputs = () => {
+    document.querySelectorAll<HTMLElement>("[data-search-input]").forEach(setupSearchInput);
+  };
+
+  setupSearchInputs();
+  document.addEventListener("astro:page-load", setupSearchInputs);
+</script>
+
+<style>
+  .search-input {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .search-input__search-icon,
+  .search-input__clear {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    flex: 0 0 auto;
+    transform: translateY(-50%);
+  }
+
+  .search-input__search-icon {
+    inset-inline-start: var(--control-padding-inline);
+    color: var(--input-icon-default);
+    pointer-events: none;
+  }
+
+  .search-input :global(.search-input__field) {
+    padding-inline-start: calc(var(--control-padding-inline) + var(--control-icon-size) + var(--control-gap));
+    padding-inline-end: var(--control-padding-inline);
+  }
+
+  .search-input[data-search-input-content="filled"] :global(.search-input__field) {
+    padding-inline-end: calc(var(--control-padding-inline) + var(--size-24) + var(--control-gap));
+  }
+
+  :global(.search-input__field::-webkit-search-cancel-button) {
+    display: none;
+  }
+
+  .search-input__clear {
+    inset-inline-end: var(--control-padding-inline);
+    display: inline-grid;
+    width: var(--size-24);
+    height: var(--size-24);
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-full);
+    padding: 0;
+    color: var(--input-icon-default);
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.72;
+  }
+
+  .search-input__clear:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+    opacity: 1;
+  }
+
+  .search-input__clear:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
+    opacity: 0.56;
+  }
+
+  .search-input__clear:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    outline: none;
+    opacity: 1;
+    box-shadow: var(--effect-focused);
+  }
+
+  .search-input__clear:disabled {
+    color: var(--input-icon-disabled);
+    cursor: not-allowed;
+    opacity: 1;
+  }
+
+  .search-input[data-search-input-disabled="true"] .search-input__search-icon {
+    color: var(--input-icon-disabled);
+  }
+
+  .search-input__clear[hidden] {
+    display: none;
+  }
+
+  @media (forced-colors: active) {
+    .search-input__search-icon,
+    .search-input__clear {
+      color: FieldText;
+    }
+
+    .search-input__clear:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+      box-shadow: none;
+    }
+  }
+</style>

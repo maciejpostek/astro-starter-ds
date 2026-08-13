@@ -29,17 +29,18 @@ const references = (source) =>
 
 const canonicalFiles = {
   "color-primitives.css": 69,
-  "color-semantic.css": 49,
-  "color-components.css": 102,
-  "size-primitives.css": 25,
-  "size-semantic.css": 55,
-  "component-sizes.css": 28,
+  "color-semantic.css": 58,
+  "color-components.css": 210,
+  "size-primitives.css": 27,
+  "size-semantic.css": 52,
+  "size-components.css": 53,
+  "control-sizes.css": 28,
   "typography-foundations.css": 72,
-  "typography-semantic.css": 121,
   "layout-foundations.css": 7,
   "layout-semantic.css": 11,
-  "motion-foundations.css": 18,
-  "elevation-foundations.css": 9
+  "motion-foundations.css": 7,
+  "elevation-foundations.css": 12,
+  "interaction-effects.css": 1
 };
 
 const sources = new Map();
@@ -81,7 +82,6 @@ const expectedImports = [
   "color-semantic.css",
   "size-semantic.css",
   "typography-foundations.css",
-  "typography-semantic.css",
   "typography-styles.css",
   "layout-foundations.css",
   "layout-semantic.css",
@@ -89,7 +89,9 @@ const expectedImports = [
   "motion-foundations.css",
   "elevation-foundations.css",
   "color-components.css",
-  "component-sizes.css",
+  "size-components.css",
+  "interaction-effects.css",
+  "control-sizes.css",
   "design-system-components.css"
 ];
 
@@ -107,9 +109,19 @@ if (!colorSemantic.includes('[data-theme="dark"]')) {
 if (!colorComponents.includes('[data-theme="dark"]')) {
   fail("color-components.css must include component-level dark overrides.");
 }
+for (const contract of [
+  "--button-tertiary-background-default:",
+  "--button-tertiary-border-default:",
+  "--button-tertiary-text-default:",
+  "--button-tertiary-icon-default:"
+]) {
+  if (!colorComponents.includes(contract)) {
+    fail(`Missing Button tertiary color contract: ${contract}`);
+  }
+}
 
-const componentSizes = sources.get("component-sizes.css") ?? "";
-const componentSizeProperties = [
+const controlSizes = sources.get("control-sizes.css") ?? "";
+const controlSizeProperties = [
   "min-height",
   "padding-inline",
   "padding-block",
@@ -119,41 +131,112 @@ const componentSizeProperties = [
   "line-height"
 ];
 for (const size of ["small", "medium", "large"]) {
-  for (const property of componentSizeProperties) {
+  for (const property of controlSizeProperties) {
     if (
-      !componentSizes.includes(`--component-size-${size}-${property}:`)
+      !controlSizes.includes(`--control-size-${size}-${property}:`)
     ) {
-      fail(`Missing ${size} component-size property: ${property}`);
+      fail(`Missing ${size} control-size property: ${property}`);
     }
   }
-  if (!componentSizes.includes(`[data-component-size="${size}"]`)) {
-    fail(`Missing data-component-size bridge for ${size}.`);
+  if (!controlSizes.includes(`[data-control-size="${size}"]`)) {
+    fail(`Missing data-control-size bridge for ${size}.`);
   }
 }
-for (const property of componentSizeProperties) {
-  if (!componentSizes.includes(`--component-${property}:`)) {
-    fail(`Missing stable component-size alias: --component-${property}`);
+for (const property of controlSizeProperties) {
+  if (!controlSizes.includes(`--control-${property}:`)) {
+    fail(`Missing stable control-size alias: --control-${property}`);
   }
 }
 
 const typographyStyles = read(
   join(tokenDirectory, "typography-styles.css")
 );
-for (const className of [
+const publicTypographyClasses = [
   "heading-h1",
   "heading-h2",
   "heading-h3",
   "heading-h4",
   "heading-h5",
   "heading-h6",
-  "body-large",
-  "body-medium",
-  "body-base",
-  "body-small",
-  "body-tiny"
-]) {
+  "body-large-regular",
+  "body-large-regular-underlined",
+  "body-large-semibold",
+  "body-medium-regular",
+  "body-medium-regular-underlined",
+  "body-medium-semibold",
+  "body-base-regular",
+  "body-base-regular-underlined",
+  "body-base-semibold",
+  "body-small-regular",
+  "body-small-regular-underlined",
+  "body-small-semibold",
+  "body-tiny-regular",
+  "body-tiny-regular-underlined",
+  "body-tiny-semibold"
+];
+for (const className of publicTypographyClasses) {
   if (!typographyStyles.includes(`.${className}`)) {
     fail(`Missing public typography class: .${className}`);
+  }
+}
+if (publicTypographyClasses.length !== 21) {
+  fail(`Typography must expose exactly 21 Text Styles; found ${publicTypographyClasses.length}.`);
+}
+for (const legacyClass of ["body-large", "body-medium", "body-base", "body-small", "body-tiny"]) {
+  if (new RegExp(`\\.${legacyClass}(?!-)`).test(typographyStyles)) {
+    fail(`Legacy standalone typography class must not exist: .${legacyClass}`);
+  }
+}
+for (const requiredReset of ["h1", "h2", "h3", "h4", "h5", "h6", "p"]) {
+  if (!typographyStyles.match(new RegExp(`:where\\([^)]*\\b${requiredReset}\\b`))) {
+    fail(`Neutral typography reset must include ${requiredReset}.`);
+  }
+}
+if (typographyStyles.includes("--text-style-")) {
+  fail("Typography classes must consume foundation tokens directly, without --text-style-* aliases.");
+}
+if (existsSync(join(tokenDirectory, "typography-semantic.css"))) {
+  fail("typography-semantic.css must not exist.");
+}
+if (entrypoint.includes("typography-semantic.css")) {
+  fail("tokens.css must not import typography-semantic.css.");
+}
+
+const sourceFiles = [];
+const collectSourceFiles = (directory) => {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const entryPath = join(directory, entry.name);
+    if (entry.isDirectory()) collectSourceFiles(entryPath);
+    else if (/\.(astro|css|ts|tsx|js|mjs)$/.test(entry.name)) sourceFiles.push(entryPath);
+  }
+};
+collectSourceFiles(join(projectRoot, "src"));
+for (const filePath of sourceFiles) {
+  const source = read(filePath);
+  const projectPath = toProjectPath(filePath);
+  if (source.includes("--text-style-")) {
+    fail(`${projectPath} must not reference removed --text-style-* aliases.`);
+  }
+  if (source.includes("typography-semantic.css")) {
+    fail(`${projectPath} must not import or register typography-semantic.css.`);
+  }
+  if (/\.(astro|tsx)$/.test(filePath)) {
+    for (const match of source.matchAll(/<h([1-6])\b([^>]*)>/g)) {
+      if (!/class(?:Name|:list)?=[^>]*heading-h[1-6]/.test(match[2])) {
+        fail(`${projectPath} contains h${match[1]} without an explicit .heading-* class.`);
+      }
+    }
+  }
+  if (projectPath !== "src/styles/tokens/typography-styles.css" && /\.(astro|css)$/.test(filePath)) {
+    for (const block of source.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      const selector = block[1];
+      const body = block[2];
+      const targetsHeading = /(?:^|[\s>+~,(])h[1-6](?:\b|:)/m.test(selector);
+      const setsTypography = /\b(?:font(?:-family|-size|-weight|-style)?|line-height|letter-spacing|text-transform|text-wrap|overflow-wrap|word-break|white-space)\s*:/.test(body);
+      if (targetsHeading && setsTypography) {
+        fail(`${projectPath} styles a content heading directly; use a .heading-* class.`);
+      }
+    }
   }
 }
 
@@ -175,8 +258,7 @@ for (const contract of [
   "--motion-duration-surface-enter:",
   "--motion-duration-disclosure:",
   "@media (prefers-reduced-motion: reduce)",
-  "--motion-duration-fast: 0ms",
-  "--motion-delay-mobile-menu-footer: 0ms"
+  "--motion-duration-fast: 0ms"
 ]) {
   if (!motionFoundations.includes(contract)) {
     fail(`Missing motion contract: ${contract}`);
@@ -185,58 +267,81 @@ for (const contract of [
 
 const elevationFoundations = sources.get("elevation-foundations.css") ?? "";
 for (const contract of [
+  "--elevation-primitive-subtle:",
   "--elevation-primitive-raised:",
+  "--elevation-primitive-control-thumb:",
   "--elevation-surface-floating:",
-  "--elevation-alert-toast:",
-  "--elevation-dropdown-menu:"
+  "--elevation-control-raised:",
+  "--elevation-control-thumb:"
 ]) {
   if (!elevationFoundations.includes(contract)) {
     fail(`Missing elevation contract: ${contract}`);
   }
 }
 
-const alertSource = read(
-  join(projectRoot, "src/components/molecules/data-display/Alert.astro")
-);
-for (const token of [
-  "var(--elevation-alert-notification)",
-  "var(--elevation-alert-toast)"
-]) {
-  if (!alertSource.includes(token)) {
-    fail(`Alert must consume ${token}.`);
-  }
-}
-
-const dropdownSource = read(
-  join(projectRoot, "src/components/atoms/navigation/Dropdown.astro")
-);
-if (!dropdownSource.includes("var(--elevation-dropdown-menu)")) {
-  fail("Dropdown must consume var(--elevation-dropdown-menu).");
-}
-
 for (const documentationPath of [
-  "src/pages/design-system/color.astro",
-  "src/pages/design-system/sizing.astro",
-  "src/pages/design-system/typography.astro",
-  "src/pages/design-system/layout.astro",
-  "src/pages/design-system/motion.astro",
-  "src/pages/design-system/elevation.astro"
+  "src/pages/design-system/foundations/color.astro",
+  "src/pages/design-system/foundations/sizing.astro",
+  "src/pages/design-system/foundations/typography.astro",
+  "src/pages/design-system/foundations/layout.astro",
+  "src/pages/design-system/foundations/motion.astro",
+  "src/pages/design-system/foundations/elevation.astro"
 ]) {
   read(join(projectRoot, documentationPath));
 }
 
-for (const [componentPath, headingTag] of Object.entries({
-  "src/components/design-system-documentation/DsSectionHeaderLevel2.astro":
-    "h2",
-  "src/components/design-system-documentation/DsSectionHeaderLevel3.astro":
-    "h3",
-  "src/components/design-system-documentation/DsSectionHeaderLevel4.astro":
-    "h4"
-})) {
-  const source = read(join(projectRoot, componentPath));
-  if (!source.includes(`<${headingTag} id={id}>`)) {
-    fail(`${componentPath} must render ${headingTag} for its declared level.`);
+const documentationFoundationData = read(join(
+  projectRoot,
+  "src/data/documentationFoundationData.ts",
+));
+const colorFoundationPage = read(join(
+  projectRoot,
+  "src/pages/design-system/foundations/color.astro",
+));
+const documentationColorRow = read(join(
+  projectRoot,
+  "src/components/_internal/documentation/DsColorRow.astro",
+));
+if (!documentationFoundationData.includes("export const resolveDocumentationColorSampleSurface")
+  || !documentationFoundationData.includes("matchingBackground")
+  || !documentationFoundationData.includes("documentationTokens.some")
+  || !documentationFoundationData.includes("resolveDocumentationColorSampleSurface(token.name)")) {
+  fail("Foundation color samples must use one shared resolver with component foreground/background state pairing.");
+}
+if (!colorFoundationPage.includes("resolveDocumentationColorSampleSurface")
+  || colorFoundationPage.includes("function getColorSampleSurfaceValue")) {
+  fail("The Color Foundation page must consume the shared sample-surface resolver without a local heuristic.");
+}
+if ((documentationColorRow.match(/\$\{resolvedSampleValue\}/g) ?? []).length < 3) {
+  fail("Foundation fill, border and text samples must render the resolved canonical color value.");
+}
+
+const sectionHeading = read(join(
+  projectRoot,
+  "src/components/_internal/documentation/DsSectionHeading.astro",
+));
+const documentationHeadingStyles = new Map([
+  [2, "heading-h4"],
+  [3, "heading-h6"],
+]);
+for (const [level, textStyle] of documentationHeadingStyles) {
+  const wrapperPath = `src/components/_internal/documentation/DsSectionHeaderLevel${level}.astro`;
+  const wrapper = read(join(projectRoot, wrapperPath));
+  if (!new RegExp(`<DsSectionHeading[\\s\\S]*?level=\\{${level}\\}`, "u").test(wrapper)) {
+    fail(`${wrapperPath} must delegate to the canonical DsSectionHeading.`);
   }
+  if (!sectionHeading.includes(`"h${level}"`)) {
+    fail(`DsSectionHeading must support semantic h${level}.`);
+  }
+  if (!sectionHeading.includes(`${level}: "${textStyle}"`)) {
+    fail(`DsSectionHeading must map semantic h${level} to .${textStyle}.`);
+  }
+}
+if (existsSync(join(
+  projectRoot,
+  "src/components/_internal/documentation/DsSectionHeaderLevel4.astro",
+))) {
+  fail("The documentation hierarchy must not restore DsSectionHeaderLevel4.");
 }
 
 for (const rulePath of [
@@ -244,6 +349,7 @@ for (const rulePath of [
   ".agentic-rules/02-colors.md",
   ".agentic-rules/03-typography.md",
   ".agentic-rules/04-layout.md",
+  ".agentic-rules/09-responsive.md",
   ".agentic-rules/06-motion.md",
   ".agentic-rules/07-elevation.md",
   "Figma2Astro Agentic Rules/01-component-size.md",
@@ -269,9 +375,9 @@ const figmaRepresentedVariableCount =
   canonicalFiles["color-components.css"] +
   canonicalFiles["size-primitives.css"] +
   canonicalFiles["size-semantic.css"] +
-  7 +
-  29 +
-  33 +
+  6 +
+  18 +
+  11 +
   2 +
   canonicalFiles["layout-semantic.css"] +
   canonicalFiles["motion-foundations.css"];
@@ -280,5 +386,5 @@ console.log(
   "Design-system foundation audit passed: " +
     `${declaredTokens.size} unique local token variables, ` +
     `${figmaRepresentedVariableCount} canonical Figma Variables, ` +
-    "11 public typography roles, and a 12/8/4 responsive grid."
+    "21 public class-based typography styles, no typography semantic aliases, and a 12/8/4 responsive grid."
 );

@@ -1,0 +1,52 @@
+---
+import FormField from "../../base-components/inputs/FormField.astro";
+import Input from "../../base-components/inputs/Input.astro";
+---
+
+<div
+  class="form-field-preview"
+  data-component-name="DsFormFieldPreview"
+  data-ds-preview-target
+  data-ds-preview-state="default"
+>
+  <div class="form-field-preview__state" data-preview-field-state="default">
+    <FormField controlId="form-field-preview-default" label="Label" hint="Hint text" optionalText="Optional">
+      <Input id="form-field-preview-default" aria-describedby="form-field-preview-default-hint" data-input-preview-control placeholder="name@example.com" />
+    </FormField>
+  </div>
+  <div class="form-field-preview__state" data-preview-field-state="valid">
+    <FormField controlId="form-field-preview-valid" label="Label" hint="Hint text" size="medium" validation="valid" required>
+      <Input id="form-field-preview-valid" aria-describedby="form-field-preview-valid-hint" data-input-preview-control validation="valid" value="name@example.com" required />
+    </FormField>
+  </div>
+  <div class="form-field-preview__state" data-preview-field-state="invalid">
+    <FormField controlId="form-field-preview-invalid" label="Label" hint="Hint text" size="medium" validation="invalid" required>
+      <Input id="form-field-preview-invalid" aria-describedby="form-field-preview-invalid-hint" data-input-preview-control validation="invalid" value="name@" required />
+    </FormField>
+  </div>
+  <div class="form-field-preview__state" data-preview-field-state="disabled">
+    <FormField controlId="form-field-preview-disabled" label="Label" hint="Hint text" size="medium" disabled>
+      <Input id="form-field-preview-disabled" aria-describedby="form-field-preview-disabled-hint" data-input-preview-control disabled value="name@example.com" />
+    </FormField>
+  </div>
+</div>
+
+<style>
+  .form-field-preview {
+    display: grid;
+    width: min(100%, 24rem);
+  }
+
+  .form-field-preview__state {
+    display: none;
+  }
+
+  .form-field-preview[data-ds-preview-state="default"] [data-preview-field-state="default"],
+  .form-field-preview[data-ds-preview-state="hover"] [data-preview-field-state="default"],
+  .form-field-preview[data-ds-preview-state="focus-visible"] [data-preview-field-state="default"],
+  .form-field-preview[data-ds-preview-state="valid"] [data-preview-field-state="valid"],
+  .form-field-preview[data-ds-preview-state="invalid"] [data-preview-field-state="invalid"],
+  .form-field-preview[data-ds-preview-state="disabled"] [data-preview-field-state="disabled"] {
+    display: block;
+  }
+</style>

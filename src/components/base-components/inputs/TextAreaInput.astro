@@ -1,0 +1,140 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Input, { type InputSize, type InputValidation } from "./Input.astro";
+
+export interface Props extends Omit<HTMLAttributes<"textarea">, "class" | "disabled" | "maxlength" | "value"> {
+  maxLength: number;
+  value?: string;
+  size?: InputSize;
+  validation?: InputValidation;
+  disabled?: boolean;
+  countLabel?: string;
+  class?: string;
+}
+
+const {
+  maxLength,
+  value = "",
+  size = "medium",
+  validation = "default",
+  disabled = false,
+  countLabel = "characters used",
+  class: className,
+  ...attributes
+} = Astro.props;
+const initialCount = value.length;
+---
+
+<div
+  class:list={["text-area-input", className]}
+  data-component-name="TextAreaInput"
+  data-control-size={size}
+  data-input-validation={validation}
+  data-text-area-disabled={disabled ? "true" : undefined}
+  data-text-area-input
+>
+  <Input
+    {...attributes}
+    class="text-area-input__field"
+    data-text-area-control
+    disabled={disabled}
+    maxlength={maxLength}
+    multiline
+    size={size}
+    validation={validation}
+    value={value}
+  />
+  <span
+    class="text-area-input__count"
+    data-component-part="character-count"
+    data-text-area-count
+    data-count-label={countLabel}
+    aria-label={`${initialCount} of ${maxLength} ${countLabel}`}
+  >{initialCount}/{maxLength}</span>
+</div>
+
+<script>
+  const setupTextAreaInput = (root: HTMLElement) => {
+    if (root.dataset.textAreaInputReady === "true") return;
+    const input = root.querySelector<HTMLTextAreaElement>("[data-text-area-control]");
+    const count = root.querySelector<HTMLElement>("[data-text-area-count]");
+    if (!input || !count) return;
+
+    root.dataset.textAreaInputReady = "true";
+    const syncCount = () => {
+      const maximum = input.maxLength;
+      const current = input.value.length;
+      count.textContent = `${current}/${maximum}`;
+      count.setAttribute("aria-label", `${current} of ${maximum} ${count.dataset.countLabel ?? "characters used"}`);
+    };
+
+    input.addEventListener("input", syncCount);
+    input.form?.addEventListener("reset", () => queueMicrotask(syncCount));
+    syncCount();
+  };
+
+  const setupTextAreaInputs = () => document.querySelectorAll<HTMLElement>("[data-text-area-input]").forEach(setupTextAreaInput);
+  setupTextAreaInputs();
+  document.addEventListener("astro:page-load", setupTextAreaInputs);
+</script>
+
+<style>
+  .text-area-input {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .text-area-input[data-control-size] :global(.text-area-input__field) {
+    min-height: calc(
+      var(--size-128) + var(--control-min-height) - var(--control-size-small-min-height)
+    );
+  }
+
+  :global(.text-area-input__field) {
+    padding-bottom: calc(var(--control-padding-block) + var(--control-line-height));
+  }
+
+  .text-area-input__count {
+    position: absolute;
+    right: var(--control-padding-inline);
+    bottom: var(--control-padding-block);
+    color: var(--input-helper-default);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-compact);
+    pointer-events: none;
+  }
+
+  .text-area-input[data-control-size="small"] .text-area-input__count {
+    bottom: var(--control-padding-inline);
+  }
+
+  :global([data-component-name="FormField"][data-control-size="small"]) .text-area-input__count {
+    bottom: var(--control-padding-inline);
+  }
+
+  :global([data-component-name="FormField"]:is([data-control-size="medium"], [data-control-size="large"])) .text-area-input__count {
+    bottom: var(--control-padding-block);
+  }
+
+  .text-area-input[data-input-validation="invalid"] .text-area-input__count {
+    color: var(--input-helper-invalid);
+  }
+
+  .text-area-input[data-text-area-disabled="true"] .text-area-input__count {
+    color: var(--input-text-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .text-area-input__count {
+      color: CanvasText;
+    }
+
+    .text-area-input[data-text-area-disabled="true"] .text-area-input__count {
+      color: GrayText;
+    }
+  }
+</style>

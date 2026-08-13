@@ -1,0 +1,77 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+  tone?: "default" | "accent" | "inverse";
+  agenticRuleName?: string;
+}
+
+const { eyebrow, title, text, tone = "default", agenticRuleName } = Astro.props;
+---
+
+<article
+  class="ds-doc-card"
+  data-agentic-rule={agenticRuleName ? "" : undefined}
+  data-agentic-rule-name={agenticRuleName}
+  data-component-name="DsDocCard"
+  data-tone={tone}
+>
+  <div class="ds-doc-card__copy">
+    {eyebrow && <span class="ds-doc-card__eyebrow">{eyebrow}</span>}
+    <h3 class="heading-h6">{title}</h3>
+    {text && <p class="body-small-regular">{text}</p>}
+  </div>
+  <slot />
+</article>
+
+<style>
+  .ds-doc-card {
+    display: grid;
+    align-content: start;
+    gap: var(--gap-medium);
+    min-height: 100%;
+    border: var(--size-1) solid var(--color-border-subtle);
+    background: var(--color-background-surface);
+    padding: var(--content-padding-medium);
+  }
+
+  .ds-doc-card[data-tone="accent"] {
+    border-color: var(--color-border-accent);
+    background: var(--color-accent-50);
+  }
+
+  .ds-doc-card[data-tone="inverse"] {
+    border-color: var(--color-border-inverse);
+    background: var(--color-background-inverse);
+    color: var(--color-text-inverse);
+  }
+
+  .ds-doc-card__copy {
+    display: grid;
+    gap: var(--gap-regular);
+  }
+
+  .ds-doc-card__eyebrow {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+  }
+
+  .ds-doc-card[data-tone="inverse"] .ds-doc-card__eyebrow {
+    color: var(--color-text-tertiary);
+  }
+
+  .ds-doc-card h3 {
+    color: inherit;
+  }
+
+  .ds-doc-card p {
+    color: var(--color-text-secondary);
+  }
+
+  .ds-doc-card[data-tone="inverse"] p {
+    color: var(--color-text-tertiary);
+  }
+</style>

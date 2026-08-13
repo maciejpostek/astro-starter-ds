@@ -1,0 +1,47 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
+import DsEmptyState from "../../../components/_internal/documentation/DsEmptyState.astro";
+import {
+  architecture,
+  createDocumentationSummary,
+  type ArchitecturePage,
+} from "../../../data/documentationRegistry";
+
+export function getStaticPaths() {
+  return architecture.pages
+    .filter(
+      (page) =>
+        page.categoryKey === "assets" &&
+        !["icons", "flags", "logos", "material-symbols", "social-icons"].includes(page.pageKey)
+    )
+    .map((page) => ({ params: { pageKey: page.pageKey }, props: { page } }));
+}
+
+interface Props { page: ArchitecturePage; }
+const { page } = Astro.props;
+const pageToc = [{ label: "Implementation status", href: "#implementation-status" }];
+---
+
+<DesignSystemLayout
+  title={`${page.pageLabel} - Assets`}
+  pageType="asset-gallery"
+  toc={pageToc}
+  header={{
+    eyebrow: "Assets",
+    title: page.pageLabel,
+    summary: createDocumentationSummary(
+      "This asset family follows the canonical Figma–Astro architecture and exposes only implemented records. Check",
+      pageToc,
+      "for the current source boundary and the next available implementation step.",
+    ),
+    status: "Empty family",
+  }}
+>
+  <DsDocSection
+    id="implementation-status"
+    title="Implementation status"
+  >
+    <DsEmptyState path={page.sourceDirectory} />
+  </DsDocSection>
+</DesignSystemLayout>

@@ -2,6 +2,10 @@
 
 Status: active.
 
+## Deterministic authoring gate
+
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
 ## Purpose
 
 This file defines how agents should build layout and page composition in the
@@ -171,10 +175,15 @@ Rule:
 - Use `data-grid="site"` when children should align to the responsive
   12/8/4 site grid.
 - Use `data-grid="columns"` with `data-columns` for local repeated layouts.
-- Do not use `data-columns` as the grid mode. It only sets the column count
-  value consumed by `data-grid="columns"`.
+- Do not use `data-columns` as the grid mode. It sets the column count consumed
+  by `data-grid="columns"` and may set the preferred maximum column count for
+  `data-grid="auto-fit"` when its value is numeric.
 - Use `data-grid="auto-fit"` with `data-min-width` when the parent should decide how
   many items fit before wrapping.
+- Add numeric `data-columns` to auto-fit only when the composition has a
+  preferred maximum count. Without it, auto-fit remains minimum-width driven.
+- Do not use `data-columns="site"` with auto-fit. The site value belongs to the
+  responsive site or columns grid contract.
 - Use `data-grid="breakout"` when content needs edge tracks before and after
   the content columns.
 - Use child `data-grid-span` for repeated placement decisions.
@@ -315,6 +324,20 @@ Default auto-fit card grid:
 </div>
 ```
 
+Count-aware breakpointless card grid:
+
+```html
+<div
+  class="l-grid"
+  data-grid="auto-fit"
+  data-columns="3"
+  data-min-width="card"
+  data-gap="medium"
+>
+  ...
+</div>
+```
+
 Default breakout structure:
 
 ```html
@@ -373,6 +396,10 @@ When changing layout:
 3. Update `/design-system/layout` if a new value, class, attribute or example
    is introduced.
 4. Update this file when the operational rule changes.
-5. Update `src/data/design-system-roadmap.json` status when a layer is done.
+5. Update affected component readiness when implementation, visual review, or
+   validation state changes.
 
 Code is the source of truth. Documentation mirrors code.
+
+Use `.agentic-rules/09-responsive.md` for the decision hierarchy between
+intrinsic layout, container queries, viewport queries and alternate rendering.

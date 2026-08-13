@@ -8,8 +8,6 @@
   /* Application shell dimensions are local implementation decisions. */
   --app-nav-row-size: var(--size-64);
   --app-topbar-height: var(--app-nav-row-size);
-  --app-sidebar-collapsed-width: var(--app-nav-row-size);
-  --app-sidebar-width: var(--app-sidebar-collapsed-width);
   --ds-doc-anchor-offset: 22vh;
   --ds-doc-anchor-offset-ratio: 0.22;
   --app-topbar-surface:
@@ -37,8 +35,7 @@ body {
   background: var(--color-background-canvas);
 }
 
-body.has-overlay,
-body.has-mobile-menu {
+body.has-overlay {
   overflow: hidden;
 }
 
@@ -67,14 +64,19 @@ a {
   text-decoration: none;
 }
 
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
+p a,
+[data-ds-doc-section] li a {
+  color: var(--link-text-default);
+  text-decoration-color: var(--link-underline-default);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--border-width-default);
+  text-underline-offset: 0.14em;
+}
+
+p a:is(:hover, :focus-visible),
+[data-ds-doc-section] li a:is(:hover, :focus-visible) {
+  color: var(--link-text-hover);
+  text-decoration-color: var(--link-underline-hover);
 }
 
 ul,
@@ -88,8 +90,20 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: var(--border-width-strong) solid var(--component-focus-ring);
+  outline: var(--border-width-strong) solid var(--color-state-focus-ring);
   outline-offset: var(--size-2);
+  box-shadow: var(--effect-focused);
+}
+
+@media (forced-colors: active) {
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline-color: Highlight;
+    box-shadow: none;
+  }
 }
 
 ::selection {
@@ -116,31 +130,12 @@ textarea:focus-visible {
   min-height: 100vh;
 }
 
-.app__workspace {
-  margin-left: var(--app-sidebar-width);
-  transition: margin-left var(--motion-transition);
-}
-
 .main {
   padding-top: var(--app-topbar-height);
 }
 
-.main--design-system {
-  display: grid;
-  grid-template-columns: repeat(var(--site-grid-columns), minmax(0, 1fr));
-  gap: 0 var(--site-grid-column-gap);
-  align-items: start;
-  padding-inline: var(--site-padding-inline);
-}
-
-.design-system-shell__content {
-  grid-column: 4 / -1;
-  min-width: 0;
-}
-
-.design-system-shell__content > .page,
-.design-system-shell__content > .page--wide {
-  padding-inline: 0;
+.main--flush {
+  padding-top: 0;
 }
 
 .brand {
@@ -196,14 +191,14 @@ textarea:focus-visible {
     var(--app-topbar-height)
     0
     0
-    var(--app-sidebar-width);
+    0;
   z-index: 25;
   overflow: hidden;
   pointer-events: none;
   user-select: none;
 }
 
-html[data-grid="hidden"] .grid-visualizer:not(.grid-visualizer--preview) {
+html[data-guides="hidden"] .grid-visualizer:not(.grid-visualizer--preview) {
   display: none;
 }
 
@@ -236,14 +231,7 @@ html[data-grid="hidden"] .grid-visualizer:not(.grid-visualizer--preview) {
   align-items: center;
   justify-content: center;
   margin-inline: auto;
-  border: var(--border-width-default) solid var(--color-border-accent);
   color: var(--color-text-accent);
-  background:
-    color-mix(
-      in oklab,
-      var(--color-background-canvas) 88%,
-      transparent
-    );
   content: attr(data-grid-column);
   font-size: var(--font-size-body-tiny);
   font-weight: var(--font-weight-emphasis);
@@ -282,15 +270,6 @@ html[data-grid="hidden"] .grid-visualizer:not(.grid-visualizer--preview) {
       var(--section-padding-medium);
   }
 
-  .main--design-system {
-    display: block;
-    padding-inline: 0;
-  }
-
-  .design-system-shell__content > .page,
-  .design-system-shell__content > .page--wide {
-    padding-inline: var(--site-padding-inline);
-  }
 }
 
 @media (width < 32.5rem) {

@@ -1,0 +1,23 @@
+---
+import Tab from "../../base-components/tabs/Tab.astro";
+---
+
+<div class="ds-preview-renderer-boundary" data-component-name="DsTabPreview">
+  <div class="ds-tab-preview" role="tablist" aria-label="Tab states">
+    <Tab
+      id="tab-preview-overview"
+      controls="tab-preview-overview-panel"
+      data-ds-preview-target
+      data-ds-preview-state="default"
+    >
+      Overview
+    </Tab>
+  </div>
+</div>
+
+<style>
+  .ds-tab-preview {
+    display: flex;
+    justify-content: center;
+  }
+</style>

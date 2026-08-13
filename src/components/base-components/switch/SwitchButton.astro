@@ -1,0 +1,246 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type NativeSwitchAttributes = Omit<
+  HTMLAttributes<"input">,
+  "checked" | "class" | "disabled" | "type"
+>;
+
+type AccessibleSwitchName =
+  | {
+      "aria-label": string;
+      "aria-labelledby"?: string;
+      label?: string;
+    }
+  | {
+      "aria-label"?: string;
+      "aria-labelledby": string;
+      label?: string;
+    }
+  | {
+      "aria-label"?: string;
+      "aria-labelledby"?: string;
+      /** @deprecated Use SwitchLabel for a visible label, or provide aria-label/aria-labelledby for a bare switch. */
+      label: string;
+    };
+
+export type Props = NativeSwitchAttributes & AccessibleSwitchName & {
+  checked?: boolean;
+  disabled?: boolean;
+  class?: string;
+};
+
+const {
+  label,
+  checked = false,
+  disabled = false,
+  class: className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  ...attributes
+} = Astro.props;
+
+const accessibleLabel = ariaLabel ?? (ariaLabelledby ? undefined : label);
+---
+
+<span
+  class:list={[
+    "switch-button",
+    label && "switch-button--legacy-label",
+    className,
+  ]}
+  data-component-name="SwitchButton"
+  data-switch-disabled={disabled ? "true" : undefined}
+>
+  <input
+    {...attributes}
+    class="switch-button__input"
+    type="checkbox"
+    role="switch"
+    aria-label={accessibleLabel}
+    aria-labelledby={ariaLabelledby}
+    checked={checked}
+    disabled={disabled}
+  />
+  <span class="switch-button__track" aria-hidden="true">
+    <span class="switch-button__thumb"></span>
+  </span>
+  {label && <span class="switch-button__legacy-label">{label}</span>}
+</span>
+
+<style>
+  .switch-button {
+    position: relative;
+    display: inline-flex;
+    min-inline-size: var(--switch-track-inline-size);
+    min-block-size: var(--size-24);
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    color: var(--switch-label-text-default);
+    cursor: pointer;
+    vertical-align: middle;
+  }
+
+  .switch-button--legacy-label {
+    gap: var(--gap-small);
+    justify-content: flex-start;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-compact);
+  }
+
+  .switch-button__input {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    appearance: none;
+    background: transparent;
+    cursor: inherit;
+    opacity: 0;
+  }
+
+  .switch-button__track {
+    position: relative;
+    display: block;
+    inline-size: var(--switch-track-inline-size);
+    block-size: var(--switch-track-block-size);
+    flex: 0 0 auto;
+    border: var(--switch-track-border-width) solid var(--switch-track-off-border-default);
+    border-radius: var(--radius-full);
+    background: var(--switch-track-off-background-default);
+    transition:
+      background-color var(--motion-transition),
+      border-color var(--motion-transition),
+      opacity var(--motion-transition),
+      box-shadow var(--motion-transition);
+  }
+
+  .switch-button__thumb {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: var(--switch-track-padding);
+    inline-size: var(--switch-thumb-size);
+    block-size: var(--switch-thumb-size);
+    border-radius: var(--radius-full);
+    background: var(--switch-handle-background-default);
+    box-shadow: var(--elevation-control-thumb);
+    translate: 0 -50%;
+    transition:
+      inset-inline-start var(--motion-transition),
+      background-color var(--motion-transition);
+  }
+
+  .switch-button__legacy-label {
+    min-inline-size: 0;
+    pointer-events: none;
+  }
+
+  .switch-button__input:checked + .switch-button__track {
+    border-color: var(--switch-track-on-border-default);
+    background: var(--switch-track-on-background-default);
+  }
+
+  .switch-button__input:checked + .switch-button__track .switch-button__thumb {
+    inset-inline-start:
+      calc(100% - var(--switch-track-padding) - var(--switch-thumb-size));
+  }
+
+  .switch-button:has(.switch-button__input:not(:disabled)):is(:hover, :has([data-ds-preview-state="hover"])) .switch-button__track {
+    border-color: var(--switch-track-off-border-hover);
+    background: var(--switch-track-off-background-hover);
+  }
+
+  .switch-button:has(.switch-button__input:not(:disabled):checked):is(:hover, :has([data-ds-preview-state="hover"])) .switch-button__track {
+    border-color: var(--switch-track-on-border-hover);
+    background: var(--switch-track-on-background-hover);
+  }
+
+  .switch-button:has(.switch-button__input:not(:disabled)):is(:hover, :has([data-ds-preview-state="hover"])) .switch-button__thumb {
+    background: var(--switch-handle-background-hover);
+  }
+
+  .switch-button:has(.switch-button__input:not(:disabled)):is(:active, :has([data-ds-preview-state="pressed"])) .switch-button__track {
+    border-color: var(--switch-track-off-border-pressed);
+    background: var(--switch-track-off-background-pressed);
+  }
+
+  .switch-button:has(.switch-button__input:not(:disabled):checked):is(:active, :has([data-ds-preview-state="pressed"])) .switch-button__track {
+    border-color: var(--switch-track-on-border-pressed);
+    background: var(--switch-track-on-background-pressed);
+  }
+
+  .switch-button:has(.switch-button__input:not(:disabled)):is(:active, :has([data-ds-preview-state="pressed"])) .switch-button__thumb {
+    background: var(--switch-handle-background-pressed);
+  }
+
+  .switch-button:has(.switch-button__input:not(:disabled):is(:active, [data-ds-preview-state="pressed"])) .switch-button__track {
+    opacity: 0.88;
+  }
+
+  .switch-button__input:is(:focus-visible, [data-ds-preview-state="focus-visible"]) + .switch-button__track {
+    outline: none;
+    box-shadow: var(--effect-focused);
+  }
+
+  .switch-button[data-switch-disabled="true"] {
+    color: var(--switch-label-text-disabled);
+    cursor: not-allowed;
+    opacity: 0.64;
+  }
+
+  .switch-button:has(.switch-button__input:disabled) .switch-button__track {
+    border-color: var(--switch-track-off-border-disabled);
+    background: var(--switch-track-off-background-disabled);
+  }
+
+  .switch-button:has(.switch-button__input:disabled:checked) .switch-button__track {
+    border-color: var(--switch-track-on-border-disabled);
+    background: var(--switch-track-on-background-disabled);
+  }
+
+  .switch-button:has(.switch-button__input:disabled) .switch-button__thumb {
+    background: var(--switch-handle-background-disabled);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .switch-button__track,
+    .switch-button__thumb {
+      transition-duration: 0ms;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .switch-button__track {
+      border-color: ButtonText;
+      background: Canvas;
+    }
+
+    .switch-button__input:checked + .switch-button__track {
+      border-color: Highlight;
+      background: Highlight;
+    }
+
+    .switch-button__thumb {
+      background: ButtonText;
+      box-shadow: none;
+    }
+
+    .switch-button__input:checked + .switch-button__track .switch-button__thumb {
+      background: HighlightText;
+    }
+
+    .switch-button__input:is(:focus-visible, [data-ds-preview-state="focus-visible"]) + .switch-button__track {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+      box-shadow: none;
+    }
+  }
+</style>

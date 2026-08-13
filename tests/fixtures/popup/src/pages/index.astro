@@ -1,0 +1,51 @@
+---
+import Popup from "../../../../../src/components/website-patterns/modal/Popup.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const statuses = ["error", "warning", "success", "info"] as const;
+const alignments = ["horizontal", "vertical"] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Popup contract fixture</title>
+  </head>
+  <body>
+    <main>
+      {statuses.flatMap((status) => alignments.map((alignment) => (
+        <Popup
+          id={`popup-${status}-${alignment}`}
+          title={`${status} ${alignment} Popup`}
+          description="This fixture verifies the complete status and alignment matrix."
+          status={status}
+          alignment={alignment}
+        />
+      )))}
+
+      <Popup
+        id="popup-optional-footer"
+        title="Required action only"
+        description="This fixture omits optional footer controls and disables light dismissal."
+        showCancel={false}
+        showPreference={false}
+        dismissible={false}
+      />
+
+      <Popup
+        id="popup-localized"
+        title="Localized labels"
+        description="This fixture verifies public label overrides and the initial preference state."
+        confirmLabel="Apply"
+        cancelLabel="Back"
+        preferenceLabel="Remember this choice"
+        statusLabel="Notice"
+        preferenceChecked
+        initialOpen
+      />
+    </main>
+  </body>
+</html>

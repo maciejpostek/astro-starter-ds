@@ -1,0 +1,28 @@
+---
+import { controlSizeAttributeProfiles } from "../../../data/documentationFoundationData";
+import DsAttributeBlock from "./DsAttributeBlock.astro";
+
+interface Props {
+  id?: string;
+}
+
+const {
+  id = "sizing-control-size-attributes",
+} = Astro.props;
+---
+
+<section
+  id={id}
+  class="ds-control-size-reference"
+  aria-label="Control size attributes"
+  data-component-name="DsControlSizeReference"
+>
+  <DsAttributeBlock groups={controlSizeAttributeProfiles} />
+</section>
+
+<style>
+  .ds-control-size-reference {
+    min-width: 0;
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+</style>

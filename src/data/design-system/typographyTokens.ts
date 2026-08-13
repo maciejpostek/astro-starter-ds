@@ -9,7 +9,7 @@ export interface TypographyFoundationRow {
   sampleStyle?: string;
 }
 
-export interface SemanticTypographyRow {
+export interface TypographyStyleRow {
   name: string;
   className: string;
   family: string;
@@ -23,6 +23,11 @@ export interface SemanticTypographyRow {
   overflowWrap: string;
   wordBreak: string;
   whiteSpace: string;
+  textDecoration?: string;
+  textDecorationStyle?: string;
+  textDecorationThickness?: string;
+  textUnderlineOffset?: string;
+  textDecorationSkipInk?: string;
   sample: string;
 }
 
@@ -39,6 +44,28 @@ export interface TypographyAgenticRule {
   title: string;
   text: string;
 }
+
+export const figmaLineHeightPercentByToken: Record<string, string> = {
+  "--line-height-none": "100%",
+  "--line-height-tight": "110%",
+  "--line-height-compact": "120%",
+  "--line-height-normal": "150%",
+  "--line-height-relaxed": "160%",
+};
+
+export const figmaLetterSpacingPercentByToken: Record<string, string> = {
+  "--letter-spacing-none": "0%",
+  "--letter-spacing-tight": "-1%",
+  "--letter-spacing-tighter": "-2%",
+  "--letter-spacing-tightest": "-3%",
+  "--letter-spacing-ultra-tight": "-4%",
+};
+
+export const resolveFigmaLineHeightPercent = (token: string) =>
+  figmaLineHeightPercentByToken[token] ?? "n/a";
+
+export const resolveFigmaLetterSpacingPercent = (token: string) =>
+  figmaLetterSpacingPercentByToken[token] ?? "n/a";
 
 export const fontFamilyRows: TypographyFoundationRow[] = [
   {
@@ -61,7 +88,7 @@ export const fontFamilyRows: TypographyFoundationRow[] = [
     token: "--font-family-mono",
     value: '"Roboto Mono", system mono stack',
     minMax: "n/a",
-    role: "Code, captions and compact utility text.",
+    role: "Internal documentation UI and code snippets only; excluded from public Text Styles and standard design-tool typography.",
     sample: "Mono 0123",
     sampleStyle: "font-family: var(--font-family-mono); font-size: var(--font-size-body-small);",
   },
@@ -402,7 +429,7 @@ export const transformRows: TypographyFoundationRow[] = [
     minMax: "n/a",
     role: "Reusable uppercase transform for captions and utility metadata.",
     sample: "Uppercase metadata",
-    sampleStyle: "text-transform: var(--text-transform-uppercase); font-family: var(--font-family-mono); font-size: var(--font-size-body-tiny);",
+    sampleStyle: "text-transform: var(--text-transform-uppercase); font-family: var(--font-family-body); font-size: var(--font-size-body-tiny);",
   },
   {
     token: "--text-transform-lowercase",
@@ -594,10 +621,77 @@ export const typographyFoundationTokenValues = Object.fromEntries(
 export const resolveTypographyTokenValue = (value: string) =>
   typographyFoundationTokenValues[value] ?? value;
 
-const semanticTypographySample =
+const typographyStyleSample =
   "AI-native websites shaped by strategy, systems thinking and precise execution for ambitious digital brands.";
 
-export const semanticTypographyRows: SemanticTypographyRow[] = [
+const bodyStyleDefinitions = [
+  { size: "large", label: "Large", letterSpacing: "--letter-spacing-tight" },
+  { size: "medium", label: "Medium", letterSpacing: "--letter-spacing-tight" },
+  { size: "base", label: "Base", letterSpacing: "--letter-spacing-tight" },
+  { size: "small", label: "Small", letterSpacing: "--letter-spacing-tight" },
+  { size: "tiny", label: "Tiny", letterSpacing: "--letter-spacing-tight" },
+] as const;
+
+const bodyStyleRows: TypographyStyleRow[] = bodyStyleDefinitions.flatMap(
+  ({ size, label, letterSpacing }) =>
+    ([
+      {
+        name: `Body / ${label} / Regular`,
+        className: `body-${size}-regular`,
+        family: "--font-family-body",
+        size: `--font-size-body-${size}`,
+        weight: "--font-weight-normal",
+        lineHeight: "--line-height-normal",
+        letterSpacing,
+        fontStyle: "--font-style-normal",
+        transform: "--text-transform-none",
+        textWrap: "--text-wrap-pretty",
+        overflowWrap: "--overflow-wrap-break-word",
+        wordBreak: "--word-break-normal",
+        whiteSpace: "--white-space-normal",
+        sample: typographyStyleSample,
+      },
+      {
+        name: `Body / ${label} / Regular Underlined`,
+        className: `body-${size}-regular-underlined`,
+        family: "--font-family-body",
+        size: `--font-size-body-${size}`,
+        weight: "--font-weight-normal",
+        lineHeight: "--line-height-normal",
+        letterSpacing,
+        fontStyle: "--font-style-normal",
+        transform: "--text-transform-none",
+        textWrap: "--text-wrap-pretty",
+        overflowWrap: "--overflow-wrap-break-word",
+        wordBreak: "--word-break-normal",
+        whiteSpace: "--white-space-normal",
+        textDecoration: "underline",
+        textDecorationStyle: "solid",
+        textDecorationThickness: "7%",
+        textUnderlineOffset: "14%",
+        textDecorationSkipInk: "auto",
+        sample: typographyStyleSample,
+      },
+      {
+        name: `Body / ${label} / Semi Bold`,
+        className: `body-${size}-semibold`,
+        family: "--font-family-body",
+        size: `--font-size-body-${size}`,
+        weight: "--font-weight-strong",
+        lineHeight: "--line-height-normal",
+        letterSpacing,
+        fontStyle: "--font-style-normal",
+        transform: "--text-transform-none",
+        textWrap: "--text-wrap-pretty",
+        overflowWrap: "--overflow-wrap-break-word",
+        wordBreak: "--word-break-normal",
+        whiteSpace: "--white-space-normal",
+        sample: typographyStyleSample,
+      },
+    ] satisfies TypographyStyleRow[]),
+);
+
+export const typographyStyleRows: TypographyStyleRow[] = [
   {
     name: "H1",
     className: "heading-h1",
@@ -612,7 +706,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H2",
@@ -628,7 +722,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H3",
@@ -644,7 +738,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H4",
@@ -660,7 +754,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H5",
@@ -676,7 +770,7 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
   {
     name: "H6",
@@ -692,88 +786,9 @@ export const semanticTypographyRows: SemanticTypographyRow[] = [
     overflowWrap: "--overflow-wrap-normal",
     wordBreak: "--word-break-normal",
     whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
+    sample: typographyStyleSample,
   },
-  {
-    name: "Body large",
-    className: "body-large",
-    family: "--font-family-body",
-    size: "--font-size-body-large",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-tight",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
-  {
-    name: "Body medium",
-    className: "body-medium",
-    family: "--font-family-body",
-    size: "--font-size-body-medium",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-tight",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
-  {
-    name: "Body base",
-    className: "body-base",
-    family: "--font-family-body",
-    size: "--font-size-body-base",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-tight",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
-  {
-    name: "Body small",
-    className: "body-small",
-    family: "--font-family-body",
-    size: "--font-size-body-small",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-none",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
-  {
-    name: "Body tiny",
-    className: "body-tiny",
-    family: "--font-family-body",
-    size: "--font-size-body-tiny",
-    weight: "--font-weight-normal",
-    lineHeight: "--line-height-normal",
-    letterSpacing: "--letter-spacing-none",
-    fontStyle: "--font-style-normal",
-    transform: "--text-transform-none",
-    textWrap: "--text-wrap-pretty",
-    overflowWrap: "--overflow-wrap-break-word",
-    wordBreak: "--word-break-normal",
-    whiteSpace: "--white-space-normal",
-    sample: semanticTypographySample,
-  },
+  ...bodyStyleRows,
 ];
 
 export const utilityTypographyRows: UtilityTypographyRow[] = [
@@ -944,11 +959,16 @@ export const typographyAgenticRules: TypographyAgenticRule[] = [
   {
     name: "typography.class-first-interface",
     title: "Classes define visual text style",
-    text: "Use `.heading-h1` through `.heading-h6` and `.body-large` through `.body-tiny` as the public typography interface. HTML tags define document semantics, not visual appearance.",
+    text: "Use `.heading-h1` through `.heading-h6` and explicit `.body-{size}-{regular|regular-underlined|semibold}` classes as the public typography interface. HTML tags define document semantics, not visual appearance.",
   },
   {
-    name: "typography.semantic-style-contracts",
-    title: "Semantic styles own the full contract",
+    name: "typography.body-size-weight-hierarchy",
+    title: "Body styles use size before weight",
+    text: "Choose Body size first, then Regular, Regular Underlined or Semi Bold. Size-only Body aliases do not exist; every use must name its variant explicitly.",
+  },
+  {
+    name: "typography.text-style-contracts",
+    title: "Text Style classes own the full contract",
     text: "A typography style class defines font family, size, weight, line height, letter spacing, font style, transform, wrapping and breaking behavior. Do not recreate partial local versions of those properties.",
   },
   {
@@ -964,6 +984,6 @@ export const typographyAgenticRules: TypographyAgenticRule[] = [
   {
     name: "typography.components-own-compact-text",
     title: "Reusable components own compact text",
-    text: "Components such as Button, Tag, Label and Eyebrow define their own local typography using foundation tokens. Do not add component-based typography tokens unless a repeated cross-component contract appears.",
+    text: "Components such as Button, Tag, Label and Eyebrow define their own local typography using foundation tokens. Every component-owned text style uses `--letter-spacing-tight` (`-0.01em`), matching native `-1%` tracking in Figma. Do not add per-component typography tokens for this shared value.",
   },
 ];

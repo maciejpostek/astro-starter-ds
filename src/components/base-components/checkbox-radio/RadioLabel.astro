@@ -1,0 +1,116 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Radio from "./Radio.astro";
+
+export interface Props extends Omit<
+  HTMLAttributes<"input">,
+  "aria-label" | "aria-labelledby" | "checked" | "class" | "disabled" | "id" | "name" | "type" | "value"
+> {
+  id: string;
+  name: string;
+  value: string;
+  label: string;
+  description?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  name,
+  value,
+  label,
+  description,
+  checked = false,
+  disabled = false,
+  class: className,
+  "aria-describedby": externalDescriptionId,
+  ...attributes
+} = Astro.props;
+
+const labelId = `${id}-label`;
+const descriptionId = description ? `${id}-description` : undefined;
+const describedBy = [descriptionId, externalDescriptionId]
+  .filter((item): item is string => typeof item === "string" && item.length > 0)
+  .join(" ") || undefined;
+---
+
+<label
+  class:list={["radio-label", className]}
+  data-component-name="RadioLabel"
+  data-selection-disabled={disabled ? "true" : undefined}
+  for={id}
+>
+  <span class="radio-label__control">
+    <Radio
+      {...attributes}
+      id={id}
+      name={name}
+      value={value}
+      aria-labelledby={labelId}
+      aria-describedby={describedBy}
+      checked={checked}
+      disabled={disabled}
+    />
+  </span>
+  <span class="radio-label__content">
+    <span class="radio-label__label body-small-semibold" id={labelId}>{label}</span>
+    {description && (
+      <span class="radio-label__description body-tiny-regular" id={descriptionId}>
+        {description}
+      </span>
+    )}
+  </span>
+</label>
+
+<style>
+  .radio-label {
+    display: inline-grid;
+    min-inline-size: 0;
+    min-block-size: var(--size-24);
+    grid-template-columns: var(--size-16) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--gap-small);
+    color: var(--input-text-default);
+    cursor: pointer;
+  }
+
+  .radio-label__control {
+    display: grid;
+    inline-size: var(--size-16);
+    padding-block-start: var(--size-2);
+    place-items: start;
+  }
+
+  .radio-label__content {
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  .radio-label__label,
+  .radio-label__description {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .radio-label__description {
+    color: var(--input-helper-default);
+  }
+
+  .radio-label[data-selection-disabled="true"] {
+    color: var(--input-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .radio-label[data-selection-disabled="true"] .radio-label__description {
+    color: var(--input-text-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .radio-label[data-selection-disabled="true"],
+    .radio-label[data-selection-disabled="true"] .radio-label__description {
+      color: GrayText;
+    }
+  }
+</style>

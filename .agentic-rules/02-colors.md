@@ -2,6 +2,10 @@
 
 Status: active.
 
+## Deterministic authoring gate
+
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
 This file defines how AI agents should use and extend the color system in the
 Astro design system.
 
@@ -117,7 +121,7 @@ Allowed primitive usage:
 
 ```css
 :root {
-  --color-background-accent: var(--color-accent-600);
+  --color-background-accent: var(--color-accent-500);
 }
 ```
 
@@ -155,8 +159,21 @@ Rules:
 
 - Use global semantic tokens for page-level and generic UI roles.
 - Use `--color-background-*` for generic surfaces and overlays.
+- Use `--color-background-strong` for a stronger neutral surface state after
+  `muted`, such as hover on a neutral control.
+- Use `--color-background-accent-subtle`, `--color-background-accent`, and
+  `--color-background-accent-strong` as the three theme-aware accent surface
+  levels. Their primitive direction reverses in dark mode so the semantic
+  emphasis remains stable.
 - Use `--color-text-*` for copy hierarchy and contrast roles.
 - Use `--color-border-*` for generic boundaries.
+- Keep the neutral border scale aligned with the reusable background surface
+  values: `border-subtle` matches `background-subtle`, `border-default`
+  matches `background-muted`, and `border-strong` matches
+  `background-strong` in both themes.
+- Use `--color-border-accent-subtle`, `--color-border-accent`, and
+  `--color-border-accent-strong` as the three theme-aware accent boundary
+  levels matching the corresponding accent background values.
 - Use `--color-icon-*` for icon hierarchy.
 - Use `--color-status-*` for feedback and validation states.
 - Use `--color-state-*` for shared states such as disabled and focus.
@@ -212,16 +229,19 @@ Current component token groups:
 - `--eyebrow-*`
 - `--label-*`
 - `--card-*`
-- `--component-focus-*`
+- shared focus role `--color-state-focus-ring`
 
 `IconButton.Primary` and `IconButton.Secondary` reuse the standard
 `--button-primary-*` and `--button-secondary-*` contracts instead of defining a
 separate icon-only color contract.
 
-`Tag` is a non-interactive tone component. It consumes global status colors and
-controlled accent/inverse roles directly. It has no separate `--tag-*` group
-because the former hover and selected tokens did not match its public API and
-had no consumers.
+`Tag` has a non-interactive tone shell and an optional nested remove button for
+applied-filter use cases. Its seven tones consume global status colors and
+controlled accent/inverse roles directly. The remove button inherits the tone
+through `currentColor` with the same opacity as the text. Hover and pressed
+strengthen the shell border, disabled uses the shared global state colors, and
+focus uses the shared `--color-state-focus-ring` contract. Tag therefore does
+not duplicate these decisions in a separate color group.
 
 Rules:
 

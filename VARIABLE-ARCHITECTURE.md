@@ -27,7 +27,7 @@ System ma być:
 | Interaction states | Założenia zatwierdzone |
 | Sizing Primitives | Architektura zatwierdzona, wartości do kalibracji |
 | Sizing Semantic | Architektura zatwierdzona |
-| Component Size | Profile `small`, `medium`, `large` zatwierdzone |
+| Control Size | Profile `small`, `medium`, `large` zatwierdzone dla kontrolek formularzy i akcji |
 | Typography Foundations | Architektura zatwierdzona, wartości do kalibracji |
 | Typography Semantic | Architektura zatwierdzona, wartości do kalibracji |
 | Layout Foundations | Architektura zatwierdzona, wartości do kalibracji |
@@ -116,6 +116,30 @@ Dozwolony, gdy wartość:
 - Alias jest wybierany na podstawie znaczenia, nie na podstawie chwilowo
   identycznej wartości koloru.
 - Bezpośrednia wartość HEX może występować wyłącznie w primitives.
+
+## 1.3.1 Deterministyczny Resolver I Gate Tokenów
+
+Każda potrzeba stylowania jest rozwiązywana w kolejności:
+
+```text
+grupa komponentu
+→ grupa bezpośredniej zależności
+→ grupa rodziny / use case'u
+→ global semantics
+→ primitive wyłącznie jako źródło zatwierdzonego aliasu
+```
+
+Rejestr `src/data/design-system/tokenArchitecture.json` definiuje właściciela,
+zakres, domenę, wzorzec nazw, plik źródłowy, konsumentów, warianty i stany.
+Wynik `reuse` pozwala użyć jednego dopasowania. `ambiguous` blokuje pracę do
+decyzji właściciela. `gap` generuje `tokenDraft` i nie pozwala wdrożyć tokenu
+przed jego jawnym zatwierdzeniem. Najpierw rozszerzamy istniejącą grupę
+właściciela; nowa grupa jest dopuszczalna dopiero po wykazaniu braku ownera.
+
+Publiczny komponent nie deklaruje własnych custom properties ani aliasów
+technicznych. `--control-*` jest jedynym zatwierdzonym, centralnym mostem
+atrybutowym. Runtime positioning używa natywnych właściwości `style`, a nie
+zmiennych udających tokeny.
 
 ## 1.4 Kryterium Wyboru Aliasu
 
@@ -304,8 +328,13 @@ background/canvas
 background/surface
 background/subtle
 background/muted
+background/strong
 background/inverse
+background/accent-subtle
 background/accent
+background/accent-strong
+background/overlay
+background/media-overlay
 ```
 
 ### Definicje
@@ -316,14 +345,21 @@ background/accent
 | `surface` | Domyślna neutralna powierzchnia komponentu, panelu lub sekcji. |
 | `subtle` | Powierzchnia wymagająca delikatnego odróżnienia od otoczenia. |
 | `muted` | Powierzchnia celowo obniżona w hierarchii lub wyciszona. |
+| `strong` | Mocniejsza neutralna powierzchnia, np. stan hover po `muted`. |
 | `inverse` | Powierzchnia o odwróconym kontraście wobec canvasu. |
-| `accent` | Powierzchnia wykorzystująca kolor marki do wyróżnienia. |
+| `accent-subtle` | Akcentowa powierzchnia o najniższym nacisku. |
+| `accent` | Domyślna akcentowa powierzchnia wykorzystująca kolor marki. |
+| `accent-strong` | Akcentowa powierzchnia o najwyższym nacisku. |
+| `overlay` | Ogólna półprzezroczysta warstwa nakładana nad interfejsem. |
+| `media-overlay` | Mocniejsza nakładka zapewniająca kontrast treści na mediach. |
 
 ### Reguły Użycia Powierzchni
 
 - Tokeny powierzchni nie definiują obowiązkowego zagnieżdżenia.
-- `surface`, `subtle` i `muted` mogą występować na dowolnym poziomie layoutu,
-  jeżeli ich rola odpowiada definicji.
+- `surface`, `subtle`, `muted` i `strong` mogą występować na dowolnym poziomie
+  layoutu, jeżeli ich rola odpowiada definicji.
+- Poziomy `accent-subtle`, `accent` i `accent-strong` opisują nacisk, a nie
+  stały kierunek numerów palety; ich aliasy odwracają się w dark mode.
 - `subtle` nie musi znajdować się wewnątrz `surface`.
 - Jeden element otrzymuje token na podstawie swojej roli, nie na podstawie
   tokena użytego przez rodzica.
@@ -338,8 +374,13 @@ body                         → background/canvas
 sidebar                      → background/surface
 niezależna sekcja pomocnicza → background/subtle
 wyciszony rekord tabeli      → background/muted
+hover neutralnego switcha    → background/strong
 ciemna sekcja CTA            → background/inverse
+delikatny brandowy panel     → background/accent-subtle
 brandowy banner              → background/accent
+aktywny brandowy control     → background/accent-strong
+modal backdrop               → background/overlay
+tekst na zdjęciu             → background/media-overlay
 ```
 
 ## 4.3 Text
@@ -369,7 +410,10 @@ border/subtle
 border/default
 border/strong
 border/inverse
+border/accent-subtle
 border/accent
+border/accent-strong
+border/on-media
 ```
 
 ### Definicje
@@ -380,7 +424,21 @@ border/accent
 | `default` | Standardowy border komponentu. |
 | `strong` | Wyraźne oddzielenie lub podkreślenie hierarchii. |
 | `inverse` | Border na powierzchniach o odwróconym kontraście. |
-| `accent` | Brandowe wyróżnienie lub zaznaczenie. |
+| `accent-subtle` | Najdelikatniejsze akcentowe obramowanie. |
+| `accent` | Domyślne akcentowe wyróżnienie lub zaznaczenie. |
+| `accent-strong` | Najmocniejsze akcentowe obramowanie. |
+| `on-media` | Półprzezroczyste obramowanie elementu umieszczonego na mediach. |
+
+Neutralne role borderów współdzielą wartości z powierzchniami:
+
+```text
+border/subtle  = background/subtle
+border/default = background/muted
+border/strong  = background/strong
+```
+
+Trzy role akcentowe borderów odpowiadają bezpośrednio trzem rolom akcentowym
+backgroundów w każdym trybie kolorystycznym.
 
 ## 4.5 Icon
 
@@ -1129,9 +1187,9 @@ neutralnych komponentów:
 
 ```css
 :root {
-  --component-padding-small: var(--size-12);
-  --component-padding-medium: var(--size-24);
-  --component-padding-large:
+  --content-padding-small: var(--size-12);
+  --content-padding-medium: var(--size-24);
+  --content-padding-large:
     clamp(var(--size-24), 1rem + 2vw, var(--size-40));
 }
 ```
@@ -1156,13 +1214,15 @@ pomiędzy elementami są domyślnie obsługiwane przez `gap`, a przestrzeń
 wewnętrzna przez padding. Margin może wystąpić w tokenach komponentowych lub
 w systemie vertical rhythm typografii, gdy ma określoną funkcję.
 
-## 13.4 Shared Component Size Profiles
+## 13.4 Shared Control Size Profiles
 
-Button, input, select, tab, tag, label i eyebrow mogą współdzielić bazowe
-profile geometrii. System definiuje trzy profile rozmiaru:
+`Button`, `ButtonLink`, `IconButton`, `Input` i `SearchInput` współdzielą bazowe
+profile geometrii kontrolek. Przyszłe implementacje `Select` i `Tab` powinny
+dołączyć do tego kontraktu, jeżeli mają wyrównywać się z sąsiednimi kontrolkami.
+System definiuje trzy profile rozmiaru:
 
 ```text
-component-size/
+control-size/
 ├── small/
 │   ├── min-height
 │   ├── padding-inline
@@ -1181,13 +1241,13 @@ Przykład:
 
 ```css
 :root {
-  --component-size-medium-min-height: var(--size-48);
-  --component-size-medium-padding-inline: var(--size-20);
-  --component-size-medium-padding-block: var(--size-12);
-  --component-size-medium-icon-size: var(--size-20);
-  --component-size-medium-gap: var(--size-8);
-  --component-size-medium-font-size: var(--font-size-body-base);
-  --component-size-medium-line-height: var(--line-height-none);
+  --control-size-medium-min-height: var(--size-48);
+  --control-size-medium-padding-inline: var(--size-20);
+  --control-size-medium-padding-block: var(--size-12);
+  --control-size-medium-icon-size: var(--size-20);
+  --control-size-medium-gap: var(--size-8);
+  --control-size-medium-font-size: var(--font-size-body-base);
+  --control-size-medium-line-height: var(--line-height-none);
 }
 ```
 
@@ -1195,27 +1255,27 @@ Rozmiar jest wybierany przez atrybut HTML. Atrybut udostępnia komponentowi
 stabilne, lokalne aliasy:
 
 ```css
-[data-component-size="medium"] {
-  --component-min-height: var(--component-size-medium-min-height);
-  --component-padding-inline: var(--component-size-medium-padding-inline);
-  --component-padding-block: var(--component-size-medium-padding-block);
-  --component-icon-size: var(--component-size-medium-icon-size);
-  --component-gap: var(--component-size-medium-gap);
-  --component-font-size: var(--component-size-medium-font-size);
-  --component-line-height: var(--component-size-medium-line-height);
+[data-control-size="medium"] {
+  --control-min-height: var(--control-size-medium-min-height);
+  --control-padding-inline: var(--control-size-medium-padding-inline);
+  --control-padding-block: var(--control-size-medium-padding-block);
+  --control-icon-size: var(--control-size-medium-icon-size);
+  --control-gap: var(--control-size-medium-gap);
+  --control-font-size: var(--control-size-medium-font-size);
+  --control-line-height: var(--control-size-medium-line-height);
 }
 ```
 
 ```html
-<button data-component-size="small">Action</button>
-<input data-component-size="medium" />
+<button data-control-size="small">Action</button>
+<input data-control-size="medium" />
 ```
 
 Komponent konsumuje lokalne aliasy. Własne decyzje, takie jak font-weight,
 kolor, border i zachowanie, pozostają częścią CSS konkretnego komponentu.
-Nie każdy komponent musi obsługiwać wszystkie profile. `small` jest
-przeznaczony głównie dla kompaktowych kontrolek, tagów, labeli i metadanych, a
-pola formularza korzystają domyślnie z `medium` lub `large`.
+Nie rozszerzamy tego kontraktu na komponenty tylko dlatego, że mają prop
+`size`. `Tag`, label, badge i `SwitchButton` zachowują geometrię lokalną,
+odpowiednią dla swojej roli UX.
 
 ### Tag Usage Rule
 
@@ -1227,6 +1287,9 @@ lokalnie stylowanych `span` / `li`, jeżeli element pełni rolę taga.
 Domyślny rozmiar taga w interfejsie to `small`. Większe rozmiary taga mogą
 pojawić się wyłącznie jako świadoma decyzja dla konkretnego wzorca UI, a nie
 jako lokalny wyjątek wynikający z miejsca użycia.
+
+`Tag` wybiera własny profil przez `data-tag-size` i lokalne aliasy
+`--tag-*`; nie konsumuje `Control Size`.
 
 ## 13.5 Component-specific Size Decisions
 
@@ -1246,9 +1309,9 @@ Token zachowuje tę samą wartość na wszystkich viewportach:
 
 ```css
 :root {
-  --component-size-medium-min-height: var(--size-48);
+  --control-size-medium-min-height: var(--size-48);
   --border-width-default: var(--size-1);
-  --component-size-medium-icon-size: var(--size-20);
+  --control-size-medium-icon-size: var(--size-20);
 }
 ```
 
@@ -1282,14 +1345,14 @@ Token otrzymuje inną stałą wartość na breakpointcie:
 
 ```css
 :root {
-  --component-padding-medium: var(--size-24);
-  --component-size-large-min-height: var(--size-56);
+  --content-padding-medium: var(--size-24);
+  --control-size-large-min-height: var(--size-56);
 }
 
 @media (width < 48rem) {
   :root {
-    --component-padding-medium: var(--size-16);
-    --component-size-large-min-height: var(--size-48);
+    --content-padding-medium: var(--size-16);
+    --control-size-large-min-height: var(--size-48);
   }
 }
 ```
@@ -1360,13 +1423,14 @@ Czy wartość powinna zmieniać się responsywnie?
 src/styles/tokens/
   size-primitives.css
   size-semantic.css
-  component-sizes.css
+  control-sizes.css
 ```
 
 `size-primitives.css` zawiera stałą skalę. `size-semantic.css` zawiera globalne
-role, `clamp()` i centralne responsive overrides. `component-sizes.css`
+role, `clamp()` i centralne responsive overrides. `control-sizes.css`
 zawiera współdzielone profile `small`, `medium`, `large` oraz
-mapowanie `data-component-size` na lokalne aliasy komponentu.
+mapowanie `data-control-size` na lokalne aliasy kontrolek. Komponenty o innej
+geometrii, takie jak Tag i SwitchButton, zachowują własne kontrakty.
 
 ---
 
@@ -1413,8 +1477,13 @@ Zasady:
 - role mogą zostać zmienione niezależnie podczas eksploracji na osobnych
   branchach,
 - zmiana fonta nie wymaga edycji semantic ani component typography tokens,
-- `font-family-mono` powstaje tylko wtedy, gdy interfejs zawiera kod, dane
-  techniczne lub treści wymagające fonta monospace,
+- `font-family-mono` jest wewnętrzną zależnością dokumentacji i code snippetów;
+  nie jest publiczną rolą typograficzną ani standardową zmienną eksportowaną
+  do Figmy; Paper może przechować nieużywany token techniczny dla jawnego code
+  snippetu,
+- w Figmie i Paper font mono może zostać użyty wyłącznie lokalnie w jawnym
+  przykładzie lub komponencie code snippet; nie stosujemy go do captionów,
+  metadanych, labeli ani zwykłego tekstu interfejsu,
 - fallbacki są częścią wartości font-family foundation.
 
 ## 14.3 Font Weight
@@ -1667,14 +1736,14 @@ HTML `<h1>`. Semantyka dokumentu i wizualny styl tekstu są niezależne.
 ## 14.9 Typografia Komponentów
 
 Komponenty korzystają bezpośrednio z foundations, semantic text styles albo
-lokalnych aliasów udostępnionych przez `data-component-size`:
+lokalnych aliasów udostępnionych kontrolkom przez `data-control-size`:
 
 ```css
 .button {
   font-family: var(--font-family-body);
-  font-size: var(--component-font-size);
+  font-size: var(--control-font-size);
   font-weight: var(--font-weight-emphasis);
-  line-height: var(--component-line-height);
+  line-height: var(--control-line-height);
   letter-spacing: var(--letter-spacing-default);
 }
 ```

@@ -1,0 +1,66 @@
+---
+import DsCopyButton from "./DsCopyButton.astro";
+import DsTableCell from "./DsTableCell.astro";
+
+interface Props {
+  value: string;
+  anchor?: boolean;
+  label?: string;
+  as?: "div" | "td" | "th";
+  role?: "cell" | "rowheader";
+  scope?: string;
+  rowspan?: number | string;
+  gridRowSpan?: number | string;
+  gridColumn?: number | string;
+  gridRow?: number | string;
+  class?: string;
+}
+
+const {
+  value,
+  anchor = true,
+  label = `Copy ${value}`,
+  as = "div",
+  role,
+  scope,
+  rowspan,
+  gridRowSpan,
+  gridColumn,
+  gridRow,
+  class: className,
+} = Astro.props as Props;
+const tokenId = anchor && value.startsWith("--")
+  ? `token-${value.replace(/^--/, "").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`
+  : undefined;
+---
+
+<DsTableCell
+  as={as}
+  class={className}
+  componentName="DsTableCopyCell"
+  justify="between"
+  gridColumn={gridColumn}
+  gridRow={gridRow}
+  gridRowSpan={gridRowSpan}
+  role={role}
+  rowspan={rowspan}
+  scope={scope}
+  variable={value.startsWith("--") ? value : undefined}
+>
+  <code
+    id={tokenId}
+    data-ds-token-anchor={tokenId ? "true" : undefined}
+  >{value}</code>
+  <span slot="actions" class="ds-table-copy-cell__actions">
+    <slot name="actions" />
+    <DsCopyButton label={label} value={value} />
+  </span>
+</DsTableCell>
+
+<style>
+  .ds-table-copy-cell__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-tiny);
+  }
+</style>

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Runtime V1 Benchmark Terminal Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "intent",
+    "reused",
+    "createdComponents",
+    "changedFiles",
+    "validation",
+    "missingInput",
+    "repairAttempts",
+    "summary"
+  ],
+  "properties": {
+    "status": { "enum": ["accepted", "blocked"] },
+    "intent": {
+      "enum": [
+        "exact-edit",
+        "reuse",
+        "compose",
+        "repair",
+        "extend",
+        "create",
+        "figma-routing"
+      ]
+    },
+    "reused": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "createdComponents": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "changedFiles": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "validation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "status"],
+        "properties": {
+          "command": { "type": "string" },
+          "status": { "enum": ["passed", "failed", "skipped"] }
+        }
+      }
+    },
+    "missingInput": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "repairAttempts": { "type": "integer", "minimum": 0, "maximum": 2 },
+    "summary": { "type": "string" }
+  }
+}
+

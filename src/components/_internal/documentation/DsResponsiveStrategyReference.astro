@@ -1,0 +1,171 @@
+---
+import {
+  layoutResponsiveExamples,
+  layoutResponsiveStrategyRows,
+} from "../../../data/design-system/layoutTokens";
+import DsCodeSnippet from "./DsCodeSnippet.astro";
+import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+import DsTableCell from "./DsTableCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+---
+
+<div class="ds-responsive-reference" data-component-name="DsResponsiveStrategyReference">
+  <section class="ds-responsive-reference__topic" aria-labelledby="responsive-decision-order-title">
+    <DsSectionHeaderLevel3
+      id="responsive-decision-order-title"
+      title="Decision order"
+    />
+
+    <DsTableFrame
+      label="Responsive strategy decision order"
+      minWidth="80rem"
+      columns="minmax(6rem, 8fr) minmax(18rem, 22fr) minmax(26rem, 34fr) minmax(30rem, 36fr)"
+      size="tiny"
+    >
+      <DsTableRow variant="header">
+        <DsTableCell role="columnheader" variant="header">Level</DsTableCell>
+        <DsTableCell role="columnheader" variant="header">Strategy</DsTableCell>
+        <DsTableCell role="columnheader" variant="header">Use when</DsTableCell>
+        <DsTableCell role="columnheader" variant="header">Mechanisms</DsTableCell>
+      </DsTableRow>
+
+      {
+        layoutResponsiveStrategyRows.map((row) => (
+          <DsTableRow>
+            <DsTableCell role="cell"><code>{row.level}</code></DsTableCell>
+            <DsTableCell role="cell"><strong>{row.strategy}</strong></DsTableCell>
+            <DsTableCell role="cell" tone="secondary">{row.useWhen}</DsTableCell>
+            <DsTableCell role="cell" tone="secondary"><code>{row.mechanisms}</code></DsTableCell>
+          </DsTableRow>
+        ))
+      }
+    </DsTableFrame>
+  </section>
+
+  <section class="ds-responsive-reference__topic" aria-labelledby="responsive-intrinsic-demo-title">
+    <DsSectionHeaderLevel3
+      id="responsive-intrinsic-demo-title"
+      title="Breakpointless grid"
+    />
+
+    <div class="ds-responsive-reference__comparison">
+      <div class="ds-responsive-reference__sample">
+        <p class="ds-responsive-reference__label">Available width</p>
+        <div class="l-grid" data-grid="auto-fit" data-columns="3" data-min-width="small" data-gap="small">
+          <span>Item 1</span><span>Item 2</span><span>Item 3</span><span>Item 4</span>
+        </div>
+      </div>
+      <div class="ds-responsive-reference__sample" data-sample-width="narrow">
+        <p class="ds-responsive-reference__label">20rem parent</p>
+        <div class="l-grid" data-grid="auto-fit" data-columns="3" data-min-width="small" data-gap="small">
+          <span>Item 1</span><span>Item 2</span><span>Item 3</span><span>Item 4</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ds-responsive-reference__topic" aria-labelledby="responsive-container-demo-title">
+    <DsSectionHeaderLevel3
+      id="responsive-container-demo-title"
+      title="Component-based response"
+    />
+
+    <div class="ds-responsive-reference__comparison">
+      <div class="ds-responsive-reference__container-host">
+        <div class="ds-responsive-reference__panel">
+          <div class="ds-responsive-reference__panel-content">
+            <strong>Component content</strong><span>Supporting content</span>
+          </div>
+        </div>
+      </div>
+      <div class="ds-responsive-reference__container-host" data-sample-width="narrow">
+        <div class="ds-responsive-reference__panel">
+          <div class="ds-responsive-reference__panel-content">
+            <strong>Component content</strong><span>Supporting content</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ds-responsive-reference__topic" aria-labelledby="responsive-recipes-title">
+    <DsSectionHeaderLevel3
+      id="responsive-recipes-title"
+      title="Canonical recipes"
+    />
+
+    {
+      layoutResponsiveExamples.map((example) => (
+        <DsCodeSnippet
+          label={example.label}
+          language={example.language}
+          code={example.code}
+        />
+      ))
+    }
+  </section>
+</div>
+
+<style>
+  .ds-responsive-reference,
+  .ds-responsive-reference__topic {
+    display: grid;
+    gap: var(--gap-xlarge);
+  }
+
+  .ds-responsive-reference__topic + .ds-responsive-reference__topic {
+    padding-block-start: var(--section-padding-small);
+    border-block-start: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .ds-responsive-reference__comparison {
+    display: grid;
+    gap: var(--gap-medium);
+    align-items: start;
+  }
+
+  .ds-responsive-reference__sample,
+  .ds-responsive-reference__container-host {
+    box-sizing: border-box;
+    inline-size: 100%;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-subtle);
+    padding: var(--content-padding-medium);
+  }
+
+  [data-sample-width="narrow"] {
+    max-inline-size: var(--size-320);
+  }
+
+  .ds-responsive-reference__label {
+    margin: 0 0 var(--space-small);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+  }
+
+  .ds-responsive-reference__sample span,
+  .ds-responsive-reference__panel-content > * {
+    min-inline-size: 0;
+    border: var(--border-width-default) solid var(--color-border-default);
+    background: var(--color-background-surface);
+    padding: var(--content-padding-small);
+  }
+
+  .ds-responsive-reference__panel {
+    container: ds-responsive-panel / inline-size;
+  }
+
+  .ds-responsive-reference__panel-content {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-small);
+  }
+
+  @container ds-responsive-panel (width < 30rem) {
+    .ds-responsive-reference__panel-content {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

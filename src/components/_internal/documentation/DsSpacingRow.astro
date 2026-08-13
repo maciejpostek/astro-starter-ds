@@ -1,0 +1,68 @@
+---
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableRow from "./DsTableRow.astro";
+import DsTableSampleCell from "./DsTableSampleCell.astro";
+import DsTooltip from "./DsTooltip.astro";
+
+interface Props {
+  token: string;
+  output: string;
+  source?: string;
+  sampleValue?: string;
+  sampleLabel?: string;
+  sampleType?: "size" | "radius" | "border";
+  size?: "tiny";
+  agenticRule?: string;
+}
+
+const {
+  token,
+  output,
+  source = "",
+  sampleValue = output,
+  sampleLabel = "",
+  sampleType = "size",
+  agenticRule,
+} = Astro.props;
+
+const sourceSize = Number.parseFloat(source);
+const samplePercent = Number.isFinite(sourceSize)
+  ? `${Math.min(Math.max((sourceSize / 320) * 100, 0), 100)}%`
+  : "100%";
+---
+
+<DsTableRow
+  class="spacing-row"
+  componentName="DsSpacingRow"
+  variable={token}
+>
+  <DsTableSampleCell
+    label={`${token} spacing sample`}
+    sampleLabel={sampleLabel}
+    samplePercent={samplePercent}
+    sampleType={sampleType}
+    sampleValue={sampleValue}
+  />
+
+  <DsTableCopyCell class="spacing-row__token-cell" role="cell" value={token}>
+    {
+      agenticRule && (
+        <DsTooltip
+          slot="actions"
+          label="Agentic Rule"
+          name={`${token} usage`}
+          text={agenticRule}
+        />
+      )
+    }
+  </DsTableCopyCell>
+
+  <DsTableCell role="cell" tone="secondary">
+    <code>{output}</code>
+  </DsTableCell>
+
+  <DsTableCell role="cell" tone="secondary">
+    <code>{source}</code>
+  </DsTableCell>
+</DsTableRow>

@@ -1,0 +1,176 @@
+---
+import CopyIconButton from "../../base-components/buttons/CopyIconButton.astro";
+
+interface Props {
+  id: string;
+  name: string;
+  markSrc?: string;
+  fullSrc?: string;
+  copyLabel: string;
+  searchKeywords: string;
+  successToastId: string;
+  errorToastId: string;
+}
+
+const {
+  id,
+  name,
+  markSrc,
+  fullSrc,
+  copyLabel,
+  searchKeywords,
+  successToastId,
+  errorToastId,
+} = Astro.props;
+---
+
+<article
+  class="ds-logo-card"
+  id={id}
+  data-component-name="DsLogoCard"
+  data-icon-gallery-keywords={searchKeywords.toLowerCase()}
+>
+  <div class="ds-logo-card__visuals" aria-hidden="true">
+    <figure class="ds-logo-card__variant" data-logo-available={markSrc ? "true" : "false"}>
+      <div class="ds-logo-card__asset" data-logo-variant="mark" data-theme="light">
+        {markSrc
+          ? <img src={markSrc} alt="" loading="lazy" decoding="async" />
+          : <span class="ds-logo-card__unavailable">Unavailable</span>}
+      </div>
+      <figcaption>Mark</figcaption>
+    </figure>
+
+    <figure class="ds-logo-card__variant" data-logo-available={fullSrc ? "true" : "false"}>
+      <div class="ds-logo-card__asset" data-logo-variant="full" data-theme="light">
+        {fullSrc
+          ? <img src={fullSrc} alt="" loading="lazy" decoding="async" />
+          : <span class="ds-logo-card__unavailable">Unavailable</span>}
+      </div>
+      <figcaption>Full</figcaption>
+    </figure>
+  </div>
+
+  <span class="ds-logo-card__name">{name}</span>
+
+  <CopyIconButton
+    class="ds-logo-card__action"
+    copyValue={name}
+    label={copyLabel}
+    successToastId={successToastId}
+    errorToastId={errorToastId}
+    variant="tertiary"
+    size="small"
+  />
+</article>
+
+<style>
+  .ds-logo-card {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    min-width: 0;
+    min-height: var(--size-192);
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: var(--gap-medium);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-input);
+    background: transparent;
+    padding:
+      calc(var(--content-padding-small) + var(--size-24))
+      var(--content-padding-medium)
+      var(--content-padding-small);
+  }
+
+  .ds-logo-card__visuals {
+    z-index: 2;
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(var(--size-64), 0.7fr) minmax(0, 1.3fr);
+    gap: var(--gap-medium);
+    pointer-events: none;
+  }
+
+  .ds-logo-card__variant {
+    display: grid;
+    min-width: 0;
+    grid-template-rows: minmax(var(--size-64), 1fr) auto;
+    align-items: center;
+    gap: var(--gap-small);
+    margin: 0;
+  }
+
+  .ds-logo-card__variant + .ds-logo-card__variant {
+    border-inline-start: var(--border-width-default) solid var(--color-border-subtle);
+    padding-inline-start: var(--content-padding-medium);
+  }
+
+  .ds-logo-card__asset {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    place-items: center;
+    border-radius: var(--radius-small);
+    background: var(--color-background-canvas);
+    padding: var(--content-padding-xsmall);
+  }
+
+  .ds-logo-card__asset img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: var(--size-64);
+    object-fit: contain;
+  }
+
+  .ds-logo-card__asset[data-logo-variant="mark"] img {
+    max-width: var(--size-64);
+  }
+
+  .ds-logo-card__variant figcaption,
+  .ds-logo-card__unavailable,
+  .ds-logo-card__name {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-tiny);
+    line-height: var(--line-height-compact);
+  }
+
+  .ds-logo-card__variant figcaption {
+    text-align: center;
+  }
+
+  .ds-logo-card__variant[data-logo-available="false"] {
+    opacity: 0.64;
+  }
+
+  .ds-logo-card__unavailable {
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  .ds-logo-card__name {
+    z-index: 2;
+    min-width: 0;
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+    pointer-events: none;
+    text-align: center;
+  }
+
+  :global(.ds-logo-card__action) {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+  }
+
+  :global(.ds-logo-card__action > .icon-button__icon) {
+    position: absolute;
+    inset-block-start: var(--content-padding-small);
+    inset-inline-end: var(--content-padding-small);
+  }
+</style>

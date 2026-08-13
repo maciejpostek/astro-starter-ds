@@ -1,0 +1,312 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import MaterialSymbol from "../components/assets/icons/MaterialSymbol.astro";
+import DsDocHeader from "../components/_internal/documentation/DsDocHeader.astro";
+import DsDocumentationPager from "../components/_internal/documentation/DsDocumentationPager.astro";
+import DsDocumentationGuidesToggle from "../components/_internal/documentation/DsDocumentationGuidesToggle.astro";
+import DsDocumentationSidebar from "../components/_internal/documentation/DsDocumentationSidebar.astro";
+import DsTableOfContents from "../components/_internal/documentation/DsTableOfContents.astro";
+import Toast from "../components/base-components/toast-notification/Toast.astro";
+import {
+  getDocumentationNeighbors,
+  normalizeDocumentationPath,
+  type DocumentationPageHeader,
+  type DocumentationPageType,
+  type DocumentationTocItem,
+} from "../data/documentationRegistry";
+import "../styles/documentation.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  pageType?: DocumentationPageType;
+  toc?: DocumentationTocItem[];
+  header: DocumentationPageHeader;
+}
+
+const {
+  title,
+  description = "Astro Design System documentation",
+  pageType = "reading",
+  toc = [],
+  header,
+} = Astro.props;
+
+const activePath = normalizeDocumentationPath(Astro.url.pathname);
+const neighbors = getDocumentationNeighbors(activePath);
+const topbarItems = [
+  { label: "Documentation", href: "/design-system", match: "/design-system" },
+  { label: "Architecture", href: "/design-system/architecture/component-model", match: "/design-system/architecture" },
+  { label: "Foundations", href: "/design-system/foundations/color", match: "/design-system/foundations" },
+  { label: "Components", href: "/design-system/base-components/buttons", match: "/design-system/base-components" },
+  { label: "Patterns", href: "/design-system/website-patterns/hero", match: "/design-system/website-patterns" },
+] as const;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  mainClass="main--flush"
+  showGridVisualizer
+  showComponentInfo
+  showGuidesToggle={false}
+>
+  <div
+    class="ds-documentation"
+    data-component-name="DesignSystemLayout"
+    data-page-type={pageType}
+    data-ds-documentation
+  >
+    <header class="ds-documentation-topbar" data-ds-documentation-topbar>
+      <button
+        class="ds-documentation-topbar__menu"
+        type="button"
+        aria-label="Open documentation navigation"
+        aria-controls="ds-documentation-sidebar"
+        aria-expanded="false"
+        data-ds-sidebar-open
+      >
+        <MaterialSymbol name="dehaze" size="var(--size-18)" />
+      </button>
+      <a class="ds-documentation-topbar__mobile-brand" href="/design-system">Astro DS</a>
+      <nav class="ds-documentation-topbar__nav" aria-label="Documentation areas">
+        {
+          topbarItems.map((item, index) => {
+            const current = index === 0
+              ? activePath === item.match
+              : activePath.startsWith(item.match);
+            return (
+              <a href={item.href} aria-current={current ? "page" : undefined}>
+                {item.label}
+              </a>
+            );
+          })
+        }
+      </nav>
+    </header>
+
+    <div class="ds-documentation-shell">
+      <DsDocumentationSidebar activePath={activePath} />
+      <button
+        class="ds-documentation-sidebar-overlay"
+        type="button"
+        aria-label="Close documentation navigation"
+        hidden
+        data-ds-sidebar-overlay
+      ></button>
+
+      <div class="ds-documentation-content" data-ds-documentation-content>
+        <div class="ds-documentation-content__inner">
+          <DsDocHeader {...header} />
+          <slot />
+          <DsDocumentationPager {...neighbors} />
+        </div>
+      </div>
+
+      {
+        toc.length > 0 && (
+          <aside class="ds-documentation-toc" data-lenis-prevent>
+            <DsTableOfContents items={toc} />
+          </aside>
+        )
+      }
+    </div>
+  </div>
+
+  <Toast
+    id="ds-clipboard-copy-success"
+    title="Copied to clipboard"
+    status="success"
+  />
+  <Toast
+    id="ds-clipboard-copy-error"
+    title="Could not copy to clipboard"
+    status="error"
+  />
+
+  <DsDocumentationGuidesToggle />
+
+  <script>
+    const runtimeWindow = window as Window & {
+      __astroDsDocumentationShellAbortController?: AbortController;
+    };
+    runtimeWindow.__astroDsDocumentationShellAbortController?.abort();
+    const controller = new AbortController();
+    const signal = controller.signal;
+    runtimeWindow.__astroDsDocumentationShellAbortController = controller;
+
+    const sidebar = document.querySelector<HTMLElement>("[data-ds-documentation-sidebar]");
+    const sidebarTrigger = document.querySelector<HTMLButtonElement>("[data-ds-sidebar-open]");
+    const sidebarOverlay = document.querySelector<HTMLButtonElement>("[data-ds-sidebar-overlay]");
+    const content = document.querySelector<HTMLElement>("[data-ds-documentation-content]");
+    const toc = document.querySelector<HTMLElement>(".ds-documentation-toc");
+    const mobileNavigation = window.matchMedia("(width < 64rem)");
+
+    const sidebarFocusables = () =>
+      sidebar
+        ? Array.from(
+            sidebar.querySelectorAll<HTMLElement>(
+              'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((element) => !element.closest("[hidden]"))
+        : [];
+
+    const closeSidebar = (restoreFocus = true) => {
+      if (!sidebar || !sidebarTrigger || !sidebarOverlay) return;
+      delete sidebar.dataset.open;
+      sidebarTrigger.setAttribute("aria-expanded", "false");
+      sidebarOverlay.hidden = true;
+      document.body.removeAttribute("data-ds-sidebar-lock");
+      if (content) content.inert = false;
+      if (toc) toc.inert = false;
+      if (restoreFocus) requestAnimationFrame(() => sidebarTrigger.focus());
+    };
+
+    const openSidebar = () => {
+      if (!mobileNavigation.matches || !sidebar || !sidebarTrigger || !sidebarOverlay) return;
+      sidebar.dataset.open = "true";
+      sidebarTrigger.setAttribute("aria-expanded", "true");
+      sidebarOverlay.hidden = false;
+      document.body.dataset.dsSidebarLock = "true";
+      if (content) content.inert = true;
+      if (toc) toc.inert = true;
+      requestAnimationFrame(() => sidebarFocusables()[0]?.focus());
+    };
+
+    sidebarTrigger?.addEventListener("click", openSidebar, { signal });
+    sidebarOverlay?.addEventListener("click", () => closeSidebar(), { signal });
+    sidebar?.querySelector("[data-ds-sidebar-close]")?.addEventListener(
+      "click",
+      () => closeSidebar(),
+      { signal }
+    );
+    sidebar?.addEventListener(
+      "click",
+      (event) => {
+        if (!mobileNavigation.matches) return;
+        const target = event.target instanceof Element ? event.target : null;
+        if (target?.closest("a[href]")) closeSidebar(false);
+      },
+      { signal }
+    );
+    document.addEventListener("ds:sidebar-close", () => closeSidebar(false), { signal });
+    mobileNavigation.addEventListener(
+      "change",
+      () => {
+        if (!mobileNavigation.matches) closeSidebar(false);
+      },
+      { signal }
+    );
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (!mobileNavigation.matches || sidebar?.dataset.open !== "true") return;
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeSidebar();
+          return;
+        }
+        if (event.key !== "Tab") return;
+        const focusables = sidebarFocusables();
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      },
+      { signal }
+    );
+
+    const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-ds-toc-link]"));
+    const sections = tocLinks
+      .map((link) => {
+        const id = link.hash.slice(1);
+        const section = id ? document.getElementById(id) : null;
+        return section ? { link, section } : null;
+      })
+      .filter((entry): entry is { link: HTMLAnchorElement; section: HTMLElement } => Boolean(entry));
+
+    if (sections.length) {
+      const syncToc = () => {
+        const offset = 120;
+        let active = sections[0];
+        sections.forEach((entry) => {
+          if (entry.section.getBoundingClientRect().top <= offset) active = entry;
+        });
+        sections.forEach((entry) => {
+          const current = entry === active;
+          entry.link.dataset.active = String(current);
+          if (current) entry.link.setAttribute("aria-current", "location");
+          else entry.link.removeAttribute("aria-current");
+        });
+      };
+      syncToc();
+      window.addEventListener("scroll", syncToc, { passive: true, signal });
+      window.addEventListener("resize", syncToc, { signal });
+    }
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    tocLinks.forEach((link) => {
+      link.addEventListener(
+        "click",
+        (event) => {
+          const target = document.getElementById(link.hash.slice(1));
+          if (!target) return;
+          event.preventDefault();
+          target.scrollIntoView({
+            behavior: reducedMotion.matches ? "auto" : "smooth",
+            block: "start",
+          });
+          history.pushState(null, "", link.hash);
+        },
+        { signal }
+      );
+    });
+
+    let activeHashTarget: HTMLElement | null = null;
+    let hashTargetTimeout: number | undefined;
+
+    const clearHashTarget = () => {
+      if (hashTargetTimeout !== undefined) {
+        window.clearTimeout(hashTargetTimeout);
+        hashTargetTimeout = undefined;
+      }
+      if (activeHashTarget) {
+        delete activeHashTarget.dataset.dsSearchTarget;
+        activeHashTarget = null;
+      }
+    };
+
+    const syncHashTarget = () => {
+      clearHashTarget();
+      const hashTarget = location.hash
+        ? document.getElementById(location.hash.slice(1))
+        : null;
+      if (!hashTarget) return;
+
+      activeHashTarget = hashTarget;
+      hashTarget.dataset.dsSearchTarget = "true";
+      requestAnimationFrame(() => {
+        if (activeHashTarget === hashTarget && hashTarget.isConnected) {
+          hashTarget.scrollIntoView({ block: "center", inline: "nearest" });
+        }
+      });
+      hashTargetTimeout = window.setTimeout(() => {
+        if (activeHashTarget !== hashTarget) return;
+        delete hashTarget.dataset.dsSearchTarget;
+        activeHashTarget = null;
+        hashTargetTimeout = undefined;
+      }, 1800);
+    };
+
+    window.addEventListener("hashchange", syncHashTarget, { signal });
+    signal.addEventListener("abort", clearHashTarget, { once: true });
+    syncHashTarget();
+  </script>
+</BaseLayout>

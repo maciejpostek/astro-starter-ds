@@ -3,34 +3,33 @@ import { join, resolve } from "node:path";
 
 const projectRoot = resolve(process.argv[2] ?? ".");
 const architectureRoot = join(projectRoot, "architecture");
-const modelPath = join(architectureRoot, "system-map.json");
-const schemaPath = join(architectureRoot, "system-map.schema.json");
-const nodeTypesPath = join(architectureRoot, "node-types.json");
-const edgeTypesPath = join(architectureRoot, "edge-types.json");
-
-const readJson = (path) => JSON.parse(readFileSync(path, "utf8"));
+const paths = {
+  model: join(architectureRoot, "system-map.json"),
+  schema: join(architectureRoot, "system-map.schema.json"),
+  nodeTypes: join(architectureRoot, "node-types.json"),
+  edgeTypes: join(architectureRoot, "edge-types.json")
+};
 const errors = [];
 const warnings = [];
 const addError = (message) => errors.push(message);
-const addWarning = (message) => warnings.push(message);
 const duplicateValues = (values) =>
   [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
-const canonicalIdPattern = /^[a-z0-9]+(?:[._-][a-z0-9]+)*$/;
+const canonicalIdPattern = /^[a-z0-9]+(?:[._-][a-z0-9]+)*$/u;
 
-for (const path of [modelPath, schemaPath, nodeTypesPath, edgeTypesPath]) {
-  if (!existsSync(path)) addError(`Required architecture file is missing: ${path}`);
+for (const [label, path] of Object.entries(paths)) {
+  if (!existsSync(path)) addError(`Missing architecture ${label}: ${path}`);
 }
-
 if (errors.length) {
   console.error("System architecture audit failed:");
   errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
 
-const model = readJson(modelPath);
-readJson(schemaPath);
-const nodeTypes = readJson(nodeTypesPath);
-const edgeTypes = readJson(edgeTypesPath);
+const readJson = (path) => JSON.parse(readFileSync(path, "utf8"));
+const model = readJson(paths.model);
+readJson(paths.schema);
+const nodeTypes = readJson(paths.nodeTypes);
+const edgeTypes = readJson(paths.edgeTypes);
 const allowedNodeTypes = new Set(nodeTypes.types.map((type) => type.id));
 const allowedEdgeTypes = new Set(edgeTypes.types.map((type) => type.id));
 const nodeById = new Map(model.nodes.map((node) => [node.id, node]));
@@ -39,7 +38,7 @@ const workflowById = new Map(
   model.workflows.map((workflow) => [workflow.id, workflow])
 );
 
-const requiredModelKeys = [
+for (const key of [
   "schemaVersion",
   "modelVersion",
   "title",
@@ -50,9 +49,11 @@ const requiredModelKeys = [
   "edges",
   "workflows",
   "views"
-];
-for (const key of requiredModelKeys) {
+]) {
   if (!(key in model)) addError(`Model is missing required key: ${key}`);
+}
+if (model.modelVersion !== "1.1.0" || model.status !== "active") {
+  addError("The implemented architecture model must be active V1.1.0.");
 }
 
 for (const [label, values] of [
@@ -77,38 +78,32 @@ for (const [label, values] of [
   }
 }
 
-const requiredNodeKeys = [
-  "id",
-  "title",
-  "type",
-  "scope",
-  "concerns",
-  "status",
-  "architectureState",
-  "sourcePaths",
-  "ownership",
-  "metadata"
-];
 for (const node of model.nodes) {
-  for (const key of requiredNodeKeys) {
+  for (const key of [
+    "id",
+    "title",
+    "type",
+    "scope",
+    "concerns",
+    "status",
+    "architectureState",
+    "sourcePaths",
+    "ownership",
+    "metadata"
+  ]) {
     if (!(key in node)) addError(`Node ${node.id} is missing ${key}.`);
   }
   if (!allowedNodeTypes.has(node.type)) {
     addError(`Node ${node.id} has unknown type ${node.type}.`);
   }
-  if (!["current", "target"].includes(node.architectureState)) {
+  if (node.status !== "current" || node.architectureState !== "current") {
     addError(
-      `Node ${node.id} has invalid architectureState ${node.architectureState}.`
+      `Active V1.1 node ${node.id} must describe current implemented state.`
     );
-  }
-  if (!Array.isArray(node.concerns) || node.concerns.length === 0) {
-    addError(`Node ${node.id} must declare at least one concern.`);
   }
   if (!node.metadata?.problem) {
     addError(`Node ${node.id} must justify the problem it represents.`);
   }
-
-  const ownership = node.ownership ?? {};
   for (const key of [
     "owner",
     "readers",
@@ -116,30 +111,33 @@ for (const node of model.nodes) {
     "validatorNodeIds",
     "contextCost"
   ]) {
-    if (!(key in ownership)) {
+    if (!(key in (node.ownership ?? {}))) {
       addError(`Node ${node.id} ownership is missing ${key}.`);
     }
   }
-  for (const validatorId of ownership.validatorNodeIds ?? []) {
-    if (!nodeById.has(validatorId)) {
-      addError(
-        `Node ${node.id} references unknown ownership validator ${validatorId}.`
-      );
-    } else if (nodeById.get(validatorId).type !== "validator") {
-      addError(
-        `Node ${node.id} ownership validator ${validatorId} is not a validator node.`
-      );
+  for (const validatorId of node.ownership?.validatorNodeIds ?? []) {
+    const validator = nodeById.get(validatorId);
+    if (!validator) {
+      addError(`${node.id} references unknown validator ${validatorId}.`);
+    } else if (validator.type !== "validator") {
+      addError(`${node.id} validator ${validatorId} is not a validator node.`);
     }
   }
-
   for (const sourcePath of node.sourcePaths ?? []) {
     const absolutePath = join(projectRoot, sourcePath);
     if (!existsSync(absolutePath)) {
       addError(`Node ${node.id} has stale sourcePath: ${sourcePath}`);
       continue;
     }
-    const pathKind = node.metadata?.pathKind;
-    if (pathKind === "directory" && !statSync(absolutePath).isDirectory()) {
+    if (
+      node.metadata?.pathKind === "directory" &&
+      !statSync(absolutePath).isDirectory() &&
+      !(
+        sourcePath === ".git" &&
+        statSync(absolutePath).isFile() &&
+        readFileSync(absolutePath, "utf8").startsWith("gitdir:")
+      )
+    ) {
       addError(`Node ${node.id} expects a directory: ${sourcePath}`);
     }
   }
@@ -165,16 +163,11 @@ for (const edge of model.edges) {
   if (!allowedEdgeTypes.has(edge.type)) {
     addError(`Edge ${edge.id} has unknown type ${edge.type}.`);
   }
-  if (!nodeById.has(edge.source)) {
-    addError(`Edge ${edge.id} has unknown source ${edge.source}.`);
+  if (!nodeById.has(edge.source) || !nodeById.has(edge.target)) {
+    addError(`Edge ${edge.id} has an unknown endpoint.`);
   }
-  if (!nodeById.has(edge.target)) {
-    addError(`Edge ${edge.id} has unknown target ${edge.target}.`);
-  }
-  if (!["current", "target"].includes(edge.architectureState)) {
-    addError(
-      `Edge ${edge.id} has invalid architectureState ${edge.architectureState}.`
-    );
+  if (edge.architectureState !== "current") {
+    addError(`Edge ${edge.id} must describe current implemented state.`);
   }
 }
 
@@ -184,20 +177,17 @@ for (const edge of model.edges) {
   outgoing.push(edge);
   outgoingByNode.set(edge.source, outgoing);
 }
-for (const node of model.nodes.filter((candidate) => candidate.type === "router")) {
-  const routingEdges = (outgoingByNode.get(node.id) ?? []).filter((edge) =>
-    ["routes-to", "selects"].includes(edge.type)
+for (const router of model.nodes.filter((node) => node.type === "router")) {
+  const routes = (outgoingByNode.get(router.id) ?? []).filter((edge) =>
+    ["routes-to", "selects", "creates"].includes(edge.type)
   );
-  if (routingEdges.length === 0) {
-    addError(`Dead-end router has no routes-to/selects edge: ${node.id}`);
-  }
+  if (routes.length === 0) addError(`Dead-end router: ${router.id}`);
 }
 
-const dependencyEdges = model.edges.filter((edge) =>
-  ["depends-on", "inherits-from"].includes(edge.type)
-);
 const dependencyGraph = new Map();
-for (const edge of dependencyEdges) {
+for (const edge of model.edges.filter((item) =>
+  ["depends-on", "inherits-from"].includes(item.type)
+)) {
   const targets = dependencyGraph.get(edge.source) ?? [];
   targets.push(edge.target);
   dependencyGraph.set(edge.source, targets);
@@ -206,7 +196,7 @@ const visiting = new Set();
 const visited = new Set();
 const visitDependency = (nodeId, path = []) => {
   if (visiting.has(nodeId)) {
-    addError(`Dependency cycle detected: ${[...path, nodeId].join(" -> ")}`);
+    addError(`Dependency cycle: ${[...path, nodeId].join(" -> ")}`);
     return;
   }
   if (visited.has(nodeId)) return;
@@ -220,19 +210,13 @@ const visitDependency = (nodeId, path = []) => {
 for (const nodeId of dependencyGraph.keys()) visitDependency(nodeId);
 
 for (const workflow of model.workflows) {
-  if (workflow.steps.length < 2) {
-    addError(`Workflow ${workflow.id} must contain at least two steps.`);
+  if (workflow.steps.length < 2 || workflow.steps.at(-1)?.kind !== "output") {
+    addError(`Workflow ${workflow.id} must end with an output step.`);
   }
-  if (workflow.steps.at(-1)?.kind !== "output") {
-    addError(`Workflow ${workflow.id} is missing a terminal output step.`);
+  if (!workflow.terminalOutputs?.includes("accepted") ||
+      !workflow.terminalOutputs?.includes("blocked")) {
+    addError(`Workflow ${workflow.id} must declare accepted and blocked.`);
   }
-  if (!workflow.terminalOutputs?.length) {
-    addError(`Workflow ${workflow.id} has no declared terminal outputs.`);
-  }
-  if (!workflow.duplicatedChecks) {
-    addError(`Workflow ${workflow.id} does not declare duplicated checks.`);
-  }
-
   const workflowNodeIds = new Set(
     workflow.steps.flatMap((step) => step.nodeIds ?? [])
   );
@@ -241,100 +225,73 @@ for (const workflow of model.workflows) {
       addError(`Workflow ${workflow.id} references unknown node ${nodeId}.`);
     }
   }
-  for (const validator of workflow.validators) {
-    const validatorNode = nodeById.get(validator.nodeId);
-    if (!validatorNode) {
+  for (const validator of workflow.validators ?? []) {
+    if (nodeById.get(validator.nodeId)?.type !== "validator") {
       addError(
-        `Workflow ${workflow.id} references unknown validator ${validator.nodeId}.`
-      );
-    } else if (validatorNode.type !== "validator") {
-      addError(
-        `Workflow ${workflow.id} references non-validator ${validator.nodeId}.`
+        `Workflow ${workflow.id} validator ${validator.nodeId} is invalid.`
       );
     }
     if (!validator.when || !validator.reason) {
       addError(
-        `Workflow ${workflow.id} validator ${validator.nodeId} must explain when and why it runs.`
-      );
-    }
-    if (/^always$/i.test(validator.when.trim())) {
-      addError(
-        `Workflow ${workflow.id} runs ${validator.nodeId} unconditionally; scope it to affected writes.`
+        `Workflow ${workflow.id} validator ${validator.nodeId} needs when and reason.`
       );
     }
   }
-
-  const skipped = new Set(workflow.mustSkipNodeIds ?? []);
-  for (const skippedNodeId of skipped) {
-    if (workflowNodeIds.has(skippedNodeId)) {
-      addError(
-        `Workflow ${workflow.id} both uses and must skip ${skippedNodeId}.`
-      );
+  for (const skippedId of workflow.mustSkipNodeIds ?? []) {
+    if (workflowNodeIds.has(skippedId)) {
+      addError(`Workflow ${workflow.id} both uses and skips ${skippedId}.`);
     }
   }
+}
 
-  if (workflow.mode === "fast-reuse") {
-    for (const forbiddenNodeId of [
-      "source.art-direction",
-      "source.brand-contract",
-      "input.brand-references",
-      "process.visual-calibration"
-    ]) {
-      if (!skipped.has(forbiddenNodeId)) {
-        addError(
-          `Fast Reuse workflow ${workflow.id} must explicitly skip ${forbiddenNodeId}.`
-        );
-      }
-    }
+const exactWorkflow = workflowById.get("workflow.exact-token-edit");
+for (const skipped of [
+  "source.component-registry",
+  "source.brand-contract",
+  "external.figma"
+]) {
+  if (!exactWorkflow?.mustSkipNodeIds.includes(skipped)) {
+    addError(`Exact token workflow must skip ${skipped}.`);
   }
-
-  if (workflow.mode === "creative-creation") {
-    for (const requiredGateId of [
-      "gate.brand-sensitive",
-      "gate.brand-contract"
-    ]) {
-      if (!workflowNodeIds.has(requiredGateId)) {
-        addError(
-          `Creative workflow ${workflow.id} can be brand-sensitive but does not include ${requiredGateId}.`
-        );
-      }
-    }
+}
+const reuseWorkflow = workflowById.get("workflow.use-ready-button");
+for (const skipped of [
+  "source.category-rules",
+  "source.brand-contract",
+  "external.figma"
+]) {
+  if (!reuseWorkflow?.mustSkipNodeIds.includes(skipped)) {
+    addError(`Named reuse workflow must skip ${skipped}.`);
   }
-
+}
+const createWorkflow = workflowById.get("workflow.create-missing-component");
+for (const required of ["gate.creation-intent", "process.gap-proof"]) {
   if (
-    ["workflow.build-new-section", "workflow.create-missing-component"].includes(
-      workflow.id
-    ) &&
-    !workflowNodeIds.has("gate.architecture-freeze")
+    !createWorkflow?.steps
+      .flatMap((step) => step.nodeIds)
+      .includes(required)
   ) {
-    addError(
-      `Creation workflow ${workflow.id} does not expose the active architecture freeze.`
-    );
+    addError(`Creation workflow must include ${required}.`);
   }
 }
 
 const requiredViewIds = [
-  "view.framework-context-current",
-  "view.framework-context-target",
+  "view.ai-native-target-architecture",
   "view.input-to-output",
-  "view.fast-reuse",
-  "view.guided-composition",
-  "view.creative-creation-extension",
-  "view.existing-component-repair",
+  "view.prompt-to-astro-page-section",
   "view.component-lifecycle-release",
-  "view.astro-figma-identity",
-  "view.new-project-fork",
   "view.brand-expression-calibration",
+  "view.astro-figma-identity",
   "view.sources-of-truth",
-  "view.atomic-design-dependencies"
+  "view.family-first-component-dependencies",
+  "view.new-project-fork"
 ];
 const viewIds = new Set(model.views.map((view) => view.id));
 for (const viewId of requiredViewIds) {
-  if (!viewIds.has(viewId)) addError(`Required architecture view is missing: ${viewId}`);
+  if (!viewIds.has(viewId)) addError(`Missing required view: ${viewId}`);
 }
-
 for (const view of model.views) {
-  const viewNodeIds = new Set(view.nodeIds);
+  const selectedNodeIds = new Set(view.nodeIds);
   for (const nodeId of view.nodeIds) {
     if (!nodeById.has(nodeId)) {
       addError(`View ${view.id} references unknown node ${nodeId}.`);
@@ -344,45 +301,233 @@ for (const view of model.views) {
     const edge = edgeById.get(edgeId);
     if (!edge) {
       addError(`View ${view.id} references unknown edge ${edgeId}.`);
+    } else if (
+      !selectedNodeIds.has(edge.source) ||
+      !selectedNodeIds.has(edge.target)
+    ) {
+      addError(`View ${view.id} omits an endpoint of ${edgeId}.`);
+    }
+  }
+}
+
+const presentation = model.views.find(
+  (view) => view.id === "view.ai-native-target-architecture"
+)?.presentation;
+if (!presentation) {
+  addError("The V1.1 runtime view is missing its presentation.");
+} else {
+  const expectedStageNumbers = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "C1",
+    "B1",
+    "F1",
+    "E1"
+  ];
+  const actualStageNumbers = presentation.stages.map((stage) => stage.number);
+  if (JSON.stringify(actualStageNumbers) !== JSON.stringify(expectedStageNumbers)) {
+    addError(
+      `V1.1 stages must be ${expectedStageNumbers.join(", ")}; received ${actualStageNumbers.join(", ")}.`
+    );
+  }
+  if (
+    presentation.stages.filter((stage) => stage.kind === "core").length !== 5
+  ) {
+    addError("V1.1 must expose exactly five core runtime stages.");
+  }
+
+  for (const [label, items] of [
+    ["stage", presentation.stages],
+    ["instance", presentation.instances],
+    ["connection", presentation.connections],
+    ["trace", presentation.traces]
+  ]) {
+    for (const duplicate of duplicateValues(items.map((item) => item.id))) {
+      addError(`Duplicate presentation ${label}: ${duplicate}`);
+    }
+  }
+
+  const stageById = new Map(
+    presentation.stages.map((stage) => [stage.id, stage])
+  );
+  const instanceById = new Map(
+    presentation.instances.map((instance) => [instance.id, instance])
+  );
+  const connectionById = new Map(
+    presentation.connections.map((connection) => [
+      connection.id,
+      connection
+    ])
+  );
+
+  for (const instance of presentation.instances) {
+    const stage = stageById.get(instance.stageId);
+    if (!nodeById.has(instance.nodeId) || !stage) {
+      addError(`Presentation instance ${instance.id} has an unknown reference.`);
       continue;
     }
-    if (!viewNodeIds.has(edge.source) || !viewNodeIds.has(edge.target)) {
+    const expectedPrefix = `${stage.number.replace(/^0/u, "")}.`;
+    if (!instance.stepNumber.startsWith(expectedPrefix)) {
       addError(
-        `View ${view.id} includes edge ${edgeId} without both endpoint nodes.`
+        `${instance.id} step ${instance.stepNumber} does not match stage ${stage.number}.`
       );
     }
+    if (
+      !instance.purpose ||
+      !instance.inputs?.length ||
+      !instance.outputs?.length
+    ) {
+      addError(`${instance.id} must declare purpose, input, and output.`);
+    }
   }
-  if (view.workflowId && !workflowById.has(view.workflowId)) {
-    addError(
-      `View ${view.id} references unknown workflow ${view.workflowId}.`
-    );
+
+  for (const stage of presentation.stages) {
+    const actualIds = presentation.instances
+      .filter((instance) => instance.stageId === stage.id)
+      .map((instance) => instance.id);
+    if (JSON.stringify(stage.instanceIds) !== JSON.stringify(actualIds)) {
+      addError(`Stage ${stage.id} instanceIds are stale or out of order.`);
+    }
+    for (const duplicate of duplicateValues(
+      actualIds.map((id) => instanceById.get(id)?.stepNumber)
+    )) {
+      addError(`Stage ${stage.id} has duplicate step ${duplicate}.`);
+    }
+  }
+
+  for (const connection of presentation.connections) {
+    if (
+      !instanceById.has(connection.sourceInstanceId) ||
+      !instanceById.has(connection.targetInstanceId)
+    ) {
+      addError(`Connection ${connection.id} has an unknown endpoint.`);
+    }
+  }
+
+  for (const trace of presentation.traces) {
+    const traceInstances = new Set(trace.instanceIds);
+    for (const instanceId of traceInstances) {
+      if (!instanceById.has(instanceId)) {
+        addError(`Trace ${trace.id} references unknown ${instanceId}.`);
+      }
+    }
+    for (const connectionId of trace.connectionIds) {
+      const connection = connectionById.get(connectionId);
+      if (!connection) {
+        addError(`Trace ${trace.id} references unknown ${connectionId}.`);
+      } else if (
+        !traceInstances.has(connection.sourceInstanceId) ||
+        !traceInstances.has(connection.targetInstanceId)
+      ) {
+        addError(
+          `Trace ${trace.id} includes ${connectionId} without both endpoints.`
+        );
+      }
+    }
+    for (const terminalId of trace.terminalInstanceIds ?? []) {
+      if (!traceInstances.has(terminalId)) {
+        addError(`Trace ${trace.id} terminal ${terminalId} is outside trace.`);
+      }
+    }
+  }
+
+  const traceById = new Map(
+    presentation.traces.map((trace) => [trace.id, trace])
+  );
+  const assertTraceSkipsStages = (traceId, stageIds) => {
+    const trace = traceById.get(traceId);
+    for (const instanceId of trace?.instanceIds ?? []) {
+      const stageId = instanceById.get(instanceId)?.stageId;
+      if (stageIds.includes(stageId)) {
+        addError(`${traceId} must skip conditional stage ${stageId}.`);
+      }
+    }
+  };
+  assertTraceSkipsStages("trace.exact-token-edit", [
+    "stage.creation",
+    "stage.brand",
+    "stage.figma"
+  ]);
+  assertTraceSkipsStages("trace.reuse-existing-asset", [
+    "stage.creation",
+    "stage.brand",
+    "stage.figma"
+  ]);
+  for (const required of [
+    "instance.creation.gate",
+    "instance.creation.gap"
+  ]) {
+    if (
+      !traceById
+        .get("trace.create-reusable-component")
+        ?.instanceIds.includes(required)
+    ) {
+      addError(`Creation trace must include ${required}.`);
+    }
+  }
+  for (const required of [
+    "instance.brand.gate",
+    "instance.brand.contract",
+    "instance.brand.approval"
+  ]) {
+    if (
+      !traceById
+        .get("trace.brand-sensitive-composition")
+        ?.instanceIds.includes(required)
+    ) {
+      addError(`Brand-sensitive trace must include ${required}.`);
+    }
+  }
+  for (const trace of presentation.traces.filter(
+    (item) => item.id !== "trace.explicit-figma-operation"
+  )) {
+    if (
+      trace.instanceIds.some(
+        (id) => instanceById.get(id)?.stageId === "stage.figma"
+      )
+    ) {
+      addError(`Figma appears in non-Figma trace ${trace.id}.`);
+    }
+  }
+  const evalFeedback = connectionById.get("connection.future-classify");
+  if (
+    evalFeedback?.type !== "feedback" ||
+    !evalFeedback.label?.includes("future")
+  ) {
+    addError("Eval feedback must affect future runs only.");
+  }
+  const repairNode = nodeById.get("process.bounded-repair");
+  const repairLimits = Object.values(
+    repairNode?.metadata?.maxIterationsByIntent ?? {}
+  );
+  if (
+    repairLimits.length === 0 ||
+    repairLimits.some((value) => !Number.isInteger(value) || value < 1)
+  ) {
+    addError("Bounded Repair must declare positive iteration limits.");
   }
 }
 
-const currentView = model.views.find(
-  (view) => view.id === "view.framework-context-current"
-);
-const targetView = model.views.find(
-  (view) => view.id === "view.framework-context-target"
-);
-if (!currentView?.architectureStates.includes("current")) {
-  addError("Current framework view does not explicitly select current state.");
-}
-if (!targetView?.architectureStates.includes("target")) {
-  addError("Target framework view does not explicitly select target state.");
+const serializedModel = JSON.stringify(model);
+if (
+  serializedModel.includes("design-system-roadmap.json") ||
+  serializedModel.includes('"status":"proposed"')
+) {
+  addError("The active architecture must not contain retired or proposed runtime mechanisms.");
 }
 
-const allWorkflowNodeIds = new Set(
-  model.workflows.flatMap((workflow) =>
+const usedNodeIds = new Set([
+  ...model.workflows.flatMap((workflow) =>
     workflow.steps.flatMap((step) => step.nodeIds)
-  )
-);
-const allViewNodeIds = new Set(model.views.flatMap((view) => view.nodeIds));
+  ),
+  ...model.views.flatMap((view) => view.nodeIds)
+]);
 for (const node of model.nodes) {
-  if (!allWorkflowNodeIds.has(node.id) && !allViewNodeIds.has(node.id)) {
-    addWarning(
-      `Node ${node.id} is not referenced by a workflow or view; verify its context cost is justified.`
-    );
+  if (!usedNodeIds.has(node.id)) {
+    warnings.push(`Node ${node.id} is not used by a workflow or view.`);
   }
 }
 
@@ -390,7 +535,6 @@ if (warnings.length) {
   console.warn("System architecture audit warnings:");
   warnings.forEach((warning) => console.warn(`- ${warning}`));
 }
-
 if (errors.length) {
   console.error("System architecture audit failed:");
   errors.forEach((error) => console.error(`- ${error}`));
@@ -398,7 +542,7 @@ if (errors.length) {
 }
 
 console.log(
-  `System architecture audit passed: ${model.nodes.length} nodes, ` +
-    `${model.edges.length} edges, ${model.workflows.length} workflows, ` +
-    `${model.views.length} views, ${concernOwners.size} exclusive concern owners.`
+  `System architecture audit passed: ${model.nodes.length} current nodes, ` +
+    `${model.edges.length} current edges, ${model.workflows.length} workflows, ` +
+    `${model.views.length} views, and five core V1.1 runtime stages.`
 );

@@ -12,14 +12,14 @@
   /* Primary button
    * High-emphasis action using the accent surface.
    */
-  --button-primary-background-default: var(--color-background-accent);
-  --button-primary-background-hover: var(--color-accent-700);
-  --button-primary-background-pressed: var(--color-accent-800);
+  --button-primary-background-default: var(--color-accent-700);
+  --button-primary-background-hover: var(--color-accent-800);
+  --button-primary-background-pressed: var(--color-accent-900);
   --button-primary-background-disabled:
     var(--color-state-disabled-background);
-  --button-primary-border-default: var(--color-border-accent);
-  --button-primary-border-hover: var(--color-accent-700);
-  --button-primary-border-pressed: var(--color-accent-800);
+  --button-primary-border-default: var(--color-accent-700);
+  --button-primary-border-hover: var(--color-accent-800);
+  --button-primary-border-pressed: var(--color-accent-900);
   --button-primary-border-disabled: var(--color-state-disabled-border);
   --button-primary-text-default: var(--color-text-on-accent);
   --button-primary-text-hover: var(--color-text-on-accent);
@@ -51,6 +51,26 @@
   --button-secondary-icon-pressed: var(--color-icon-primary);
   --button-secondary-icon-disabled: var(--color-state-disabled-icon);
 
+  /* Tertiary button
+   * Low-emphasis action with a transparent resting container.
+   */
+  --button-tertiary-background-default: var(--color-transparent);
+  --button-tertiary-background-hover: var(--color-background-subtle);
+  --button-tertiary-background-pressed: var(--color-background-muted);
+  --button-tertiary-background-disabled: var(--color-transparent);
+  --button-tertiary-border-default: var(--color-transparent);
+  --button-tertiary-border-hover: var(--color-transparent);
+  --button-tertiary-border-pressed: var(--color-transparent);
+  --button-tertiary-border-disabled: var(--color-transparent);
+  --button-tertiary-text-default: var(--color-text-primary);
+  --button-tertiary-text-hover: var(--color-text-primary);
+  --button-tertiary-text-pressed: var(--color-text-primary);
+  --button-tertiary-text-disabled: var(--color-state-disabled-text);
+  --button-tertiary-icon-default: var(--color-icon-primary);
+  --button-tertiary-icon-hover: var(--color-icon-primary);
+  --button-tertiary-icon-pressed: var(--color-icon-primary);
+  --button-tertiary-icon-disabled: var(--color-state-disabled-icon);
+
   /* Link button
    * Low-emphasis action without a persistent container.
    */
@@ -71,6 +91,34 @@
   --button-link-icon-pressed: var(--color-accent-900);
   --button-link-icon-disabled: var(--color-state-disabled-icon);
 
+  /* Switch button
+   * Persistent binary setting with distinct off and on track states.
+   */
+  --switch-track-off-background-default: var(--color-background-muted);
+  --switch-track-off-background-hover: var(--color-background-strong);
+  --switch-track-off-background-pressed: var(--color-background-muted);
+  --switch-track-off-background-disabled: var(--color-background-muted);
+  --switch-track-off-border-default: var(--color-border-default);
+  --switch-track-off-border-hover: var(--color-border-strong);
+  --switch-track-off-border-pressed: var(--color-border-default);
+  --switch-track-off-border-disabled: var(--color-border-default);
+  --switch-track-on-background-default: var(--color-background-accent);
+  --switch-track-on-background-hover: var(--color-background-accent-strong);
+  --switch-track-on-background-pressed: var(--color-background-accent);
+  --switch-track-on-background-disabled: var(--color-background-accent);
+  --switch-track-on-border-default: var(--color-border-accent);
+  --switch-track-on-border-hover: var(--color-border-accent-strong);
+  --switch-track-on-border-pressed: var(--color-border-accent);
+  --switch-track-on-border-disabled: var(--color-border-accent);
+  --switch-handle-background-default: var(--color-background-canvas);
+  --switch-handle-background-hover: var(--color-background-canvas);
+  --switch-handle-background-pressed: var(--color-background-canvas);
+  --switch-handle-background-disabled: var(--color-background-canvas);
+  --switch-label-text-default: var(--color-text-primary);
+  --switch-label-text-hover: var(--color-text-primary);
+  --switch-label-text-pressed: var(--color-text-primary);
+  --switch-label-text-disabled: var(--color-state-disabled-text);
+
   /* Input
    * Shared field colors for default, validation, focus and disabled states.
    */
@@ -82,7 +130,7 @@
   --input-border-hover: var(--color-border-strong);
   --input-border-focus: var(--color-border-accent);
   --input-border-invalid: var(--color-status-error-border);
-  --input-border-valid: var(--color-status-success-border);
+  --input-border-valid: var(--color-status-success-text);
   --input-border-disabled: var(--color-state-disabled-border);
   --input-text-default: var(--color-text-primary);
   --input-text-disabled: var(--color-state-disabled-text);
@@ -115,6 +163,12 @@
   --tab-icon-hover: var(--color-icon-primary);
   --tab-icon-selected: var(--color-icon-inverse);
   --tab-icon-disabled: var(--color-state-disabled-icon);
+  --tab-menu-background-default: var(--color-transparent);
+  --tab-menu-border-default: var(--color-border-subtle);
+  --tab-menu-text-default: var(--color-text-secondary);
+  --tab-menu-text-hover: var(--color-text-primary);
+  --tab-menu-text-current: var(--color-text-primary);
+  --tab-menu-indicator-current: var(--color-border-accent);
 
   /* Link
    * Inline or standalone text action with an optional underline.
@@ -124,6 +178,29 @@
   --link-text-visited: var(--color-accent-900);
   --link-underline-default: var(--color-border-accent);
   --link-underline-hover: var(--color-accent-800);
+
+  /* Code snippet
+   * Internal documentation surface and CSS-variable-backed syntax palette.
+   */
+  --code-snippet-shell-background: var(--color-background-surface);
+  --code-snippet-border: var(--color-border-subtle);
+  --code-snippet-header-text: var(--color-text-secondary);
+  --code-snippet-action-icon: var(--color-icon-tertiary);
+  --code-snippet-action-icon-hover: var(--color-icon-primary);
+  --code-snippet-background: var(--color-background-canvas);
+  --code-snippet-foreground: var(--color-text-primary);
+  --code-snippet-token-link: var(--color-text-accent);
+  --code-snippet-token-string: var(--color-warning-800);
+  --code-snippet-token-comment: var(--color-neutral-500);
+  --code-snippet-token-constant: var(--color-warning-800);
+  --code-snippet-token-keyword: var(--color-accent-700);
+  --code-snippet-token-parameter: var(--color-accent-700);
+  --code-snippet-token-function: var(--color-accent-700);
+  --code-snippet-token-string-expression: var(--color-warning-800);
+  --code-snippet-token-punctuation: var(--color-neutral-700);
+  --code-snippet-token-inserted: var(--color-status-success-text);
+  --code-snippet-token-deleted: var(--color-status-error-text);
+  --code-snippet-token-changed: var(--color-status-warning-text);
 
   /* Eyebrow
    * Repeated section eyebrow treatment with accent text and marker.
@@ -137,6 +214,49 @@
   --label-metric-text-default: var(--color-text-tertiary);
   --label-field-text-default: var(--color-text-secondary);
 
+  /* Selection control
+   * Shared checkbox and radio indicator contract.
+   */
+  --selection-control-unchecked-background-default: var(--input-background-default);
+  --selection-control-unchecked-background-hover: var(--input-background-hover);
+  --selection-control-unchecked-background-pressed: var(--input-background-hover);
+  --selection-control-unchecked-background-disabled: var(--input-background-disabled);
+  --selection-control-unchecked-border-default: var(--input-border-default);
+  --selection-control-unchecked-border-hover: var(--input-border-hover);
+  --selection-control-unchecked-border-pressed: var(--input-border-hover);
+  --selection-control-unchecked-border-disabled: var(--input-border-disabled);
+  --selection-control-checked-background-default: var(--button-primary-background-default);
+  --selection-control-checked-background-hover: var(--button-primary-background-hover);
+  --selection-control-checked-background-pressed: var(--button-primary-background-pressed);
+  --selection-control-checked-background-disabled: var(--input-background-disabled);
+  --selection-control-checked-border-default: var(--button-primary-border-default);
+  --selection-control-checked-border-hover: var(--button-primary-border-hover);
+  --selection-control-checked-border-pressed: var(--button-primary-border-pressed);
+  --selection-control-checked-border-disabled: var(--input-border-disabled);
+  --selection-control-checked-foreground-default: var(--button-primary-icon-default);
+  --selection-control-checked-foreground-hover: var(--button-primary-icon-hover);
+  --selection-control-checked-foreground-pressed: var(--button-primary-icon-pressed);
+  --selection-control-checked-foreground-disabled: var(--button-primary-icon-disabled);
+
+  /* Pagination
+   * URL-addressable navigation controls and current-page state.
+   */
+  --pagination-control-background-default: var(--color-background-canvas);
+  --pagination-control-background-hover: var(--color-background-subtle);
+  --pagination-control-background-pressed: var(--color-background-muted);
+  --pagination-control-background-current: var(--color-background-inverse);
+  --pagination-control-background-disabled: var(--color-state-disabled-background);
+  --pagination-control-border-default: var(--color-border-default);
+  --pagination-control-border-hover: var(--color-border-strong);
+  --pagination-control-border-pressed: var(--color-border-strong);
+  --pagination-control-border-current: var(--color-border-inverse);
+  --pagination-control-border-disabled: var(--color-state-disabled-border);
+  --pagination-control-text-default: var(--color-text-secondary);
+  --pagination-control-text-hover: var(--color-text-primary);
+  --pagination-control-text-pressed: var(--color-text-primary);
+  --pagination-control-text-current: var(--color-text-inverse);
+  --pagination-control-text-disabled: var(--color-state-disabled-text);
+
   /* Card
    * Reusable content surface with hover and selected emphasis.
    */
@@ -147,11 +267,19 @@
   --card-border-hover: var(--color-border-default);
   --card-border-selected: var(--color-border-accent);
 
-  /* Shared focus treatment
-   * Consistent keyboard focus ring used by interactive components.
+  /* Feedback
+   * Shared emphasis surfaces for Alert, Notification and Toast.
    */
-  --component-focus-ring: var(--color-state-focus-ring);
-  --image-effect-overlay-background: color-mix(in oklab, var(--color-background-accent) 60%, transparent);
+  --feedback-error-background-solid: var(--color-status-error-text);
+  --feedback-error-background-soft: var(--color-status-error-border);
+  --feedback-warning-background-solid: var(--color-status-warning-text);
+  --feedback-warning-background-soft: var(--color-status-warning-border);
+  --feedback-success-background-solid: var(--color-status-success-text);
+  --feedback-success-background-soft: var(--color-status-success-border);
+  --feedback-info-background-solid: var(--color-status-info-text);
+  --feedback-info-background-soft: var(--color-status-info-border);
+  --feedback-feature-background-solid: var(--color-accent-700);
+  --feedback-feature-background-soft: var(--color-accent-100);
 }
 
 /* Dark-theme interaction adjustments
@@ -159,10 +287,7 @@
  * redeclared on the dark scope and therefore resolve against dark semantics.
  */
 [data-theme="dark"] {
-  --button-primary-background-hover: var(--color-accent-400);
-  --button-primary-background-pressed: var(--color-accent-300);
-  --button-primary-border-hover: var(--color-accent-400);
-  --button-primary-border-pressed: var(--color-accent-300);
+  --feedback-feature-background-soft: var(--color-accent-900);
 
   --button-link-text-hover: var(--color-accent-400);
   --button-link-text-pressed: var(--color-accent-100);
@@ -172,4 +297,13 @@
   --link-text-hover: var(--color-accent-200);
   --link-text-visited: var(--color-accent-300);
   --link-underline-hover: var(--color-accent-200);
+
+  --code-snippet-token-string: var(--color-warning-400);
+  --code-snippet-token-comment: var(--color-neutral-400);
+  --code-snippet-token-constant: var(--color-warning-400);
+  --code-snippet-token-keyword: var(--color-accent-400);
+  --code-snippet-token-parameter: var(--color-accent-400);
+  --code-snippet-token-function: var(--color-accent-400);
+  --code-snippet-token-string-expression: var(--color-warning-400);
+  --code-snippet-token-punctuation: var(--color-neutral-300);
 }

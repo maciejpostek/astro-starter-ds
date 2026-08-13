@@ -1,472 +1,233 @@
 # GENERATED FILE. DO NOT EDIT.
 # Canonical source: architecture/system-map.json
 # View: view.prompt-to-astro-page-section
-# Read edges from source-of-truth nodes toward consumers as visual data flow.
-# This reverses presentation only; semantic edge direction remains canonical in JSON.
-direction: down
+direction: right
 
-title: "Prompt → Astro Page or Section" {
+title: "Prompt to Astro Page or Section" {
   shape: text
   near: top-center
-  style.font-size: 32
+  style.font-size: 30
   style.bold: true
   style.font-color: "#0f172a"
 }
 
-intake: {
-  label: "01 · INTAKE AND ROUTING"
-  style.fill: "#f8fafc"
-  style.stroke: "#cbd5e1"
-  style.font-color: "#334155"
-  style.stroke-width: 1
-  style.border-radius: 12
-  direction: down
-  prompt: "User Prompt\nPROMPT\nExample\n“Create a slider section using SectionHeader, Swiper, and Blog Cards.”" {
-    shape: parallelogram
-    style.fill: "#dbeafe"
-    style.stroke: "#2563eb"
-    style.font-color: "#1e3a8a"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  agent: "AI Agent\nACTOR\nEntry instruction\nAGENTS.md" {
-    shape: person
-    style.fill: "#e0f2fe"
-    style.stroke: "#0369a1"
-    style.font-color: "#0c4a6e"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  router: "Agentic Rules Router\nROUTER\nSelects the smallest relevant rule set\nAGENTIC-RULES.json" {
-    shape: hexagon
-    style.fill: "#ede9fe"
-    style.stroke: "#7c3aed"
-    style.font-color: "#4c1d95"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  scope: "Scope and Mode Gate\nDECISION GATE\nWhich mode?\nReuse · compose · create · repair" {
-    shape: diamond
-    style.fill: "#fce7f3"
-    style.stroke: "#be185d"
-    style.font-color: "#831843"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  prompt -> agent: "interpreted by" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-  agent -> router: "reads" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-  router -> scope: "selects mode" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-}
-
-discovery: {
-  label: "02 · REQUIRED CONTEXT AND FOCUSED DISCOVERY"
-  style.fill: "#f8fafc"
-  style.stroke: "#cbd5e1"
-  style.font-color: "#334155"
-  style.stroke-width: 1
-  style.border-radius: 12
-  direction: down
-  project_input: "Project Context\nINPUT\nAudience · offer · content · IA\nproject-context/" {
-    shape: parallelogram
-    style.fill: "#cffafe"
-    style.stroke: "#0891b2"
-    style.font-color: "#164e63"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  project_gate: "Project Context Availability Gate\nDECISION GATE\nProject inputs complete?\nYes / No" {
-    shape: diamond
-    style.fill: "#fce7f3"
-    style.stroke: "#be185d"
-    style.font-color: "#831843"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  project_blocked: "Blocked: Project Input Required\nOUTPUT\nAsk only for the missing audience, content, offer, or IA input" {
-    shape: parallelogram
-    style.fill: "#fee2e2"
-    style.stroke: "#b91c1c"
-    style.font-color: "#7f1d1d"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  lookup: "Focused Architecture and Component Lookup\nPROCESS\nResolve only requested roles\nSectionHeader · Swiper · Blog Cards" {
-    shape: rectangle
-    style.fill: "#eef2ff"
-    style.stroke: "#4f46e5"
-    style.font-color: "#312e81"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  registry: "Component Registry\nSOURCE OF TRUTH\nDiscovery and stable identity\ncomponentArchitecture.json" {
-    shape: cylinder
-    style.fill: "#d1fae5"
-    style.stroke: "#059669"
-    style.font-color: "#064e3b"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  astro_source: "Astro Component Source\nSOURCE OF TRUTH\nExecutable API and runtime truth\nsrc/components/" {
-    shape: cylinder
-    style.fill: "#d1fae5"
-    style.stroke: "#059669"
-    style.font-color: "#064e3b"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  reuse: "Existing Asset Reuse Gate\nDECISION GATE\nAll requested roles ready?\nYes / No" {
-    shape: diamond
-    style.fill: "#fce7f3"
-    style.stroke: "#be185d"
-    style.font-color: "#831843"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  project_input -> project_gate: "read by" {
-    style.stroke: "#0f766e"
-    style.font-color: "#115e59"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  project_gate -> project_blocked: "missing → stop" {
-    style.stroke: "#b91c1c"
-    style.font-color: "#991b1b"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  project_gate -> registry: "available → discover" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-  registry -> astro_source: "resolve identity" {
-    style.stroke: "#0f766e"
-    style.font-color: "#115e59"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  astro_source -> lookup: "inspect selected APIs" {
-    style.stroke: "#0f766e"
-    style.font-color: "#115e59"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  lookup -> reuse: "resolved candidates" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-}
-
-creation: {
-  label: "03A · MISSING REUSABLE ROLE"
-  style.fill: "#f8fafc"
-  style.stroke: "#cbd5e1"
-  style.font-color: "#334155"
-  style.stroke-width: 1
-  style.border-radius: 12
-  direction: down
-  gap: "Genuine Component Gap Gate\nDECISION GATE\nGenuine reusable gap?\nYes / No" {
-    shape: diamond
-    style.fill: "#fce7f3"
-    style.stroke: "#be185d"
-    style.font-color: "#831843"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  freeze: "Architecture Phase Component Freeze\nDECISION GATE\nComponent creation allowed now?\nNo · architecture phase" {
-    shape: diamond
-    style.fill: "#fce7f3"
-    style.stroke: "#be185d"
-    style.font-color: "#831843"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  deferred: "Deferred: Component Creation\nOUTPUT\nRecord the exact reusable gap and hand it to the lifecycle workflow" {
-    shape: parallelogram
-    style.fill: "#fee2e2"
-    style.stroke: "#b91c1c"
-    style.font-color: "#7f1d1d"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  gap -> freeze: "genuine gap" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-  freeze -> deferred: "defer creation" {
-    style.stroke: "#b91c1c"
-    style.font-color: "#991b1b"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-}
-
-brand: {
-  label: "03B · CONDITIONAL BRAND ACTIVATION"
-  style.fill: "#f8fafc"
-  style.stroke: "#cbd5e1"
-  style.font-color: "#334155"
-  style.stroke-width: 1
-  style.border-radius: 12
-  direction: down
-  brand_gate: "Brand Sensitivity Gate\nDECISION GATE\nBrand-sensitive request?\nVisual direction changes: Yes / No" {
-    shape: diamond
-    style.fill: "#fce7f3"
-    style.stroke: "#be185d"
-    style.font-color: "#831843"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  brand_source: "Approved Brand Expression Contract\nSOURCE OF TRUTH\nApproved project visual intent\nBrand Expression Contract" {
-    shape: cylinder
-    style.fill: "#d1fae5"
-    style.stroke: "#059669"
-    style.font-color: "#064e3b"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  contract: "Approved Brand Contract Gate\nDECISION GATE\nApproved contract in scope?\nYes / No" {
-    shape: diamond
-    style.fill: "#fce7f3"
-    style.stroke: "#be185d"
-    style.font-color: "#831843"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  brand_blocked: "Blocked: Brand Approval Required\nOUTPUT\nRequest an approved contract or a narrower propagation scope" {
-    shape: parallelogram
-    style.fill: "#fee2e2"
-    style.stroke: "#b91c1c"
-    style.font-color: "#7f1d1d"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  art_direction: "Universal Art Direction Knowledge\nSOURCE OF TRUTH\nUniversal calibration knowledge\nart-direction/" {
-    shape: cylinder
-    style.fill: "#d1fae5"
-    style.stroke: "#059669"
-    style.font-color: "#064e3b"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  calibration: "Brand Visual Calibration\nPROCESS\nBounded representative browser pilot" {
-    shape: rectangle
-    style.fill: "#eef2ff"
-    style.stroke: "#4f46e5"
-    style.font-color: "#312e81"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  approval: "Human Visual Approval\nHUMAN APPROVAL\nVisual pilot accepted?\nYes / No" {
-    shape: diamond
-    style.fill: "#ffedd5"
-    style.stroke: "#ea580c"
-    style.font-color: "#7c2d12"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  brand_gate -> brand_source: "yes · load approved visual intent" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-  brand_source -> contract: "check status and scope" {
-    style.stroke: "#0f766e"
-    style.font-color: "#115e59"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  contract -> brand_blocked: "not approved → stop" {
-    style.stroke: "#b91c1c"
-    style.font-color: "#991b1b"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  contract -> art_direction: "approved → load calibration knowledge" {
-    style.stroke: "#0f766e"
-    style.font-color: "#115e59"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  art_direction -> calibration: "calibration input" {
-    style.stroke: "#0f766e"
-    style.font-color: "#115e59"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  calibration -> approval: "review" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-}
-
-delivery: {
-  label: "04 · ASTRO COMPOSITION AND VALIDATION LOOP"
-  style.fill: "#f8fafc"
-  style.stroke: "#cbd5e1"
-  style.font-color: "#334155"
-  style.stroke-width: 1
-  style.border-radius: 12
-  direction: down
-  tokens: "CSS Variable Foundations\nSOURCE OF TRUTH\nShared value truth\nsrc/styles/tokens/" {
-    shape: cylinder
-    style.fill: "#d1fae5"
-    style.stroke: "#059669"
-    style.font-color: "#064e3b"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  astro_source: "Astro Component Source\nSOURCE OF TRUTH\nComponent imports, props, slots and semantics" {
-    shape: cylinder
-    style.fill: "#d1fae5"
-    style.stroke: "#059669"
-    style.font-color: "#064e3b"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  compose: "Compose Existing Components\nPROCESS\nPage → src/pages/<route>.astro\nSection → src/components/organisms/sections/" {
-    shape: rectangle
-    style.fill: "#eef2ff"
-    style.stroke: "#4f46e5"
-    style.font-color: "#312e81"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  build: "Astro Check and Build\nVALIDATOR\nAstro check/build\nplus targeted audits when public contracts change" {
-    shape: hexagon
-    style.fill: "#fef3c7"
-    style.stroke: "#d97706"
-    style.font-color: "#78350f"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  browser_runtime: "Browser Runtime\nEXTERNAL SYSTEM\nResponsive runtime and interaction" {
-    shape: cloud
-    style.fill: "#e2e8f0"
-    style.stroke: "#475569"
-    style.font-color: "#1e293b"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  browser: "Browser Validation\nPROCESS\nInspect layout · content · a11y · behavior" {
-    shape: rectangle
-    style.fill: "#eef2ff"
-    style.stroke: "#4f46e5"
-    style.font-color: "#312e81"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  astro_output: "Accepted Astro Output\nOUTPUT\nAccepted page route or reusable Astro section" {
-    shape: parallelogram
-    style.fill: "#dcfce7"
-    style.stroke: "#15803d"
-    style.font-color: "#14532d"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  terminal: "Terminal Result and Handoff\nOUTPUT\nFiles written · assets reused · checks · remaining gaps" {
-    shape: parallelogram
-    style.fill: "#dcfce7"
-    style.stroke: "#15803d"
-    style.font-color: "#14532d"
-    style.stroke-width: 2
-    style.border-radius: 8
-  }
-  tokens -> astro_source: "values consumed by components" {
-    style.stroke: "#0f766e"
-    style.font-color: "#115e59"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  astro_source -> compose: "compose selected APIs" {
-    style.stroke: "#0f766e"
-    style.font-color: "#115e59"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  compose -> build: "validate structure" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-  build -> browser_runtime: "compile passes" {
-    style.stroke: "#b45309"
-    style.font-color: "#92400e"
-    style.stroke-width: 2
-  }
-  browser_runtime -> browser: "inspect in browser" {
-    style.stroke: "#64748b"
-    style.font-color: "#475569"
-    style.stroke-width: 2
-    style.stroke-dash: 5
-  }
-  browser -> astro_output: "passes" {
-    style.stroke: "#15803d"
-    style.font-color: "#166534"
-    style.stroke-width: 2
-  }
-  astro_output -> terminal: "handoff" {
-    style.stroke: "#475569"
-    style.font-color: "#334155"
-    style.stroke-width: 2
-  }
-  browser -> compose: "fails → repair and repeat" {
-    style.stroke: "#b91c1c"
-    style.font-color: "#991b1b"
-    style.stroke-width: 2
-    style.stroke-dash: 6
-  }
-}
-
-intake.scope -> discovery.project_gate: "page or section task" {
-  style.stroke: "#475569"
-  style.font-color: "#334155"
+prompt_user_request: "User Prompt\\nprompt" {
+  shape: parallelogram
+  style.fill: "#dbeafe"
+  style.stroke: "#2563eb"
+  style.font-color: "#1e3a8a"
   style.stroke-width: 2
-}
-discovery.reuse -> brand.brand_gate: "all roles ready" {
-  style.stroke: "#475569"
-  style.font-color: "#334155"
-  style.stroke-width: 2
-}
-discovery.reuse -> creation.gap: "role missing" {
-  style.stroke: "#b91c1c"
-  style.font-color: "#991b1b"
-  style.stroke-width: 2
-}
-brand.brand_gate -> delivery.compose: "no · skip full Brand Expression context" {
-  style.stroke: "#4f46e5"
-  style.font-color: "#3730a3"
-  style.stroke-width: 2
-}
-brand.approval -> delivery.compose: "approved direction" {
-  style.stroke: "#ea580c"
-  style.font-color: "#9a3412"
-  style.stroke-width: 2
-}
-creation.deferred -> brand.brand_gate: "layout only" {
-  style.opacity: 0
+  style.border-radius: 8
 }
 
-scope_note: "Figma synchronization is a separate downstream workflow and is intentionally not part of this Astro acceptance view." {
+router_request_classifier: "Request Classifier\\nrouter\\nroute-agent-request.mjs, AGENTIC-RULES.json" {
+  shape: hexagon
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+artifact_task_contract: "Task Contract\\nartifact\\nagent-task.schema.json" {
   shape: page
-  near: bottom-center
-  style.fill: "#f1f5f9"
-  style.stroke: "#94a3b8"
-  style.font-color: "#334155"
-  style.stroke-dash: 5
+  style.fill: "#ccfbf1"
+  style.stroke: "#0f766e"
+  style.font-color: "#134e4a"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+router_context_resolver: "Focused Context Resolver\\nrouter\\nresolve-agent-context.mjs, agent-runtime.mjs" {
+  shape: hexagon
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+source_component_registry: "Component Registry and Readiness\\nsource of truth\\ncomponentArchitecture.json" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+source_astro_components: "Astro Component Sources\\nsource of truth\\ncomponents" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+artifact_context_pack: "Bounded Context Pack\\nartifact\\nagent-runtime.mjs" {
+  shape: page
+  style.fill: "#ccfbf1"
+  style.stroke: "#0f766e"
+  style.font-color: "#134e4a"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+router_execution_profile: "Execution Profile\\nrouter\\nAGENTIC-RULES.json" {
+  shape: hexagon
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_compose: "Compose Existing Assets\\nprocess" {
+  shape: rectangle
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+gate_brand_activation: "Brand Activation Gate\\ndecision gate\\nagent-runtime.mjs, AGENTIC-RULES.json" {
+  shape: diamond
+  style.fill: "#fce7f3"
+  style.stroke: "#be185d"
+  style.font-color: "#831843"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+source_brand_contract: "Approved Brand/Composition Rules\\nsource of truth\\ncontract.json" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_scoped_validation: "Scoped Validation\\nvalidator\\nAGENTIC-RULES.json, scripts" {
+  shape: hexagon
+  style.fill: "#fef3c7"
+  style.stroke: "#d97706"
+  style.font-color: "#78350f"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_bounded_repair: "Bounded Repair\\nprocess\\nAGENTIC-RULES.json" {
+  shape: rectangle
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+output_accepted: "Accepted Astro Result\\noutput" {
+  shape: parallelogram
+  style.fill: "#dcfce7"
+  style.stroke: "#15803d"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+output_blocked: "Blocked Result\\noutput" {
+  shape: parallelogram
+  style.fill: "#dcfce7"
+  style.stroke: "#15803d"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+prompt_user_request -> router_request_classifier: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+router_request_classifier -> artifact_task_contract: "creates" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+router_request_classifier -> router_context_resolver: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+router_context_resolver -> source_component_registry: "component target" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+router_context_resolver -> source_astro_components: "component execution" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+router_context_resolver -> artifact_context_pack: "creates" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+router_execution_profile -> process_compose: "intent compose" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+gate_brand_activation -> source_brand_contract: "matching approved rules only" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_compose -> process_scoped_validation: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+process_scoped_validation -> output_accepted: "passed" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_scoped_validation -> process_bounded_repair: "failed and attempts remain" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_bounded_repair -> process_scoped_validation: "retry" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_bounded_repair -> output_blocked: "repair limit exhausted" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
 }

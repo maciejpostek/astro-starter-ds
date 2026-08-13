@@ -1,0 +1,664 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsCodeSnippet from "../../../components/_internal/documentation/DsCodeSnippet.astro";
+import DsDocSection from "../../../components/_internal/documentation/DsDocSection.astro";
+import DsDocumentationBlockTitle from "../../../components/_internal/documentation/DsDocumentationBlockTitle.astro";
+import DsComponentColorReference from "../../../components/_internal/documentation/DsComponentColorReference.astro";
+import DsPaletteBlock from "../../../components/_internal/documentation/DsPaletteBlock.astro";
+import {
+  documentationFoundationHeader,
+  documentationFoundationToc,
+} from "../../../data/documentationFoundationRegistry";
+import { resolveDocumentationColorSampleSurface } from "../../../data/documentationFoundationData";
+import colorAgenticRules from "../../../../.agentic-rules/02-colors.md?raw";
+
+type ColorRow = {
+  token: string;
+  value: string;
+  lightValue?: string;
+  darkValue?: string;
+  sampleValue?: string;
+  sampleSurfaceValue?: string;
+  sampleType?: "fill" | "border" | "text";
+  label?: string;
+};
+
+const parseModeValue = (value: string) => {
+  const splitModeMatch = value.match(/^light:\s*(.+?)\s*\/\s*dark:\s*(.+)$/);
+  const sharedModeMatch = value.match(/^light\/dark:\s*(.+)$/);
+
+  if (splitModeMatch) {
+    return {
+      lightValue: splitModeMatch[1],
+      darkValue: splitModeMatch[2],
+    };
+  }
+
+  if (sharedModeMatch) {
+    return {
+      lightValue: sharedModeMatch[1],
+      darkValue: sharedModeMatch[1],
+    };
+  }
+
+  return {};
+};
+
+const tokenSample = (
+  token: string,
+  value: string,
+  sampleType: ColorRow["sampleType"] = "fill",
+  label?: string,
+): ColorRow => ({
+  token,
+  value,
+  ...parseModeValue(value),
+  sampleType,
+  sampleValue: `var(${token})`,
+  sampleSurfaceValue: resolveDocumentationColorSampleSurface(token),
+  label,
+});
+const foundationHeader = documentationFoundationHeader("color");
+
+const baseColorRows: ColorRow[] = [
+  { token: "--color-transparent", value: "transparent" },
+  {
+    token: "--color-on-accent",
+    value: "var(--color-neutral-0)",
+    sampleSurfaceValue: "var(--color-background-accent)",
+    sampleType: "text",
+    label: "Aa"
+  },
+];
+
+const neutralRows: ColorRow[] = [
+  { token: "--color-neutral-0", value: "#ffffff" },
+  { token: "--color-neutral-50", value: "#fafafa" },
+  { token: "--color-neutral-100", value: "#f5f5f5" },
+  { token: "--color-neutral-200", value: "#e5e5e5" },
+  { token: "--color-neutral-300", value: "#d4d4d4" },
+  { token: "--color-neutral-400", value: "#a1a1a1" },
+  { token: "--color-neutral-500", value: "#737373" },
+  { token: "--color-neutral-600", value: "#525252" },
+  { token: "--color-neutral-700", value: "#404040" },
+  { token: "--color-neutral-800", value: "#262626" },
+  { token: "--color-neutral-900", value: "#171717" },
+  { token: "--color-neutral-950", value: "#0a0a0a" },
+];
+
+const accentRows: ColorRow[] = [
+  { token: "--color-accent-50", value: "#eff6ff" },
+  { token: "--color-accent-100", value: "#dbeafe" },
+  { token: "--color-accent-200", value: "#bedbff" },
+  { token: "--color-accent-300", value: "#8ec5ff" },
+  { token: "--color-accent-400", value: "#51a2ff" },
+  { token: "--color-accent-500", value: "#2b7fff" },
+  { token: "--color-accent-600", value: "#155dfc" },
+  { token: "--color-accent-700", value: "#1447e6" },
+  { token: "--color-accent-800", value: "#193cb8" },
+  { token: "--color-accent-900", value: "#1c398e" },
+  { token: "--color-accent-950", value: "#162456" },
+];
+
+const successRows: ColorRow[] = [
+  { token: "--color-success-50", value: "#f0fdf4" },
+  { token: "--color-success-100", value: "#dcfce7" },
+  { token: "--color-success-200", value: "#b9f8cf" },
+  { token: "--color-success-300", value: "#7bf1a8" },
+  { token: "--color-success-400", value: "#05df72" },
+  { token: "--color-success-500", value: "#00c950" },
+  { token: "--color-success-600", value: "#00a63e" },
+  { token: "--color-success-700", value: "#008236" },
+  { token: "--color-success-800", value: "#016630" },
+  { token: "--color-success-900", value: "#0d542b" },
+  { token: "--color-success-950", value: "#032e15" },
+];
+
+const warningRows: ColorRow[] = [
+  { token: "--color-warning-50", value: "#fffbeb" },
+  { token: "--color-warning-100", value: "#fef3c6" },
+  { token: "--color-warning-200", value: "#fee685" },
+  { token: "--color-warning-300", value: "#ffd230" },
+  { token: "--color-warning-400", value: "#ffb900" },
+  { token: "--color-warning-500", value: "#fe9a00" },
+  { token: "--color-warning-600", value: "#e17100" },
+  { token: "--color-warning-700", value: "#bb4d00" },
+  { token: "--color-warning-800", value: "#973c00" },
+  { token: "--color-warning-900", value: "#7b3306" },
+  { token: "--color-warning-950", value: "#461901" },
+];
+
+const errorRows: ColorRow[] = [
+  { token: "--color-error-50", value: "#fef2f2" },
+  { token: "--color-error-100", value: "#ffe2e2" },
+  { token: "--color-error-200", value: "#ffc9c9" },
+  { token: "--color-error-300", value: "#ffa2a2" },
+  { token: "--color-error-400", value: "#ff6467" },
+  { token: "--color-error-500", value: "#fb2c36" },
+  { token: "--color-error-600", value: "#e7000b" },
+  { token: "--color-error-700", value: "#c10007" },
+  { token: "--color-error-800", value: "#9f0712" },
+  { token: "--color-error-900", value: "#82181a" },
+  { token: "--color-error-950", value: "#460809" },
+];
+
+const infoRows: ColorRow[] = [
+  { token: "--color-info-50", value: "#f0f9ff" },
+  { token: "--color-info-100", value: "#dff2fe" },
+  { token: "--color-info-200", value: "#b8e6fe" },
+  { token: "--color-info-300", value: "#74d4ff" },
+  { token: "--color-info-400", value: "#00bcff" },
+  { token: "--color-info-500", value: "#00a6f4" },
+  { token: "--color-info-600", value: "#0084d1" },
+  { token: "--color-info-700", value: "#0069a8" },
+  { token: "--color-info-800", value: "#00598a" },
+  { token: "--color-info-900", value: "#024a70" },
+  { token: "--color-info-950", value: "#052f4a" },
+];
+
+const semanticBackgroundRows: ColorRow[] = [
+  tokenSample("--color-background-canvas", "light: var(--color-neutral-0) / dark: var(--color-neutral-950)"),
+  tokenSample("--color-background-surface", "light: var(--color-neutral-50) / dark: var(--color-neutral-900)"),
+  tokenSample("--color-background-subtle", "light: var(--color-neutral-100) / dark: var(--color-neutral-800)"),
+  tokenSample("--color-background-muted", "light: var(--color-neutral-200) / dark: var(--color-neutral-700)"),
+  tokenSample("--color-background-strong", "light: var(--color-neutral-300) / dark: var(--color-neutral-600)"),
+  tokenSample("--color-background-inverse", "light: var(--color-neutral-950) / dark: var(--color-neutral-0)"),
+  tokenSample("--color-background-accent-subtle", "light: var(--color-accent-300) / dark: var(--color-accent-700)"),
+  tokenSample("--color-background-accent", "light/dark: var(--color-accent-500)"),
+  tokenSample("--color-background-accent-strong", "light: var(--color-accent-700) / dark: var(--color-accent-300)"),
+  tokenSample("--color-background-overlay", "light/dark: oklch(0% 0 0 / 20%)"),
+  tokenSample("--color-background-media-overlay", "light: oklch(14.5% 0 0 / 78%) / dark: oklch(0% 0 0 / 78%)"),
+];
+
+const semanticTextRows: ColorRow[] = [
+  tokenSample("--color-text-primary", "light: var(--color-neutral-950) / dark: var(--color-neutral-0)", "text", "Aa"),
+  tokenSample("--color-text-secondary", "light: var(--color-neutral-700) / dark: var(--color-neutral-300)", "text", "Aa"),
+  tokenSample("--color-text-tertiary", "light: var(--color-neutral-500) / dark: var(--color-neutral-400)", "text", "Aa"),
+  tokenSample("--color-text-inverse", "light: var(--color-neutral-0) / dark: var(--color-neutral-950)", "text", "Aa"),
+  tokenSample("--color-text-accent", "light: var(--color-accent-700) / dark: var(--color-accent-300)", "text", "Aa"),
+  tokenSample("--color-text-on-accent", "light/dark: var(--color-on-accent)", "text", "Aa"),
+];
+
+const semanticBorderRows: ColorRow[] = [
+  tokenSample("--color-border-subtle", "light: var(--color-neutral-100) / dark: var(--color-neutral-800)", "border"),
+  tokenSample("--color-border-default", "light: var(--color-neutral-200) / dark: var(--color-neutral-700)", "border"),
+  tokenSample("--color-border-strong", "light: var(--color-neutral-300) / dark: var(--color-neutral-600)", "border"),
+  tokenSample("--color-border-inverse", "light: var(--color-neutral-700) / dark: var(--color-neutral-300)", "border"),
+  tokenSample("--color-border-accent-subtle", "light: var(--color-accent-300) / dark: var(--color-accent-700)", "border"),
+  tokenSample("--color-border-accent", "light/dark: var(--color-accent-500)", "border"),
+  tokenSample("--color-border-accent-strong", "light: var(--color-accent-700) / dark: var(--color-accent-300)", "border"),
+  tokenSample("--color-border-on-media", "light/dark: oklch(100% 0 0 / 35%)", "border"),
+];
+
+const semanticIconRows: ColorRow[] = [
+  tokenSample("--color-icon-primary", "light: var(--color-neutral-950) / dark: var(--color-neutral-0)", "text", "Icon"),
+  tokenSample("--color-icon-secondary", "light: var(--color-neutral-700) / dark: var(--color-neutral-300)", "text", "Icon"),
+  tokenSample("--color-icon-tertiary", "light: var(--color-neutral-500) / dark: var(--color-neutral-400)", "text", "Icon"),
+  tokenSample("--color-icon-inverse", "light: var(--color-neutral-0) / dark: var(--color-neutral-950)", "text", "Icon"),
+  tokenSample("--color-icon-accent", "light: var(--color-accent-700) / dark: var(--color-accent-300)", "text", "Icon"),
+  tokenSample("--color-icon-on-accent", "light/dark: var(--color-on-accent)", "text", "Icon"),
+  tokenSample("--color-content-on-media", "light/dark: var(--color-neutral-0)", "text", "Aa"),
+];
+
+const semanticStateRows: ColorRow[] = [
+  tokenSample("--color-state-disabled-background", "light: var(--color-neutral-100) / dark: var(--color-neutral-900)"),
+  tokenSample("--color-state-disabled-border", "light: var(--color-neutral-200) / dark: var(--color-neutral-800)", "border"),
+  tokenSample("--color-state-disabled-text", "light: var(--color-neutral-400) / dark: var(--color-neutral-600)", "text", "Aa"),
+  tokenSample("--color-state-disabled-icon", "light: var(--color-neutral-400) / dark: var(--color-neutral-600)", "text", "Icon"),
+  tokenSample("--color-state-focus-ring", "light: var(--color-accent-500) / dark: var(--color-accent-400)", "border"),
+  tokenSample("--color-state-focus-ring-offset", "light: var(--color-neutral-0) / dark: var(--color-neutral-950)"),
+];
+
+const semanticStatusRows: ColorRow[] = [
+  tokenSample("--color-status-success-background", "light: var(--color-success-50) / dark: var(--color-success-950)"),
+  tokenSample("--color-status-success-border", "light: var(--color-success-200) / dark: var(--color-success-800)", "border"),
+  tokenSample("--color-status-success-text", "light: var(--color-success-800) / dark: var(--color-success-200)", "text", "Aa"),
+  tokenSample("--color-status-success-icon", "light: var(--color-success-600) / dark: var(--color-success-400)", "text", "Icon"),
+  tokenSample("--color-status-warning-background", "light: var(--color-warning-50) / dark: var(--color-warning-950)"),
+  tokenSample("--color-status-warning-border", "light: var(--color-warning-200) / dark: var(--color-warning-800)", "border"),
+  tokenSample("--color-status-warning-text", "light: var(--color-warning-800) / dark: var(--color-warning-200)", "text", "Aa"),
+  tokenSample("--color-status-warning-icon", "light: var(--color-warning-600) / dark: var(--color-warning-400)", "text", "Icon"),
+  tokenSample("--color-status-error-background", "light: var(--color-error-50) / dark: var(--color-error-950)"),
+  tokenSample("--color-status-error-border", "light: var(--color-error-200) / dark: var(--color-error-800)", "border"),
+  tokenSample("--color-status-error-text", "light: var(--color-error-800) / dark: var(--color-error-200)", "text", "Aa"),
+  tokenSample("--color-status-error-icon", "light: var(--color-error-600) / dark: var(--color-error-400)", "text", "Icon"),
+  tokenSample("--color-status-info-background", "light: var(--color-info-50) / dark: var(--color-info-950)"),
+  tokenSample("--color-status-info-border", "light: var(--color-info-200) / dark: var(--color-info-800)", "border"),
+  tokenSample("--color-status-info-text", "light: var(--color-info-800) / dark: var(--color-info-200)", "text", "Aa"),
+  tokenSample("--color-status-info-icon", "light: var(--color-info-600) / dark: var(--color-info-400)", "text", "Icon"),
+  tokenSample("--color-status-feature-background", "light: var(--color-accent-50) / dark: var(--color-accent-950)"),
+  tokenSample("--color-status-feature-border", "light/dark: var(--color-border-accent-subtle)", "border"),
+  tokenSample("--color-status-feature-text", "light/dark: var(--color-text-accent)", "text", "Aa"),
+  tokenSample("--color-status-feature-icon", "light/dark: var(--color-icon-accent)", "text", "Icon"),
+];
+
+const inputRows: ColorRow[] = [
+  tokenSample("--input-background-default", "var(--color-background-canvas)"),
+  tokenSample("--input-background-hover", "var(--color-background-surface)"),
+  tokenSample("--input-background-focus", "var(--color-background-canvas)"),
+  tokenSample("--input-background-disabled", "var(--color-state-disabled-background)"),
+  tokenSample("--input-border-default", "var(--color-border-default)", "border"),
+  tokenSample("--input-border-hover", "var(--color-border-strong)", "border"),
+  tokenSample("--input-border-focus", "var(--color-border-accent)", "border"),
+  tokenSample("--input-border-invalid", "var(--color-status-error-border)", "border"),
+  tokenSample("--input-border-valid", "var(--color-status-success-border)", "border"),
+  tokenSample("--input-text-default", "var(--color-text-primary)", "text", "Aa"),
+  tokenSample("--input-placeholder-default", "var(--color-text-tertiary)", "text", "Aa"),
+  tokenSample("--input-helper-default", "var(--color-text-secondary)", "text", "Aa"),
+  tokenSample("--input-helper-invalid", "var(--color-status-error-text)", "text", "Aa"),
+  tokenSample("--input-helper-valid", "var(--color-status-success-text)", "text", "Aa"),
+];
+
+const cardRows: ColorRow[] = [
+  tokenSample("--card-background-default", "var(--color-background-surface)"),
+  tokenSample("--card-background-hover", "var(--color-background-subtle)"),
+  tokenSample("--card-background-selected", "var(--color-background-surface)"),
+  tokenSample("--card-border-default", "var(--color-border-subtle)", "border"),
+  tokenSample("--card-border-hover", "var(--color-border-default)", "border"),
+  tokenSample("--card-border-selected", "var(--color-border-accent)", "border"),
+];
+
+const linkRows: ColorRow[] = [
+  tokenSample("--link-text-default", "var(--color-text-accent)", "text", "Aa"),
+  tokenSample("--link-text-hover", "light: var(--color-accent-800) / dark: var(--color-accent-200)", "text", "Aa"),
+  tokenSample("--link-text-visited", "light: var(--color-accent-900) / dark: var(--color-accent-300)", "text", "Aa"),
+  tokenSample("--link-underline-default", "var(--color-border-accent)", "border"),
+  tokenSample("--link-underline-hover", "light: var(--color-accent-800) / dark: var(--color-accent-200)", "border"),
+];
+
+const eyebrowRows: ColorRow[] = [
+  tokenSample("--eyebrow-text-default", "var(--color-text-accent)", "text", "Aa"),
+  tokenSample("--eyebrow-marker-default", "var(--color-border-accent)", "border"),
+];
+
+const labelRows: ColorRow[] = [
+  tokenSample("--label-metric-text-default", "var(--color-text-tertiary)", "text", "Aa"),
+  tokenSample("--label-field-text-default", "var(--color-text-secondary)", "text", "Aa"),
+];
+
+---
+
+<DesignSystemLayout
+  title="Color - Astro Design System"
+  pageType="foundation"
+  toc={documentationFoundationToc("color")}
+  header={foundationHeader}
+>
+    <DsDocSection
+      id="colors-primitive-tokens"
+      title="Color Primitives"
+    >
+      <section
+        id="colors-primitive-base"
+        class="ds-color-topic"
+        aria-labelledby="colors-primitive-base-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-primitive-base-title"
+          title="Base utility values"
+        />
+
+        <DsPaletteBlock
+          name="Base utility values"
+          description="Shared primitive color utilities."
+          flushSampleInline
+          rows={baseColorRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="colors-primitive-neutral"
+        class="ds-color-topic"
+        aria-labelledby="colors-primitive-neutral-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-primitive-neutral-title"
+          title="Neutral palette"
+        />
+
+        <DsPaletteBlock
+          name="Neutral palette"
+          description="Achromatic scale from pure white to near black."
+          flushSampleInline
+          rows={neutralRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="colors-primitive-accent"
+        class="ds-color-topic"
+        aria-labelledby="colors-primitive-accent-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-primitive-accent-title"
+          title="Accent palette"
+        />
+
+        <DsPaletteBlock
+          name="Accent palette"
+          description="Default brand and interaction emphasis scale."
+          flushSampleInline
+          rows={accentRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="colors-primitive-status"
+        class="ds-color-topic"
+        aria-label="Status primitive colors"
+      >
+        <div class="ds-color-subsections">
+          <section aria-labelledby="colors-primitive-success-title">
+              <DsDocumentationBlockTitle id="colors-primitive-success-title" title="Success" />
+
+            <DsPaletteBlock
+              name="Success palette"
+              description="Positive status and validation scale."
+              flushSampleInline
+              rows={successRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="colors-primitive-warning-title">
+              <DsDocumentationBlockTitle id="colors-primitive-warning-title" title="Warning" />
+
+            <DsPaletteBlock
+              name="Warning palette"
+              description="Caution and attention status scale."
+              flushSampleInline
+              rows={warningRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="colors-primitive-error-title">
+              <DsDocumentationBlockTitle id="colors-primitive-error-title" title="Error" />
+
+            <DsPaletteBlock
+              name="Error palette"
+              description="Destructive action and invalid-state scale."
+              flushSampleInline
+              rows={errorRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="colors-primitive-info-title">
+              <DsDocumentationBlockTitle id="colors-primitive-info-title" title="Info" />
+
+            <DsPaletteBlock
+              name="Info palette"
+              description="Informational and neutral-notice status scale."
+              flushSampleInline
+              rows={infoRows}
+              showHeader={false}
+            />
+          </section>
+        </div>
+      </section>
+
+    </DsDocSection>
+
+    <DsDocSection
+      id="colors-semantic-tokens"
+      title="Color Semantic — Global"
+    >
+      <section
+        id="colors-semantic-global"
+        class="ds-color-topic"
+        aria-label="Global semantic colors"
+      >
+        <div class="ds-color-subsections">
+          <section aria-labelledby="colors-semantic-backgrounds-title">
+              <DsDocumentationBlockTitle id="colors-semantic-backgrounds-title" title="Backgrounds" />
+
+            <DsPaletteBlock
+              name="Semantic background tokens"
+              description="Theme-aware surface and overlay roles."
+              rows={semanticBackgroundRows}
+              showModeSamples
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="colors-semantic-text-title">
+              <DsDocumentationBlockTitle id="colors-semantic-text-title" title="Text" />
+
+            <DsPaletteBlock
+              name="Semantic text tokens"
+              description="Theme-aware text hierarchy roles."
+              rows={semanticTextRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="colors-semantic-border-title">
+              <DsDocumentationBlockTitle id="colors-semantic-border-title" title="Border" />
+
+            <DsPaletteBlock
+              name="Semantic border tokens"
+              description="Theme-aware boundary roles."
+              rows={semanticBorderRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="colors-semantic-icon-title">
+              <DsDocumentationBlockTitle id="colors-semantic-icon-title" title="Icon" />
+
+            <DsPaletteBlock
+              name="Semantic icon tokens"
+              description="Theme-aware icon hierarchy roles."
+              rows={semanticIconRows}
+              showHeader={false}
+            />
+          </section>
+        </div>
+      </section>
+
+      <section
+        id="colors-semantic-status"
+        class="ds-color-topic"
+        aria-label="Semantic status and state colors"
+      >
+        <div class="ds-color-subsections">
+          <section aria-labelledby="colors-semantic-status-feedback-title">
+              <DsDocumentationBlockTitle id="colors-semantic-status-feedback-title" title="Status" />
+
+            <DsPaletteBlock
+              name="Semantic status tokens"
+              description="Theme-aware status contracts."
+              rows={semanticStatusRows}
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="colors-semantic-state-title">
+              <DsDocumentationBlockTitle id="colors-semantic-state-title" title="State" />
+
+            <DsPaletteBlock
+              name="Semantic state tokens"
+              description="Theme-aware disabled and focus roles."
+              rows={semanticStateRows}
+              showHeader={false}
+            />
+          </section>
+        </div>
+      </section>
+    </DsDocSection>
+
+    <DsDocSection
+      id="colors-component-tokens"
+      title="Color Semantic — Component"
+    >
+      <section
+        id="colors-component-buttons"
+        class="ds-color-topic"
+        aria-labelledby="colors-component-buttons-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-component-buttons-title"
+          title="Buttons"
+        />
+
+        <div class="ds-color-subsections">
+          <DsComponentColorReference groupId="button-primary" />
+          <DsComponentColorReference groupId="button-secondary" />
+          <DsComponentColorReference groupId="button-tertiary" />
+          <DsComponentColorReference groupId="button-link" />
+          <DsComponentColorReference groupId="icon-button" />
+        </div>
+      </section>
+
+      <DsComponentColorReference groupId="feedback" />
+
+      <DsComponentColorReference groupId="switch-button" />
+
+      <section
+        id="colors-component-input"
+        class="ds-color-topic"
+        aria-labelledby="colors-component-input-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-component-input-title"
+          title="Input"
+        />
+        <DsPaletteBlock
+          name="Input colors"
+          description="Input field color contract."
+          rows={inputRows}
+          showHeader={false}
+        />
+      </section>
+
+      <DsComponentColorReference groupId="breadcrumb" />
+
+      <DsComponentColorReference groupId="content-divider" />
+
+      <DsComponentColorReference groupId="pagination" />
+
+      <DsComponentColorReference groupId="ratio" />
+
+      <DsComponentColorReference groupId="tag-tones" />
+
+      <section
+        id="colors-component-tabs"
+        class="ds-color-topic"
+        aria-labelledby="colors-component-tabs-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-component-tabs-title"
+          title="Tabs"
+        />
+
+        <div class="ds-color-subsections">
+          <DsComponentColorReference groupId="tab" />
+          <DsComponentColorReference groupId="tab-menu" />
+        </div>
+      </section>
+
+      <section
+        id="colors-component-card"
+        class="ds-color-topic"
+        aria-labelledby="colors-component-card-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-component-card-title"
+          title="Card"
+        />
+        <DsPaletteBlock
+          name="Card colors"
+          description="Card color contract."
+          rows={cardRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="colors-component-link"
+        class="ds-color-topic"
+        aria-labelledby="colors-component-link-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-component-link-title"
+          title="Link"
+        />
+
+        <DsPaletteBlock
+          name="Link colors"
+          description="Link color contract."
+          rows={linkRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="colors-component-eyebrow"
+        class="ds-color-topic"
+        aria-labelledby="colors-component-eyebrow-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-component-eyebrow-title"
+          title="Eyebrow"
+        />
+        <DsPaletteBlock
+          name="Eyebrow colors"
+          description="Eyebrow color contract."
+          rows={eyebrowRows}
+          showHeader={false}
+        />
+      </section>
+
+      <section
+        id="colors-component-label"
+        class="ds-color-topic"
+        aria-labelledby="colors-component-label-title"
+      >
+        <DsDocumentationBlockTitle
+          id="colors-component-label-title"
+          title="Label"
+        />
+        <DsPaletteBlock
+          name="Label colors"
+          description="Label color contract."
+          rows={labelRows}
+          showHeader={false}
+        />
+      </section>
+
+    </DsDocSection>
+
+    <DsDocSection
+      id="colors-agentic-rules"
+      title="Agentic Rules"
+    >
+      <DsCodeSnippet
+        filename=".agentic-rules/02-colors.md"
+        language="markdown"
+        code={colorAgenticRules.trim()}
+      />
+    </DsDocSection>
+</DesignSystemLayout>
+
+<style>
+  .ds-color-topic {
+    display: grid;
+    gap: var(--space-regular);
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+
+  .ds-color-subsections {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .ds-color-subsections > :global(section) {
+    display: grid;
+    gap: var(--space-regular);
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+</style>

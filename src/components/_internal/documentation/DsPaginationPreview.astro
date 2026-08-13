@@ -1,0 +1,26 @@
+---
+import Pagination from "../../base-components/pagination/Pagination.astro";
+
+const componentPath = "/design-system/base-components/pagination/pagination";
+---
+
+<div
+  class="ds-pagination-preview"
+  data-component-name="DsPaginationPreview"
+>
+  <Pagination
+    currentPage={8}
+    data-ds-preview-target
+    getPageHref={(page) => `${componentPath}?page=${page}#preview`}
+    totalPages={16}
+  />
+</div>
+
+<style>
+  .ds-pagination-preview {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    place-items: center;
+  }
+</style>

@@ -1,0 +1,400 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { OverlayPlacement } from "../../../lib/overlays/overlay-types";
+import { validateInfoPopoverContract } from "../../../lib/overlays/overlay-contract.mjs";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export type { OverlayPlacement } from "../../../lib/overlays/overlay-types";
+
+export interface Props extends Omit<HTMLAttributes<"span">, "class" | "id" | "title"> {
+  title: string;
+  description: string;
+  label: string;
+  closeLabel: string;
+  placement?: OverlayPlacement;
+  id?: string;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  label,
+  closeLabel,
+  placement = "top",
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+validateInfoPopoverContract({ title, description, label, closeLabel, placement, id });
+
+const rootId = id ?? `info-popover-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const titleId = `${rootId}-title`;
+const descriptionId = `${rootId}-description`;
+---
+
+<span
+  {...attributes}
+  id={rootId}
+  class:list={["info-popover", className]}
+  data-component-name="InfoPopover"
+  data-overlay-mode="popover"
+  data-overlay-placement={placement}
+  data-overlay-root
+>
+  <button
+    class="info-popover__trigger"
+    type="button"
+    aria-controls={contentId}
+    aria-expanded="false"
+    aria-haspopup="dialog"
+    aria-label={label}
+    popovertarget={contentId}
+    popovertargetaction="toggle"
+    data-control-size="small"
+    data-info-popover-trigger
+    data-overlay-trigger
+  >
+    <MaterialSymbol name="info" size="var(--control-icon-size)" />
+  </button>
+
+  <div
+    id={contentId}
+    class="info-popover__content"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby={titleId}
+    aria-describedby={descriptionId}
+    popover="auto"
+    data-info-popover-content
+    data-overlay-surface
+  >
+    <span class="info-popover__tail" aria-hidden="true" data-overlay-tail></span>
+    <MaterialSymbol
+      class="info-popover__leading-icon"
+      name="info"
+      size="var(--tooltip-rich-icon-size)"
+    />
+    <span class="info-popover__body">
+      <span id={titleId} class="info-popover__title body-small-semibold">{title}</span>
+      <span id={descriptionId} class="info-popover__description body-tiny-regular">
+        {description}
+      </span>
+    </span>
+    <button
+      class="info-popover__close"
+      type="button"
+      aria-label={closeLabel}
+      popovertarget={contentId}
+      popovertargetaction="hide"
+      data-control-size="small"
+      data-info-popover-close
+    >
+      <MaterialSymbol name="close" size="var(--control-icon-size)" />
+    </button>
+  </div>
+</span>
+
+<script>
+  import {
+    activateOverlay,
+    deactivateOverlay,
+    isPopoverOpen,
+    positionOverlay,
+  } from "../../../lib/overlays/overlay-runtime";
+
+  type PopoverElement = HTMLElement & {
+    hidePopover?: () => void;
+    showPopover?: () => void;
+  };
+
+  type ToggleStateEvent = Event & {
+    newState?: "closed" | "open";
+  };
+
+  const nativePopoverSupported = typeof HTMLElement.prototype.showPopover === "function";
+
+  const setOpenState = (root: HTMLElement, open: boolean) => {
+    const trigger = root.querySelector<HTMLButtonElement>("[data-info-popover-trigger]");
+    const surface = root.querySelector<HTMLElement>("[data-info-popover-content]");
+    if (!trigger || !surface) return;
+
+    trigger.setAttribute("aria-expanded", String(open));
+    root.dataset.infoPopoverOpen = String(open);
+    surface.classList.toggle("is-visible", open);
+    if (open) activateOverlay(root);
+    else deactivateOverlay(root);
+  };
+
+  const closeFallbackPopover = (root: HTMLElement, restoreFocus = false) => {
+    const trigger = root.querySelector<HTMLButtonElement>("[data-info-popover-trigger]");
+    const surface = root.querySelector<PopoverElement>("[data-info-popover-content]");
+    if (!trigger || !surface) return;
+
+    surface.classList.remove("is-fallback-open");
+    setOpenState(root, false);
+    if (restoreFocus) trigger.focus();
+  };
+
+  const openFallbackPopover = (root: HTMLElement) => {
+    document
+      .querySelectorAll<HTMLElement>('[data-component-name="InfoPopover"][data-info-popover-open="true"]')
+      .forEach((candidate) => {
+        if (candidate !== root) closeFallbackPopover(candidate);
+      });
+
+    const surface = root.querySelector<PopoverElement>("[data-info-popover-content]");
+    const close = root.querySelector<HTMLButtonElement>("[data-info-popover-close]");
+    if (!surface || !close) return;
+
+    surface.classList.add("is-fallback-open");
+    setOpenState(root, true);
+    positionOverlay(root);
+    requestAnimationFrame(() => close.focus());
+  };
+
+  const initializeInfoPopovers = () => {
+    document.querySelectorAll<HTMLElement>('[data-component-name="InfoPopover"]').forEach((root) => {
+      if (root.dataset.infoPopoverReady === "true") return;
+      root.dataset.infoPopoverReady = "true";
+      root.dataset.infoPopoverOpen = "false";
+
+      const trigger = root.querySelector<HTMLButtonElement>("[data-info-popover-trigger]");
+      const surface = root.querySelector<PopoverElement>("[data-info-popover-content]");
+      const close = root.querySelector<HTMLButtonElement>("[data-info-popover-close]");
+      if (!trigger || !surface || !close) return;
+
+      let restoreFocus = false;
+
+      trigger.addEventListener("click", (event) => {
+        restoreFocus = false;
+        if (nativePopoverSupported) return;
+        event.preventDefault();
+        if (surface.classList.contains("is-fallback-open")) closeFallbackPopover(root);
+        else openFallbackPopover(root);
+      });
+
+      trigger.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        restoreFocus = false;
+
+        if (nativePopoverSupported) {
+          if (isPopoverOpen(surface)) surface.hidePopover?.();
+          else surface.showPopover?.();
+          return;
+        }
+
+        if (surface.classList.contains("is-fallback-open")) closeFallbackPopover(root);
+        else openFallbackPopover(root);
+      });
+
+      close.addEventListener("click", (event) => {
+        restoreFocus = true;
+        if (nativePopoverSupported) return;
+        event.preventDefault();
+        closeFallbackPopover(root, true);
+      });
+
+      if (nativePopoverSupported) {
+        surface.addEventListener("toggle", (event) => {
+          const open = (event as ToggleStateEvent).newState === "open" || isPopoverOpen(surface);
+          setOpenState(root, open);
+          if (open) {
+            positionOverlay(root);
+            requestAnimationFrame(() => close.focus());
+          } else if (restoreFocus) {
+            trigger.focus();
+          }
+          if (!open) restoreFocus = false;
+        });
+      }
+
+      document.addEventListener("pointerdown", (event) => {
+        if (!(event.target instanceof Node) || root.contains(event.target)) return;
+        restoreFocus = false;
+        if (!nativePopoverSupported && surface.classList.contains("is-fallback-open")) {
+          closeFallbackPopover(root);
+        }
+      }, true);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        const open = nativePopoverSupported
+          ? isPopoverOpen(surface)
+          : surface.classList.contains("is-fallback-open");
+        if (!open) return;
+        restoreFocus = true;
+        event.preventDefault();
+        if (nativePopoverSupported) {
+          surface.hidePopover?.();
+        } else {
+          closeFallbackPopover(root, true);
+        }
+      });
+    });
+  };
+
+  initializeInfoPopovers();
+  document.addEventListener("astro:page-load", initializeInfoPopovers);
+</script>
+
+<style>
+  .info-popover {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .info-popover__trigger,
+  .info-popover__close {
+    display: inline-grid;
+    inline-size: var(--control-min-height);
+    block-size: var(--control-min-height);
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-small);
+    background: transparent;
+    padding: 0;
+    color: var(--color-icon-secondary);
+    cursor: pointer;
+    transition: color var(--motion-transition), background-color var(--motion-transition);
+  }
+
+  .info-popover__trigger:hover,
+  .info-popover__close:hover {
+    background: var(--color-background-subtle);
+    color: var(--color-icon-primary);
+  }
+
+  .info-popover__trigger:active,
+  .info-popover__close:active {
+    background: var(--color-background-muted);
+  }
+
+  .info-popover__trigger:focus-visible,
+  .info-popover__close:focus-visible {
+    outline: none;
+    box-shadow: var(--effect-focused);
+  }
+
+  .info-popover__content[popover] {
+    display: none;
+  }
+
+  .info-popover__content[popover]:popover-open,
+  .info-popover__content.is-fallback-open {
+    display: grid;
+  }
+
+  .info-popover__content {
+    position: fixed;
+    inset: auto;
+    box-sizing: border-box;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    inline-size: min(
+      var(--tooltip-rich-max-inline-size),
+      calc(100vw - (var(--tooltip-viewport-padding) * 2))
+    );
+    max-inline-size: var(--tooltip-rich-max-inline-size);
+    align-items: start;
+    gap: var(--gap-regular);
+    margin: 0;
+    border: var(--border-width-default) solid var(--color-border-default);
+    border-radius: var(--radius-medium);
+    background: var(--color-background-canvas);
+    padding: var(--content-padding-small);
+    color: var(--color-text-primary);
+    box-shadow: var(--elevation-surface-floating);
+    opacity: 0;
+    overflow-wrap: anywhere;
+    transition: opacity var(--motion-transition);
+  }
+
+  .info-popover__content.is-visible {
+    opacity: 1;
+  }
+
+  .info-popover__tail {
+    position: absolute;
+    inline-size: var(--tooltip-tail-size);
+    block-size: var(--tooltip-tail-size);
+    background: var(--color-background-canvas);
+  }
+
+  .info-popover__content[data-overlay-resolved-placement="top"] .info-popover__tail {
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .info-popover__content[data-overlay-resolved-placement="bottom"] .info-popover__tail {
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+
+  .info-popover__content[data-overlay-resolved-placement="left"] .info-popover__tail {
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  .info-popover__content[data-overlay-resolved-placement="right"] .info-popover__tail {
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  }
+
+  .info-popover__leading-icon {
+    flex: 0 0 auto;
+    color: var(--color-icon-secondary);
+  }
+
+  .info-popover__body {
+    display: grid;
+    min-inline-size: 0;
+    gap: var(--gap-tiny);
+  }
+
+  .info-popover__title,
+  .info-popover__description {
+    display: block;
+  }
+
+  .info-popover__description {
+    color: var(--color-text-secondary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .info-popover__trigger,
+    .info-popover__close,
+    .info-popover__content {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .info-popover__trigger,
+    .info-popover__close {
+      color: ButtonText;
+    }
+
+    .info-popover__trigger:focus-visible,
+    .info-popover__close:focus-visible {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+      box-shadow: none;
+    }
+
+    .info-popover__content {
+      border-color: CanvasText;
+      background: Canvas;
+      color: CanvasText;
+      box-shadow: none;
+    }
+
+    .info-popover__tail {
+      background: Canvas;
+    }
+
+    .info-popover__leading-icon,
+    .info-popover__description {
+      color: CanvasText;
+    }
+  }
+</style>

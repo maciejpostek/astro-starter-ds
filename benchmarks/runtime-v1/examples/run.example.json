@@ -1,0 +1,214 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "runtime-v1-pilot-example",
+  "run_id": "reuse-medium-guide-exact-en-warm-r1-gpt-5.6-sol-high-standard-001",
+  "snapshot": {
+    "git_head": "3302e6971eca386ff31ec5319ae2f4187904d635",
+    "content_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "fixture_id": "reuse-medium-page",
+    "node_version": "v22.22.0",
+    "npm_version": "10.9.4",
+    "codex_version": "codex-cli 0.141.0"
+  },
+  "timestamps": {
+    "started_at": "2026-07-29T10:00:00.000Z",
+    "ended_at": "2026-07-29T10:04:10.000Z"
+  },
+  "execution": {
+    "requested_model": "gpt-5.6-sol",
+    "effective_model": "gpt-5.6-sol",
+    "requested_reasoning": "high",
+    "effective_reasoning": "high",
+    "requested_speed": "standard",
+    "effective_service_tier": "standard",
+    "effective_configuration_source": "measured",
+    "credit_multiplier": 1
+  },
+  "condition": {
+    "scenario_id": "reuse-medium",
+    "arm": "r1",
+    "profile": "reuse",
+    "complexity": "medium",
+    "precision": "guide-exact",
+    "language": "en",
+    "cache_state": "warm",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "service_tier": "standard",
+    "replicate": 1,
+    "provider_cache_observed": true
+  },
+  "routing": {
+    "expected_intent": "reuse",
+    "actual_intent": "reuse",
+    "route_status": "ready",
+    "brand_mode": "skip",
+    "allow_new_components": false,
+    "contract_errors": [],
+    "router_intent": "reuse",
+    "blocked_reason": null,
+    "targets": [
+      {
+        "kind": "component",
+        "id": "Accordion",
+        "exists": true,
+        "role": "primary"
+      }
+    ],
+    "constraints": {
+      "prohibitNewComponents": false,
+      "prohibitedCreations": []
+    },
+    "target_file": "src/pages/index.astro"
+  },
+  "timing_ms": {
+    "wall_clock": 250000,
+    "task_wall_clock": 220000,
+    "setup": 25000,
+    "time_to_terminal": 245000,
+    "time_to_first_model_output": 1200,
+    "time_to_first_tool": 8500,
+    "time_to_first_repository_read": 10000,
+    "time_to_first_mutation": 50000,
+    "route": 4,
+    "context_resolver": 9,
+    "model_active_proxy": 160000,
+    "tools": 60000,
+    "validators": 20000,
+    "build": 0,
+    "browser": 0,
+    "oracle_validation": 18000
+  },
+  "usage": {
+    "input_tokens": {
+      "value": 12000,
+      "source": "measured"
+    },
+    "output_tokens": {
+      "value": 2200,
+      "source": "measured"
+    },
+    "cached_tokens": {
+      "value": 3000,
+      "source": "measured"
+    },
+    "cache_write_tokens": {
+      "value": null,
+      "source": "unavailable"
+    },
+    "reasoning_tokens": {
+      "value": null,
+      "source": "unavailable"
+    },
+    "total_tokens": {
+      "value": 14200,
+      "source": "measured"
+    }
+  },
+  "cost": {
+    "currency": "USD",
+    "value": null,
+    "source": "unavailable",
+    "pricing_snapshot": "1.0.0"
+  },
+  "context": {
+    "descriptor_bytes": 6200,
+    "limit_bytes": 12288,
+    "declared_read_files": 4,
+    "declared_source_bytes": 18000,
+    "actual_read_files": 4,
+    "actual_model_read_bytes": {
+      "value": 22000,
+      "source": "measured"
+    },
+    "instruction_overhead_bytes": 4800,
+    "instruction_overhead_ratio": 0.2182,
+    "materialized_limit_bytes": 65536,
+    "materialized_budget_overrun": false,
+    "unnecessary_read_files": 0,
+    "unnecessary_read_bytes": 0,
+    "forbidden_read_files": 0,
+    "forbidden_read_bytes": 0,
+    "budget_overrun": false,
+    "read_classification": [
+      {
+        "path": "src/components/molecules/disclosure/Accordion.astro",
+        "classification": "required",
+        "bytes": 7200
+      }
+    ],
+    "phase": "normal",
+    "next_step": null,
+    "required_reads": [
+      "src/components/molecules/disclosure/Accordion.astro",
+      "src/pages/index.astro"
+    ],
+    "read_plan": [
+      {
+        "path": "src/components/molecules/disclosure/Accordion.astro",
+        "reason": "component-source-and-api",
+        "target": "Accordion",
+        "bytes": 7200
+      },
+      {
+        "path": "src/pages/index.astro",
+        "reason": "target-file",
+        "target": "src/pages/index.astro",
+        "bytes": 10800
+      }
+    ],
+    "dependencies": [],
+    "missing": [],
+    "source_limit_bytes": 65536
+  },
+  "tools": {
+    "calls": 7,
+    "validator_calls": 1,
+    "duplicate_validator_calls": 0,
+    "duplicate_reads": 0,
+    "figma_calls": 0,
+    "commands": [
+      "rg Accordion src",
+      "npm run audit:disclosure"
+    ]
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "command": "npm run audit:disclosure",
+        "status": "passed",
+        "duration_ms": 18000,
+        "exit_code": 0
+      }
+    ]
+  },
+  "outcome": {
+    "expected_terminal": "accepted",
+    "actual_terminal": "accepted",
+    "task_success": true,
+    "first_pass": true,
+    "repair_attempts": 0,
+    "harness_retries": 0,
+    "quality_score": 95,
+    "critical_failures": [],
+    "failure_classification": null,
+    "changed_files": [
+      "src/pages/benchmark/runtime-v1/reuse-medium.astro"
+    ],
+    "diff_size_bytes": 1432,
+    "registry_delta": 0,
+    "registry_api_delta_count": 0,
+    "registry_added": [],
+    "registry_removed": [],
+    "registry_changed": [],
+    "summary": "Reused Accordion Featured and passed the scoped validator."
+  },
+  "artifacts": {
+    "events": ".benchmark-artifacts/runtime-v1/example/events.jsonl",
+    "raw_model_events": ".benchmark-artifacts/runtime-v1/example/model-events.jsonl",
+    "final_message": ".benchmark-artifacts/runtime-v1/example/final-message.json",
+    "diff": ".benchmark-artifacts/runtime-v1/example/changes.patch",
+    "log": ".benchmark-artifacts/runtime-v1/example/run.log"
+  }
+}

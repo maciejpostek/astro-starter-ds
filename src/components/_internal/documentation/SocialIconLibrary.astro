@@ -1,0 +1,42 @@
+---
+import SocialIcons from "../../assets/icons/SocialIcons.astro";
+import {
+  getSocialIconLabel,
+  socialIconPlatforms,
+} from "../../../lib/icons/socialIcons";
+import DsCopyableIconTile from "./DsCopyableIconTile.astro";
+import DsIconGallery from "./DsIconGallery.astro";
+
+const successToastId = "social-icon-copy-success";
+const errorToastId = "social-icon-copy-error";
+---
+
+<section data-component-name="SocialIconLibrary" data-social-icon-library>
+  <DsIconGallery
+    label="Search social icons"
+    clearLabel="Clear social icons search"
+    placeholder="Search social icons"
+    emptyMessage="No social icon matches this search."
+    successToastId={successToastId}
+    successToastTitle="Social icon slug copied"
+    errorToastId={errorToastId}
+    errorToastTitle="Social icon slug could not be copied"
+  >
+    {socialIconPlatforms.map((platform) => {
+      const label = getSocialIconLabel(platform);
+      return (
+        <DsCopyableIconTile
+          id={`social-icon-${platform}`}
+          name={label}
+          copyValue={platform}
+          copyLabel={`Copy ${label} social icon slug`}
+          searchKeywords={`${platform} ${label} social icon brand`}
+          successToastId={successToastId}
+          errorToastId={errorToastId}
+        >
+          <SocialIcons platform={platform} variant="brand" />
+        </DsCopyableIconTile>
+      );
+    })}
+  </DsIconGallery>
+</section>

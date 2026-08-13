@@ -1,0 +1,29 @@
+---
+import Hint from "../../base-components/hint/Hint.astro";
+---
+
+<div
+  class="hint-preview"
+  data-component-name="DsHintPreview"
+  data-control-size="medium"
+  data-ds-preview-target
+  data-ds-preview-state="default"
+>
+  <Hint class="hint-preview__default" text="Hint text" />
+  <Hint class="hint-preview__valid" text="Hint text" tone="valid" />
+  <Hint class="hint-preview__invalid" text="Hint text" tone="invalid" />
+  <Hint class="hint-preview__disabled" text="Hint text" disabled />
+</div>
+
+<style>
+  .hint-preview > :global(*) {
+    display: none;
+  }
+
+  .hint-preview[data-ds-preview-state="default"] :global(.hint-preview__default),
+  .hint-preview[data-ds-preview-state="valid"] :global(.hint-preview__valid),
+  .hint-preview[data-ds-preview-state="invalid"] :global(.hint-preview__invalid),
+  .hint-preview[data-ds-preview-state="disabled"] :global(.hint-preview__disabled) {
+    display: flex;
+  }
+</style>

@@ -1,0 +1,167 @@
+<!--
+  ClipboardCopy
+
+  Internal global clipboard behavior for any interactive component.
+
+  Attribute contract:
+  - data-clipboard-copy: enables the behavior on the trigger element.
+  - data-clipboard-value="hello@example.com": copies an explicit value.
+  - data-clipboard-source="current-url": copies the current page URL.
+  - data-clipboard-target="#selector": copies value/textContent from another element.
+  - data-clipboard-label: optional child label updated after a successful copy.
+  - data-clipboard-copied-label="Copied": temporary feedback label.
+  - data-clipboard-restore-delay="1600": optional feedback restore delay in ms.
+  - data-clipboard-success-toast="toast-id": shows a prerendered Toast after success.
+  - data-clipboard-error-toast="toast-id": shows a prerendered Toast after failure.
+
+  Documentation fallback:
+  - ds-clipboard-copy-success: addressed system Toast used when no success id is supplied.
+  - ds-clipboard-copy-error: addressed system Toast used when no error id is supplied.
+-->
+
+<script is:inline>
+  (() => {
+    if (window.__astroDsClipboardCopyInitialized) return;
+    window.__astroDsClipboardCopyInitialized = true;
+
+    const restoreTimers = new WeakMap();
+    const defaultSuccessToastId = "ds-clipboard-copy-success";
+    const defaultErrorToastId = "ds-clipboard-copy-error";
+
+    const writeClipboard = async (value) => {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+
+      const textArea = document.createElement("textarea");
+      const copyCommand = document.execCommand?.bind(document);
+
+      textArea.value = value;
+      textArea.setAttribute("readonly", "");
+      textArea.style.position = "fixed";
+      textArea.style.inset = "0";
+      textArea.style.opacity = "0";
+      textArea.style.pointerEvents = "none";
+
+      document.body.append(textArea);
+      textArea.select();
+
+      const didCopy =
+        typeof copyCommand === "function" && Reflect.apply(copyCommand, document, ["copy"]);
+      textArea.remove();
+
+      if (!didCopy) throw new Error("Clipboard API is unavailable.");
+    };
+
+    const getTargetValue = (selector) => {
+      const target = selector ? document.querySelector(selector) : null;
+      if (!target) return "";
+
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+        return target.value;
+      }
+
+      return target.textContent?.trim() ?? "";
+    };
+
+    const getCopyValue = (trigger) => {
+      const sharedValue = trigger.getAttribute("data-copy-value");
+      if (sharedValue) return sharedValue;
+
+      const legacyDsValue = trigger.getAttribute("data-ds-copy-value");
+      if (legacyDsValue) return legacyDsValue;
+
+      const explicitValue = trigger.getAttribute("data-clipboard-value");
+      if (explicitValue) return explicitValue;
+
+      const source = trigger.getAttribute("data-clipboard-source");
+      if (source === "current-url") return window.location.href;
+
+      const targetSelector = trigger.getAttribute("data-clipboard-target");
+      if (targetSelector) return getTargetValue(targetSelector);
+
+      return "";
+    };
+
+    const syncLabel = (trigger) => {
+      const label = trigger.querySelector("[data-clipboard-label]");
+      if (!label) return;
+
+      const defaultLabel =
+        trigger.getAttribute("data-clipboard-default-label") ?? label.textContent ?? "";
+      const copiedLabel = trigger.getAttribute("data-clipboard-copied-label") ?? "Copied";
+      const restoreDelay = Number(trigger.getAttribute("data-clipboard-restore-delay") ?? "1600");
+
+      label.textContent = copiedLabel;
+
+      const existingTimer = restoreTimers.get(trigger);
+      if (existingTimer) window.clearTimeout(existingTimer);
+
+      const timer = window.setTimeout(() => {
+        label.textContent = defaultLabel;
+        restoreTimers.delete(trigger);
+      }, Number.isFinite(restoreDelay) ? restoreDelay : 1600);
+
+      restoreTimers.set(trigger, timer);
+    };
+
+    const showToast = (id) => {
+      const toast = id ? document.getElementById(id) : null;
+      if (!(toast instanceof HTMLElement) || !toast.matches("[data-toast]")) return false;
+
+      window.dispatchEvent(
+        new CustomEvent("astro-ds:toast-show", {
+          detail: { id }
+        })
+      );
+      return true;
+    };
+
+    const showAddressedToast = (trigger, attribute, fallbackId) => {
+      const id = trigger.getAttribute(attribute)?.trim();
+      return showToast(id || fallbackId);
+    };
+
+    document.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const trigger = target.closest("[data-copy-value], [data-ds-copy-value], [data-clipboard-copy]");
+      if (!(trigger instanceof HTMLElement)) return;
+
+      const value = getCopyValue(trigger);
+      if (!value) return;
+
+      event.preventDefault();
+
+      try {
+        await writeClipboard(value);
+        syncLabel(trigger);
+        trigger.dispatchEvent(
+          new CustomEvent("astro-ds:clipboard-copy", {
+            bubbles: true,
+            detail: { value }
+          })
+        );
+        showAddressedToast(
+          trigger,
+          "data-clipboard-success-toast",
+          defaultSuccessToastId
+        );
+      } catch (error) {
+        trigger.dispatchEvent(
+          new CustomEvent("astro-ds:clipboard-error", {
+            bubbles: true,
+            detail: { error }
+          })
+        );
+        showAddressedToast(
+          trigger,
+          "data-clipboard-error-toast",
+          defaultErrorToastId
+        );
+      }
+    });
+  })();
+</script>

@@ -1,0 +1,141 @@
+---
+import DsColorRow from "./DsColorRow.astro";
+import DsDocumentationBlockTitle from "./DsDocumentationBlockTitle.astro";
+import DsTableCell from "./DsTableCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+import { createDocumentationColorRows } from "../../../data/documentationFoundationData";
+import { documentationTokenMap } from "../../../data/documentationTokenRegistry";
+
+type SampleType = "fill" | "border" | "text";
+type Row =
+  | string[]
+  | {
+      token: string;
+      value: string;
+      lightValue?: string;
+      darkValue?: string;
+      sampleValue?: string;
+      sampleSurfaceValue?: string;
+      sampleType?: SampleType | string;
+      label?: string;
+    };
+
+interface Props {
+  name: string;
+  description: string;
+  rows: Row[];
+  anchorTokens?: boolean;
+  flushSampleInline?: boolean;
+  showHeader?: boolean;
+  showModeSamples?: boolean;
+}
+
+const {
+  name,
+  description,
+  rows,
+  anchorTokens = true,
+  flushSampleInline = false,
+  showHeader = true,
+  showModeSamples = true,
+} = Astro.props;
+const id = `palette-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+const sampleTypes = ["fill", "border", "text"];
+const normalizeSampleType = (sampleType?: string): SampleType =>
+  sampleTypes.includes(sampleType ?? "") ? (sampleType as SampleType) : "fill";
+
+const normalizedRows = rows.map((row) => {
+  const normalized = Array.isArray(row)
+    ? { token: row[0] ?? "", value: row[1] ?? "", sampleType: "fill" as SampleType }
+    : { ...row, sampleType: normalizeSampleType(row.sampleType) };
+  const canonical = documentationTokenMap.get(normalized.token);
+  if (!canonical) return normalized;
+  const projected = createDocumentationColorRows([canonical])[0];
+  return {
+    ...normalized,
+    ...projected,
+    label: normalized.label ?? projected.label,
+    sampleType: normalized.sampleType ?? projected.sampleType,
+    sampleSurfaceValue: normalized.sampleSurfaceValue ?? projected.sampleSurfaceValue,
+  };
+});
+const hasModeValues = normalizedRows.some((row) => row.lightValue || row.darkValue);
+const columns = hasModeValues
+  ? "minmax(var(--ds-doc-table-token-column-min-width), 36fr) minmax(var(--ds-doc-table-mode-column-min-width), 32fr) minmax(var(--ds-doc-table-mode-column-min-width), 32fr)"
+  : "minmax(var(--ds-doc-table-token-column-min-width), 1fr) var(--ds-doc-table-sample-column-width) var(--ds-doc-table-short-value-column-width)";
+const minWidth = hasModeValues ? "74rem" : "40rem";
+---
+
+<section
+  class="ds-palette-block"
+  aria-label={showHeader ? undefined : `${name} color tokens`}
+  aria-labelledby={showHeader ? `${id}-title` : undefined}
+  data-component-name="DsPaletteBlock"
+  data-ds-doc-table-size="tiny"
+>
+  {showHeader && (
+    <>
+      <DsDocumentationBlockTitle
+        id={`${id}-title`}
+        title={name}
+      />
+      <p class="ds-palette-block__description body-small-regular">{description}</p>
+    </>
+  )}
+
+  <DsTableFrame
+    columns={columns}
+    label={`${name} color tokens`}
+    minWidth={minWidth}
+    size="tiny"
+  >
+    <DsTableRow variant="header">
+      <DsTableCell role="columnheader" variant="header">Token</DsTableCell>
+      {
+        hasModeValues ? (
+          <>
+            <DsTableCell role="columnheader" variant="header">Light mode</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Dark mode</DsTableCell>
+          </>
+        ) : (
+          <>
+            <DsTableCell role="columnheader" variant="header">Sample</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Value</DsTableCell>
+          </>
+        )
+      }
+    </DsTableRow>
+    {
+      normalizedRows.map((row) => (
+        <DsColorRow
+          anchorToken={anchorTokens}
+          darkValue={row.darkValue}
+          hasModeValues={hasModeValues}
+          label={row.label}
+          lightValue={row.lightValue}
+          flushSampleInline={flushSampleInline}
+          showModeSamples={showModeSamples}
+          sampleValue={row.sampleValue}
+          sampleSurfaceValue={row.sampleSurfaceValue}
+          sampleType={row.sampleType}
+          token={row.token}
+          value={row.value}
+        />
+      ))
+    }
+  </DsTableFrame>
+</section>
+
+<style>
+  .ds-palette-block {
+    display: grid;
+    gap: var(--space-regular);
+  }
+
+  .ds-palette-block__description {
+    margin-block-start: calc(var(--gap-medium) * -1);
+    color: var(--color-text-tertiary);
+  }
+
+</style>

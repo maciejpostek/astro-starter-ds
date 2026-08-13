@@ -1,0 +1,25 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props as Props;
+---
+
+<div
+  class:list={["ds-table-group-separator", className]}
+  aria-hidden="true"
+  data-component-name="DsTableGroupSeparator"
+></div>
+
+<style>
+  .ds-table-group-separator {
+    width: 100%;
+    min-width: 0;
+    height: var(--ds-doc-table-row-min-height);
+    border-right: var(--size-1) solid var(--color-border-subtle);
+    border-bottom: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-subtle);
+    padding: 0;
+  }
+</style>

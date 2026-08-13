@@ -14,8 +14,8 @@ The system separates four concerns:
 1. universal visual-design knowledge;
 2. supplied and approved project evidence;
 3. a project-specific Brand Expression Contract;
-4. operational rules that translate the contract into tokens, components,
-   Figma representations, and browser output.
+4. operational rules that translate the contract into tokens, components, and
+   browser output, with Figma available only as an explicit projection.
 
 Design adjectives are not implementation instructions. Words such as
 `modular`, `technical`, `editorial`, `premium`, or `playful` become useful only
@@ -56,6 +56,8 @@ Project-specific decisions live separately:
 ```text
 project-context/brand-foundations/brand-expression/
 ├── README.md
+├── contract.json
+├── contract.schema.json
 ├── contract.md
 ├── reference-manifest.json
 ├── component-signatures.md
@@ -71,13 +73,13 @@ contract decides which mechanisms are appropriate for one brand.
 
 | Concern | Source of truth |
 | --- | --- |
-| Brand intent and visual character | approved Brand Expression Contract |
+| Brand intent and visual character | approved `contract.json` |
 | Reference interpretation | approved reference manifest |
 | Shared values and design decisions | CSS Variables |
 | Component API, semantics, accessibility, and runtime | Astro components |
-| Visual exploration and review | Figma or browser prototypes |
-| Figma-to-code differences | Figma2Astro adapters |
-| Work status and release readiness | design-system roadmap |
+| Visual exploration and review | browser prototypes; optional Figma on request |
+| Figma-to-code differences | selected Figma2Astro adapter during explicit operations |
+| Component discovery and current readiness | component registry |
 
 Code remains the production source of truth. An approved Brand Expression
 Contract is the source of visual intent that code must implement.
@@ -108,16 +110,18 @@ brand intake
 → token mapping
 → Astro calibration set
 → browser validation and human visual approval
-→ Figma parity
 → controlled propagation
 ```
+
+An explicit Figma operation may project an accepted calibration result after
+Astro acceptance. Figma parity is not a normal runtime gate.
 
 The calibration set should normally include:
 
 - Button;
 - Input or FormField;
 - Tag;
-- ContentBlock or SectionHeader;
+- SectionHeader;
 - one representative Card;
 - Navigation;
 - one representative Hero or marketing section.

@@ -3,160 +3,158 @@
 # View: view.input-to-output
 direction: right
 
-title: "Input-to-Output Pipeline (L1)" {
+title: "Prompt to Accepted or Blocked Result" {
   shape: text
   near: top-center
-  style.font-size: 28
+  style.font-size: 30
   style.bold: true
+  style.font-color: "#0f172a"
 }
 
-prompt_user_request: "User Prompt\nprompt · active · current" {
+prompt_user_request: "User Prompt\\nprompt" {
   shape: parallelogram
-  style.fill: "#0284c7"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dbeafe"
+  style.stroke: "#2563eb"
+  style.font-color: "#1e3a8a"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-router_agentic_rules: "Agentic Rules Router\nrouter · active · current" {
+router_request_classifier: "Request Classifier\\nrouter\\nroute-agent-request.mjs, AGENTIC-RULES.json" {
   shape: hexagon
-  style.fill: "#7c3aed"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-gate_scope: "Scope and Mode Gate\ndecision-gate · documented · current" {
-  shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+artifact_task_contract: "Task Contract\\nartifact\\nagent-task.schema.json" {
+  shape: page
+  style.fill: "#ccfbf1"
+  style.stroke: "#0f766e"
+  style.font-color: "#134e4a"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-gate_reuse: "Existing Asset Reuse Gate\ndecision-gate · active · current" {
-  shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+router_context_resolver: "Focused Context Resolver\\nrouter\\nresolve-agent-context.mjs, agent-runtime.mjs" {
+  shape: hexagon
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-process_lookup: "Focused Architecture and Component Lookup\nprocess · partially-manual · current" {
+artifact_context_pack: "Bounded Context Pack\\nartifact\\nagent-runtime.mjs" {
+  shape: page
+  style.fill: "#ccfbf1"
+  style.stroke: "#0f766e"
+  style.font-color: "#134e4a"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+router_execution_profile: "Execution Profile\\nrouter\\nAGENTIC-RULES.json" {
+  shape: hexagon
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_scoped_validation: "Scoped Validation\\nvalidator\\nAGENTIC-RULES.json, scripts" {
+  shape: hexagon
+  style.fill: "#fef3c7"
+  style.stroke: "#d97706"
+  style.font-color: "#78350f"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_bounded_repair: "Bounded Repair\\nprocess\\nAGENTIC-RULES.json" {
   shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-process_compose: "Compose Existing Components\nprocess · active · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-gate_component_gap: "Genuine Component Gap Gate\ndecision-gate · active · current" {
-  shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_implement_astro: "Implement or Repair Astro\nprocess · active · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-gate_brand_sensitive: "Brand Sensitivity Gate\ndecision-gate · active · current" {
-  shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-gate_brand_contract: "Approved Brand Contract Gate\ndecision-gate · blocked · current" {
-  shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_visual_calibration: "Brand Visual Calibration\nprocess · blocked-without-approved-contract · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-approval_visual: "Human Visual Approval\nhuman-approval · required-when-brand-sensitive · current" {
-  shape: diamond
-  style.fill: "#ea580c"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_browser_validation: "Browser Validation\nprocess · active · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_figma_sync: "Synchronize Accepted Astro to Figma\nprocess · active · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-output_astro: "Accepted Astro Output\noutput · active · current" {
+output_accepted: "Accepted Astro Result\\noutput" {
   shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#15803d"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-output_figma: "Accepted Figma Representation\noutput · external · current" {
+output_blocked: "Blocked Result\\noutput" {
   shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#15803d"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-output_terminal: "Terminal Result and Handoff\noutput · active · current" {
-  shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+prompt_user_request -> router_request_classifier: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
 }
 
-prompt_user_request -> router_agentic_rules: "routes-to"
-router_agentic_rules -> gate_scope: "selects"
-gate_scope -> gate_reuse: "routes-to · Any UI or component task."
-gate_scope -> gate_brand_sensitive: "routes-to · Visual direction, redesign, polish, reference-driven work, or brand-sensitive composition."
-gate_reuse -> process_lookup: "routes-to"
-gate_reuse -> process_compose: "selects · A ready component or section already satisfies the required role."
-gate_reuse -> gate_component_gap: "selects · No ready component satisfies the reusable role."
-gate_component_gap -> process_implement_astro: "routes-to · A genuinely reusable component or API gap is evidenced."
-process_compose -> output_astro: "creates"
-process_implement_astro -> process_browser_validation: "routes-to"
-gate_brand_sensitive -> gate_brand_contract: "routes-to · The task is brand-sensitive."
-gate_brand_contract -> process_visual_calibration: "blocks · Contract status is not-configured, draft, deprecated, or otherwise outside permitted scope."
-approval_visual -> process_visual_calibration: "approves"
-process_figma_sync -> output_figma: "creates"
+router_request_classifier -> artifact_task_contract: "creates" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+router_request_classifier -> router_context_resolver: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+router_context_resolver -> artifact_context_pack: "creates" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+artifact_context_pack -> router_execution_profile: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+process_scoped_validation -> output_accepted: "passed" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_scoped_validation -> process_bounded_repair: "failed and attempts remain" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_bounded_repair -> process_scoped_validation: "retry" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+process_bounded_repair -> output_blocked: "repair limit exhausted" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}

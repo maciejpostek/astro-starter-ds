@@ -3,105 +3,110 @@
 # View: view.brand-expression-calibration
 direction: right
 
-title: "Brand Expression and Art Direction Calibration" {
+title: "Brand and Composition Activation" {
   shape: text
   near: top-center
-  style.font-size: 28
+  style.font-size: 30
   style.bold: true
+  style.font-color: "#0f172a"
 }
 
-gate_brand_sensitive: "Brand Sensitivity Gate\ndecision-gate · active · current" {
+router_execution_profile: "Execution Profile\\nrouter\\nAGENTIC-RULES.json" {
+  shape: hexagon
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+gate_brand_activation: "Brand Activation Gate\\ndecision gate\\nagent-runtime.mjs, AGENTIC-RULES.json" {
   shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#fce7f3"
+  style.stroke: "#be185d"
+  style.font-color: "#831843"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-gate_brand_contract: "Approved Brand Contract Gate\ndecision-gate · blocked · current" {
-  shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_brand_contract: "Approved Brand Expression Contract\nsource-of-truth · not-configured · current" {
+source_brand_contract: "Approved Brand/Composition Rules\\nsource of truth\\ncontract.json" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-input_brand_references: "Approved Brand References\ninput · not-configured · current" {
+validator_brand_contract: "Brand Contract Audit\\nvalidator\\naudit-brand-expression.mjs" {
+  shape: hexagon
+  style.fill: "#fef3c7"
+  style.stroke: "#d97706"
+  style.font-color: "#78350f"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+human_brand_approval: "Human Visual Approval\\nhuman approval\\nvisual-qa.md" {
+  shape: diamond
+  style.fill: "#ffedd5"
+  style.stroke: "#ea580c"
+  style.font-color: "#7c2d12"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_compose: "Compose Existing Assets\\nprocess" {
+  shape: rectangle
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_create: "Create Reusable Component\\nprocess" {
+  shape: rectangle
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+output_blocked: "Blocked Result\\noutput" {
   shape: parallelogram
-  style.fill: "#0891b2"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#15803d"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_art_direction: "Universal Art Direction Knowledge\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+router_execution_profile -> gate_brand_activation: "brand-sensitive choice" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
 }
 
-process_visual_calibration: "Brand Visual Calibration\nprocess · blocked-without-approved-contract · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+gate_brand_activation -> source_brand_contract: "matching approved rules only" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
 }
 
-approval_visual: "Human Visual Approval\nhuman-approval · required-when-brand-sensitive · current" {
-  shape: diamond
-  style.fill: "#ea580c"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+gate_brand_activation -> human_brand_approval: "new visual direction or propagation" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
 }
 
-source_css_variables: "CSS Variable Foundations\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+gate_brand_activation -> output_blocked: "required contract is not approved" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
 }
-
-source_astro_components: "Astro Component Source\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_browser_validation: "Browser Validation\nprocess · active · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_figma_sync: "Synchronize Accepted Astro to Figma\nprocess · active · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-gate_brand_sensitive -> gate_brand_contract: "routes-to · The task is brand-sensitive."
-gate_brand_contract -> source_brand_contract: "reads"
-gate_brand_contract -> process_visual_calibration: "blocks · Contract status is not-configured, draft, deprecated, or otherwise outside permitted scope."
-process_visual_calibration -> source_art_direction: "reads"
-process_visual_calibration -> input_brand_references: "reads"
-approval_visual -> process_visual_calibration: "approves"
-process_visual_calibration -> source_astro_components: "writes · Only within an approved contract propagation scope."

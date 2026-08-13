@@ -1,0 +1,33 @@
+---
+import Tabs, { type TabsItems } from "../../base-components/tabs/Tabs.astro";
+
+const items: TabsItems = [
+  { id: "overview", label: "Overview" },
+  { id: "details", label: "Details" },
+  { id: "activity", label: "Activity" },
+];
+---
+
+<div class="ds-preview-renderer-boundary ds-tabs-preview" data-component-name="DsTabsPreview">
+  <Tabs items={items} aria-label="Example tabs" data-ds-preview-target>
+    <span slot="overview"></span>
+    <span slot="details"></span>
+    <span slot="activity"></span>
+  </Tabs>
+</div>
+
+<style>
+  .ds-tabs-preview {
+    display: flex;
+    inline-size: 100%;
+    justify-content: center;
+  }
+
+  .ds-tabs-preview :global(.tabs__list) {
+    justify-content: center;
+  }
+
+  .ds-tabs-preview :global(.tabs__panel) {
+    display: none;
+  }
+</style>

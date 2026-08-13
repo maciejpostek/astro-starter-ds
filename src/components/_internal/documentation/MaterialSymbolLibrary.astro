@@ -1,0 +1,37 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import { materialSymbolNames } from "../../../lib/icons/materialSymbols";
+import { slugifyDocumentationValue } from "../../../data/documentationRegistry";
+import DsCopyableIconTile from "./DsCopyableIconTile.astro";
+import DsIconGallery from "./DsIconGallery.astro";
+
+const successToastId = "material-symbol-copy-success";
+const errorToastId = "material-symbol-copy-error";
+---
+
+<section data-component-name="MaterialSymbolLibrary" data-material-symbol-library>
+  <DsIconGallery
+    label="Search curated Material Symbols"
+    clearLabel="Clear Material Symbols search"
+    placeholder="Search Material Symbols"
+    emptyMessage="No curated Material Symbol matches this search."
+    successToastId={successToastId}
+    successToastTitle="Material Symbol name copied"
+    errorToastId={errorToastId}
+    errorToastTitle="Material Symbol name could not be copied"
+  >
+    {materialSymbolNames.map((name) => (
+      <DsCopyableIconTile
+        id={`icon-${slugifyDocumentationValue(name)}`}
+        name={name}
+        copyValue={name}
+        copyLabel={`Copy Material Symbol ${name}`}
+        searchKeywords={`${name} material symbol icon`}
+        successToastId={successToastId}
+        errorToastId={errorToastId}
+      >
+        <MaterialSymbol name={name} size="var(--size-32)" />
+      </DsCopyableIconTile>
+    ))}
+  </DsIconGallery>
+</section>

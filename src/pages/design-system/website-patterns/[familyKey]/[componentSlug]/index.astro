@@ -1,0 +1,59 @@
+---
+import DesignSystemLayout from "../../../../../layouts/DesignSystemLayout.astro";
+import DsComponentDetail from "../../../../../components/_internal/documentation/DsComponentDetail.astro";
+import {
+  architecture,
+  createDocumentationSummary,
+  type ArchitectureComponent,
+} from "../../../../../data/documentationRegistry";
+import { loadComponentRule } from "../../../../../data/componentRuleLoader";
+import { getComponentDocumentationAdapter } from "../../../../../data/documentationComponentRegistry";
+
+export function getStaticPaths() {
+  return architecture.components
+    .filter((component) => component.categoryKey === "website-patterns")
+    .map((component) => ({
+      params: { familyKey: component.pageKey, componentSlug: component.id },
+      props: { component },
+    }));
+}
+
+interface Props { component: ArchitectureComponent; }
+const { component } = Astro.props;
+const rule = component.agenticRule ? await loadComponentRule(component.agenticRule) : undefined;
+const adapter = getComponentDocumentationAdapter(component.id);
+const documentationToc = adapter?.toc ?? [
+  { label: "Dependencies", href: "#dependencies" },
+];
+const pageToc = [
+  ...documentationToc,
+  ...(rule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
+];
+const figmaHref = component.figmaCanonicalNodeId
+  ? `${architecture.figma.fileUrl}?node-id=${component.figmaCanonicalNodeId.replace(":", "-")}`
+  : undefined;
+---
+
+<DesignSystemLayout
+  title={`${component.name} - Website Patterns`}
+  pageType="component-detail"
+  toc={pageToc}
+  header={{
+    eyebrow: `Website Patterns / ${component.pageLabel}`,
+    title: component.name,
+    summary: createDocumentationSummary(
+      component.sourcePath
+        ? "This canonical Astro website pattern combines its registry identity with a responsive implementation contract. Use"
+        : "This canonical Figma pattern identity intentionally has no responsive Astro preview yet. Use",
+      pageToc,
+      component.sourcePath
+        ? "to inspect its composition, dependencies and approved behavior."
+        : "to verify its recorded metadata and implementation boundary.",
+    ),
+    copyValue: component.name,
+    sourcePath: component.sourcePath ?? undefined,
+    figmaHref,
+  }}
+>
+  <DsComponentDetail component={component} rule={rule} adapter={adapter} />
+</DesignSystemLayout>

@@ -1,0 +1,149 @@
+---
+import DsColorModeCell from "./DsColorModeCell.astro";
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableRow from "./DsTableRow.astro";
+
+type SampleType = "fill" | "border" | "text";
+
+interface Props {
+  token: string;
+  value: string;
+  anchorToken?: boolean;
+  lightValue?: string;
+  darkValue?: string;
+  flushSampleInline?: boolean;
+  hasModeValues?: boolean;
+  showModeSamples?: boolean;
+  sampleValue?: string;
+  sampleSurfaceValue?: string;
+  sampleType?: SampleType;
+  label?: string;
+}
+
+const {
+  token,
+  value,
+  anchorToken = true,
+  lightValue,
+  darkValue,
+  flushSampleInline = false,
+  hasModeValues = false,
+  showModeSamples = false,
+  sampleValue = value,
+  sampleSurfaceValue = "var(--color-background-canvas)",
+  sampleType = "fill",
+  label = "Aa",
+} = Astro.props;
+const resolvedLightValue = lightValue ?? value;
+const resolvedDarkValue = darkValue ?? value;
+const resolvedSampleValue = sampleValue ?? `var(${token})`;
+const resolvedLightSampleValue = lightValue ?? resolvedSampleValue;
+const resolvedDarkSampleValue = darkValue ?? resolvedSampleValue;
+---
+
+<DsTableRow
+  class="color-row"
+  componentName="DsColorRow"
+  variable={token}
+>
+  <DsTableCopyCell anchor={anchorToken} class="color-row__token-cell" role="cell" value={token} />
+
+  {
+    hasModeValues ? (
+      <>
+        <DsColorModeCell
+          label={label}
+          mode="light"
+          sampleType={sampleType}
+          sampleSurfaceValue={sampleSurfaceValue}
+          sampleValue={resolvedLightSampleValue}
+          showSample={showModeSamples}
+          value={resolvedLightValue}
+        />
+        <DsColorModeCell
+          label={label}
+          mode="dark"
+          sampleType={sampleType}
+          sampleSurfaceValue={sampleSurfaceValue}
+          sampleValue={resolvedDarkSampleValue}
+          showSample={showModeSamples}
+          value={resolvedDarkValue}
+        />
+      </>
+    ) : (
+      <>
+        <DsTableCell
+          class={flushSampleInline ? "color-row__sample-cell color-row__sample-cell--flush-inline" : "color-row__sample-cell"}
+          flushInline={flushSampleInline}
+          overflow="visual"
+          role="cell"
+        >
+          {
+            sampleType === "fill" && (
+              <span class="color-row__sample color-row__sample--fill" style={`--color-row-value: ${resolvedSampleValue}`} />
+            )
+          }
+          {
+            sampleType === "border" && (
+              <span class="color-row__sample color-row__sample--border" style={`--color-row-value: ${resolvedSampleValue}`} />
+            )
+          }
+          {
+            sampleType === "text" && (
+              <span
+                class="color-row__sample color-row__sample--text"
+                style={`--color-row-value: ${resolvedSampleValue}; --color-row-surface-value: ${sampleSurfaceValue}`}
+              >
+                {label}
+              </span>
+            )
+          }
+        </DsTableCell>
+
+        <DsTableCell class="color-row__value-cell" role="cell" tone="secondary">
+          <code>{value}</code>
+        </DsTableCell>
+      </>
+    )
+  }
+</DsTableRow>
+
+<style>
+  .color-row__sample {
+    display: flex;
+    width: 100%;
+    min-height: 100%;
+  }
+
+  .color-row__sample--fill {
+    background: var(--color-row-value);
+  }
+
+  .color-row__sample--border {
+    background:
+      linear-gradient(45deg, var(--color-background-surface) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--color-background-surface) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--color-background-surface) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--color-background-surface) 75%);
+    background-color: var(--color-background-canvas);
+    background-position: 0 0, 0 0.5rem, 0.5rem -0.5rem, -0.5rem 0;
+    background-size: 1rem 1rem;
+    border: 0.5rem solid var(--color-row-value);
+  }
+
+  .color-row__sample--text {
+    align-items: center;
+    justify-content: center;
+    background: var(--color-row-surface-value, var(--color-background-canvas));
+    color: var(--color-row-value);
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-strong);
+    letter-spacing: var(--letter-spacing-ultra-tight);
+  }
+
+  .color-row__sample-cell.color-row__sample-cell--flush-inline {
+    padding-inline: 0;
+  }
+
+</style>

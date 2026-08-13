@@ -1,0 +1,39 @@
+---
+import DesignSystemLayout from "../../../../layouts/DesignSystemLayout.astro";
+import DsFamilyGallery from "../../../../components/_internal/documentation/DsFamilyGallery.astro";
+import {
+  architecture,
+  componentsByPage,
+  createDocumentationSummary,
+  type ArchitecturePage,
+} from "../../../../data/documentationRegistry";
+
+export function getStaticPaths() {
+  return architecture.pages
+    .filter((page) => page.categoryKey === "examples-templates")
+    .map((page) => ({ params: { familyKey: page.pageKey }, props: { page } }));
+}
+
+interface Props { page: ArchitecturePage; }
+const { page } = Astro.props;
+const components = componentsByPage.get(`examples-templates/${page.pageKey}`) ?? [];
+const pageToc = [{ label: "Templates", href: "#variants" }];
+---
+
+<DesignSystemLayout
+  title={`${page.pageLabel} - Examples & Templates`}
+  pageType="template-gallery"
+  toc={pageToc}
+  header={{
+    eyebrow: "Examples & Templates",
+    title: page.pageLabel,
+    summary: createDocumentationSummary(
+      "Production examples and templates appear here only when backed by a canonical Astro source and registry record. Browse",
+      pageToc,
+      "to reuse complete compositions without promoting local page markup into a public component.",
+    ),
+    status: components.length ? "Available records" : "Empty family",
+  }}
+>
+  <DsFamilyGallery page={page} components={components} />
+</DesignSystemLayout>

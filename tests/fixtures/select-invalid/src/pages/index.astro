@@ -1,0 +1,14 @@
+---
+import Select from "../../../../../src/components/base-components/select/Select.astro";
+
+const options = [
+  { value: "xx", label: "Unknown country", flag: "unknown-country" },
+];
+---
+
+<Select
+  id="invalid-country-select"
+  label="Country"
+  options={options}
+  purpose="country"
+/>

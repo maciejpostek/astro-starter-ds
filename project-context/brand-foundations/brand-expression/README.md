@@ -1,31 +1,46 @@
-# Project Brand Expression
+# Project Brand and Composition Contract
 
 Status: not configured.
 
-This directory is the project-specific application of the universal
-`art-direction` knowledge base. It intentionally contains no brand decisions
-in the starter.
+This directory contains project-specific visual decisions and their evidence.
+It intentionally contains no brand decisions in the starter.
+
+## Canonical Files
+
+- `contract.json` — machine-readable source of truth for approved visual and
+  composition rules;
+- `contract.schema.json` — validation contract;
+- `contract.md` — generated human-readable projection; never edit manually;
+- `reference-manifest.json` — supplied visual evidence and its approval state;
+- `component-signatures.md` — representative component patterns;
+- `visual-qa.md` — human review criteria.
 
 ## Activation
 
-1. Complete the intake in `art-direction/templates/art-direction-intake.md`.
+1. Complete `art-direction/templates/art-direction-intake.md`.
 2. Add supplied references to `references/` and explorations to
    `explorations/`.
 3. Register every reference in `reference-manifest.json`.
-4. Draft `contract.md`.
-5. Define representative patterns in `component-signatures.md`.
-6. Review the calibration set with `visual-qa.md`.
-7. Change the contract and manifest status to `approved` only after explicit
-   human approval.
+4. Define concrete rules in `contract.json`.
+5. Generate `contract.md` with `npm run brand:generate`.
+6. Define representative patterns in `component-signatures.md`.
+7. Review the calibration set with `visual-qa.md`.
+8. Set the contract and manifest to `approved` only after explicit human
+   approval.
 
-Until approval, agents must treat visual direction as an input gap. They may
-preserve or improve neutral system structure, but they must not invent a brand,
-visual metaphor, audience, or signature treatment.
+Every approved rule must map its visual intent to concrete tokens, classes,
+attributes, CSS declarations, runtime behavior, requirements, prohibitions,
+and validation checks.
 
-## Separation
+Until approval, agents may preserve or improve neutral system structure and
+perform exact reuse. They must not invent a brand, visual metaphor, audience,
+or signature treatment.
 
-- `art-direction/knowledge` is reusable theory.
-- this directory contains one project's decisions and evidence;
-- `.agentic-rules/08-brand-expression.md` defines the operational AI workflow;
-- CSS Variables and Astro components implement approved decisions;
-- Figma remains the visual exploration and parity surface.
+## Runtime Activation
+
+The contract is loaded only for open-ended or brand-sensitive decisions. Exact
+token edits and named component reuse skip it. The resolver returns only rules
+that match the requested component, scope, or theme.
+
+Figma remains an optional exploration or projection surface and is used only
+after an explicit Figma request.

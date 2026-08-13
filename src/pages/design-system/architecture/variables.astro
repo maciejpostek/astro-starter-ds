@@ -1,0 +1,91 @@
+---
+import DesignSystemLayout from "../../../layouts/DesignSystemLayout.astro";
+import DsSectionHeaderLevel2 from "../../../components/_internal/documentation/DsSectionHeaderLevel2.astro";
+import {
+  architecture,
+  createDocumentationSummary,
+} from "../../../data/documentationRegistry";
+import tokenArchitecture from "../../../data/design-system/tokenArchitecture.json";
+
+const sources = [
+  ["CSS variables", "src/styles/tokens", "Runtime values and mode aliases"],
+  ["TypeScript projections", "src/data/design-system", "Documentation and typed metadata"],
+  ["Component registry", "componentArchitecture.json", "Identity, readiness and Figma references"],
+  ["Token group registry", "tokenArchitecture.json", "Semantic owners, consumers, domains and CSS source paths"],
+  ["Authoring contract", "architecture/component-authoring-contract.json", "Naming, resolution order and approval gate"],
+  ["Figma metadata", architecture.figma.fileKey, "Stable design-file identity and checkpoints"],
+];
+const pageToc = [
+  { label: "Variable architecture", href: "#variable-architecture" },
+  { label: "Sources of truth", href: "#variable-sources" },
+  { label: "Registered groups", href: "#variable-groups" },
+  { label: "Modes", href: "#variable-modes" },
+];
+---
+
+<DesignSystemLayout title="Variables - Astro Design System" pageType="reading" toc={pageToc} header={{
+  eyebrow: "Architecture",
+  title: "Variables",
+  summary: createDocumentationSummary(
+    "Variables move from primitive references through semantic ownership into component contracts, while canonical source files remain distinct from their documentation and Figma projections. Review",
+    pageToc,
+    "to resolve the approved alias direction and understand how theme modes affect the rendered value.",
+  ),
+}}>
+
+  <section id="variable-architecture" aria-labelledby="variable-architecture-title" data-ds-doc-section>
+    <DsSectionHeaderLevel2 id="variable-architecture-title" title="Variable architecture" />
+    <div class="variable-flow" aria-label="Variable dependency flow">
+      <span>Primitive values</span><b>→</b><span>Semantic roles</span><b>→</b><span>Component contracts</span><b>→</b><span>Rendered UI</span>
+    </div>
+  </section>
+
+  <section id="variable-groups" aria-labelledby="variable-groups-title" data-ds-doc-section>
+    <DsSectionHeaderLevel2
+      id="variable-groups-title"
+      title="Registered token groups"
+    />
+    <div class="source-table token-group-table" role="table" aria-label="Registered token groups">
+      <div role="row">
+        <strong role="columnheader">Group / scope</strong>
+        <strong role="columnheader">Owner / domain</strong>
+        <strong role="columnheader">Source and dependencies</strong>
+        <strong role="columnheader">Consumers</strong>
+      </div>
+      {tokenArchitecture.groups.map((group) => (
+        <div role="row">
+          <span role="cell"><code>{group.id}</code><br />{group.scope}</span>
+          <span role="cell"><code>{group.owner}</code><br />{group.domain}</span>
+          <span role="cell"><code>{group.sourcePaths.join(", ")}</code><br />→ {group.dependencies.join(", ") || "none"}</span>
+          <span role="cell">{group.consumers.join(", ")}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section id="variable-sources" aria-labelledby="variable-sources-title" data-ds-doc-section>
+    <DsSectionHeaderLevel2 id="variable-sources-title" title="Sources of truth" />
+    <div class="source-table" role="table" aria-label="Variable sources of truth">
+      {sources.map(([name, source, role]) => (
+        <div role="row"><strong role="cell">{name}</strong><code role="cell">{source}</code><span role="cell">{role}</span></div>
+      ))}
+    </div>
+  </section>
+
+  <section id="variable-modes" aria-labelledby="variable-modes-title" data-ds-doc-section>
+    <DsSectionHeaderLevel2 id="variable-modes-title" title="Light and dark modes" />
+    <p class="body-base-regular">Semantic aliases change under <code>data-theme</code>. Components consume the semantic role, not a mode-specific primitive.</p>
+  </section>
+</DesignSystemLayout>
+
+<style>
+  section { display:grid; gap:var(--gap-large); }
+  .variable-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr auto 1fr; align-items:center; gap:var(--gap-small); }
+  .variable-flow span, .source-table > div { border:var(--border-width-default) solid var(--color-border-subtle); padding:var(--content-padding-medium); }
+  .variable-flow b { color:var(--color-text-accent); }
+  .source-table { display:grid; }
+  .source-table > div { display:grid; grid-template-columns:1fr 1.4fr 1.5fr; gap:var(--gap-medium); }
+  .source-table.token-group-table > div { grid-template-columns: 0.8fr 0.7fr 1.6fr 1.4fr; }
+  .source-table span, section > p { color:var(--color-text-secondary); }
+  @media (width < 48rem) { .variable-flow, .source-table > div, .source-table.token-group-table > div { grid-template-columns:1fr; } .variable-flow b { transform:rotate(90deg); } }
+</style>

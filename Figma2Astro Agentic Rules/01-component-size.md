@@ -8,12 +8,12 @@ component-size profiles and their exact mapping to the production
 
 ## Decision
 
-Figma stores seven public size properties directly in `Component Size`.
+Figma stores six public size properties directly in `Component Size`.
 
 The collection has three modes:
 
-- `Medium` — the collection default;
-- `Small`;
+- `Small` — the collection default;
+- `Medium`;
 - `Large`.
 
 Figma does not contain a `component-profile` group, and `Component Size`
@@ -27,35 +27,17 @@ from Astro code.
 
 | Figma Variable | Web code syntax | Small | Medium | Large |
 | --- | --- | ---: | ---: | ---: |
-| `min/height` | `var(--component-min-height)` | 48 | 56 | 64 |
-| `padding/inline` | `var(--component-padding-inline)` | 16 | 20 | 24 |
-| `padding/block` | `var(--component-padding-block)` | 12 | 18 | 24 |
+| `min/height` | `var(--component-min-height)` | 32 | 48 | 56 |
+| `padding/inline` | `var(--component-padding-inline)` | 12 | 20 | 24 |
+| `padding/block` | `var(--component-padding-block)` | 0 | 18 | 24 |
 | `icon/size` | `var(--component-icon-size)` | 14 | 16 | 18 |
-| `gap` | `var(--component-gap)` | 8 | 10 | 12 |
-| `font/size` | `var(--component-font-size)` | 12 | 13 | 14 |
-| `line/height` | `var(--component-line-height)` | 100 | 100 | 100 |
+| `gap` | `var(--component-gap)` | 4 | 8 | 10 |
+| `font/size` | `var(--component-font-size)` | 12 | 14 | 16 |
 
-`line/height = 100` represents `100%`, which maps to
-`--line-height-none: 1` in code.
-
-## Figma MCP line-height limitation
-
-The `Component Size / line/height` Variable remains the numeric value `100`
-because the Variables panel represents it as `100%`. Binding that FLOAT
-Variable directly to a text `lineHeight` through the Plugin API may change the
-unit to pixels and interpret it as `100px`.
-
-Therefore, in Figma profile documentation:
-
-- visible text uses native `line-height: 100%` without a direct binding;
-- the Variable remains documented in the `Small / Medium / Large` table;
-- transfer to Astro always maps `100` to `--line-height-none: 1`, never
-  `100px`;
-- any manually bound text must be checked to confirm that its percentage unit
-  was preserved.
-
-This is an MCP representation limitation, not a change to the architecture or
-Astro source value.
+Line height is deliberately absent from the Figma collection. Component Text
+Styles store it as a native percentage and the typography adapter maps it to
+the existing Astro `--component-line-height` contract. This keeps Figma
+editable without weakening the code profile layer.
 
 ## Astro representation
 
@@ -82,9 +64,9 @@ Example:
 
 ```css
 :root {
-  --component-size-small-min-height: var(--size-48);
-  --component-size-medium-min-height: var(--size-56);
-  --component-size-large-min-height: var(--size-64);
+  --component-size-small-min-height: var(--size-32);
+  --component-size-medium-min-height: var(--size-48);
+  --component-size-large-min-height: var(--size-56);
 }
 
 [data-component-size="medium"] {
@@ -136,28 +118,29 @@ instead of assuming that every component uses the same prop.
 5. Pass the prop so rendered HTML contains the correct
    `data-component-size`.
 6. Keep component CSS on the stable `--component-*` aliases.
-7. Do not copy values such as 48, 16, or 12 into local component CSS.
-8. Verify every profile-dependent property: height, padding, icon, gap, font
-   size, and line height.
+7. Do not copy values such as 32, 12, or 4 into local component CSS.
+8. Verify every Figma profile-dependent property: height, padding, icon, gap
+   and font size; verify line height through the applied component Text Style.
 9. Compare the result with a Figma screenshot in the same mode.
 
 ## Default mode versus default prop
 
-`Medium` is the default Figma mode, but this does not mean every Astro
-component defaults to `medium`.
+`Small` is the default Figma mode, but this does not mean every Astro
+component defaults to `small`.
 
-If a Figma node uses `Medium` while Astro defaults to `Small`, pass
-`size="medium"` or the appropriate equivalent explicitly. Never rely on a
+If a Figma node uses a mode different from the Astro component default, pass
+the matching `size` or `componentSize` prop explicitly. Never rely on a
 component default before inspecting its code.
 
 ## Changing a profile value
 
-Code remains the source of truth. When a profile value changes:
+The approved canonical Figma collection is the source of truth for public
+component geometry. When a profile value changes in Figma:
 
-1. update the correct `--component-size-{mode}-*` token;
-2. verify the `[data-component-size]` mapping;
-3. verify all consumers of `--component-*`;
-4. update the direct value in the corresponding Figma mode;
+1. inspect and validate all six values in every Figma mode;
+2. update the correct `--component-size-{mode}-*` tokens in Astro;
+3. verify the `[data-component-size]` mapping;
+4. verify all consumers of `--component-*`;
 5. update the table in this rule;
 6. validate both environments.
 
@@ -170,19 +153,22 @@ CSS alias layer.
 - Do not alias `Component Size` to technical profiles in `Sizing`.
 - Do not hardcode Figma values in component CSS.
 - Do not add local `[data-component-size]` rules to individual components.
-- Do not create `.button--small` or `.tag--large`; use the public prop and
-  `data-component-size`.
+- Do not create `.button--small`; use the public control-size prop and
+  `data-control-size`. Tag intentionally owns one fixed Astro geometry even
+  though its current Figma projection retains size modes.
 - Do not assume the Figma default mode is every component's default prop.
 
 ## Validation checklist
 
 Figma:
 
-- `Component Size` has exactly seven Variables;
-- modes are `Medium`, `Small`, and `Large`;
+- `Component Size` has exactly six Variables;
+- modes are `Small`, `Medium`, and `Large`, with `Small` as default;
 - every Variable has a direct value in every mode;
 - no `component-profile` group exists;
 - Web code syntax points to stable `var(--component-*)` aliases.
+- no `line/height` Variable exists; component Text Styles own native
+  percentage line height.
 
 Astro:
 

@@ -1,0 +1,27 @@
+---
+import CopyIconButton from "../../base-components/buttons/CopyIconButton.astro";
+
+interface Props {
+  value: string;
+  label?: string;
+  class?: string;
+}
+
+const {
+  value,
+  label = `Copy ${value}`,
+  class: className,
+} = Astro.props;
+const componentName = "DsCopyButton";
+---
+
+<CopyIconButton
+  class={className}
+  copyValue={value}
+  data-component-name={componentName}
+  label={label}
+  successToastId="ds-clipboard-copy-success"
+  errorToastId="ds-clipboard-copy-error"
+  variant="tertiary"
+  size="small"
+/>

@@ -1,0 +1,68 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Hint, { type HintTone } from "../hint/Hint.astro";
+import Label from "./Label.astro";
+import type { InputSize, InputValidation } from "./Input.astro";
+
+type FieldRequirement =
+  | { required?: boolean; optionalText?: never }
+  | { required?: false; optionalText?: string };
+
+export type Props = Omit<HTMLAttributes<"div">, "class"> &
+  FieldRequirement & {
+    controlId: string;
+    label: string;
+    hint?: string;
+    descriptionId?: string;
+    size?: InputSize;
+    validation?: InputValidation;
+    disabled?: boolean;
+    class?: string;
+  };
+
+const {
+  controlId,
+  label,
+  hint,
+  descriptionId = `${controlId}-hint`,
+  size,
+  required = false,
+  optionalText,
+  validation = "default",
+  disabled = false,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const hintTone: HintTone = validation === "invalid" ? "invalid" : validation === "valid" ? "valid" : "default";
+---
+
+<div
+  {...attributes}
+  class:list={["form-field", className]}
+  data-component-name="FormField"
+  data-control-size={size}
+  data-field-validation={validation}
+  data-field-disabled={disabled ? "true" : undefined}
+>
+  {required ? (
+    <Label for={controlId} label={label} required disabled={disabled} />
+  ) : (
+    <Label for={controlId} label={label} optionalText={optionalText} disabled={disabled} />
+  )}
+  <div class="form-field__control"><slot /></div>
+  {hint && <Hint id={descriptionId} text={hint} tone={hintTone} disabled={disabled} />}
+</div>
+
+<style>
+  .form-field {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    gap: var(--control-gap, var(--gap-small));
+  }
+
+  .form-field__control {
+    min-width: 0;
+  }
+</style>

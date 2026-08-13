@@ -1,102 +1,130 @@
-# Component Agentic Rule: Icons
+# Icon Assets
 
-Status: active.
+Status: active asset rule.
 
-Use this file whenever an agent selects, adds, replaces or transfers an icon
-between Figma and Astro.
+Canonical catalog: `src/data/design-system/iconLibrary.json`
+Astro renderers: `src/components/assets/icons/MaterialSymbol.astro`,
+`MaterialSymbol.tsx`, and `SocialIcons.astro`
+Figma page: `     ↪  ◆  Icons`
 
-## 1. Canonical source
+## Material Symbols contract
 
-- Astro icon package: `@lucide/astro`
-- Figma library naming: `Icon/<LucidePascalName>`
-- Default optical canvas: `24 × 24`
-- Component family: `assets/icons`
+Provider: Google Material Symbols
+Figma naming: `Icon/Material/<google_snake_case_name>`
+Default optical canvas: `20 × 20`
+License: Apache License 2.0
 
-The icon name must stay compatible with the named Lucide Astro export. For
-example:
+Use only the 49 curated Google Material Symbols in the manifest. Render each
+glyph as local inline SVG with the Sharp profile: optical size 20, weight 400,
+grade 0, fill 0. Lucide, icon fonts, runtime requests, Unicode glyphs, and
+pasted SVG paths in consumers are forbidden.
 
-```text
-Figma Icon/ArrowDownRight
-  -> import { ArrowDownRight } from "@lucide/astro"
-  -> <ArrowDownRight />
-```
+Each Figma icon master uses a `20 × 20` inner group with locked 1:1 aspect
+ratio and horizontal `Fill container` sizing. The vector remains centered
+and bound to `Color Semantic / Global/icon/primary`.
 
-The Figma library is curated to the icons used by the starter. It is not a local
-fork of the complete Lucide package.
+Astro renderers inherit color through `currentColor`. Parent components control
+both icon dimensions through the shared `size` value; its default `1em` follows
+the parent's font size. Keep width and height equal and use
+`preserveAspectRatio="xMidYMid meet"` so glyph geometry is never distorted.
 
-Machine-readable catalog:
-`src/data/design-system/iconLibrary.json`.
+Do not import the complete Google catalog. Do not expose icon selection from a
+consumer component.
 
-## 1.1 Licensing
+A consumer master owns one fixed semantic icon across all states. It exposes no
+INSTANCE_SWAP, icon slot, or arbitrary icon-name prop. A documented Boolean may
+hide the icon. Change a glyph only in the consumer master, then re-check color
+and size bindings. Astro hardcodes the same MaterialSymbol name.
 
-- The installed `@lucide/astro` package uses the ISC license.
-- The canonical local evidence is `node_modules/@lucide/astro/LICENSE`.
-- Lucide identifies a subset of Feather-derived glyphs under the MIT license in
-  the same file.
-- Preserve the applicable copyright and permission notices when distributing
-  Lucide source or copied icon assets.
-- Do not infer licensing from a glyph name or a website screenshot. Validate
-  against the installed dependency used by the build.
+The feedback family has one bounded semantic-axis exception: `Alert`,
+`Notification` and `Toast` map `error` to `error`, `warning` to `warning`,
+`success` to `check_circle`, `info` to `info`, and `feature` to `star_rate`.
+This closed mapping is owned by `src/lib/feedback/feedbackModel.mjs`; consumers
+still receive no icon prop, icon slot, glyph name or instance-swap capability.
 
-## 2. Selection rules
+## Social Icons contract
 
-- Reuse a local Figma `Icon/*` component before drawing a new glyph.
-- Use instance swap for icon choice inside reusable Figma components.
-- In Astro, use a named `@lucide/astro` import and render the icon through the
-  public component slot.
-- Keep one semantic meaning per icon within a local interaction context.
-- Prefer common, recognizable glyphs. If the meaning is ambiguous, use a
-  visible text label instead of inventing a decorative symbol.
+Canonical social catalog: `src/data/design-system/iconLibrary.json#social`
+Canonical Figma ComponentSet: `Social Icons` (`964:9411`)
+Astro renderer: `src/components/assets/icons/SocialIcons.astro`
 
-## 3. Naming and accessibility
+Use exactly the 26 approved platform identities from the manifest. The
+`platform` prop is required and uses a lowercase stable slug. The
+`variant` prop is `brand | monochrome` and defaults to `brand`.
 
-- Preserve canonical PascalCase Lucide naming after the `Icon/` prefix.
-- Aliases used only for local import readability do not create new Figma
-  components. `Grid3x3 as Grid` still maps to `Icon/Grid3x3`.
-- Standalone decorative icons use `aria-hidden="true"` in Astro.
-- Interactive accessible names belong to `Button` or required
-  `IconButton.label`; they do not come from the glyph name.
-- Do not use an icon component name as user-facing accessible copy.
+- `brand` preserves every fixed fill, gradient, mask, and geometry exported
+  from Figma Color=Original. These platform-owned paints are asset data, not
+  project color tokens.
+- `monochrome` uses the Figma Color=Negative geometry and replaces drawable
+  paints with `currentColor`.
+- The renderer has no `size` prop. Its SVG uses `width="100%"` and
+  `height="100%"`; the consumer parent owns both dimensions.
+- Keep all SVG geometry local. Runtime URLs, icon fonts, consumer-supplied SVG,
+  and hand-redrawn platform marks are forbidden.
+- Preserve `preserveAspectRatio="xMidYMid meet"` so non-square parent boxes
+  cannot distort the mark.
 
-## 4. Styling contract
+## UX purpose
 
-- Icon geometry stays inside the `24 × 24` Lucide view box.
-- In Figma the glyph container must stay optically centered and scale with the
-  outer icon instance. Use centered alignment plus Scale constraints (or an
-  equivalent responsive vector contract); never leave a fixed 24 × 24 glyph
-  inside a resized outer frame.
-- The consuming component controls rendered size through
-  `--component-icon-size` or another documented semantic size token.
-- Standalone Figma icons bind their visible color to
-  `Color Semantic / Global/icon/primary`.
-- Component masters may recolor an icon through their own
-  `Component/*/icon/*` token contract. Do not create icon-specific color
-  variables for a single consumer.
-- Do not modify Lucide path geometry to compensate for layout spacing. Fix the
-  container, gap or size instead.
+Render one canonical, recognizable Material Symbol or social platform mark
+without adding runtime icon fonts, network requests, or consumer-owned SVG
+paths.
 
-## 5. Forbidden shortcuts
+## Use when
 
-- Do not paste raw SVG paths into Astro templates.
-- Do not use emoji or Unicode arrows as interface icons.
-- Do not detach Figma icon instances merely to change color or size.
-- Do not create a variant axis containing every icon name. Icon choice is an
-  instance-swap property.
-- Do not add the full Lucide catalog to the starter without a real use case.
+- A curated symbol already exists in `iconLibrary.json` for the required meaning.
+- An interface needs a decorative or labelled semantic glyph rendered inline.
+- A social platform identity exists in the canonical `social.platforms` catalog.
 
-## 6. Validation
+## Avoid when
 
-- Figma component name maps to a real `@lucide/astro` named export.
-- Every named Lucide import under `src` exists in
-  `src/data/design-system/iconLibrary.json` and has one permanent Figma node ID.
-- The catalog currently contains 51 curated icons: 43 required by named source
-  imports and eight retained for deliberate instance-swap composition.
-- The component remains swappable and is not detached.
-- Its containing component supplies the accessible name where required.
-- Size and color come from the consuming component contract.
-- Resizing the icon instance preserves equal optical insets on both axes; the
-  glyph is not shifted by a fixed inner frame.
-- New icons are added to the curated Figma library and this rule is updated
-  only if the mapping contract changes.
-- Run `npm run audit:icons` after adding, removing or renaming an icon import or
-  Figma asset record.
+- The required glyph is outside the curated manifest.
+- A consumer wants arbitrary Material Symbol swapping instead of owning one semantic icon.
+- A social platform is not present in the approved Figma ComponentSet.
+
+## Content contract
+
+- Use the canonical Google snake_case name from the local manifest.
+- Use the canonical lowercase social platform slug for `SocialIcons`.
+- A decorative glyph has no accessible name; the parent control owns the label.
+- A standalone meaningful glyph requires an explicit accessible label from its caller.
+
+## Composition and placement
+
+- Keep width and height equal and preserve the canonical 1:1 optical canvas.
+- Let the parent component own color and the final rendered size.
+- For SocialIcons, size the parent box; brand ignores parent color while
+  monochrome inherits it.
+
+## Responsive behavior
+
+- Primary strategy: `intrinsic`
+- Mechanisms and references: MaterialSymbol uses equal `size` dimensions and a `1em` default; SocialIcons fills the parent width and height; both use `currentColor` where applicable and `preserveAspectRatio="xMidYMid meet"`.
+- Container queries: none.
+- Viewport queries: none.
+- Reflow, order and visibility: The glyph scales with its owning component and never swaps, crops, or changes meaning at a viewport width.
+
+## Accessibility and required behavior
+
+- Keep decorative SVGs out of the accessibility tree.
+- Do not use color alone to communicate an interaction or status.
+- Preserve the parent control's accessible name and focus behavior.
+- Give a standalone meaningful SocialIcons instance an explicit `label`.
+
+## Related components
+
+- Button, ButtonLink, IconButton, SearchInput, and Tag consume fixed canonical Material Symbols.
+- Social links and platform identity patterns may consume SocialIcons.
+
+## Naming and token contract
+
+Use the canonical `MaterialSymbol` and `SocialIcons` identities, manifest-backed
+names and asset-owned rendering contracts. Consumers control size and semantic
+color through existing registered groups; asset renderers do not declare local
+design tokens or create component token namespaces.
+
+## Core decision
+
+Use an icon renderer only for an approved local manifest entry. Let the
+semantic consumer own interaction and accessible naming, and let the parent
+own SocialIcons dimensions.

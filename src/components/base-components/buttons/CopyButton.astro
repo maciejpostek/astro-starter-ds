@@ -1,0 +1,65 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ClipboardCopy from "../../_internal/behaviors/ClipboardCopy.astro";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type { ButtonSize, ButtonVariant } from "./Button.astro";
+import "../../../styles/components/button-controls.css";
+
+export interface Props extends Omit<HTMLAttributes<"button">, "aria-label" | "class" | "type" | "value"> {
+  copyValue: string;
+  successToastId: string;
+  errorToastId: string;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  copyValue,
+  successToastId,
+  errorToastId,
+  variant = "primary",
+  size = "small",
+  disabled = false,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof copyValue !== "string") throw new TypeError("CopyButton copyValue must be a string.");
+if (!Astro.slots.has("default")) throw new TypeError("CopyButton requires a visible label.");
+
+const successToastTarget = successToastId?.trim();
+const errorToastTarget = errorToastId?.trim();
+
+if (!successToastTarget) throw new TypeError("CopyButton successToastId is required.");
+if (!errorToastTarget) throw new TypeError("CopyButton errorToastId is required.");
+if (successToastTarget === errorToastTarget) {
+  throw new TypeError("CopyButton successToastId and errorToastId must be different.");
+}
+
+const isDisabled = disabled || copyValue.length === 0;
+---
+
+<button
+  {...attributes}
+  class:list={["button", "copy-button", className]}
+  data-button-variant={variant}
+  data-clipboard-copy
+  data-clipboard-error-toast={errorToastTarget}
+  data-clipboard-success-toast={successToastTarget}
+  data-clipboard-value={copyValue}
+  data-component-name="CopyButton"
+  data-control-size={size}
+  disabled={isDisabled}
+  type="button"
+>
+  <span class="button__label"><slot /></span>
+  <MaterialSymbol
+    class="button__icon"
+    name="content_copy"
+    size="var(--control-icon-size)"
+  />
+</button>
+
+<ClipboardCopy />

@@ -1,0 +1,272 @@
+---
+interface Props {
+  label?: string;
+  mode?: "overlay" | "static";
+}
+
+const { label = "Component", mode = "overlay" } = Astro.props;
+const isOverlay = mode === "overlay";
+---
+
+<div
+  class="component-info-layer"
+  data-component-name="ComponentInfoLayer"
+  data-component-info-layer
+  data-component-info-mode={mode}
+  hidden={isOverlay ? true : undefined}
+  aria-hidden={isOverlay ? "true" : undefined}
+>
+  <span class="component-info-layer__icon" aria-hidden="true">❖</span>
+  <span data-component-info-text>{label}</span>
+</div>
+
+<script>
+  const infoLayer = document.querySelector<HTMLElement>("[data-component-info-layer][data-component-info-mode='overlay']");
+  const infoText = infoLayer?.querySelector<HTMLElement>("[data-component-info-text]");
+  let activeComponent: HTMLElement | null = null;
+
+  const canShowInfoLayer = () => document.documentElement.dataset.guides === "visible";
+
+  const getComponentTarget = (target: EventTarget | null) => {
+    if (!(target instanceof Element)) return null;
+    if (target.closest("[data-grid-toggle]")) return null;
+    return target.closest<HTMLElement>("[data-component-name]");
+  };
+
+  const isGuidesToggle = (target: EventTarget | null) =>
+    target instanceof Element && Boolean(target.closest("[data-grid-toggle]"));
+
+  const isInteractiveTarget = (target: EventTarget | null) =>
+    target instanceof Element && Boolean(
+      target.closest(
+        'a[href], button, input, textarea, select, label, summary, [role="button"], [contenteditable="true"]'
+      )
+    );
+
+  const getComponentName = (target: HTMLElement) => target.dataset.componentName ?? "Component";
+  const getClipboardText = (target: HTMLElement) => `Component name: ${getComponentName(target)}`;
+
+  const preventGuidesInteraction = (event: Event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+  };
+
+  const setInfoText = (text: string) => {
+    if (!infoText) return;
+    infoText.textContent = text;
+  };
+
+  const moveInfoLayer = (x: number, y: number) => {
+    if (!infoLayer) return;
+    infoLayer.style.transform = `translate3d(${x + 14}px, ${y + 14}px, 0)`;
+  };
+
+  const hideInfoLayer = () => {
+    if (!infoLayer) return;
+    activeComponent = null;
+    infoLayer.hidden = true;
+  };
+
+  const showInfoLayer = (target: HTMLElement, x: number, y: number) => {
+    if (!canShowInfoLayer()) {
+      hideInfoLayer();
+      return;
+    }
+    if (!infoLayer || !infoText) return;
+    activeComponent = target;
+    setInfoText(getComponentName(target));
+    infoLayer.hidden = false;
+    moveInfoLayer(x, y);
+  };
+
+  const writeClipboardText = async (text: string) => {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    const textArea = document.createElement("textarea");
+    const copyCommand = (document as unknown as { execCommand?: (command: string) => boolean })
+      .execCommand?.bind(document);
+
+    textArea.value = text;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.inset = "0";
+    textArea.style.opacity = "0";
+    textArea.style.pointerEvents = "none";
+
+    document.body.append(textArea);
+    textArea.select();
+
+    const didCopy = typeof copyCommand === "function" && copyCommand("copy");
+    textArea.remove();
+
+    if (!didCopy) {
+      throw new Error("Clipboard unavailable");
+    }
+  };
+
+  const showToast = (id: string) => {
+    window.dispatchEvent(
+      new CustomEvent("astro-ds:toast-show", {
+        detail: { id }
+      })
+    );
+  };
+
+  const copyComponentName = async (target: HTMLElement) => {
+    try {
+      await writeClipboardText(getClipboardText(target));
+      showToast("ds-clipboard-copy-success");
+    } catch {
+      showToast("ds-clipboard-copy-error");
+    }
+  };
+
+  document.addEventListener("pointerover", (event) => {
+    const target = getComponentTarget(event.target);
+    if (!target) return;
+    showInfoLayer(target, event.clientX, event.clientY);
+  });
+
+  document.addEventListener("pointermove", (event) => {
+    if (!activeComponent) return;
+    if (!canShowInfoLayer()) {
+      hideInfoLayer();
+      return;
+    }
+    moveInfoLayer(event.clientX, event.clientY);
+  });
+
+  document.addEventListener("pointerout", (event) => {
+    if (!activeComponent) return;
+    const relatedTarget = event.relatedTarget;
+    if (relatedTarget instanceof Node && activeComponent.contains(relatedTarget)) return;
+    const target = getComponentTarget(event.target);
+    if (target === activeComponent) hideInfoLayer();
+  });
+
+  document.addEventListener("focusin", (event) => {
+    if (!canShowInfoLayer()) return;
+    const target = getComponentTarget(event.target);
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    showInfoLayer(target, rect.left + rect.width, rect.top);
+  });
+
+  document.addEventListener("focusout", (event) => {
+    const target = getComponentTarget(event.target);
+    if (target === activeComponent) hideInfoLayer();
+  });
+
+  (["pointerdown", "pointerup", "auxclick", "dblclick", "contextmenu", "dragstart"] as const)
+    .forEach((eventName) => {
+      document.addEventListener(
+        eventName,
+        (event) => {
+          if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
+          if (!getComponentTarget(event.target)) return;
+
+          preventGuidesInteraction(event);
+        },
+        { capture: true }
+      );
+    });
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
+      if (!isInteractiveTarget(event.target)) return;
+
+      preventGuidesInteraction(event);
+    },
+    { capture: true }
+  );
+
+  document.addEventListener(
+    "beforeinput",
+    (event) => {
+      if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
+      if (!isInteractiveTarget(event.target)) return;
+
+      preventGuidesInteraction(event);
+    },
+    { capture: true }
+  );
+
+  document.addEventListener(
+    "submit",
+    (event) => {
+      if (!canShowInfoLayer()) return;
+      preventGuidesInteraction(event);
+    },
+    { capture: true }
+  );
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      if (!canShowInfoLayer()) return;
+      if (isGuidesToggle(event.target)) return;
+
+      const target = getComponentTarget(event.target);
+      if (!target) return;
+
+      preventGuidesInteraction(event);
+
+      showInfoLayer(target, event.clientX, event.clientY);
+      void copyComponentName(target);
+    },
+    { capture: true }
+  );
+
+  new MutationObserver(() => {
+    if (!canShowInfoLayer()) hideInfoLayer();
+  }).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-guides"]
+  });
+</script>
+
+<style>
+  .component-info-layer {
+    --ds-guide-highlight-background: #f5f0ff;
+    --ds-guide-highlight-border: #8b5cf6;
+
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    display: inline-flex;
+    max-width: 18rem;
+    align-items: center;
+    gap: var(--size-4);
+    border: var(--border-width-default) solid var(--ds-guide-highlight-border);
+    color: var(--ds-guide-highlight-border);
+    background: var(--ds-guide-highlight-background);
+    box-shadow: 0 var(--size-12) var(--size-40) rgb(0 0 0 / 0.1);
+    padding: var(--size-6) var(--size-8);
+    pointer-events: none;
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+    white-space: nowrap;
+  }
+
+  .component-info-layer[data-component-info-mode="overlay"] {
+    position: fixed;
+  }
+
+  .component-info-layer[data-component-info-mode="static"] {
+    position: absolute;
+    top: var(--content-padding-medium);
+    left: var(--content-padding-medium);
+    transform: none;
+  }
+
+  .component-info-layer__icon {
+    line-height: 1;
+  }
+</style>

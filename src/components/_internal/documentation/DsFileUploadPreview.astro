@@ -1,0 +1,42 @@
+---
+import FileUpload from "../../base-components/file-upload/FileUpload.astro";
+---
+
+<div class="file-upload-preview" data-component-name="DsFileUploadPreview" data-ds-preview-target>
+  <FileUpload
+    id="file-upload-preview-input"
+    label="Choose a file or drag it here"
+    browseLabel="Browse file"
+    hint="PDF, PNG or JPG · max 10 MB"
+    accept=".pdf,.png,.jpg,.jpeg"
+    maxFileSizeBytes={10 * 1024 * 1024}
+  />
+</div>
+
+<script>
+  const initializeFileUploadPreviews = () => {
+    document.querySelectorAll<HTMLElement>('[data-component-name="DsFileUploadPreview"]').forEach((preview) => {
+      if (preview.dataset.fileUploadPreviewReady === "true") return;
+      preview.dataset.fileUploadPreviewReady = "true";
+      preview.closest("[data-ds-interactive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent) || event.detail?.axisId !== "state") return;
+        const root = preview.querySelector<HTMLElement>("[data-file-upload]");
+        const input = preview.querySelector<HTMLInputElement>("[data-file-upload-input]");
+        const browse = preview.querySelector<HTMLButtonElement>("[data-file-upload-browse]");
+        const status = preview.querySelector<HTMLElement>("[data-file-upload-status]");
+        if (!root || !input || !browse || !status) return;
+        const state = String(event.detail.value);
+        root.dataset.fileUploadState = state;
+        input.disabled = state === "disabled";
+        browse.disabled = state === "disabled";
+        status.textContent = state === "selected" ? "brand-guidelines.pdf" : state === "invalid" ? "File type is not accepted" : "No file selected";
+      });
+    });
+  };
+  initializeFileUploadPreviews();
+  document.addEventListener("astro:page-load", initializeFileUploadPreviews);
+</script>
+
+<style>
+  .file-upload-preview { inline-size: min(100%, var(--size-320)); }
+</style>

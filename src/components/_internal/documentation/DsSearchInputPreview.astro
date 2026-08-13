@@ -1,0 +1,29 @@
+---
+import SearchInput from "../../base-components/inputs/SearchInput.astro";
+import FormField from "../../base-components/inputs/FormField.astro";
+---
+
+<div
+  class="search-input-preview"
+  data-component-name="DsSearchInputPreview"
+  data-control-size="medium"
+  data-ds-preview-target
+  data-search-input-content="empty"
+>
+  <FormField controlId="search-input-preview" label="Label" hint="Hint text">
+    <SearchInput
+      id="search-input-preview"
+      aria-describedby="search-input-preview-hint"
+      data-input-preview-control
+      label="Label"
+      placeholder="Search"
+    />
+  </FormField>
+</div>
+
+<style>
+  .search-input-preview {
+    display: grid;
+    width: min(100%, 20rem);
+  }
+</style>

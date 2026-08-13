@@ -1,0 +1,124 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type TabSize = "small" | "medium" | "large";
+
+export interface Props extends Omit<HTMLAttributes<"button">, "class" | "id" | "role" | "type"> {
+  id: string;
+  controls: string;
+  selected?: boolean;
+  disabled?: boolean;
+  size?: TabSize;
+  class?: string;
+}
+
+const {
+  id,
+  controls,
+  selected = false,
+  disabled = false,
+  size = "small",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof id !== "string" || id.trim().length === 0) {
+  throw new TypeError("Tab id must be a non-empty string.");
+}
+if (typeof controls !== "string" || controls.trim().length === 0) {
+  throw new TypeError("Tab controls must be a non-empty panel id.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("Tab requires a visible label in its default slot.");
+}
+---
+
+<button
+  {...attributes}
+  id={id}
+  class:list={["tab", className]}
+  type="button"
+  role="tab"
+  aria-selected={selected ? "true" : "false"}
+  aria-controls={controls}
+  tabindex={selected && !disabled ? 0 : -1}
+  disabled={disabled}
+  data-component-name="Tab"
+  data-control-size={size}
+>
+  <span class="tab__label"><slot /></span>
+</button>
+
+<style>
+  .tab {
+    display: inline-flex;
+    min-block-size: var(--control-min-height);
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: var(--control-gap);
+    border: var(--border-width-default) solid var(--tab-border-default);
+    border-radius: var(--radius-button);
+    padding: var(--control-padding-block) var(--control-padding-inline);
+    background: var(--tab-background-default);
+    color: var(--tab-text-default);
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    font-size: var(--control-font-size);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--control-line-height);
+    text-align: center;
+    transition:
+      background-color var(--motion-transition),
+      border-color var(--motion-transition),
+      color var(--motion-transition),
+      box-shadow var(--motion-transition);
+  }
+
+  .tab__label {
+    white-space: nowrap;
+  }
+
+  .tab:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+    border-color: var(--tab-border-hover);
+    background: var(--tab-background-hover);
+    color: var(--tab-text-hover);
+  }
+
+  .tab[aria-selected="true"] {
+    border-color: var(--tab-border-selected);
+    background: var(--tab-background-selected);
+    color: var(--tab-text-selected);
+  }
+
+  .tab:disabled {
+    border-color: var(--tab-border-disabled);
+    background: var(--tab-background-disabled);
+    color: var(--tab-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .tab:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    outline: var(--border-width-strong) solid var(--color-state-focus-ring);
+    outline-offset: var(--size-2);
+    box-shadow: var(--effect-focused);
+  }
+
+  @media (forced-colors: active) {
+    .tab {
+      border-color: ButtonText;
+    }
+
+    .tab[aria-selected="true"] {
+      border-color: Highlight;
+      background: Highlight;
+      color: HighlightText;
+    }
+
+    .tab:disabled {
+      border-color: GrayText;
+      color: GrayText;
+    }
+  }
+</style>

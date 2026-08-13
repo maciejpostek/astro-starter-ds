@@ -1,0 +1,24 @@
+---
+interface Props {
+  title: string;
+  id?: string;
+}
+
+const { title, id } = Astro.props as Props;
+---
+
+<p
+  id={id}
+  class="ds-documentation-block-title body-small-regular"
+  data-component-name="DsDocumentationBlockTitle"
+>
+  {title}
+</p>
+
+<style>
+  .ds-documentation-block-title {
+    margin: 0;
+    color: var(--color-text-accent);
+    font-weight: var(--font-weight-strong);
+  }
+</style>

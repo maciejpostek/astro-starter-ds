@@ -1,0 +1,26 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import RadioCard from "../../base-components/checkbox-radio/RadioCard.astro";
+---
+
+<div
+  class="radio-card-preview"
+  data-component-name="DsRadioCardPreview"
+  data-ds-preview-target
+>
+  <RadioCard
+    id="ds-preview-radio-card"
+    name="ds-preview-radio-card-group"
+    value="email"
+    label="Email"
+    description="Send account notifications to the primary email address."
+  >
+    <MaterialSymbol slot="leading" name="mail" size="var(--size-20)" />
+  </RadioCard>
+</div>
+
+<style>
+  .radio-card-preview {
+    inline-size: min(100%, var(--size-320));
+  }
+</style>

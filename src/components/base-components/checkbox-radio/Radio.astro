@@ -1,0 +1,192 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type NativeRadioAttributes = Omit<
+  HTMLAttributes<"input">,
+  "aria-label" | "aria-labelledby" | "checked" | "class" | "disabled" | "id" | "name" | "type" | "value"
+>;
+
+type AccessibleRadioName =
+  | { "aria-label": string; "aria-labelledby"?: string }
+  | { "aria-label"?: string; "aria-labelledby": string };
+
+export type Props = NativeRadioAttributes & AccessibleRadioName & {
+  id: string;
+  name: string;
+  value: string;
+  checked?: boolean;
+  disabled?: boolean;
+  class?: string;
+};
+
+const {
+  id,
+  name,
+  value,
+  checked = false,
+  disabled = false,
+  class: className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  ...attributes
+} = Astro.props;
+---
+
+<span
+  class:list={["radio", className]}
+  data-component-name="Radio"
+  data-selection-kind="radio"
+  data-selection-disabled={disabled ? "true" : undefined}
+>
+  <input
+    {...attributes}
+    class="radio__input"
+    id={id}
+    type="radio"
+    name={name}
+    value={value}
+    aria-label={ariaLabel}
+    aria-labelledby={ariaLabelledby}
+    checked={checked}
+    disabled={disabled}
+    data-selection-input
+  />
+  <span class="radio__indicator" aria-hidden="true">
+    <span class="radio__dot"></span>
+  </span>
+</span>
+
+<style>
+  .radio {
+    position: relative;
+    display: inline-grid;
+    inline-size: var(--size-16);
+    block-size: var(--size-16);
+    flex: 0 0 auto;
+    place-items: center;
+  }
+
+  .radio__input {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    appearance: none;
+    cursor: pointer;
+    opacity: 0;
+  }
+
+  .radio__indicator {
+    display: grid;
+    inline-size: 100%;
+    block-size: 100%;
+    place-items: center;
+    border: var(--border-width-default) solid var(--selection-control-unchecked-border-default);
+    border-radius: var(--radius-full);
+    color: var(--selection-control-checked-foreground-default);
+    background: var(--selection-control-unchecked-background-default);
+    pointer-events: none;
+    transition:
+      background-color var(--motion-transition),
+      border-color var(--motion-transition),
+      box-shadow var(--motion-transition);
+  }
+
+  .radio__dot {
+    display: none;
+    inline-size: var(--size-6);
+    block-size: var(--size-6);
+    border-radius: var(--radius-full);
+    background: currentColor;
+  }
+
+  .radio:has(.radio__input:checked) .radio__indicator {
+    border-color: var(--selection-control-checked-border-default);
+    color: var(--selection-control-checked-foreground-default);
+    background: var(--selection-control-checked-background-default);
+  }
+
+  .radio:has(.radio__input:checked) .radio__dot {
+    display: block;
+  }
+
+  .radio:not([data-selection-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) .radio__indicator,
+  :global(label:hover) .radio:not([data-selection-disabled="true"]) .radio__indicator {
+    border-color: var(--selection-control-unchecked-border-hover);
+    background: var(--selection-control-unchecked-background-hover);
+  }
+
+  .radio:not([data-selection-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]):has(.radio__input:checked) .radio__indicator,
+  :global(label:hover) .radio:not([data-selection-disabled="true"]):has(.radio__input:checked) .radio__indicator {
+    border-color: var(--selection-control-checked-border-hover);
+    color: var(--selection-control-checked-foreground-hover);
+    background: var(--selection-control-checked-background-hover);
+  }
+
+  .radio:not([data-selection-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) .radio__indicator,
+  :global(label:active) .radio:not([data-selection-disabled="true"]) .radio__indicator {
+    border-color: var(--selection-control-unchecked-border-pressed);
+    background: var(--selection-control-unchecked-background-pressed);
+  }
+
+  .radio:not([data-selection-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]):has(.radio__input:checked) .radio__indicator,
+  :global(label:active) .radio:not([data-selection-disabled="true"]):has(.radio__input:checked) .radio__indicator {
+    border-color: var(--selection-control-checked-border-pressed);
+    color: var(--selection-control-checked-foreground-pressed);
+    background: var(--selection-control-checked-background-pressed);
+  }
+
+  .radio:has(.radio__input:is(:focus-visible, [data-ds-preview-state="focus-visible"])) .radio__indicator {
+    outline: none;
+    box-shadow: var(--effect-focused);
+  }
+
+  .radio[data-selection-disabled="true"] .radio__indicator {
+    border-color: var(--selection-control-unchecked-border-disabled);
+    color: var(--selection-control-checked-foreground-disabled);
+    background: var(--selection-control-unchecked-background-disabled);
+  }
+
+  .radio[data-selection-disabled="true"]:has(.radio__input:checked) .radio__indicator {
+    border-color: var(--selection-control-checked-border-disabled);
+    background: var(--selection-control-checked-background-disabled);
+  }
+
+  .radio[data-selection-disabled="true"] .radio__input {
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .radio__indicator {
+      transition-duration: 0ms;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .radio__indicator {
+      border-color: ButtonText;
+      color: HighlightText;
+      background: Canvas;
+    }
+
+    .radio:has(.radio__input:checked) .radio__indicator {
+      border-color: Highlight;
+      background: Highlight;
+    }
+
+    .radio:has(.radio__input:is(:focus-visible, [data-ds-preview-state="focus-visible"])) .radio__indicator {
+      outline: var(--border-width-strong) solid Highlight;
+      outline-offset: var(--size-2);
+      box-shadow: none;
+    }
+
+    .radio[data-selection-disabled="true"] .radio__indicator {
+      border-color: GrayText;
+      color: GrayText;
+    }
+  }
+</style>

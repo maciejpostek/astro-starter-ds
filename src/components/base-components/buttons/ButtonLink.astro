@@ -1,0 +1,99 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type { ButtonSize } from "./Button.astro";
+
+export interface Props extends Omit<HTMLAttributes<"a">, "class" | "href"> {
+  href: string;
+  size?: ButtonSize;
+  showIcon?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  size = "small",
+  showIcon = true,
+  disabled = false,
+  class: className,
+  ...attributes
+} = Astro.props;
+---
+
+<a
+  {...attributes}
+  aria-disabled={disabled ? "true" : undefined}
+  class:list={["button-link", className]}
+  data-component-name="ButtonLink"
+  data-control-size={size}
+  href={disabled ? undefined : href}
+  tabindex={disabled ? -1 : attributes.tabindex}
+>
+  <span class="button-link__label"><slot /></span>
+  {showIcon && (
+    <MaterialSymbol
+      class="button-link__icon"
+      name="arrow_forward"
+      size="var(--control-icon-size)"
+    />
+  )}
+</a>
+
+<style>
+  .button-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--control-gap);
+    padding: 0;
+    color: var(--button-link-text-default);
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    font-size: var(--control-font-size);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-compact);
+    text-decoration: none;
+  }
+
+  .button-link__label {
+    white-space: nowrap;
+  }
+
+  .button-link__icon {
+    flex: 0 0 auto;
+    color: var(--button-link-icon-default);
+  }
+
+  .button-link:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
+    color: var(--button-link-text-hover);
+  }
+
+  .button-link:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) .button-link__icon {
+    color: var(--button-link-icon-hover);
+  }
+
+  .button-link:not([aria-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) {
+    color: var(--button-link-text-pressed);
+  }
+
+  .button-link:not([aria-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) .button-link__icon {
+    color: var(--button-link-icon-pressed);
+  }
+
+  .button-link[aria-disabled="true"] {
+    color: var(--button-link-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .button-link[aria-disabled="true"] .button-link__icon {
+    color: var(--button-link-icon-disabled);
+  }
+
+  .button-link:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    box-shadow: var(--effect-focused);
+    outline: var(--border-width-emphasis) solid transparent;
+    outline-offset: var(--size-2);
+  }
+</style>

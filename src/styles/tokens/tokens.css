@@ -15,7 +15,6 @@
 @import "./color-semantic.css";
 @import "./size-semantic.css";
 @import "./typography-foundations.css";
-@import "./typography-semantic.css";
 @import "./typography-styles.css";
 @import "./layout-foundations.css";
 @import "./layout-semantic.css";
@@ -24,8 +23,10 @@
 @import "./elevation-foundations.css";
 
 /* Component contracts
- * Component-specific colors and shared component size profiles.
+ * Component-specific colors, interaction effects and shared size profiles.
  */
 @import "./color-components.css";
-@import "./component-sizes.css";
+@import "./size-components.css";
+@import "./interaction-effects.css";
+@import "./control-sizes.css";
 @import "./design-system-components.css";

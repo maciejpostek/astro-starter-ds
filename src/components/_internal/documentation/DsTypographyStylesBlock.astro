@@ -1,0 +1,26 @@
+---
+import DsTypographyStyleProfile from "./DsTypographyStyleProfile.astro";
+import type { TypographyStyleRow } from "../../../data/design-system/typographyTokens";
+
+interface Props {
+  rows: TypographyStyleRow[];
+}
+
+const { rows } = Astro.props as Props;
+---
+
+<section
+  class="ds-typography-styles-block"
+  data-component-name="DsTypographyStylesBlock"
+>
+  {rows.map((row) => <DsTypographyStyleProfile row={row} />)}
+</section>
+
+<style>
+  .ds-typography-styles-block {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--gap-xlarge);
+  }
+</style>

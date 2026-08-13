@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "active",
+  "canonicalDocs": [
+    "VARIABLE-ARCHITECTURE.md",
+    "CSS-NAMING-CONVENTIONS.md",
+    ".agentic-rules/10-component-readiness.md"
+  ],
+  "identity": {
+    "astroFile": "^[A-Z][A-Za-z0-9]*\\.astro$",
+    "componentName": "^[A-Z][A-Za-z0-9]*$",
+    "registryId": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+    "publicRootClass": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+    "elementClass": "^[a-z0-9]+(?:-[a-z0-9]+)*(?:__[a-z0-9]+(?:-[a-z0-9]+)*)$",
+    "documentationClassPrefix": "ds-",
+    "layoutClassPrefix": "l-",
+    "utilityClassPrefix": "u-"
+  },
+  "tokenFlow": [
+    "primitive",
+    "global-semantic",
+    "component-semantic",
+    "component-css"
+  ],
+  "resolutionOrder": [
+    "component",
+    "dependency",
+    "use-case",
+    "global",
+    "primitive-as-approved-alias-source"
+  ],
+  "tokenDomains": {
+    "color": "src/styles/tokens/color-components.css",
+    "size": "src/styles/tokens/size-components.css",
+    "typography": "src/styles/tokens/typography-foundations.css",
+    "layout": "src/styles/tokens/layout-semantic.css",
+    "motion": "src/styles/tokens/motion-foundations.css",
+    "elevation": "src/styles/tokens/elevation-foundations.css"
+  },
+  "forbiddenTokenPrefixes": [
+    "--ds-",
+    "--_ds-",
+    "--component-"
+  ],
+  "sharedAttributeBridges": [
+    {
+      "id": "control-size",
+      "sourcePath": "src/styles/tokens/control-sizes.css",
+      "patterns": ["--control-*"],
+      "reason": "A centrally registered attribute bridge shared by aligned controls."
+    }
+  ],
+  "runtimeCustomProperties": [],
+  "creationPolicy": {
+    "default": "blocked",
+    "requiresTokenDraft": true,
+    "reuseAndComposeCanCreateTokens": false,
+    "primitiveAndGlobalSemanticRequireSeparateApproval": true,
+    "approvedDraftIsExact": true,
+    "extendExistingOwnerBeforeNewGroup": true
+  }
+}

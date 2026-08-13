@@ -54,7 +54,15 @@ export interface LayoutAgenticRule {
 
 export interface LayoutStructureExample {
   label: string;
+  language: "html" | "css";
   code: string;
+}
+
+export interface LayoutResponsiveStrategyRow {
+  level: string;
+  strategy: string;
+  useWhen: string;
+  mechanisms: string;
 }
 
 export const layoutFluidViewportRows: LayoutTokenRow[] = [
@@ -350,8 +358,8 @@ export const layoutGridAttributeRows: LayoutGridAttributeRow[] = [
     attribute: "data-columns",
     values: "site, 1, 2, 3, 4, 6, 12",
     defaultValue: "site",
-    valueContracts: "--site-grid-columns",
-    usage: "Controls explicit column presets. Use with data-grid=\"columns\" for local repeated layouts or site for the responsive 12/8/4 grid.",
+    valueContracts: "--site-grid-columns, --grid-auto-min-width, selected gap",
+    usage: "Controls explicit columns for data-grid=\"columns\". A numeric value on auto-fit becomes the preferred maximum count while children still wrap intrinsically. The site value is not valid for auto-fit.",
   },
   {
     selector: ".l-grid",
@@ -380,6 +388,11 @@ export const layoutGridAttributeRows: LayoutGridAttributeRow[] = [
 ];
 
 export const layoutAgenticRules: LayoutAgenticRule[] = [
+  {
+    name: "layout.intrinsic-first",
+    title: "Start with intrinsic responsiveness",
+    text: "Start with semantic structure, fluid typography and sizing, then use auto-fit, minmax, flex-wrap and natural flow before adding a container or viewport query.",
+  },
   {
     name: "layout.class-role-attribute-variant",
     title: "Class defines role, attribute defines variant",
@@ -420,17 +433,19 @@ export const layoutAgenticRules: LayoutAgenticRule[] = [
 export const layoutStructureExamples: LayoutStructureExample[] = [
   {
     label: "Section + container",
+    language: "html",
     code: `<section class="l-section" data-padding="large">
   <div class="l-container" data-container="main">
     <div class="l-stack" data-gap="medium">
       <h2 class="heading-h2">System-first websites</h2>
-      <p class="body-large">Reusable structure, controlled values and clear AI-readable contracts.</p>
+      <p class="body-large-regular">Reusable structure, controlled values and clear AI-readable contracts.</p>
     </div>
   </div>
 </section>`,
   },
   {
     label: "Section + container + composition grid",
+    language: "html",
     code: `<section class="l-section" data-padding="medium">
   <div class="l-container" data-container="main">
     <div class="l-grid" data-grid="site" data-gap="site">
@@ -443,13 +458,14 @@ export const layoutStructureExamples: LayoutStructureExample[] = [
   },
   {
     label: "Stack + cluster inside a component area",
+    language: "html",
     code: `<div class="l-stack" data-gap="regular">
   <h3 class="heading-h4">Design system audit</h3>
   <p class="body-regular">Use stack for vertical rhythm and cluster for wrapped inline actions.</p>
 
   <div class="l-cluster" data-gap="small" data-align="center" data-justify="start">
-    <a class="button" href="/design-system/components">Explore components</a>
-    <a class="button" href="/design-system/layout">Review layout</a>
+    <a class="button" href="/design-system/base-components/buttons">Explore components</a>
+    <a class="button" href="/design-system/foundations/layout">Review layout</a>
   </div>
 </div>`,
   },
@@ -458,6 +474,7 @@ export const layoutStructureExamples: LayoutStructureExample[] = [
 export const layoutGridExamples: LayoutStructureExample[] = [
   {
     label: "Site composition grid",
+    language: "html",
     code: `<div class="l-grid" data-grid="site" data-gap="site">
   <article data-grid-span="4">...</article>
   <article data-grid-span="4">...</article>
@@ -466,6 +483,7 @@ export const layoutGridExamples: LayoutStructureExample[] = [
   },
   {
     label: "Auto-fit card grid",
+    language: "html",
     code: `<div class="l-grid" data-grid="auto-fit" data-min-width="card" data-gap="medium">
   <article>...</article>
   <article>...</article>
@@ -473,12 +491,88 @@ export const layoutGridExamples: LayoutStructureExample[] = [
 </div>`,
   },
   {
+    label: "Count-aware breakpointless card grid",
+    language: "html",
+    code: `<div class="l-grid" data-grid="auto-fit" data-columns="3" data-min-width="card" data-gap="medium">
+  <article>...</article>
+  <article>...</article>
+  <article>...</article>
+  <article>...</article>
+</div>`,
+  },
+  {
     label: "Breakout grid",
+    language: "html",
     code: `<section class="l-section" data-padding="large">
   <div class="l-grid" data-grid="breakout">
     <div data-grid-span="content">Content aligned to the site grid.</div>
     <figure data-grid-span="full">Media can break out into edge tracks.</figure>
   </div>
 </section>`,
+  },
+];
+
+export const layoutResponsiveStrategyRows: LayoutResponsiveStrategyRow[] = [
+  {
+    level: "1",
+    strategy: "Semantic and fluid baseline",
+    useWhen: "Always.",
+    mechanisms: "Semantic HTML, l-section, l-container, typography classes, fluid sizing and logical properties.",
+  },
+  {
+    level: "2",
+    strategy: "Intrinsic / breakpointless",
+    useWhen: "Order and meaning stay stable while available space changes.",
+    mechanisms: "auto-fit, minmax(), min(), max(), clamp(), flex-wrap and natural flow.",
+  },
+  {
+    level: "3",
+    strategy: "Component-based",
+    useWhen: "A reusable component responds to its parent allocation rather than the viewport.",
+    mechanisms: "A named component-owned inline-size container and local @container query.",
+  },
+  {
+    level: "4",
+    strategy: "Viewport",
+    useWhen: "A page shell, navigation or overlay genuinely depends on the viewport.",
+    mechanisms: "@media with the preferred 48rem or 64rem references, or a documented exception.",
+  },
+  {
+    level: "5",
+    strategy: "Alternate rendering",
+    useWhen: "The required interaction cannot be preserved through intrinsic or query-based reflow.",
+    mechanisms: "One accessible source when possible; no duplicated IDs, form controls or focusable actions.",
+  },
+];
+
+export const layoutResponsiveExamples: LayoutStructureExample[] = [
+  {
+    label: "Intrinsic count-aware grid",
+    language: "html",
+    code: `<div class="l-grid" data-grid="auto-fit" data-columns="3" data-min-width="card" data-gap="medium">
+  ...
+</div>`,
+  },
+  {
+    label: "Component-owned container query",
+    language: "css",
+    code: `.search-panel {
+  container: search-panel / inline-size;
+}
+
+@container search-panel (width < 30rem) {
+  .search-panel__content {
+    grid-template-columns: 1fr;
+  }
+}`,
+  },
+  {
+    label: "Viewport-owned exception",
+    language: "css",
+    code: `@media (width < 48rem) {
+  .site-navigation {
+    /* A global navigation mode may change with the viewport. */
+  }
+}`,
   },
 ];

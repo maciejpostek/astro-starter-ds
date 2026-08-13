@@ -1,0 +1,93 @@
+.input-control {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.input-control__leading,
+.input-control__action {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input-control__leading {
+  left: var(--control-padding-inline);
+  display: inline-flex;
+  color: var(--input-icon-default);
+  pointer-events: none;
+}
+
+.input-control__action {
+  right: var(--control-padding-inline);
+  display: inline-grid;
+  width: var(--size-24);
+  height: var(--size-24);
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-full);
+  padding: 0;
+  color: var(--input-icon-default);
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.72;
+}
+
+.input-control__action:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+  opacity: 1;
+}
+
+.input-control__action:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
+  opacity: 0.56;
+}
+
+.input-control__action:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+  outline: none;
+  opacity: 1;
+  box-shadow: var(--effect-focused);
+}
+
+.input-control__action:disabled,
+.input-control[data-input-control-disabled="true"] .input-control__leading {
+  color: var(--input-icon-disabled);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.input-control--leading :is(.input-control__field) {
+  padding-left: calc(var(--control-padding-inline) + var(--control-icon-size) + var(--control-gap));
+}
+
+.input-control--trailing :is(.input-control__field) {
+  padding-right: calc(var(--control-padding-inline) + var(--size-24) + var(--control-gap));
+}
+
+.input-control--leading.input-control--trailing :is(.input-control__field) {
+  padding-left: calc(var(--control-padding-inline) + var(--control-icon-size) + var(--control-gap));
+  padding-right: calc(var(--control-padding-inline) + var(--size-24) + var(--control-gap));
+}
+
+.input-control__sr-only {
+  position: absolute;
+  width: var(--size-1);
+  height: var(--size-1);
+  margin: calc(var(--size-1) * -1);
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .input-control__leading,
+  .input-control__action {
+    color: FieldText;
+  }
+
+  .input-control__action:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    outline: var(--border-width-strong) solid Highlight;
+    outline-offset: var(--size-2);
+    box-shadow: none;
+  }
+}

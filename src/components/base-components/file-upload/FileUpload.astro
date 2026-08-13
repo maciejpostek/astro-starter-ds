@@ -1,0 +1,220 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import Button from "../buttons/Button.astro";
+
+type ValidationProps =
+  | { validation?: "default"; errorMessage?: never }
+  | { validation: "invalid"; errorMessage: string };
+
+type NativeFileInputProps = Omit<
+  HTMLAttributes<"input">,
+  "class" | "id" | "type" | "disabled" | "multiple"
+>;
+
+export type Props = NativeFileInputProps & ValidationProps & {
+  id: string;
+  label: string;
+  browseLabel?: string;
+  hint?: string;
+  emptyMessage?: string;
+  maxFileSizeBytes?: number;
+  multiple?: boolean;
+  disabled?: boolean;
+  class?: string;
+};
+
+const {
+  id,
+  label,
+  browseLabel = "Browse file",
+  hint,
+  emptyMessage = "No file selected",
+  maxFileSizeBytes,
+  multiple = false,
+  disabled = false,
+  validation = "default",
+  errorMessage,
+  class: className,
+  ...inputAttributes
+} = Astro.props as Props;
+
+if (!id?.trim()) throw new Error("FileUpload requires a non-empty id.");
+if (!label?.trim()) throw new Error("FileUpload requires a non-empty label.");
+if (validation === "invalid" && !errorMessage?.trim()) {
+  throw new Error('FileUpload with validation="invalid" requires errorMessage.');
+}
+
+const hintId = hint ? `${id}-hint` : undefined;
+const statusId = `${id}-status`;
+const errorId = validation === "invalid" ? `${id}-error` : undefined;
+const describedBy = [inputAttributes["aria-describedby"], hintId, statusId, errorId]
+  .filter(Boolean)
+  .join(" ") || undefined;
+const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid" : "default";
+---
+
+<div
+  class:list={["file-upload", className]}
+  data-component-name="FileUpload"
+  data-file-upload
+  data-file-upload-state={initialState}
+  data-max-file-size-bytes={maxFileSizeBytes}
+  data-validation={validation}
+>
+  <input
+    {...inputAttributes}
+    class="file-upload__input"
+    id={id}
+    type="file"
+    multiple={multiple || undefined}
+    disabled={disabled}
+    aria-describedby={describedBy}
+    aria-invalid={validation === "invalid" ? "true" : inputAttributes["aria-invalid"]}
+    data-file-upload-input
+  />
+
+  <div class="file-upload__dropzone" data-file-upload-dropzone>
+    <MaterialSymbol class="file-upload__icon" name="upload" size="var(--size-24)" />
+    <label class="file-upload__label" for={id}>{label}</label>
+    {hint && <span class="file-upload__hint" id={hintId}>{hint}</span>}
+    <Button
+      class="file-upload__browse"
+      variant="secondary"
+      size="small"
+      showIcon={false}
+      disabled={disabled}
+      data-file-upload-browse
+    >
+      {browseLabel}
+    </Button>
+    <span
+      class="file-upload__status"
+      id={statusId}
+      aria-live="polite"
+      data-empty-message={emptyMessage}
+      data-file-upload-status
+    >
+      {validation === "invalid" ? errorMessage : emptyMessage}
+    </span>
+    {validation === "invalid" && (
+      <span class="file-upload__error" id={errorId}>{errorMessage}</span>
+    )}
+  </div>
+</div>
+
+<script>
+  import { validateFileSelection } from "../../../lib/file-upload/fileUploadModel.mjs";
+
+  type FileUploadRejection = { file: File; reason: "type" | "size" | "count" };
+
+  const setInputFiles = (input: HTMLInputElement, files: File[]) => {
+    if (typeof DataTransfer === "undefined") return;
+    const transfer = new DataTransfer();
+    files.forEach((file) => transfer.items.add(file));
+    input.files = transfer.files;
+  };
+
+  const initializeFileUploads = () => {
+    document.querySelectorAll<HTMLElement>("[data-file-upload]").forEach((root) => {
+      if (root.dataset.fileUploadReady === "true") return;
+      root.dataset.fileUploadReady = "true";
+
+      const input = root.querySelector<HTMLInputElement>("[data-file-upload-input]");
+      const dropzone = root.querySelector<HTMLElement>("[data-file-upload-dropzone]");
+      const browse = root.querySelector<HTMLButtonElement>("[data-file-upload-browse]");
+      const status = root.querySelector<HTMLElement>("[data-file-upload-status]");
+      if (!input || !dropzone || !browse || !status) return;
+
+      let dragDepth = 0;
+      const isDisabled = () => input.disabled;
+      const setState = (state: "default" | "dragging" | "selected" | "invalid" | "disabled") => {
+        root.dataset.fileUploadState = isDisabled() ? "disabled" : state;
+      };
+
+      const announceSelection = (files: File[]) => {
+        status.textContent = files.length
+          ? files.map((file) => file.name).join(", ")
+          : status.dataset.emptyMessage ?? "No file selected";
+      };
+
+      const processFiles = (files: Iterable<File> | ArrayLike<File>) => {
+        if (isDisabled()) return;
+        const maximumSize = root.dataset.maxFileSizeBytes;
+        const { accepted, rejections } = validateFileSelection(files, {
+          accept: input.accept,
+          multiple: input.multiple,
+          maxFileSizeBytes: maximumSize === undefined ? undefined : Number(maximumSize),
+        }) as { accepted: File[]; rejections: FileUploadRejection[] };
+
+        setInputFiles(input, accepted);
+        announceSelection(accepted);
+        setState(rejections.length ? "invalid" : accepted.length ? "selected" : "default");
+
+        if (accepted.length) {
+          root.dispatchEvent(new CustomEvent("astro-ds:file-upload-select", {
+            bubbles: true,
+            detail: { files: accepted },
+          }));
+        }
+        if (rejections.length) {
+          status.textContent = rejections.map(({ file, reason }) => `${file.name}: ${reason}`).join(", ");
+          root.dispatchEvent(new CustomEvent("astro-ds:file-upload-reject", {
+            bubbles: true,
+            detail: { rejections },
+          }));
+        }
+      };
+
+      browse.addEventListener("click", () => {
+        if (!isDisabled()) input.click();
+      });
+      input.addEventListener("change", () => processFiles(input.files ?? []));
+      input.addEventListener("focus", () => dropzone.dataset.inputFocus = "true");
+      input.addEventListener("blur", () => delete dropzone.dataset.inputFocus);
+
+      dropzone.addEventListener("dragenter", (event) => {
+        event.preventDefault();
+        if (isDisabled()) return;
+        dragDepth += 1;
+        setState("dragging");
+      });
+      dropzone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        if (event.dataTransfer) event.dataTransfer.dropEffect = isDisabled() ? "none" : "copy";
+      });
+      dropzone.addEventListener("dragleave", () => {
+        dragDepth = Math.max(0, dragDepth - 1);
+        if (dragDepth === 0) setState(input.files?.length ? "selected" : "default");
+      });
+      dropzone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dragDepth = 0;
+        if (!isDisabled() && event.dataTransfer?.files) processFiles(event.dataTransfer.files);
+      });
+    });
+  };
+
+  initializeFileUploads();
+  document.addEventListener("astro:page-load", initializeFileUploads);
+</script>
+
+<style>
+  .file-upload { min-width: 0; width: 100%; }
+  .file-upload__input { position: absolute; inline-size: var(--size-1); block-size: var(--size-1); margin: calc(var(--size-1) * -1); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .file-upload__dropzone { display: flex; min-block-size: var(--size-160); min-inline-size: 0; flex-direction: column; align-items: center; justify-content: center; gap: var(--gap-small); border: var(--border-width-default) dashed var(--input-border-default); border-radius: var(--radius-input); padding: var(--content-padding-medium); color: var(--input-text-default); background: var(--input-background-default); text-align: center; transition: background-color var(--motion-transition), border-color var(--motion-transition), box-shadow var(--motion-transition); }
+  .file-upload__icon { flex: 0 0 auto; color: var(--input-icon-default); }
+  .file-upload__label { color: var(--input-label-default); font-family: var(--font-family-body); font-size: var(--font-size-body-small); font-weight: var(--font-weight-normal); line-height: var(--line-height-normal); }
+  .file-upload__hint, .file-upload__status, .file-upload__error { overflow-wrap: anywhere; color: var(--input-helper-default); font-family: var(--font-family-body); font-size: var(--font-size-body-tiny); line-height: var(--line-height-normal); }
+  .file-upload__error { color: var(--input-helper-invalid); }
+  .file-upload[data-validation="invalid"] .file-upload__status { display: none; }
+  .file-upload:not([data-file-upload-state="disabled"]) .file-upload__dropzone:is(:hover, [data-ds-preview-state="hover"]) { border-color: var(--input-border-hover); background: var(--input-background-hover); }
+  .file-upload:not([data-file-upload-state="disabled"]) .file-upload__dropzone:is(:focus-within, [data-input-focus="true"]),
+  .file-upload[data-ds-preview-state="focus-visible"] .file-upload__dropzone { border-color: var(--input-border-focus); background: var(--input-background-focus); box-shadow: var(--effect-focused); }
+  .file-upload:is([data-file-upload-state="dragging"], [data-ds-preview-state="dragging"]) .file-upload__dropzone { border-style: solid; border-color: var(--color-border-accent); background: var(--color-background-subtle); }
+  .file-upload:is([data-file-upload-state="selected"], [data-ds-preview-state="selected"]) .file-upload__dropzone { border-style: solid; border-color: var(--input-border-valid); }
+  .file-upload:is([data-file-upload-state="invalid"], [data-ds-preview-state="invalid"]) .file-upload__dropzone { border-style: solid; border-color: var(--input-border-invalid); }
+  .file-upload:is([data-file-upload-state="disabled"], [data-ds-preview-state="disabled"]) .file-upload__dropzone { border-color: var(--input-border-disabled); color: var(--input-text-disabled); background: var(--input-background-disabled); cursor: not-allowed; }
+  .file-upload:is([data-file-upload-state="disabled"], [data-ds-preview-state="disabled"]) :is(.file-upload__label, .file-upload__hint, .file-upload__status, .file-upload__icon) { color: var(--input-text-disabled); }
+  @media (forced-colors: active) { .file-upload__dropzone { border-color: CanvasText; background: Canvas; } .file-upload[data-file-upload-state="dragging"] .file-upload__dropzone { border-color: Highlight; } .file-upload[data-file-upload-state="invalid"] .file-upload__dropzone { border-color: Mark; } .file-upload__input:focus-visible + .file-upload__dropzone { outline: var(--border-width-strong) solid Highlight; outline-offset: var(--size-2); box-shadow: none; } }
+</style>

@@ -1,0 +1,120 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import Button from "../buttons/Button.astro";
+import { formatByteCount, getFileFormatLabel, resolveProgress } from "../../../lib/file-upload/fileUploadModel.mjs";
+
+export type FileUploadCardState = "uploading" | "success" | "error";
+export interface FileUploadCardLabels { uploading: string; success: string; error: string; cancel: string; remove: string; retry: string; }
+export interface Props extends Omit<HTMLAttributes<"article">, "class" | "id"> {
+  fileId: string;
+  fileName: string;
+  state: FileUploadCardState;
+  progress?: number;
+  loadedBytes?: number;
+  totalBytes?: number;
+  formatLabel?: string;
+  labels?: Partial<FileUploadCardLabels>;
+  class?: string;
+}
+
+const defaults: FileUploadCardLabels = { uploading: "Uploading…", success: "Completed", error: "Failed", cancel: "Cancel upload", remove: "Remove file", retry: "Try again" };
+const { fileId, fileName, state, progress, loadedBytes, totalBytes, formatLabel, labels: labelOverrides = {}, class: className, ...attributes } = Astro.props;
+if (!fileId?.trim()) throw new Error("FileUploadCard requires a non-empty fileId.");
+if (!fileName?.trim()) throw new Error("FileUploadCard requires a non-empty fileName.");
+const labels = { ...defaults, ...labelOverrides };
+const progressValue = state === "uploading" ? resolveProgress({ progress, loadedBytes, totalBytes }) : undefined;
+const bytesLabel = loadedBytes !== undefined && totalBytes !== undefined ? `${formatByteCount(loadedBytes)} of ${formatByteCount(totalBytes)}` : totalBytes !== undefined ? formatByteCount(totalBytes) : undefined;
+const statusLabel = labels[state];
+const titleId = `file-upload-card-${fileId}-title`;
+const descriptionId = `file-upload-card-${fileId}-description`;
+---
+
+<article
+  {...attributes}
+  class:list={["file-upload-card", className]}
+  data-component-name="FileUploadCard"
+  data-file-upload-card
+  data-file-upload-card-state={state}
+  data-file-id={fileId}
+  aria-labelledby={titleId}
+  aria-describedby={descriptionId}
+  aria-busy={state === "uploading" ? "true" : undefined}
+>
+  <div class="file-upload-card__icon" aria-hidden="true">
+    <MaterialSymbol name="description" size="var(--size-24)" />
+    <span>{formatLabel?.trim() || getFileFormatLabel(fileName)}</span>
+  </div>
+  <div class="file-upload-card__body">
+    <strong class="file-upload-card__name" id={titleId}>{fileName}</strong>
+    <div class="file-upload-card__meta" id={descriptionId}>
+      {bytesLabel && <span>{bytesLabel}</span>}
+      <span class="file-upload-card__status" role="status">
+        <span class="file-upload-card__status-marker" aria-hidden="true"></span>
+        {statusLabel}
+      </span>
+    </div>
+    {state === "uploading" && (
+      <progress class="file-upload-card__progress" max="100" value={progressValue} aria-label={statusLabel}>
+        {progressValue === undefined ? statusLabel : `${Math.round(progressValue)}%`}
+      </progress>
+    )}
+    {state === "error" && (
+      <Button variant="secondary" size="small" showIcon={false} data-file-upload-action="retry">
+        {labels.retry}
+      </Button>
+    )}
+  </div>
+  <div class="file-upload-card__actions">
+    <button class="file-upload-card__action" type="button" aria-label={state === "uploading" ? labels.cancel : labels.remove} data-file-upload-action={state === "uploading" ? "cancel" : "remove"}>
+      <MaterialSymbol name="close" size="var(--size-20)" />
+    </button>
+  </div>
+</article>
+
+<script>
+  const initializeFileUploadCards = () => {
+    document.querySelectorAll<HTMLElement>("[data-file-upload-card]").forEach((card) => {
+      if (card.dataset.fileUploadCardReady === "true") return;
+      card.dataset.fileUploadCardReady = "true";
+      card.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const actionButton = target.closest<HTMLButtonElement>("[data-file-upload-action]");
+        const action = actionButton?.dataset.fileUploadAction;
+        const fileId = card.dataset.fileId;
+        if (!actionButton || !fileId || !["cancel", "retry", "remove"].includes(action ?? "")) return;
+        card.dispatchEvent(new CustomEvent("astro-ds:file-upload-action", { bubbles: true, detail: { fileId, action } }));
+      });
+    });
+  };
+  initializeFileUploadCards();
+  document.addEventListener("astro:page-load", initializeFileUploadCards);
+</script>
+
+<style>
+  .file-upload-card { container: file-upload-card / inline-size; display: grid; min-inline-size: 0; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: var(--gap-regular); border: var(--border-width-default) solid var(--card-border-default); border-radius: var(--radius-medium); padding: var(--content-padding-medium); color: var(--color-text-primary); background: var(--card-background-default); font-family: var(--font-family-body); }
+  .file-upload-card[data-file-upload-card-state="error"] { border-color: var(--color-status-error-border); }
+  .file-upload-card__icon { position: relative; display: grid; inline-size: var(--size-40); block-size: var(--size-40); place-items: center; color: var(--color-text-secondary); }
+  .file-upload-card__icon > span { position: absolute; inset-inline-start: 0; inset-block-end: 0; max-inline-size: 100%; overflow: hidden; border-radius: var(--radius-small); padding: var(--size-1) var(--size-2); color: var(--color-text-primary); background: var(--color-background-strong); font-size: var(--font-size-body-tiny); font-weight: var(--font-weight-strong); line-height: var(--line-height-none); text-overflow: ellipsis; }
+  .file-upload-card__body { display: grid; min-inline-size: 0; gap: var(--gap-small); }
+  .file-upload-card__name { min-inline-size: 0; overflow-wrap: anywhere; font-size: var(--font-size-body-small); line-height: var(--line-height-normal); }
+  .file-upload-card__meta { display: flex; min-inline-size: 0; flex-wrap: wrap; align-items: center; gap: var(--gap-small); color: var(--color-text-secondary); font-size: var(--font-size-body-tiny); line-height: var(--line-height-normal); }
+  .file-upload-card__status { display: inline-flex; align-items: center; gap: var(--gap-tiny); color: var(--color-text-primary); }
+  .file-upload-card__status-marker { inline-size: var(--size-8); block-size: var(--size-8); flex: none; border-radius: var(--radius-full); background: var(--color-status-info-icon); }
+  [data-file-upload-card-state="success"] .file-upload-card__status-marker { background: var(--color-status-success-icon); }
+  [data-file-upload-card-state="error"] .file-upload-card__status-marker { background: var(--color-status-error-border); }
+  .file-upload-card__progress { inline-size: 100%; block-size: var(--size-6); overflow: hidden; border: 0; border-radius: var(--radius-full); color: var(--color-status-info-icon); background: var(--color-background-muted); }
+  .file-upload-card__progress::-webkit-progress-bar { background: var(--color-background-muted); }
+  .file-upload-card__progress::-webkit-progress-value { background: var(--color-status-info-icon); transition: inline-size var(--motion-transition); }
+  .file-upload-card__progress::-moz-progress-bar { background: var(--color-status-info-icon); }
+  .file-upload-card__progress:indeterminate { background: linear-gradient(90deg, var(--color-background-muted), var(--color-status-info-background), var(--color-background-muted)); background-size: 200% 100%; animation: file-upload-progress var(--motion-duration-fast) var(--motion-ease-standard) infinite alternate; }
+  .file-upload-card__actions { align-self: start; justify-self: end; }
+  .file-upload-card__action { min-inline-size: var(--control-size-small-min-height); min-block-size: var(--control-size-small-min-height); border: 0; border-radius: var(--radius-control); color: var(--color-text-secondary); background: transparent; cursor: pointer; font: inherit; }
+  .file-upload-card__action { display: grid; place-items: center; padding: 0; }
+  .file-upload-card__action:hover { color: var(--color-text-primary); background: var(--color-background-subtle); }
+  .file-upload-card__action:focus-visible { outline: none; box-shadow: var(--effect-focused); }
+  @keyframes file-upload-progress { from { background-position: 100% 0; } to { background-position: 0 0; } }
+  @media (prefers-reduced-motion: reduce) { .file-upload-card__progress:indeterminate { animation: none; } }
+  @media (forced-colors: active) { .file-upload-card { border-color: CanvasText; background: Canvas; color: CanvasText; } .file-upload-card[data-file-upload-card-state="error"] { border-color: Mark; } .file-upload-card__status-marker { border: var(--border-width-default) solid CanvasText; background: CanvasText; } .file-upload-card__progress { color: Highlight; background: Canvas; } .file-upload-card__action:focus-visible { outline: var(--border-width-strong) solid Highlight; outline-offset: var(--size-2); box-shadow: none; } }
+</style>

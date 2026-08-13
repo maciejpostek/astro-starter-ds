@@ -1,0 +1,28 @@
+---
+import PaginationGroup from "../../base-components/pagination/PaginationGroup.astro";
+import PaginationItem from "../../base-components/pagination/PaginationItem.astro";
+---
+
+<div class="ds-pagination-item-preview" data-component-name="DsPaginationItemPreview">
+  <nav aria-label="Pagination item example">
+    <PaginationGroup>
+      <PaginationItem
+        kind="page"
+        page={8}
+        current
+        href="?page=8#preview"
+        label="Page 8, current page"
+        linkAttributes={{ "data-ds-preview-target": true }}
+      />
+    </PaginationGroup>
+  </nav>
+</div>
+
+<style>
+  .ds-pagination-item-preview {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    place-items: center;
+  }
+</style>

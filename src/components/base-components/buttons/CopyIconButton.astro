@@ -1,0 +1,69 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ClipboardCopy from "../../_internal/behaviors/ClipboardCopy.astro";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type { ButtonSize } from "./Button.astro";
+import type { IconButtonVariant } from "./IconButton.astro";
+import "../../../styles/components/button-controls.css";
+
+export interface Props extends Omit<HTMLAttributes<"button">, "aria-label" | "class" | "type" | "value"> {
+  copyValue: string;
+  successToastId: string;
+  errorToastId: string;
+  label: string;
+  variant?: IconButtonVariant;
+  size?: ButtonSize;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  copyValue,
+  successToastId,
+  errorToastId,
+  label,
+  variant = "tertiary",
+  size = "small",
+  disabled = false,
+  class: className,
+  "data-component-name": componentName = "CopyIconButton",
+  ...attributes
+} = Astro.props;
+
+if (typeof copyValue !== "string") throw new TypeError("CopyIconButton copyValue must be a string.");
+if (!label?.trim()) throw new TypeError("CopyIconButton label is required.");
+
+const successToastTarget = successToastId?.trim();
+const errorToastTarget = errorToastId?.trim();
+
+if (!successToastTarget) throw new TypeError("CopyIconButton successToastId is required.");
+if (!errorToastTarget) throw new TypeError("CopyIconButton errorToastId is required.");
+if (successToastTarget === errorToastTarget) {
+  throw new TypeError("CopyIconButton successToastId and errorToastId must be different.");
+}
+
+const isDisabled = disabled || copyValue.length === 0;
+---
+
+<button
+  {...attributes}
+  aria-label={label.trim()}
+  class:list={["icon-button", "copy-icon-button", className]}
+  data-button-variant={variant}
+  data-clipboard-copy
+  data-clipboard-error-toast={errorToastTarget}
+  data-clipboard-success-toast={successToastTarget}
+  data-clipboard-value={copyValue}
+  data-component-name={componentName}
+  data-control-size={size}
+  disabled={isDisabled}
+  type="button"
+>
+  <MaterialSymbol
+    class="icon-button__icon"
+    name="content_copy"
+    size="var(--control-icon-size)"
+  />
+</button>
+
+<ClipboardCopy />

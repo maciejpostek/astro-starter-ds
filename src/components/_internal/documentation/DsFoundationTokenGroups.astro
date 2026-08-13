@@ -1,0 +1,94 @@
+---
+import type { DocumentationFoundationTokenGroup } from "../../../data/documentationFoundationRegistry";
+import {
+  getDocumentationResolvedValue,
+  getDocumentationTokenValue,
+} from "../../../data/documentationTokenRegistry";
+import { createDocumentationColorRows } from "../../../data/documentationFoundationData";
+import DsDocumentationBlockTitle from "./DsDocumentationBlockTitle.astro";
+import DsPaletteBlock from "./DsPaletteBlock.astro";
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+
+interface Props {
+  groups: DocumentationFoundationTokenGroup[];
+}
+
+const { groups } = Astro.props as Props;
+---
+
+{
+  groups.map((group) => (
+    <section
+      id={group.id}
+      class="ds-foundation-token-group"
+      aria-labelledby={`${group.id}-title`}
+      data-component-name="DsFoundationTokenGroups"
+    >
+      <DsDocumentationBlockTitle
+        id={`${group.id}-title`}
+        title={group.title}
+      />
+      <p class="ds-foundation-token-group__description body-small-regular">
+        {group.description} Source: <code>{group.sourceFile}</code>.
+      </p>
+
+      {group.presentation === "color" ? (
+        <DsPaletteBlock
+          name={group.title}
+          description={group.description}
+          rows={createDocumentationColorRows(group.tokens)}
+          showHeader={false}
+        />
+      ) : (
+        <DsTableFrame
+          label={`${group.title} token reference`}
+          columns={group.presentation === "motion"
+            ? "minmax(var(--ds-doc-table-token-column-min-width), 28fr) minmax(18rem, 22fr) minmax(18rem, 22fr) minmax(24rem, 28fr)"
+            : "minmax(var(--ds-doc-table-token-column-min-width), 32fr) minmax(20rem, 30fr) minmax(24rem, 38fr)"}
+          minWidth={group.presentation === "motion" ? "82rem" : "66rem"}
+        >
+          <DsTableRow variant="header">
+            <DsTableCell role="columnheader" variant="header">Token</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Authored value</DsTableCell>
+            {group.presentation === "motion" && (
+              <DsTableCell role="columnheader" variant="header">Reduced Motion</DsTableCell>
+            )}
+            <DsTableCell role="columnheader" variant="header">Resolved value</DsTableCell>
+          </DsTableRow>
+          {group.tokens.map((token) => (
+            <DsTableRow>
+              <DsTableCopyCell role="rowheader" value={token.name} />
+              <DsTableCell role="cell" tone="secondary"><code>{getDocumentationTokenValue(token)}</code></DsTableCell>
+              {group.presentation === "motion" && (
+                <DsTableCell role="cell" tone="secondary">
+                  <code>{getDocumentationTokenValue(token, "reduced-motion")}</code>
+                </DsTableCell>
+              )}
+              <DsTableCell role="cell" tone="secondary"><code>{getDocumentationResolvedValue(token)}</code></DsTableCell>
+            </DsTableRow>
+          ))}
+        </DsTableFrame>
+      )}
+    </section>
+  ))
+}
+
+<style>
+  .ds-foundation-token-group {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-regular);
+  }
+
+  .ds-foundation-token-group__description {
+    margin-block: calc(var(--space-regular) * -1) 0;
+    color: var(--color-text-tertiary);
+  }
+
+  .ds-foundation-token-group + .ds-foundation-token-group {
+    margin-top: var(--section-padding-small);
+  }
+</style>

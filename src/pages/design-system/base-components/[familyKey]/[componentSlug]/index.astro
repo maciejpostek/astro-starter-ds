@@ -1,0 +1,67 @@
+---
+import DesignSystemLayout from "../../../../../layouts/DesignSystemLayout.astro";
+import DsComponentDetail from "../../../../../components/_internal/documentation/DsComponentDetail.astro";
+import {
+  architecture,
+  createDocumentationSummary,
+  isPublicDocumentationComponent,
+  type ArchitectureComponent,
+} from "../../../../../data/documentationRegistry";
+import { loadComponentRule } from "../../../../../data/componentRuleLoader";
+import {
+  getComponentDocumentationAdapter,
+} from "../../../../../data/documentationComponentRegistry";
+
+export function getStaticPaths() {
+  return architecture.components
+    .filter((component) => component.categoryKey === "base-components" && isPublicDocumentationComponent(component))
+    .map((component) => ({
+      params: { familyKey: component.pageKey, componentSlug: component.id },
+      props: { component },
+    }));
+}
+
+interface Props { component: ArchitectureComponent; }
+const { component } = Astro.props;
+const rule = component.agenticRule ? await loadComponentRule(component.agenticRule) : undefined;
+const adapter = getComponentDocumentationAdapter(component.id);
+const documentationToc = adapter?.toc ?? [];
+const pageToc = [
+  ...documentationToc,
+  ...(!documentationToc.some((item) => item.href === "#dependencies")
+    ? [{ label: "Dependencies", href: "#dependencies" }]
+    : []),
+  ...(rule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
+];
+const figmaHref = component.figmaCanonicalNodeId
+  ? `${architecture.figma.fileUrl}?node-id=${component.figmaCanonicalNodeId.replace(":", "-")}`
+  : undefined;
+---
+
+<DesignSystemLayout
+  title={`${component.name} - Astro Design System`}
+  pageType="component-detail"
+  toc={pageToc}
+  header={{
+    eyebrow: `Base Components / ${component.pageLabel}`,
+    title: component.name,
+    summary: createDocumentationSummary(
+      component.sourcePath
+        ? "This canonical Astro component is documented from its implementation, registry identity and UX contract. Use"
+        : "This canonical Figma identity intentionally exposes no fabricated Astro API or preview. Use",
+      pageToc,
+      component.sourcePath
+        ? "to inspect its supported presentation, dependencies and usage rules."
+        : "to verify the recorded identity, dependencies and implementation boundary.",
+    ),
+    copyValue: component.name,
+    sourcePath: component.sourcePath ?? undefined,
+    figmaHref,
+  }}
+>
+  <DsComponentDetail
+    component={component}
+    rule={rule}
+    adapter={adapter}
+  />
+</DesignSystemLayout>

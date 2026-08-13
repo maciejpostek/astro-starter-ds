@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Standalone V3.1 wireframe for an adaptive design-system documentation architecture." />
+    <title>Design system documentation V3.1</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body data-app-mode="docs">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar" data-docs-topbar>
+      <a class="topbar__brand" href="?page=button" data-page-link="button" aria-label="Documentation prototype home">
+        <span class="topbar__brand-mark" aria-hidden="true">DS</span>
+        <span>Documentation</span>
+        <span class="badge badge--neutral">V3.1</span>
+      </a>
+
+      <nav class="topbar__nav" aria-label="Primary documentation categories">
+        <button type="button" data-nav-group="foundations">Foundations</button>
+        <button type="button" data-nav-group="base-components">Components</button>
+        <button type="button" data-nav-group="website-patterns">Patterns</button>
+        <button type="button" data-nav-group="examples-templates">Templates</button>
+        <button type="button" data-nav-group="architecture">Architecture</button>
+      </nav>
+
+      <div class="topbar__actions">
+        <button class="search-trigger" type="button" data-search-open aria-haspopup="dialog">
+          <span>Search…</span><kbd>⌘ K</kbd>
+        </button>
+        <button class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Switch to dark theme" data-theme-toggle>
+          <span data-theme-label>Light</span>
+          <span class="theme-switch__track" aria-hidden="true"><span class="theme-switch__thumb"></span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="documentation-shell" data-docs-shell>
+      <aside class="sidebar" aria-label="Documentation pages">
+        <div class="sidebar__heading"><span>Pages</span><span>One group open</span></div>
+        <nav class="sidebar__navigation" id="sidebar-navigation"></nav>
+      </aside>
+
+      <main class="content" id="main-content" tabindex="-1">
+        <article class="page-view page-view--reading" data-page-view="component-model" data-page-type="reading" hidden>
+          <section class="doc-section page-hero" id="architecture-overview" data-doc-section data-section-title="Overview">
+            <div class="breadcrumb"><span>Architecture</span><span>/</span><span>Component Model</span></div>
+            <p class="eyebrow">System architecture</p>
+            <h1>Component Model</h1>
+            <p class="lede">A compact map of where component identity, values, behavior and visual representation belong.</p>
+          </section>
+          <section class="doc-section" id="architecture-flow" data-doc-section data-section-title="Lifecycle">
+            <header class="section-heading"><p class="eyebrow">Lifecycle</p><h2>One identity, several representations</h2></header>
+            <div class="architecture-flow" aria-label="Component lifecycle diagram">
+              <article><span>01</span><strong>Figma master</strong><small>Visual structure</small></article>
+              <i aria-hidden="true">→</i>
+              <article><span>02</span><strong>Registry</strong><small>Identity and readiness</small></article>
+              <i aria-hidden="true">→</i>
+              <article><span>03</span><strong>Astro</strong><small>Runtime and semantics</small></article>
+              <i aria-hidden="true">→</i>
+              <article><span>04</span><strong>Documentation</strong><small>Human and AI context</small></article>
+            </div>
+          </section>
+          <section class="doc-section" id="architecture-sources" data-doc-section data-section-title="Sources of truth">
+            <header class="section-heading"><p class="eyebrow">Ownership</p><h2>Sources of truth</h2></header>
+            <div class="table-frame"><table><thead><tr><th>Concern</th><th>Authority</th><th>Documentation role</th></tr></thead><tbody>
+              <tr><td>Identity and readiness</td><td><code>componentArchitecture.json</code></td><td>Discovery and status</td></tr>
+              <tr><td>Runtime and accessibility</td><td><code>src/components/</code></td><td>API and live preview</td></tr>
+              <tr><td>Shared values</td><td><code>src/styles/tokens/</code></td><td>Variable relationships</td></tr>
+              <tr><td>Decision guidance</td><td><code>.agentic-rules/</code></td><td>Use and avoid rules</td></tr>
+            </tbody></table></div>
+          </section>
+        </article>
+
+        <article class="page-view page-view--reading page-view--color" data-page-view="color" data-page-type="reading" hidden>
+          <section class="doc-section page-hero" id="color-overview" data-doc-section data-section-title="Overview">
+            <div class="breadcrumb"><span>Foundations</span><span>/</span><span>Color</span></div>
+            <p class="eyebrow">Foundation documentation</p><h1>Color</h1>
+            <p class="lede">Primitive palettes supply values. Semantic variables describe intent. Components consume the semantic contract.</p>
+          </section>
+          <section class="doc-section" id="color-primitives" data-doc-section data-section-title="Primitive values">
+            <header class="section-heading"><p class="eyebrow">Raw values</p><h2>Primitive values</h2><p>Primitives are stable palette values. Components should consume them only through semantic aliases.</p></header>
+            <div class="color-groups color-groups--primitive">
+              <section class="color-group"><header><h3>Neutral</h3><span>4 examples</span></header><div class="color-table color-table--primitive" role="table" aria-label="Neutral primitive colors">
+                <div class="color-table__head" role="row"><span role="columnheader">Token</span><span role="columnheader">Swatch</span><span role="columnheader">Value</span></div>
+                <div class="color-row" id="token-color-neutral-0" data-variable-row="--color-neutral-0" role="row"><span class="color-token" role="cell"><code>--color-neutral-0</code><button class="icon-copy" type="button" data-copy-value="--color-neutral-0" aria-label="Copy --color-neutral-0"><span aria-hidden="true">⧉</span></button></span><span class="primitive-swatch" style="--sample:#ffffff" role="cell"></span><code role="cell">#ffffff</code></div>
+                <div class="color-row" id="token-color-neutral-100" data-variable-row="--color-neutral-100" role="row"><span class="color-token" role="cell"><code>--color-neutral-100</code><button class="icon-copy" type="button" data-copy-value="--color-neutral-100" aria-label="Copy --color-neutral-100"><span aria-hidden="true">⧉</span></button></span><span class="primitive-swatch" style="--sample:#f5f5f5" role="cell"></span><code role="cell">#f5f5f5</code></div>
+                <div class="color-row" id="token-color-neutral-500" data-variable-row="--color-neutral-500" role="row"><span class="color-token" role="cell"><code>--color-neutral-500</code><button class="icon-copy" type="button" data-copy-value="--color-neutral-500" aria-label="Copy --color-neutral-500"><span aria-hidden="true">⧉</span></button></span><span class="primitive-swatch" style="--sample:#737373" role="cell"></span><code role="cell">#737373</code></div>
+                <div class="color-row" id="token-color-neutral-950" data-variable-row="--color-neutral-950" role="row"><span class="color-token" role="cell"><code>--color-neutral-950</code><button class="icon-copy" type="button" data-copy-value="--color-neutral-950" aria-label="Copy --color-neutral-950"><span aria-hidden="true">⧉</span></button></span><span class="primitive-swatch" style="--sample:#0a0a0a" role="cell"></span><code role="cell">#0a0a0a</code></div>
+              </div></section>
+              <section class="color-group"><header><h3>Accent</h3><span>4 examples</span></header><div class="color-table color-table--primitive" role="table" aria-label="Accent primitive colors">
+                <div class="color-table__head" role="row"><span role="columnheader">Token</span><span role="columnheader">Swatch</span><span role="columnheader">Value</span></div>
+                <div class="color-row" id="token-color-accent-300" data-variable-row="--color-accent-300" role="row"><span class="color-token" role="cell"><code>--color-accent-300</code><button class="icon-copy" type="button" data-copy-value="--color-accent-300" aria-label="Copy --color-accent-300"><span aria-hidden="true">⧉</span></button></span><span class="primitive-swatch" style="--sample:#8ec5ff" role="cell"></span><code role="cell">#8ec5ff</code></div>
+                <div class="color-row" id="token-color-accent-500" data-variable-row="--color-accent-500" role="row"><span class="color-token" role="cell"><code>--color-accent-500</code><button class="icon-copy" type="button" data-copy-value="--color-accent-500" aria-label="Copy --color-accent-500"><span aria-hidden="true">⧉</span></button></span><span class="primitive-swatch" style="--sample:#2b7fff" role="cell"></span><code role="cell">#2b7fff</code></div>
+                <div class="color-row" id="token-color-accent-700" data-variable-row="--color-accent-700" role="row"><span class="color-token" role="cell"><code>--color-accent-700</code><button class="icon-copy" type="button" data-copy-value="--color-accent-700" aria-label="Copy --color-accent-700"><span aria-hidden="true">⧉</span></button></span><span class="primitive-swatch" style="--sample:#1447e6" role="cell"></span><code role="cell">#1447e6</code></div>
+                <div class="color-row" id="token-color-accent-950" data-variable-row="--color-accent-950" role="row"><span class="color-token" role="cell"><code>--color-accent-950</code><button class="icon-copy" type="button" data-copy-value="--color-accent-950" aria-label="Copy --color-accent-950"><span aria-hidden="true">⧉</span></button></span><span class="primitive-swatch" style="--sample:#162456" role="cell"></span><code role="cell">#162456</code></div>
+              </div></section>
+            </div>
+          </section>
+          <section class="doc-section" id="color-semantic" data-doc-section data-section-title="Semantic modes">
+            <header class="section-heading"><p class="eyebrow">Intent and modes</p><h2>Semantic Light/Dark table</h2><p>Each mode shows the visual sample, source alias and resolved value, following the structure used in Figma.</p></header>
+            <div class="color-groups color-groups--semantic">
+              <section class="color-group"><header><h3>Background</h3><span>Surfaces and actions</span></header><div class="color-table color-table--semantic" role="table" aria-label="Semantic background colors">
+                <div class="color-table__head" role="row"><span role="columnheader">Token</span><span role="columnheader">Light</span><span role="columnheader">Dark</span></div>
+                <div class="color-row" id="token-color-background-canvas" data-variable-row="--color-background-canvas" role="row"><span class="color-token" role="cell"><code>--color-background-canvas</code><button class="icon-copy" type="button" data-copy-value="--color-background-canvas" aria-label="Copy --color-background-canvas"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell" data-sample-theme="light" style="--sample:#ffffff" role="cell"><i></i><span><code>--color-neutral-0</code><small>#ffffff</small></span></span><span class="mode-cell" data-sample-theme="dark" style="--sample:#0a0a0a" role="cell"><i></i><span><code>--color-neutral-950</code><small>#0a0a0a</small></span></span></div>
+                <div class="color-row" id="token-color-background-surface" data-variable-row="--color-background-surface" role="row"><span class="color-token" role="cell"><code>--color-background-surface</code><button class="icon-copy" type="button" data-copy-value="--color-background-surface" aria-label="Copy --color-background-surface"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell" data-sample-theme="light" style="--sample:#fafafa" role="cell"><i></i><span><code>--color-neutral-50</code><small>#fafafa</small></span></span><span class="mode-cell" data-sample-theme="dark" style="--sample:#171717" role="cell"><i></i><span><code>--color-neutral-900</code><small>#171717</small></span></span></div>
+                <div class="color-row" id="token-color-background-accent" data-variable-row="--color-background-accent" role="row"><span class="color-token" role="cell"><code>--color-background-accent</code><button class="icon-copy" type="button" data-copy-value="--color-background-accent" aria-label="Copy --color-background-accent"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell" data-sample-theme="light" style="--sample:#2b7fff" role="cell"><i></i><span><code>--color-accent-500</code><small>#2b7fff</small></span></span><span class="mode-cell" data-sample-theme="dark" style="--sample:#2b7fff" role="cell"><i></i><span><code>--color-accent-500</code><small>#2b7fff</small></span></span></div>
+              </div></section>
+              <section class="color-group"><header><h3>Text</h3><span>Content hierarchy</span></header><div class="color-table color-table--semantic" role="table" aria-label="Semantic text colors">
+                <div class="color-table__head" role="row"><span role="columnheader">Token</span><span role="columnheader">Light</span><span role="columnheader">Dark</span></div>
+                <div class="color-row" id="token-color-text-primary" data-variable-row="--color-text-primary" role="row"><span class="color-token" role="cell"><code>--color-text-primary</code><button class="icon-copy" type="button" data-copy-value="--color-text-primary" aria-label="Copy --color-text-primary"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell mode-cell--text" data-sample-theme="light" style="--sample:#0a0a0a" role="cell"><i>Aa</i><span><code>--color-neutral-950</code><small>#0a0a0a</small></span></span><span class="mode-cell mode-cell--text" data-sample-theme="dark" style="--sample:#ffffff" role="cell"><i>Aa</i><span><code>--color-neutral-0</code><small>#ffffff</small></span></span></div>
+                <div class="color-row" id="token-color-text-secondary" data-variable-row="--color-text-secondary" role="row"><span class="color-token" role="cell"><code>--color-text-secondary</code><button class="icon-copy" type="button" data-copy-value="--color-text-secondary" aria-label="Copy --color-text-secondary"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell mode-cell--text" data-sample-theme="light" style="--sample:#404040" role="cell"><i>Aa</i><span><code>--color-neutral-700</code><small>#404040</small></span></span><span class="mode-cell mode-cell--text" data-sample-theme="dark" style="--sample:#d4d4d4" role="cell"><i>Aa</i><span><code>--color-neutral-300</code><small>#d4d4d4</small></span></span></div>
+                <div class="color-row" id="token-color-text-accent" data-variable-row="--color-text-accent" role="row"><span class="color-token" role="cell"><code>--color-text-accent</code><button class="icon-copy" type="button" data-copy-value="--color-text-accent" aria-label="Copy --color-text-accent"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell mode-cell--text" data-sample-theme="light" style="--sample:#1447e6" role="cell"><i>Aa</i><span><code>--color-accent-700</code><small>#1447e6</small></span></span><span class="mode-cell mode-cell--text" data-sample-theme="dark" style="--sample:#8ec5ff" role="cell"><i>Aa</i><span><code>--color-accent-300</code><small>#8ec5ff</small></span></span></div>
+              </div></section>
+              <section class="color-group"><header><h3>Border</h3><span>Edges and focus</span></header><div class="color-table color-table--semantic" role="table" aria-label="Semantic border colors">
+                <div class="color-table__head" role="row"><span role="columnheader">Token</span><span role="columnheader">Light</span><span role="columnheader">Dark</span></div>
+                <div class="color-row" id="token-color-border-default" data-variable-row="--color-border-default" role="row"><span class="color-token" role="cell"><code>--color-border-default</code><button class="icon-copy" type="button" data-copy-value="--color-border-default" aria-label="Copy --color-border-default"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell mode-cell--border" data-sample-theme="light" style="--sample:#e5e5e5" role="cell"><i></i><span><code>--color-neutral-200</code><small>#e5e5e5</small></span></span><span class="mode-cell mode-cell--border" data-sample-theme="dark" style="--sample:#404040" role="cell"><i></i><span><code>--color-neutral-700</code><small>#404040</small></span></span></div>
+                <div class="color-row" id="token-color-border-accent" data-variable-row="--color-border-accent" role="row"><span class="color-token" role="cell"><code>--color-border-accent</code><button class="icon-copy" type="button" data-copy-value="--color-border-accent" aria-label="Copy --color-border-accent"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell mode-cell--border" data-sample-theme="light" style="--sample:#2b7fff" role="cell"><i></i><span><code>--color-accent-500</code><small>#2b7fff</small></span></span><span class="mode-cell mode-cell--border" data-sample-theme="dark" style="--sample:#2b7fff" role="cell"><i></i><span><code>--color-accent-500</code><small>#2b7fff</small></span></span></div>
+              </div></section>
+              <section class="color-group"><header><h3>Status</h3><span>Feedback roles</span></header><div class="color-table color-table--semantic" role="table" aria-label="Semantic status colors">
+                <div class="color-table__head" role="row"><span role="columnheader">Token</span><span role="columnheader">Light</span><span role="columnheader">Dark</span></div>
+                <div class="color-row" id="token-color-status-success-background" data-variable-row="--color-status-success-background" role="row"><span class="color-token" role="cell"><code>--color-status-success-background</code><button class="icon-copy" type="button" data-copy-value="--color-status-success-background" aria-label="Copy --color-status-success-background"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell" data-sample-theme="light" style="--sample:#f0fdf4" role="cell"><i></i><span><code>--color-success-50</code><small>#f0fdf4</small></span></span><span class="mode-cell" data-sample-theme="dark" style="--sample:#032e15" role="cell"><i></i><span><code>--color-success-950</code><small>#032e15</small></span></span></div>
+                <div class="color-row" id="token-color-status-error-text" data-variable-row="--color-status-error-text" role="row"><span class="color-token" role="cell"><code>--color-status-error-text</code><button class="icon-copy" type="button" data-copy-value="--color-status-error-text" aria-label="Copy --color-status-error-text"><span aria-hidden="true">⧉</span></button></span><span class="mode-cell mode-cell--text" data-sample-theme="light" style="--sample:#9f0712" role="cell"><i>Aa</i><span><code>--color-error-800</code><small>#9f0712</small></span></span><span class="mode-cell mode-cell--text" data-sample-theme="dark" style="--sample:#ffc9c9" role="cell"><i>Aa</i><span><code>--color-error-200</code><small>#ffc9c9</small></span></span></div>
+              </div></section>
+            </div>
+          </section>
+        </article>
+
+        <article class="page-view page-view--catalog" data-page-view="icons" data-page-type="asset-gallery" hidden>
+          <section class="doc-section page-hero" id="icons-overview" data-doc-section data-section-title="Overview">
+            <div class="breadcrumb"><span>Assets</span><span>/</span><span>Icons</span></div>
+            <p class="eyebrow">Asset catalog</p><h1>Icons</h1>
+            <p class="lede">Search the approved set and inspect one stable asset identity without leaving the library.</p>
+          </section>
+          <section class="doc-section" id="icons-library" data-doc-section data-section-title="Icon library">
+            <div class="icon-profile"><div><p class="eyebrow">Provider profile</p><h2>Google Material Symbols</h2><p>Curated local SVG paths using the approved Sharp profile. Names follow Google snake_case identity.</p></div><dl><div><dt>Family</dt><dd>Material Symbols Sharp</dd></div><div><dt>Optical size</dt><dd>20</dd></div><div><dt>Weight</dt><dd>400</dd></div><div><dt>Grade</dt><dd>0</dd></div><div><dt>Fill</dt><dd>0</dd></div><div><dt>Runtime</dt><dd>Inline SVG · <code>currentColor</code></dd></div></dl></div>
+            <div class="catalog-toolbar"><label><span class="sr-only">Filter icons</span><input type="search" placeholder="Filter icons…" data-icon-filter /></label><span data-icon-count>8 icons</span></div>
+            <div class="asset-layout">
+              <div class="icon-grid" data-icon-grid>
+                <article class="icon-card" id="icon-arrow-forward" data-icon-item data-icon-name="arrow_forward" data-icon-glyph="→"><button class="icon-card__select" type="button" data-icon-select><span>→</span><code>arrow_forward</code></button><button class="icon-copy" type="button" data-copy-value="arrow_forward" aria-label="Copy arrow_forward"><span aria-hidden="true">⧉</span></button></article>
+                <article class="icon-card" id="icon-add" data-icon-item data-icon-name="add" data-icon-glyph="＋"><button class="icon-card__select" type="button" data-icon-select><span>＋</span><code>add</code></button><button class="icon-copy" type="button" data-copy-value="add" aria-label="Copy add"><span aria-hidden="true">⧉</span></button></article>
+                <article class="icon-card" id="icon-close" data-icon-item data-icon-name="close" data-icon-glyph="×"><button class="icon-card__select" type="button" data-icon-select><span>×</span><code>close</code></button><button class="icon-copy" type="button" data-copy-value="close" aria-label="Copy close"><span aria-hidden="true">⧉</span></button></article>
+                <article class="icon-card" id="icon-check" data-icon-item data-icon-name="check" data-icon-glyph="✓"><button class="icon-card__select" type="button" data-icon-select><span>✓</span><code>check</code></button><button class="icon-copy" type="button" data-copy-value="check" aria-label="Copy check"><span aria-hidden="true">⧉</span></button></article>
+                <article class="icon-card" id="icon-search" data-icon-item data-icon-name="search" data-icon-glyph="⌕"><button class="icon-card__select" type="button" data-icon-select><span>⌕</span><code>search</code></button><button class="icon-copy" type="button" data-copy-value="search" aria-label="Copy search"><span aria-hidden="true">⧉</span></button></article>
+                <article class="icon-card" id="icon-menu" data-icon-item data-icon-name="menu" data-icon-glyph="≡"><button class="icon-card__select" type="button" data-icon-select><span>≡</span><code>menu</code></button><button class="icon-copy" type="button" data-copy-value="menu" aria-label="Copy menu"><span aria-hidden="true">⧉</span></button></article>
+                <article class="icon-card" id="icon-download" data-icon-item data-icon-name="download" data-icon-glyph="↓"><button class="icon-card__select" type="button" data-icon-select><span>↓</span><code>download</code></button><button class="icon-copy" type="button" data-copy-value="download" aria-label="Copy download"><span aria-hidden="true">⧉</span></button></article>
+                <article class="icon-card" id="icon-info" data-icon-item data-icon-name="info" data-icon-glyph="i"><button class="icon-card__select" type="button" data-icon-select><span>i</span><code>info</code></button><button class="icon-copy" type="button" data-copy-value="info" aria-label="Copy info"><span aria-hidden="true">⧉</span></button></article>
+              </div>
+              <aside class="asset-detail" data-icon-detail><span class="asset-detail__glyph" data-icon-detail-glyph>→</span><p class="eyebrow">Selected asset</p><h2 data-icon-detail-name>arrow_forward</h2><dl><div><dt>Profile</dt><dd>Sharp</dd></div><div><dt>Size</dt><dd>20 × 20</dd></div><div><dt>Color</dt><dd><code>currentColor</code></dd></div></dl></aside>
+            </div>
+          </section>
+        </article>
+
+        <article class="page-view page-view--reading" data-page-view="button" data-page-type="component-detail">
+          <section class="doc-section page-hero" id="button-overview" data-doc-section data-section-title="Overview">
+            <div class="breadcrumb"><span>Base Components</span><span>/</span><span>Buttons</span></div>
+            <div class="hero-heading"><div><p class="eyebrow">Component documentation</p><h1>Button</h1></div><button class="copy-action" type="button" data-copy-value="Button">Copy name</button></div>
+            <p class="lede">Triggers an immediate action such as submitting a form, saving changes or opening a task flow.</p>
+            <dl class="metadata-row"><div><dt>Family</dt><dd>buttons</dd></div><div><dt>Role</dt><dd>atom</dd></div><div><dt>Status</dt><dd><span class="badge badge--ready">Figma only</span></dd></div><div><dt>Registry</dt><dd><code>button</code></dd></div></dl>
+          </section>
+          <section class="doc-section" id="button-preview" data-doc-section data-section-title="Preview">
+            <header class="section-heading"><p class="eyebrow">Interactive specimen</p><h2>Preview</h2><p>Controls validate the documentation structure rather than the final component design.</p></header>
+            <div class="component-preview">
+              <div class="preview-controls">
+                <fieldset data-preview-group="variant"><legend>Variant</legend><div><button type="button" data-preview-value="primary" aria-pressed="true">Primary</button><button type="button" data-preview-value="secondary" aria-pressed="false">Secondary</button><button type="button" data-preview-value="link" aria-pressed="false">Link</button></div></fieldset>
+                <fieldset data-preview-group="size"><legend>Size</legend><div><button type="button" data-preview-value="small" aria-pressed="false">S</button><button type="button" data-preview-value="medium" aria-pressed="true">M</button><button type="button" data-preview-value="large" aria-pressed="false">L</button></div></fieldset>
+                <fieldset data-preview-group="state"><legend>State</legend><div><button type="button" data-preview-value="default" aria-pressed="true">Default</button><button type="button" data-preview-value="hover" aria-pressed="false">Hover</button><button type="button" data-preview-value="focus" aria-pressed="false">Focus</button><button type="button" data-preview-value="disabled" aria-pressed="false">Disabled</button></div></fieldset>
+              </div>
+              <div class="component-stage"><span data-preview-theme>Light mode</span><button class="demo-button" type="button" data-demo-button data-variant="primary" data-size="medium" data-state="default">Save changes</button></div>
+            </div>
+          </section>
+          <section class="doc-section" id="button-variants" data-doc-section data-section-title="Variants & states">
+            <header class="section-heading"><p class="eyebrow">Coverage</p><h2>Variants &amp; states</h2></header>
+            <div class="specimen-grid"><article><button class="demo-button" type="button" data-variant="primary" data-size="medium">Primary</button><small>Default</small></article><article><button class="demo-button" type="button" data-variant="secondary" data-size="medium">Secondary</button><small>Supporting</small></article><article><button class="demo-button" type="button" data-variant="primary" data-size="medium" data-state="focus">Focused</button><small>Focus</small></article><article><button class="demo-button" type="button" data-variant="primary" data-size="medium" disabled>Disabled</button><small>Disabled</small></article></div>
+          </section>
+          <section class="doc-section" id="button-variables" data-doc-section data-section-title="Variables">
+            <header class="section-heading"><p class="eyebrow">Token relationships</p><h2>Variables</h2></header>
+            <div class="table-frame"><table><thead><tr><th>Component token</th><th>Resolves to</th><th></th></tr></thead><tbody>
+              <tr><td><code>--button-primary-background-default</code></td><td><code>--color-background-accent</code></td><td><button class="icon-copy table-copy" type="button" data-copy-value="--button-primary-background-default" aria-label="Copy --button-primary-background-default"><span aria-hidden="true">⧉</span></button></td></tr>
+              <tr><td><code>--button-primary-text-default</code></td><td><code>--color-text-on-accent</code></td><td><button class="icon-copy table-copy" type="button" data-copy-value="--button-primary-text-default" aria-label="Copy --button-primary-text-default"><span aria-hidden="true">⧉</span></button></td></tr>
+              <tr><td><code>--button-secondary-background-default</code></td><td><code>--color-background-subtle</code></td><td><button class="icon-copy table-copy" type="button" data-copy-value="--button-secondary-background-default" aria-label="Copy --button-secondary-background-default"><span aria-hidden="true">⧉</span></button></td></tr>
+            </tbody></table></div>
+          </section>
+          <section class="doc-section" id="button-agentic-rule" data-doc-section data-section-title="Agentic rule">
+            <header class="section-heading section-heading--action component-rule-heading">
+              <div><p class="eyebrow">Component agentic rule</p><h2>Button UX rule</h2><p>A compact, repeatable context shared by people and AI. It describes selection and content—not implementation.</p></div>
+              <button class="copy-action" type="button" data-copy-component-rule="button">Copy Markdown</button>
+            </header>
+            <article class="component-rule">
+              <div class="component-rule__purpose"><span>UX purpose</span><p><strong>Button initiates an immediate user-triggered action</strong> and communicates the priority of that action in the current interface.</p></div>
+              <div class="component-rule__grid">
+                <section><p class="eyebrow">Use when</p><ul><li>Submitting or confirming user input.</li><li>Starting an operation such as create, save, upload or delete.</li><li>Opening an interactive layer such as a dialog or menu.</li></ul></section>
+                <section><p class="eyebrow">Avoid when</p><ul><li>The interaction navigates to another URL or page.</li><li>The control has no visible text label.</li><li>The user changes a persistent boolean setting.</li></ul></section>
+                <section><p class="eyebrow">Content contract</p><ul><li>Start with a specific action verb.</li><li>Name the immediate outcome: “Save changes”, not “Continue”.</li><li>Keep the label short; avoid “Click here”, “OK” and unexplained jargon.</li></ul></section>
+                <section><p class="eyebrow">Composition &amp; placement</p><ul><li>Keep one dominant primary action per decision area.</li><li>Place the action close to the content it affects or at the end of a form.</li><li>Use Button Group when multiple coordinated actions must stay together.</li></ul></section>
+                <section class="component-rule__accessibility"><p class="eyebrow">Accessibility &amp; required behavior</p><ul><li>Use a native <code>&lt;button&gt;</code> element for actions.</li><li>Expose an accessible name through the visible label.</li><li>Support keyboard activation and show a visible <code>focus-visible</code> indicator in every theme.</li><li>Use the native <code>disabled</code> attribute when the action is unavailable.</li></ul></section>
+              </div>
+              <div class="component-rule__related"><div><span>Related components</span><p>Use these when the interaction crosses Button’s semantic boundary.</p></div><div><button type="button" data-page-link="button-link">Button Link ↗</button><button type="button" data-page-link="icon-button">Icon Button ↗</button><button type="button" data-page-link="button-group">Button Group ↗</button><button type="button" data-page-link="switch-button">Switch Button ↗</button></div></div>
+              <div class="component-rule__decision"><span>Core decision</span><p><strong>Action → Button.</strong> Navigation → Button Link. Icon-only action → Icon Button. Persistent on/off value → Switch.</p></div>
+            </article>
+          </section>
+        </article>
+
+        <article class="page-view page-view--gallery" data-page-view="hero" data-page-type="family-gallery" hidden>
+          <section class="doc-section page-hero" id="hero-overview" data-doc-section data-section-title="Overview">
+            <div class="breadcrumb"><span>Website Patterns</span><span>/</span><span>Hero Sections</span></div>
+            <p class="eyebrow">Pattern family</p><h1>Hero Sections</h1>
+            <p class="lede">Compare different opening compositions before validating the selected hero at its real responsive widths.</p>
+          </section>
+          <section class="doc-section" id="hero-variants" data-doc-section data-section-title="Variants">
+            <div class="gallery-toolbar"><div><p class="eyebrow">Family variants</p><h2>Choose an opening composition</h2></div><span>4 variants</span></div>
+            <div class="pattern-grid">
+              <article class="pattern-card" data-pattern-id="hero-1"><div class="pattern-thumbnail pattern-thumbnail--hero-one" aria-hidden="true"><span><i></i><i></i><i></i><i></i></span><b></b></div><div class="pattern-card__meta"><div><strong>Hero 1</strong><span>Split copy and visual</span></div><div class="pattern-card__actions"><button class="icon-copy" type="button" data-copy-value="Hero 1" aria-label="Copy Hero 1"><span aria-hidden="true">⧉</span></button><button type="button" data-preview-open="hero-1">Open preview</button></div></div></article>
+              <article class="pattern-card" data-pattern-id="hero-2"><div class="pattern-thumbnail pattern-thumbnail--hero-two" aria-hidden="true"><i></i><i></i><i></i><b></b></div><div class="pattern-card__meta"><div><strong>Hero 2</strong><span>Centered statement</span></div><div class="pattern-card__actions"><button class="icon-copy" type="button" data-copy-value="Hero 2" aria-label="Copy Hero 2"><span aria-hidden="true">⧉</span></button><button type="button" data-preview-placeholder="Hero 2">Open preview</button></div></div></article>
+              <article class="pattern-card" data-pattern-id="hero-3"><div class="pattern-thumbnail pattern-thumbnail--hero-three" aria-hidden="true"><i></i><i></i><i></i><b></b></div><div class="pattern-card__meta"><div><strong>Hero 3</strong><span>Editorial headline</span></div><div class="pattern-card__actions"><button class="icon-copy" type="button" data-copy-value="Hero 3" aria-label="Copy Hero 3"><span aria-hidden="true">⧉</span></button><button type="button" data-preview-placeholder="Hero 3">Open preview</button></div></div></article>
+              <article class="pattern-card" data-pattern-id="hero-4"><div class="pattern-thumbnail pattern-thumbnail--hero-four" aria-hidden="true"><span><i></i><i></i><i></i></span><b></b></div><div class="pattern-card__meta"><div><strong>Hero 4</strong><span>Product interface focus</span></div><div class="pattern-card__actions"><button class="icon-copy" type="button" data-copy-value="Hero 4" aria-label="Copy Hero 4"><span aria-hidden="true">⧉</span></button><button type="button" data-preview-placeholder="Hero 4">Open preview</button></div></div></article>
+            </div>
+          </section>
+          <section class="doc-section" id="hero-guidance" data-doc-section data-section-title="Family guidance">
+            <header class="section-heading"><p class="eyebrow">Selection guidance</p><h2>Choose by communication priority</h2></header>
+            <div class="guidance-grid"><article><h3>Lead with the proposition</h3><p>Use copy-led variants when the message must do most of the persuasive work.</p></article><article><h3>Lead with evidence</h3><p>Use split or product-led variants when the visual makes the offer immediately credible.</p></article></div>
+          </section>
+        </article>
+
+        <article class="page-view page-view--gallery" data-page-view="faq" data-page-type="family-gallery" hidden>
+          <section class="doc-section page-hero" id="faq-overview" data-doc-section data-section-title="Overview">
+            <div class="breadcrumb"><span>Website Patterns</span><span>/</span><span>FAQ</span></div>
+            <p class="eyebrow">Pattern family</p><h1>FAQ</h1>
+            <p class="lede">Browse structurally different FAQ sections before opening one in a full responsive preview.</p>
+          </section>
+          <section class="doc-section" id="faq-variants" data-doc-section data-section-title="Variants">
+            <div class="gallery-toolbar"><div><p class="eyebrow">Family variants</p><h2>Choose a composition</h2></div><span>4 variants</span></div>
+            <div class="pattern-grid">
+              <article class="pattern-card"><div class="pattern-thumbnail pattern-thumbnail--faq-one" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="pattern-card__meta"><div><strong>FAQ 1</strong><span>Two-column introduction</span></div><button type="button" data-preview-open="faq-1">Open preview</button></div></article>
+              <article class="pattern-card"><div class="pattern-thumbnail pattern-thumbnail--faq-two" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="pattern-card__meta"><div><strong>FAQ 2</strong><span>Centered accordion</span></div><button type="button" data-preview-placeholder="FAQ 2">Open preview</button></div></article>
+              <article class="pattern-card"><div class="pattern-thumbnail pattern-thumbnail--faq-three" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="pattern-card__meta"><div><strong>FAQ 3</strong><span>Questions in cards</span></div><button type="button" data-preview-placeholder="FAQ 3">Open preview</button></div></article>
+              <article class="pattern-card"><div class="pattern-thumbnail pattern-thumbnail--faq-four" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="pattern-card__meta"><div><strong>FAQ 4</strong><span>Split categories</span></div><button type="button" data-preview-placeholder="FAQ 4">Open preview</button></div></article>
+            </div>
+          </section>
+          <section class="doc-section" id="faq-guidance" data-doc-section data-section-title="Family guidance">
+            <header class="section-heading"><p class="eyebrow">Selection guidance</p><h2>Choose by content shape</h2></header>
+            <div class="guidance-grid"><article><h3>Use a simple accordion</h3><p>For one topic and a compact number of questions.</p></article><article><h3>Use categories</h3><p>When questions cover multiple distinct decision areas.</p></article></div>
+          </section>
+        </article>
+
+        <article class="page-view page-view--gallery" data-page-view="landing-templates" data-page-type="template-gallery" hidden>
+          <section class="doc-section page-hero" id="templates-overview" data-doc-section data-section-title="Overview">
+            <div class="breadcrumb"><span>Examples &amp; Templates</span><span>/</span><span>Landing Templates</span></div>
+            <p class="eyebrow">Template gallery</p><h1>Landing Templates</h1>
+            <p class="lede">Templates compose approved patterns into complete page narratives and need a full-page preview.</p>
+          </section>
+          <section class="doc-section" id="templates-gallery" data-doc-section data-section-title="Templates">
+            <div class="gallery-toolbar"><div><p class="eyebrow">Page recipes</p><h2>Starting structures</h2></div><span>3 templates</span></div>
+            <div class="template-grid">
+              <article class="template-card"><div class="template-thumbnail" aria-hidden="true"><i class="template-nav"></i><i class="template-hero"></i><i class="template-logos"></i><i class="template-features"></i><i class="template-cta"></i></div><div class="pattern-card__meta"><div><strong>Landing 1</strong><span>Product narrative</span></div><button type="button" data-preview-open="landing-1">Open preview</button></div></article>
+              <article class="template-card"><div class="template-thumbnail template-thumbnail--two" aria-hidden="true"><i class="template-nav"></i><i class="template-hero"></i><i class="template-features"></i><i class="template-logos"></i><i class="template-cta"></i></div><div class="pattern-card__meta"><div><strong>Landing 2</strong><span>Editorial narrative</span></div><button type="button" data-preview-placeholder="Landing 2">Open preview</button></div></article>
+              <article class="template-card"><div class="template-thumbnail template-thumbnail--three" aria-hidden="true"><i class="template-nav"></i><i class="template-hero"></i><i class="template-logos"></i><i class="template-features"></i><i class="template-cta"></i></div><div class="pattern-card__meta"><div><strong>Landing 3</strong><span>Conversion narrative</span></div><button type="button" data-preview-placeholder="Landing 3">Open preview</button></div></article>
+            </div>
+          </section>
+          <section class="doc-section" id="templates-guidance" data-doc-section data-section-title="Template guidance">
+            <header class="section-heading"><p class="eyebrow">Composition contract</p><h2>Templates are recipes</h2></header>
+            <ul class="check-list"><li>Templates compose existing sections and components.</li><li>Project content and brand rules remain outside the neutral starter.</li><li>Responsive behavior is validated in the full preview.</li></ul>
+          </section>
+        </article>
+
+        <article class="page-view page-view--reading" data-page-view="sandbox" data-page-type="workspace" hidden>
+          <section class="doc-section page-hero" id="sandbox-overview" data-doc-section data-section-title="Overview">
+            <div class="breadcrumb"><span>Workspace</span><span>/</span><span>Sandbox</span></div>
+            <p class="eyebrow">Non-public workspace</p><h1>Sandbox</h1>
+            <p class="lede">A temporary surface for controlled experiments that are not registry-backed public components.</p>
+          </section>
+          <section class="doc-section" id="sandbox-canvas" data-doc-section data-section-title="Canvas">
+            <header class="section-heading"><p class="eyebrow">Experiment area</p><h2>Empty canvas</h2></header>
+            <div class="sandbox-canvas"><span>Drop a temporary experiment here</span><small>Nothing in this area is published by default.</small></div>
+          </section>
+        </article>
+
+        <section class="page-view empty-page" data-page-view="empty" data-page-type="reading" hidden>
+          <p class="eyebrow">Structure placeholder</p><h1 data-empty-title>Page</h1><p>Page intentionally empty in this prototype.</p>
+          <button class="copy-action" type="button" data-page-link="button">Return to Button documentation</button>
+        </section>
+      </main>
+
+      <aside class="on-this-page"><p>On this page</p><nav id="on-this-page-navigation" aria-label="On this page"></nav></aside>
+    </div>
+
+    <section class="full-preview" data-full-preview hidden>
+      <header class="preview-topbar">
+        <button type="button" class="preview-back" data-preview-back>← Back</button>
+        <div class="preview-title"><strong data-preview-title>Preview</strong><span data-preview-kind>Website Pattern</span></div>
+        <div class="device-switcher" aria-label="Preview viewport">
+          <button type="button" data-device="desktop" aria-pressed="true">Desktop <small>1440</small></button>
+          <button type="button" data-device="tablet" aria-pressed="false">Tablet <small>768</small></button>
+          <button type="button" data-device="mobile" aria-pressed="false">Mobile <small>390</small></button>
+          <button type="button" data-device="fit" aria-pressed="false">Fit width</button>
+          <output class="custom-width-label" data-custom-width-label hidden>1024 px</output>
+        </div>
+        <div class="preview-actions">
+          <button class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Switch to dark theme" data-theme-toggle><span data-theme-label>Light</span><span class="theme-switch__track" aria-hidden="true"><span class="theme-switch__thumb"></span></span></button>
+        </div>
+      </header>
+      <div class="preview-workspace" data-preview-workspace>
+        <div class="preview-stage" data-preview-stage>
+          <button class="resize-handle resize-handle--left" type="button" role="slider" aria-label="Preview width, left handle" aria-valuemin="320" aria-valuemax="1440" aria-valuenow="1440" aria-orientation="horizontal" data-resize-handle="left"><span aria-hidden="true"></span></button>
+          <div class="responsive-viewport" data-responsive-viewport data-device="desktop">
+          <div class="responsive-document" data-preview-content="hero-1" hidden>
+            <section class="hero-demo">
+              <div class="hero-demo__content">
+                <span class="hero-demo__eyebrow">A system for ambitious teams</span>
+                <h1>Turn a clear brand into a consistent digital experience.</h1>
+                <p>Connect visual direction, reusable components and responsive patterns in one shared language.</p>
+                <div class="hero-demo__actions"><button type="button">Start building</button><a href="#">Explore the system →</a></div>
+                <div class="hero-demo__proof"><strong>12×</strong><span>faster alignment from concept to production</span></div>
+              </div>
+              <div class="hero-demo__visual" aria-label="Abstract interface preview">
+                <div class="hero-demo__window"><span></span><span></span><span></span><div><i></i><i></i><i></i></div></div>
+                <aside><small>System coverage</small><strong>84%</strong><span></span></aside>
+              </div>
+            </section>
+          </div>
+          <div class="responsive-document" data-preview-content="faq-1" hidden>
+            <section class="faq-demo">
+              <div class="faq-demo__intro"><span>Support</span><h1>Questions, answered.</h1><p>Everything you need to know before getting started. Can’t find an answer? Talk to our team.</p><a href="#">Contact support →</a></div>
+              <div class="faq-demo__questions">
+                <details open><summary>How quickly can I get started?</summary><p>You can prepare the foundations first and introduce components family by family.</p></details>
+                <details><summary>Can I change the visual direction?</summary><p>Yes. Approved brand rules and tokens control the presentation without replacing the structure.</p></details>
+                <details><summary>Does the system support dark mode?</summary><p>Every documented variable and component state should be validated in both modes.</p></details>
+                <details><summary>How does Figma stay aligned?</summary><p>Figma remains the visual representation while code owns runtime behavior.</p></details>
+              </div>
+            </section>
+          </div>
+          <div class="responsive-document" data-preview-content="landing-1" hidden>
+            <div class="landing-demo">
+              <nav><strong>Northstar</strong><div><a href="#">Product</a><a href="#">Solutions</a><a href="#">Company</a></div><button type="button">Start a project</button></nav>
+              <section class="landing-demo__hero"><p>Design systems for ambitious teams</p><h1>Build a clearer path from brand to production.</h1><span>Turn approved visual decisions into reusable components, patterns and pages.</span><div><button type="button">Start building</button><a href="#">Explore the system →</a></div></section>
+              <section class="landing-demo__logos"><span>ACME</span><span>APERTURE</span><span>POLAR</span><span>SUMMIT</span></section>
+              <section class="landing-demo__features"><article><small>01</small><h2>One shared language</h2><p>Tokens, components and guidance stay connected across tools.</p></article><article><small>02</small><h2>Responsive by default</h2><p>Patterns are reviewed at the width where they will actually live.</p></article><article><small>03</small><h2>Ready for AI</h2><p>Stable identity and focused context make reuse predictable.</p></article></section>
+              <section class="landing-demo__cta"><h2>Start with a system that can grow.</h2><button type="button">View documentation</button></section>
+              <footer><strong>Northstar</strong><span>Independent template preview</span></footer>
+            </div>
+          </div>
+          </div>
+          <button class="resize-handle resize-handle--right" type="button" role="slider" aria-label="Preview width, right handle" aria-valuemin="320" aria-valuemax="1440" aria-valuenow="1440" aria-orientation="horizontal" data-resize-handle="right"><span aria-hidden="true"></span></button>
+        </div>
+      </div>
+    </section>
+
+    <dialog class="search-dialog" data-search-dialog aria-labelledby="search-title">
+      <div class="search-dialog__surface">
+        <header><div><p class="eyebrow">Global navigation</p><h2 id="search-title">Search documentation</h2></div><button type="button" data-search-close aria-label="Close search">Esc</button></header>
+        <label class="search-field"><span class="sr-only">Search pages, components, icons and variables</span><input type="search" placeholder="Search pages, components, icons and variables…" autocomplete="off" aria-controls="search-results" aria-autocomplete="list" data-search-input /></label>
+        <div class="search-results" id="search-results" role="listbox" data-search-results></div>
+        <p class="search-hint">↑↓ to select · Enter to open · Tab to copy · Esc to close</p>
+      </div>
+    </dialog>
+
+    <div class="copy-toast" role="status" aria-live="polite" data-copy-toast></div>
+  </body>
+</html>

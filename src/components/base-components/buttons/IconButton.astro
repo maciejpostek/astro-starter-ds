@@ -1,0 +1,42 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type { ButtonSize } from "./Button.astro";
+import "../../../styles/components/button-controls.css";
+
+export type IconButtonVariant = "primary" | "secondary" | "tertiary";
+export type IconButtonIcon = "arrow_forward" | "add";
+
+export interface Props extends Omit<HTMLAttributes<"button">, "aria-label" | "class" | "type"> {
+  label: string;
+  icon?: IconButtonIcon;
+  variant?: IconButtonVariant;
+  size?: ButtonSize;
+  class?: string;
+  type?: "button" | "submit" | "reset";
+}
+
+const {
+  label,
+  icon = "arrow_forward",
+  variant = "secondary",
+  size = "small",
+  class: className,
+  type = "button",
+  disabled = false,
+  ...attributes
+} = Astro.props;
+---
+
+<button
+  {...attributes}
+  aria-label={label}
+  class:list={["icon-button", className]}
+  data-button-variant={variant}
+  data-component-name="IconButton"
+  data-control-size={size}
+  disabled={disabled}
+  type={type}
+>
+  <MaterialSymbol name={icon} size="var(--control-icon-size)" />
+</button>

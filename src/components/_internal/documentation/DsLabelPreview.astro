@@ -1,0 +1,35 @@
+---
+import Label from "../../base-components/inputs/Label.astro";
+---
+
+<div
+  class="label-preview"
+  data-component-name="DsLabelPreview"
+  data-control-size="medium"
+  data-ds-preview-target
+  data-label-requirement="default"
+  data-ds-preview-state="default"
+>
+  <Label class="label-preview__default" for="label-preview-control" label="Label" />
+  <Label class="label-preview__required" for="label-preview-control" label="Label" required />
+  <Label class="label-preview__optional" for="label-preview-control" label="Label" optionalText="Optional" />
+</div>
+
+<style>
+  .label-preview__required,
+  .label-preview__optional {
+    display: none;
+  }
+
+  .label-preview[data-label-requirement="required"] :global(.label-preview__default),
+  .label-preview[data-label-requirement="required"] :global(.label-preview__optional),
+  .label-preview[data-label-requirement="optional"] :global(.label-preview__default),
+  .label-preview[data-label-requirement="optional"] :global(.label-preview__required) {
+    display: none;
+  }
+
+  .label-preview[data-label-requirement="required"] :global(.label-preview__required),
+  .label-preview[data-label-requirement="optional"] :global(.label-preview__optional) {
+    display: inline-flex;
+  }
+</style>

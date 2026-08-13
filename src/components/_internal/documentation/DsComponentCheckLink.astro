@@ -1,0 +1,25 @@
+---
+interface Props {
+  href: string;
+  label?: string;
+}
+
+const { href, label = "Check component" } = Astro.props as Props;
+---
+
+<div class="ds-component-check-link" data-component-name="DsComponentCheckLink">
+  <a href={href}>{label}</a>
+</div>
+
+<style>
+  .ds-component-check-link {
+    display: flex;
+    margin-block: 0 var(--space-regular);
+  }
+
+  .ds-component-check-link a {
+    color: var(--color-text-link);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+  }
+</style>

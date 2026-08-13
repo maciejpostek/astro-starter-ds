@@ -1,0 +1,49 @@
+---
+import MaterialSymbol from "../../../../../src/components/assets/icons/MaterialSymbol.astro";
+import SocialIcons from "../../../../../src/components/assets/icons/SocialIcons.astro";
+import Tag from "../../../../../src/components/base-components/tag/Tag.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const tones = ["neutral", "accent", "success", "warning", "error", "info", "inverse"] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tag contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <section aria-label="Tag geometry combinations">
+        <Tag id="text-only" label="Text only" data-contract="forwarded" class="tag-contract-fixture" />
+
+        <Tag id="leading-only" label="Leading only">
+          <MaterialSymbol name="search" slot="leading" />
+        </Tag>
+
+        <Tag id="remove-only" label="Remove only" removable removeLabel="Remove selected category" />
+
+        <Tag id="leading-remove" label="Leading and remove" removable>
+          <SocialIcons platform="figma" variant="brand" slot="leading" />
+        </Tag>
+
+        <Tag id="disabled-remove" label="Disabled filter" tone="error" removable disabled>
+          <MaterialSymbol name="search" slot="leading" />
+        </Tag>
+      </section>
+
+      <section aria-label="Tag tones">
+        {tones.map((tone) => <Tag label={`${tone} tag`} tone={tone} />)}
+      </section>
+
+      <section aria-label="Dark theme Tag" data-theme="dark">
+        <Tag id="dark-theme-tag" label="Dark theme filter" tone="success" removable>
+          <SocialIcons platform="figma" variant="brand" slot="leading" />
+        </Tag>
+      </section>
+    </main>
+  </body>
+</html>

@@ -2,6 +2,10 @@
 
 Status: active.
 
+## Deterministic authoring gate
+
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
 Use this file for brand-sensitive component design, visual redesign, page
 composition, reference-driven exploration, Figma generation, visual
 reconciliation, or any task that asks AI to express a creative direction.
@@ -12,12 +16,12 @@ Source references:
 - `art-direction/knowledge/`
 - `project-context/README.md`
 - `project-context/brand-foundations/brand-expression/README.md`
-- `project-context/brand-foundations/brand-expression/contract.md`
+- `project-context/brand-foundations/brand-expression/contract.json`
 - `project-context/brand-foundations/brand-expression/reference-manifest.json`
 - `project-context/brand-foundations/brand-expression/component-signatures.md`
 - `project-context/brand-foundations/brand-expression/visual-qa.md`
 - `DESIGN-SYSTEM-FRAMEWORK.md`
-- `src/data/design-system-roadmap.json`
+- `src/data/design-system/componentArchitecture.json`
 
 ## 1. Core Contract
 
@@ -36,8 +40,11 @@ Brand Expression Contract
 CSS Variables and Astro components
   -> implement the approved grammar
 
-Figma and browser prototypes
-  -> explore and validate the grammar
+Browser prototypes
+  -> explore and validate the production grammar
+
+Explicit Figma operations
+  -> optionally project or explore the accepted grammar
 ```
 
 Never use the universal knowledge base as if it were the project's brand.
@@ -45,7 +52,7 @@ Never use the universal knowledge base as if it were the project's brand.
 ## 2. Source Of Truth By Concern
 
 - Brand intent and visual character:
-  approved `project-context/brand-foundations/brand-expression/contract.md`.
+  approved `project-context/brand-foundations/brand-expression/contract.json`.
 - Reference interpretation:
   approved entries in `reference-manifest.json`.
 - Shared design values:
@@ -53,19 +60,19 @@ Never use the universal knowledge base as if it were the project's brand.
 - Public API, semantics, accessibility, responsive mechanics, and runtime:
   Astro components.
 - Visual exploration:
-  Figma or browser prototypes.
+  browser prototypes or explicitly requested Figma work.
 - Figma-to-code differences:
   numbered Figma2Astro adapters.
-- Progress:
-  `src/data/design-system-roadmap.json`.
+- Current component state:
+  readiness in `src/data/design-system/componentArchitecture.json`.
 
-An approved visual decision may originate in Figma. It becomes a production
-system decision only after it is translated into the appropriate token,
-component, documentation, and parity contract.
+An approved visual decision becomes a production system decision only after it
+is translated into the appropriate token, class, attribute, component,
+runtime behavior, and documentation contract.
 
 ## 3. Activation Gate
 
-Read the frontmatter status in the project contract before making a
+Read the `status` field in the project contract JSON before making a
 brand-sensitive visual decision.
 
 - `not-configured`: report the missing input; preserve neutral structure.
@@ -136,8 +143,8 @@ When creating or visually redesigning a component:
 
 1. Read the project contract and activation state.
 2. Read approved references and the relevant universal knowledge files.
-3. Inspect the existing Astro source, registry, roadmap item, documentation,
-   token contracts, and Figma adapter.
+3. Inspect the existing Astro source, registry readiness, documentation, and
+   token contracts. Inspect a Figma adapter only for an explicit Figma task.
 4. Preserve the component's UX role, semantic element, accessibility contract,
    and public API unless the task explicitly changes them.
 5. Create or update a Component Visual Brief.
@@ -159,7 +166,8 @@ When creating or visually redesigning a component:
     component contracts.
 14. Re-run browser semantics, interactions, content extremes, and responsive
     validation against the canonical implementation.
-15. Synchronize Figma and record parity evidence.
+15. Update current visual and validation readiness. Synchronize Figma only
+    after an explicit Figma request.
 
 Do not redesign all variants or families before the calibration set is
 approved.
@@ -178,12 +186,12 @@ intake
 → Astro calibration set
 → browser validation
 → human visual approval
-→ Figma parity
 → controlled propagation
+→ optional explicit Figma projection
 ```
 
 The initial calibration set normally includes Button, Input or FormField, Tag,
-ContentBlock or SectionHeader, one Card, Navigation, and one Hero or section.
+SectionHeader, one Card, Navigation, and one Hero or section.
 
 ## 8. Technical Translation
 
@@ -287,9 +295,9 @@ approve-system
 
 Only a human reviewer may approve family- or system-wide propagation.
 
-## 12. Figma And Browser Responsibilities
+## 12. Browser And Optional Figma Responsibilities
 
-Use Figma for:
+Use Figma only after an explicit request for:
 
 - creative exploration;
 - comparison of alternatives;
@@ -308,7 +316,8 @@ Use the browser for:
 - interaction and motion;
 - final production validation.
 
-Neither surface alone proves completion.
+The browser is the production validation surface. Figma is an optional editable
+representation and does not prove completion.
 
 ## 13. Forbidden Shortcuts
 
@@ -334,6 +343,7 @@ Brand-sensitive design-system work is ready only when:
 - Astro preserves the real API, semantics, accessibility, and runtime;
 - visual QA records human approval for the propagation scope;
 - desktop, intermediate, and mobile behavior are validated;
-- Figma and browser evidence are linked;
+- browser evidence is linked;
 - intentional differences are documented;
-- roadmap status reflects the real state.
+- current component visual and validation readiness reflects the real state;
+- Figma evidence is linked only when an explicit Figma operation occurred.

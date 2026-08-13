@@ -1,95 +1,96 @@
 # GENERATED FILE. DO NOT EDIT.
 # Canonical source: architecture/system-map.json
 # View: view.sources-of-truth
-direction: down
+direction: right
 
 title: "Sources of Truth by Concern" {
   shape: text
   near: top-center
-  style.font-size: 28
+  style.font-size: 30
   style.bold: true
+  style.font-color: "#0f172a"
 }
 
-state_current: "Current Architecture\nstate · frozen-for-audit · current" {
-  shape: oval
-  style.fill: "#64748b"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_component_registry: "Component Registry\nsource-of-truth · active · current" {
+source_component_registry: "Component Registry and Readiness\\nsource of truth\\ncomponentArchitecture.json" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_astro_components: "Astro Component Source\nsource-of-truth · active · current" {
+source_token_group_registry: "Token Group Registry\\nsource of truth\\ntokenArchitecture.json" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_css_variables: "CSS Variable Foundations\nsource-of-truth · active · current" {
+artifact_component_authoring_contract: "Component Authoring Contract\\nartifact\\ncomponent-authoring-contract.json" {
+  shape: page
+  style.fill: "#ccfbf1"
+  style.stroke: "#0f766e"
+  style.font-color: "#134e4a"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+source_astro_components: "Astro Component Sources\\nsource of truth\\ncomponents" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_roadmap: "Design System Roadmap\nsource-of-truth · active · current" {
+source_css_variables: "CSS Variable Foundations\\nsource of truth\\ntokens" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_brand_contract: "Approved Brand Expression Contract\nsource-of-truth · not-configured · current" {
+source_brand_contract: "Approved Brand/Composition Rules\\nsource of truth\\ncontract.json" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_art_direction: "Universal Art Direction Knowledge\nsource-of-truth · active · current" {
+source_category_rules: "Selected Category Rules\\nsource of truth\\n.agentic-rules" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_figma_adapters: "Figma2Astro Mapping Adapters\nsource-of-truth · active · current" {
+source_git_history: "Git History\\nsource of truth\\n.git" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-external_figma: "Figma Editable Representation\nexternal-system · external · current" {
-  shape: cloud
-  style.fill: "#475569"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+source_git_history -> source_component_registry: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
 }
 
-target_architecture_graph: "Canonical Semantic Architecture Graph\nsource-of-truth · review · target" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+source_css_variables -> source_token_group_registry: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
 }
-
-source_astro_components -> source_figma_adapters: "maps-to"
-source_component_registry -> external_figma: "maps-to"
-target_architecture_graph -> state_current: "reads"

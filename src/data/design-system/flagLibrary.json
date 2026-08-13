@@ -1,0 +1,438 @@
+{
+  "schemaVersion": 1,
+  "status": "active",
+  "updatedAt": "2026-08-11",
+  "profile": {
+    "format": "svg",
+    "canvas": "24x24",
+    "rendering": "local-asset",
+    "runtimeNetworkRequests": 0,
+    "intendedUse": [
+      "country-select",
+      "language-select",
+      "locale-select"
+    ]
+  },
+  "figma": {
+    "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
+    "pageId": "1291:111",
+    "pageName": "     ↪  ◆  Flags",
+    "sectionId": "1291:122",
+    "sectionName": "Country Flags"
+  },
+  "flags": [
+    {
+      "slug": "china",
+      "label": "China",
+      "sourceName": "China",
+      "figmaNodeId": "1291:186",
+      "sourcePath": "src/assets/flags/china.svg"
+    },
+    {
+      "slug": "brazil",
+      "label": "Brazil",
+      "sourceName": "Brazil",
+      "figmaNodeId": "1291:265",
+      "sourcePath": "src/assets/flags/brazil.svg"
+    },
+    {
+      "slug": "mexico",
+      "label": "Mexico",
+      "sourceName": "Mexico",
+      "figmaNodeId": "1291:360",
+      "sourcePath": "src/assets/flags/mexico.svg"
+    },
+    {
+      "slug": "nato",
+      "label": "NATO",
+      "sourceName": "Nato",
+      "figmaNodeId": "1291:395",
+      "sourcePath": "src/assets/flags/nato.svg"
+    },
+    {
+      "slug": "russia",
+      "label": "Russia",
+      "sourceName": "Russia",
+      "figmaNodeId": "1291:476",
+      "sourcePath": "src/assets/flags/russia.svg"
+    },
+    {
+      "slug": "india",
+      "label": "India",
+      "sourceName": "India",
+      "figmaNodeId": "1291:546",
+      "sourcePath": "src/assets/flags/india.svg"
+    },
+    {
+      "slug": "canada",
+      "label": "Canada",
+      "sourceName": "Canada",
+      "figmaNodeId": "1291:629",
+      "sourcePath": "src/assets/flags/canada.svg"
+    },
+    {
+      "slug": "austria",
+      "label": "Austria",
+      "sourceName": "Austria",
+      "figmaNodeId": "1291:704",
+      "sourcePath": "src/assets/flags/austria.svg"
+    },
+    {
+      "slug": "netherlands",
+      "label": "Netherlands",
+      "sourceName": "Netherlands",
+      "figmaNodeId": "1291:746",
+      "sourcePath": "src/assets/flags/netherlands.svg"
+    },
+    {
+      "slug": "portugal",
+      "label": "Portugal",
+      "sourceName": "Portugal",
+      "figmaNodeId": "1291:935",
+      "sourcePath": "src/assets/flags/portugal.svg"
+    },
+    {
+      "slug": "vietnam",
+      "label": "Vietnam",
+      "sourceName": "Vietnam",
+      "figmaNodeId": "1291:1021",
+      "sourcePath": "src/assets/flags/vietnam.svg"
+    },
+    {
+      "slug": "united-kingdom",
+      "label": "United Kingdom",
+      "sourceName": "United Kingdom",
+      "figmaNodeId": "1291:1024",
+      "sourcePath": "src/assets/flags/united-kingdom.svg"
+    },
+    {
+      "slug": "england",
+      "label": "England",
+      "sourceName": "England",
+      "figmaNodeId": "1291:1167",
+      "sourcePath": "src/assets/flags/england.svg"
+    },
+    {
+      "slug": "croatia",
+      "label": "Croatia",
+      "sourceName": "Croatia",
+      "figmaNodeId": "1291:1203",
+      "sourcePath": "src/assets/flags/croatia.svg"
+    },
+    {
+      "slug": "singapore",
+      "label": "Singapore",
+      "sourceName": "Singapore",
+      "figmaNodeId": "1291:1244",
+      "sourcePath": "src/assets/flags/singapore.svg"
+    },
+    {
+      "slug": "australia",
+      "label": "Australia",
+      "sourceName": "Australia",
+      "figmaNodeId": "1291:1345",
+      "sourcePath": "src/assets/flags/australia.svg"
+    },
+    {
+      "slug": "turkey",
+      "label": "Turkey",
+      "sourceName": "Turkey",
+      "figmaNodeId": "1291:1448",
+      "sourcePath": "src/assets/flags/turkey.svg"
+    },
+    {
+      "slug": "poland",
+      "label": "Poland",
+      "sourceName": "Poland",
+      "figmaNodeId": "1291:1546",
+      "sourcePath": "src/assets/flags/poland.svg"
+    },
+    {
+      "slug": "switzerland",
+      "label": "Switzerland",
+      "sourceName": "Switzerland",
+      "figmaNodeId": "1291:1672",
+      "sourcePath": "src/assets/flags/switzerland.svg"
+    },
+    {
+      "slug": "morocco",
+      "label": "Morocco",
+      "sourceName": "Morocco",
+      "figmaNodeId": "1291:1748",
+      "sourcePath": "src/assets/flags/morocco.svg"
+    },
+    {
+      "slug": "united-states",
+      "label": "United States",
+      "sourceName": "United States",
+      "figmaNodeId": "1291:1765",
+      "sourcePath": "src/assets/flags/united-states.svg"
+    },
+    {
+      "slug": "south-africa",
+      "label": "South Africa",
+      "sourceName": "South Africa",
+      "figmaNodeId": "1291:1782",
+      "sourcePath": "src/assets/flags/south-africa.svg"
+    },
+    {
+      "slug": "sweden",
+      "label": "Sweden",
+      "sourceName": "Sweden",
+      "figmaNodeId": "1291:1794",
+      "sourcePath": "src/assets/flags/sweden.svg"
+    },
+    {
+      "slug": "denmark",
+      "label": "Denmark",
+      "sourceName": "Denmark",
+      "figmaNodeId": "1291:1801",
+      "sourcePath": "src/assets/flags/denmark.svg"
+    },
+    {
+      "slug": "greece",
+      "label": "Greece",
+      "sourceName": "Greece",
+      "figmaNodeId": "1291:1808",
+      "sourcePath": "src/assets/flags/greece.svg"
+    },
+    {
+      "slug": "ireland",
+      "label": "Ireland",
+      "sourceName": "Ireland",
+      "figmaNodeId": "1291:1816",
+      "sourcePath": "src/assets/flags/ireland.svg"
+    },
+    {
+      "slug": "united-arab-emirates",
+      "label": "United Arab Emirates",
+      "sourceName": "United Arab Emirates",
+      "figmaNodeId": "1291:1826",
+      "sourcePath": "src/assets/flags/united-arab-emirates.svg"
+    },
+    {
+      "slug": "hong-kong",
+      "label": "Hong Kong",
+      "sourceName": "Hong Kong",
+      "figmaNodeId": "1291:1831",
+      "sourcePath": "src/assets/flags/hong-kong.svg"
+    },
+    {
+      "slug": "france",
+      "label": "France",
+      "sourceName": "France",
+      "figmaNodeId": "1291:1839",
+      "sourcePath": "src/assets/flags/france.svg"
+    },
+    {
+      "slug": "ukraine",
+      "label": "Ukraine",
+      "sourceName": "Ukraine",
+      "figmaNodeId": "1291:1843",
+      "sourcePath": "src/assets/flags/ukraine.svg"
+    },
+    {
+      "slug": "argentina",
+      "label": "Argentina",
+      "sourceName": "Argentina",
+      "figmaNodeId": "1291:1846",
+      "sourcePath": "src/assets/flags/argentina.svg"
+    },
+    {
+      "slug": "colombia",
+      "label": "Colombia",
+      "sourceName": "Colombia",
+      "figmaNodeId": "1291:1857",
+      "sourcePath": "src/assets/flags/colombia.svg"
+    },
+    {
+      "slug": "czech-republic",
+      "label": "Czech Republic",
+      "sourceName": "Czech Republic",
+      "figmaNodeId": "1291:1861",
+      "sourcePath": "src/assets/flags/czech-republic.svg"
+    },
+    {
+      "slug": "israel",
+      "label": "Israel",
+      "sourceName": "Israel",
+      "figmaNodeId": "1291:1865",
+      "sourcePath": "src/assets/flags/israel.svg"
+    },
+    {
+      "slug": "saudi-arabia",
+      "label": "Saudi Arabia",
+      "sourceName": "Saudi Arabia",
+      "figmaNodeId": "1291:1871",
+      "sourcePath": "src/assets/flags/saudi-arabia.svg"
+    },
+    {
+      "slug": "norway",
+      "label": "Norway",
+      "sourceName": "Norway",
+      "figmaNodeId": "1291:1880",
+      "sourcePath": "src/assets/flags/norway.svg"
+    },
+    {
+      "slug": "germany",
+      "label": "Germany",
+      "sourceName": "Germany",
+      "figmaNodeId": "1291:1912",
+      "sourcePath": "src/assets/flags/germany.svg"
+    },
+    {
+      "slug": "belgium",
+      "label": "Belgium",
+      "sourceName": "Belgium",
+      "figmaNodeId": "1291:1916",
+      "sourcePath": "src/assets/flags/belgium.svg"
+    },
+    {
+      "slug": "hungary",
+      "label": "Hungary",
+      "sourceName": "Hungary",
+      "figmaNodeId": "1291:1920",
+      "sourcePath": "src/assets/flags/hungary.svg"
+    },
+    {
+      "slug": "finland",
+      "label": "Finland",
+      "sourceName": "Finland",
+      "figmaNodeId": "1291:1924",
+      "sourcePath": "src/assets/flags/finland.svg"
+    },
+    {
+      "slug": "chile",
+      "label": "Chile",
+      "sourceName": "Chile",
+      "figmaNodeId": "1291:1927",
+      "sourcePath": "src/assets/flags/chile.svg"
+    },
+    {
+      "slug": "romania",
+      "label": "Romania",
+      "sourceName": "Romania",
+      "figmaNodeId": "1291:1932",
+      "sourcePath": "src/assets/flags/romania.svg"
+    },
+    {
+      "slug": "new-zealand",
+      "label": "New Zealand",
+      "sourceName": "New Zealand",
+      "figmaNodeId": "1291:1943",
+      "sourcePath": "src/assets/flags/new-zealand.svg"
+    },
+    {
+      "slug": "united-nations",
+      "label": "United Nations",
+      "sourceName": "United Nations",
+      "figmaNodeId": "1291:1962",
+      "sourcePath": "src/assets/flags/united-nations.svg"
+    },
+    {
+      "slug": "slovakia",
+      "label": "Slovakia",
+      "sourceName": "Slovakia",
+      "figmaNodeId": "1291:1967",
+      "sourcePath": "src/assets/flags/slovakia.svg"
+    },
+    {
+      "slug": "south-korea",
+      "label": "South Korea",
+      "sourceName": "South Korea",
+      "figmaNodeId": "1291:1975",
+      "sourcePath": "src/assets/flags/south-korea.svg"
+    },
+    {
+      "slug": "monaco",
+      "label": "Monaco",
+      "sourceName": "Monaco",
+      "figmaNodeId": "1291:1997",
+      "sourcePath": "src/assets/flags/monaco.svg"
+    },
+    {
+      "slug": "iceland",
+      "label": "Iceland",
+      "sourceName": "Iceland",
+      "figmaNodeId": "1291:2006",
+      "sourcePath": "src/assets/flags/iceland.svg"
+    },
+    {
+      "slug": "uruguay",
+      "label": "Uruguay",
+      "sourceName": "Uruguay",
+      "figmaNodeId": "1291:2028",
+      "sourcePath": "src/assets/flags/uruguay.svg"
+    },
+    {
+      "slug": "scotland",
+      "label": "Scotland",
+      "sourceName": "Scotland",
+      "figmaNodeId": "1291:2046",
+      "sourcePath": "src/assets/flags/scotland.svg"
+    },
+    {
+      "slug": "spain",
+      "label": "Spain",
+      "sourceName": "Spain",
+      "figmaNodeId": "1291:2068",
+      "sourcePath": "src/assets/flags/spain.svg"
+    },
+    {
+      "slug": "latvia",
+      "label": "Latvia",
+      "sourceName": "Latvia",
+      "figmaNodeId": "1291:2073",
+      "sourcePath": "src/assets/flags/latvia.svg"
+    },
+    {
+      "slug": "luxembourg",
+      "label": "Luxembourg",
+      "sourceName": "Luxembourg",
+      "figmaNodeId": "1291:2136",
+      "sourcePath": "src/assets/flags/luxembourg.svg"
+    },
+    {
+      "slug": "japan",
+      "label": "Japan",
+      "sourceName": "Japan",
+      "figmaNodeId": "1291:2140",
+      "sourcePath": "src/assets/flags/japan.svg"
+    },
+    {
+      "slug": "qatar",
+      "label": "Qatar",
+      "sourceName": "Qatar",
+      "figmaNodeId": "1291:2154",
+      "sourcePath": "src/assets/flags/qatar.svg"
+    },
+    {
+      "slug": "wales",
+      "label": "Wales",
+      "sourceName": "Wales",
+      "figmaNodeId": "1291:2166",
+      "sourcePath": "src/assets/flags/wales.svg"
+    },
+    {
+      "slug": "european-union",
+      "label": "European Union",
+      "sourceName": "European Union",
+      "figmaNodeId": "1291:2203",
+      "sourcePath": "src/assets/flags/european-union.svg"
+    },
+    {
+      "slug": "slovenia",
+      "label": "Slovenia",
+      "sourceName": "Slovania",
+      "figmaNodeId": "1291:2258",
+      "sourcePath": "src/assets/flags/slovenia.svg"
+    },
+    {
+      "slug": "italy",
+      "label": "Italy",
+      "sourceName": "Italy",
+      "figmaNodeId": "1291:2284",
+      "sourcePath": "src/assets/flags/italy.svg"
+    }
+  ]
+}

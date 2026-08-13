@@ -1,0 +1,13 @@
+---
+import DsSectionHeading from "./DsSectionHeading.astro";
+
+interface Props { title: string; id?: string; }
+const { title, id } = Astro.props as Props;
+---
+
+<DsSectionHeading
+  componentName="DsSectionHeaderLevel3"
+  level={3}
+  title={title}
+  id={id}
+/>

@@ -1,0 +1,27 @@
+{
+  "headings": [
+    "UX purpose",
+    "Use when",
+    "Avoid when",
+    "Content contract",
+    "Composition and placement",
+    "Responsive behavior",
+    "Accessibility and required behavior",
+    "Related components",
+    "Naming and token contract",
+    "Core decision"
+  ],
+  "responsiveFields": [
+    "Primary strategy",
+    "Mechanisms and references",
+    "Container queries",
+    "Viewport queries",
+    "Reflow, order and visibility"
+  ],
+  "primaryStrategies": [
+    "intrinsic",
+    "container",
+    "viewport",
+    "alternate"
+  ]
+}

@@ -1,0 +1,231 @@
+---
+import {
+  architecture,
+  type ArchitectureComponent,
+} from "../../../data/documentationRegistry";
+import type { ComponentRuleDocument } from "../../../data/componentRuleLoader";
+import type {
+  ComponentDocumentationAdapter,
+  DocumentationApiRow,
+} from "../../../data/documentationComponentRegistry";
+import { resolveDocumentationLink } from "../../../data/documentationLinkResolver";
+import DsComponentRule from "./DsComponentRule.astro";
+import DsEmptyState from "./DsEmptyState.astro";
+import DsInteractiveComponentPreview from "./DsInteractiveComponentPreview.astro";
+import DsSectionHeaderLevel2 from "./DsSectionHeaderLevel2.astro";
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+
+interface Props {
+  component: ArchitectureComponent;
+  rule?: ComponentRuleDocument;
+  adapter?: ComponentDocumentationAdapter;
+}
+
+const { component, rule, adapter } = Astro.props;
+const componentName = "DsComponentDetail";
+const available = Boolean(component.sourcePath);
+const resolveApiTypeParts = (row: DocumentationApiRow) => {
+  const references = (row.typeReferences ?? [])
+    .map((reference) => ({
+      ...reference,
+      ...resolveDocumentationLink(reference.target),
+      start: row.type.indexOf(reference.value),
+    }))
+    .filter((reference) => reference.start >= 0)
+    .sort((left, right) => left.start - right.start);
+  const parts: Array<{ value: string; href?: string }> = [];
+  let cursor = 0;
+
+  for (const reference of references) {
+    if (reference.start < cursor) continue;
+    if (reference.start > cursor) parts.push({ value: row.type.slice(cursor, reference.start) });
+    parts.push({ value: reference.value, href: reference.href });
+    cursor = reference.start + reference.value.length;
+  }
+  if (cursor < row.type.length) parts.push({ value: row.type.slice(cursor) });
+  return parts.length > 0 ? parts : [{ value: row.type }];
+};
+const apiRows = adapter?.apiRows.map((row) => ({
+  ...row,
+  typeParts: resolveApiTypeParts(row),
+})) ?? [];
+const dependencyRecords = adapter?.dependencies.length
+  ? adapter.dependencies
+  : component.dependencies.map((dependencyId) => ({
+      target: { kind: "component" as const, id: dependencyId },
+      description: `Declared registry dependency for ${component.name}.`,
+    }));
+const resolvedDependencies = dependencyRecords.map((dependency) => ({
+  ...resolveDocumentationLink(dependency.target),
+  description: dependency.description,
+}));
+const usedBy = architecture.components
+  .filter((candidate) => (candidate.dependencies as readonly string[]).includes(component.id))
+  .map((candidate) => ({
+    ...resolveDocumentationLink({ kind: "component", id: candidate.id }),
+    description: `${candidate.name} declares ${component.name} as a direct reusable dependency.`,
+}));
+---
+
+{
+  adapter ? (
+    <>
+      {adapter.preview && (
+        <DsInteractiveComponentPreview
+          title={component.name}
+          renderer={adapter.preview.renderer}
+          rendererProps={adapter.preview.props}
+          axes={adapter.preview.axes}
+        />
+      )}
+
+      <section
+        class="ds-component-detail__section"
+        id="api"
+        aria-labelledby="api-title"
+        data-component-name={componentName}
+        data-ds-doc-section
+      >
+        <DsSectionHeaderLevel2
+          id="api-title"
+          title="API"
+        />
+        <DsTableFrame
+          label={`${component.name} API`}
+          columns="minmax(12rem, 8fr) minmax(18rem, 14fr) minmax(10rem, 8fr)"
+          minWidth="44rem"
+        >
+          <DsTableRow variant="header">
+            <DsTableCell role="columnheader" variant="header">Prop or slot</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Type</DsTableCell>
+            <DsTableCell role="columnheader" variant="header">Default</DsTableCell>
+          </DsTableRow>
+          {apiRows.map((row) => (
+            <DsTableRow>
+              <DsTableCopyCell value={row.name} role="rowheader" />
+              <DsTableCell role="cell">
+                <code class="ds-component-detail__api-type">
+                  {row.typeParts.map((part) => part.href
+                    ? <a href={part.href}>{part.value}</a>
+                    : part.value)}
+                </code>
+              </DsTableCell>
+              <DsTableCell role="cell" tone="secondary"><code>{row.defaultValue}</code></DsTableCell>
+            </DsTableRow>
+          ))}
+        </DsTableFrame>
+      </section>
+    </>
+  ) : !available ? (
+    <section
+      class="ds-component-detail__empty-preview"
+      id="preview"
+      aria-label={`${component.name} preview availability`}
+      data-component-name={componentName}
+      data-ds-doc-section
+    >
+      <DsEmptyState
+        title="Astro preview unavailable"
+        description="This Figma identity has not been implemented as a canonical Astro component. The documentation does not fabricate an API or visual preview."
+        path={component.sourceDirectory}
+      />
+    </section>
+  ) : null
+}
+
+<section
+  class="ds-component-detail__section"
+  id="dependencies"
+  aria-labelledby="dependencies-title"
+  data-component-name={componentName}
+  data-ds-doc-section
+>
+  <DsSectionHeaderLevel2
+    id="dependencies-title"
+    title="Dependencies"
+  />
+  {resolvedDependencies.length ? (
+    <ul class="ds-component-detail__dependencies">
+      {resolvedDependencies.map((dependency) => (
+        <li>
+          <a href={dependency.href}>{dependency.label}</a>
+            <p class="body-small-regular">{dependency.description}</p>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="ds-component-detail__muted body-small-regular">No direct dependencies are declared.</p>
+  )}
+
+  {usedBy.length > 0 && (
+    <div class="ds-component-detail__used-by">
+      <ul aria-label={`Components that use ${component.name}`}>
+        {usedBy.map((consumer) => (
+          <li>
+            <a href={consumer.href}>{consumer.label}</a>
+            <p class="body-small-regular">{consumer.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</section>
+
+{rule && <DsComponentRule rule={rule} />}
+
+<style>
+  .ds-component-detail__section {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-medium);
+    margin-top: var(--section-padding-small);
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+
+  .ds-component-detail__empty-preview {
+    min-width: 0;
+    scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+
+  .ds-component-detail__muted,
+  .ds-component-detail__dependencies p,
+  .ds-component-detail__used-by p {
+    color: var(--color-text-secondary);
+  }
+
+  .ds-component-detail__dependencies,
+  .ds-component-detail__used-by ul {
+    display: grid;
+    gap: var(--gap-medium);
+    list-style: none;
+  }
+
+  .ds-component-detail__dependencies li,
+  .ds-component-detail__used-by li {
+    display: grid;
+    gap: var(--gap-small);
+  }
+
+  .ds-component-detail__api-type a {
+    color: var(--color-text-accent);
+    text-decoration: underline;
+    text-underline-offset: var(--size-2);
+  }
+
+  .ds-component-detail__dependencies a,
+  .ds-component-detail__used-by a {
+    color: var(--color-text-accent);
+    font-weight: var(--font-weight-emphasis);
+    text-decoration: underline;
+    text-underline-offset: var(--size-2);
+  }
+
+  .ds-component-detail__used-by {
+    display: grid;
+    gap: var(--gap-medium);
+  }
+
+</style>

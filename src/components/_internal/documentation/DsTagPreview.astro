@@ -1,0 +1,44 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import SocialIcons from "../../assets/icons/SocialIcons.astro";
+import Tag from "../../base-components/tag/Tag.astro";
+---
+
+<div
+  class="ds-preview-renderer-boundary"
+  data-component-name="DsTagPreview"
+>
+  <Tag
+    data-ds-preview-target
+    label="Filter result"
+    removable
+  >
+    <span class="ds-tag-preview__leading" slot="leading">
+      <span data-tag-leading-option="context-icon">
+        <MaterialSymbol name="search" />
+      </span>
+      <span data-tag-leading-option="logo" hidden>
+        <SocialIcons platform="figma" variant="brand" />
+      </span>
+    </span>
+  </Tag>
+</div>
+
+<style>
+  .ds-tag-preview__leading,
+  .ds-tag-preview__leading > span {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+  }
+
+  .ds-tag-preview__leading > span[hidden] {
+    display: none;
+  }
+
+  .ds-tag-preview__leading :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+</style>

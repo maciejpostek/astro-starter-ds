@@ -3,131 +3,79 @@
 # View: view.new-project-fork
 direction: right
 
-title: "New Project Fork and Duplicated Figma File Flow" {
+title: "New Project Fork and Optional Figma Copy" {
   shape: text
   near: top-center
-  style.font-size: 28
+  style.font-size: 30
   style.bold: true
+  style.font-color: "#0f172a"
 }
 
-state_current: "Current Architecture\nstate · frozen-for-audit · current" {
-  shape: oval
-  style.fill: "#64748b"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_project_fork: "Create Project Fork from Starter\nprocess · manual · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-output_project_fork: "Project-Owned Starter Fork\noutput · manual · current" {
-  shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-input_project_context: "Project Context\ninput · not-configured · current" {
-  shape: parallelogram
-  style.fill: "#0891b2"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-input_brand_references: "Approved Brand References\ninput · not-configured · current" {
-  shape: parallelogram
-  style.fill: "#0891b2"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_brand_contract: "Approved Brand Expression Contract\nsource-of-truth · not-configured · current" {
+source_component_registry: "Component Registry and Readiness\\nsource of truth\\ncomponentArchitecture.json" {
   shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-gate_brand_contract: "Approved Brand Contract Gate\ndecision-gate · blocked · current" {
+source_astro_components: "Astro Component Sources\\nsource of truth\\ncomponents" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+source_css_variables: "CSS Variable Foundations\\nsource of truth\\ntokens" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+source_brand_contract: "Approved Brand/Composition Rules\\nsource of truth\\ncontract.json" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+gate_explicit_figma: "Explicit Figma Request\\ndecision gate\\nAGENTIC-RULES.json" {
   shape: diamond
-  style.fill: "#c026d3"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#fce7f3"
+  style.stroke: "#be185d"
+  style.font-color: "#831843"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_component_registry: "Component Registry\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_astro_components: "Astro Component Source\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_figma_adapters: "Figma2Astro Mapping Adapters\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_duplicate_figma_file: "Duplicate Figma File for Project\nprocess · manual-no-repository-automation · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-external_figma: "Figma Editable Representation\nexternal-system · external · current" {
+external_figma: "Figma Visual Repository\\nexternal system\\nREADME.md" {
   shape: cloud
-  style.fill: "#475569"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#e2e8f0"
+  style.stroke: "#475569"
+  style.font-color: "#1e293b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-output_astro: "Accepted Astro Output\noutput · active · current" {
-  shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+source_git_history: "Git History\\nsource of truth\\n.git" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-output_figma: "Accepted Figma Representation\noutput · external · current" {
-  shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+source_git_history -> source_component_registry: "required by" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
 }
-
-process_project_fork -> state_current: "reads"
-process_project_fork -> output_project_fork: "creates"
-input_project_context -> output_project_fork: "required by"
-gate_brand_contract -> source_brand_contract: "reads"
-source_astro_components -> source_figma_adapters: "maps-to"
-source_component_registry -> external_figma: "maps-to"
-process_duplicate_figma_file -> source_component_registry: "reads"
-process_duplicate_figma_file -> source_figma_adapters: "reads"
-process_duplicate_figma_file -> output_figma: "creates"

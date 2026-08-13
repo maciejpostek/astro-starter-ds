@@ -3,89 +3,98 @@
 # View: view.astro-figma-identity
 direction: right
 
-title: "Astro ↔ Figma Identity and Mapping" {
+title: "Explicit Astro to Figma Projection" {
   shape: text
   near: top-center
-  style.font-size: 28
+  style.font-size: 30
   style.bold: true
+  style.font-color: "#0f172a"
 }
 
-source_astro_components: "Astro Component Source\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_component_registry: "Component Registry\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_css_variables: "CSS Variable Foundations\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-source_figma_adapters: "Figma2Astro Mapping Adapters\nsource-of-truth · active · current" {
-  shape: cylinder
-  style.fill: "#059669"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-process_figma_sync: "Synchronize Accepted Astro to Figma\nprocess · active · current" {
-  shape: rectangle
-  style.fill: "#4f46e5"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-external_figma: "Figma Editable Representation\nexternal-system · external · current" {
-  shape: cloud
-  style.fill: "#475569"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
-}
-
-validator_family: "Family and Parity Audits\nvalidator · active · current" {
+router_request_classifier: "Request Classifier\\nrouter\\nroute-agent-request.mjs, AGENTIC-RULES.json" {
   shape: hexagon
-  style.fill: "#d97706"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#ede9fe"
+  style.stroke: "#7c3aed"
+  style.font-color: "#4c1d95"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-approval_family: "Family Checkpoint Acceptance\nhuman-approval · required · current" {
+gate_explicit_figma: "Explicit Figma Request\\ndecision gate\\nAGENTIC-RULES.json" {
   shape: diamond
-  style.fill: "#ea580c"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#fce7f3"
+  style.stroke: "#be185d"
+  style.font-color: "#831843"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-output_figma: "Accepted Figma Representation\noutput · external · current" {
+source_component_registry: "Component Registry and Readiness\\nsource of truth\\ncomponentArchitecture.json" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+source_astro_components: "Astro Component Sources\\nsource of truth\\ncomponents" {
+  shape: cylinder
+  style.fill: "#d1fae5"
+  style.stroke: "#059669"
+  style.font-color: "#064e3b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+process_figma_operation: "Selected Figma Operation\\nprocess\\nFigma2Astro Agentic Rules" {
+  shape: rectangle
+  style.fill: "#eef2ff"
+  style.stroke: "#4f46e5"
+  style.font-color: "#312e81"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+external_figma: "Figma Visual Repository\\nexternal system\\nREADME.md" {
+  shape: cloud
+  style.fill: "#e2e8f0"
+  style.stroke: "#475569"
+  style.font-color: "#1e293b"
+  style.stroke-width: 2
+  style.border-radius: 8
+}
+
+output_accepted: "Accepted Astro Result\\noutput" {
   shape: parallelogram
-  style.fill: "#15803d"
-  style.stroke: "#0f172a"
-  style.font-color: "#ffffff"
-  style.border-radius: 6
+  style.fill: "#dcfce7"
+  style.stroke: "#15803d"
+  style.font-color: "#14532d"
+  style.stroke-width: 2
+  style.border-radius: 8
 }
 
-source_astro_components -> source_figma_adapters: "maps-to"
-source_component_registry -> external_figma: "maps-to"
-process_figma_sync -> source_astro_components: "reads"
-process_figma_sync -> source_figma_adapters: "reads"
-process_figma_sync -> external_figma: "writes"
-validator_family -> external_figma: "validates"
-approval_family -> output_figma: "approves"
+router_request_classifier -> gate_explicit_figma: "explicit Figma request" {
+  style.stroke: "#9333ea"
+  style.font-color: "#9333ea"
+  style.stroke-width: 2
+  style.stroke-dash: 6
+}
+
+gate_explicit_figma -> process_figma_operation: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+process_figma_operation -> external_figma: "synchronizes-with" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}
+
+process_figma_operation -> output_accepted: "routes-to" {
+  style.stroke: "#475569"
+  style.font-color: "#475569"
+  style.stroke-width: 2
+}

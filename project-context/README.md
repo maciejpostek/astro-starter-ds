@@ -17,8 +17,11 @@ leave it empty rather than filling it with assumptions.
 
 Project-specific visual direction lives in
 `brand-foundations/brand-expression/`. The starter includes an explicitly
-`not-configured` contract shell, empty reference manifest, component-signature
-template and visual-QA template. These files are scaffolding, not brand input.
+`not-configured` `contract.json`, its schema, a generated `contract.md`, an
+empty reference manifest, a component-signature template and a visual-QA
+template. The JSON contract is the machine-readable source of truth; the
+Markdown file is a generated projection. These files are scaffolding, not
+brand input.
 
 Universal visual-design knowledge and reusable templates live in
 `art-direction/`. Read `.agentic-rules/08-brand-expression.md` before using

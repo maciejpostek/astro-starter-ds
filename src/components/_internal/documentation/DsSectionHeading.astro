@@ -1,0 +1,51 @@
+---
+interface Props {
+  level: 2 | 3;
+  title: string;
+  id?: string;
+  componentName?: string;
+}
+
+const {
+  level,
+  title,
+  id,
+  componentName = "DsSectionHeading",
+} = Astro.props as Props;
+const Heading = `h${level}` as "h2" | "h3";
+const headingClass = {
+  2: "heading-h4",
+  3: "heading-h6",
+}[level];
+---
+
+<header
+  class="ds-section-heading"
+  data-component-name={componentName}
+  data-ds-section-heading-level={level}
+>
+  <Heading id={id} class={headingClass}>{title}</Heading>
+</header>
+
+<style>
+  .ds-section-heading {
+    min-width: 0;
+    margin-block: var(--space-large) var(--space-regular);
+  }
+
+  .ds-section-heading[data-ds-section-heading-level="2"] {
+    margin-block: var(--space-large) var(--space-regular);
+  }
+
+  .ds-section-heading:first-child {
+    margin-block-start: 0;
+  }
+
+  .ds-section-heading h2 {
+    color: var(--color-text-primary);
+  }
+
+  .ds-section-heading[data-ds-section-heading-level="3"] h3 {
+    color: var(--color-text-primary);
+  }
+</style>

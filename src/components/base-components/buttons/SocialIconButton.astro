@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import SocialIcons from "../../assets/icons/SocialIcons.astro";
+import type { SocialIconPlatform } from "../../../lib/icons/socialIcons";
+import type { ButtonSize } from "./Button.astro";
+import type { IconButtonVariant } from "./IconButton.astro";
+import "../../../styles/components/button-controls.css";
+
+export type SocialIconButtonVariant = Exclude<IconButtonVariant, "tertiary">;
+
+export interface Props extends Omit<HTMLAttributes<"button">, "aria-label" | "class" | "type"> {
+  platform: SocialIconPlatform;
+  label: string;
+  variant?: SocialIconButtonVariant;
+  size?: ButtonSize;
+  class?: string;
+  type?: "button" | "submit" | "reset";
+}
+
+const {
+  platform,
+  label,
+  variant = "secondary",
+  size = "small",
+  class: className,
+  type = "button",
+  disabled = false,
+  ...attributes
+} = Astro.props;
+---
+
+<button
+  {...attributes}
+  aria-label={label}
+  class:list={["icon-button", "social-icon-button", className]}
+  data-button-variant={variant}
+  data-component-name="SocialIconButton"
+  data-control-size={size}
+  data-social-platform={platform}
+  disabled={disabled}
+  type={type}
+>
+  <span class="icon-button__icon">
+    <SocialIcons platform={platform} variant="monochrome" />
+  </span>
+</button>

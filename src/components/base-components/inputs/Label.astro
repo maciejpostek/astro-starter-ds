@@ -1,0 +1,90 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type LabelVariant = "field" | "metric";
+
+type LabelRequirement =
+  | { required?: boolean; optionalText?: never }
+  | { required?: false; optionalText?: string };
+
+export type Props = Omit<HTMLAttributes<"label">, "class" | "for"> &
+  LabelRequirement & {
+    label: string;
+    variant?: LabelVariant;
+    for?: string;
+    disabled?: boolean;
+    class?: string;
+  };
+
+const {
+  label,
+  variant = "field",
+  for: htmlFor,
+  required = false,
+  optionalText,
+  disabled = false,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const Element = variant === "field" ? "label" : "span";
+---
+
+<Element
+  {...attributes}
+  class:list={["label", className]}
+  data-component-name="Label"
+  data-label-variant={variant}
+  data-label-disabled={disabled ? "true" : undefined}
+  for={variant === "field" ? htmlFor : undefined}
+>
+  <span>{label}</span>
+  {required && <span class="label__required" aria-hidden="true">*</span>}
+  {optionalText && <span class="label__optional">{optionalText}</span>}
+</Element>
+
+<style>
+  .label {
+    display: inline-flex;
+    min-width: 0;
+    align-items: baseline;
+    gap: var(--gap-tiny);
+    color: var(--label-field-text-default);
+    font-family: var(--font-family-body);
+    font-size: var(--control-font-size, var(--font-size-body-small));
+    font-weight: var(--font-weight-strong);
+    line-height: var(--line-height-compact);
+  }
+
+  .label[data-label-variant="metric"] {
+    color: var(--label-metric-text-default);
+    font-size: var(--font-size-body-tiny);
+    letter-spacing: var(--letter-spacing-none);
+    text-transform: var(--text-transform-uppercase);
+  }
+
+  .label__required {
+    color: var(--input-helper-invalid);
+  }
+
+  .label__optional {
+    color: var(--input-helper-default);
+    font-weight: var(--font-weight-normal);
+  }
+
+  .label[data-label-disabled="true"],
+  .label[data-label-disabled="true"] :is(.label__required, .label__optional) {
+    color: var(--input-label-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .label,
+    .label :is(.label__required, .label__optional) {
+      color: CanvasText;
+    }
+
+    .label[data-label-disabled="true"] {
+      color: GrayText;
+    }
+  }
+</style>

@@ -1,0 +1,98 @@
+---
+import DsSpacingRow from "./DsSpacingRow.astro";
+import DsDocumentationBlockTitle from "./DsDocumentationBlockTitle.astro";
+import DsTableCell from "./DsTableCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+import {
+  documentationTokenMap,
+  getDocumentationResolvedValue,
+  getDocumentationTokenValue,
+} from "../../../data/documentationTokenRegistry";
+
+interface Row {
+  token: string;
+  output: string;
+  source?: string;
+  sampleValue?: string;
+  sampleLabel?: string;
+  sampleType?: "size" | "radius" | "border";
+  agenticRule?: string;
+}
+
+interface Props {
+  name: string;
+  description: string;
+  rows: Row[];
+  showHeader?: boolean;
+  size?: "tiny";
+}
+
+const { name, description, rows, showHeader = true, size = "tiny" } = Astro.props;
+const resolvedRows = rows.map((row) => {
+  const token = documentationTokenMap.get(row.token);
+  if (!token) return row;
+  const resolved = getDocumentationResolvedValue(token);
+  const remMatch = resolved.match(/^(-?\d*\.?\d+)rem$/);
+  return {
+    ...row,
+    output: getDocumentationTokenValue(token),
+    source: remMatch ? `${Number(remMatch[1]) * 16}px` : resolved,
+  };
+});
+const id = `spacing-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+---
+
+<section
+  class="ds-spacing-block"
+  aria-label={showHeader ? undefined : `${name} sizing tokens`}
+  aria-labelledby={showHeader ? `${id}-title` : undefined}
+  data-component-name="DsSpacingBlock"
+  data-ds-doc-table-size={size}
+>
+  {showHeader && (
+    <>
+      <DsDocumentationBlockTitle
+        id={`${id}-title`}
+        title={name}
+      />
+      <p class="ds-spacing-block__description body-small-regular">{description}</p>
+    </>
+  )}
+
+  <DsTableFrame label={`${name} sizing tokens`} size={size}>
+    <DsTableRow variant="header">
+      <DsTableCell role="columnheader" variant="header">Sample</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Token</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Value (REM)</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Value (PX)</DsTableCell>
+    </DsTableRow>
+    {
+      resolvedRows.map((row) => (
+        <DsSpacingRow
+          agenticRule={row.agenticRule}
+          output={row.output}
+          sampleLabel={row.sampleLabel}
+          sampleType={row.sampleType}
+          sampleValue={row.sampleValue}
+          source={row.source}
+          size={size}
+          token={row.token}
+        />
+      ))
+    }
+  </DsTableFrame>
+</section>
+
+<style>
+  .ds-spacing-block {
+    display: grid;
+    gap: var(--space-regular);
+  }
+
+  .ds-spacing-block__description {
+    margin-block-start: calc(var(--gap-medium) * -1);
+    color: var(--color-text-tertiary);
+  }
+
+</style>

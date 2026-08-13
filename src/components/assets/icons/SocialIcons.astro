@@ -1,0 +1,74 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import {
+  getSocialIcon,
+  namespaceSocialIconMarkup,
+  type SocialIconPlatform,
+  type SocialIconVariant,
+} from "../../../lib/icons/socialIcons";
+
+type ReservedSvgAttribute =
+  | "aria-hidden"
+  | "aria-label"
+  | "class"
+  | "data-component-name"
+  | "data-platform"
+  | "data-variant"
+  | "focusable"
+  | "height"
+  | "preserveAspectRatio"
+  | "role"
+  | "style"
+  | "viewBox"
+  | "width";
+
+export interface Props
+  extends Omit<HTMLAttributes<"svg">, ReservedSvgAttribute> {
+  platform: SocialIconPlatform;
+  variant?: SocialIconVariant;
+  label?: string;
+  class?: string;
+}
+
+const {
+  platform,
+  variant = "brand",
+  label,
+  class: className,
+  ...attributes
+} = Astro.props;
+const icon = getSocialIcon(platform, variant);
+
+if (!icon) {
+  throw new Error(`Unknown SocialIcons selection: ${platform}/${variant}`);
+}
+const iconMarkup = namespaceSocialIconMarkup(icon.innerSvg);
+---
+
+<svg
+  {...attributes}
+  aria-hidden={label ? undefined : "true"}
+  aria-label={label}
+  class:list={["social-icons", className]}
+  data-component-name="SocialIcons"
+  data-platform={platform}
+  data-variant={variant}
+  focusable="false"
+  height="100%"
+  preserveAspectRatio="xMidYMid meet"
+  role={label ? "img" : undefined}
+  viewBox={icon.viewBox}
+  width="100%"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <Fragment set:html={iconMarkup} />
+</svg>
+
+<style>
+  .social-icons {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: visible;
+  }
+</style>

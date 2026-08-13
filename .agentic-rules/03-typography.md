@@ -2,301 +2,137 @@
 
 Status: active.
 
-This file defines how AI agents should use and extend typography in the Astro
-design system.
+## Deterministic authoring gate
 
-Read this file when a task changes or consumes font families, font sizes,
-heading styles, body text, text style classes, line height, letter spacing,
-font weight, font style, text transform, text wrapping or typography
-documentation.
+For every component or styling decision use `resolve → reuse → prove gap → draft → approve → implement`. Resolve registered component, dependency, use-case and global token groups in that order. Stop on `ambiguous`; a `gap` may change CSS only after an exact `tokenDraft` is approved. Do not invent namespaces, local custom properties, groups or source files. The canonical sources are `architecture/component-authoring-contract.json` and `src/data/design-system/tokenArchitecture.json`.
+
+Read this file when a task changes or consumes typography tokens, Text Style
+classes, heading or paragraph markup, compact component typography, typography
+utilities or typography documentation.
 
 Source references:
 
 - `AGENTIC-RULES.json`
 - `.agentic-rules/00-framework.md`
 - `src/styles/tokens/typography-foundations.css`
-- `src/styles/tokens/typography-semantic.css`
 - `src/styles/tokens/typography-styles.css`
 - `src/data/design-system/typographyTokens.ts`
-- `src/pages/design-system/typography.astro`
-- `src/data/design-system-roadmap.json`
+- `src/pages/design-system/foundations/typography.astro`
 
-## Purpose
+## Architecture
 
-The typography system exists to separate document semantics from visual text
-style.
-
-Agents should treat typography as a layered contract:
+Typography uses one short public path:
 
 ```txt
-typography foundations
-  -> reference values and role-bearing control points for font families,
-     sizes, weights, line heights, tracking and wrapping
-
-semantic typography variables
-  -> complete heading and body style contracts
-
-typography classes
-  -> public authoring interface for visual text styles
-
-HTML tags
-  -> document semantics only
+typography foundation tokens
+  -> complete Text Style classes
+  -> neutral HTML
 ```
 
-Do not rely on native `h1-h6` browser styles to create visual hierarchy.
+There is no semantic typography-token alias layer. A Text Style class is the
+semantic visual contract. HTML elements describe document structure only.
 
-## Current Typography Architecture
+This exception is scoped to typography. It does not authorize removing or
+bypassing semantic color, sizing, layout or component tokens. In particular,
+UI colors must continue to consume semantic or component color contracts.
 
-```txt
-src/styles/tokens/typography-foundations.css
-  -> font families
-  -> heading sizes H1 through H6
-  -> body sizes
-  -> line heights
-  -> letter spacing
-  -> font weights
-  -> font styles
-  -> text transforms
-  -> text wrap, overflow wrap, word break and white-space
+## HTML Semantics
 
-src/styles/tokens/typography-semantic.css
-  -> --text-style-heading-h1-* through --text-style-heading-h6-*
-  -> --text-style-body-large-* through --text-style-body-tiny-*
+- Use `h1` through `h6` for document hierarchy and accessibility.
+- Use `.heading-h1` through `.heading-h6` for visual scale.
+- A semantic heading level may use a different visual class, for example
+  `<h3 class="heading-h1">Release overview</h3>`.
+- Give every documentation heading an explicit `.heading-*` class.
+- Give content paragraphs an explicit Body Text Style class.
+- Keep the canonical `h1-h6` and `p` reset in `typography-styles.css` neutral.
+- Do not add competing global heading or paragraph typography.
 
-src/styles/tokens/typography-styles.css
-  -> .heading-h1 through .heading-h6
-  -> .body-large through .body-tiny
-  -> small typography utility classes
-  -> neutral native h1-h6 and p reset
+## Public Text Styles
 
-src/pages/design-system/typography.astro
-  -> documentation mirror of the typography system
+Exactly 21 public classes exist:
 
-src/data/design-system/typographyTokens.ts
-  -> documentation data for typography tables and resolved foundation values
-```
+- `.heading-h1` through `.heading-h6`,
+- `.body-{large|medium|base|small|tiny}-regular`,
+- `.body-{large|medium|base|small|tiny}-regular-underlined`,
+- `.body-{large|medium|base|small|tiny}-semibold`.
 
-## Decision Model
+Standalone `.body-large`, `.body-medium`, `.body-base`, `.body-small` and
+`.body-tiny` classes are not part of the API.
 
-Before changing typography, choose the right layer:
-
-```txt
-Need an atomic or role-bearing font value?
-  -> typography foundation token
-
-Need a complete reusable text style?
-  -> semantic typography variable set
-
-Need to apply visual typography in markup?
-  -> typography class
-
-Need to change document structure?
-  -> HTML heading tag
-
-Need a narrow casing, italic or wrapping adjustment?
-  -> approved typography utility class
-```
-
-Preferred order:
-
-```txt
-typography class
-  -> semantic text style variables
-  -> typography foundation tokens
-  -> local value only as an approved exception
-```
-
-## HTML Tag Rules
-
-HTML heading tags are semantic, not visual.
-
-Rules:
-
-- Use `h1-h6` to express document hierarchy and accessibility structure.
-- Use `.heading-h1` through `.heading-h6` to express visual scale.
-- It is valid to pair a semantic tag with a different visual class.
-- Do not attach font-size, line-height or weight directly to global `h1-h6`
-  selectors.
-- Keep native heading and paragraph styles neutral.
-
-Good:
-
-```html
-<h2 class="heading-h3">System strategy</h2>
-```
-
-Good:
-
-```html
-<p class="body-base">Reusable components keep the page consistent.</p>
-```
-
-Avoid:
-
-```css
-h2 {
-  font-size: var(--font-size-h2);
-}
-```
-
-## Typography Class Rules
-
-Typography classes are the public text style API.
-
-Current global text style classes:
-
-- `.heading-h1`
-- `.heading-h2`
-- `.heading-h3`
-- `.heading-h4`
-- `.heading-h5`
-- `.heading-h6`
-- `.body-large`
-- `.body-medium`
-- `.body-base`
-- `.body-small`
-- `.body-tiny`
-
-Each class owns the complete typographic contract:
+Each class owns the complete contract:
 
 - font family,
 - font size,
-- font weight,
-- font style,
-- line height,
-- letter spacing,
+- font weight and style,
+- line height and letter spacing,
 - text transform,
-- text wrap,
-- overflow wrap,
-- word break,
-- white-space.
+- text wrap, overflow wrap, word break and white-space.
 
-Rules:
+Regular Underlined additionally owns its underline properties. Do not combine
+multiple Heading or Body classes on one element and do not recreate a partial
+Text Style with local declarations.
 
-- Use one global typography class per text node or text container.
-- Do not compose multiple heading/body classes on the same element.
-- Do not create `.text-h1` naming. Use `.heading-h1`.
-- Do not create font-size utility classes for heading or body scale.
-- Do not create component-based typography variables for reusable components by
-  default.
+## Tokens
 
-## Typography Foundation Rules
+`typography-foundations.css` is the only typography token source. Text Style
+classes consume its existing tokens directly.
 
-Typography foundation tokens are reference values and role-bearing control
-points. They are not the main markup API and intentionally are not described as
-a purely raw primitive ramp.
+- Do not create typography aliases that merely rename one foundation token.
+- Do not create new tokens without an approved gap.
+- Do not use foundation font-size tokens directly in page content markup.
+- Compact component typography may use foundation tokens locally.
 
-Rules:
+## Compact Component Typography
 
-- Foundation tokens live in `typography-foundations.css`.
-- Foundation tokens can define semantic typography variables.
-- Components may use foundation tokens locally when they own compact component
-  typography, for example Button, Tag, Label or Eyebrow.
-- Do not use foundation font-size tokens directly in page markup.
-- Do not create new foundation tokens that duplicate an existing semantic text
-  style contract.
+Buttons, tags, inputs, navigation, tables, labels, statuses and code are not
+forced into global Text Styles. Their compact typography may remain local and
+token-based when it belongs to the component contract.
 
-Good foundation naming:
+- Keep component text properties inside the owning component.
+- Use the existing family, size, weight, line-height and tracking tokens.
+- Do not create per-component typography variables by default.
+- `--font-family-mono` is internal and reserved for code or technical UI.
+- Component color still uses semantic or component color variables.
 
-```css
---letter-spacing-tightest: -0.03em;
---text-transform-uppercase: uppercase;
-```
+## Utilities
 
-Avoid misleading foundation naming:
-
-```css
---letter-spacing-role-name: -0.03em;
-```
-
-## Semantic Typography Variable Rules
-
-Semantic typography variables define complete text style contracts.
-
-Current semantic groups:
-
-- `--text-style-heading-h1-*` through `--text-style-heading-h6-*`
-- `--text-style-body-large-*` through `--text-style-body-tiny-*`
-
-Rules:
-
-- Semantic typography variables live in `typography-semantic.css`.
-- They should be consumed primarily by `typography-styles.css`.
-- Do not add label, caption, eyebrow, tag or button semantic typography tokens
-  by default.
-- Reusable components with their own Astro component should own their local
-  typography inside the component.
-- If a repeated cross-component typography contract appears, document the need
-  before adding new semantic variables.
-
-## Utility Typography Class Rules
-
-Utility typography classes are small escape hatches. They are not a replacement
-for text style classes.
-
-Approved utility groups:
+Approved utilities are limited to:
 
 - font style: `.u-font-normal`, `.u-font-italic`,
-- text transform: `.u-text-transform-none`, `.u-text-uppercase`,
-  `.u-text-lowercase`, `.u-text-capitalize`, `.u-text-full-width`,
-  `.u-text-full-size-kana`,
-- text wrap: `.u-text-wrap`, `.u-text-wrap-nowrap`,
-  `.u-text-wrap-balance`, `.u-text-wrap-pretty`,
-- overflow wrap: `.u-overflow-wrap-normal`,
-  `.u-overflow-wrap-break-word`, `.u-overflow-wrap-anywhere`,
-- word break: `.u-word-break-normal`, `.u-word-break-all`,
-  `.u-word-break-keep-all`,
-- white-space: `.u-white-space-normal`, `.u-white-space-nowrap`,
-  `.u-white-space-pre-wrap`, `.u-white-space-pre-line`,
-  `.u-white-space-break-spaces`.
+- text transform: `.u-text-transform-*`,
+- text wrap: `.u-text-wrap*`,
+- overflow wrap: `.u-overflow-wrap-*`,
+- word break: `.u-word-break-*`,
+- white-space: `.u-white-space-*`.
 
-Rules:
+Utilities are narrow overrides. Do not add font-size, line-height, color,
+spacing or heading-level utilities.
 
-- Use utility typography classes only with an existing text style class or a
-  component-owned text style.
-- Do not create typography utilities for color, spacing, radius or layout.
-- Do not create typography utilities for font size, line height or heading
-  hierarchy.
-- If a utility is used repeatedly in the same component, consider moving the
-  behavior into that component's CSS.
+## Design-tool Projection
 
-Good:
+Astro is canonical for this implementation. Figma typography synchronization
+is a separate operation and must be explicitly requested. Relative-unit
+adapters remain:
 
-```html
-<h2 class="heading-h2 u-text-wrap-balance">AI-native systems</h2>
+```txt
+Figma line height percentage / 100 -> Astro unitless line height
+Figma letter spacing percentage / 100 -> Astro em letter spacing
 ```
 
-Avoid:
+Do not infer that an Astro typography change authorizes a Figma mutation.
 
-```html
-<h2 class="u-font-size-h2 u-line-height-tight">AI-native systems</h2>
-```
-
-## Component Typography Rules
-
-Reusable components own compact component typography.
-
-Rules:
-
-- Button, Tag, Label, Eyebrow and similar reusable components should define
-  their typography inside the master component.
-- Component typography may use foundation tokens such as `--font-family-mono`,
-  `--font-size-body-tiny`, `--line-height-compact` and
-  `--text-transform-uppercase`.
-- Do not create per-component typography variables unless a strong repeated
-  cross-component need appears.
-- Component colors may still use component-based color variables.
-
-## Documentation Rules
+## Documentation and Validation
 
 When typography changes:
 
-- Update `src/pages/design-system/typography.astro`.
-- Update `src/data/design-system/typographyTokens.ts` when documented
-  foundation values, semantic rows, utility rows or typography agentic cards
-  change.
-- Use existing design-system documentation components and table atoms.
-- Keep foundation values, semantic values, style classes and agentic rules
-  documented in separate sections.
-- Update `src/data/design-system-roadmap.json`.
-- Run `npm run build` after structural changes.
+- update `typography-styles.css`,
+- update `typographyTokens.ts`,
+- update the Typography foundation page,
+- migrate affected content nodes to the public classes,
+- keep token search and documentation registries free of removed aliases,
+- run the runtime tests, foundation/documentation/agentic audits, build and
+  `npm run validate`.
+
+The foundation audit must reject removed typography aliases, legacy Body
+classes, documentation headings without `.heading-*`, and direct content
+heading typography outside the canonical class contracts.

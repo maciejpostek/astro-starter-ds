@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"li">, "aria-hidden" | "class"> {
+  class?: string;
+}
+
+const { class: className, ...attributes } = Astro.props;
+---
+
+<li
+  {...attributes}
+  aria-hidden="true"
+  class:list={["pagination-ellipsis", className]}
+  data-component-name="PaginationEllipsis"
+  data-pagination-item="ellipsis"
+>
+  &hellip;
+</li>
+
+<style>
+  .pagination-ellipsis {
+    display: inline-grid;
+    min-inline-size: var(--pagination-control-size);
+    min-block-size: var(--pagination-control-size);
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: var(--radius-button);
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-small);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-none);
+    white-space: nowrap;
+  }
+
+  @media (forced-colors: active) {
+    .pagination-ellipsis {
+      color: CanvasText;
+    }
+  }
+</style>

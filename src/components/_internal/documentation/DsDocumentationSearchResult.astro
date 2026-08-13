@@ -1,0 +1,65 @@
+---
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import ClipboardCopy from "../behaviors/ClipboardCopy.astro";
+import CopyIconButton from "../../base-components/buttons/CopyIconButton.astro";
+import {
+  documentationCategoryIcons,
+  type DocumentationCategoryKey,
+} from "../../../data/documentationRegistry";
+import type { MaterialSymbolName } from "../../../lib/icons/materialSymbols";
+
+interface Props {
+  iconSize?: number | string;
+}
+
+const { iconSize = "var(--size-18)" } = Astro.props;
+const categoryIcons = Object.entries(documentationCategoryIcons) as Array<
+  [DocumentationCategoryKey, MaterialSymbolName]
+>;
+---
+
+<template data-ds-search-result-template>
+  <div
+    class="ds-search-result"
+    data-component-name="DsDocumentationSearchResult"
+  >
+    <a class="ds-search-result__link" role="option" aria-selected="false">
+      <span class="ds-search-result__icon" aria-hidden="true" data-ds-search-result-icon></span>
+      <span class="ds-search-result__content">
+        <span class="ds-search-result__title" data-ds-search-result-title></span>
+        <span
+          class="ds-search-result__breadcrumb"
+          data-ds-search-result-breadcrumb
+        ></span>
+      </span>
+    </a>
+    <span class="ds-search-result__action" data-ds-search-result-action></span>
+  </div>
+</template>
+
+<template data-ds-search-result-variable-action-template>
+  <CopyIconButton
+    class="ds-search-result__copy"
+    copyValue="--documentation-variable"
+    successToastId="ds-documentation-variable-copy-success"
+    errorToastId="ds-documentation-variable-copy-error"
+    label="Copy variable"
+    size="small"
+    variant="tertiary"
+    data-ds-search-result-copy
+  />
+</template>
+
+{
+  categoryIcons.map(([categoryKey, icon]) => (
+    <template data-ds-search-result-icon-template={categoryKey}>
+      <MaterialSymbol name={icon} size={iconSize} />
+    </template>
+  ))
+}
+
+<template data-ds-search-result-separator-template>
+  <MaterialSymbol name="chevron_right" size="var(--size-12)" />
+</template>
+
+<ClipboardCopy />

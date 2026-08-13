@@ -1,0 +1,81 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export type HintTone = "default" | "valid" | "invalid";
+
+export interface Props extends Omit<HTMLAttributes<"p">, "class"> {
+  text: string;
+  tone?: HintTone;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  text,
+  tone = "default",
+  disabled = false,
+  class: className,
+  ...attributes
+} = Astro.props;
+---
+
+<p
+  {...attributes}
+  class:list={["hint", className]}
+  data-component-name="Hint"
+  data-hint-tone={tone}
+  data-hint-disabled={disabled ? "true" : undefined}
+>
+  <span class="hint__icon-wrapper" aria-hidden="true">
+    <MaterialSymbol class="hint__icon" name="info" size="var(--control-icon-size, var(--size-16))" />
+  </span>
+  <span>{text}</span>
+</p>
+
+<style>
+  .hint {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    gap: var(--gap-tiny);
+    margin: 0;
+    color: var(--input-helper-default);
+    font-family: var(--font-family-body);
+    font-size: var(--control-font-size, var(--font-size-body-small));
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+  }
+
+  .hint[data-hint-tone="valid"] {
+    color: var(--input-helper-valid);
+  }
+
+  .hint[data-hint-tone="invalid"] {
+    color: var(--input-helper-invalid);
+  }
+
+  .hint[data-hint-disabled="true"] {
+    color: var(--input-text-disabled);
+  }
+
+  .hint__icon-wrapper {
+    display: inline-flex;
+    flex: 0 0 auto;
+    padding-block-start: var(--size-2);
+  }
+
+  .hint__icon {
+    display: block;
+  }
+
+  @media (forced-colors: active) {
+    .hint {
+      color: CanvasText;
+    }
+
+    .hint[data-hint-disabled="true"] {
+      color: GrayText;
+    }
+  }
+</style>

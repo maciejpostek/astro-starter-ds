@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astro-design-system.local/benchmarks/runtime-v1/event.schema.json",
+  "title": "Runtime V1 Benchmark Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "experiment_id",
+    "run_id",
+    "sequence",
+    "timestamp",
+    "monotonic_ms",
+    "type",
+    "source",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "experiment_id": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "sequence": { "type": "integer", "minimum": 0 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "monotonic_ms": { "type": "number", "minimum": 0 },
+    "type": {
+      "enum": [
+        "run_start",
+        "snapshot_ready",
+        "model_request_start",
+        "model_event",
+        "first_model_output",
+        "first_tool_call",
+        "first_repository_read",
+        "first_mutation",
+        "route_start",
+        "route_end",
+        "context_resolve_start",
+        "context_resolve_end",
+        "tool_start",
+        "tool_end",
+        "validator_start",
+        "validator_end",
+        "build_start",
+        "build_end",
+        "browser_start",
+        "browser_end",
+        "terminal_output",
+        "run_end",
+        "harness_error"
+      ]
+    },
+    "source": {
+      "enum": ["harness", "codex", "router", "resolver", "validator", "grader"]
+    },
+    "payload": { "type": "object" }
+  }
+}
+

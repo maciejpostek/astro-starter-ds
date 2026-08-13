@@ -25,6 +25,32 @@ Token layers should stay explicit:
 - component-based variables describe specific repeated use cases,
 - components consume semantic and component-based variables instead of hardcoded values.
 
+Typography has one deliberate, documented exception: foundation typography
+tokens feed complete public Text Style classes directly. The class is the
+semantic visual contract, while `h1-h6` and `p` remain neutral document
+semantics. This exception does not apply to colors; semantic and component
+color variables remain mandatory contracts.
+
+### Deterministic Component And Token Authoring
+
+AI authoring is registry-driven. The naming policy is
+`architecture/component-authoring-contract.json`; token ownership is recorded
+in `src/data/design-system/tokenArchitecture.json`, while CSS remains the
+source of values.
+
+Every styling need follows one sequence:
+
+```text
+resolve component → dependency → use case → global
+reuse one match → prove a gap → draft → approve → implement
+```
+
+An ambiguous semantic match blocks implementation. A gap extends the current
+owner group before any new group is proposed. The proposed `tokenDraft`
+records exact names, aliases, consumers and source paths and must be explicitly
+approved. Public components do not declare custom properties or local alias
+layers; `.ds-*` and `--ds-*` are reserved for private documentation UI.
+
 ### Astro Components Are The Main Interface
 
 Astro components are the primary way to compose pages. A page should prefer existing components and documented props before adding local markup and styles.
@@ -59,7 +85,7 @@ The core selector model is:
 Preferred examples:
 
 ```html
-<button class="button" data-component-size="small" data-variant="primary">
+<button class="button" data-control-size="small" data-variant="primary">
   Action
 </button>
 
@@ -143,6 +169,27 @@ CSS variables = values
 
 This model makes UI intent more explicit than utility-only markup and maps cleanly to Astro and React component APIs.
 
+### Intrinsic-First Responsive Model
+
+Responsive authoring starts from one semantic, token-backed composition rather
+than separate device implementations. Use this decision order:
+
+1. semantic HTML, layout primitives, responsive typography and sizing;
+2. intrinsic CSS such as `auto-fit`, `minmax()`, `clamp()` and `flex-wrap`;
+3. component-owned container queries when parent allocation owns the change;
+4. viewport media queries when the viewport owns the change;
+5. an alternate rendering only when the earlier mechanisms cannot preserve the
+   required interaction.
+
+Each implemented public component records its actual mechanisms, query
+thresholds, reflow, order and visibility contract in the canonical component
+rule. The required schema lives in
+`architecture/component-rule-contract.json`; the complete operational strategy
+lives in `.agentic-rules/09-responsive.md`.
+
+This hierarchy does not forbid combining mechanisms. It exists so agents begin
+with the smallest, most reusable solution and document justified exceptions.
+
 ### Agentic Markdown Is Operational Instruction
 
 Documentation is not only for humans. It is also operational context for AI agents.
@@ -184,7 +231,7 @@ No single artifact owns every concern:
 
 | Concern | Canonical source |
 | --- | --- |
-| Target scope, priority, and delivery status | `src/data/design-system-roadmap.json` |
+| Component discovery and current readiness | `src/data/design-system/componentArchitecture.json` |
 | Executable component API and behavior | Astro components |
 | Design values and responsive contracts | CSS Variables |
 | Reusable design theory and evaluation language | `art-direction/` |
@@ -228,7 +275,7 @@ The intended order of work is:
 3. Approved brand-expression constraints, when the work is brand-sensitive
 4. Agentic Rules
 5. Component and layout usage
-6. Browser and Figma visual calibration
+6. Browser validation and optional, explicitly requested Figma projection
 
 For each design-system category, such as Sizing, Colors, Typography, and Layout, the framework should move through these layers in order.
 

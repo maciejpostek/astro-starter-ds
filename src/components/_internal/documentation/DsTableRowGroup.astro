@@ -1,0 +1,40 @@
+---
+interface Props {
+  class?: string;
+  id?: string;
+  hidden?: boolean;
+  "data-ds-typography-style-details"?: boolean | string;
+}
+
+const {
+  class: className,
+  id,
+  hidden = false,
+  "data-ds-typography-style-details": typographyStyleDetails,
+} = Astro.props as Props;
+---
+
+<div
+  id={id}
+  class:list={["ds-table-row-group", className]}
+  data-component-name="DsTableRowGroup"
+  data-ds-typography-style-details={typographyStyleDetails}
+  hidden={hidden}
+  role="rowgroup"
+>
+  <slot />
+</div>
+
+<style>
+  .ds-table-row-group {
+    display: grid;
+    width: 100%;
+    grid-template-columns:
+      var(--ds-table-grid-template-columns, var(--ds-doc-table-grid-template-columns));
+    min-width: 0;
+  }
+
+  .ds-table-row-group[hidden] {
+    display: none;
+  }
+</style>

@@ -1,0 +1,189 @@
+---
+import { codeToHtml, createCssVariablesTheme } from "shiki";
+import DsCopyButton from "./DsCopyButton.astro";
+
+const supportedLanguageValues = [
+  "astro",
+  "html",
+  "css",
+  "scss",
+  "javascript",
+  "typescript",
+  "jsx",
+  "tsx",
+  "json",
+  "yaml",
+  "markdown",
+  "mdx",
+  "bash",
+  "text",
+] as const;
+
+export type CodeSnippetLanguage = (typeof supportedLanguageValues)[number];
+
+export interface Props {
+  code: string;
+  label?: string;
+  filename?: string;
+  language?: CodeSnippetLanguage;
+}
+
+const supportedLanguages = new Set<CodeSnippetLanguage>(supportedLanguageValues);
+
+const languageByExtension: Record<string, CodeSnippetLanguage> = {
+  astro: "astro",
+  html: "html",
+  htm: "html",
+  css: "css",
+  scss: "scss",
+  js: "javascript",
+  mjs: "javascript",
+  cjs: "javascript",
+  ts: "typescript",
+  mts: "typescript",
+  cts: "typescript",
+  jsx: "jsx",
+  tsx: "tsx",
+  json: "json",
+  yaml: "yaml",
+  yml: "yaml",
+  md: "markdown",
+  mdx: "mdx",
+  sh: "bash",
+  bash: "bash",
+  txt: "text",
+};
+
+const inferLanguage = (value?: string): CodeSnippetLanguage => {
+  const extension = value?.trim().toLowerCase().match(/\.([a-z0-9]+)$/)?.[1];
+  return extension ? languageByExtension[extension] ?? "text" : "text";
+};
+
+const { code, label, filename, language } = Astro.props;
+
+if (typeof code !== "string") throw new TypeError("DsCodeSnippet code must be a string.");
+if (language !== undefined && !supportedLanguages.has(language)) {
+  throw new TypeError(`DsCodeSnippet language is not supported: ${String(language)}`);
+}
+
+const normalizedFilename = filename?.trim();
+const normalizedLabel = label?.trim();
+const title = normalizedFilename || normalizedLabel || "Code";
+const resolvedLanguage = language ?? inferLanguage(normalizedFilename);
+const theme = createCssVariablesTheme({
+  name: "astro-ds-code-snippet",
+  variablePrefix: "--code-snippet-",
+  fontStyle: false,
+});
+const highlightedCode = await codeToHtml(code, {
+  lang: resolvedLanguage,
+  theme,
+});
+---
+
+<figure class="ds-code-snippet" data-component-name="DsCodeSnippet">
+  <figcaption class="ds-code-snippet__header">
+    <span class="ds-code-snippet__title">{title}</span>
+    <DsCopyButton
+      class="ds-code-snippet__copy"
+      value={code}
+      label={`Copy ${title} code to clipboard`}
+    />
+  </figcaption>
+  <div class="ds-code-snippet__viewport">
+    <Fragment set:html={highlightedCode} />
+  </div>
+</figure>
+
+<style>
+  .ds-code-snippet {
+    box-sizing: border-box;
+    width: 100%;
+    min-inline-size: 0;
+    overflow: hidden;
+    margin: 0;
+    border: var(--border-width-default) solid var(--code-snippet-border);
+    border-radius: var(--radius-button);
+    padding: var(--border-width-default);
+    background: var(--code-snippet-shell-background);
+  }
+
+  .ds-code-snippet__header {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-small);
+    padding: var(--content-padding-tiny) var(--content-padding-small);
+  }
+
+  .ds-code-snippet__title {
+    min-inline-size: 0;
+    overflow: hidden;
+    color: var(--code-snippet-header-text);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ds-code-snippet :global(.ds-code-snippet__copy) {
+    color: var(--code-snippet-action-icon);
+  }
+
+  .ds-code-snippet :global(.ds-code-snippet__copy:hover) {
+    color: var(--code-snippet-action-icon-hover);
+  }
+
+  .ds-code-snippet__viewport {
+    min-inline-size: 0;
+    overflow: hidden;
+    border-radius: var(--radius-button);
+    background: var(--code-snippet-background);
+  }
+
+  .ds-code-snippet__viewport :global(.shiki) {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 100%;
+    margin: 0;
+    background: var(--code-snippet-background) !important;
+    padding: var(--content-padding-large);
+    color: var(--code-snippet-foreground) !important;
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .ds-code-snippet__viewport :global(.shiki code) {
+    display: block;
+    font: inherit;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .ds-code-snippet__viewport :global(.shiki:focus-visible) {
+    outline: var(--border-width-strong) solid var(--color-state-focus-ring);
+    outline-offset: 0;
+    box-shadow: var(--effect-focused);
+  }
+
+  @media (forced-colors: active) {
+    .ds-code-snippet {
+      border-color: CanvasText;
+      background: Canvas;
+    }
+
+    .ds-code-snippet__viewport,
+    .ds-code-snippet__viewport :global(.shiki) {
+      background: Canvas !important;
+      color: CanvasText !important;
+    }
+
+    .ds-code-snippet__viewport :global(.shiki span) {
+      color: CanvasText !important;
+    }
+  }
+</style>

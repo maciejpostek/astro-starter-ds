@@ -1,0 +1,116 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type RatioValue = "16:9" | "1:1" | "2.39:1" | "2:1" | "2:3" | "3:2" | "3:4" | "4:3" | "4:5" | "5:4";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class"> {
+  ratio?: RatioValue;
+  class?: string;
+}
+
+const {
+  ratio = "16:9",
+  class: className,
+  ...attributes
+} = Astro.props;
+---
+
+<div
+  {...attributes}
+  class:list={["ratio", className]}
+  data-component-name="Ratio"
+  data-ratio={ratio}
+>
+  <div class="ratio__content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  :where(.ratio) {
+    position: relative;
+    inline-size: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--color-background-surface);
+  }
+
+  :where(.ratio)::before {
+    position: absolute;
+    inset: 0;
+    background-image: url("/images/ratio-placeholder.png");
+    background-position: left top;
+    background-repeat: repeat;
+    background-size: 32px 32px;
+    content: "";
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  :where(.ratio[data-ratio="1:1"]) {
+    aspect-ratio: 1 / 1;
+  }
+
+  :where(.ratio[data-ratio="2.39:1"]) {
+    aspect-ratio: 2.39 / 1;
+  }
+
+  :where(.ratio[data-ratio="2:1"]) {
+    aspect-ratio: 2 / 1;
+  }
+
+  :where(.ratio[data-ratio="2:3"]) {
+    aspect-ratio: 2 / 3;
+  }
+
+  :where(.ratio[data-ratio="3:2"]) {
+    aspect-ratio: 3 / 2;
+  }
+
+  :where(.ratio[data-ratio="3:4"]) {
+    aspect-ratio: 3 / 4;
+  }
+
+  :where(.ratio[data-ratio="4:3"]) {
+    aspect-ratio: 4 / 3;
+  }
+
+  :where(.ratio[data-ratio="4:5"]) {
+    aspect-ratio: 4 / 5;
+  }
+
+  :where(.ratio[data-ratio="5:4"]) {
+    aspect-ratio: 5 / 4;
+  }
+
+  .ratio__content {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .ratio__content > :global(img),
+  .ratio__content > :global(video),
+  .ratio__content > :global(picture),
+  .ratio__content > :global(iframe),
+  .ratio__content > :global(canvas),
+  .ratio__content > :global(svg) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .ratio__content > :global(img),
+  .ratio__content > :global(video),
+  .ratio__content > :global(picture > img) {
+    object-fit: cover;
+  }
+
+  .ratio__content > :global(picture > img) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+</style>

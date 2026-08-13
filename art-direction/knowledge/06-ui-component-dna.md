@@ -31,7 +31,7 @@ Calibrate at least:
 - Button;
 - Input or FormField;
 - Tag;
-- ContentBlock or SectionHeader;
+- SectionHeader;
 - representative Card;
 - Navigation;
 - representative Section.

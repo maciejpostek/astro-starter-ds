@@ -9,7 +9,7 @@ The token system is integrated with the Astro prototype.
 - `tokens.css` is imported before `src/styles/global.css` in `BaseLayout.astro`.
 - Global colors, typography, spacing, radii and borders consume design tokens.
 - Light and dark themes use the same semantic and component contracts.
-- Shared controls select geometry through `data-component-size`.
+- Shared controls select geometry through `data-control-size`.
 - Product-specific widths and composition decisions remain local to the
   prototype instead of expanding the global design-system foundations.
 
@@ -22,7 +22,6 @@ The token system is integrated with the Astro prototype.
 @import "./color-semantic.css";
 @import "./size-semantic.css";
 @import "./typography-foundations.css";
-@import "./typography-semantic.css";
 @import "./typography-styles.css";
 @import "./layout-foundations.css";
 @import "./layout-semantic.css";
@@ -31,7 +30,8 @@ The token system is integrated with the Astro prototype.
 @import "./elevation-foundations.css";
 
 @import "./color-components.css";
-@import "./component-sizes.css";
+@import "./size-components.css";
+@import "./control-sizes.css";
 @import "./design-system-components.css";
 ```
 
@@ -47,8 +47,9 @@ Reference and foundation layer
 Semantic layer
 ├── Color Semantic
 ├── Sizing Semantic
-├── Typography Semantic
 └── Layout Semantic
+        ↓
+Typography Text Style classes
         ↓
 Component contracts
         ↓
@@ -66,6 +67,17 @@ alias:
 - a global semantic token when the role is shared,
 - a primitive when the decision belongs only to that component.
 
+Every published group is registered in
+`src/data/design-system/tokenArchitecture.json`. Styling work must resolve an
+existing component, dependency, use-case, or global group before proposing a
+new token. A missing role extends the existing owner group first. A confirmed
+gap produces a proposed `tokenDraft`; no CSS definition is added until the
+draft is explicitly approved.
+
+Public components consume these variables directly. They do not declare local
+custom-property aliases. Names with `--ds-*`, `--_ds-*`, or `--component-*`
+are forbidden outside the private documentation token contract.
+
 ## File Map
 
 ### Colors
@@ -80,23 +92,41 @@ alias:
 - `size-primitives.css`: fixed dimension scale.
 - `size-semantic.css`: section spacing, component padding, gaps, radius,
   and border widths.
-- `component-sizes.css`: shared `small`, `medium` and `large`
-  geometry profiles exposed through `data-component-size`.
+- `size-components.css`: registered component sizing for Switch, Tag,
+  Pagination and Tooltip.
+- `control-sizes.css`: shared `small`, `medium` and `large`
+  control geometry profiles exposed through `data-control-size`.
 
 ### Typography
 
 - `typography-foundations.css`: font families, weight roles, responsive font
   sizes, line heights, letter spacing, font styles, transforms and text wrap.
-- `typography-semantic.css`: complete heading and body contracts.
 - `typography-styles.css`: public typography classes such as `.heading-h1`
-  and `.body-small`, neutral native heading/paragraph resets, and the small
-  approved typography utility set for font-style, casing and wrapping.
+  and `.body-small-semibold`, size-first Regular, Regular Underlined and Semi
+  Bold Body variants, neutral native
+  heading/paragraph resets, and the small approved typography utility set for
+  font-style, casing and wrapping. Underlined variants use a solid 7%
+  decoration with a 14% offset and automatic skip-ink behavior.
 - `src/data/design-system/typographyTokens.ts`: documentation data for
-  foundation tables, semantic typography tables, resolved values, utility classes
+  foundation tables, Text Style tables, resolved values, utility classes
   and typography agentic rules.
 
 Typography is class-first: HTML tags define document semantics, while classes
-define visual text style.
+define visual text style. Body classes use the
+`.body-{large|medium|base|small|tiny}-{regular|regular-underlined|semibold}`
+hierarchy.
+
+Text Style classes consume typography foundation tokens directly. There is no
+`--text-style-*` alias layer and no standalone `.body-large` through
+`.body-tiny` compatibility API. This simplification is typography-only;
+semantic color tokens remain essential.
+
+Figma and Astro intentionally use different native representations for two
+relative metrics. Figma Text Styles store line height and letter spacing as
+percentages without Variable bindings. Astro stores line height as a unitless
+ratio and letter spacing in `em`. The transfer formulas are `percentage / 100`
+for line height and `percentage / 100 em` for letter spacing; for example,
+`150% -> 1.5` and `-1% -> -0.01em`. Always select the matching existing token.
 
 ### Layout
 
@@ -122,8 +152,8 @@ column count, gaps and alignment.
 
 ### Motion
 
-- `motion-foundations.css`: shared easing, duration, transition, disclosure and
-  staged navigation timing contracts.
+- `motion-foundations.css`: shared easing, duration, transition and disclosure
+  timing contracts.
 - The same file owns the canonical `Reduced Motion` mode through
   `prefers-reduced-motion: reduce`; reusable durations and delays collapse to
   zero while components remain responsible for removing movement that would
@@ -134,11 +164,22 @@ column count, gaps and alignment.
 ### Elevation
 
 - `elevation-foundations.css`: primitive shadow references, semantic surface
-  roles and stable component aliases for raised, floating and overlay surfaces.
+  roles for subtle, raised, floating and overlay surfaces, plus compact control
+  roles for raised controls and thumbs.
 - Surface elevation is distinct from focus rings, status indicators, divider
   outlines, colored attention halos and documentation-only inspector overlays.
 - Components consume semantic or component aliases. They do not copy reusable
   shadow geometry locally.
+
+### Interaction effects
+
+- `interaction-effects.css`: reusable state effects that are not surface
+  elevation.
+- `--effect-focused` mirrors the Figma Effect Style `Focused` with a 2 px
+  surface-colored offset and a 4 px semantic focus ring.
+- CSS `:focus-visible` owns keyboard-focus detection. The native outline
+  remains active as the accessibility and forced-colors fallback; JavaScript
+  must not determine focus visibility.
 
 ### Documentation UI
 
@@ -159,43 +200,60 @@ layers below, while Figma-specific simplifications are documented in
 | `color-components.css` | `Color Semantic / Component` |
 | `size-primitives.css` | `Sizing Primitives` |
 | `size-semantic.css` | `Sizing Semantic` |
-| `component-sizes.css` | `Component Size` |
+| `control-sizes.css` | Pending — the existing Figma `Component Size` collection is unchanged in this Astro-only update |
 | `typography-foundations.css` | `Typography Foundations` |
-| `typography-semantic.css` | `Typography Semantic` |
+| `typography-styles.css` | Figma Text Styles (separate synchronization follow-up) |
 | `layout-foundations.css` | `Layout Foundations` |
 | `layout-semantic.css` | `Layout Semantic` |
 | `motion-foundations.css` | `Motion Foundations` |
-| `elevation-foundations.css` | `Effect Styles / Elevation/Surface/*` |
+| `elevation-foundations.css` | `Effect Styles / Elevation/Surface/*` and `Elevation/Control/*` |
+| `interaction-effects.css` | `Effect Style / Focused` |
 
 Do not add a project-name prefix to these collection names. Every Figma
 variable that maps directly to CSS should use Web code syntax in the form
 `var(--token-name)`.
 
-## Shared Component Sizes
+## Shared Control Sizes
 
-Compact controls share one geometry contract:
+Controls that align in action groups, form rows and toolbars share one geometry contract:
 
 ```html
-<button data-component-size="small">Action</button>
-<input data-component-size="medium" />
+<button data-control-size="small">Action</button>
+<input data-control-size="medium" />
 ```
 
 Component CSS consumes:
 
 ```css
-min-height: var(--component-min-height);
-padding: var(--component-padding-block) var(--component-padding-inline);
-gap: var(--component-gap);
-font-size: var(--component-font-size);
-line-height: var(--component-line-height);
+min-height: var(--control-min-height);
+padding: var(--control-padding-block) var(--control-padding-inline);
+gap: var(--control-gap);
+font-size: var(--control-font-size);
+line-height: var(--control-line-height);
 ```
 
-Not every component must support every profile. Form inputs should normally use
-`medium` or `large`; `small` is the minimum supported component size for compact controls.
+Button, ButtonLink, IconButton, Input and SearchInput are the current consumers.
+Future Select and Tab implementations should reuse Control Size when they align
+with adjacent controls. Form inputs should normally use `medium` or `large`;
+`small` is the minimum supported control size.
 
-`Tag` is the default component for short categorical values such as service
-scope, process activities, tech stack, industries and project metadata. Use
-`small` by default; larger tag sizes require an explicit UI reason.
+`SearchInput` reuses the Input color and Control Size contracts. Its fixed
+search glyph and clear action use `--input-icon-*`; it does not own a separate
+component color group.
+
+`Tag`, `SwitchButton`, Label, Badge and other components with different UX and
+geometry do not consume Control Size. `Tag` owns one fixed local geometry and
+uses `data-tag-leading` and `data-tag-removable` only to switch logical edge
+padding between the text and visual values. Both edge visuals use the same
+24px target around a 14px glyph so the 4px visual edge padding remains
+optically balanced on either side. `SwitchButton` also owns one fixed local
+geometry contract. A second shared family should be introduced only after
+at least three semantically related components prove the same geometry.
+
+For applied filters, Tag may expose one nested close action. The shell remains
+non-interactive, and the close action inherits the exact text color and opacity
+through `currentColor` while the shell projects its native interaction and
+shared focus treatment.
 
 ## Responsive Strategy
 
@@ -212,8 +270,9 @@ There is no separate fluid-token namespace.
 
 ## Typography Baseline
 
-The starter baseline uses Inter for heading and body text, and Roboto Mono for
-utility/code text:
+The starter baseline uses Inter for all public heading and body text. Roboto
+Mono is an internal technical dependency reserved for documentation UI and
+code snippets:
 
 ```css
 --font-family-heading: "Inter", Arial, sans-serif;
@@ -221,8 +280,11 @@ utility/code text:
 --font-family-mono: "Roboto Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 ```
 
-The variables remain separate so heading, body and utility/code roles can be
-explored independently on future branches.
+Heading and body remain independently editable public roles. Mono must not be
+used by public Text Styles, product components or general Figma/Paper
+typography. Figma omits the mono Variable. Paper may retain an unused technical
+token, but Roboto Mono may be applied only to an explicit code-snippet specimen
+or component.
 
 ## Values To Review
 

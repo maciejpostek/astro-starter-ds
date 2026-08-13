@@ -1,0 +1,160 @@
+---
+import DsTableCell from "./DsTableCell.astro";
+import DsTableCopyCell from "./DsTableCopyCell.astro";
+import DsTableFrame from "./DsTableFrame.astro";
+import DsTableRow from "./DsTableRow.astro";
+import DsDocumentationBlockTitle from "./DsDocumentationBlockTitle.astro";
+import {
+  documentationTokenMap,
+  getDocumentationTokenValue,
+} from "../../../data/documentationTokenRegistry";
+
+interface Row {
+  token: string;
+  value: string;
+  minValue?: string;
+  maxValue?: string;
+  minMax?: string;
+  role: string;
+  sample?: string;
+  sampleStyle?: string;
+}
+
+interface Props {
+  name: string;
+  description: string;
+  rows: Row[];
+  showHeader?: boolean;
+  showMinMax?: boolean;
+  size?: "tiny";
+}
+
+const {
+  name,
+  description,
+  rows,
+  showHeader = true,
+  showMinMax = false,
+  size = "tiny",
+} = Astro.props as Props;
+const resolvedRows = rows.map((row) => {
+  const token = documentationTokenMap.get(row.token);
+  return token ? { ...row, value: getDocumentationTokenValue(token) } : row;
+});
+const id = `typography-foundation-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+const showFluidControls = resolvedRows.some((row) => row.minValue && row.maxValue);
+const columns = showMinMax
+  ? showFluidControls
+    ? "minmax(var(--ds-doc-table-token-column-min-width), 18fr) minmax(24rem, 24fr) minmax(10rem, 10fr) minmax(10rem, 10fr) minmax(12rem, 12fr) minmax(24rem, 26fr) minmax(16rem, 16fr)"
+    : "minmax(var(--ds-doc-table-token-column-min-width), 26fr) minmax(18rem, 24fr) minmax(14rem, 18fr) minmax(24rem, 32fr) minmax(16rem, 24fr)"
+  : "minmax(var(--ds-doc-table-token-column-min-width), 30fr) minmax(24rem, 26fr) minmax(24rem, 34fr) minmax(16rem, 22fr)";
+const minWidth = showMinMax ? (showFluidControls ? "118rem" : "94rem") : "86rem";
+---
+
+<section
+  class="ds-typography-foundation-block"
+  aria-label={showHeader ? undefined : `${name} typography foundation tokens`}
+  aria-labelledby={showHeader ? `${id}-title` : undefined}
+  data-component-name="DsTypographyFoundationBlock"
+  data-ds-doc-table-size={size}
+>
+  {showHeader && (
+    <>
+      <DsDocumentationBlockTitle
+        id={`${id}-title`}
+        title={name}
+      />
+      <p class="ds-typography-foundation-block__description body-small-regular">
+        {description}
+      </p>
+    </>
+  )}
+
+  <DsTableFrame
+    label={`${name} typography foundation tokens`}
+    minWidth={minWidth}
+    columns={columns}
+    size={size}
+  >
+    <DsTableRow variant="header">
+      <DsTableCell role="columnheader" variant="header">Token</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Value</DsTableCell>
+      {showFluidControls && <DsTableCell role="columnheader" variant="header">Min (REM)</DsTableCell>}
+      {showFluidControls && <DsTableCell role="columnheader" variant="header">Max (REM)</DsTableCell>}
+      {showMinMax && <DsTableCell role="columnheader" variant="header">Min-max (PX)</DsTableCell>}
+      <DsTableCell role="columnheader" variant="header">Role</DsTableCell>
+      <DsTableCell role="columnheader" variant="header">Sample</DsTableCell>
+    </DsTableRow>
+
+    {
+      resolvedRows.map((row) => (
+        <DsTableRow>
+          <DsTableCopyCell role="cell" value={row.token} />
+          <DsTableCell role="cell" tone="secondary">
+            <code>{row.value}</code>
+          </DsTableCell>
+          {showFluidControls && (
+            <DsTableCell role="cell" tone="secondary">
+              <code>{row.minValue}</code>
+            </DsTableCell>
+          )}
+          {showFluidControls && (
+            <DsTableCell role="cell" tone="secondary">
+              <code>{row.maxValue}</code>
+            </DsTableCell>
+          )}
+          {showMinMax && (
+            <DsTableCell role="cell" tone="secondary">
+              <code>{row.minMax}</code>
+            </DsTableCell>
+          )}
+          <DsTableCell role="cell" tone="secondary">
+            <span>{row.role}</span>
+          </DsTableCell>
+          <DsTableCell
+            class="ds-typography-foundation-block__sample-cell"
+            role="cell"
+            tooltipText={row.sample ?? "Ag"}
+          >
+            <span
+              class="ds-typography-foundation-block__sample"
+              style={row.sampleStyle || undefined}
+            >
+              {row.sample ?? "Ag"}
+            </span>
+          </DsTableCell>
+        </DsTableRow>
+      ))
+    }
+  </DsTableFrame>
+</section>
+
+<style>
+  .ds-typography-foundation-block {
+    display: grid;
+    gap: var(--space-regular);
+  }
+
+  .ds-typography-foundation-block__description {
+    margin-block-start: calc(var(--gap-medium) * -1);
+    color: var(--color-text-tertiary);
+  }
+
+  :global(.ds-typography-foundation-block__sample-cell.ds-table-cell) {
+    overflow: hidden;
+    align-items: center;
+  }
+
+  .ds-typography-foundation-block__sample {
+    display: block;
+    width: 100%;
+    max-width: 100% !important;
+    overflow: hidden;
+    color: var(--color-text-primary);
+    overflow-wrap: normal !important;
+    text-overflow: ellipsis;
+    text-wrap: nowrap !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+  }
+</style>

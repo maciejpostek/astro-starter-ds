@@ -1,0 +1,33 @@
+---
+import InlineSelect, { type SelectOption } from "../../base-components/select/InlineSelect.astro";
+
+const options: SelectOption[] = [
+  { value: "pl", label: "Poland", flag: "poland" },
+  { value: "de", label: "Germany", flag: "germany" },
+  { value: "us", label: "United States", flag: "united-states" },
+];
+---
+
+<div class="ds-inline-select-preview" data-component-name="DsInlineSelectPreview" data-ds-preview-target>
+  <p>
+    Show availability for
+    <InlineSelect
+      id="inline-select-preview-control"
+      name="inline-country"
+      aria-label="Country"
+      options={options}
+      value="pl"
+    />
+    in the current market.
+  </p>
+</div>
+
+<style>
+  .ds-inline-select-preview p {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-base);
+    line-height: var(--line-height-normal);
+  }
+</style>

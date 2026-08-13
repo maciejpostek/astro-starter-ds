@@ -4,131 +4,121 @@ import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
 import "../styles/tokens/tokens.css";
 import "../styles/global.css";
-import GlobalHeader from "../components/organisms/navigation/GlobalHeader.astro";
-import NavigationTooltip from "../components/molecules/navigation/NavigationTooltip.astro";
-import DsSidebar from "../components/design-system/DsSidebar.astro";
-import GridVisualizer from "../components/dev/GridVisualizer.astro";
-import ComponentInfoLayer from "../components/dev/ComponentInfoLayer.astro";
-import ClipboardCopy from "../components/global-scripts/ClipboardCopy.astro";
-import { isDesignSystemPath } from "../data/designSystemNavigation";
+import GridVisualizer from "../components/_internal/dev/GridVisualizer.astro";
+import ComponentInfoLayer from "../components/_internal/dev/ComponentInfoLayer.astro";
+import ClipboardCopy from "../components/_internal/behaviors/ClipboardCopy.astro";
+import SwitchLabel from "../components/base-components/switch/SwitchLabel.astro";
 
 interface Props {
   title: string;
   description?: string;
+  showGridVisualizer?: boolean;
+  showComponentInfo?: boolean;
+  showGuidesToggle?: boolean;
+  mainClass?: string;
 }
 
 const {
   title,
-  description = "Astro Starter provides a reusable, token-driven component system with operational documentation for people and AI."
+  description = "Astro Starter provides a reusable, token-driven component system with operational documentation for people and AI.",
+  showGridVisualizer = true,
+  showComponentInfo = true,
+  showGuidesToggle = true,
+  mainClass,
 } = Astro.props;
 const activePath = Astro.url.pathname;
-const isDesignSystem = isDesignSystemPath(activePath);
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light" data-grid="visible">
+<html lang="en" data-theme="light" data-theme-preference="system" data-grid="hidden" data-guides="hidden">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={new URL(activePath, Astro.site)} />
     <title>{title}</title>
     <script is:inline>
       const storedTheme = localStorage.getItem("astro-ds-theme");
-      document.documentElement.dataset.theme =
-        storedTheme === "dark" || storedTheme === "light" ? storedTheme : "light";
+      const themePreference = storedTheme === "dark" || storedTheme === "light" || storedTheme === "system"
+        ? storedTheme
+        : "system";
+      const resolvedTheme = themePreference === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : themePreference;
+      document.documentElement.dataset.themePreference = themePreference;
+      document.documentElement.dataset.theme = resolvedTheme;
+      const storedGuides = localStorage.getItem("astro-ds-guides");
       const storedGrid = localStorage.getItem("astro-ds-grid");
-      document.documentElement.dataset.grid =
-        storedGrid === "hidden" ? "hidden" : "visible";
+      const guidesState = storedGuides === "hidden" || storedGuides === "visible"
+        ? storedGuides
+        : storedGrid === "visible"
+          ? "visible"
+          : "hidden";
+      document.documentElement.dataset.guides = guidesState;
+      document.documentElement.dataset.grid = guidesState;
     </script>
   </head>
   <body>
     <div class="app">
-      <GlobalHeader
-        activePath={activePath}
-        brandLabel="Astro Starter home"
-        availabilityLabel="Starter ready"
-        locationLabel="UTC"
-        timeZone="UTC"
-        workspaceLabel="Design system workspace"
-        contactLabel="Components"
-        contactHref="/design-system/components"
-        profileName="Astro Starter"
-        profileLabel="Project context"
-        profileDescription="Ready to configure"
-      />
       <div class="app__workspace">
-        <GridVisualizer />
-        <main class:list={["main", isDesignSystem && "main--design-system"]}>
-          {isDesignSystem && <DsSidebar activePath={activePath} />}
-          <div class:list={[isDesignSystem && "design-system-shell__content"]}>
-            <slot />
-          </div>
+        {showGridVisualizer && <GridVisualizer />}
+        <main class:list={["main", mainClass]}>
+          <slot />
         </main>
       </div>
     </div>
-    <NavigationTooltip />
-    <ComponentInfoLayer />
+    {showComponentInfo && <ComponentInfoLayer />}
+    {(showGridVisualizer || showComponentInfo) && showGuidesToggle && (
+      <div class="guides-toggle" data-grid-toggle>
+        <SwitchLabel
+          id="ds-guides-toggle"
+          label="Guides"
+          data-guides-switch
+        />
+      </div>
+    )}
     <ClipboardCopy />
 
     <script>
-      interface ShellRuntimeState {
-        abortController: AbortController;
-        clockInterval?: number;
-      }
-
       const runtimeWindow = window as Window & {
-        __astroDsShellRuntime?: ShellRuntimeState;
+        __astroDsShellAbortController?: AbortController;
       };
-      runtimeWindow.__astroDsShellRuntime?.abortController.abort();
-      if (runtimeWindow.__astroDsShellRuntime?.clockInterval) {
-        window.clearInterval(runtimeWindow.__astroDsShellRuntime.clockInterval);
-      }
+      runtimeWindow.__astroDsShellAbortController?.abort();
       const shellAbortController = new AbortController();
       const shellSignal = shellAbortController.signal;
-      runtimeWindow.__astroDsShellRuntime = {
-        abortController: shellAbortController
-      };
+      runtimeWindow.__astroDsShellAbortController = shellAbortController;
 
       const root = document.documentElement;
-      const themeToggle = document.querySelector("[data-theme-toggle]");
-      const navSidebar = document.querySelector<HTMLElement>("[data-nav-sidebar]");
-      const syncThemeToggle = () => {
-        const isDark = root.dataset.theme === "dark";
-        themeToggle?.setAttribute("data-nav-tooltip-label", isDark ? "Mode dark" : "Mode light");
-        themeToggle?.setAttribute("aria-pressed", String(isDark));
-        if (navSidebar) navSidebar.dataset.themeState = isDark ? "dark" : "light";
-      };
-      syncThemeToggle();
-      themeToggle?.addEventListener(
-        "click",
-        () => {
-          const next = root.dataset.theme === "dark" ? "light" : "dark";
-          root.dataset.theme = next;
-          localStorage.setItem("astro-ds-theme", next);
-          syncThemeToggle();
-        },
-        { signal: shellSignal }
-      );
-
-      const gridToggles = document.querySelectorAll<HTMLButtonElement>("[data-grid-toggle]");
-      const syncGridToggle = () => {
-        const isVisible = root.dataset.grid !== "hidden";
-        gridToggles.forEach((gridToggle) => {
-          gridToggle.setAttribute("aria-pressed", String(isVisible));
-          gridToggle.setAttribute(
+      const guidesSwitches = document.querySelectorAll<HTMLInputElement>("[data-guides-switch]");
+      const guidesButtons = document.querySelectorAll<HTMLButtonElement>("[data-guides-button]");
+      const syncGuidesControls = () => {
+        const isVisible = root.dataset.guides !== "hidden";
+        guidesSwitches.forEach((guidesSwitch) => {
+          guidesSwitch.checked = isVisible;
+          guidesSwitch.setAttribute(
             "aria-label",
-            isVisible ? "Hide composition grid" : "Show composition grid"
+            isVisible ? "Disable guides" : "Enable guides"
           );
-          gridToggle.setAttribute("data-nav-tooltip-label", isVisible ? "Guides on" : "Guides off");
         });
-        if (navSidebar) navSidebar.dataset.gridState = isVisible ? "visible" : "hidden";
+        guidesButtons.forEach((guidesButton) => {
+          guidesButton.setAttribute("aria-pressed", String(isVisible));
+          guidesButton.setAttribute("aria-label", isVisible ? "Disable guides" : "Enable guides");
+          const visibleIcon = guidesButton.querySelector("[data-guides-visible-icon]");
+          const hiddenIcon = guidesButton.querySelector("[data-guides-hidden-icon]");
+          visibleIcon?.toggleAttribute("hidden", !isVisible);
+          hiddenIcon?.toggleAttribute("hidden", isVisible);
+        });
       };
-      const setGridState = (next: "visible" | "hidden") => {
+      const setGuidesState = (next: "visible" | "hidden") => {
+        root.dataset.guides = next;
         root.dataset.grid = next;
+        localStorage.setItem("astro-ds-guides", next);
         localStorage.setItem("astro-ds-grid", next);
-        syncGridToggle();
+        syncGuidesControls();
       };
       const isTypingContext = (event: KeyboardEvent) => {
         const element = event.target as HTMLElement | null;
@@ -136,13 +126,22 @@ const isDesignSystem = isDesignSystemPath(activePath);
         const tag = element.tagName.toLowerCase();
         return tag === "input" || tag === "textarea" || tag === "select" || element.isContentEditable;
       };
-      syncGridToggle();
-      gridToggles.forEach((gridToggle) => {
-        gridToggle.addEventListener(
+      syncGuidesControls();
+      guidesSwitches.forEach((guidesSwitch) => {
+        guidesSwitch.addEventListener(
+          "change",
+          () => {
+            setGuidesState(guidesSwitch.checked ? "visible" : "hidden");
+          },
+          { signal: shellSignal }
+        );
+      });
+      guidesButtons.forEach((guidesButton) => {
+        guidesButton.addEventListener(
           "click",
           () => {
-            const next = root.dataset.grid === "hidden" ? "visible" : "hidden";
-            setGridState(next);
+            const next = root.dataset.guides === "hidden" ? "visible" : "hidden";
+            setGuidesState(next);
           },
           { signal: shellSignal }
         );
@@ -153,152 +152,41 @@ const isDesignSystem = isDesignSystemPath(activePath);
           if (isTypingContext(event)) return;
           if (!(event.shiftKey && event.key.toLowerCase() === "g")) return;
           event.preventDefault();
-          const next = root.dataset.grid === "hidden" ? "visible" : "hidden";
-          setGridState(next);
+          const next = root.dataset.guides === "hidden" ? "visible" : "hidden";
+          setGuidesState(next);
         },
         { signal: shellSignal }
-      );
-
-      const mobileMenu = document.querySelector<HTMLElement>("[data-mobile-menu]");
-      const mobileMenuToggle = document.querySelector<HTMLButtonElement>("[data-mobile-menu-toggle]");
-      const topNavbar = document.querySelector<HTMLElement>("[data-top-navbar]");
-      const mobileMenuQuery = window.matchMedia("(width < 64rem)");
-      let mobileMenuTransition = 0;
-
-      const getMobileMenuFocusables = () => {
-        if (!mobileMenu || !mobileMenuToggle) return [];
-        return [
-          mobileMenuToggle,
-          ...mobileMenu.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-          )
-        ].filter((element) => !element.hasAttribute("hidden"));
-      };
-
-      const hideMobileMenu = () => {
-        root.dataset.mobileMenu = "closed";
-        if (topNavbar) topNavbar.dataset.navigationState = "default";
-        mobileMenu?.setAttribute("hidden", "");
-        mobileMenu?.setAttribute("aria-hidden", "true");
-        document.body.classList.remove("has-mobile-menu");
-      };
-
-      const closeMobileMenu = (restoreFocus = true) => {
-        mobileMenuToggle?.setAttribute("aria-expanded", "false");
-        mobileMenuToggle?.setAttribute("aria-label", "Open mobile menu");
-
-        if (root.dataset.mobileMenu !== "open") {
-          hideMobileMenu();
-          return;
-        }
-
-        const transition = ++mobileMenuTransition;
-        root.dataset.mobileMenu = "closing";
-        if (topNavbar) topNavbar.dataset.navigationState = "closing";
-        if (
-          restoreFocus &&
-          mobileMenu &&
-          document.activeElement &&
-          mobileMenu.contains(document.activeElement)
-        ) {
-          mobileMenuToggle?.focus();
-        }
-        mobileMenu?.setAttribute("aria-hidden", "true");
-        requestAnimationFrame(() => {
-          const animations = mobileMenu?.getAnimations() ?? [];
-          if (!animations.length) {
-            if (transition === mobileMenuTransition) hideMobileMenu();
-            return;
-          }
-          Promise.allSettled(animations.map((animation) => animation.finished)).then(() => {
-            if (transition === mobileMenuTransition) hideMobileMenu();
-          });
-        });
-      };
-
-      const openMobileMenu = () => {
-        mobileMenuTransition += 1;
-        root.dataset.mobileMenu = "open";
-        if (topNavbar) topNavbar.dataset.navigationState = "open";
-        mobileMenu?.removeAttribute("hidden");
-        mobileMenu?.setAttribute("aria-hidden", "false");
-        mobileMenuToggle?.setAttribute("aria-expanded", "true");
-        mobileMenuToggle?.setAttribute("aria-label", "Close mobile menu");
-        document.body.classList.add("has-mobile-menu");
-        requestAnimationFrame(() => {
-          const firstMenuControl = getMobileMenuFocusables().find(
-            (element) => element !== mobileMenuToggle
-          );
-          firstMenuControl?.focus();
-        });
-      };
-
-      hideMobileMenu();
-      mobileMenuToggle?.addEventListener(
-        "click",
-        () => {
-          root.dataset.mobileMenu === "open"
-            ? closeMobileMenu()
-            : openMobileMenu();
-        },
-        { signal: shellSignal }
-      );
-      mobileMenu?.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => closeMobileMenu(false), {
-          signal: shellSignal
-        });
-      });
-      mobileMenuQuery.addEventListener(
-        "change",
-        () => {
-          if (!mobileMenuQuery.matches) closeMobileMenu(false);
-        },
-        { signal: shellSignal }
-      );
-      window.addEventListener(
-        "keydown",
-        (event) => {
-          if (root.dataset.mobileMenu !== "open") return;
-          if (event.key === "Escape") {
-            event.preventDefault();
-            closeMobileMenu();
-            return;
-          }
-          if (event.key !== "Tab") return;
-          const focusables = getMobileMenuFocusables();
-          if (!focusables.length) return;
-          const first = focusables[0];
-          const last = focusables[focusables.length - 1];
-          if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-          } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-          }
-        },
-        { signal: shellSignal }
-      );
-
-      const updateClocks = () => {
-        const now = new Date();
-        document.querySelectorAll<HTMLElement>("[data-local-time]").forEach((element) => {
-          const timeZone = element.dataset.timezone ?? "UTC";
-          const localTime = new Intl.DateTimeFormat("en-GB", {
-          timeZone,
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }).format(now);
-          element.textContent = localTime;
-        });
-      };
-      updateClocks();
-      runtimeWindow.__astroDsShellRuntime.clockInterval = window.setInterval(
-        updateClocks,
-        1000
       );
 
     </script>
+
+    <style>
+      .guides-toggle {
+        position: fixed;
+        right: var(--size-16);
+        bottom: var(--size-16);
+        z-index: 1100;
+        display: grid;
+        place-items: center;
+        border: var(--border-width-default) solid var(--color-border-subtle);
+        border-radius: var(--radius-medium);
+        padding: var(--size-8);
+        background: var(--color-background-surface);
+        box-shadow: var(--elevation-surface-floating);
+      }
+
+      .guides-toggle :global(.switch-label__text) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        margin: -1px;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+    </style>
   </body>
 </html>

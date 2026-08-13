@@ -1,14 +1,15 @@
 /*
  * Design system typography foundations.
- * Heading, body and utility font families remain separate so each role can
- * change independently on an exploration branch.
+ * Heading and body are public typography roles. Mono is an internal technical
+ * role reserved for documentation UI and code snippets.
  */
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap");
 
 :root {
   /* Font families
-   * All primary text roles resolve to Inter loaded through @fontsource/inter.
+   * All public text roles resolve to Inter loaded through @fontsource/inter.
+   * Mono must not back public Text Styles or general design-tool typography.
    */
   --font-family-heading: "Inter", Arial, sans-serif;
   --font-family-body: "Inter", Arial, sans-serif;
@@ -165,7 +166,9 @@
     );
 
   /* Line heights
-   * Reusable vertical rhythm independent of a specific text style.
+   * Unitless ratios keep vertical rhythm responsive and inherit safely.
+   * Figma Text Styles store the equivalent native percentages:
+   * 100% / 110% / 120% / 150% / 160%.
    */
   --line-height-none: 1;
   --line-height-tight: 1.1;
@@ -174,7 +177,8 @@
   --line-height-relaxed: 1.6;
 
   /* Letter spacing
-   * Universal negative tracking scale from 0% to -4%.
+   * em keeps tracking relative to the active font size. Figma Text Styles
+   * store the equivalent native percentages: 0% / -1% / -2% / -3% / -4%.
    */
   --letter-spacing-none: 0;
   --letter-spacing-tight: -0.01em;

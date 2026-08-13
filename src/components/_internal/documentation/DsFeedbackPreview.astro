@@ -1,0 +1,155 @@
+---
+import Alert from "../../base-components/alerts/Alert.astro";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import Notification from "../../base-components/toast-notification/Notification.astro";
+import Toast from "../../base-components/toast-notification/Toast.astro";
+import type { FeedbackStatus } from "../../../lib/feedback/feedbackTypes";
+
+interface Props {
+  kind: "alert" | "notification" | "toast";
+}
+
+const { kind } = Astro.props;
+const previewId = `feedback-preview-${kind}`;
+const statuses: FeedbackStatus[] = ["error", "warning", "success", "info", "feature"];
+const statusIcons = {
+  error: "error",
+  warning: "warning",
+  success: "check_circle",
+  info: "info",
+  feature: "star_rate",
+} as const;
+const statusLabels = {
+  error: "Error",
+  warning: "Warning",
+  success: "Success",
+  info: "Information",
+  feature: "Featured",
+} as const;
+---
+
+<div class="feedback-preview" data-component-name="DsFeedbackPreview" data-feedback-preview={kind}>
+  {kind === "alert" && (
+    <div class="feedback-preview__primary" data-ds-preview-target>
+      <Alert title="Settings updated" />
+    </div>
+  )}
+
+  {kind === "notification" && (
+    <div class="feedback-preview__primary" data-ds-preview-target>
+      <Notification
+        id={previewId}
+        title="Changes saved"
+        description="Your latest settings are now available to everyone on the project."
+        status="success"
+        actions={[{ label: "View settings", href: "#api" }, { label: "Learn more", href: "#dependencies" }]}
+      />
+    </div>
+  )}
+
+  {kind === "toast" && (
+    <div class="feedback-preview__primary" data-ds-preview-target>
+      <Toast
+        id={previewId}
+        title="Export is ready"
+        description="The generated file can now be downloaded."
+        data-feedback-static-preview
+        duration="persistent"
+      />
+    </div>
+  )}
+
+  <div hidden data-feedback-preview-templates>
+    {statuses.map((status) => (
+      <template
+        data-feedback-icon-template={status}
+        data-feedback-status-label={statusLabels[status]}
+      >
+        <MaterialSymbol class="feedback-message__icon" name={statusIcons[status]} />
+      </template>
+    ))}
+  </div>
+</div>
+
+<script>
+  const initializeFeedbackPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-feedback-preview]").forEach((preview) => {
+      if (preview.dataset.feedbackPreviewReady === "true") return;
+      preview.dataset.feedbackPreviewReady = "true";
+
+      preview.querySelectorAll<HTMLElement>("[data-feedback-static-preview]").forEach((toast) => {
+        toast.hidden = false;
+        toast.dataset.toastState = "visible";
+      });
+
+      preview.addEventListener("click", (event) => {
+        if (!(event.target instanceof Element)) return;
+        const dismiss = event.target.closest("[data-feedback-dismiss]");
+        const toast = dismiss?.closest<HTMLElement>("[data-feedback-static-preview]");
+        if (!toast) return;
+        toast.hidden = true;
+        toast.dataset.toastState = "closed";
+      });
+
+      preview.closest("[data-ds-interactive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const target = preview.querySelector<HTMLElement>("[data-ds-preview-target]");
+        if (!target) return;
+        const feedbackRoot = target.matches("[data-feedback-root]")
+          ? target
+          : target.querySelector<HTMLElement>("[data-feedback-root]");
+
+        if (feedbackRoot?.hidden) {
+          feedbackRoot.hidden = false;
+          if (feedbackRoot.matches("[data-toast]")) feedbackRoot.dataset.toastState = "visible";
+        }
+
+        if (event.detail?.axisId === "feedbackStatus" && feedbackRoot) {
+          const status = String(event.detail.value);
+          const template = preview.querySelector<HTMLTemplateElement>(
+            `template[data-feedback-icon-template="${status}"]`,
+          );
+          const currentIcon = feedbackRoot.querySelector<SVGElement>(".feedback-message__icon");
+          const nextIcon = template?.content.querySelector<SVGElement>(".feedback-message__icon");
+          const statusLabel = feedbackRoot.querySelector<HTMLElement>(".feedback-message__status-label");
+          feedbackRoot.dataset.feedbackStatus = status;
+          if (currentIcon && nextIcon) currentIcon.replaceWith(nextIcon.cloneNode(true));
+          if (statusLabel && template?.dataset.feedbackStatusLabel) {
+            statusLabel.textContent = `${template.dataset.feedbackStatusLabel}: `;
+          }
+        }
+        if (event.detail?.axisId === "feedbackEmphasis" && feedbackRoot) {
+          feedbackRoot.dataset.feedbackEmphasis = String(event.detail.value);
+        }
+        if (event.detail?.axisId === "feedbackSize" && feedbackRoot) {
+          feedbackRoot.dataset.feedbackSize = String(event.detail.value);
+        }
+      });
+    });
+  };
+
+  initializeFeedbackPreviews();
+  document.addEventListener("astro:page-load", initializeFeedbackPreviews);
+</script>
+
+<style>
+  .feedback-preview,
+  .feedback-preview__primary {
+    display: grid;
+    width: 100%;
+    gap: var(--gap-regular);
+  }
+
+  .feedback-preview__primary {
+    justify-items: center;
+  }
+
+  .feedback-preview__primary :global(.toast[data-feedback-static-preview]) {
+    position: static;
+    inset: auto;
+    display: grid;
+    width: min(100%, var(--toast-max-inline-size));
+    max-height: none;
+    margin: 0;
+  }
+</style>
