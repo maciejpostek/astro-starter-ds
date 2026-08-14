@@ -39,6 +39,27 @@ Styles store it as a native percentage and the typography adapter maps it to
 the existing Astro `--component-line-height` contract. This keeps Figma
 editable without weakening the code profile layer.
 
+## Fixed Tag geometry
+
+Tag does not consume `Component Size`. Its eight `component/tag/*` Variables
+live in `Sizing Semantic`, use the same alias in `Max` and `Min`, and project
+the fixed Astro contract:
+
+| Figma Variable | Web code syntax | Value |
+| --- | --- | ---: |
+| `component/tag/min-height` | `var(--tag-min-height)` | 24 |
+| `component/tag/padding/block` | `var(--tag-padding-block)` | 0 |
+| `component/tag/padding/inline/text` | `var(--tag-padding-inline-text)` | 12 |
+| `component/tag/padding/inline/visual` | `var(--tag-padding-inline-visual)` | 4 |
+| `component/tag/icon/size` | `var(--tag-icon-size)` | 14 |
+| `component/tag/visual-target/size` | `var(--tag-visual-target-size)` | 16 |
+| `component/tag/gap` | `var(--tag-gap)` | 2 |
+| `component/tag/font/size` | `var(--tag-font-size)` | 12 |
+
+`Adornment=None|Leading|Remove|Both` chooses text or visual inline padding per
+edge. This axis is a controlled Figma adapter for Astro's optional `leading`
+slot and Boolean `removable`; it is not a public production prop.
+
 ## Astro representation
 
 `src/styles/tokens/component-sizes.css` keeps a two-stage implementation:
@@ -132,6 +153,14 @@ If a Figma node uses a mode different from the Astro component default, pass
 the matching `size` or `componentSize` prop explicitly. Never rely on a
 component default before inspecting its code.
 
+For component-library documentation, apply an explicit `Component Size` mode
+to the canonical `ComponentSet`, never to an individual variant, nested
+instance, or reusable single-component geometry.
+This preserves the intended preview size while allowing placed instances to
+inherit the mode of the screen or composition that contains them. Default
+`Max` modes from Sizing or Typography collections are not size-profile inputs
+and must not be repeated on component descendants.
+
 ## Changing a profile value
 
 The approved canonical Figma collection is the source of truth for public
@@ -154,8 +183,8 @@ CSS alias layer.
 - Do not hardcode Figma values in component CSS.
 - Do not add local `[data-component-size]` rules to individual components.
 - Do not create `.button--small`; use the public control-size prop and
-  `data-control-size`. Tag intentionally owns one fixed Astro geometry even
-  though its current Figma projection retains size modes.
+  `data-control-size`. Tag intentionally owns one fixed geometry in both Astro
+  and Figma and must not inherit `Component Size`.
 - Do not assume the Figma default mode is every component's default prop.
 
 ## Validation checklist
@@ -169,6 +198,8 @@ Figma:
 - Web code syntax points to stable `var(--component-*)` aliases.
 - no `line/height` Variable exists; component Text Styles own native
   percentage line height.
+- `Sizing Semantic` contains exactly eight `component/tag/*` Variables with
+  identical `Max` and `Min` aliases.
 
 Astro:
 

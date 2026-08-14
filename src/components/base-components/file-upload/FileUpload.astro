@@ -2,14 +2,15 @@
 import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import Button from "../buttons/Button.astro";
+import { normalizeValidationState } from "../../../lib/forms/validationState";
 
 type ValidationProps =
-  | { validation?: "default"; errorMessage?: never }
-  | { validation: "invalid"; errorMessage: string };
+  | { validation?: "none" | "default"; errorMessage?: never }
+  | { validation: "error" | "invalid"; errorMessage: string };
 
 type NativeFileInputProps = Omit<
   HTMLAttributes<"input">,
-  "class" | "id" | "type" | "disabled" | "multiple"
+  "aria-invalid" | "class" | "id" | "type" | "disabled" | "multiple"
 >;
 
 export type Props = NativeFileInputProps & ValidationProps & {
@@ -33,25 +34,27 @@ const {
   maxFileSizeBytes,
   multiple = false,
   disabled = false,
-  validation = "default",
+  validation = "none",
   errorMessage,
   class: className,
   ...inputAttributes
 } = Astro.props as Props;
 
+const validationState = normalizeValidationState(validation);
+
 if (!id?.trim()) throw new Error("FileUpload requires a non-empty id.");
 if (!label?.trim()) throw new Error("FileUpload requires a non-empty label.");
-if (validation === "invalid" && !errorMessage?.trim()) {
-  throw new Error('FileUpload with validation="invalid" requires errorMessage.');
+if (validationState === "error" && !errorMessage?.trim()) {
+  throw new Error('FileUpload with validation="error" requires errorMessage.');
 }
 
 const hintId = hint ? `${id}-hint` : undefined;
 const statusId = `${id}-status`;
-const errorId = validation === "invalid" ? `${id}-error` : undefined;
+const errorId = validationState === "error" ? `${id}-error` : undefined;
 const describedBy = [inputAttributes["aria-describedby"], hintId, statusId, errorId]
   .filter(Boolean)
   .join(" ") || undefined;
-const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid" : "default";
+const initialState = disabled ? "disabled" : validationState;
 ---
 
 <div
@@ -60,7 +63,7 @@ const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid
   data-file-upload
   data-file-upload-state={initialState}
   data-max-file-size-bytes={maxFileSizeBytes}
-  data-validation={validation}
+  data-validation={validationState}
 >
   <input
     {...inputAttributes}
@@ -70,7 +73,7 @@ const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid
     multiple={multiple || undefined}
     disabled={disabled}
     aria-describedby={describedBy}
-    aria-invalid={validation === "invalid" ? "true" : inputAttributes["aria-invalid"]}
+    aria-invalid={validationState === "error" ? "true" : undefined}
     data-file-upload-input
   />
 
@@ -95,9 +98,9 @@ const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid
       data-empty-message={emptyMessage}
       data-file-upload-status
     >
-      {validation === "invalid" ? errorMessage : emptyMessage}
+      {validationState === "error" ? errorMessage : emptyMessage}
     </span>
-    {validation === "invalid" && (
+    {validationState === "error" && (
       <span class="file-upload__error" id={errorId}>{errorMessage}</span>
     )}
   </div>
@@ -128,8 +131,13 @@ const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid
 
       let dragDepth = 0;
       const isDisabled = () => input.disabled;
-      const setState = (state: "default" | "dragging" | "selected" | "invalid" | "disabled") => {
+      const setState = (state: "none" | "dragging" | "success" | "error" | "disabled") => {
         root.dataset.fileUploadState = isDisabled() ? "disabled" : state;
+        if (state === "success" || state === "error" || state === "none") {
+          root.dataset.validation = state;
+          if (state === "error") input.setAttribute("aria-invalid", "true");
+          else input.removeAttribute("aria-invalid");
+        }
       };
 
       const announceSelection = (files: File[]) => {
@@ -149,7 +157,7 @@ const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid
 
         setInputFiles(input, accepted);
         announceSelection(accepted);
-        setState(rejections.length ? "invalid" : accepted.length ? "selected" : "default");
+        setState(rejections.length ? "error" : accepted.length ? "success" : "none");
 
         if (accepted.length) {
           root.dispatchEvent(new CustomEvent("astro-ds:file-upload-select", {
@@ -185,7 +193,7 @@ const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid
       });
       dropzone.addEventListener("dragleave", () => {
         dragDepth = Math.max(0, dragDepth - 1);
-        if (dragDepth === 0) setState(input.files?.length ? "selected" : "default");
+        if (dragDepth === 0) setState(input.files?.length ? "success" : "none");
       });
       dropzone.addEventListener("drop", (event) => {
         event.preventDefault();
@@ -206,15 +214,18 @@ const initialState = disabled ? "disabled" : validation === "invalid" ? "invalid
   .file-upload__icon { flex: 0 0 auto; color: var(--input-icon-default); }
   .file-upload__label { color: var(--input-label-default); font-family: var(--font-family-body); font-size: var(--font-size-body-small); font-weight: var(--font-weight-normal); line-height: var(--line-height-normal); }
   .file-upload__hint, .file-upload__status, .file-upload__error { overflow-wrap: anywhere; color: var(--input-helper-default); font-family: var(--font-family-body); font-size: var(--font-size-body-tiny); line-height: var(--line-height-normal); }
-  .file-upload__error { color: var(--input-helper-invalid); }
-  .file-upload[data-validation="invalid"] .file-upload__status { display: none; }
-  .file-upload:not([data-file-upload-state="disabled"]) .file-upload__dropzone:is(:hover, [data-ds-preview-state="hover"]) { border-color: var(--input-border-hover); background: var(--input-background-hover); }
-  .file-upload:not([data-file-upload-state="disabled"]) .file-upload__dropzone:is(:focus-within, [data-input-focus="true"]),
-  .file-upload[data-ds-preview-state="focus-visible"] .file-upload__dropzone { border-color: var(--input-border-focus); background: var(--input-background-focus); box-shadow: var(--effect-focused); }
+  .file-upload__error { color: var(--input-helper-error); }
+  .file-upload[data-validation="error"]:has(.file-upload__error) .file-upload__status { display: none; }
+  .file-upload:not([data-validation="error"]) .file-upload__error { display: none; }
+  .file-upload[data-file-upload-state="none"] .file-upload__dropzone:is(:hover, [data-ds-preview-state="hover"]) { border-color: var(--input-border-hover); background: var(--input-background-hover); }
   .file-upload:is([data-file-upload-state="dragging"], [data-ds-preview-state="dragging"]) .file-upload__dropzone { border-style: solid; border-color: var(--color-border-accent); background: var(--color-background-subtle); }
-  .file-upload:is([data-file-upload-state="selected"], [data-ds-preview-state="selected"]) .file-upload__dropzone { border-style: solid; border-color: var(--input-border-valid); }
-  .file-upload:is([data-file-upload-state="invalid"], [data-ds-preview-state="invalid"]) .file-upload__dropzone { border-style: solid; border-color: var(--input-border-invalid); }
-  .file-upload:is([data-file-upload-state="disabled"], [data-ds-preview-state="disabled"]) .file-upload__dropzone { border-color: var(--input-border-disabled); color: var(--input-text-disabled); background: var(--input-background-disabled); cursor: not-allowed; }
+  .file-upload:is([data-file-upload-state="success"], [data-ds-preview-state="success"], [data-ds-preview-state="selected"]) .file-upload__dropzone { border-style: solid; border-color: var(--input-border-success); box-shadow: var(--effect-validation-success); }
+  .file-upload:is([data-file-upload-state="error"], [data-ds-preview-state="error"], [data-ds-preview-state="invalid"]) .file-upload__dropzone { border-style: solid; border-color: var(--input-border-error); box-shadow: var(--effect-validation-error); }
+  .file-upload:not([data-file-upload-state="disabled"]) .file-upload__dropzone:is(:focus-within, [data-input-focus="true"]),
+  .file-upload[data-ds-preview-state="focus-visible"] .file-upload__dropzone { background: var(--input-background-focus); box-shadow: var(--effect-focused); }
+  .file-upload:is([data-file-upload-state="none"], [data-file-upload-state="dragging"]):not([data-file-upload-state="disabled"]) .file-upload__dropzone:is(:focus-within, [data-input-focus="true"]),
+  .file-upload:is([data-file-upload-state="none"], [data-file-upload-state="dragging"])[data-ds-preview-state="focus-visible"] .file-upload__dropzone { border-color: var(--input-border-focus); }
+  .file-upload:is([data-file-upload-state="disabled"], [data-ds-preview-state="disabled"]) .file-upload__dropzone { border-color: var(--input-border-disabled); color: var(--input-text-disabled); background: var(--input-background-disabled); box-shadow: none; cursor: not-allowed; }
   .file-upload:is([data-file-upload-state="disabled"], [data-ds-preview-state="disabled"]) :is(.file-upload__label, .file-upload__hint, .file-upload__status, .file-upload__icon) { color: var(--input-text-disabled); }
-  @media (forced-colors: active) { .file-upload__dropzone { border-color: CanvasText; background: Canvas; } .file-upload[data-file-upload-state="dragging"] .file-upload__dropzone { border-color: Highlight; } .file-upload[data-file-upload-state="invalid"] .file-upload__dropzone { border-color: Mark; } .file-upload__input:focus-visible + .file-upload__dropzone { outline: var(--border-width-strong) solid Highlight; outline-offset: var(--size-2); box-shadow: none; } }
+  @media (forced-colors: active) { .file-upload__dropzone { border-color: CanvasText; background: Canvas; box-shadow: none; } .file-upload[data-file-upload-state="dragging"] .file-upload__dropzone { border-color: Highlight; } .file-upload[data-file-upload-state="error"] .file-upload__dropzone { border-color: Mark; } .file-upload__input:focus-visible + .file-upload__dropzone { outline: var(--border-width-strong) solid Highlight; outline-offset: var(--size-2); box-shadow: none; } }
 </style>

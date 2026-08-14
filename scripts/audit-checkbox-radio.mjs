@@ -38,8 +38,8 @@ const components = [
     name: "CheckboxLabel",
     sourcePath: "src/components/base-components/checkbox-radio/CheckboxLabel.astro",
     rulePath: ".agentic-rules/components/checkbox-label.md",
-    syncStatus: "astro-only",
-    canonicalNodeId: null,
+    syncStatus: "mapped",
+    canonicalNodeId: "1370:36",
     dependencies: ["checkbox"],
   },
   {
@@ -47,8 +47,8 @@ const components = [
     name: "RadioLabel",
     sourcePath: "src/components/base-components/checkbox-radio/RadioLabel.astro",
     rulePath: ".agentic-rules/components/radio-label.md",
-    syncStatus: "astro-only",
-    canonicalNodeId: null,
+    syncStatus: "mapped",
+    canonicalNodeId: "1370:126",
     dependencies: ["radio"],
   },
   {
@@ -56,8 +56,8 @@ const components = [
     name: "CheckboxCard",
     sourcePath: "src/components/base-components/checkbox-radio/CheckboxCard.astro",
     rulePath: ".agentic-rules/components/checkbox-card.md",
-    syncStatus: "astro-only",
-    canonicalNodeId: null,
+    syncStatus: "mapped",
+    canonicalNodeId: "1370:451",
     dependencies: ["checkbox"],
   },
   {
@@ -65,8 +65,8 @@ const components = [
     name: "RadioCard",
     sourcePath: "src/components/base-components/checkbox-radio/RadioCard.astro",
     rulePath: ".agentic-rules/components/radio-card.md",
-    syncStatus: "astro-only",
-    canonicalNodeId: null,
+    syncStatus: "mapped",
+    canonicalNodeId: "1370:611",
     dependencies: ["radio"],
   },
 ];

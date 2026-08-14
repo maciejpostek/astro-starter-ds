@@ -45,17 +45,16 @@ they do not map to Astro folders, component records, Variables, or public APIs.
      ↪  ❖  Accordion
      ↪  ❖  Tooltip
      ↪  ❖  Hint
-     ↪  ❖  Alerts
-     ↪  ❖  Toast Notification
+     ↪  ❖  Feedback Messages
      ↪  ❖  Dividers
      ↪  ❖  Ratio
      ↪  ❖  Breadcrumbs
      ↪  ❖  Pagination
      ↪  ❖  Tag
-     ↪  ❖  Label
      ↪  ❖  Eyebrow
 ---
 ▦  ・ Website Patterns
+     ↪  ❖  Bullet Points
      ↪  ▦  Navigation
      ↪  ▦  Announcements & Banners
      ↪  ▦  Hero
@@ -100,4 +99,4 @@ page order. Content `figmaCurrentIndex` values likewise exclude dividers, while
 divider records use physical Figma indices. Graphik-blocked differences must
 never be repaired by cloning or recreating a master.
 
-Current controlled order differences: 55.
+Current controlled order differences: 54.

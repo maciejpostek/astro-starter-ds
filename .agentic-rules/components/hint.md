@@ -11,7 +11,7 @@ Status: active.
 
 ## UX purpose
 
-Explain expected input or communicate one valid or invalid outcome with one fixed information icon and a semantic tone.
+Explain expected input or communicate a success, warning or error outcome with a fixed semantic icon and tone.
 
 ## Use when
 
@@ -25,8 +25,8 @@ Explain expected input or communicate one valid or invalid outcome with one fixe
 
 ## Content contract
 
-- Render one concise message and one tone: `default`, `valid` or `invalid`.
-- Keep the fixed `info` icon in every tone; its color follows the message tone.
+- Render one concise message and one canonical tone: `none`, `success`, `warning` or `error`. Legacy tone names remain compatibility aliases only.
+- Use `info`, `check_circle`, `warning` and `error` for the matching canonical tones; icon and text share the semantic content color.
 - Explain how to recover from an invalid value whenever possible.
 - Do not rely on icon or color alone to carry the meaning.
 
@@ -35,7 +35,7 @@ Explain expected input or communicate one valid or invalid outcome with one fixe
 - Place Hint after the associated control in source order.
 - Use exactly one visible message below a FormField control.
 - Hint consumes the surrounding control-size font and icon roles without exposing a separate size prop.
-- The fixed `info` icon is not replaceable through the public API and does not change glyph between tones.
+- The finite semantic icon mapping is not replaceable through the public API.
 
 ## Responsive behavior
 

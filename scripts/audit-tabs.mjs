@@ -118,12 +118,12 @@ for (const consumer of ["tab", "tabs", "tab-menu"]) {
 
 const expectedRecords = {
   tab: { path: tabPath, status: "mapped", dependency: null },
-  tabs: { path: tabsPath, status: "astro-only", dependency: "tab" },
-  "tab-menu": { path: tabMenuPath, status: "astro-only", dependency: null },
+  tabs: { path: tabsPath, status: "mapped", nodeId: "1372:171", dependency: "tab" },
+  "tab-menu": { path: tabMenuPath, status: "mapped", nodeId: "1563:2827", dependency: null },
 };
 for (const [id, expected] of Object.entries(expectedRecords)) {
   const record = registry.components?.find((component) => component.id === id);
-  if (!record || record.sourcePath !== expected.path || record.syncStatus !== expected.status) {
+  if (!record || record.sourcePath !== expected.path || record.syncStatus !== expected.status || (expected.nodeId && record.figmaCanonicalNodeId !== expected.nodeId)) {
     errors.push(`Registry projection is incomplete for ${id}.`);
     continue;
   }
@@ -196,5 +196,5 @@ if (errors.length) {
 }
 
 console.log(
-  "Tabs family audit passed: validated state, mapped Tab, Astro-only Tabs and TabMenu, native semantics, approved tokens, docs and bounded benchmark.",
+  "Tabs family audit passed: mapped Tab, Tabs and TabMenu visual mastery, native semantics, approved tokens, docs and bounded runtime divergence.",
 );

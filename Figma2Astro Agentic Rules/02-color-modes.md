@@ -7,7 +7,7 @@ roles and component contracts.
 
 ## Figma representation
 
-Figma uses two collections:
+Figma uses three color collections:
 
 ```text
 Color Primitives
@@ -30,19 +30,32 @@ Color Semantic
     ├── tab/{property}/{state}
     ├── link/{property}/{state}
     └── card/*
+
+Tag Color
+├── background
+├── border
+└── content
 ```
 
 `Color Semantic` has `Light` and `Dark` modes. The first-level group is
 `Global` or `Component`; do not add a `Semantic` group because the collection
 already expresses that layer.
 
-Tag intentionally consumes existing accent, status and inverse roles directly.
-Its nested close action inherits the exact current text color and opacity,
-projects interaction feedback on the shell and uses the shared Focused Effect
-Style for keyboard focus; there is no `Component/tag/*` Variable group.
+`Tag Color` has `Neutral`, `Brand`, `Green`, `Amber`, `Red`, `Sky` and
+`Inverse` modes. Its three Variables alias `Color Semantic` roles, so the Tag
+palette remains replaceable without changing the master or public Astro API.
+The collection never duplicates Light/Dark: those modes remain on `Color
+Semantic` and resolve from the composition parent. Astro projects the same
+choice through `data-tag-tone` and the component aliases `--tag-background`,
+`--tag-border` and `--tag-content`.
+
+The nested close action inherits `content` through `currentColor`, projects
+interaction feedback on the shell and uses the shared `Focused` Effect Style
+for keyboard focus.
 
 Component masters, variants, nested instances, and internal frames do not set
-an explicit `Color Semantic` mode. Theme is set only on a composition parent,
+an explicit `Color Semantic` mode. A Tag instance may set one explicit `Tag
+Color` mode. Theme is set only on a composition parent,
 such as a page frame, documentation section, or screen, and the component tree
 inherits `Light` or `Dark`.
 
@@ -72,6 +85,9 @@ Example code syntax:
 | `Component/button/primary/background/default` | `var(--button-primary-background-default)` |
 | `Component/switch/track/on/background/default` | `var(--switch-track-on-background-default)` |
 | `Component/input/border/focus` | `var(--input-border-focus)` |
+| `Tag Color/background` | `var(--tag-background)` |
+| `Tag Color/border` | `var(--tag-border)` |
+| `Tag Color/content` | `var(--tag-content)` |
 
 ## Astro representation
 
@@ -97,8 +113,8 @@ is only a Variables-panel representation.
 3. For `Global/*`, use a global token only when the implementation does not
    have a dedicated component contract.
 4. For `Component/*`, find the existing component and its variants or states.
-5. Transfer variant and state through existing props and `data-*`; do not
-   create a local palette copy.
+5. Transfer Tag Color mode to `data-tag-tone`; transfer interaction state
+   through native behavior rather than a public `state` prop.
 6. Set a page theme through the existing `data-theme` contract, not through
    separate color classes on each element.
 
@@ -120,9 +136,12 @@ is only a Variables-panel representation.
 
 ## Validation checklist
 
-- the collections are exactly `Color Primitives` and `Color Semantic`;
+- the color collections are exactly `Color Primitives`, `Color Semantic` and
+  `Tag Color`;
 - `Color Semantic` contains `Global` and `Component` groups;
 - semantic modes are `Light` and `Dark`;
+- Tag Color modes are `Neutral`, `Brand`, `Green`, `Amber`, `Red`, `Sky` and
+  `Inverse`, with `Neutral` as default;
 - components inherit theme from an external section or page;
 - component paths match real code variants;
 - every Variable has the correct `var(--token-name)`;

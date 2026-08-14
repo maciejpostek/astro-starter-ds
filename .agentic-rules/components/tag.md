@@ -11,11 +11,11 @@ Status: active.
 
 ## UX purpose
 
-Tag communicates one short categorical value, status or applied filter. Its optional remove action lets users remove an already-applied filter without turning the whole Tag into an action.
+Tag communicates one short categorical value or applied filter. Its optional remove action lets users remove an already-applied filter without turning the whole Tag into an action.
 
 ## Use when
 
-- Showing compact metadata such as category, technology, service, status or scope.
+- Showing compact metadata such as category, technology, product, service or scope.
 - Representing a filter that is already active and can be removed independently.
 - Several short values must remain visually scannable without becoming navigation.
 
@@ -31,7 +31,7 @@ Tag communicates one short categorical value, status or applied filter. Its opti
 - `label` contains one concise noun, short phrase or status value written in normal sentence case; Tag does not transform it to uppercase.
 - Optional `leading` content is one decorative contextual icon, approved logo, flag or avatar; `label` still carries the meaning.
 - Do not place sentences, headings or multiple unrelated values inside one Tag.
-- Tone communicates semantic meaning only when that meaning is already established by the surrounding content; color must not be the sole status cue.
+- Tone distinguishes categories through the component-owned Tag palette. It does not automatically mean success, warning or error, and color must never be the sole cue when surrounding content assigns a status meaning.
 - `removeLabel` names the action and value, for example `Remove Industry: Finance`.
 
 ## Composition and placement
@@ -45,7 +45,7 @@ Tag communicates one short categorical value, status or applied filter. Its opti
 ## Responsive behavior
 
 - Primary strategy: `intrinsic`
-- Mechanisms and references: one fixed component-owned geometry, conditional logical edge padding through `data-tag-leading` and `data-tag-removable`, a shared 24px visual target around either 14px edge icon, and parent-owned `.l-cluster` or wrapping list gaps.
+- Mechanisms and references: one fixed 24px-high component-owned geometry, conditional logical edge padding through `data-tag-leading` and `data-tag-removable`, a shared 16px visual target around either 14px edge icon, and parent-owned `.l-cluster` or wrapping list gaps.
 - Container queries: none.
 - Viewport queries: none.
 - Reflow, order and visibility: Each Tag remains intact while the parent wraps tags in DOM order; the label and optional remove button are never split into alternate renderings.
@@ -73,4 +73,4 @@ Use the canonical identity, public root class, controlled `data-*` attributes an
 
 ## Core decision
 
-Use Tag for one compact value with one fixed size and the same corner radius as Button. Add one decorative leading visual only when it improves recognition, and enable `removable` only when the caller can remove the applied value through the nested native button.
+Use Tag for one compact value with one fixed size, the component-owned category palette and the same corner radius as Button. Add one decorative leading visual only when it improves recognition, and enable `removable` only when the caller can remove the applied value through the nested native button.

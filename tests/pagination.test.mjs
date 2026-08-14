@@ -120,7 +120,7 @@ test("renders the public HTML contract without client JavaScript", async () => {
     assert.match(html, /data-component-name="PaginationGroup"/u);
     assert.match(html, /aria-label="Go to page 2"/u);
     assert.match(html, />\s*Start\s*<\/a>/u);
-    assert.equal(currentLinks.length, 3);
+    assert.equal(currentLinks.length, 4);
     assert.ok(currentLinks.every((link) => /\shref="\/results\?page=\d+"/u.test(link)));
     assert.equal(disabledLinks.length, 5);
     assert.ok(disabledLinks.every((link) => !/\shref=/u.test(link)));
@@ -134,6 +134,13 @@ test("renders the public HTML contract without client JavaScript", async () => {
     assert.match(html, /data-pagination-item="previous"/u);
     assert.match(html, /data-pagination-item="next"/u);
     assert.match(html, /data-pagination-item="last"/u);
+    const slottedPagination = html.match(
+      /<nav\b[^>]*data-contract="slotted"[^>]*>[\s\S]*?<\/nav>/u,
+    )?.[0];
+    assert.ok(slottedPagination);
+    assert.equal((slottedPagination.match(/data-slot-item=/gu) ?? []).length, 3);
+    assert.doesNotMatch(slottedPagination, /data-pagination-item="first"/u);
+    assert.doesNotMatch(slottedPagination, /data-pagination-item="last"/u);
     assert.doesNotMatch(html, /<astro-island\b/u);
     assert.doesNotMatch(html, /<script\b/u);
   } finally {

@@ -3,6 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import "../../../styles/components/input-controls.css";
 import Input, { type InputSize, type InputValidation } from "./Input.astro";
+import { normalizeValidationState } from "../../../lib/forms/validationState";
 
 export interface Props extends Omit<HTMLAttributes<"input">, "class" | "disabled" | "readonly" | "size" | "type"> {
   size?: InputSize;
@@ -16,7 +17,7 @@ export interface Props extends Omit<HTMLAttributes<"input">, "class" | "disabled
 
 const {
   size = "medium",
-  validation = "default",
+  validation = "none",
   disabled = false,
   readonly = false,
   decrementLabel = "Decrease value",
@@ -27,13 +28,14 @@ const {
   step,
   ...attributes
 } = Astro.props;
+const validationState = normalizeValidationState(validation);
 ---
 
 <div
   class:list={["counter-input", className]}
   data-component-name="CounterInput"
   data-control-size={size}
-  data-input-validation={validation}
+  data-input-validation={validationState}
   data-input-control-disabled={disabled ? "true" : undefined}
   data-counter-input
   data-counter-readonly={readonly ? "true" : undefined}
@@ -57,7 +59,7 @@ const {
     max={max}
     step={step}
     size={size}
-    validation={validation}
+    validation={validationState}
     type="number"
   />
   <button
@@ -172,7 +174,7 @@ const {
   }
 
   .counter-input :global(.counter-input__field),
-  .counter-input :global(.counter-input__field:is(:hover, :focus-visible, :disabled, [data-input-validation="valid"], [data-input-validation="invalid"])) {
+  .counter-input :global(.counter-input__field:is(:hover, :focus-visible, :disabled, [data-input-validation="success"], [data-input-validation="warning"], [data-input-validation="error"])) {
     height: 100%;
     min-height: 0;
     border: 0;
@@ -182,24 +184,34 @@ const {
     text-align: center;
   }
 
-  .counter-input:not([data-input-control-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
+  .counter-input:not([data-input-control-disabled="true"])[data-input-validation="none"]:is(:hover, [data-ds-preview-state="hover"]) {
     border-color: var(--input-border-hover);
     background: var(--input-background-hover);
   }
 
+  .counter-input:not([data-input-control-disabled="true"])[data-input-validation="error"] {
+    border-color: var(--input-border-error);
+    box-shadow: var(--effect-validation-error);
+  }
+
+  .counter-input:not([data-input-control-disabled="true"])[data-input-validation="warning"] {
+    border-color: var(--input-border-warning);
+    box-shadow: var(--effect-validation-warning);
+  }
+
+  .counter-input:not([data-input-control-disabled="true"])[data-input-validation="success"] {
+    border-color: var(--input-border-success);
+    box-shadow: var(--effect-validation-success);
+  }
+
   .counter-input:not([data-input-control-disabled="true"]):is(:focus-within, [data-ds-preview-state="focus-visible"]) {
-    border-color: var(--input-border-focus);
     background: var(--input-background-focus);
     outline: none;
     box-shadow: var(--effect-focused);
   }
 
-  .counter-input[data-input-validation="invalid"] {
-    border-color: var(--input-border-invalid);
-  }
-
-  .counter-input[data-input-validation="valid"] {
-    border-color: var(--input-border-valid);
+  .counter-input:not([data-input-control-disabled="true"])[data-input-validation="none"]:is(:focus-within, [data-ds-preview-state="focus-visible"]) {
+    border-color: var(--input-border-focus);
   }
 
   .counter-input[data-input-control-disabled="true"] {
@@ -230,6 +242,10 @@ const {
       outline: var(--border-width-strong) solid Highlight;
       outline-offset: var(--size-2);
       box-shadow: none;
+    }
+
+    .counter-input:not([data-input-control-disabled="true"])[data-input-validation="error"] {
+      border-color: Mark;
     }
   }
 </style>

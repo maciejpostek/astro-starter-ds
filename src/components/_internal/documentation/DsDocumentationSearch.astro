@@ -5,7 +5,7 @@ import {
   type DocumentationSearchRecord,
 } from "../../../data/documentationRegistry";
 import DsDocumentationSearchResult from "./DsDocumentationSearchResult.astro";
-import Toast from "../../base-components/toast-notification/Toast.astro";
+import NotificationAndToast from "../../base-components/feedback-messages/NotificationAndToast.astro";
 
 interface Props {
   triggerClass?: string;
@@ -84,12 +84,14 @@ const serializedSearchRecords = JSON.stringify(searchRecords).replace(/</g, "\\u
     </div>
   </dialog>
 
-  <Toast
+  <NotificationAndToast
+    delivery="toast"
     id="ds-documentation-variable-copy-success"
     title="Variable copied to clipboard"
     status="success"
   />
-  <Toast
+  <NotificationAndToast
+    delivery="toast"
     id="ds-documentation-variable-copy-error"
     title="Variable could not be copied"
     status="error"

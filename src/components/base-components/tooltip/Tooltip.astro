@@ -12,6 +12,7 @@ export interface Props extends Omit<HTMLAttributes<"span">, "class" | "id"> {
   label: string;
   size?: TooltipSize;
   placement?: OverlayPlacement;
+  narrowPlacement?: OverlayPlacement;
   id?: string;
   class?: string;
 }
@@ -21,12 +22,13 @@ const {
   label,
   size = "medium",
   placement = "top",
+  narrowPlacement,
   id,
   class: className,
   ...attributes
 } = Astro.props;
 
-validateTooltipContract({ text, label, size, placement, id });
+validateTooltipContract({ text, label, size, placement, narrowPlacement, id });
 
 const rootId = id ?? `tooltip-${crypto.randomUUID()}`;
 const contentId = `${rootId}-content`;
@@ -39,7 +41,10 @@ const contentId = `${rootId}-content`;
   data-component-name="Tooltip"
   data-overlay-mode="tooltip"
   data-overlay-placement={placement}
+  data-overlay-placement-narrow={narrowPlacement}
   data-overlay-root
+  data-tooltip-placement={placement}
+  data-tooltip-placement-narrow={narrowPlacement}
   data-tooltip-size={size}
 >
   <button
@@ -55,10 +60,7 @@ const contentId = `${rootId}-content`;
   </button>
   <span
     id={contentId}
-    class:list={[
-      "tooltip__content",
-      size === "small" ? "body-tiny-regular" : "body-small-regular",
-    ]}
+    class="tooltip__content body-tiny-regular"
     role="tooltip"
     popover="manual"
     hidden
@@ -66,7 +68,7 @@ const contentId = `${rootId}-content`;
     data-tooltip-content
   >
     <span class="tooltip__tail" aria-hidden="true" data-overlay-tail></span>
-    {text}
+    <span class="tooltip__text">{text}</span>
   </span>
 </span>
 
@@ -218,6 +220,11 @@ const contentId = `${rootId}-content`;
 
   .tooltip__content.is-visible {
     opacity: 1;
+  }
+
+  .tooltip__text {
+    display: block;
+    max-inline-size: 100%;
   }
 
   .tooltip__tail {

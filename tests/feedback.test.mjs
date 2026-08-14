@@ -27,7 +27,7 @@ test("presentation and content validation accept the public matrix", () => {
     title: "Saved",
     actions: [{ label: "View", href: "/settings" }, { label: "Undo", href: "/undo" }],
   }));
-  assert.deepEqual(feedbackEmphases, ["solid", "soft", "subtle"]);
+  assert.deepEqual(feedbackEmphases, ["solid", "soft", "subtle", "outlined"]);
   assert.throws(() => validateFeedbackPresentation({ status: "info", emphasis: "outline", size: "medium" }), TypeError);
 });
 

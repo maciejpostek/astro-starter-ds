@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import "../../../styles/components/input-controls.css";
 import Input, { type InputSize, type InputValidation } from "./Input.astro";
+import { normalizeValidationState } from "../../../lib/forms/validationState";
 
 export interface Props extends Omit<HTMLAttributes<"input">, "class" | "disabled" | "name" | "size" | "type" | "value"> {
   name?: string;
@@ -16,11 +17,12 @@ const {
   name,
   value = "",
   size = "medium",
-  validation = "default",
+  validation = "none",
   disabled = false,
   class: className,
   ...attributes
 } = Astro.props;
+const validationState = normalizeValidationState(validation);
 const protocol = "https://";
 const visibleValue = value.replace(/^https:\/\//iu, "");
 const submittedValue = visibleValue ? `${protocol}${visibleValue}` : "";
@@ -30,7 +32,7 @@ const submittedValue = visibleValue ? `${protocol}${visibleValue}` : "";
   class:list={["url-input", className]}
   data-component-name="UrlInput"
   data-control-size={size}
-  data-input-validation={validation}
+  data-input-validation={validationState}
   data-input-control-disabled={disabled ? "true" : undefined}
   data-url-input
 >
@@ -41,7 +43,7 @@ const submittedValue = visibleValue ? `${protocol}${visibleValue}` : "";
     data-url-input-control
     disabled={disabled}
     size={size}
-    validation={validation}
+    validation={validationState}
     type="text"
     inputmode="url"
     value={visibleValue}
@@ -106,7 +108,7 @@ const submittedValue = visibleValue ? `${protocol}${visibleValue}` : "";
   }
 
   .url-input :global(.url-input__field),
-  .url-input :global(.url-input__field:is(:hover, :focus-visible, :disabled, [data-input-validation="valid"], [data-input-validation="invalid"])) {
+  .url-input :global(.url-input__field:is(:hover, :focus-visible, :disabled, [data-input-validation="success"], [data-input-validation="warning"], [data-input-validation="error"])) {
     height: 100%;
     min-height: 0;
     border: 0;
@@ -115,40 +117,54 @@ const submittedValue = visibleValue ? `${protocol}${visibleValue}` : "";
     box-shadow: none;
   }
 
-  .url-input:not([data-input-control-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
+  .url-input:not([data-input-control-disabled="true"])[data-input-validation="none"]:is(:hover, [data-ds-preview-state="hover"]) {
     border-color: var(--input-border-hover);
     background: var(--input-background-hover);
   }
 
+  .url-input:not([data-input-control-disabled="true"])[data-input-validation="error"] {
+    border-color: var(--input-border-error);
+    box-shadow: var(--effect-validation-error);
+  }
+
+  .url-input:not([data-input-control-disabled="true"])[data-input-validation="warning"] {
+    border-color: var(--input-border-warning);
+    box-shadow: var(--effect-validation-warning);
+  }
+
+  .url-input:not([data-input-control-disabled="true"])[data-input-validation="success"] {
+    border-color: var(--input-border-success);
+    box-shadow: var(--effect-validation-success);
+  }
+
   .url-input:not([data-input-control-disabled="true"]):is(:focus-within, [data-ds-preview-state="focus-visible"]) {
-    border-color: var(--input-border-focus);
     background: var(--input-background-focus);
     outline: none;
     box-shadow: var(--effect-focused);
   }
 
-  .url-input[data-input-validation="invalid"] {
-    border-color: var(--input-border-invalid);
+  .url-input:not([data-input-control-disabled="true"])[data-input-validation="none"]:is(:focus-within, [data-ds-preview-state="focus-visible"]) {
+    border-color: var(--input-border-focus);
   }
 
-  .url-input[data-input-validation="valid"] {
-    border-color: var(--input-border-valid);
-  }
-
-  .url-input:not([data-input-control-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) .url-input__protocol {
+  .url-input:not([data-input-control-disabled="true"])[data-input-validation="none"]:is(:hover, [data-ds-preview-state="hover"]) .url-input__protocol {
     border-inline-end-color: var(--input-border-hover);
   }
 
-  .url-input:not([data-input-control-disabled="true"]):is(:focus-within, [data-ds-preview-state="focus-visible"]) .url-input__protocol {
+  .url-input:not([data-input-control-disabled="true"])[data-input-validation="none"]:is(:focus-within, [data-ds-preview-state="focus-visible"]) .url-input__protocol {
     border-inline-end-color: var(--input-border-focus);
   }
 
-  .url-input[data-input-validation="invalid"] .url-input__protocol {
-    border-inline-end-color: var(--input-border-invalid);
+  .url-input[data-input-validation="error"] .url-input__protocol {
+    border-inline-end-color: var(--input-border-error);
   }
 
-  .url-input[data-input-validation="valid"] .url-input__protocol {
-    border-inline-end-color: var(--input-border-valid);
+  .url-input[data-input-validation="warning"] .url-input__protocol {
+    border-inline-end-color: var(--input-border-warning);
+  }
+
+  .url-input[data-input-validation="success"] .url-input__protocol {
+    border-inline-end-color: var(--input-border-success);
   }
 
   .url-input[data-input-control-disabled="true"] {
@@ -180,6 +196,10 @@ const submittedValue = visibleValue ? `${protocol}${visibleValue}` : "";
       outline: var(--border-width-strong) solid Highlight;
       outline-offset: var(--size-2);
       box-shadow: none;
+    }
+
+    .url-input:not([data-input-control-disabled="true"])[data-input-validation="error"] {
+      border-color: Mark;
     }
   }
 </style>

@@ -342,7 +342,8 @@ if (!documentationRegistry.includes("sourcePath?: string;")
   || !docHeader.includes("ds-documentation-page-header__resources")
   || !docHeader.includes('import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro"')
   || !docHeader.includes('import CopyButton from "../../base-components/buttons/CopyButton.astro"')
-  || !docHeader.includes('import Toast from "../../base-components/toast-notification/Toast.astro"')
+  || !docHeader.includes('import NotificationAndToast from "../../base-components/feedback-messages/NotificationAndToast.astro"')
+  || !docHeader.includes('delivery="toast"')
   || !docHeader.includes("<ButtonGroup")
   || !docHeader.includes("<CopyButton")
   || !docHeader.includes('variant="primary"')
@@ -366,8 +367,8 @@ if (!/\.ds-documentation-page-header__inner \.heading-h1\s*\{[^}]*margin-block-e
 }
 if ((componentDetailRoutes.match(/sourcePath:\s*component\.sourcePath\s*\?\?\s*undefined/g) ?? []).length !== 2
   || (componentDetailRoutes.match(/figmaHref,/g) ?? []).length !== 2
-  || (componentDetailRoutes.match(/architecture\.figma\.fileUrl/g) ?? []).length !== 2
-  || (componentDetailRoutes.match(/figmaCanonicalNodeId\.replace\(":",\s*"-"\)/g) ?? []).length !== 2) {
+  || (componentDetailRoutes.match(/documentationFigmaHref\(component\)/g) ?? []).length !== 2
+  || !documentationRegistry.includes("export const documentationFigmaHref")) {
   errors.push("Both component detail routes must derive optional source and canonical Figma header resources from the registry.");
 }
 if (!sectionHeading.includes("level: 2 | 3;")
@@ -817,7 +818,7 @@ if (!tableCopyCell.includes('id={tokenId}')
   || !colorRow.includes("anchor={anchorToken}")
   || !paletteBlock.includes("anchorToken={anchorTokens}")
   || !componentColorReference.includes("anchorTokens={group.anchorTokens}")
-  || (foundationData.match(/anchorTokens:\s*false/g) ?? []).length !== 6
+  || (foundationData.match(/anchorTokens:\s*false/g) ?? []).length !== 5
   || !typographyFoundationPage.includes('<DsTableCopyCell anchor={false} role="cell" value={row.token} />')
   || !documentationStyles.includes('[data-ds-token-anchor="true"][data-ds-search-target="true"]')
   || !documentationStyles.includes("background: var(--color-background-accent-subtle)")

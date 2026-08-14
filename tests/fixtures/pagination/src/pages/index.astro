@@ -60,6 +60,38 @@ const getPageHref = (page: number) => `/results?page=${page}`;
           </PaginationGroup>
         </nav>
       </section>
+
+      <section class="pagination-fixture" data-theme="light">
+        <Pagination
+          aria-label="Slotted result pages"
+          currentPage={2}
+          data-contract="slotted"
+          getPageHref={getPageHref}
+          showSummary={false}
+          totalPages={5}
+        >
+          <PaginationItem
+            data-slot-item="previous"
+            kind="previous"
+            label="Previous page"
+            href={getPageHref(1)}
+          />
+          <PaginationItem
+            current
+            data-slot-item="current"
+            kind="page"
+            label="Page 2, current page"
+            page={2}
+            href={getPageHref(2)}
+          />
+          <PaginationItem
+            data-slot-item="next"
+            kind="next"
+            label="Next page"
+            href={getPageHref(3)}
+          />
+        </Pagination>
+      </section>
     </main>
   </body>
 </html>

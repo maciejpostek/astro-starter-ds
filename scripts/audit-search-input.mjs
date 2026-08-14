@@ -45,7 +45,7 @@ for (const contract of [
   if (!source.includes(contract)) errors.push(`SearchInput is missing contract: ${contract}`);
 }
 
-if (!input.includes('data-input-validation={validation}') || !input.includes('data-control-size={size}')) {
+if (!input.includes('data-input-validation={validationState}') || !input.includes('data-control-size={size}')) {
   errors.push("SearchInput's canonical Input dependency is incomplete.");
 }
 if (/#[0-9a-f]{3,8}\b/iu.test(source) || /(?:min-height|gap|padding|font-size):\s*\d+(?:px|rem)/u.test(source)) {
@@ -84,7 +84,10 @@ if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePa
 if (record?.figmaCanonicalNodeId !== "223:137" || !record?.dependencies?.includes("input") || !record?.dependencies?.includes("material-symbol")) {
   errors.push("SearchInput registry does not preserve canonical identity and dependencies.");
 }
-if (!record?.divergences?.some((entry) => entry.includes("_Parts/SearchInput.ClearButton"))) {
+if (!record?.divergences?.some((entry) =>
+  (typeof entry === "string" ? entry : `${entry.reason ?? ""} ${entry.instruction ?? ""}`)
+    .includes("_Parts/SearchInput.ClearButton")
+)) {
   errors.push("SearchInput registry does not document the private clear-action state model.");
 }
 

@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"nav">, "class"> {
+  label?: string;
+  class?: string;
+}
+
+const {
+  label = "Breadcrumb",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (!Astro.slots.has("default")) {
+  throw new TypeError("Breadcrumbs requires Breadcrumb children.");
+}
+---
+
+<nav
+  {...attributes}
+  class:list={["breadcrumbs", className]}
+  aria-label={label}
+  data-component-name="Breadcrumbs"
+>
+  <ol class="breadcrumbs__list">
+    <slot />
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    min-inline-size: 0;
+  }
+
+  .breadcrumbs__list {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-tiny);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

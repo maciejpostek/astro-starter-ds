@@ -6,6 +6,7 @@ const read = (path) => readFileSync(resolve(projectRoot, path), "utf8");
 const contract = JSON.parse(read("architecture/approved-token-repairs.json"));
 const registry = JSON.parse(read("src/data/design-system/tokenArchitecture.json"));
 const errors = [];
+const normalizeWhitespace = (value) => value.replace(/\s+/gu, " ").trim();
 
 for (const repair of contract.repairs ?? []) {
   if (repair.approvalStatus !== "approved" || !repair.approvedBy || !repair.approvedAt) {
@@ -14,8 +15,18 @@ for (const repair of contract.repairs ?? []) {
   }
   const source = read(repair.sourcePath);
   for (const token of repair.proposedTokens ?? []) {
-    const declaration = `${token.name}: var(${token.aliasSource})`;
-    if (!source.includes(declaration)) errors.push(`${repair.id}: missing exact declaration ${declaration}.`);
+    const declaration = token.aliasSource
+      ? `${token.name}: var(${token.aliasSource})`
+      : token.value
+        ? `${token.name}: ${token.value}`
+        : null;
+    if (!declaration) {
+      errors.push(`${repair.id}: ${token.name} requires aliasSource or value.`);
+      continue;
+    }
+    if (!normalizeWhitespace(source).includes(normalizeWhitespace(declaration))) {
+      errors.push(`${repair.id}: missing exact declaration ${declaration}.`);
+    }
   }
   for (const override of repair.removedThemeOverrides ?? []) {
     const [name, alias] = override.split(": ");
@@ -25,7 +36,8 @@ for (const repair of contract.repairs ?? []) {
   if (!group) errors.push(`${repair.id}: registry group ${repair.extensionTarget} does not exist.`);
   for (const consumer of repair.consumers ?? []) {
     const registered = (registry.groups ?? []).some((candidate) =>
-      candidate.sourcePaths?.includes(repair.sourcePath) && candidate.consumers?.includes(consumer)
+      candidate.sourcePaths?.includes(repair.sourcePath)
+      && (candidate.consumers?.includes("*") || candidate.consumers?.includes(consumer))
     );
     if (!registered) errors.push(`${repair.id}: consumer ${consumer} is not projected by the token registry.`);
   }

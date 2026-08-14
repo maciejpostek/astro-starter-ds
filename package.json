@@ -39,6 +39,7 @@
     "audit:accordion": "node scripts/audit-accordion.mjs .",
     "audit:tooltip": "node scripts/audit-tooltip.mjs .",
     "audit:content-divider": "node scripts/audit-content-divider.mjs .",
+    "audit:bullet-point": "node scripts/audit-bullet-point.mjs .",
     "audit:tag": "node scripts/audit-tag.mjs .",
     "audit:file-upload": "node scripts/audit-file-upload.mjs .",
     "audit:feedback": "node scripts/audit-feedback.mjs .",
@@ -64,6 +65,7 @@
     "test:pagination": "node --test tests/pagination.test.mjs",
     "test:ratio": "node --test tests/ratio.test.mjs",
     "test:content-divider": "node --test tests/content-divider.test.mjs",
+    "test:bullet-point": "node --test tests/bullet-point.test.mjs",
     "test:tag": "node --test tests/tag.test.mjs",
     "test:tabs": "node --test tests/tabs.test.mjs",
     "test:accordion": "node --test tests/accordion.test.mjs",
@@ -73,6 +75,7 @@
     "test:feedback": "node --test tests/feedback.test.mjs",
     "test:popup": "node --test tests/popup.test.mjs",
     "test:select": "node --test tests/select.test.mjs",
+    "test:validation-state": "node --test tests/validation-state.test.mjs",
     "test:documentation-navigation": "node --test tests/documentation-navigation.test.mjs",
     "test:documentation-search": "node --test tests/documentation-search.test.mjs",
     "test:runtime-benchmark": "node --test tests/runtime-benchmark.test.mjs",
@@ -88,7 +91,7 @@
     "figma-pages:generate": "node scripts/generate-figma-page-map.mjs .",
     "figma-pages:check": "node scripts/generate-figma-page-map.mjs . --check",
     "architecture:trace": "node scripts/trace-agentic-workflow.mjs .",
-    "validate": "npm run test:agent-runtime && npm run test:pagination && npm run test:ratio && npm run test:content-divider && npm run test:tag && npm run test:tabs && npm run test:accordion && npm run test:tooltip && npm run test:documentation-tables && npm run test:file-upload && npm run test:feedback && npm run test:popup && npm run test:select && npm run test:documentation-navigation && npm run test:documentation-search && npm run audit:agent-runtime && npm run audit:architecture && npm run audit:components && npm run audit:component-authoring && npm run audit:component-readiness && npm run audit:agentic-rules && npm run audit:brand-expression && npm run brand:check && npm run audit:foundations && npm run audit:approved-token-repairs && npm run audit:icons && npm run audit:social-buttons && npm run audit:copy-buttons && npm run audit:checkbox-radio && npm run audit:input && npm run audit:search-input && npm run audit:inputs && npm run audit:select && npm run audit:pagination && npm run audit:content-divider && npm run audit:tag && npm run audit:tabs && npm run audit:accordion && npm run audit:tooltip && npm run audit:file-upload && npm run audit:feedback && npm run audit:popup && npm run audit:documentation && npm run audit:responsive && npm run build",
+    "validate": "npm run test:agent-runtime && npm run test:pagination && npm run test:ratio && npm run test:content-divider && npm run test:bullet-point && npm run test:tag && npm run test:tabs && npm run test:accordion && npm run test:tooltip && npm run test:documentation-tables && npm run test:file-upload && npm run test:feedback && npm run test:popup && npm run test:select && npm run test:validation-state && npm run test:documentation-navigation && npm run test:documentation-search && npm run audit:agent-runtime && npm run audit:architecture && npm run audit:components && npm run audit:component-authoring && npm run audit:component-readiness && npm run audit:agentic-rules && npm run audit:brand-expression && npm run brand:check && npm run audit:foundations && npm run audit:approved-token-repairs && npm run audit:icons && npm run audit:social-buttons && npm run audit:copy-buttons && npm run audit:checkbox-radio && npm run audit:input && npm run audit:search-input && npm run audit:inputs && npm run audit:select && npm run audit:pagination && npm run audit:content-divider && npm run audit:bullet-point && npm run audit:tag && npm run audit:tabs && npm run audit:accordion && npm run audit:tooltip && npm run audit:file-upload && npm run audit:feedback && npm run audit:popup && npm run audit:documentation && npm run audit:responsive && npm run build",
     "validate:release": "npm run validate && npm run audit:runtime:v1.1 && npm run audit:release-readiness && npm run build:release && npm run test:browser:chromium && npm run test:browser:firefox && npm run test:browser:webkit && npm run test:a11y && npm run test:lighthouse && npm run audit:security:production && npm run audit:security"
   },
   "dependencies": {

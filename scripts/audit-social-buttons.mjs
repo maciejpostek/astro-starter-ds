@@ -118,10 +118,10 @@ if (/^\s*--[a-z0-9_-]+\s*:/mu.test(sharedStyles)) {
 }
 
 const expectedRecords = [
-  ["social-button", "SocialButton", socialButtonPath, ["primary", "secondary", "tertiary"]],
-  ["social-icon-button", "SocialIconButton", socialIconButtonPath, ["primary", "secondary"]],
+  ["social-button", "SocialButton", socialButtonPath, ["primary", "secondary", "tertiary"], "1344:95"],
+  ["social-icon-button", "SocialIconButton", socialIconButtonPath, ["primary", "secondary"], "1344:1688"],
 ];
-for (const [id, name, sourcePath, variants] of expectedRecords) {
+for (const [id, name, sourcePath, variants, figmaNodeId] of expectedRecords) {
   const record = registry.components.find((component) => component.id === id);
   if (!record) {
     errors.push(`Missing registry record: ${id}`);
@@ -137,8 +137,16 @@ for (const [id, name, sourcePath, variants] of expectedRecords) {
   ) {
     errors.push(`${id} has an incomplete identity, source, family, or role mapping.`);
   }
-  if (record.syncStatus !== "astro-only" || record.status !== "astro-only" || record.figmaCanonicalNodeId !== null) {
-    errors.push(`${id} must remain astro-only without a fictional canonical Figma node.`);
+  if (
+    record.syncStatus !== "intentional-difference" ||
+    record.status !== "intentional-difference" ||
+    record.figmaCanonicalNodeId !== figmaNodeId ||
+    record.readiness?.visual !== "review" ||
+    record.readiness?.validation !== "passed" ||
+    record.divergences?.[0]?.kind !== "property-mapping" ||
+    !record.divergences?.[0]?.instruction?.includes("Facebook")
+  ) {
+    errors.push(`${id} must map the fixed-Facebook Figma fallback as an intentional difference under visual review.`);
   }
   if (JSON.stringify(record.variants) !== JSON.stringify(variants)) {
     errors.push(`${id} has an invalid variant contract.`);

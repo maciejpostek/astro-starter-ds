@@ -19,12 +19,26 @@ export function getPublicComponentRecords(projectRoot = process.cwd()) {
 }
 
 export function getPublicComponentRoutes(projectRoot = process.cwd()) {
-  return getPublicComponentRecords(projectRoot).map((component) => ({
+  const components = getPublicComponentRecords(projectRoot);
+  const registry = JSON.parse(
+    readFileSync(resolve(projectRoot, "src/data/design-system/componentArchitecture.json"), "utf8"),
+  );
+
+  return components.map((component) => ({
     id: component.id,
     name: component.name,
     family: component.pageKey,
     category: component.categoryKey,
-    route: `/design-system/${component.categoryKey}/${component.pageKey}/${component.id}/`,
+    route:
+      component.categoryKey === "base-components" &&
+      (registry.components ?? []).filter(
+        (candidate) =>
+          candidate.categoryKey === component.categoryKey &&
+          candidate.pageKey === component.pageKey &&
+          !["internal", "part"].includes(candidate.role),
+      ).length === 1
+        ? `/design-system/${component.categoryKey}/${component.pageKey}/`
+        : `/design-system/${component.categoryKey}/${component.pageKey}/${component.id}/`,
     visual: component.readiness?.visual,
     validation: component.readiness?.validation,
   }));

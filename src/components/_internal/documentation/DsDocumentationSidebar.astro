@@ -5,6 +5,7 @@ import {
   documentationCategories,
   documentationComponentHref,
   documentationPageHref,
+  isSingletonBaseComponentPage,
   normalizeDocumentationPath,
 } from "../../../data/documentationRegistry";
 import DsDocumentationSearch from "./DsDocumentationSearch.astro";
@@ -61,7 +62,11 @@ const normalizedActivePath = normalizeDocumentationPath(activePath);
                 const components = category.categoryKey === "assets"
                   ? []
                   : componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
-                const activeComponent = components.some(
+                const isSingleton =
+                  category.categoryKey === "base-components" &&
+                  isSingletonBaseComponentPage(page.pageKey);
+                const nestedComponents = isSingleton ? [] : components;
+                const activeComponent = nestedComponents.some(
                   (component) =>
                     normalizeDocumentationPath(documentationComponentHref(component)) === normalizedActivePath
                 );
@@ -82,7 +87,7 @@ const normalizedActivePath = normalizeDocumentationPath(activePath);
                       >
                         {page.pageLabel}
                       </a>
-                      {components.length > 0 && (
+                      {nestedComponents.length > 0 && (
                         <button
                           class="ds-documentation-sidebar__disclosure"
                           type="button"
@@ -96,14 +101,14 @@ const normalizedActivePath = normalizeDocumentationPath(activePath);
                       )}
                     </div>
 
-                    {components.length > 0 && (
+                    {nestedComponents.length > 0 && (
                       <ul
                         class="ds-documentation-sidebar__components"
                         id={panelId}
                         hidden={!expanded}
                         data-ds-sidebar-component-list
                       >
-                        {components.map((component) => {
+                        {nestedComponents.map((component) => {
                           const componentHref = documentationComponentHref(component);
                           const currentComponent =
                             normalizeDocumentationPath(componentHref) === normalizedActivePath;

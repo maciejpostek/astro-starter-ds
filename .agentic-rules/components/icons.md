@@ -14,7 +14,7 @@ Figma naming: `Icon/Material/<google_snake_case_name>`
 Default optical canvas: `20 × 20`
 License: Apache License 2.0
 
-Use only the 49 curated Google Material Symbols in the manifest. Render each
+Use only the 50 curated Google Material Symbols in the manifest. Render each
 glyph as local inline SVG with the Sharp profile: optical size 20, weight 400,
 grade 0, fill 0. Lucide, icon fonts, runtime requests, Unicode glyphs, and
 pasted SVG paths in consumers are forbidden.
@@ -37,7 +37,7 @@ hide the icon. Change a glyph only in the consumer master, then re-check color
 and size bindings. Astro hardcodes the same MaterialSymbol name.
 
 The feedback family has one bounded semantic-axis exception: `Alert`,
-`Notification` and `Toast` map `error` to `error`, `warning` to `warning`,
+`NotificationAndToast` maps `error` to `error`, `warning` to `warning`,
 `success` to `check_circle`, `info` to `info`, and `feature` to `star_rate`.
 This closed mapping is owned by `src/lib/feedback/feedbackModel.mjs`; consumers
 still receive no icon prop, icon slot, glyph name or instance-swap capability.

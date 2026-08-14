@@ -26,14 +26,14 @@ const icons = JSON.parse(read("src/data/design-system/iconLibrary.json") || "{}"
 const ruleContract = readComponentRuleContract(projectRoot);
 const definitions = [
   ["label", "Label", "inputs", "mapped", "216:9"],
-  ["hint", "Hint", "hint", "astro-only", null],
+  ["hint", "Hint", "hint", "mapped", "1371:29"],
   ["form-field", "FormField", "inputs", "mapped", "224:122"],
-  ["url-input", "UrlInput", "inputs", "astro-only", null],
-  ["date-input", "DateInput", "inputs", "astro-only", null],
-  ["password-input", "PasswordInput", "inputs", "astro-only", null],
-  ["share-link-input", "ShareLinkInput", "inputs", "astro-only", null],
-  ["counter-input", "CounterInput", "inputs", "astro-only", null],
-  ["text-area-input", "TextAreaInput", "inputs", "astro-only", null],
+  ["url-input", "UrlInput", "inputs", "mapped", "1369:104"],
+  ["date-input", "DateInput", "inputs", "mapped", "1369:151"],
+  ["password-input", "PasswordInput", "inputs", "mapped", "1369:456"],
+  ["share-link-input", "ShareLinkInput", "inputs", "mapped", "1369:216"],
+  ["counter-input", "CounterInput", "inputs", "mapped", "1369:311"],
+  ["text-area-input", "TextAreaInput", "inputs", "mapped", "1369:482"],
 ];
 
 const retiredFormStructurePage = registry.pages?.find(
@@ -73,10 +73,7 @@ const label = read("src/components/base-components/inputs/Label.astro");
 requireContracts("Label", label, ['variant === "field" ? "label" : "span"', "required?: boolean", "optionalText?: never", "data-label-disabled", "var(--control-font-size, var(--font-size-body-small))"]);
 
 const hint = read("src/components/base-components/hint/Hint.astro");
-requireContracts("Hint", hint, ['name="info"', 'size="var(--control-icon-size, var(--size-16))"', 'class="hint__icon-wrapper"', "padding-block-start: var(--size-2)", "data-hint-disabled", "var(--control-font-size, var(--font-size-body-small))"]);
-if (hint.includes('name={icon}') || hint.includes('name="error"') || hint.includes('name="check_circle"')) {
-  errors.push("Hint must keep one fixed info Material Symbol across every tone.");
-}
+requireContracts("Hint", hint, ['name={hintIcon}', 'hintTone === "error"', '? "warning"', '? "check_circle"', 'size="var(--control-icon-size, var(--size-16))"', 'class="hint__icon-wrapper"', "padding-block-start: var(--size-2)", "data-hint-disabled", "var(--control-font-size, var(--font-size-body-small))"]);
 
 const formField = read("src/components/base-components/inputs/FormField.astro");
 requireContracts("FormField", formField, ['descriptionId = `${controlId}-hint`', "size?: InputSize", "data-control-size={size}", "var(--control-gap, var(--gap-small))", "<Label", "<slot />", "<Hint", "data-field-validation"]);
@@ -106,7 +103,7 @@ if (!formFieldRecord?.props?.includes("size") || !formFieldRecord?.attributes?.i
 }
 
 const search = read("src/components/base-components/inputs/SearchInput.astro");
-requireContracts("SearchInput", search, ["type InputValidation", 'validation = "default"', "validation={validation}"]);
+requireContracts("SearchInput", search, ["type InputValidation", 'validation = "none"', "validation={validation}"]);
 
 const url = read("src/components/base-components/inputs/UrlInput.astro");
 requireContracts("UrlInput", url, ['const protocol = "https://"', "type=\"hidden\"", "name={name}", "hidden.value", 'addEventListener("reset"', "queueMicrotask", "border-inline-end:", "grid-template-columns: max-content minmax(0, 1fr)"]);
@@ -126,7 +123,7 @@ requireContracts("CounterInput", counter, ['type="number"', "input.stepUp()", "i
 const textArea = read("src/components/base-components/inputs/TextAreaInput.astro");
 requireContracts("TextAreaInput", textArea, ["maxLength: number", "maxlength={maxLength}", 'data-component-part="character-count"', "input.value.length", 'addEventListener("reset"', "right: var(--control-padding-inline)", '[data-component-name="FormField"][data-control-size="small"]'] );
 
-for (const icon of ["info", "error", "check_circle", "calendar_month", "shield_lock", "visibility", "visibility_off", "link", "content_copy", "add", "remove", "search", "close"]) {
+for (const icon of ["info", "error", "warning", "check_circle", "calendar_month", "shield_lock", "visibility", "visibility_off", "link", "content_copy", "add", "remove", "search", "close"]) {
   if (!icons.icons?.[icon]) errors.push(`Input family requires missing Material Symbol: ${icon}`);
 }
 

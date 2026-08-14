@@ -23,7 +23,7 @@ heading belongs to without competing with that heading.
 
 ## Avoid when
 
-- The text is a status, filter or standalone metadata value; use [Tag](/design-system/base-components/tag/tag) when its contract applies.
+- The text is a status, filter or standalone metadata value; use [Tag](/design-system/base-components/tag) when its contract applies.
 - The label repeats the heading without adding context.
 - The content needs a sentence, explanation or call to action.
 - The label is intended to become part of the document heading hierarchy.
@@ -59,7 +59,7 @@ heading belongs to without competing with that heading.
 
 ## Related components
 
-- [Tag](/design-system/base-components/tag/tag) communicates a compact standalone value or removable filter, not a heading prelabel.
+- [Tag](/design-system/base-components/tag) communicates a compact standalone value or removable filter, not a heading prelabel.
 - A semantic heading follows Eyebrow and remains responsible for document structure.
 
 ## Naming and token contract
@@ -70,6 +70,11 @@ the registered `eyebrow-color` group, marker geometry consumes the approved
 `--space-eyebrow-bottom`, and compact typography consumes existing foundation
 tokens. Do not declare local custom properties, add variants or replace the
 marker through props or slots.
+
+Figma represents Eyebrow as one standalone `Component` with a single `Text`
+property and no variant axes. Its master owns only the reusable marker, text,
+semantic gap and visual bindings; the 12px separation from the following
+heading remains Astro composition behavior.
 
 ## Core decision
 

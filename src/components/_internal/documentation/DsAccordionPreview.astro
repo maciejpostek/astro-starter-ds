@@ -1,24 +1,14 @@
 ---
-import Accordion, {
-  type AccordionItems,
-} from "../../base-components/accordion/Accordion.astro";
-
-const items: AccordionItems = [
-  {
-    id: "response-time",
-    title: "How quickly will I receive a response?",
-    content: "Most requests receive an initial response within one business day.",
-    helpText: "Response time starts when a complete request reaches the team.",
-    helpLabel: "Explain how response time is measured",
-  },
-];
+import Accordion from "../../base-components/accordion/Accordion.astro";
 ---
 
 <div class="ds-preview-renderer-boundary" data-component-name="DsAccordionPreview">
   <Accordion
     data-ds-preview-target
-    items={items}
-    initialOpen="none"
+    title="How quickly will I receive a response?"
+    content="Most requests receive an initial response within one business day."
+    helpText="Response time starts when a complete request reaches the team."
+    helpLabel="Explain how response time is measured"
   />
 </div>
 

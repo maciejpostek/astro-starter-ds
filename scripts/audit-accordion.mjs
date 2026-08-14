@@ -8,119 +8,121 @@ const componentRuleContract = readComponentRuleContract(projectRoot);
 const read = (path) => {
   const absolute = join(projectRoot, path);
   if (!existsSync(absolute)) {
-    errors.push(`Missing Accordion artifact: ${path}`);
+    errors.push(`Missing Accordion family artifact: ${path}`);
     return "";
   }
   return readFileSync(absolute, "utf8");
 };
 
-const sourcePath = "src/components/base-components/accordion/Accordion.astro";
-const modelPath = "src/lib/accordion/accordion-model.mjs";
-const rulePath = ".agentic-rules/components/accordion.md";
-const source = read(sourcePath);
-const model = read(modelPath);
-const rule = read(rulePath);
+const accordionPath = "src/components/base-components/accordion/Accordion.astro";
+const listPath = "src/components/base-components/accordion/AccordionList.astro";
+const accordion = read(accordionPath);
+const list = read(listPath);
+const accordionRule = read(".agentic-rules/components/accordion.md");
+const listRule = read(".agentic-rules/components/accordion-list.md");
 const docs = read("src/data/documentationComponentRegistry.ts");
-const preview = read("src/components/_internal/documentation/DsAccordionPreview.astro");
+const accordionPreview = read("src/components/_internal/documentation/DsAccordionPreview.astro");
+const listPreview = read("src/components/_internal/documentation/DsAccordionListPreview.astro");
 const readiness = read("architecture/component-readiness-contract.json");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
-const record = registry.components?.find((component) => component.id === "accordion");
-const part = registry.components?.find((component) => component.id === "accordion-item");
+const accordionRecord = registry.components?.find((component) => component.id === "accordion");
+const listRecord = registry.components?.find((component) => component.id === "accordion-list");
 
 for (const contract of [
   'data-component-name="Accordion"',
-  "data-accordion-mode={mode}",
-  "data-accordion-initial-open={initialOpenAttribute}",
-  "normalizeAccordionState(items, mode, initialOpen)",
+  "data-accordion-state",
+  "data-accordion-help",
+  "data-accordion-disabled",
   "<HeadingTag",
-  'aria-expanded={isOpen ? "true" : "false"}',
+  "aria-expanded",
   "aria-controls={panelId}",
   "aria-labelledby={triggerId}",
-  "disabled={item.disabled}",
+  "disabled={disabled}",
   "<Tooltip",
   'name="arrow_drop_down"',
-  'size="var(--size-20)"',
-  "body-base-semibold",
-  "body-base-regular",
   "data-accordion-help-trigger",
-  'size="small"',
-  "grid-column: 2",
-  ".accordion__row--with-help:has(> [data-accordion-help-trigger][hidden])",
-  "grid-column: 1",
-  "padding: var(--content-padding-medium)",
   "panel.animate(",
   "panel.scrollHeight",
-  'panel.hidden = !open',
   'window.matchMedia("(prefers-reduced-motion: reduce)")',
-  "var(--motion-duration-surface-enter)",
-  "var(--motion-ease-premium-out)",
   "border: var(--border-width-default) solid var(--color-border-default)",
   "border-radius: var(--radius-small)",
-  'event.key === "ArrowDown"',
-  'event.key === "ArrowUp"',
-  'event.key === "Home"',
-  'event.key === "End"',
   "var(--effect-focused)",
-  "@media (prefers-reduced-motion: reduce)",
   "@media (forced-colors: active)",
 ]) {
-  if (!source.includes(contract)) errors.push(`Accordion is missing contract: ${contract}`);
+  if (!accordion.includes(contract)) errors.push(`Accordion is missing contract: ${contract}`);
 }
 
-if (!model.includes("normalizeAccordionState") || !model.includes("requestedIds")) {
-  errors.push("Accordion does not expose its testable normalization model.");
+for (const contract of [
+  'data-component-name="AccordionList"',
+  "data-accordion-mode={mode}",
+  "<slot />",
+  "gap: var(--gap-small)",
+]) {
+  if (!list.includes(contract)) errors.push(`AccordionList is missing contract: ${contract}`);
 }
-if (/^\s+(?:state|open)\??:/mu.test(source)) {
+
+if (/^\s+(?:state|open)\??:/mu.test(accordion)) {
   errors.push("Accordion exposes a prohibited visual state prop.");
 }
-if (/#[0-9a-f]{3,8}\b/iu.test(source)) {
-  errors.push("Accordion contains a raw color value instead of canonical tokens.");
+if (/#[0-9a-f]{3,8}\b/iu.test(`${accordion}\n${list}`)) {
+  errors.push("Accordion family contains a raw color value instead of canonical tokens.");
 }
-if (/@container|@media\s*\([^)]*(?:width|height)/u.test(source)) {
-  errors.push("Accordion must remain intrinsic and query-free.");
+if (/@container|@media\s*\([^)]*(?:width|height)/u.test(`${accordion}\n${list}`)) {
+  errors.push("Accordion family must remain intrinsic and query-free.");
 }
-if (source.includes('data-ds-preview-state="pressed"') || source.includes(".accordion__trigger:active")) {
-  errors.push("Accordion must not project a pressed visual state.");
-}
-
-for (const { heading, content } of componentRuleSections(rule, componentRuleContract.headings)) {
-  if (!content) errors.push(`Accordion rule is missing: ${heading}`);
+if (accordion.includes("data-accordion-item") || docs.includes("AccordionItem")) {
+  errors.push("The retired private AccordionItem boundary still exists in the public contract.");
 }
 
-if (
-  !docs.includes('componentId: "accordion"')
-  || !docs.includes('{ label: "Open", value: "open" }')
-  || docs.slice(docs.indexOf('componentId: "accordion"'), docs.indexOf('const feedbackAxes')).includes('{ label: "Pressed", value: "pressed" }')
-  || !docs.includes('label: "Info tooltip"')
-  || !preview.includes("<Accordion")
-  || !preview.includes("position: absolute")
-  || !preview.includes("inset-block-start: 50%")
-  || !preview.includes("inset-inline: var(--content-padding-large)")
-) {
-  errors.push("Accordion documentation adapter or preview is incomplete.");
+for (const [name, rule] of [["Accordion", accordionRule], ["AccordionList", listRule]]) {
+  for (const { heading, content } of componentRuleSections(rule, componentRuleContract.headings)) {
+    if (!content) errors.push(`${name} rule is missing: ${heading}`);
+  }
 }
-if (!readiness.includes('"DsAccordionPreview"')) {
-  errors.push("Accordion preview is missing from the readiness boundary contract.");
+
+for (const contract of [
+  'componentId: "accordion"',
+  'componentId: "accordion-list"',
+  "renderer: DsAccordionPreview",
+  "renderer: DsAccordionListPreview",
+  'label: "Info tooltip"',
+]) {
+  if (!docs.includes(contract)) errors.push(`Accordion documentation is missing: ${contract}`);
 }
-if (!record || record.sourcePath !== sourcePath || record.syncStatus !== "mapped") {
+if (!accordionPreview.includes("<Accordion") || !listPreview.includes("<AccordionList")) {
+  errors.push("Accordion documentation previews are incomplete.");
+}
+for (const previewName of ["DsAccordionPreview", "DsAccordionListPreview"]) {
+  if (!readiness.includes(`"${previewName}"`)) {
+    errors.push(`${previewName} is missing from the readiness boundary contract.`);
+  }
+}
+
+if (!accordionRecord || accordionRecord.sourcePath !== accordionPath || accordionRecord.syncStatus !== "mapped") {
   errors.push("Accordion registry mapping is incomplete.");
 }
-if (record?.figmaCanonicalNodeId !== "299:23") {
-  errors.push("Accordion must preserve canonical Figma node 299:23.");
+if (accordionRecord?.figmaCanonicalNodeId !== "297:105") {
+  errors.push("Accordion must map to canonical Figma node 297:105.");
 }
-for (const dependency of ["accordion-item", "material-symbol", "tooltip"]) {
-  if (!record?.dependencies?.includes(dependency)) {
+for (const dependency of ["material-symbol", "tooltip"]) {
+  if (!accordionRecord?.dependencies?.includes(dependency)) {
     errors.push(`Accordion registry is missing dependency: ${dependency}.`);
   }
 }
-if (part?.sourcePath !== null || part?.syncStatus !== "figma-only") {
-  errors.push("_Parts/Accordion.Item must remain private and Figma-only.");
+if (!listRecord || listRecord.sourcePath !== listPath || listRecord.syncStatus !== "mapped") {
+  errors.push("AccordionList registry mapping is incomplete.");
+}
+if (listRecord?.figmaCanonicalNodeId !== "299:23" || !listRecord?.dependencies?.includes("accordion")) {
+  errors.push("AccordionList must map to Figma node 299:23 and depend on Accordion.");
+}
+if (registry.components?.some((component) => component.id === "accordion-item")) {
+  errors.push("The obsolete accordion-item registry record must be removed.");
 }
 
 if (errors.length) {
-  console.error("Accordion audit failed:");
+  console.error("Accordion family audit failed:");
   errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
 
-console.log("Accordion audit passed: validated text API, native disclosure semantics, keyboard focus movement, intrinsic layout, private item boundary, documentation and mapped registry.");
+console.log("Accordion family audit passed: public disclosure and slotted list contracts, ARIA behavior, tokens, documentation and Figma mappings are aligned.");

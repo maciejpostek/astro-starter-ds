@@ -94,7 +94,7 @@ const descriptionId = `file-upload-card-${fileId}-description`;
 
 <style>
   .file-upload-card { container: file-upload-card / inline-size; display: grid; min-inline-size: 0; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: var(--gap-regular); border: var(--border-width-default) solid var(--card-border-default); border-radius: var(--radius-medium); padding: var(--content-padding-medium); color: var(--color-text-primary); background: var(--card-background-default); font-family: var(--font-family-body); }
-  .file-upload-card[data-file-upload-card-state="error"] { border-color: var(--color-status-error-border); }
+  .file-upload-card[data-file-upload-card-state="error"] { border-color: var(--color-status-error-border-strong); }
   .file-upload-card__icon { position: relative; display: grid; inline-size: var(--size-40); block-size: var(--size-40); place-items: center; color: var(--color-text-secondary); }
   .file-upload-card__icon > span { position: absolute; inset-inline-start: 0; inset-block-end: 0; max-inline-size: 100%; overflow: hidden; border-radius: var(--radius-small); padding: var(--size-1) var(--size-2); color: var(--color-text-primary); background: var(--color-background-strong); font-size: var(--font-size-body-tiny); font-weight: var(--font-weight-strong); line-height: var(--line-height-none); text-overflow: ellipsis; }
   .file-upload-card__body { display: grid; min-inline-size: 0; gap: var(--gap-small); }

@@ -1,5 +1,5 @@
 export const feedbackStatuses = ["error", "warning", "success", "info", "feature"];
-export const feedbackEmphases = ["solid", "soft", "subtle"];
+export const feedbackEmphases = ["solid", "soft", "subtle", "outlined"];
 export const feedbackSizes = ["small", "medium", "large"];
 export const feedbackLiveValues = ["off", "polite", "assertive"];
 

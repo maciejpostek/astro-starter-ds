@@ -50,7 +50,16 @@
       "reason": "A centrally registered attribute bridge shared by aligned controls."
     }
   ],
-  "runtimeCustomProperties": [],
+  "runtimeCustomProperties": [
+    {
+      "id": "tag-color",
+      "owner": "tag",
+      "names": ["--tag-background", "--tag-border", "--tag-content"],
+      "sourcePath": "src/styles/tokens/color-components.css",
+      "consumerPath": "src/components/base-components/tag/Tag.astro",
+      "projection": "data-tag-tone"
+    }
+  ],
   "creationPolicy": {
     "default": "blocked",
     "requiresTokenDraft": true,

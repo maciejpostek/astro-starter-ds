@@ -38,6 +38,127 @@
         "radio",
         "radio-card"
       ]
+    },
+    {
+      "id": "validation-global-color-2026-08-14",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-14",
+      "requestedFor": "Create vivid, mode-aware validation rings and strong control borders while preserving subtle feedback surfaces.",
+      "extensionTarget": "global-color",
+      "sourcePath": "src/styles/tokens/color-semantic.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#global-color",
+      "proposedTokens": [
+        { "name": "--color-state-ring-offset", "aliasSource": "--color-neutral-0", "darkAliasSource": "--color-neutral-950" },
+        { "name": "--color-status-error-ring", "aliasSource": "--color-error-100", "darkAliasSource": "--color-error-950" },
+        { "name": "--color-status-warning-ring", "aliasSource": "--color-warning-100", "darkAliasSource": "--color-warning-950" },
+        { "name": "--color-status-success-ring", "aliasSource": "--color-success-100", "darkAliasSource": "--color-success-950" },
+        { "name": "--color-status-error-border-strong", "aliasSource": "--color-error-500", "darkAliasSource": "--color-error-400" },
+        { "name": "--color-status-warning-border-strong", "aliasSource": "--color-warning-600", "darkAliasSource": "--color-warning-400" },
+        { "name": "--color-status-success-border-strong", "aliasSource": "--color-success-600", "darkAliasSource": "--color-success-400" }
+      ],
+      "consumers": [
+        "input",
+        "hint",
+        "form-field",
+        "search-input",
+        "url-input",
+        "date-input",
+        "password-input",
+        "share-link-input",
+        "counter-input",
+        "text-area-input",
+        "select",
+        "compact-select",
+        "file-upload"
+      ]
+    },
+    {
+      "id": "validation-interaction-effects-2026-08-14",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-14",
+      "requestedFor": "Add reusable Error, Warning and Success halo recipes alongside the canonical keyboard focus effect.",
+      "extensionTarget": "interaction-effect",
+      "sourcePath": "src/styles/tokens/interaction-effects.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#interaction-effect",
+      "proposedTokens": [
+        { "name": "--effect-validation-error", "aliasSource": null, "value": "0 0 0 var(--size-2) var(--color-state-ring-offset), 0 0 0 var(--size-4) var(--color-status-error-ring)" },
+        { "name": "--effect-validation-warning", "aliasSource": null, "value": "0 0 0 var(--size-2) var(--color-state-ring-offset), 0 0 0 var(--size-4) var(--color-status-warning-ring)" },
+        { "name": "--effect-validation-success", "aliasSource": null, "value": "0 0 0 var(--size-2) var(--color-state-ring-offset), 0 0 0 var(--size-4) var(--color-status-success-ring)" }
+      ],
+      "consumers": [
+        "input",
+        "search-input",
+        "url-input",
+        "date-input",
+        "password-input",
+        "share-link-input",
+        "counter-input",
+        "text-area-input",
+        "select",
+        "compact-select",
+        "file-upload"
+      ]
+    },
+    {
+      "id": "validation-input-color-2026-08-14",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-14",
+      "requestedFor": "Expose canonical Error, Warning and Success component aliases without breaking valid and invalid consumers.",
+      "extensionTarget": "input-color",
+      "sourcePath": "src/styles/tokens/color-components.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#input-color",
+      "proposedTokens": [
+        { "name": "--input-border-error", "aliasSource": "--color-status-error-border-strong" },
+        { "name": "--input-border-warning", "aliasSource": "--color-status-warning-border-strong" },
+        { "name": "--input-border-success", "aliasSource": "--color-status-success-border-strong" },
+        { "name": "--input-helper-error", "aliasSource": "--color-status-error-text" },
+        { "name": "--input-helper-warning", "aliasSource": "--color-status-warning-text" },
+        { "name": "--input-helper-success", "aliasSource": "--color-status-success-text" }
+      ],
+      "compatibilityAliases": [
+        "--input-border-invalid: --input-border-error",
+        "--input-border-valid: --input-border-success",
+        "--input-helper-invalid: --input-helper-error",
+        "--input-helper-valid: --input-helper-success"
+      ],
+      "consumers": [
+        "input",
+        "label",
+        "hint",
+        "search-input",
+        "select",
+        "compact-select",
+        "inline-select",
+        "form-field",
+        "counter-input",
+        "date-input",
+        "password-input",
+        "share-link-input",
+        "text-area-input",
+        "url-input",
+        "checkbox-label",
+        "radio-label",
+        "file-upload"
+      ]
+    },
+    {
+      "id": "bullet-point-icon-offset-2026-08-14",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-14",
+      "requestedFor": "Center the 20px BulletPoint status icon within the first 24px Body/Base/Regular text line in Astro and Figma.",
+      "extensionTarget": "bullet-point-size",
+      "sourcePath": "src/styles/tokens/size-components.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#bullet-point-size",
+      "proposedTokens": [
+        { "name": "--bullet-point-icon-offset", "aliasSource": "--size-2" }
+      ],
+      "consumers": [
+        "bullet-point"
+      ]
     }
   ]
 }

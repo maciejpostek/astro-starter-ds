@@ -19,6 +19,7 @@ const read = (path) => {
 
 const contract = readComponentRuleContract(projectRoot);
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
+const overlayRuntime = read("src/lib/overlays/overlay-runtime.ts");
 const implementedPublicComponents = (registry.components ?? []).filter(
   (component) => component.sourcePath && !["internal", "part"].includes(component.role),
 );
@@ -54,7 +55,13 @@ for (const component of implementedPublicComponents) {
   const containerRule = (fields.get("Container queries") ?? "").toLowerCase();
   const viewportRule = (fields.get("Viewport queries") ?? "").toLowerCase();
   const sourceHasContainerQuery = /@container\b/u.test(source);
-  const sourceHasViewportLayoutQuery = /@media\s*\([^)]*(?:min-width|max-width|\bwidth\b)/u.test(source);
+  const sourceHasViewportLayoutQuery =
+    /@media\s*\([^)]*(?:min-width|max-width|\bwidth\b)/u.test(source)
+    || (
+      component.id === "tooltip"
+      && /NARROW_PLACEMENT_QUERY\s*=\s*["'`]\(max-width:\s*48rem\)["'`]/u.test(overlayRuntime)
+      && /matchMedia\(NARROW_PLACEMENT_QUERY\)/u.test(overlayRuntime)
+    );
 
   if (sourceHasContainerQuery === containerRule.startsWith("none")) {
     errors.push(`${component.id} container-query declaration does not match its Astro source.`);

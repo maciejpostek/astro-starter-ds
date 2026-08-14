@@ -100,8 +100,8 @@ if (!license.includes("Apache License") || !license.includes("Version 2.0")) {
 }
 
 const iconEntries = Object.entries(catalog.icons ?? {});
-if (iconEntries.length !== 49) {
-  errors.push(`Expected 49 curated Material Symbols, found ${iconEntries.length}.`);
+if (iconEntries.length !== 50) {
+  errors.push(`Expected 50 curated Material Symbols, found ${iconEntries.length}.`);
 }
 
 const nodeIds = [];
@@ -416,7 +416,7 @@ for (const contract of [
 }
 for (const contract of [
   "SearchInput",
-  "Toast",
+  "NotificationAndToast",
   "data-icon-gallery-search",
   "data-icon-gallery-keywords",
 ]) {

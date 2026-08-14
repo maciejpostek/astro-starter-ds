@@ -43,8 +43,8 @@ requireMatch(model, /formatByteCount/, "Shared byte formatting is missing.");
 const byId = new Map(registry.components.map((component) => [component.id, component]));
 const uploadRecord = byId.get("file-upload");
 const cardRecord = byId.get("file-upload-card");
-if (!uploadRecord?.sourcePath || uploadRecord.syncStatus !== "intentional-difference") errors.push("file-upload registry record is incomplete.");
-if (!cardRecord?.sourcePath || cardRecord.role !== "card" || cardRecord.syncStatus !== "astro-only") errors.push("file-upload-card registry record is incomplete.");
+if (!uploadRecord?.sourcePath || uploadRecord.syncStatus !== "mapped" || uploadRecord.figmaCanonicalNodeId !== "221:88") errors.push("file-upload registry record is incomplete.");
+if (!cardRecord?.sourcePath || cardRecord.role !== "card" || cardRecord.syncStatus !== "mapped" || cardRecord.figmaCanonicalNodeId !== "1372:164") errors.push("file-upload-card registry record is incomplete.");
 if (!cardRecord?.dependencies?.includes("button")) errors.push("file-upload-card must declare its Button dependency.");
 for (const id of ["file-upload", "file-upload-card"]) {
   requireMatch(docs, new RegExp(`componentId: "${id}"`), `${id} documentation adapter is missing.`);

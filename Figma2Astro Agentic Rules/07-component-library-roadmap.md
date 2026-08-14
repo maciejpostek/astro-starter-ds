@@ -16,6 +16,36 @@ recorded as `figma-only`.
 - Do not generate placeholder component files, README files, or per-component
   rules for unimplemented families.
 
+## Base Components synchronization map
+
+This generated projection keeps one Figma page per Astro family. Each public
+component appears exactly once with its current sync and readiness state.
+
+<!-- BEGIN GENERATED BASE COMPONENT MAP -->
+| Family page | Public components |
+| --- | --- |
+| Buttons | `Button` — `mapped`, node `190:131`, readiness `review/passed`; `ButtonLink` — `mapped`, node `959:2706`, readiness `review/passed`; `IconButton` — `mapped`, node `193:110`, readiness `review/passed`; `CopyButton` — `mapped`, node `1343:310`, readiness `review/passed`; `CopyIconButton` — `mapped`, node `1343:1000`, readiness `review/passed`; `SocialButton` — `intentional-difference`, node `1344:95`, readiness `review/passed`; `SocialIconButton` — `intentional-difference`, node `1344:1688`, readiness `review/passed`; `ButtonGroup` — `mapped`, node `204:103`, readiness `review/passed` |
+| Switch | `SwitchButton` — `mapped`, node `206:166`, readiness `review/passed`; `SwitchLabel` — `mapped`, node `1346:108`, readiness `review/passed`; `SwitchCard` — `mapped`, node `1347:215`, readiness `review/passed` |
+| Inputs | `Input` — `mapped`, node `215:29`, readiness `review/passed`; `Label` — `mapped`, node `216:9`, readiness `review/passed`; `SearchInput` — `mapped`, node `223:137`, readiness `review/passed`; `FormField` — `mapped`, node `224:122`, readiness `review/passed`; `UrlInput` — `mapped`, node `1369:104`, readiness `review/passed`; `DateInput` — `mapped`, node `1369:151`, readiness `review/passed`; `PasswordInput` — `mapped`, node `1369:456`, readiness `review/passed`; `ShareLinkInput` — `mapped`, node `1369:216`, readiness `review/passed`; `CounterInput` — `mapped`, node `1369:311`, readiness `review/passed`; `TextAreaInput` — `mapped`, node `1369:482`, readiness `review/passed` |
+| Checkbox & Radio | `Checkbox` — `mapped`, node `219:110`, readiness `review/passed`; `Radio` — `mapped`, node `220:80`, readiness `review/passed`; `CheckboxLabel` — `mapped`, node `1370:36`, readiness `review/passed`; `RadioLabel` — `mapped`, node `1370:126`, readiness `review/passed`; `CheckboxCard` — `mapped`, node `1370:451`, readiness `review/passed`; `RadioCard` — `mapped`, node `1370:611`, readiness `review/passed` |
+| Select | `Select` — `mapped`, node `222:83`, readiness `review/passed`; `CompactSelect` — `mapped`, node `1372:25`, readiness `review/passed`; `InlineSelect` — `mapped`, node `1372:51`, readiness `review/passed` |
+| File Upload | `FileUpload` — `mapped`, node `221:88`, readiness `review/passed`; `FileUploadCard` — `mapped`, node `1372:164`, readiness `review/passed` |
+| Form Structure | Reserved — no public components |
+| Tabs | `Tab` — `mapped`, node `295:15`, readiness `review/passed`; `Tabs` — `mapped`, node `1372:171`, readiness `review/passed`; `TabMenu` — `mapped`, node `1563:2827`, readiness `review/passed` |
+| Accordion | `Accordion` — `mapped`, node `297:105`, readiness `review/passed`; `AccordionList` — `mapped`, node `299:23`, readiness `review/passed` |
+| Tooltip | `Tooltip` — `mapped`, node `1371:45`, readiness `review/passed`; `InfoPopover` — `mapped`, node `1371:74`, readiness `review/passed` |
+| Hint | `Hint` — `mapped`, node `1371:29`, readiness `review/passed` |
+| Feedback Messages | `Alert` — `mapped`, node `1371:202`, readiness `review/passed`; `NotificationAndToast` — `mapped`, node `1371:390`, readiness `review/passed` |
+| Dividers | `ContentDivider` — `mapped`, node `270:10`, readiness `review/passed` |
+| Ratio | `Ratio` — `mapped`, node `1009:2614`, readiness `review/passed` |
+| Breadcrumbs | `Breadcrumb` — `mapped`, node `1009:2627`, readiness `review/passed`; `Breadcrumbs` — `mapped`, node `1448:133`, readiness `review/passed` |
+| Pagination | `PaginationItem` — `mapped`, node `1373:137`, readiness `review/passed`; `PaginationEllipsis` — `mapped`, node `1373:172`, readiness `review/passed`; `PaginationGroup` — `mapped`, node `1373:178`, readiness `review/passed`; `Pagination` — `mapped`, node `1373:203`, readiness `review/passed` |
+| Tag | `Tag` — `mapped`, node `244:19`, readiness `review/passed` |
+| Label | Reserved — no public components |
+| Eyebrow | `Eyebrow` — `mapped`, node `268:5`, readiness `review/passed` |
+| Bullet Points | `BulletPoint` — `mapped`, node `1472:2966`, readiness `review/passed` |
+<!-- END GENERATED BASE COMPONENT MAP -->
+
 ## Implemented families
 
 ### Assets / Icons
@@ -43,6 +73,10 @@ Canonical Figma masters:
 - Button — `190:131`;
 - ButtonLink — `959:2706`;
 - IconButton — `193:110`;
+- CopyButton — `1343:310`;
+- CopyIconButton — `1343:1000`;
+- SocialButton — `1344:95`;
+- SocialIconButton — `1344:1688`;
 - ButtonGroup — `204:103`.
 
 Astro sources:
@@ -50,30 +84,47 @@ Astro sources:
 - `src/components/base-components/buttons/Button.astro`;
 - `src/components/base-components/buttons/ButtonLink.astro`;
 - `src/components/base-components/buttons/IconButton.astro`;
+- `src/components/base-components/buttons/CopyButton.astro`;
+- `src/components/base-components/buttons/CopyIconButton.astro`;
+- `src/components/base-components/buttons/SocialButton.astro`;
+- `src/components/base-components/buttons/SocialIconButton.astro`;
 - `src/components/base-components/buttons/ButtonGroup.astro`.
 
 The family uses the shared `Component Size` profiles, component color
 contracts, Material Symbols, and canonical component rules in
-`.agentic-rules/components/`.
+`.agentic-rules/components/`. SocialButton and SocialIconButton intentionally
+keep a fixed Facebook Negative icon in Figma: the 390-case nested-platform
+test found that Dribbble resets every state-specific icon token to the global
+icon alias. Astro retains its explicit typed platform prop.
 
 ### Base Components / Switch
 
-Canonical Figma master:
+Canonical Figma masters:
 
 - SwitchButton — `206:166`.
+- SwitchLabel — `1346:108`.
+- SwitchCard — `1347:215`.
 
-Astro source:
+Astro sources:
 
 - `src/components/base-components/switch/SwitchButton.astro`.
-- `src/components/base-components/switch/SwitchLabel.astro` — Astro-only.
-- `src/components/base-components/switch/SwitchCard.astro` — Astro-only.
+- `src/components/base-components/switch/SwitchLabel.astro`.
+- `src/components/base-components/switch/SwitchCard.astro`.
 
 Astro treats SwitchButton as the bare native checkbox control, SwitchLabel as
 its visible-label molecule, and SwitchCard as its bordered explanatory card.
-The existing Figma master still projects the legacy labelled SwitchButton and
-remains an intentional difference until a separate explicit Figma task remaps
-the family. All three components reuse the dedicated switch color contract and
-native checkbox semantics with `role="switch"`.
+The Figma master is mapped in place as the same bare control: 10 variants use
+`Checked=Off|On` and five visual interaction states, without Label or Component
+Size properties. Its fixed 34 x 24 root, 34 x 20 track, 14 px thumb, bindings,
+Focused effect, and thumb elevation project the Astro contract. SwitchLabel
+adds Start or End position and a TEXT Label across 20 variants. SwitchCard adds
+TEXT Label and Description, BOOLEAN Show Description, and an unrestricted
+native Leading Slot across 10 variants. Its 320 px Figma width is a resizable
+presentation default, and its 24 px padding represents the maximum of Astro's
+fluid `--content-padding-medium`. Checked maps only to the initial value; State
+remains a visual reference for native behavior. All three components reuse the
+dedicated switch color contract and native checkbox semantics with
+`role="switch"`.
 
 ### Base Components / Checkbox & Radio
 
@@ -113,8 +164,11 @@ Astro source:
 - `src/components/base-components/inputs/SearchInput.astro`.
 
 Input keeps Input and Textarea as one Figma Type axis. Astro maps that decision
-to the `multiline` boolean, maps validation to `validation`, and keeps hover and
-focus as native CSS interaction states. Component Size defaults to Medium.
+to the `multiline` boolean and canonical `none`, `success`, `warning` and
+`error` validation values while retaining the legacy aliases. Hover and focus
+remain native CSS interaction states. Component Size defaults to Medium. The
+master follows [Interaction and Validation States](./22-interaction-validation-states.md):
+status borders remain visible while keyboard focus replaces only the halo.
 
 SearchInput composes the production Input with fixed `search` and `close`
 Material Symbols. Figma keeps Content and field State as presentation axes and
@@ -154,7 +208,8 @@ Astro sources:
 
 FileUpload adds native file semantics, the canonical Browse Button, client-side
 selection validation and bubbling events while preserving the Figma master as
-the visual state reference. FileUploadCard is a controlled, transport-agnostic
+the visual state reference. Selected maps to Success and rejected selections
+map to Error; the dropzone owns both validation and focus effects. FileUploadCard is a controlled, transport-agnostic
 status card for uploading, success and error. Align UI is retained only as
 bounded structural evidence; local tokens, fixed Material Symbols and native
 semantics own the production implementation.
@@ -164,35 +219,74 @@ semantics own the production implementation.
 Canonical Figma master:
 
 - Breadcrumb — `1009:2627`.
+- Breadcrumbs — `1448:133`.
 
-Astro source:
+Astro sources:
 
 - `src/components/base-components/breadcrumbs/Breadcrumb.astro`.
+- `src/components/base-components/breadcrumbs/Breadcrumbs.astro`.
 
-Breadcrumb renders one labelled navigation landmark with an ordered item list,
-derives depth from a non-empty item array and marks the final item with native
-`aria-current="page"`. Astro exposes chevron, slash and dot separators, while
-the current Figma projection keeps only chevron and presentation variants for
-Default and Active; native hover, focus-visible and pressed behavior remains
-owned by Astro.
+Breadcrumb is the hierarchy atom with editable Label and the Default, Hover,
+Focus, Pressed and Current visual states. Its fixed `chevron_right` separator is
+bound to `Global/icon/secondary` and hidden in Current. Default, Hover, Focus
+and Pressed stay Regular without underline; Current alone uses Body Small Semi
+Bold with underline. Breadcrumbs is the landmark molecule with one unrestricted
+native Items Slot whose preferred value is Breadcrumb. Astro maps that structure
+to repeatable Breadcrumb children in the default slot, owns the labelled `nav`
+and ordered-list semantics, and marks the final child with native
+`aria-current="page"`.
+
+### Base Components / Pagination
+
+Canonical Figma masters:
+
+- PaginationItem — `1373:137`;
+- PaginationEllipsis — `1373:172`;
+- PaginationGroup — `1373:178`;
+- Pagination — `1373:203`.
+
+Astro sources:
+
+- `src/components/base-components/pagination/PaginationItem.astro`;
+- `src/components/base-components/pagination/PaginationEllipsis.astro`;
+- `src/components/base-components/pagination/PaginationGroup.astro`;
+- `src/components/base-components/pagination/Pagination.astro`.
+
+PaginationItem uses a stable `Kind` × `State` matrix with State columns and
+the global focus ring plus `Focused` effect. PaginationGroup exposes an
+unrestricted native `Pagination Items` Slot whose preferred values are
+PaginationItem and PaginationEllipsis. Pagination exposes editable Summary,
+Show Summary, and one `Pagination Group` Slot; designers configure repeated
+links through the nested group slot. Astro keeps the bounded generated range
+as its default and lets a default slot replace that range when the caller owns
+the exact destination count and order.
 
 ### Base Components / Tag
 
 Canonical Figma master:
 
-- Tag — `244:19`;
-- private interaction part — `_Parts/Tag.RemoveButton` (`1254:33`).
+- Tag — `244:19`.
 
 Astro source:
 
 - `src/components/base-components/tag/Tag.astro`.
 
-Tag preserves seven semantic Tone variants. Figma retains its existing
-Component Size modes, while Astro intentionally owns one fixed Tag geometry
-with conditional leading and remove padding. `Removable` adds the fixed close
-Material Symbol for applied-filter use cases. Figma documents the nested remove
-states through the private part; Astro uses one native button with hover,
-focus-visible, pressed and disabled behavior.
+Tag uses one 20-variant `Adornment=None|Leading|Remove|Both` × five-state
+master and one fixed geometry independent of Component Size. `Tag Color` modes
+provide the seven category palettes, while Astro maps the same choice through
+`data-tag-tone`. Figma keeps fixed search and close Material Symbols in
+symmetrical 16 px wrappers; Astro keeps the decorative leading slot, Boolean
+`removable`, conditional inline padding and native remove-button semantics.
+
+### Base Components / Tooltip
+
+Tooltip keeps canonical master `1371:45` with 16 variants across Size,
+State and Placement. The private `Tooltip Indicator` set `1488:3566` provides
+Down, Up, Left and Right nested directions, each bound to the inverse surface
+color. Every Tooltip variant uses a Hug `Tooltip Content` wrapper and the
+shared `Body/Tiny/Regular` 12 px Text Style. Astro maps Placement to the
+typed `placement` prop and may additionally use `narrowPlacement` at `48rem`;
+that responsive runtime choice is an intentional code-only projection.
 
 ### Website Patterns / Modal
 

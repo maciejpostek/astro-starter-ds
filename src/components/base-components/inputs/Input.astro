@@ -1,8 +1,12 @@
 ---
 import type { HTMLAttributes } from "astro/types";
+import {
+  normalizeValidationState,
+  type InputValidation as SharedInputValidation
+} from "../../../lib/forms/validationState";
 
 export type InputSize = "small" | "medium" | "large";
-export type InputValidation = "default" | "valid" | "invalid";
+export type InputValidation = SharedInputValidation;
 
 interface InputSharedProps {
   size?: InputSize;
@@ -24,16 +28,17 @@ export type Props = SingleLineInputProps | MultilineInputProps;
 const {
   multiline = false,
   size = "medium",
-  validation = "default",
+  validation = "none",
   disabled = false,
   class: className,
   value,
   ...attributes
 } = Astro.props as Props;
 
-const ariaInvalid = validation === "invalid"
+const validationState = normalizeValidationState(validation);
+const ariaInvalid = validationState === "error"
   ? "true"
-  : attributes["aria-invalid"];
+  : undefined;
 ---
 
 {
@@ -43,7 +48,7 @@ const ariaInvalid = validation === "invalid"
       class:list={["input", "input--textarea", className]}
       data-component-name="Input"
       data-control-size={size}
-      data-input-validation={validation}
+      data-input-validation={validationState}
       disabled={disabled}
       aria-invalid={ariaInvalid}
     >{value}</textarea>
@@ -53,7 +58,7 @@ const ariaInvalid = validation === "invalid"
       class:list={["input", className]}
       data-component-name="Input"
       data-control-size={size}
-      data-input-validation={validation}
+      data-input-validation={validationState}
       disabled={disabled}
       aria-invalid={ariaInvalid}
       type={(attributes as HTMLAttributes<"input">).type ?? "text"}
@@ -108,30 +113,41 @@ const ariaInvalid = validation === "invalid"
     padding-block: var(--control-padding-block);
   }
 
-  .input:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+  .input:not(:disabled)[data-input-validation="none"]:is(:hover, [data-ds-preview-state="hover"]) {
     border-color: var(--input-border-hover);
     background: var(--input-background-hover);
   }
 
+  .input:not(:disabled):is([data-input-validation="error"], :user-invalid) {
+    border-color: var(--input-border-error);
+    box-shadow: var(--effect-validation-error);
+  }
+
+  .input:not(:disabled)[data-input-validation="warning"] {
+    border-color: var(--input-border-warning);
+    box-shadow: var(--effect-validation-warning);
+  }
+
+  .input:not(:disabled)[data-input-validation="success"] {
+    border-color: var(--input-border-success);
+    box-shadow: var(--effect-validation-success);
+  }
+
   .input:not(:disabled):is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
-    border-color: var(--input-border-focus);
     background: var(--input-background-focus);
     outline: none;
     box-shadow: var(--effect-focused);
   }
 
-  .input:is([data-input-validation="invalid"], :user-invalid) {
-    border-color: var(--input-border-invalid);
-  }
-
-  .input[data-input-validation="valid"] {
-    border-color: var(--input-border-valid);
+  .input:not(:disabled)[data-input-validation="none"]:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    border-color: var(--input-border-focus);
   }
 
   .input:disabled {
     border-color: var(--input-border-disabled);
     color: var(--input-text-disabled);
     background: var(--input-background-disabled);
+    box-shadow: none;
     cursor: not-allowed;
   }
 
@@ -152,8 +168,14 @@ const ariaInvalid = validation === "invalid"
       box-shadow: none;
     }
 
-    .input:is([data-input-validation="invalid"], :user-invalid) {
+    .input:not(:disabled):is([data-input-validation="error"], :user-invalid) {
       border-color: Mark;
+      box-shadow: none;
+    }
+
+    .input:not(:disabled):is([data-input-validation="warning"], [data-input-validation="success"]) {
+      border-color: CanvasText;
+      box-shadow: none;
     }
   }
 </style>

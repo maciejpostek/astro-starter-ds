@@ -1,0 +1,24 @@
+---
+import BulletPoint from "../../../../../src/components/base-components/bullet-points/BulletPoint.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BulletPoint contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <ul>
+        <BulletPoint id="included-neutral" data-contract="forwarded" text="Included neutral" />
+        <BulletPoint text="Excluded neutral" status="excluded" />
+        <BulletPoint text="Included status" tone="status" />
+        <BulletPoint text="Excluded status" status="excluded" tone="status" />
+      </ul>
+    </main>
+  </body>
+</html>

@@ -19,8 +19,10 @@ semantics.
    - [Layout](./04-layout.md)
    - [Typography](./05-typography.md)
    - [Component Library Roadmap](./07-component-library-roadmap.md)
+   - [Base Component Improvement Backlog](./08-base-component-improvement-backlog.md)
    - [Motion Foundations](./20-motion-foundations.md)
    - [Elevation Foundations](./21-elevation-foundations.md)
+   - [Interaction and Validation States](./22-interaction-validation-states.md)
 4. Resolve concrete page, folder, node, and status data from
    `src/data/design-system/componentArchitecture.json`.
 5. For icon work, read only `.agentic-rules/components/icons.md` and

@@ -94,8 +94,10 @@
     "DsTableSampleCell"
   ],
   "previewBoundaryComponents": [
+    "DsAccordionListPreview",
     "DsAccordionPreview",
     "DsBreadcrumbPreview",
+    "DsBulletPointPreview",
     "DsButtonGroupPreview",
     "DsButtonLinkPreview",
     "DsButtonPreview",

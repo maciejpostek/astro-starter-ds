@@ -1,6 +1,12 @@
 export type FeedbackStatus = "error" | "warning" | "success" | "info" | "feature";
 
-export type FeedbackEmphasis = "solid" | "soft" | "subtle";
+export type FeedbackEmphasis = "solid" | "soft" | "subtle" | "outlined";
+
+export type AlertEmphasis = Exclude<FeedbackEmphasis, "outlined">;
+
+export type FeedbackDelivery = "notification" | "toast";
+
+export type NotificationAndToastLayout = "compact" | "expanded";
 
 export type FeedbackSize = "small" | "medium" | "large";
 

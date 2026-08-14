@@ -20,13 +20,14 @@ const assertPlacement = (placement, componentName) => {
   }
 };
 
-export const validateTooltipContract = ({ text, label, size, placement, id }) => {
+export const validateTooltipContract = ({ text, label, size, placement, narrowPlacement, id }) => {
   assertNonEmptyString(text, "Tooltip requires non-empty text.");
   assertNonEmptyString(label, "Tooltip requires a non-empty accessible label.");
   if (size !== "small" && size !== "medium") {
     throw new RangeError('Tooltip size must be "small" or "medium".');
   }
   assertPlacement(placement, "Tooltip");
+  if (narrowPlacement !== undefined) assertPlacement(narrowPlacement, "Tooltip narrow");
   assertOptionalId(id, "Tooltip");
 };
 

@@ -20,6 +20,7 @@ const resizeObserver = typeof ResizeObserver === "undefined"
   : new ResizeObserver(() => scheduleActiveOverlayPositions());
 let frameId = 0;
 let trackingReady = false;
+const NARROW_PLACEMENT_QUERY = "(max-width: 48rem)";
 
 const readLength = (root: HTMLElement, property: string) => {
   const probe = document.createElement("span");
@@ -59,11 +60,16 @@ const getOverlayElements = (root: HTMLElement) => {
   const trigger = root.querySelector<HTMLElement>("[data-overlay-trigger]");
   const surface = root.querySelector<HTMLElement>("[data-overlay-surface]");
   const tail = surface?.querySelector<HTMLElement>("[data-overlay-tail]") ?? null;
+  const defaultPlacement = root.dataset.overlayPlacement ?? "top";
+  const narrowPlacement = root.dataset.overlayPlacementNarrow;
+  const preferredPlacement = narrowPlacement && window.matchMedia(NARROW_PLACEMENT_QUERY).matches
+    ? narrowPlacement
+    : defaultPlacement;
   return {
     trigger,
     surface,
     tail,
-    preferredPlacement: root.dataset.overlayPlacement ?? "top",
+    preferredPlacement,
   };
 };
 
@@ -115,6 +121,7 @@ const setupTracking = () => {
   document.addEventListener("scroll", scheduleActiveOverlayPositions, true);
   window.visualViewport?.addEventListener("resize", scheduleActiveOverlayPositions);
   window.visualViewport?.addEventListener("scroll", scheduleActiveOverlayPositions);
+  window.matchMedia(NARROW_PLACEMENT_QUERY).addEventListener("change", scheduleActiveOverlayPositions);
 };
 
 export const activateOverlay = (root: HTMLElement) => {

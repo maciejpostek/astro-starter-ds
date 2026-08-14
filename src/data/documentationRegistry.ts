@@ -12,6 +12,7 @@ import {
   buildUniqueDocumentationNavigation,
   getNavigationNeighbors,
 } from "../lib/documentation/navigation";
+import { resolveFigmaNodeHref } from "../lib/documentation/figma-links.mjs";
 
 export { normalizeDocumentationPath } from "../lib/documentation/navigation";
 
@@ -141,6 +142,25 @@ export type ArchitecturePage = (typeof architecture.pages)[number];
 export const isPublicDocumentationComponent = (component: ArchitectureComponent) =>
   !["internal", "part"].includes(component.role);
 
+export const getPublicDocumentationComponents = (categoryKey: string, pageKey: string) =>
+  architecture.components.filter(
+    (component) =>
+      component.categoryKey === categoryKey &&
+      component.pageKey === pageKey &&
+      isPublicDocumentationComponent(component),
+  );
+
+export const isSingletonBaseComponentPage = (pageKey: string) => {
+  const page = architecture.pages.find(
+    (candidate) =>
+      candidate.categoryKey === "base-components" &&
+      candidate.pageKey === pageKey &&
+      candidate.documentationVisible !== false,
+  );
+
+  return Boolean(page) && getPublicDocumentationComponents("base-components", pageKey).length === 1;
+};
+
 const categoryType: Record<string, DocumentationPageType> = {
   architecture: "reading",
   foundations: "foundation",
@@ -189,12 +209,21 @@ export const documentationPageHref = (categoryKey: string, pageKey: string) =>
 
 export const documentationComponentHref = (component: ArchitectureComponent) => {
   const pageHref = documentationPageHref(component.categoryKey, component.pageKey);
+  if (
+    component.categoryKey === "base-components" &&
+    isSingletonBaseComponentPage(component.pageKey)
+  ) {
+    return pageHref;
+  }
   if (component.categoryKey === "base-components" || component.categoryKey === "website-patterns") {
     return `${pageHref}/${component.id}`;
   }
   if (component.categoryKey === "workspace") return `${pageHref}#canonical-records`;
   return `${pageHref}#component-${component.id}`;
 };
+
+export const documentationFigmaHref = (component: ArchitectureComponent) =>
+  resolveFigmaNodeHref(architecture.figma.fileUrl, component.figmaCanonicalNodeId);
 
 export const slugifyDocumentationValue = (value: string) =>
   value
@@ -243,7 +272,10 @@ export const documentationPages: DocumentationPageRecord[] = architecture.pages
     pageKey: page.pageKey,
     title: page.pageLabel,
     href: documentationPageHref(page.categoryKey, page.pageKey),
-    pageType: categoryType[page.categoryKey] ?? "reading",
+    pageType:
+      page.categoryKey === "base-components" && isSingletonBaseComponentPage(page.pageKey)
+        ? "component-detail"
+        : categoryType[page.categoryKey] ?? "reading",
     status: available || hasHandAuthoredPage ? "available" : components.length ? "figma-only" : "empty",
     toc: [],
   };
@@ -262,7 +294,12 @@ const categorySearchRecords: DocumentationSearchRecord[] = documentationCategori
   keywords: `${category.displayLabel} ${category.categoryKey}`.toLowerCase(),
 }));
 
-const pageSearchRecords: DocumentationSearchRecord[] = documentationPages.map((page) => ({
+const pageSearchRecords: DocumentationSearchRecord[] = documentationPages
+  .filter(
+    (page) =>
+      page.categoryKey !== "base-components" || !isSingletonBaseComponentPage(page.pageKey),
+  )
+  .map((page) => ({
   id: `page-${page.id}`,
   label: page.title,
   kind: searchKind[page.categoryKey] ?? "Category",
@@ -280,7 +317,7 @@ const pageSearchRecords: DocumentationSearchRecord[] = documentationPages.map((p
   parent: cleanCategoryLabel(
     architecture.categories.find((category) => category.categoryKey === page.categoryKey)?.label ?? ""
   ),
-}));
+  }));
 
 const componentSearchRecords: DocumentationSearchRecord[] = architecture.components
   .filter(isPublicDocumentationComponent)
@@ -307,7 +344,12 @@ const componentSearchRecords: DocumentationSearchRecord[] = architecture.compone
     cleanCategoryLabel(
       architecture.categories.find((category) => category.categoryKey === component.categoryKey)?.label ?? ""
     ),
-    component.pageLabel,
+    ...(
+      component.categoryKey === "base-components" &&
+      isSingletonBaseComponentPage(component.pageKey)
+        ? []
+        : [component.pageLabel]
+    ),
   ],
   href: documentationComponentHref(component),
   copyValue: component.name,
@@ -373,6 +415,23 @@ const navigationRecords: DocumentationNavigationRecord[] = [
 for (const category of documentationCategories) {
   for (const page of category.pages) {
     const pageHref = documentationPageHref(page.categoryKey, page.pageKey);
+    const components = componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
+    const singletonBaseComponent =
+      page.categoryKey === "base-components" && isSingletonBaseComponentPage(page.pageKey)
+        ? components[0]
+        : undefined;
+
+    if (singletonBaseComponent) {
+      navigationRecords.push({
+        id: `component-${singletonBaseComponent.id}`,
+        label: singletonBaseComponent.name,
+        href: pageHref,
+        parent: category.displayLabel,
+        kind: "component",
+      });
+      continue;
+    }
+
     navigationRecords.push({
       id: `page-${page.categoryKey}-${page.pageKey}`,
       label: page.pageLabel,
@@ -382,7 +441,6 @@ for (const category of documentationCategories) {
     });
 
     if (!["base-components", "website-patterns"].includes(page.categoryKey)) continue;
-    const components = componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
     for (const component of components) {
       navigationRecords.push({
         id: `component-${component.id}`,

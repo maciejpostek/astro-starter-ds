@@ -53,6 +53,7 @@ FileUpload lets a person choose or drop one or more local files, validates the c
 - The browse action opens the native picker and drag and drop respects the same validation contract.
 - Announce selected names and rejection reasons through a visible polite live region.
 - Native focus, hover and disabled behavior own interaction state; do not expose a public state prop.
+- Map accepted selection to Success and rejection to Error. Apply the halo to the dropzone; blue keyboard focus replaces only the status halo, and Disabled removes all effects.
 - Emit `astro-ds:file-upload-select` with `{ files }` and `astro-ds:file-upload-reject` with `{ rejections }`; events bubble and contain File objects.
 
 ## Related components

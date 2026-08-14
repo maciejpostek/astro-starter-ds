@@ -6,7 +6,7 @@ import DsDocumentationPager from "../components/_internal/documentation/DsDocume
 import DsDocumentationGuidesToggle from "../components/_internal/documentation/DsDocumentationGuidesToggle.astro";
 import DsDocumentationSidebar from "../components/_internal/documentation/DsDocumentationSidebar.astro";
 import DsTableOfContents from "../components/_internal/documentation/DsTableOfContents.astro";
-import Toast from "../components/base-components/toast-notification/Toast.astro";
+import NotificationAndToast from "../components/base-components/feedback-messages/NotificationAndToast.astro";
 import {
   getDocumentationNeighbors,
   normalizeDocumentationPath,
@@ -113,12 +113,14 @@ const topbarItems = [
     </div>
   </div>
 
-  <Toast
+  <NotificationAndToast
+    delivery="toast"
     id="ds-clipboard-copy-success"
     title="Copied to clipboard"
     status="success"
   />
-  <Toast
+  <NotificationAndToast
+    delivery="toast"
     id="ds-clipboard-copy-error"
     title="Could not copy to clipboard"
     status="error"

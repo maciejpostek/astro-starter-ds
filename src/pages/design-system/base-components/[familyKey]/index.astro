@@ -1,13 +1,20 @@
 ---
 import DesignSystemLayout from "../../../../layouts/DesignSystemLayout.astro";
+import DsComponentDetail from "../../../../components/_internal/documentation/DsComponentDetail.astro";
 import DsFamilyGallery from "../../../../components/_internal/documentation/DsFamilyGallery.astro";
 import {
   architecture,
   componentsByPage,
   createDocumentationSummary,
+  documentationFigmaHref,
+  isSingletonBaseComponentPage,
   type ArchitecturePage,
 } from "../../../../data/documentationRegistry";
-import { getFamilyDocumentationAdapter } from "../../../../data/documentationComponentRegistry";
+import { loadComponentRule } from "../../../../data/componentRuleLoader";
+import {
+  getComponentDocumentationAdapter,
+  getFamilyDocumentationAdapter,
+} from "../../../../data/documentationComponentRegistry";
 
 export function getStaticPaths() {
   return architecture.pages
@@ -18,29 +25,73 @@ export function getStaticPaths() {
 interface Props { page: ArchitecturePage; }
 const { page } = Astro.props;
 const components = componentsByPage.get(`base-components/${page.pageKey}`) ?? [];
+const isSingleton = isSingletonBaseComponentPage(page.pageKey);
+const component = isSingleton ? components[0] : undefined;
 const availableCount = components.filter((component) => Boolean(component.sourcePath)).length;
 const familyAdapter = getFamilyDocumentationAdapter("base-components", page.pageKey);
-const pageToc = [{ label: "Variants", href: "#variants" }];
+const componentRule = component?.agenticRule
+  ? await loadComponentRule(component.agenticRule)
+  : undefined;
+const componentAdapter = component
+  ? getComponentDocumentationAdapter(component.id)
+  : undefined;
+const documentationToc = componentAdapter?.toc ?? [];
+const componentToc = [
+  ...documentationToc,
+  ...(!documentationToc.some((item) => item.href === "#dependencies")
+    ? [{ label: "Dependencies", href: "#dependencies" }]
+    : []),
+  ...(componentRule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
+];
+const familyToc = [{ label: "Variants", href: "#variants" }];
+const pageToc = component ? componentToc : familyToc;
 ---
 
 <DesignSystemLayout
-  title={`${page.pageLabel} - Base Components`}
-  pageType="family-gallery"
+  title={component
+    ? `${component.name} - Astro Design System`
+    : `${page.pageLabel} - Base Components`}
+  pageType={component ? "component-detail" : "family-gallery"}
   toc={pageToc}
-  header={{
-    eyebrow: "Base Components",
-    title: page.pageLabel,
-    summary: createDocumentationSummary(
-      `${page.pageLabel} contains ${components.length} canonical component identities, including ${availableCount} with an Astro source implementation. Compare`,
-      pageToc,
-      "to distinguish production previews from registry-backed Figma identities without inventing unavailable APIs.",
-    ),
-    status: availableCount ? "Partially available" : "Figma only",
-  }}
+  header={component
+    ? {
+        eyebrow: "Base Components",
+        title: component.name,
+        summary: createDocumentationSummary(
+          component.sourcePath
+            ? "This canonical Astro component is documented from its implementation, registry identity and UX contract. Use"
+            : "This canonical Figma identity intentionally exposes no fabricated Astro API or preview. Use",
+          pageToc,
+          component.sourcePath
+            ? "to inspect its supported presentation, dependencies and usage rules."
+            : "to verify the recorded identity, dependencies and implementation boundary.",
+        ),
+        copyValue: component.name,
+        sourcePath: component.sourcePath ?? undefined,
+        figmaHref: documentationFigmaHref(component),
+      }
+    : {
+        eyebrow: "Base Components",
+        title: page.pageLabel,
+        summary: createDocumentationSummary(
+          `${page.pageLabel} contains ${components.length} canonical component identities, including ${availableCount} with an Astro source implementation. Compare`,
+          pageToc,
+          "to distinguish production previews from registry-backed Figma identities without inventing unavailable APIs.",
+        ),
+        status: availableCount ? "Partially available" : "Figma only",
+      }}
 >
-  <DsFamilyGallery
-    page={page}
-    components={components}
-    showcaseRenderer={familyAdapter?.showcase.renderer}
-  />
+  {component ? (
+    <DsComponentDetail
+      component={component}
+      rule={componentRule}
+      adapter={componentAdapter}
+    />
+  ) : (
+    <DsFamilyGallery
+      page={page}
+      components={components}
+      showcaseRenderer={familyAdapter?.showcase.renderer}
+    />
+  )}
 </DesignSystemLayout>

@@ -3,11 +3,11 @@
 Status: active.
 
 - Manifest id: `pagination`
-- Figma canonical node: none
+- Figma canonical node: `1373:203`
 - Figma page key: `pagination`
 - Astro source: `src/components/base-components/pagination/Pagination.astro`
 - Role: `molecule`
-- Sync status: `astro-only`
+- Sync status: `mapped`
 
 ## UX purpose
 
@@ -33,6 +33,8 @@ Pagination lets users move between numbered pages in a larger ordered result set
 - Default labels are English. Supply `labels` when the surrounding interface uses another language.
 - The visible summary stays concise, for example `Page 8 of 16`.
 - First and Last are text controls; Previous and Next use the fixed `chevron_left` and `chevron_right` Material Symbols.
+- Without children, Pagination generates the canonical bounded range from `currentPage` and `totalPages`.
+- When the default slot is present, it replaces the generated destinations and contains only PaginationItem or PaginationEllipsis children in the caller-defined count and order.
 
 ## Composition and placement
 
@@ -40,6 +42,7 @@ Pagination lets users move between numbered pages in a larger ordered result set
 - Let the component fill its assigned inline size so the summary and centered controls can balance on wide surfaces.
 - Do not wrap Pagination in a second navigation landmark for the same result set.
 - Use Pagination as the generated high-level set when the current page and total count are known. Use PaginationGroup with PaginationItem and PaginationEllipsis only when a deliberately smaller or custom URL-addressable set is required.
+- Use Pagination's default slot when the standard navigation landmark and optional summary should remain, but the exact destination count and order are caller-defined.
 
 ## Responsive behavior
 
@@ -73,4 +76,4 @@ Use the canonical identity, public root class, controlled `data-*` attributes an
 
 ## Core decision
 
-Use Pagination as the canonical generated facade for stable, URL-addressable numbered results. It calculates a bounded seven-item page window and composes the public PaginationItem, PaginationEllipsis and PaginationGroup building blocks, while the caller remains responsible for URLs and result state.
+Use Pagination as the canonical facade for stable, URL-addressable numbered results. It either calculates a bounded seven-item page window or accepts caller-authored atoms through its default slot, and always composes the public PaginationItem, PaginationEllipsis and PaginationGroup building blocks while the caller remains responsible for URLs and result state.

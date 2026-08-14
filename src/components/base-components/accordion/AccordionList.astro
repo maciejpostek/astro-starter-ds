@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type AccordionListMode = "single" | "multiple";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class" | "id"> {
+  mode?: AccordionListMode;
+  id?: string;
+  class?: string;
+}
+
+const {
+  mode = "single",
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (mode !== "single" && mode !== "multiple") {
+  throw new TypeError('AccordionList mode must be either "single" or "multiple".');
+}
+if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
+  throw new TypeError("AccordionList id must be a non-empty string when provided.");
+}
+---
+
+<div
+  {...attributes}
+  id={id}
+  class:list={["accordion-list", className]}
+  data-component-name="AccordionList"
+  data-accordion-mode={mode}
+>
+  <slot />
+</div>
+
+<style>
+  .accordion-list {
+    display: grid;
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    gap: var(--gap-small);
+  }
+</style>

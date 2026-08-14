@@ -12,10 +12,18 @@ const componentPath = fileURLToPath(
 const sizeSemanticPath = fileURLToPath(
   new URL("../src/styles/tokens/size-semantic.css", import.meta.url),
 );
+const sizeComponentsPath = fileURLToPath(
+  new URL("../src/styles/tokens/size-components.css", import.meta.url),
+);
+const colorComponentsPath = fileURLToPath(
+  new URL("../src/styles/tokens/color-components.css", import.meta.url),
+);
 
 test("keeps one fixed token-backed geometry and exact remove color inheritance", async () => {
   const source = await readFile(componentPath, "utf8");
   const sizeSemantics = await readFile(sizeSemanticPath, "utf8");
+  const sizeComponents = await readFile(sizeComponentsPath, "utf8");
+  const colorComponents = await readFile(colorComponentsPath, "utf8");
   const removeRule = source.match(/^\s*\.tag__remove\s*\{(?<body>[\s\S]*?)\n\s*\}/mu)?.groups?.body ?? "";
   const leadingRule = source.match(/^\s*\.tag__leading\s*\{(?<body>[\s\S]*?)\n\s*\}/mu)?.groups?.body ?? "";
 
@@ -29,9 +37,24 @@ test("keeps one fixed token-backed geometry and exact remove color inheritance",
   assert.match(source, /text-transform:\s*var\(--text-transform-none\)/u);
   assert.doesNotMatch(source, /text-transform:\s*uppercase/u);
   assert.match(sizeSemantics, /--radius-tag:\s*var\(--radius-button\)/u);
+  assert.match(sizeComponents, /--tag-min-height:\s*var\(--size-24\)/u);
+  assert.match(sizeComponents, /--tag-icon-size:\s*var\(--size-14\)/u);
+  assert.match(sizeComponents, /--tag-visual-target-size:\s*var\(--size-16\)/u);
+  assert.match(sizeComponents, /--tag-gap:\s*var\(--size-2\)/u);
   assert.match(removeRule, /color:\s*inherit/u);
   assert.doesNotMatch(removeRule, /\bopacity\s*:/u);
   assert.match(source, /\.tag__remove-icon[\s\S]*?color:\s*currentColor/u);
+  assert.match(source, /border:\s*var\(--border-width-default\) solid var\(--tag-border\)/u);
+  assert.match(source, /color:\s*var\(--tag-content\)/u);
+  assert.match(source, /background:\s*var\(--tag-background\)/u);
+  assert.doesNotMatch(source, /var\(--color-(?:accent|status|background|border|text|state|transparent)/u);
+  assert.deepEqual(
+    [...colorComponents.matchAll(/\[data-tag-tone="([^"]+)"\]/gu)].map((match) => match[1]),
+    ["neutral", "brand", "green", "amber", "red", "sky", "inverse"],
+  );
+  for (const alias of ["--tag-background", "--tag-border", "--tag-content"]) {
+    assert.match(colorComponents, new RegExp(`${alias}:\\s*var\\(--color-`, "u"));
+  }
 });
 
 test("renders all Tag combinations and tones without client hydration", async () => {
@@ -63,7 +86,7 @@ test("renders all Tag combinations and tones without client hydration", async ()
     assert.match(html, /aria-label="Remove selected category"/u);
     assert.ok(removeButtons.some((button) => /\sdisabled(?:="")?(?:\s|>)/u.test(`${button}>`)));
     assert.ok(removeButtons.every((button) => /\stype="button"/u.test(button)));
-    assert.deepEqual(new Set(tones), new Set(["neutral", "accent", "success", "warning", "error", "info", "inverse"]));
+    assert.deepEqual(new Set(tones), new Set(["neutral", "brand", "green", "amber", "red", "sky", "inverse"]));
     assert.doesNotMatch(html, /<astro-island\b/u);
     assert.doesNotMatch(html, /<script\b/u);
   } finally {

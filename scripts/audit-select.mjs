@@ -117,7 +117,7 @@ for (const forbidden of ["label?:", "hint?:", "validation?:", "purpose?:", "size
 for (const purpose of ["basic", "language", "phone", "country", "brand", "company"]) {
   if (!sources.core.includes(`\"${purpose}\"`)) errors.push(`SelectControl is missing purpose: ${purpose}`);
 }
-for (const key of ["arrow_drop_down", "check", "language", "call", "info", "error", "check_circle"]) {
+for (const key of ["arrow_drop_down", "check", "language", "call", "info", "error", "warning", "check_circle"]) {
   if (!icons.icons?.[key]) errors.push(`Select family requires missing MaterialSymbol: ${key}`);
 }
 if (/MaterialSymbolName|iconName\??:|<slot/u.test(sources.core)) {
@@ -193,25 +193,25 @@ if (!interaction.includes("astro-select:refresh") || !interaction.includes("sele
 if (!sizeTokens.includes("--radius-button: var(--radius-small)") || !sizeTokens.includes("--radius-input: var(--radius-small)")) {
   errors.push("Button and input controls do not share the approved subtle radius.");
 }
-if (!colorTokens.includes("--input-border-valid: var(--color-status-success-text)")) {
-  errors.push("The valid input border does not use the stronger success semantic.");
+if (!colorTokens.includes("--input-border-success: var(--color-status-success-border-strong)")) {
+  errors.push("The canonical success input border does not use the strong status semantic.");
 }
 if (!inputSource.includes("box-shadow: var(--elevation-control-raised)")) {
   errors.push("Input does not use the shared raised control elevation.");
 }
 if (!packageSource.includes('"audit:select"')) errors.push("package.json does not expose audit:select.");
 
-for (const [id, sourcePath, rulePath, role, status] of [
-  ["select", paths.select, rules[0][0], "molecule", "intentional-difference"],
-  ["compact-select", paths.compact, rules[1][0], "atom", "astro-only"],
-  ["inline-select", paths.inline, rules[2][0], "atom", "astro-only"],
+for (const [id, sourcePath, rulePath, role, status, nodeId] of [
+  ["select", paths.select, rules[0][0], "molecule", "mapped", "222:83"],
+  ["compact-select", paths.compact, rules[1][0], "atom", "mapped", "1372:25"],
+  ["inline-select", paths.inline, rules[2][0], "atom", "mapped", "1372:51"],
 ]) {
   const record = registry.components?.find((component) => component.id === id);
   if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePath) {
     errors.push(`${id} registry source and rule mapping is incomplete.`);
     continue;
   }
-  if (record.role !== role || record.syncStatus !== status || !record.dependencies?.includes("material-symbol")) {
+  if (record.role !== role || record.syncStatus !== status || record.figmaCanonicalNodeId !== nodeId || !record.dependencies?.includes("material-symbol")) {
     errors.push(`${id} registry role, status, or MaterialSymbol dependency is incomplete.`);
   }
 }
@@ -228,5 +228,5 @@ if (errors.length) {
 }
 
 console.log(
-  "Select audit passed: separate standard, compact and inline public contracts share one native-backed listbox runtime, fixed semantic icons, Guides documentation and intentional Figma divergence.",
+  "Select audit passed: mapped standard, compact and inline visual mastery shares one native-backed Astro listbox runtime, finite semantic icons and Guides documentation.",
 );

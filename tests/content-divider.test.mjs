@@ -78,7 +78,7 @@ test("keeps the canonical ContentDivider API, token and documentation contract",
   assert.match(previewController, /axisId === "dividerTone"/u);
   assert.equal(record?.sourcePath, "src/components/base-components/dividers/ContentDivider.astro");
   assert.equal(record?.agenticRule, ".agentic-rules/components/content-divider.md");
-  assert.equal(record?.syncStatus, "intentional-difference");
+  assert.equal(record?.syncStatus, "mapped");
   assert.deepEqual(record?.variants, ["line", "text"]);
   assert.deepEqual(record?.props, ["variant", "text", "tone"]);
   assert.deepEqual(record?.tokenGroups, ["content-divider-size", "global-color", "global-size", "typography-foundations"]);

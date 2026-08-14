@@ -32,6 +32,7 @@ Collect a short or multiline text value through a native form control while expo
 - Keep placeholder examples concise and representative of the expected value.
 - Use `multiline` only for content that can reasonably span multiple lines.
 - Error and helper copy belongs outside Input and should be connected with `aria-describedby`.
+- Use canonical `validation` values `none`, `success`, `warning` and `error`; `default`, `valid` and `invalid` are compatibility aliases only.
 
 ## Composition and placement
 
@@ -53,8 +54,9 @@ Collect a short or multiline text value through a native form control while expo
 - Preserve the native `<input>` or `<textarea>` element, its keyboard behavior, selection, autofill and form submission semantics.
 - Every Input requires an accessible name through a connected `<label>`, `aria-label` or `aria-labelledby`.
 - Use the most specific native `type`, `inputmode` and `autocomplete` values supported by the requested data.
-- Invalid state must set `aria-invalid="true"`; connect explanatory error text with `aria-describedby`.
+- Error alone sets `aria-invalid="true"`; connect explanatory error text with `aria-describedby`. Success and Warning require visible semantic copy or an icon.
 - Do not suppress browser focus behavior without preserving the visible `focus-visible` treatment.
+- Focus replaces a validation halo with the blue focus ring while preserving the status border. Disabled removes every halo and Hover never overrides status.
 
 ## Related components
 

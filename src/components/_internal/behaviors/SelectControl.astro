@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import type { InputSize, InputValidation } from "../../base-components/inputs/Input.astro";
+import { normalizeValidationState } from "../../../lib/forms/validationState";
 import { resolveSelectFlag } from "../../../lib/select/selectFlags";
 import type {
   SelectOption,
@@ -54,12 +55,12 @@ const {
   value,
   purpose = "basic",
   size: requestedSize,
-  validation = "default",
+  validation = "none",
   disabled = false,
   class: className,
   required = false,
   "aria-describedby": ariaDescribedBy,
-  "aria-invalid": ariaInvalid,
+  "aria-invalid": _ariaInvalid,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   ...attributes
@@ -75,6 +76,7 @@ if (kind !== "standard" && !ariaLabel && !ariaLabelledBy) {
 }
 
 const size = requestedSize ?? (kind === "standard" ? "medium" : "small");
+const validationState = normalizeValidationState(validation);
 const selectedOption = options.find((option) => option.value === value) ?? options[0];
 const selectedIndex = options.indexOf(selectedOption);
 const optionVisuals = options.map((option): SelectOptionVisual | undefined => {
@@ -110,7 +112,7 @@ const hintId = `${id}-hint`;
 const valueId = `${id}-value`;
 const listboxId = `${id}-listbox`;
 const describedBy = [ariaDescribedBy, hint ? hintId : undefined].filter(Boolean).join(" ") || undefined;
-const resolvedAriaInvalid = validation === "invalid" ? "true" : ariaInvalid;
+const resolvedAriaInvalid = validationState === "error" ? "true" : undefined;
 const triggerLabelledBy = ariaLabel
   ? undefined
   : [label ? labelId : ariaLabelledBy, valueId].filter(Boolean).join(" ") || undefined;
@@ -129,10 +131,10 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
   data-select
   data-select-kind={kind}
   data-select-base-aria-invalid={resolvedAriaInvalid === "true" ? "true" : undefined}
-  data-select-base-validation={validation}
+  data-select-base-validation={validationState}
   data-select-disabled={disabled ? "true" : undefined}
   data-select-purpose={purpose}
-  data-select-validation={validation}
+  data-select-validation={validationState}
 >
   {label && (
     <label class="select__label" id={labelId} for={id} data-select-label>
@@ -253,10 +255,11 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
   </span>
 
   {hint && (
-    <span class="select__hint" id={hintId} data-select-hint data-select-hint-tone={validation}>
-      <MaterialSymbol class="select__hint-icon select__hint-icon--default" name="info" size="var(--control-icon-size)" />
-      <MaterialSymbol class="select__hint-icon select__hint-icon--valid" name="check_circle" size="var(--control-icon-size)" />
-      <MaterialSymbol class="select__hint-icon select__hint-icon--invalid" name="error" size="var(--control-icon-size)" />
+    <span class="select__hint" id={hintId} data-select-hint data-select-hint-tone={validationState}>
+      <MaterialSymbol class="select__hint-icon select__hint-icon--none" name="info" size="var(--control-icon-size)" />
+      <MaterialSymbol class="select__hint-icon select__hint-icon--success" name="check_circle" size="var(--control-icon-size)" />
+      <MaterialSymbol class="select__hint-icon select__hint-icon--warning" name="warning" size="var(--control-icon-size)" />
+      <MaterialSymbol class="select__hint-icon select__hint-icon--error" name="error" size="var(--control-icon-size)" />
       <span>{hint}</span>
     </span>
   )}
@@ -346,15 +349,27 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     };
 
     const syncValidity = () => {
+      const normalizeValidation = (value?: string) => {
+        if (value === "default") return "none";
+        if (value === "valid") return "success";
+        if (value === "invalid") return "error";
+        return value === "success" || value === "warning" || value === "error" ? value : "none";
+      };
       const previewState = root.dataset.dsPreviewState;
-      const previewValidation = previewState === "valid" || previewState === "invalid" ? previewState : undefined;
+      const previewValidation = ["valid", "invalid", "success", "warning", "error"].includes(previewState ?? "")
+        ? normalizeValidation(previewState)
+        : undefined;
       const baseValidation = previewValidation
-        ?? (root.dataset.selectBaseAriaInvalid === "true" ? "invalid" : root.dataset.selectBaseValidation)
-        ?? "default";
-      const validation = native.validity.valid ? baseValidation : "invalid";
+        ?? (root.dataset.selectBaseAriaInvalid === "true" ? "error" : normalizeValidation(root.dataset.selectBaseValidation));
+      const validation = native.validity.valid ? baseValidation : "error";
       root.dataset.selectValidation = validation;
-      trigger.setAttribute("aria-invalid", validation === "invalid" ? "true" : "false");
-      native.setAttribute("aria-invalid", validation === "invalid" ? "true" : "false");
+      if (validation === "error") {
+        trigger.setAttribute("aria-invalid", "true");
+        native.setAttribute("aria-invalid", "true");
+      } else {
+        trigger.removeAttribute("aria-invalid");
+        native.removeAttribute("aria-invalid");
+      }
       if (hint) hint.dataset.selectHintTone = validation;
     };
 
@@ -596,7 +611,7 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
   }
 
   .select__required {
-    color: var(--input-helper-invalid);
+    color: var(--input-helper-error);
   }
 
   .select-control__native-shell {
@@ -809,7 +824,7 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     transform: rotate(180deg);
   }
 
-  .select-control:not(.inline-select, [data-select-disabled="true"]) :is(
+  .select-control:not(.inline-select, [data-select-disabled="true"])[data-select-validation="none"] :is(
     .select-control__native,
     .select-control__trigger
   ):is(
@@ -820,6 +835,30 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     background: var(--input-background-hover);
   }
 
+  .select-control:not(.inline-select, [data-select-disabled="true"])[data-select-validation="error"] :is(
+    .select-control__native,
+    .select-control__trigger
+  ) {
+    border-color: var(--input-border-error);
+    box-shadow: var(--effect-validation-error);
+  }
+
+  .select-control:not(.inline-select, [data-select-disabled="true"])[data-select-validation="warning"] :is(
+    .select-control__native,
+    .select-control__trigger
+  ) {
+    border-color: var(--input-border-warning);
+    box-shadow: var(--effect-validation-warning);
+  }
+
+  .select-control:not(.inline-select, [data-select-disabled="true"])[data-select-validation="success"] :is(
+    .select-control__native,
+    .select-control__trigger
+  ) {
+    border-color: var(--input-border-success);
+    box-shadow: var(--effect-validation-success);
+  }
+
   .select-control:not(.inline-select, [data-select-disabled="true"]) :is(
     .select-control__native,
     .select-control__trigger
@@ -828,10 +867,20 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     [data-ds-preview-state="focus-visible"]
   ),
   .select-control:not(.inline-select) .select-control__trigger[aria-expanded="true"] {
-    border-color: var(--input-border-focus);
     background: var(--input-background-focus);
     outline: none;
     box-shadow: var(--effect-focused);
+  }
+
+  .select-control:not(.inline-select, [data-select-disabled="true"])[data-select-validation="none"] :is(
+    .select-control__native,
+    .select-control__trigger
+  ):is(
+    :focus-visible,
+    [data-ds-preview-state="focus-visible"]
+  ),
+  .select-control:not(.inline-select, [data-select-disabled="true"])[data-select-validation="none"] .select-control__trigger[aria-expanded="true"] {
+    border-color: var(--input-border-focus);
   }
 
   .inline-select:not([data-select-disabled="true"]) :is(
@@ -857,33 +906,28 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
   .inline-select:not([data-select-disabled="true"]) :is(
     .select-control__native,
     .select-control__trigger
-  ):is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
-    outline: var(--border-width-strong) solid var(--input-border-focus);
-    outline-offset: var(--size-2);
+  ):is(:focus-visible, [data-ds-preview-state="focus-visible"]),
+  .inline-select:not([data-select-disabled="true"]) .select-control__trigger[aria-expanded="true"] {
+    outline: none;
+    box-shadow: var(--effect-focused);
   }
 
-  .select-control[data-select-validation="invalid"] :is(.select-control__native, .select-control__trigger) {
-    border-color: var(--input-border-invalid);
+  .select-control:not(.inline-select)[data-select-validation="error"] .select-control__leading {
+    border-color: var(--input-border-error);
   }
 
-  .select-control[data-select-validation="valid"] :is(.select-control__native, .select-control__trigger) {
-    border-color: var(--input-border-valid);
+  .select-control:not(.inline-select)[data-select-validation="warning"] .select-control__leading {
+    border-color: var(--input-border-warning);
   }
 
-  .select-control:not(.inline-select)[data-select-validation="invalid"] .select-control__leading {
-    border-color: var(--input-border-invalid);
-  }
-
-  .select-control:not(.inline-select)[data-select-validation="valid"] .select-control__leading {
-    border-color: var(--input-border-valid);
+  .select-control:not(.inline-select)[data-select-validation="success"] .select-control__leading {
+    border-color: var(--input-border-success);
   }
 
   .select-control:not(
     .inline-select,
-    [data-select-disabled="true"],
-    [data-select-validation="valid"],
-    [data-select-validation="invalid"]
-  ):has(
+    [data-select-disabled="true"]
+  )[data-select-validation="none"]:has(
     :is(.select-control__native, .select-control__trigger):hover
   ) .select-control__leading {
     border-color: var(--input-border-hover);
@@ -891,17 +935,13 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
 
   .select-control:not(
     .inline-select,
-    [data-select-disabled="true"],
-    [data-select-validation="valid"],
-    [data-select-validation="invalid"]
-  ):has(
+    [data-select-disabled="true"]
+  )[data-select-validation="none"]:has(
     :is(.select-control__native, .select-control__trigger):focus-visible
   ) .select-control__leading,
   .select-control:not(
-    .inline-select,
-    [data-select-validation="valid"],
-    [data-select-validation="invalid"]
-  ) .select-control__trigger[aria-expanded="true"] .select-control__leading {
+    .inline-select
+  )[data-select-validation="none"] .select-control__trigger[aria-expanded="true"] .select-control__leading {
     border-color: var(--input-border-focus);
   }
 
@@ -1017,12 +1057,16 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     line-height: var(--line-height-normal);
   }
 
-  .select__hint[data-select-hint-tone="valid"] {
-    color: var(--input-helper-valid);
+  .select__hint[data-select-hint-tone="success"] {
+    color: var(--input-helper-success);
   }
 
-  .select__hint[data-select-hint-tone="invalid"] {
-    color: var(--input-helper-invalid);
+  .select__hint[data-select-hint-tone="warning"] {
+    color: var(--input-helper-warning);
+  }
+
+  .select__hint[data-select-hint-tone="error"] {
+    color: var(--input-helper-error);
   }
 
   .select-control[data-select-disabled="true"] .select__hint {
@@ -1034,9 +1078,10 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     flex: 0 0 auto;
   }
 
-  .select__hint[data-select-hint-tone="default"] .select__hint-icon--default,
-  .select__hint[data-select-hint-tone="valid"] .select__hint-icon--valid,
-  .select__hint[data-select-hint-tone="invalid"] .select__hint-icon--invalid {
+  .select__hint[data-select-hint-tone="none"] .select__hint-icon--none,
+  .select__hint[data-select-hint-tone="success"] .select__hint-icon--success,
+  .select__hint[data-select-hint-tone="warning"] .select__hint-icon--warning,
+  .select__hint[data-select-hint-tone="error"] .select__hint-icon--error {
     display: block;
   }
 
@@ -1068,6 +1113,13 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     .select-control__option[data-select-active="true"] {
       outline: var(--border-width-strong) solid Highlight;
       outline-offset: var(--size-2);
+    }
+
+    .select-control:not([data-select-disabled="true"])[data-select-validation="error"] :is(
+      .select-control__native,
+      .select-control__trigger
+    ) {
+      border-color: Mark;
     }
 
     .select-control[data-select-disabled="true"] :is(

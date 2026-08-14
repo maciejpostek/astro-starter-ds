@@ -7,6 +7,16 @@
    * named "Focused".
    */
   --effect-focused:
-    0 0 0 var(--size-2) var(--color-state-focus-ring-offset),
+    0 0 0 var(--size-2) var(--color-state-ring-offset),
     0 0 0 var(--size-4) var(--color-state-focus-ring);
+
+  --effect-validation-error:
+    0 0 0 var(--size-2) var(--color-state-ring-offset),
+    0 0 0 var(--size-4) var(--color-status-error-ring);
+  --effect-validation-warning:
+    0 0 0 var(--size-2) var(--color-state-ring-offset),
+    0 0 0 var(--size-4) var(--color-status-warning-ring);
+  --effect-validation-success:
+    0 0 0 var(--size-2) var(--color-state-ring-offset),
+    0 0 0 var(--size-4) var(--color-status-success-ring);
 }

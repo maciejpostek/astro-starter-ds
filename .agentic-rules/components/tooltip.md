@@ -3,11 +3,11 @@
 Status: active.
 
 - Manifest id: `tooltip`
-- Figma canonical node: none
+- Figma canonical node: `1371:45`
 - Figma page key: `tooltip`
 - Astro source: `src/components/base-components/tooltip/Tooltip.astro`
 - Role: `atom`
-- Sync status: `astro-only`
+- Sync status: `mapped`
 
 ## UX purpose
 
@@ -32,11 +32,14 @@ Tooltip gives a short, non-essential explanation for the fixed information contr
 - `label` is the required accessible name of the information button and describes what will be explained.
 - Keep `text` to six words when practical. This is an authoring guideline, not a runtime truncation or validation limit.
 - `size="small"` uses the most compact treatment; `size="medium"` is the backward-compatible default.
+- Tooltip text uses the shared 12 px `Body/Tiny/Regular` contract in both sizes; size changes padding, not typography.
 
 ## Composition and placement
 
 - Place Tooltip directly beside the label or heading it explains while preserving it as a separate focusable control.
 - `placement` accepts physical `top`, `bottom`, `left` or `right` and expresses a preference, not a viewport guarantee.
+- Optional `narrowPlacement` overrides that preference at viewport widths up to `48rem`; omit it to use `placement` at every width.
+- Figma exposes the same four directions through `Placement=Top|Bottom|Left|Right`. Its nested Tooltip Indicator points toward the trigger and remains a private visual part rather than a separate Astro API.
 - Runtime positioning tries the preferred side, then its opposite, then the side with the most space, clamps the surface to the visual viewport and keeps the tail aimed at the trigger.
 - Let the Popover API move the tooltip into the top layer; do not add a local z-index or clipping workaround.
 - The fixed `info` MaterialSymbol is not consumer-configurable.
@@ -44,9 +47,9 @@ Tooltip gives a short, non-essential explanation for the fixed information contr
 ## Responsive behavior
 
 - Primary strategy: `intrinsic`
-- Mechanisms and references: the trigger uses the registered small `--control-*` bridge; compact content uses `--tooltip-compact-max-inline-size`, viewport padding and fixed runtime coordinates derived from the trigger and visual viewport.
+- Mechanisms and references: the trigger uses the registered small `--control-*` bridge; compact content uses `--tooltip-compact-max-inline-size`, viewport padding, `data-tooltip-placement`, optional `data-tooltip-placement-narrow` and fixed runtime coordinates derived from the trigger and visual viewport.
 - Container queries: none.
-- Viewport queries: none.
+- Viewport queries: the shared overlay runtime reads `data-overlay-placement-narrow` through `(max-width: 48rem)` when `narrowPlacement` is provided.
 - Reflow, order and visibility: the trigger remains in DOM flow beside its label; the tooltip enters the top layer, flips when its preferred side cannot fit, clamps at viewport edges and never moves surrounding content.
 
 ## Accessibility and required behavior
@@ -61,12 +64,12 @@ Tooltip gives a short, non-essential explanation for the fixed information contr
 
 - [InfoPopover](/design-system/base-components/tooltip/info-popover) presents a titled explanation with a close action.
 - [MaterialSymbol](/design-system/assets/material-symbols) renders the fixed information glyph.
-- [Hint](/design-system/base-components/hint/hint) keeps essential supporting text persistently visible.
+- [Hint](/design-system/base-components/hint) keeps essential supporting text persistently visible.
 - Accordion composes Tooltip as the optional, separate help control for an item heading.
 
 ## Naming and token contract
 
-Use the canonical identity, public root class, controlled placement and size attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Tooltip and InfoPopover share only the approved overlay geometry and small control bridge. Public CSS declares no local custom properties.
+Use the canonical identity, public root class, controlled placement, narrow-placement and size attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Tooltip and InfoPopover share only the approved overlay geometry and small control bridge. Public CSS declares no local custom properties.
 
 ## Core decision
 

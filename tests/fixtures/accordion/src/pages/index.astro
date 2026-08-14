@@ -1,35 +1,8 @@
 ---
-import Accordion, {
-  type AccordionItems,
-} from "../../../../../src/components/base-components/accordion/Accordion.astro";
+import Accordion from "../../../../../src/components/base-components/accordion/Accordion.astro";
+import AccordionList from "../../../../../src/components/base-components/accordion/AccordionList.astro";
 import "../../../../../src/styles/tokens/tokens.css";
 import "../../../../../src/styles/global.css";
-
-const primaryItems: AccordionItems = [
-  {
-    id: "delivery",
-    title: "When will it arrive?",
-    content: "Most orders arrive within three business days.",
-    helpText: "Delivery windows begin after dispatch.",
-    helpLabel: "Explain the delivery window",
-  },
-  {
-    id: "returns",
-    title: "Can I return it?",
-    content: "Unused products can be returned within thirty days.",
-  },
-  {
-    id: "unavailable",
-    title: "Is same-day delivery available?",
-    content: "Same-day delivery is not available.",
-    disabled: true,
-  },
-];
-
-const secondaryItems: AccordionItems = [
-  { id: "alpha", title: "Alpha", content: "Alpha answer" },
-  { id: "beta", title: "Beta", content: "Beta answer" },
-];
 ---
 
 <!doctype html>
@@ -42,19 +15,36 @@ const secondaryItems: AccordionItems = [
   <body>
     <main>
       <section data-theme="light">
-        <Accordion
-          id="primary-accordion"
-          items={primaryItems}
-          initialOpen="first"
-          headingLevel={4}
-        />
+        <AccordionList id="primary-list" mode="single">
+          <Accordion
+            id="delivery"
+            title="When will it arrive?"
+            content="Most orders arrive within three business days."
+            helpText="Delivery windows begin after dispatch."
+            helpLabel="Explain the delivery window"
+            initialOpen
+            headingLevel={4}
+          />
+          <Accordion
+            id="returns"
+            title="Can I return it?"
+            content="Unused products can be returned within thirty days."
+            headingLevel={4}
+          />
+          <Accordion
+            id="unavailable"
+            title="Is same-day delivery available?"
+            content="Same-day delivery is not available."
+            disabled
+            headingLevel={4}
+          />
+        </AccordionList>
       </section>
       <section data-theme="dark">
-        <Accordion
-          items={secondaryItems}
-          mode="multiple"
-          initialOpen={["alpha", "beta"]}
-        />
+        <AccordionList mode="multiple">
+          <Accordion title="Alpha" content="Alpha answer" initialOpen />
+          <Accordion title="Beta" content="Beta answer" initialOpen />
+        </AccordionList>
       </section>
     </main>
   </body>

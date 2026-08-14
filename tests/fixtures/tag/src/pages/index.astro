@@ -5,7 +5,7 @@ import Tag from "../../../../../src/components/base-components/tag/Tag.astro";
 import "../../../../../src/styles/tokens/tokens.css";
 import "../../../../../src/styles/global.css";
 
-const tones = ["neutral", "accent", "success", "warning", "error", "info", "inverse"] as const;
+const tones = ["neutral", "brand", "green", "amber", "red", "sky", "inverse"] as const;
 ---
 
 <!doctype html>
@@ -30,7 +30,7 @@ const tones = ["neutral", "accent", "success", "warning", "error", "info", "inve
           <SocialIcons platform="figma" variant="brand" slot="leading" />
         </Tag>
 
-        <Tag id="disabled-remove" label="Disabled filter" tone="error" removable disabled>
+        <Tag id="disabled-remove" label="Disabled filter" tone="red" removable disabled>
           <MaterialSymbol name="search" slot="leading" />
         </Tag>
       </section>
@@ -40,7 +40,7 @@ const tones = ["neutral", "accent", "success", "warning", "error", "info", "inve
       </section>
 
       <section aria-label="Dark theme Tag" data-theme="dark">
-        <Tag id="dark-theme-tag" label="Dark theme filter" tone="success" removable>
+        <Tag id="dark-theme-tag" label="Dark theme filter" tone="green" removable>
           <SocialIcons platform="figma" variant="brand" slot="leading" />
         </Tag>
       </section>

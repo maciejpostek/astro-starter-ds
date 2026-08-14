@@ -10,8 +10,9 @@ import Hint from "../../base-components/hint/Hint.astro";
   data-ds-preview-state="default"
 >
   <Hint class="hint-preview__default" text="Hint text" />
-  <Hint class="hint-preview__valid" text="Hint text" tone="valid" />
-  <Hint class="hint-preview__invalid" text="Hint text" tone="invalid" />
+  <Hint class="hint-preview__success" text="Changes saved" tone="success" />
+  <Hint class="hint-preview__warning" text="Check this value" tone="warning" />
+  <Hint class="hint-preview__error" text="Enter a valid value" tone="error" />
   <Hint class="hint-preview__disabled" text="Hint text" disabled />
 </div>
 
@@ -21,8 +22,9 @@ import Hint from "../../base-components/hint/Hint.astro";
   }
 
   .hint-preview[data-ds-preview-state="default"] :global(.hint-preview__default),
-  .hint-preview[data-ds-preview-state="valid"] :global(.hint-preview__valid),
-  .hint-preview[data-ds-preview-state="invalid"] :global(.hint-preview__invalid),
+  .hint-preview[data-ds-preview-state="success"] :global(.hint-preview__success),
+  .hint-preview[data-ds-preview-state="warning"] :global(.hint-preview__warning),
+  .hint-preview[data-ds-preview-state="error"] :global(.hint-preview__error),
   .hint-preview[data-ds-preview-state="disabled"] :global(.hint-preview__disabled) {
     display: flex;
   }

@@ -163,8 +163,17 @@ if (/\.switch-button__track\s*\{[^}]*overflow\s*:\s*hidden/su.test(switchSource)
   failures.push("SwitchButton track must not use overflow: hidden because it clips the thumb shadow.");
 }
 
-if ((contract.runtimeCustomProperties ?? []).length !== 0) {
-  failures.push("runtimeCustomProperties allowlist must remain empty.");
+const runtimeCustomProperties = contract.runtimeCustomProperties ?? [];
+const expectedRuntimeCustomProperties = [{
+  id: "tag-color",
+  owner: "tag",
+  names: ["--tag-background", "--tag-border", "--tag-content"],
+  sourcePath: "src/styles/tokens/color-components.css",
+  consumerPath: "src/components/base-components/tag/Tag.astro",
+  projection: "data-tag-tone",
+}];
+if (JSON.stringify(runtimeCustomProperties) !== JSON.stringify(expectedRuntimeCustomProperties)) {
+  failures.push("runtimeCustomProperties must contain only the exact tag-color runtime alias contract.");
 }
 if ((contract.sharedAttributeBridges ?? []).map(({ id }) => id).join(",") !== "control-size") {
   failures.push("control-size must remain the only approved shared attribute bridge.");

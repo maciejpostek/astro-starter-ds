@@ -1,21 +1,25 @@
 ---
-import Breadcrumb, {
-  type BreadcrumbItems,
-} from "../../base-components/breadcrumbs/Breadcrumb.astro";
-
-const items: BreadcrumbItems = [
-  { label: "Design system" },
-  { label: "Base components" },
-  { label: "Breadcrumb" },
-];
+import Breadcrumb from "../../base-components/breadcrumbs/Breadcrumb.astro";
 ---
 
 <div
   class="ds-preview-renderer-boundary"
   data-component-name="DsBreadcrumbPreview"
 >
-  <Breadcrumb
-    data-ds-preview-target
-    items={items}
-  />
+  <ol class="ds-breadcrumb-preview__list">
+    <Breadcrumb
+      data-ds-preview-target
+      data-ds-preview-state="default"
+      href="/design-system"
+      label="Design system"
+    />
+  </ol>
 </div>
+
+<style>
+  .ds-breadcrumb-preview__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

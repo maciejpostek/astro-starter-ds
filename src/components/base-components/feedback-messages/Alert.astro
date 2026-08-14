@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import type {
-  FeedbackEmphasis,
+  AlertEmphasis,
   FeedbackLive,
   FeedbackSize,
   FeedbackStatus,
@@ -18,9 +18,11 @@ import "../../../styles/components/feedback-messages.css";
 
 export interface Props extends Omit<HTMLAttributes<"div">, "class" | "title" | "role" | "aria-live"> {
   title: string;
+  description?: string;
   status?: FeedbackStatus;
-  emphasis?: FeedbackEmphasis;
+  emphasis?: AlertEmphasis;
   size?: FeedbackSize;
+  showIcon?: boolean;
   statusLabel?: string;
   live?: FeedbackLive;
   class?: string;
@@ -28,9 +30,11 @@ export interface Props extends Omit<HTMLAttributes<"div">, "class" | "title" | "
 
 const {
   title,
+  description,
   status = "info",
   emphasis = "subtle",
   size = "medium",
+  showIcon = true,
   statusLabel = getFeedbackStatusLabel(status),
   live = "off",
   class: className,
@@ -41,6 +45,11 @@ validateFeedbackContent({ title });
 validateFeedbackPresentation({ status, emphasis, size });
 const role = resolveFeedbackRole(live);
 const iconName = getFeedbackIcon(status);
+const iconSize = {
+  small: "var(--feedback-size-small-icon-size)",
+  medium: "var(--feedback-size-medium-icon-size)",
+  large: "var(--feedback-size-large-icon-size)",
+}[size];
 ---
 
 <div
@@ -49,6 +58,7 @@ const iconName = getFeedbackIcon(status);
   data-component-name="Alert"
   data-feedback-root
   data-feedback-kind="Alert"
+  data-feedback-icon={showIcon ? "true" : "false"}
   data-feedback-status={status}
   data-feedback-emphasis={emphasis}
   data-feedback-size={size}
@@ -56,8 +66,11 @@ const iconName = getFeedbackIcon(status);
   aria-live={live === "off" ? undefined : live}
   aria-atomic={live === "off" ? undefined : "true"}
 >
-  <MaterialSymbol class="feedback-message__icon" name={iconName} />
-  <p class="feedback-message__title">
-    <span class="feedback-message__status-label">{statusLabel}: </span>{title}
-  </p>
+  {showIcon && <MaterialSymbol class="alert__icon" name={iconName} size={iconSize} />}
+  <div class="alert__content">
+    <p class="alert__title">
+      <span class="alert__status-label">{statusLabel}: </span>{title}
+    </p>
+    {description && <p class="alert__description">{description}</p>}
+  </div>
 </div>

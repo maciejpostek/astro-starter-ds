@@ -84,7 +84,7 @@ if (!foundationData.includes('"content-divider": namedColorGroup({')) {
 if (!previewController.includes('axisId === "dividerVariant"') || !previewController.includes('axisId === "dividerTone"')) {
   errors.push("ContentDivider interactive preview controls are incomplete.");
 }
-if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePath || record.syncStatus !== "intentional-difference") {
+if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePath || record.syncStatus !== "mapped") {
   errors.push("ContentDivider registry mapping is incomplete.");
 }
 if (record?.figmaCanonicalNodeId !== "270:10") {
@@ -104,5 +104,5 @@ if (errors.length) {
 }
 
 console.log(
-  "ContentDivider audit passed: two intrinsic variants, three neutral tones, accessible separator semantics, approved 12 px geometry, documentation and intentional Figma difference.",
+  "ContentDivider audit passed: two mapped intrinsic variants, three neutral tones, accessible separator semantics, approved 12 px geometry and documentation.",
 );

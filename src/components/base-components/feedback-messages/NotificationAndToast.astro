@@ -1,0 +1,182 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type {
+  FeedbackAction,
+  FeedbackDelivery,
+  FeedbackEmphasis,
+  FeedbackStatus,
+  NotificationAndToastLayout,
+  ToastDuration,
+} from "../../../lib/feedback/feedbackTypes";
+import {
+  getFeedbackIcon,
+  getFeedbackStatusLabel,
+  resolveToastDuration,
+  resolveToastRole,
+  validateFeedbackContent,
+  validateFeedbackPresentation,
+} from "../../../lib/feedback/feedbackModel.mjs";
+import "../../../styles/components/feedback-messages.css";
+
+interface CommonProps {
+  id: string;
+  title: string;
+  description?: string;
+  layout?: NotificationAndToastLayout;
+  status?: FeedbackStatus;
+  emphasis?: FeedbackEmphasis;
+  actions?: FeedbackAction[];
+  showIcon?: boolean;
+  dismissible?: boolean;
+  dismissLabel?: string;
+  statusLabel?: string;
+  class?: string;
+}
+
+type NotificationProps = CommonProps & {
+  delivery?: Extract<FeedbackDelivery, "notification">;
+  duration?: never;
+} & Omit<HTMLAttributes<"article">, "class" | "title" | "role">;
+
+type ToastProps = CommonProps & {
+  delivery: Extract<FeedbackDelivery, "toast">;
+  duration?: ToastDuration;
+} & Omit<HTMLAttributes<"div">, "class" | "title" | "role">;
+
+export type Props = NotificationProps | ToastProps;
+
+const {
+  id,
+  title,
+  description,
+  layout = "compact",
+  delivery = "notification",
+  status = "info",
+  emphasis = "outlined",
+  actions = [],
+  showIcon = true,
+  dismissible = true,
+  dismissLabel = "Dismiss message",
+  statusLabel = getFeedbackStatusLabel(status),
+  duration = "auto",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (!id) throw new TypeError("NotificationAndToast id is required.");
+if (layout !== "compact" && layout !== "expanded") {
+  throw new TypeError(`Unsupported NotificationAndToast layout: ${layout}`);
+}
+validateFeedbackContent({ title, actions });
+validateFeedbackPresentation({ status, emphasis });
+if (layout === "compact" && actions.length > 1) {
+  throw new RangeError("Compact NotificationAndToast accepts at most one action.");
+}
+if (layout === "compact" && description) {
+  throw new RangeError("Compact NotificationAndToast does not accept a description.");
+}
+
+const isToast = delivery === "toast";
+const durationMs = isToast
+  ? resolveToastDuration(duration, { status, hasActions: actions.length > 0 })
+  : undefined;
+const titleId = `${id}-title`;
+const descriptionId = layout === "expanded" && description ? `${id}-description` : undefined;
+const iconName = getFeedbackIcon(status);
+const role = isToast ? resolveToastRole(status) : undefined;
+const Root = isToast ? "div" : "article";
+const visibleActions = layout === "compact" ? actions.slice(0, 1) : actions;
+---
+
+<Root
+  {...attributes}
+  id={id}
+  class:list={["notification-and-toast", className]}
+  data-component-name="NotificationAndToast"
+  data-feedback-root
+  data-feedback-kind="NotificationAndToast"
+  data-feedback-delivery={delivery}
+  data-feedback-layout={layout}
+  data-feedback-icon={showIcon ? "true" : "false"}
+  data-feedback-dismissible={dismissible ? "true" : "false"}
+  data-feedback-status={status}
+  data-feedback-emphasis={emphasis}
+  data-toast={isToast ? true : undefined}
+  data-toast-id={isToast ? id : undefined}
+  data-toast-duration-ms={durationMs ?? undefined}
+  data-toast-state={isToast ? "closed" : undefined}
+  role={role}
+  aria-live={isToast ? (role === "alert" ? "assertive" : "polite") : undefined}
+  aria-atomic={isToast ? "true" : undefined}
+  aria-labelledby={titleId}
+  aria-describedby={descriptionId}
+  popover={isToast ? "manual" : undefined}
+  hidden={isToast}
+>
+  {showIcon && (
+    <MaterialSymbol
+      class="notification-and-toast__icon"
+      name={iconName}
+      size="var(--feedback-size-medium-icon-size)"
+    />
+  )}
+
+  {layout === "compact" ? (
+    <p class="notification-and-toast__title" id={titleId}>
+      <span class="notification-and-toast__status-label">{statusLabel}: </span>{title}
+    </p>
+  ) : (
+    <div class="notification-and-toast__content">
+      <div class="notification-and-toast__copy">
+        <p class="notification-and-toast__title" id={titleId}>
+          <span class="notification-and-toast__status-label">{statusLabel}: </span>{title}
+        </p>
+        {description && <p class="notification-and-toast__description" id={descriptionId}>{description}</p>}
+      </div>
+      {visibleActions.length > 0 && (
+        <div class="notification-and-toast__actions">
+          {visibleActions.map((action) => (
+            <a
+              class="notification-and-toast__action body-small-regular-underlined"
+              href={action.href}
+              target={action.target}
+              rel={action.rel ?? (action.target === "_blank" ? "noopener noreferrer" : undefined)}
+              download={action.download}
+            >{action.label}</a>
+          ))}
+        </div>
+      )}
+    </div>
+  )}
+
+  {layout === "compact" && visibleActions.length > 0 && (
+    <div class="notification-and-toast__actions notification-and-toast__actions--compact">
+      {visibleActions.map((action) => (
+        <a
+          class="notification-and-toast__action body-small-regular-underlined"
+          href={action.href}
+          target={action.target}
+          rel={action.rel ?? (action.target === "_blank" ? "noopener noreferrer" : undefined)}
+          download={action.download}
+        >{action.label}</a>
+      ))}
+    </div>
+  )}
+
+  {dismissible && (
+    <button class="notification-and-toast__dismiss" type="button" aria-label={dismissLabel} data-feedback-dismiss>
+      <MaterialSymbol
+        class="notification-and-toast__dismiss-icon"
+        name="close"
+        size="var(--feedback-size-medium-icon-size)"
+      />
+    </button>
+  )}
+</Root>
+
+<script>
+  import { initializeFeedbackRuntime } from "../../../lib/feedback/feedback-runtime";
+  initializeFeedbackRuntime();
+  document.addEventListener("astro:page-load", initializeFeedbackRuntime);
+</script>

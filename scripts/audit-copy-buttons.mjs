@@ -129,7 +129,8 @@ forbidMatch(
   "Clipboard behavior rule still documents the legacy custom copy toast fallback.",
 );
 for (const contract of [
-  'import Toast from "../components/base-components/toast-notification/Toast.astro"',
+  'import NotificationAndToast from "../components/base-components/feedback-messages/NotificationAndToast.astro"',
+  'delivery="toast"',
   'id="ds-clipboard-copy-success"',
   'title="Copied to clipboard"',
   'status="success"',
@@ -180,10 +181,10 @@ forbidMatch(styles, /\.copy-(?:button|icon-button)\s*\{/, "Copy Buttons duplicat
 
 const byId = new Map(registry.components.map((component) => [component.id, component]));
 const expectedRecords = [
-  ["copy-button", "CopyButton", copyButtonPath, ["default"]],
-  ["copy-icon-button", "CopyIconButton", copyIconButtonPath, []],
+  ["copy-button", "CopyButton", copyButtonPath, ["default"], "1343:310"],
+  ["copy-icon-button", "CopyIconButton", copyIconButtonPath, [], "1343:1000"],
 ];
-for (const [id, name, sourcePath, slots] of expectedRecords) {
+for (const [id, name, sourcePath, slots, figmaNodeId] of expectedRecords) {
   const record = byId.get(id);
   if (!record) {
     errors.push(`Missing registry record: ${id}`);
@@ -199,14 +200,20 @@ for (const [id, name, sourcePath, slots] of expectedRecords) {
   ) {
     errors.push(`${id} has an incomplete identity, source, family, or role mapping.`);
   }
-  if (record.syncStatus !== "astro-only" || record.status !== "astro-only" || record.figmaCanonicalNodeId !== null) {
-    errors.push(`${id} must remain Astro-only without a fictional Figma node.`);
+  if (
+    record.syncStatus !== "mapped" ||
+    record.status !== "mapped" ||
+    record.figmaCanonicalNodeId !== figmaNodeId ||
+    record.readiness?.visual !== "review" ||
+    record.readiness?.validation !== "passed"
+  ) {
+    errors.push(`${id} must map its canonical Figma mastery with visual review and passed validation.`);
   }
   if (JSON.stringify(record.variants) !== JSON.stringify(["primary", "secondary", "tertiary"])) {
     errors.push(`${id} must expose all three canonical Button variants.`);
   }
   if (JSON.stringify(record.slots) !== JSON.stringify(slots)) errors.push(`${id} has an invalid slot contract.`);
-  for (const dependency of ["material-symbol", "toast"]) {
+  for (const dependency of ["material-symbol", "notification-and-toast"]) {
     if (!record.dependencies?.includes(dependency)) errors.push(`${id} is missing ${dependency} dependency.`);
   }
   for (const group of ["control-size", "button-color"]) {
@@ -252,5 +259,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  "Copy Buttons audit passed: two native actions, fixed content_copy glyphs, shared Button tokens, addressed Toast feedback, registry, Guides, and documentation contracts."
+  "Copy Buttons audit passed: two native actions, fixed content_copy glyphs, shared Button tokens, addressed NotificationAndToast delivery, registry, Guides, and documentation contracts."
 );

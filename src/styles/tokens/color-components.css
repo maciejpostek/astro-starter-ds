@@ -129,8 +129,11 @@
   --input-border-default: var(--color-border-default);
   --input-border-hover: var(--color-border-strong);
   --input-border-focus: var(--color-border-accent);
-  --input-border-invalid: var(--color-status-error-border);
-  --input-border-valid: var(--color-status-success-text);
+  --input-border-error: var(--color-status-error-border-strong);
+  --input-border-warning: var(--color-status-warning-border-strong);
+  --input-border-success: var(--color-status-success-border-strong);
+  --input-border-invalid: var(--input-border-error);
+  --input-border-valid: var(--input-border-success);
   --input-border-disabled: var(--color-state-disabled-border);
   --input-text-default: var(--color-text-primary);
   --input-text-disabled: var(--color-state-disabled-text);
@@ -141,8 +144,11 @@
   --input-label-default: var(--color-text-primary);
   --input-label-disabled: var(--color-state-disabled-text);
   --input-helper-default: var(--color-text-secondary);
-  --input-helper-invalid: var(--color-status-error-text);
-  --input-helper-valid: var(--color-status-success-text);
+  --input-helper-error: var(--color-status-error-text);
+  --input-helper-warning: var(--color-status-warning-text);
+  --input-helper-success: var(--color-status-success-text);
+  --input-helper-invalid: var(--input-helper-error);
+  --input-helper-valid: var(--input-helper-success);
 
   /* Tab
    * Navigation choice using selected as the persistent current state.
@@ -257,6 +263,13 @@
   --pagination-control-text-current: var(--color-text-inverse);
   --pagination-control-text-disabled: var(--color-state-disabled-text);
 
+  /* Tag
+   * Category color contract. data-tag-tone selects the semantic alias set.
+   */
+  --tag-background: var(--color-transparent);
+  --tag-border: var(--color-border-default);
+  --tag-content: var(--color-text-secondary);
+
   /* Card
    * Reusable content surface with hover and selected emphasis.
    */
@@ -268,7 +281,7 @@
   --card-border-selected: var(--color-border-accent);
 
   /* Feedback
-   * Shared emphasis surfaces for Alert, Notification and Toast.
+   * Shared emphasis surfaces for Alert and NotificationAndToast.
    */
   --feedback-error-background-solid: var(--color-status-error-text);
   --feedback-error-background-soft: var(--color-status-error-border);
@@ -280,6 +293,54 @@
   --feedback-info-background-soft: var(--color-status-info-border);
   --feedback-feature-background-solid: var(--color-accent-700);
   --feedback-feature-background-soft: var(--color-accent-100);
+}
+
+[data-tag-tone="neutral"] {
+  --tag-background: var(--color-transparent);
+  --tag-border: var(--color-border-default);
+  --tag-content: var(--color-text-secondary);
+}
+
+[data-tag-tone="brand"] {
+  --tag-background: var(--color-status-feature-background);
+  --tag-border: var(--color-status-feature-border);
+  --tag-content: var(--color-status-feature-text);
+}
+
+[data-tag-tone="green"] {
+  --tag-background: var(--color-status-success-background);
+  --tag-border: var(--color-status-success-border);
+  --tag-content: var(--color-status-success-text);
+}
+
+[data-tag-tone="amber"] {
+  --tag-background: var(--color-status-warning-background);
+  --tag-border: var(--color-status-warning-border);
+  --tag-content: var(--color-status-warning-text);
+}
+
+[data-tag-tone="red"] {
+  --tag-background: var(--color-status-error-background);
+  --tag-border: var(--color-status-error-border);
+  --tag-content: var(--color-status-error-text);
+}
+
+[data-tag-tone="sky"] {
+  --tag-background: var(--color-status-info-background);
+  --tag-border: var(--color-status-info-border);
+  --tag-content: var(--color-status-info-text);
+}
+
+[data-tag-tone="inverse"] {
+  --tag-background: var(--color-background-inverse);
+  --tag-border: var(--color-background-inverse);
+  --tag-content: var(--color-text-inverse);
+}
+
+[data-tag-removable="true"][data-tag-disabled="true"] {
+  --tag-background: var(--color-state-disabled-background);
+  --tag-border: var(--color-state-disabled-border);
+  --tag-content: var(--color-state-disabled-text);
 }
 
 /* Dark-theme interaction adjustments

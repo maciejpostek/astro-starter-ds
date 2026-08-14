@@ -53,7 +53,7 @@ Collect one text query while making search intent immediately recognizable and a
 - The input requires an accessible name through `label`, while the nested clear button requires its own `clearLabel`.
 - Show the clear action only when the input contains a value; native keyboard activation must clear the value, emit an input event and return focus to the field.
 - Disabled state disables both the input and clear action.
-- `validation="invalid"` sets `aria-invalid="true"` through Input; connect the matching Hint through FormField and `aria-describedby`.
+- `validation="error"` sets `aria-invalid="true"` through Input; connect the matching Hint through FormField and `aria-describedby`. Success and Warning use the shared visible message contract without setting `aria-invalid`.
 - Search result counts or asynchronous status changes are announced by the composing search pattern, not by SearchInput itself.
 
 ## Related components
@@ -61,7 +61,7 @@ Collect one text query while making search intent immediately recognizable and a
 - [Input](/design-system/base-components/inputs/input) collects non-search textual values and owns the shared field styling contract.
 - [FormField](/design-system/base-components/inputs/form-field) supplies the visible label, Hint and validation relationship around SearchInput.
 - [Button](/design-system/base-components/buttons/button) triggers an explicit submitted action when search is not performed as the query changes.
-- [Tag](/design-system/base-components/tag/tag) may represent applied structured filters next to SearchInput.
+- [Tag](/design-system/base-components/tag) may represent applied structured filters next to SearchInput.
 
 ## Naming and token contract
 

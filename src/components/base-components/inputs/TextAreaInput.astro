@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import Input, { type InputSize, type InputValidation } from "./Input.astro";
+import { normalizeValidationState } from "../../../lib/forms/validationState";
 
 export interface Props extends Omit<HTMLAttributes<"textarea">, "class" | "disabled" | "maxlength" | "value"> {
   maxLength: number;
@@ -16,12 +17,13 @@ const {
   maxLength,
   value = "",
   size = "medium",
-  validation = "default",
+  validation = "none",
   disabled = false,
   countLabel = "characters used",
   class: className,
   ...attributes
 } = Astro.props;
+const validationState = normalizeValidationState(validation);
 const initialCount = value.length;
 ---
 
@@ -29,7 +31,7 @@ const initialCount = value.length;
   class:list={["text-area-input", className]}
   data-component-name="TextAreaInput"
   data-control-size={size}
-  data-input-validation={validation}
+  data-input-validation={validationState}
   data-text-area-disabled={disabled ? "true" : undefined}
   data-text-area-input
 >
@@ -41,7 +43,7 @@ const initialCount = value.length;
     maxlength={maxLength}
     multiline
     size={size}
-    validation={validation}
+    validation={validationState}
     value={value}
   />
   <span
@@ -120,8 +122,16 @@ const initialCount = value.length;
     bottom: var(--control-padding-block);
   }
 
-  .text-area-input[data-input-validation="invalid"] .text-area-input__count {
-    color: var(--input-helper-invalid);
+  .text-area-input[data-input-validation="error"] .text-area-input__count {
+    color: var(--input-helper-error);
+  }
+
+  .text-area-input[data-input-validation="warning"] .text-area-input__count {
+    color: var(--input-helper-warning);
+  }
+
+  .text-area-input[data-input-validation="success"] .text-area-input__count {
+    color: var(--input-helper-success);
   }
 
   .text-area-input[data-text-area-disabled="true"] .text-area-input__count {

@@ -29,18 +29,18 @@ const references = (source) =>
 
 const canonicalFiles = {
   "color-primitives.css": 69,
-  "color-semantic.css": 58,
-  "color-components.css": 210,
+  "color-semantic.css": 65,
+  "color-components.css": 219,
   "size-primitives.css": 27,
   "size-semantic.css": 52,
-  "size-components.css": 53,
+  "size-components.css": 56,
   "control-sizes.css": 28,
   "typography-foundations.css": 72,
   "layout-foundations.css": 7,
   "layout-semantic.css": 11,
   "motion-foundations.css": 7,
   "elevation-foundations.css": 12,
-  "interaction-effects.css": 1
+  "interaction-effects.css": 4
 };
 
 const sources = new Map();
@@ -117,6 +117,22 @@ for (const contract of [
 ]) {
   if (!colorComponents.includes(contract)) {
     fail(`Missing Button tertiary color contract: ${contract}`);
+  }
+}
+for (const contract of [
+  "--tag-background:",
+  "--tag-border:",
+  "--tag-content:",
+  '[data-tag-tone="neutral"]',
+  '[data-tag-tone="brand"]',
+  '[data-tag-tone="green"]',
+  '[data-tag-tone="amber"]',
+  '[data-tag-tone="red"]',
+  '[data-tag-tone="sky"]',
+  '[data-tag-tone="inverse"]'
+]) {
+  if (!colorComponents.includes(contract)) {
+    fail(`Missing Tag color contract: ${contract}`);
   }
 }
 

@@ -20,7 +20,7 @@ const componentContracts = [
     name: "SwitchButton",
     sourcePath: "src/components/base-components/switch/SwitchButton.astro",
     rulePath: ".agentic-rules/components/switch-button.md",
-    syncStatus: "intentional-difference",
+    syncStatus: "mapped",
     dependencies: [],
   },
   {
@@ -28,7 +28,7 @@ const componentContracts = [
     name: "SwitchLabel",
     sourcePath: "src/components/base-components/switch/SwitchLabel.astro",
     rulePath: ".agentic-rules/components/switch-label.md",
-    syncStatus: "astro-only",
+    syncStatus: "mapped",
     dependencies: ["switch-button"],
   },
   {
@@ -36,7 +36,7 @@ const componentContracts = [
     name: "SwitchCard",
     sourcePath: "src/components/base-components/switch/SwitchCard.astro",
     rulePath: ".agentic-rules/components/switch-card.md",
-    syncStatus: "astro-only",
+    syncStatus: "mapped",
     dependencies: ["switch-button"],
   },
 ];
@@ -173,9 +173,31 @@ for (const contract of componentContracts) {
 if (records.get("switch-button")?.figmaCanonicalNodeId !== "206:166") {
   errors.push("SwitchButton registry does not preserve canonical Figma node 206:166.");
 }
-for (const id of ["switch-label", "switch-card"]) {
-  if (records.get(id)?.figmaCanonicalNodeId !== null) {
-    errors.push(`${id} must remain Astro-only until an explicit Figma task supplies a canonical node.`);
+const switchButtonRecord = records.get("switch-button");
+if (
+  switchButtonRecord?.syncStatus !== "mapped" ||
+  switchButtonRecord?.status !== "mapped" ||
+  switchButtonRecord?.readiness?.visual !== "review" ||
+  switchButtonRecord?.readiness?.validation !== "passed"
+) {
+  errors.push("SwitchButton must remain mapped with visual review and passed validation after the Figma pilot.");
+}
+if (
+  switchButtonRecord?.divergences?.length !== 1 ||
+  switchButtonRecord.divergences[0]?.kind !== "property-mapping"
+) {
+  errors.push("SwitchButton must retain only the Checked/State native-behavior mapping divergence.");
+}
+for (const [id, nodeId] of [["switch-label", "1346:108"], ["switch-card", "1347:215"]]) {
+  const record = records.get(id);
+  if (
+    record?.figmaCanonicalNodeId !== nodeId ||
+    record?.syncStatus !== "mapped" ||
+    record?.status !== "mapped" ||
+    record?.readiness?.visual !== "review" ||
+    record?.readiness?.validation !== "passed"
+  ) {
+    errors.push(`${id} must map canonical Figma node ${nodeId} with visual review and passed validation.`);
   }
 }
 

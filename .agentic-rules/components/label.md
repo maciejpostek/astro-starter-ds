@@ -20,7 +20,7 @@ Name a form control persistently or identify a compact metric while preserving t
 
 ## Avoid when
 
-- The text explains validation or usage; use [Hint](/design-system/base-components/hint/hint).
+- The text explains validation or usage; use [Hint](/design-system/base-components/hint).
 - A complete labelled field is needed; use [FormField](/design-system/base-components/inputs/form-field).
 
 ## Content contract
@@ -53,7 +53,7 @@ Name a form control persistently or identify a compact metric while preserving t
 ## Related components
 
 - [FormField](/design-system/base-components/inputs/form-field) owns the standard Label → control → Hint composition.
-- [Hint](/design-system/base-components/hint/hint) provides supporting and validation copy.
+- [Hint](/design-system/base-components/hint) provides supporting and validation copy.
 
 ## Naming and token contract
 

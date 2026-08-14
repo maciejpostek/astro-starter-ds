@@ -23,7 +23,13 @@ export default defineConfig({
   trailingSlash: "never",
 
   redirects: {
-    "/design-system/assets/icons": "/design-system/assets/material-symbols"
+    "/design-system/assets/icons": "/design-system/assets/material-symbols",
+    "/design-system/base-components/hint/hint": "/design-system/base-components/hint",
+    "/design-system/base-components/dividers/content-divider": "/design-system/base-components/dividers",
+    "/design-system/base-components/ratio/ratio": "/design-system/base-components/ratio",
+    "/design-system/base-components/tag/tag": "/design-system/base-components/tag",
+    "/design-system/base-components/eyebrow/eyebrow": "/design-system/base-components/eyebrow",
+    "/design-system/base-components/bullet-points/bullet-point": "/design-system/base-components/bullet-points"
   },
 
   vite: {

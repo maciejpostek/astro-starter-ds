@@ -2,7 +2,7 @@
 import FigmaIcon from "../../../assets/documentation/figma.svg";
 import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
 import CopyButton from "../../base-components/buttons/CopyButton.astro";
-import Toast from "../../base-components/toast-notification/Toast.astro";
+import NotificationAndToast from "../../base-components/feedback-messages/NotificationAndToast.astro";
 import DsCopyButton from "./DsCopyButton.astro";
 import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro";
 import type { DocumentationHeaderSegment } from "../../../data/documentationRegistry";
@@ -91,12 +91,14 @@ const {
     )}
     {copyValue && (
       <>
-        <Toast
+        <NotificationAndToast
+          delivery="toast"
           id="ds-component-name-copy-success"
           title={`${copyValue} component name copied`}
           status="success"
         />
-        <Toast
+        <NotificationAndToast
+          delivery="toast"
           id="ds-component-name-copy-error"
           title={`${copyValue} component name could not be copied`}
           status="error"

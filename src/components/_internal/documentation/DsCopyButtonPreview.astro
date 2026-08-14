@@ -1,6 +1,6 @@
 ---
 import CopyButton from "../../base-components/buttons/CopyButton.astro";
-import Toast from "../../base-components/toast-notification/Toast.astro";
+import NotificationAndToast from "../../base-components/feedback-messages/NotificationAndToast.astro";
 ---
 
 <div
@@ -18,12 +18,14 @@ import Toast from "../../base-components/toast-notification/Toast.astro";
   >
     Copy email
   </CopyButton>
-  <Toast
+  <NotificationAndToast
+    delivery="toast"
     id="copy-button-preview-success"
     title="Email copied to clipboard"
     status="success"
   />
-  <Toast
+  <NotificationAndToast
+    delivery="toast"
     id="copy-button-preview-error"
     title="Email could not be copied"
     status="error"

@@ -4,8 +4,8 @@ Status: active.
 
 - Manifest id: `alert`
 - Figma canonical node: none (`astro-only`)
-- Figma page key: `alerts`
-- Astro source: `src/components/base-components/alerts/Alert.astro`
+- Figma page key: `feedback-messages`
+- Astro source: `src/components/base-components/feedback-messages/Alert.astro`
 - Role: `molecule`
 - Sync status: `astro-only`
 
@@ -16,19 +16,19 @@ Alert communicates one compact contextual message inside the normal page flow, w
 ## Use when
 
 - Feedback belongs beside the content or operation it explains.
-- The message is concise and does not need supporting copy, actions or dismissal.
+- The message is contextual and may need a short supporting description, but never actions or dismissal.
 - A live announcement is deliberately selected for newly inserted content.
 
 ## Avoid when
 
-- The message needs description, links or dismissal; use Notification.
-- The message must float temporarily above the page; use Toast.
+- The message needs actions or dismissal; use NotificationAndToast.
+- The message must float temporarily above the page; use NotificationAndToast with toast delivery.
 - Native field validation already communicates the same issue.
 
 ## Content contract
 
-- `title` is required and is the only visible content prop.
-- The status icon is always rendered and changes only through `status`.
+- `title` is required and `description` is optional supporting copy.
+- The status icon is controlled by `showIcon` and changes only through `status`.
 - `statusLabel` localizes the visually hidden status prefix.
 - Status uses the fixed glyph mapping in `feedbackModel.mjs`; no arbitrary icon API exists.
 
@@ -37,7 +37,7 @@ Alert communicates one compact contextual message inside the normal page flow, w
 - Keep Alert in document flow and close to the affected content.
 - Keep its inline size fluid up to the canonical `20rem` maximum.
 - Use `solid`, `soft` and `subtle` only to express deliberate emphasis hierarchy.
-- Use Notification when the user must act on or dismiss a richer message.
+- Use NotificationAndToast when the user must act on or dismiss a richer message.
 
 ## Responsive behavior
 
@@ -55,14 +55,13 @@ Alert communicates one compact contextual message inside the normal page flow, w
 
 ## Related components
 
-- Notification is the durable article alternative.
-- Toast handles floating event feedback and its global FIFO queue.
+- NotificationAndToast handles durable notification delivery and floating toast delivery with one visual contract.
 - MaterialSymbol supplies fixed status and close glyphs.
 
 ## Naming and token contract
 
-Use `.alert`, stable `data-component-name="Alert"`, controlled feedback attributes and registered feedback token groups. Do not declare custom properties, expose glyph selection or copy Align UI values.
+Use `.alert`, stable `data-component-name="Alert"`, controlled feedback attributes and registered feedback token groups. Do not add dismissal, actions, component-local properties, arbitrary glyph selection or copied benchmark tokens.
 
 ## Core decision
 
-Use Alert for concise contextual feedback in document flow; use Notification for rich content and enable live behavior only when insertion timing requires an announcement.
+Use Alert for static contextual feedback in document flow; use NotificationAndToast for actionable or dismissible delivery and enable live behavior only when insertion timing requires an announcement.

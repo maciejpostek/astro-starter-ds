@@ -1,8 +1,12 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import {
+  normalizeValidationState,
+  type InputValidation
+} from "../../../lib/forms/validationState";
 
-export type HintTone = "default" | "valid" | "invalid";
+export type HintTone = InputValidation;
 
 export interface Props extends Omit<HTMLAttributes<"p">, "class"> {
   text: string;
@@ -13,22 +17,31 @@ export interface Props extends Omit<HTMLAttributes<"p">, "class"> {
 
 const {
   text,
-  tone = "default",
+  tone = "none",
   disabled = false,
   class: className,
   ...attributes
 } = Astro.props;
+
+const hintTone = normalizeValidationState(tone);
+const hintIcon = hintTone === "error"
+  ? "error"
+  : hintTone === "warning"
+    ? "warning"
+    : hintTone === "success"
+      ? "check_circle"
+      : "info";
 ---
 
 <p
   {...attributes}
   class:list={["hint", className]}
   data-component-name="Hint"
-  data-hint-tone={tone}
+  data-hint-tone={hintTone}
   data-hint-disabled={disabled ? "true" : undefined}
 >
   <span class="hint__icon-wrapper" aria-hidden="true">
-    <MaterialSymbol class="hint__icon" name="info" size="var(--control-icon-size, var(--size-16))" />
+    <MaterialSymbol class="hint__icon" name={hintIcon} size="var(--control-icon-size, var(--size-16))" />
   </span>
   <span>{text}</span>
 </p>
@@ -47,12 +60,16 @@ const {
     line-height: var(--line-height-normal);
   }
 
-  .hint[data-hint-tone="valid"] {
-    color: var(--input-helper-valid);
+  .hint[data-hint-tone="success"] {
+    color: var(--input-helper-success);
   }
 
-  .hint[data-hint-tone="invalid"] {
-    color: var(--input-helper-invalid);
+  .hint[data-hint-tone="warning"] {
+    color: var(--input-helper-warning);
+  }
+
+  .hint[data-hint-tone="error"] {
+    color: var(--input-helper-error);
   }
 
   .hint[data-hint-disabled="true"] {

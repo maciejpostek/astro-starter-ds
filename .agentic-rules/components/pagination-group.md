@@ -3,11 +3,11 @@
 Status: active.
 
 - Manifest id: `pagination-group`
-- Figma canonical node: none
+- Figma canonical node: `1373:178`
 - Figma page key: `pagination`
 - Astro source: `src/components/base-components/pagination/PaginationGroup.astro`
 - Role: `molecule`
-- Sync status: `astro-only`
+- Sync status: `mapped`
 
 ## UX purpose
 
@@ -30,6 +30,7 @@ PaginationGroup provides the semantic list and canonical spacing for a deliberat
 - The required default slot contains only PaginationItem or PaginationEllipsis children.
 - Keep the number of visible destinations bounded for the assigned container.
 - The component forwards native `ul` attributes and does not generate URLs or state.
+- Figma maps the same contract to the unrestricted `Pagination Items` native Slot, limited to preferred PaginationItem and PaginationEllipsis masters.
 
 ## Composition and placement
 

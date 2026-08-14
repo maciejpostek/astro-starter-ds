@@ -9,6 +9,8 @@ import { join, relative, resolve, sep } from "node:path";
 const projectRoot = resolve(process.argv[2] ?? ".");
 const registryPath = join(projectRoot, "src/data/design-system/componentArchitecture.json");
 const registry = JSON.parse(readFileSync(registryPath, "utf8"));
+const roadmapPath = join(projectRoot, "Figma2Astro Agentic Rules/07-component-library-roadmap.md");
+const roadmap = readFileSync(roadmapPath, "utf8");
 const errors = [];
 const allowedRoles = new Set(registry.roles ?? []);
 const allowedStatuses = new Set(registry.syncStatuses ?? []);
@@ -98,6 +100,13 @@ for (const component of registry.components ?? []) {
   if (!pageKeys.has(component.pageKey)) {
     errors.push(`${component.name} references unknown pageKey ${component.pageKey}.`);
   }
+  const componentPage = (registry.pages ?? []).find((page) => page.pageKey === component.pageKey);
+  if (componentPage?.figmaPageId && component.figmaPageId !== componentPage.figmaPageId) {
+    errors.push(`${component.name} does not inherit the canonical Figma page ID for ${component.pageKey}.`);
+  }
+  if (component.syncStatus === "mapped" && !component.figmaCanonicalNodeId) {
+    errors.push(`${component.name} is mapped but has no canonical Figma node ID.`);
+  }
   if (component.syncStatus === "figma-only" && component.sourcePath !== null) {
     errors.push(`${component.name} is figma-only but has a sourcePath.`);
   }
@@ -105,6 +114,62 @@ for (const component of registry.components ?? []) {
     const source = join(projectRoot, component.sourcePath);
     if (!existsSync(source) || !statSync(source).isFile()) {
       errors.push(`Missing source for ${component.name}: ${component.sourcePath}`);
+    }
+  }
+}
+
+for (const [componentId, contract] of Object.entries(registry.figmaComponentContracts ?? {})) {
+  const component = (registry.components ?? []).find((entry) => entry.id === componentId);
+  if (!component) {
+    errors.push(`Figma component contract references unknown component ${componentId}.`);
+    continue;
+  }
+  if (component.figmaPageId !== contract.pageId) {
+    errors.push(`${component.name} Figma contract page ID differs from its component record.`);
+  }
+  if (component.figmaCanonicalNodeId !== contract.nodeId) {
+    errors.push(`${component.name} Figma contract node ID differs from its component record.`);
+  }
+  if (!Number.isInteger(contract.variantCount) || contract.variantCount < 1) {
+    errors.push(`${component.name} Figma contract must declare a positive variant count.`);
+  }
+  if (!contract.axes || !contract.properties) {
+    errors.push(`${component.name} Figma contract must declare axes and properties.`);
+  }
+}
+
+const roadmapStart = "<!-- BEGIN GENERATED BASE COMPONENT MAP -->";
+const roadmapEnd = "<!-- END GENERATED BASE COMPONENT MAP -->";
+const roadmapStartIndex = roadmap.indexOf(roadmapStart);
+const roadmapEndIndex = roadmap.indexOf(roadmapEnd);
+if (roadmapStartIndex === -1 || roadmapEndIndex <= roadmapStartIndex) {
+  errors.push("Component roadmap is missing the generated Base Components map markers.");
+} else {
+  const roadmapMap = roadmap.slice(roadmapStartIndex, roadmapEndIndex + roadmapEnd.length);
+  const basePages = (registry.pages ?? []).filter((page) => page.categoryKey === "base-components");
+  for (const page of basePages) {
+    const rowMarker = `| ${page.pageLabel} |`;
+    if ((roadmapMap.match(new RegExp(`\\| ${page.pageLabel.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&")} \\|`, "gu")) ?? []).length !== 1) {
+      errors.push(`Roadmap must contain exactly one Base Components row for ${page.pageLabel}.`);
+    }
+    const components = (registry.components ?? []).filter(
+      (component) => component.categoryKey === "base-components" && component.pageKey === page.pageKey
+    );
+    if (components.length === 0) {
+      const row = roadmapMap.split("\n").find((line) => line.startsWith(rowMarker));
+      if (!row?.includes("Reserved — no public components")) {
+        errors.push(`Roadmap must mark empty Base Components page ${page.pageLabel} as reserved.`);
+      }
+    }
+  }
+  for (const component of (registry.components ?? []).filter(
+    (entry) => entry.categoryKey === "base-components" && !entry.name.startsWith("_Parts/")
+  )) {
+    const nodeId = component.figmaCanonicalNodeId ?? "—";
+    const readiness = `${component.readiness?.visual ?? "not-run"}/${component.readiness?.validation ?? "not-run"}`;
+    const marker = `\`${component.name}\` — \`${component.syncStatus}\`, node \`${nodeId}\`, readiness \`${readiness}\``;
+    if (roadmapMap.split(marker).length - 1 !== 1) {
+      errors.push(`Roadmap projection is stale or duplicated for ${component.name}.`);
     }
   }
 }

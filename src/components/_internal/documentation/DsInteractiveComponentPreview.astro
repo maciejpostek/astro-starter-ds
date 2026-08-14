@@ -156,10 +156,21 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
       }
     }
     if (axisId === "dividerTone") target.dataset.contentDividerTone = value;
+    if (axisId === "bulletPointStatus") {
+      target.dataset.bulletPointStatus = value;
+      target.querySelectorAll<HTMLElement>("[data-bullet-point-status-option]").forEach((item) => {
+        item.hidden = item.dataset.bulletPointStatusOption !== value;
+      });
+    }
+    if (axisId === "bulletPointTone") {
+      target.dataset.bulletPointTone = value;
+      target.querySelectorAll<HTMLElement>("[data-bullet-point-status-option]").forEach((item) => {
+        item.dataset.tone = value;
+      });
+    }
     if (axisId === "purpose" && selectRoot) selectRoot.dataset.selectPurpose = value;
     if (axisId === "type") target.dataset.inputType = value;
     if (axisId === "tone") target.dataset.tagTone = value;
-    if (axisId === "separator") target.dataset.breadcrumbSeparator = value;
     if (axisId === "removable") {
       const isVisible = value === "visible";
       target.dataset.tagRemovable = String(isVisible);
@@ -208,6 +219,17 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
     if (axisId === "tooltipSize") target.dataset.tooltipSize = value;
     if (axisId === "placement") {
       target.dataset.overlayPlacement = value;
+      target.dataset.tooltipPlacement = value;
+      window.dispatchEvent(new Event("resize"));
+    }
+    if (axisId === "narrowPlacement") {
+      if (value === "default") {
+        delete target.dataset.overlayPlacementNarrow;
+        delete target.dataset.tooltipPlacementNarrow;
+      } else {
+        target.dataset.overlayPlacementNarrow = value;
+        target.dataset.tooltipPlacementNarrow = value;
+      }
       window.dispatchEvent(new Event("resize"));
     }
     if (axisId === "label" && selectRoot) {
@@ -272,25 +294,38 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
         target.tabIndex = isSelected ? 0 : -1;
       }
       if (accordionRoot) {
-        const item = accordionRoot.querySelector<HTMLElement>("[data-accordion-item]");
-        const trigger = item?.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
-        const panel = item?.querySelector<HTMLElement>("[data-accordion-panel]");
+        const trigger = accordionRoot.querySelector<HTMLButtonElement>("[data-accordion-trigger]");
+        const panel = accordionRoot.querySelector<HTMLElement>("[data-accordion-panel]");
         const isOpen = value === "open";
         const isDisabled = value === "disabled";
 
         accordionRoot.dataset.dsPreviewState = value;
-        if (item && trigger && panel) {
-          item.dataset.accordionState = isOpen ? "open" : "closed";
-          if (isDisabled) item.dataset.accordionDisabled = "true";
-          else delete item.dataset.accordionDisabled;
+        if (trigger && panel) {
+          accordionRoot.dataset.accordionState = isOpen ? "open" : "closed";
+          if (isDisabled) accordionRoot.dataset.accordionDisabled = "true";
+          else delete accordionRoot.dataset.accordionDisabled;
           trigger.disabled = isDisabled;
           trigger.setAttribute("aria-expanded", String(isOpen));
           panel.setAttribute("aria-hidden", String(!isOpen));
           panel.hidden = !isOpen;
         }
       }
-      const breadcrumbLink = target.querySelector<HTMLElement>(".breadcrumb__link:not([aria-current])");
-      if (breadcrumbLink) breadcrumbLink.dataset.dsPreviewState = value;
+      const breadcrumbRoot = target.matches(".breadcrumb")
+        ? target
+        : target.querySelector<HTMLElement>(".breadcrumb");
+      const breadcrumbLabel = breadcrumbRoot?.querySelector<HTMLElement>(".breadcrumb__label");
+      if (breadcrumbRoot && breadcrumbLabel) {
+        const isCurrent = value === "current";
+        if (isCurrent) {
+          breadcrumbRoot.dataset.breadcrumbCurrent = "true";
+          breadcrumbLabel.setAttribute("aria-current", "page");
+          delete breadcrumbLabel.dataset.dsPreviewState;
+        } else {
+          delete breadcrumbRoot.dataset.breadcrumbCurrent;
+          breadcrumbLabel.removeAttribute("aria-current");
+          breadcrumbLabel.dataset.dsPreviewState = value;
+        }
+      }
       if (target instanceof HTMLButtonElement || target instanceof HTMLInputElement) {
         target.disabled = value === "disabled";
       }
@@ -322,16 +357,21 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
         if (value === "disabled") root.dataset.selectionDisabled = "true";
         else delete root.dataset.selectionDisabled;
       });
+      const validation = value === "success" || value === "warning" || value === "error" ? value : "none";
       if (selectRoot && selectNative && selectTrigger) {
-        const validation = value === "invalid" || value === "valid" ? value : "default";
         selectRoot.dataset.dsPreviewState = value;
         selectRoot.dataset.selectValidation = validation;
         selectRoot.dataset.selectDisabled = value === "disabled" ? "true" : "false";
         selectTrigger.dataset.dsPreviewState = value;
         selectTrigger.disabled = value === "disabled";
         selectNative.disabled = value === "disabled";
-        selectTrigger.setAttribute("aria-invalid", value === "invalid" ? "true" : "false");
-        selectNative.setAttribute("aria-invalid", value === "invalid" ? "true" : "false");
+        if (value === "error") {
+          selectTrigger.setAttribute("aria-invalid", "true");
+          selectNative.setAttribute("aria-invalid", "true");
+        } else {
+          selectTrigger.removeAttribute("aria-invalid");
+          selectNative.removeAttribute("aria-invalid");
+        }
         const hint = selectRoot.querySelector<HTMLElement>("[data-select-hint]");
         if (hint) hint.dataset.selectHintTone = validation;
       }
@@ -341,22 +381,21 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
       }
 
       target.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[data-input-preview-control]").forEach((control) => {
-        const validation = value === "invalid" || value === "valid" ? value : "default";
         control.dataset.dsPreviewState = value;
         control.dataset.inputValidation = validation;
         control.disabled = value === "disabled";
-        if (value === "invalid") control.setAttribute("aria-invalid", "true");
+        if (value === "error") control.setAttribute("aria-invalid", "true");
         else control.removeAttribute("aria-invalid");
       });
 
       target.querySelectorAll<HTMLElement>("[data-field-validation]").forEach((field) => {
-        field.dataset.fieldValidation = value === "invalid" || value === "valid" ? value : "default";
+        field.dataset.fieldValidation = validation;
         if (value === "disabled") field.dataset.fieldDisabled = "true";
         else delete field.dataset.fieldDisabled;
       });
 
       target.querySelectorAll<HTMLElement>("[data-hint-tone]").forEach((hint) => {
-        hint.dataset.hintTone = value === "invalid" || value === "valid" ? value : "default";
+        hint.dataset.hintTone = validation;
         if (value === "disabled") hint.dataset.hintDisabled = "true";
         else delete hint.dataset.hintDisabled;
       });
@@ -368,13 +407,13 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
 
       target.querySelectorAll<HTMLElement>('[data-component-name="UrlInput"], [data-component-name="DateInput"], [data-component-name="PasswordInput"], [data-component-name="ShareLinkInput"], [data-component-name="CounterInput"]').forEach((control) => {
         control.dataset.dsPreviewState = value;
-        control.dataset.inputValidation = value === "invalid" || value === "valid" ? value : "default";
+        control.dataset.inputValidation = validation;
         if (value === "disabled") control.dataset.inputControlDisabled = "true";
         else delete control.dataset.inputControlDisabled;
       });
 
       target.querySelectorAll<HTMLElement>("[data-text-area-input]").forEach((control) => {
-        control.dataset.inputValidation = value === "invalid" || value === "valid" ? value : "default";
+        control.dataset.inputValidation = validation;
         if (value === "disabled") control.dataset.textAreaDisabled = "true";
         else delete control.dataset.textAreaDisabled;
       });

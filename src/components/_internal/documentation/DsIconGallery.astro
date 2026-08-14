@@ -1,6 +1,6 @@
 ---
 import SearchInput from "../../base-components/inputs/SearchInput.astro";
-import Toast from "../../base-components/toast-notification/Toast.astro";
+import NotificationAndToast from "../../base-components/feedback-messages/NotificationAndToast.astro";
 
 interface Props {
   label: string;
@@ -54,8 +54,8 @@ const {
     {emptyMessage}
   </p>
 
-  <Toast id={successToastId} title={successToastTitle} status="success" />
-  <Toast id={errorToastId} title={errorToastTitle} status="error" />
+  <NotificationAndToast delivery="toast" id={successToastId} title={successToastTitle} status="success" />
+  <NotificationAndToast delivery="toast" id={errorToastId} title={errorToastTitle} status="error" />
 </div>
 
 <script>

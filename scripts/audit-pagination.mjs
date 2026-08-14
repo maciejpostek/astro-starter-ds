@@ -62,6 +62,12 @@ const readiness = read("architecture/component-readiness-contract.json");
 const icons = JSON.parse(read("src/data/design-system/iconLibrary.json") || "{}");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
 const tokens = JSON.parse(read("src/data/design-system/tokenArchitecture.json") || "{}");
+const paginationNodeIds = {
+  "pagination-item": "1373:137",
+  "pagination-ellipsis": "1373:172",
+  "pagination-group": "1373:178",
+  pagination: "1373:203",
+};
 
 for (const contract of componentContracts) {
   const source = sources.get(contract.id) ?? "";
@@ -82,8 +88,8 @@ for (const contract of componentContracts) {
     || record.role !== contract.role
     || record.sourcePath !== contract.sourcePath
     || record.agenticRule !== contract.rulePath
-    || record.syncStatus !== "astro-only"
-    || record.figmaCanonicalNodeId !== null
+    || record.syncStatus !== "mapped"
+    || record.figmaCanonicalNodeId !== paginationNodeIds[contract.id]
   ) {
     errors.push(`${contract.name} registry projection is incomplete.`);
   }
@@ -104,6 +110,8 @@ for (const contract of [
   "<PaginationGroup",
   "<PaginationItem",
   "<PaginationEllipsis",
+  'Astro.slots.has("default")',
+  "<slot />",
   "container: pagination / inline-size",
   "@container pagination (max-width: 35.999rem)",
 ]) {
@@ -136,6 +144,26 @@ if (!ellipsisSource.includes('aria-hidden="true"') || !ellipsisSource.includes("
 const groupSource = sources.get("pagination-group") ?? "";
 if (!groupSource.includes("<ul") || !groupSource.includes("<slot />") || !groupSource.includes("Astro.slots.has")) {
   errors.push("PaginationGroup must expose a validated native ul slot composition.");
+}
+
+const paginationRecord = registry.components?.find((component) => component.id === "pagination");
+if (JSON.stringify(paginationRecord?.slots ?? []) !== JSON.stringify(["default"])) {
+  errors.push("Pagination must register its configurable default item slot.");
+}
+
+const figmaGroup = registry.figmaComponentContracts?.["pagination-group"];
+if (figmaGroup?.properties?.["Pagination Items"] !== "SLOT") {
+  errors.push("PaginationGroup Figma contract must expose the Pagination Items SLOT.");
+}
+const figmaPagination = registry.figmaComponentContracts?.pagination;
+for (const [property, type] of Object.entries({
+  Summary: "TEXT",
+  "Show Summary": "BOOLEAN",
+  "Pagination Group": "SLOT",
+})) {
+  if (figmaPagination?.properties?.[property] !== type) {
+    errors.push(`Pagination Figma contract is missing ${property}=${type}.`);
+  }
 }
 
 for (const [currentPage, expectedLength] of [[1, 7], [8, 7], [16, 7]]) {
@@ -203,5 +231,5 @@ if (errors.length) {
 }
 
 console.log(
-  "Pagination audit passed: public atoms, group composition, generated facade, centered documentation, token consumers and Astro-only readiness are complete.",
+  "Pagination audit passed: mapped atoms and compositions, generated Astro facade, centered documentation, token consumers and visual-review readiness are complete.",
 );

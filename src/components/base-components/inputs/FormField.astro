@@ -3,6 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 import Hint, { type HintTone } from "../hint/Hint.astro";
 import Label from "./Label.astro";
 import type { InputSize, InputValidation } from "./Input.astro";
+import { normalizeValidationState } from "../../../lib/forms/validationState";
 
 type FieldRequirement =
   | { required?: boolean; optionalText?: never }
@@ -28,13 +29,14 @@ const {
   size,
   required = false,
   optionalText,
-  validation = "default",
+  validation = "none",
   disabled = false,
   class: className,
   ...attributes
 } = Astro.props;
 
-const hintTone: HintTone = validation === "invalid" ? "invalid" : validation === "valid" ? "valid" : "default";
+const validationState = normalizeValidationState(validation);
+const hintTone: HintTone = validationState;
 ---
 
 <div
@@ -42,7 +44,7 @@ const hintTone: HintTone = validation === "invalid" ? "invalid" : validation ===
   class:list={["form-field", className]}
   data-component-name="FormField"
   data-control-size={size}
-  data-field-validation={validation}
+  data-field-validation={validationState}
   data-field-disabled={disabled ? "true" : undefined}
 >
   {required ? (

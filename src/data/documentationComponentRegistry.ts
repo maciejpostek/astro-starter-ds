@@ -1,6 +1,9 @@
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import DsAccordionListPreview from "../components/_internal/documentation/DsAccordionListPreview.astro";
 import DsAccordionPreview from "../components/_internal/documentation/DsAccordionPreview.astro";
 import DsBreadcrumbPreview from "../components/_internal/documentation/DsBreadcrumbPreview.astro";
+import DsBreadcrumbsPreview from "../components/_internal/documentation/DsBreadcrumbsPreview.astro";
+import DsBulletPointPreview from "../components/_internal/documentation/DsBulletPointPreview.astro";
 import DsButtonGroupPreview from "../components/_internal/documentation/DsButtonGroupPreview.astro";
 import DsButtonLinkPreview from "../components/_internal/documentation/DsButtonLinkPreview.astro";
 import DsButtonPreview from "../components/_internal/documentation/DsButtonPreview.astro";
@@ -59,7 +62,7 @@ export interface DocumentationPreviewOption {
 }
 
 export interface DocumentationPreviewAxis {
-  id: "variant" | "purpose" | "controlSize" | "tooltipSize" | "placement" | "state" | "separator" | "icon" | "leading" | "checked" | "selection" | "switchPosition" | "type" | "tone" | "removable" | "content" | "clearState" | "platform" | "label" | "hint" | "required" | "feedbackStatus" | "feedbackEmphasis" | "feedbackSize" | "ratio" | "dividerVariant" | "dividerTone" | "popupStatus" | "popupAlignment" | "popupCancel" | "popupPreference" | "popupDismissible";
+  id: "variant" | "purpose" | "controlSize" | "tooltipSize" | "placement" | "narrowPlacement" | "state" | "separator" | "icon" | "leading" | "checked" | "selection" | "switchPosition" | "type" | "tone" | "removable" | "content" | "clearState" | "platform" | "label" | "hint" | "required" | "feedbackStatus" | "feedbackEmphasis" | "feedbackSize" | "notificationLayout" | "ratio" | "dividerVariant" | "dividerTone" | "bulletPointStatus" | "bulletPointTone" | "popupStatus" | "popupAlignment" | "popupCancel" | "popupPreference" | "popupDismissible";
   label: string;
   defaultValue: string;
   options: DocumentationPreviewOption[];
@@ -632,7 +635,7 @@ const copyButtonAdapter: ComponentDocumentationAdapter = {
   },
   dependencies: [
     { target: { kind: "component", id: "material-symbol" }, description: "CopyButton renders the fixed content_copy glyph and reuses the private clipboard behavior." },
-    { target: { kind: "component", id: "toast" }, description: "CopyButton addresses separate prerendered success and error Toasts without creating runtime markup." },
+    { target: { kind: "component", id: "notification-and-toast" }, description: "CopyButton addresses separate prerendered success and error NotificationAndToast instances with toast delivery without creating runtime markup." },
   ],
   toc: commonToc,
 };
@@ -682,7 +685,7 @@ const copyIconButtonAdapter: ComponentDocumentationAdapter = {
   },
   dependencies: [
     { target: { kind: "component", id: "material-symbol" }, description: "CopyIconButton renders the fixed content_copy glyph and reuses the private clipboard behavior." },
-    { target: { kind: "component", id: "toast" }, description: "CopyIconButton addresses separate prerendered success and error Toasts without creating runtime markup." },
+    { target: { kind: "component", id: "notification-and-toast" }, description: "CopyIconButton addresses separate prerendered success and error NotificationAndToast instances with toast delivery without creating runtime markup." },
   ],
   toc: commonToc,
 };
@@ -828,8 +831,9 @@ const inputAdapter: ComponentDocumentationAdapter = {
           { label: "Default", value: "default" },
           { label: "Hover", value: "hover" },
           { label: "Focus visible", value: "focus-visible" },
-          { label: "Invalid", value: "invalid" },
-          { label: "Valid", value: "valid" },
+          { label: "Success", value: "success" },
+          { label: "Warning", value: "warning" },
+          { label: "Error", value: "error" },
           { label: "Disabled", value: "disabled" },
         ],
       },
@@ -838,7 +842,7 @@ const inputAdapter: ComponentDocumentationAdapter = {
   apiRows: [
     { name: "multiline", type: "boolean", defaultValue: "false" },
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"medium"', typeReferences: controlSizeApiReferences },
-    { name: "validation", type: '"default" | "valid" | "invalid"', defaultValue: '"default"' },
+    { name: "validation", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "value", type: "string | number", defaultValue: "undefined" },
     { name: "placeholder", type: "string", defaultValue: "undefined" },
@@ -859,8 +863,9 @@ const fieldStateAxis: DocumentationPreviewAxis = {
     { label: "Default", value: "default" },
     { label: "Hover", value: "hover" },
     { label: "Focus visible", value: "focus-visible" },
-    { label: "Valid", value: "valid" },
-    { label: "Invalid", value: "invalid" },
+    { label: "Success", value: "success" },
+    { label: "Warning", value: "warning" },
+    { label: "Error", value: "error" },
     { label: "Disabled", value: "disabled" },
   ],
 };
@@ -925,8 +930,9 @@ const hintAdapter: ComponentDocumentationAdapter = {
         defaultValue: "default",
         options: [
           { label: "Default", value: "default" },
-          { label: "Valid", value: "valid" },
-          { label: "Invalid", value: "invalid" },
+          { label: "Success", value: "success" },
+          { label: "Warning", value: "warning" },
+          { label: "Error", value: "error" },
           { label: "Disabled", value: "disabled" },
         ],
       },
@@ -934,14 +940,14 @@ const hintAdapter: ComponentDocumentationAdapter = {
   },
   apiRows: [
     { name: "text", type: "string", defaultValue: "required" },
-    { name: "tone", type: '"default" | "valid" | "invalid"', defaultValue: '"default"' },
+    { name: "tone", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "paragraph attributes", type: 'HTMLAttributes<"p">', defaultValue: "forwarded" },
   ],
   foundationReferences: { colorGroups: ["input"] },
   dependencies: [{
     target: { kind: "component", id: "material-symbol" },
-    description: "Hint keeps one fixed info Material Symbol while its inherited color follows the message tone.",
+    description: "Hint uses a fixed semantic Material Symbol for each canonical validation tone and inherits the matching content color.",
   }],
   toc: commonToc,
 };
@@ -959,6 +965,46 @@ const eyebrowAdapter: ComponentDocumentationAdapter = {
   ],
   foundationReferences: { colorGroups: ["eyebrow"] },
   dependencies: [],
+  toc: commonToc,
+};
+
+const bulletPointAdapter: ComponentDocumentationAdapter = {
+  componentId: "bullet-point",
+  preview: {
+    renderer: DsBulletPointPreview,
+    props: {},
+    axes: [
+      {
+        id: "bulletPointStatus",
+        label: "Status",
+        defaultValue: "included",
+        options: [
+          { label: "Included", value: "included" },
+          { label: "Excluded", value: "excluded" },
+        ],
+      },
+      {
+        id: "bulletPointTone",
+        label: "Tone",
+        defaultValue: "neutral",
+        options: [
+          { label: "Neutral", value: "neutral" },
+          { label: "Status", value: "status" },
+        ],
+      },
+    ],
+  },
+  apiRows: [
+    { name: "text", type: "string", defaultValue: "required" },
+    { name: "status", type: '"included" | "excluded"', defaultValue: '"included"' },
+    { name: "tone", type: '"neutral" | "status"', defaultValue: '"neutral"' },
+    { name: "list-item attributes", type: 'HTMLAttributes<"li">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [{
+    target: { kind: "component", id: "material-symbol" },
+    description: "BulletPoint uses the fixed check_circle and cancel Material Symbols; consumers cannot select arbitrary glyphs.",
+  }],
   toc: commonToc,
 };
 
@@ -1055,7 +1101,7 @@ const formFieldAdapter: ComponentDocumentationAdapter = {
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: "inferred from the slotted control; medium fallback", typeReferences: controlSizeApiReferences },
     { name: "required", type: "boolean", defaultValue: "false" },
     { name: "optionalText", type: "string", defaultValue: "undefined; exclusive with required" },
-    { name: "validation", type: '"default" | "valid" | "invalid"', defaultValue: '"default"' },
+    { name: "validation", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "default slot", type: "one native form control", defaultValue: "required" },
   ],
@@ -1088,7 +1134,7 @@ const makeSpecializedInputAdapter = ({
   apiRows: [
     ...apiRows,
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"medium"', typeReferences: controlSizeApiReferences },
-    { name: "validation", type: '"default" | "valid" | "invalid"', defaultValue: '"default"' },
+    { name: "validation", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "native input attributes", type: "HTMLAttributes", defaultValue: "forwarded" },
   ],
@@ -1193,8 +1239,9 @@ const searchInputAdapter: ComponentDocumentationAdapter = {
           { label: "Default", value: "default" },
           { label: "Hover", value: "hover" },
           { label: "Focus visible", value: "focus-visible" },
-          { label: "Valid", value: "valid" },
-          { label: "Invalid", value: "invalid" },
+          { label: "Success", value: "success" },
+          { label: "Warning", value: "warning" },
+          { label: "Error", value: "error" },
           { label: "Disabled", value: "disabled" },
         ],
       },
@@ -1215,7 +1262,7 @@ const searchInputAdapter: ComponentDocumentationAdapter = {
   apiRows: [
     { name: "label", type: "string", defaultValue: "required" },
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"medium"', typeReferences: controlSizeApiReferences },
-    { name: "validation", type: '"default" | "valid" | "invalid"', defaultValue: '"default"' },
+    { name: "validation", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "clearLabel", type: "string", defaultValue: '"Clear search"' },
     { name: "placeholder", type: "string", defaultValue: '"Search"' },
@@ -1270,8 +1317,9 @@ const selectAdapter: ComponentDocumentationAdapter = {
           { label: "Default", value: "default" },
           { label: "Hover", value: "hover" },
           { label: "Focus visible", value: "focus-visible" },
-          { label: "Invalid", value: "invalid" },
-          { label: "Valid", value: "valid" },
+          { label: "Success", value: "success" },
+          { label: "Warning", value: "warning" },
+          { label: "Error", value: "error" },
           { label: "Disabled", value: "disabled" },
         ],
       },
@@ -1304,7 +1352,7 @@ const selectAdapter: ComponentDocumentationAdapter = {
     { name: "purpose", type: '"basic" | "language" | "phone" | "country" | "brand" | "company"', defaultValue: '"basic"' },
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"medium"', typeReferences: controlSizeApiReferences },
     { name: "value", type: "string", defaultValue: "first option" },
-    { name: "validation", type: '"default" | "valid" | "invalid"', defaultValue: '"default"' },
+    { name: "validation", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "select attributes", type: 'HTMLAttributes<"select">', defaultValue: "forwarded" },
   ],
@@ -1346,8 +1394,9 @@ const compactSelectAdapter: ComponentDocumentationAdapter = {
           { label: "Default", value: "default" },
           { label: "Hover", value: "hover" },
           { label: "Focus visible", value: "focus-visible" },
-          { label: "Invalid", value: "invalid" },
-          { label: "Valid", value: "valid" },
+          { label: "Success", value: "success" },
+          { label: "Warning", value: "warning" },
+          { label: "Error", value: "error" },
           { label: "Disabled", value: "disabled" },
         ],
       },
@@ -1360,7 +1409,7 @@ const compactSelectAdapter: ComponentDocumentationAdapter = {
     { name: "accessible name", type: "aria-label | aria-labelledby", defaultValue: "required" },
     { name: "purpose", type: '"language" | "phone" | "country" | "brand" | "company"', defaultValue: '"language"' },
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"small"', typeReferences: controlSizeApiReferences },
-    { name: "validation", type: '"default" | "valid" | "invalid"', defaultValue: '"default"' },
+    { name: "validation", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
     { name: "disabled", type: "boolean", defaultValue: "false" },
   ],
   foundationReferences: { colorGroups: ["input"] },
@@ -1418,8 +1467,8 @@ const fileUploadAdapter: ComponentDocumentationAdapter = {
         { label: "Hover", value: "hover" },
         { label: "Focus visible", value: "focus-visible" },
         { label: "Dragging", value: "dragging" },
-        { label: "Selected", value: "selected" },
-        { label: "Invalid", value: "invalid" },
+        { label: "Success", value: "success" },
+        { label: "Error", value: "error" },
         { label: "Disabled", value: "disabled" },
       ],
     }],
@@ -1431,8 +1480,8 @@ const fileUploadAdapter: ComponentDocumentationAdapter = {
     { name: "hint", type: "string", defaultValue: "undefined" },
     { name: "emptyMessage", type: "string", defaultValue: '"No file selected"' },
     { name: "maxFileSizeBytes", type: "number", defaultValue: "undefined" },
-    { name: "validation", type: '"default" | "invalid"', defaultValue: '"default"' },
-    { name: "errorMessage", type: "string", defaultValue: 'required when validation="invalid"' },
+    { name: "validation", type: '"none" | "error"; legacy: "default" | "invalid"', defaultValue: '"none"' },
+    { name: "errorMessage", type: "string", defaultValue: 'required when validation="error"' },
     { name: "multiple", type: "boolean", defaultValue: "false" },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "input attributes", type: 'HTMLAttributes<"input">', defaultValue: "forwarded" },
@@ -1490,21 +1539,24 @@ const breadcrumbAdapter: ComponentDocumentationAdapter = {
     renderer: DsBreadcrumbPreview,
     props: {},
     axes: [{
-      id: "separator",
-      label: "Separator",
-      defaultValue: "chevron",
+      id: "state",
+      label: "State",
+      defaultValue: "default",
       options: [
-        { label: "Chevron", value: "chevron" },
-        { label: "Slash", value: "slash" },
-        { label: "Dot", value: "dot" },
+        { label: "Default", value: "default" },
+        { label: "Hover", value: "hover" },
+        { label: "Focus visible", value: "focus-visible" },
+        { label: "Pressed", value: "pressed" },
+        { label: "Current", value: "current" },
       ],
     }],
   },
   apiRows: [
-    { name: "items", type: "readonly [BreadcrumbItem, ...BreadcrumbItem[]]", defaultValue: "required" },
-    { name: "separator", type: '"chevron" | "slash" | "dot"', defaultValue: '"chevron"' },
-    { name: "label", type: "string", defaultValue: '"Breadcrumb"' },
-    { name: "nav attributes", type: 'HTMLAttributes<"nav">', defaultValue: "forwarded" },
+    { name: "label", type: "string", defaultValue: "required" },
+    { name: "href", type: "string", defaultValue: "undefined (static label)" },
+    { name: "current", type: "boolean", defaultValue: "false" },
+    { name: "linkAttributes", type: 'Omit<HTMLAttributes<"a">, "aria-current" | "href">', defaultValue: "{}" },
+    { name: "li attributes", type: 'HTMLAttributes<"li">', defaultValue: "forwarded" },
   ],
   foundationReferences: {
     colorGroups: ["breadcrumb"],
@@ -1512,6 +1564,26 @@ const breadcrumbAdapter: ComponentDocumentationAdapter = {
   dependencies: [{
     target: { kind: "component", id: "material-symbol" },
     description: "Breadcrumb uses the fixed chevron_right MaterialSymbol for its default decorative separator.",
+  }],
+  toc: commonToc,
+};
+
+const breadcrumbsAdapter: ComponentDocumentationAdapter = {
+  componentId: "breadcrumbs",
+  preview: {
+    renderer: DsBreadcrumbsPreview,
+    props: {},
+    axes: [],
+  },
+  apiRows: [
+    { name: "label", type: "string", defaultValue: '"Breadcrumb"' },
+    { name: "default slot", type: "one or more Breadcrumb children", defaultValue: "required" },
+    { name: "nav attributes", type: 'HTMLAttributes<"nav">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [{
+    target: { kind: "component", id: "breadcrumb" },
+    description: "Breadcrumb supplies every ancestor and the final current-page item.",
   }],
   toc: commonToc,
 };
@@ -1716,15 +1788,15 @@ const tagAdapter: ComponentDocumentationAdapter = {
     axes: [
       {
         id: "tone",
-        label: "Tone",
+        label: "Color",
         defaultValue: "neutral",
         options: [
           { label: "Neutral", value: "neutral" },
-          { label: "Accent", value: "accent" },
-          { label: "Success", value: "success" },
-          { label: "Warning", value: "warning" },
-          { label: "Error", value: "error" },
-          { label: "Info", value: "info" },
+          { label: "Brand", value: "brand" },
+          { label: "Green", value: "green" },
+          { label: "Amber", value: "amber" },
+          { label: "Red", value: "red" },
+          { label: "Sky", value: "sky" },
           { label: "Inverse", value: "inverse" },
         ],
       },
@@ -1754,11 +1826,11 @@ const tagAdapter: ComponentDocumentationAdapter = {
     { name: "label", type: "string", defaultValue: "required" },
     {
       name: "tone",
-      type: '"neutral" | "accent" | "success" | "warning" | "error" | "info" | "inverse"',
+      type: '"neutral" | "brand" | "green" | "amber" | "red" | "sky" | "inverse"',
       defaultValue: '"neutral"',
-      typeReferences: ["neutral", "accent", "success", "warning", "error", "info", "inverse"].map((value) => ({
+      typeReferences: ["neutral", "brand", "green", "amber", "red", "sky", "inverse"].map((value) => ({
         value: `"${value}"`,
-        target: { kind: "component-color-group", id: "tag-tones" },
+        target: { kind: "component-color-group", id: "tag-colors" },
       })),
     },
     { name: "leading slot", type: "non-interactive decorative icon or logo", defaultValue: "empty" },
@@ -1768,7 +1840,7 @@ const tagAdapter: ComponentDocumentationAdapter = {
     { name: "span attributes", type: 'HTMLAttributes<"span">', defaultValue: "forwarded" },
   ],
   foundationReferences: {
-    colorGroups: ["tag-tones"],
+    colorGroups: ["tag-colors"],
   },
   dependencies: [{
     target: { kind: "component", id: "material-symbol" },
@@ -1803,6 +1875,18 @@ const tooltipAdapter: ComponentDocumentationAdapter = {
           { label: "Right", value: "right" },
         ],
       },
+      {
+        id: "narrowPlacement",
+        label: "Narrow placement (≤48rem)",
+        defaultValue: "default",
+        options: [
+          { label: "Same as default", value: "default" },
+          { label: "Top", value: "top" },
+          { label: "Bottom", value: "bottom" },
+          { label: "Left", value: "left" },
+          { label: "Right", value: "right" },
+        ],
+      },
     ],
   },
   apiRows: [
@@ -1810,6 +1894,7 @@ const tooltipAdapter: ComponentDocumentationAdapter = {
     { name: "label", type: "string", defaultValue: "required" },
     { name: "size", type: '"small" | "medium"', defaultValue: '"medium"' },
     { name: "placement", type: '"top" | "bottom" | "left" | "right"', defaultValue: '"top"' },
+    { name: "narrowPlacement", type: '"top" | "bottom" | "left" | "right"', defaultValue: "undefined (uses placement)" },
     { name: "id", type: "string", defaultValue: "generated" },
     { name: "span attributes", type: 'HTMLAttributes<"span">', defaultValue: "forwarded" },
   ],
@@ -1887,26 +1972,48 @@ const accordionAdapter: ComponentDocumentationAdapter = {
     ],
   },
   apiRows: [
-    { name: "items", type: "readonly [AccordionItem, ...AccordionItem[]]", defaultValue: "required" },
-    { name: "items[].helpText", type: "string", defaultValue: "undefined (Tooltip hidden)" },
-    { name: "items[].helpLabel", type: "string", defaultValue: "generated from title" },
-    { name: "mode", type: '"single" | "multiple"', defaultValue: '"single"' },
-    { name: "initialOpen", type: '"none" | "first" | readonly string[]', defaultValue: '"none"' },
+    { name: "title", type: "string", defaultValue: "required" },
+    { name: "content", type: "string", defaultValue: "required" },
+    { name: "helpText", type: "string", defaultValue: "undefined (Tooltip hidden)" },
+    { name: "helpLabel", type: "string", defaultValue: "generated from title" },
+    { name: "initialOpen", type: "boolean", defaultValue: "false" },
+    { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
     { name: "id", type: "string", defaultValue: "generated" },
-    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "forwarded" },
   ],
   foundationReferences: { colorGroups: [] },
   dependencies: [
     {
       target: { kind: "component", id: "tooltip" },
-      description: "Items with helpText compose Tooltip as a separate control beside the disclosure heading.",
+      description: "helpText composes Tooltip as a separate control beside the disclosure heading.",
     },
     {
       target: { kind: "component", id: "material-symbol" },
       description: "Accordion uses the fixed arrow_drop_down MaterialSymbol as its disclosure indicator.",
     },
   ],
+  toc: commonToc,
+};
+
+const accordionListAdapter: ComponentDocumentationAdapter = {
+  componentId: "accordion-list",
+  preview: {
+    renderer: DsAccordionListPreview,
+    props: {},
+    axes: [],
+  },
+  apiRows: [
+    { name: "mode", type: '"single" | "multiple"', defaultValue: '"single"' },
+    { name: "id", type: "string", defaultValue: "undefined" },
+    { name: "default slot", type: "Accordion children", defaultValue: "required by composition" },
+    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [{
+    target: { kind: "component", id: "accordion" },
+    description: "AccordionList stacks public Accordion components and coordinates their runtime mode.",
+  }],
   toc: commonToc,
 };
 
@@ -1932,6 +2039,7 @@ const feedbackAxes: DocumentationPreviewAxis[] = [
       { label: "Solid", value: "solid" },
       { label: "Soft", value: "soft" },
       { label: "Subtle", value: "subtle" },
+      { label: "Outlined", value: "outlined" },
     ],
   },
   {
@@ -1949,7 +2057,7 @@ const feedbackAxes: DocumentationPreviewAxis[] = [
 const feedbackPresentationApiRows: DocumentationApiRow[] = [
   { name: "title", type: "string", defaultValue: "required" },
   { name: "status", type: '"error" | "warning" | "success" | "info" | "feature"', defaultValue: '"info"' },
-  { name: "emphasis", type: '"solid" | "soft" | "subtle"', defaultValue: '"subtle"' },
+  { name: "emphasis", type: '"solid" | "soft" | "subtle" | "outlined"', defaultValue: '"outlined"' },
   { name: "statusLabel", type: "string", defaultValue: "localized status label" },
 ];
 
@@ -1972,11 +2080,17 @@ const alertAdapter: ComponentDocumentationAdapter = {
   preview: {
     renderer: DsFeedbackPreview,
     props: { kind: "alert" },
-    axes: feedbackAxes.map((axis) => axis.id === "feedbackEmphasis" ? { ...axis, defaultValue: "subtle" } : axis),
+    axes: feedbackAxes.map((axis) => axis.id === "feedbackEmphasis"
+      ? { ...axis, defaultValue: "subtle", options: axis.options.filter((option) => option.value !== "outlined") }
+      : axis),
   },
   apiRows: [
-    ...feedbackPresentationApiRows,
+    ...feedbackPresentationApiRows.map((row) => row.name === "emphasis"
+      ? { ...row, type: '"solid" | "soft" | "subtle"', defaultValue: '"subtle"' }
+      : row),
+    { name: "description", type: "string", defaultValue: "undefined" },
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"medium"' },
+    { name: "showIcon", type: "boolean", defaultValue: "true" },
     { name: "live", type: '"off" | "polite" | "assertive"', defaultValue: '"off"' },
     { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
   ],
@@ -1985,37 +2099,33 @@ const alertAdapter: ComponentDocumentationAdapter = {
   toc: commonToc,
 };
 
-const notificationAdapter: ComponentDocumentationAdapter = {
-  componentId: "notification",
+const notificationAndToastAdapter: ComponentDocumentationAdapter = {
+  componentId: "notification-and-toast",
   preview: {
     renderer: DsFeedbackPreview,
-    props: { kind: "notification" },
-    axes: feedbackAxes
-      .filter((axis) => axis.id !== "feedbackSize")
-      .map((axis) => axis.id === "feedbackStatus" ? { ...axis, defaultValue: "success" } : axis),
+    props: { kind: "notification-and-toast" },
+    axes: [
+      {
+        id: "notificationLayout",
+        label: "Layout",
+        defaultValue: "compact",
+        options: [
+          { label: "Compact", value: "compact" },
+          { label: "Expanded", value: "expanded" },
+        ],
+      },
+      ...feedbackAxes
+        .filter((axis) => axis.id !== "feedbackSize")
+        .map((axis) => axis.id === "feedbackStatus" ? { ...axis, defaultValue: "success" } : axis),
+    ],
   },
   apiRows: [
     { name: "id", type: "string", defaultValue: "required" },
+    { name: "layout", type: '"compact" | "expanded"', defaultValue: '"compact"' },
+    { name: "delivery", type: '"notification" | "toast"', defaultValue: '"notification"' },
     ...richFeedbackApiRows,
-    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "forwarded" },
-  ],
-  foundationReferences: { colorGroups: ["feedback"] },
-  dependencies: [materialSymbolDependency],
-  toc: commonToc,
-};
-
-const toastAdapter: ComponentDocumentationAdapter = {
-  componentId: "toast",
-  preview: {
-    renderer: DsFeedbackPreview,
-    props: { kind: "toast" },
-    axes: feedbackAxes.filter((axis) => axis.id !== "feedbackSize"),
-  },
-  apiRows: [
-    { name: "id", type: "string", defaultValue: "required" },
-    ...richFeedbackApiRows,
-    { name: "duration", type: '"auto" | "persistent" | number', defaultValue: '"auto"' },
-    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
+    { name: "duration", type: '"auto" | "persistent" | number (toast only)', defaultValue: '"auto"' },
+    { name: "root attributes", type: 'HTMLAttributes<"article"> | HTMLAttributes<"div">', defaultValue: "delivery-dependent" },
   ],
   foundationReferences: { colorGroups: ["feedback"] },
   dependencies: [materialSymbolDependency],
@@ -2129,6 +2239,7 @@ export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   labelAdapter,
   hintAdapter,
   eyebrowAdapter,
+  bulletPointAdapter,
   contentDividerAdapter,
   ratioAdapter,
   formFieldAdapter,
@@ -2145,6 +2256,7 @@ export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   fileUploadAdapter,
   fileUploadCardAdapter,
   breadcrumbAdapter,
+  breadcrumbsAdapter,
   paginationItemAdapter,
   paginationEllipsisAdapter,
   paginationGroupAdapter,
@@ -2156,9 +2268,9 @@ export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   tooltipAdapter,
   infoPopoverAdapter,
   accordionAdapter,
+  accordionListAdapter,
   alertAdapter,
-  notificationAdapter,
-  toastAdapter,
+  notificationAndToastAdapter,
   popupAdapter,
 ];
 

@@ -3,11 +3,11 @@
 Status: active.
 
 - Manifest id: `pagination-ellipsis`
-- Figma canonical node: none
+- Figma canonical node: `1373:172`
 - Figma page key: `pagination`
 - Astro source: `src/components/base-components/pagination/PaginationEllipsis.astro`
 - Role: `atom`
-- Sync status: `astro-only`
+- Sync status: `mapped`
 
 ## UX purpose
 

@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 
-export type TagTone = "neutral" | "accent" | "success" | "warning" | "error" | "info" | "inverse";
+export type TagTone = "neutral" | "brand" | "green" | "amber" | "red" | "sky" | "inverse";
 
 export interface Props extends Omit<HTMLAttributes<"span">, "class"> {
   label: string;
@@ -63,12 +63,12 @@ const hasLeading = Astro.slots.has("leading");
     align-items: center;
     justify-content: center;
     gap: var(--tag-gap);
-    border: var(--border-width-default) solid var(--color-border-accent);
+    border: var(--border-width-default) solid var(--tag-border);
     border-radius: var(--radius-tag);
     padding-block: var(--tag-padding-block);
     padding-inline: var(--tag-padding-inline-text);
-    color: var(--color-text-accent);
-    background: var(--color-transparent);
+    color: var(--tag-content);
+    background: var(--tag-background);
     font-family: var(--font-family-body);
     font-size: var(--tag-font-size);
     font-weight: var(--font-weight-emphasis);
@@ -89,42 +89,6 @@ const hasLeading = Astro.slots.has("leading");
 
   .tag[data-tag-removable="true"] {
     padding-inline-end: var(--tag-padding-inline-visual);
-  }
-
-  .tag[data-tag-tone="accent"] {
-    border-color: var(--color-accent-200);
-    color: var(--color-accent-700);
-    background: var(--color-accent-50);
-  }
-
-  .tag[data-tag-tone="success"] {
-    border-color: var(--color-status-success-border);
-    color: var(--color-status-success-text);
-    background: var(--color-status-success-background);
-  }
-
-  .tag[data-tag-tone="warning"] {
-    border-color: var(--color-status-warning-border);
-    color: var(--color-status-warning-text);
-    background: var(--color-status-warning-background);
-  }
-
-  .tag[data-tag-tone="error"] {
-    border-color: var(--color-status-error-border);
-    color: var(--color-status-error-text);
-    background: var(--color-status-error-background);
-  }
-
-  .tag[data-tag-tone="info"] {
-    border-color: var(--color-status-info-border);
-    color: var(--color-status-info-text);
-    background: var(--color-status-info-background);
-  }
-
-  .tag[data-tag-tone="inverse"] {
-    border-color: var(--color-background-inverse);
-    color: var(--color-text-inverse);
-    background: var(--color-background-inverse);
   }
 
   .tag__label {
@@ -198,12 +162,6 @@ const hasLeading = Astro.slots.has("leading");
     .tag__remove:is(:focus-visible, [data-ds-preview-state="focus-visible"])
   ) {
     box-shadow: var(--effect-focused);
-  }
-
-  .tag[data-tag-removable="true"]:has(.tag__remove:disabled) {
-    border-color: var(--color-state-disabled-border);
-    color: var(--color-state-disabled-text);
-    background: var(--color-state-disabled-background);
   }
 
   .tag__remove:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {

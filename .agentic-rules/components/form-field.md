@@ -34,6 +34,7 @@ Provide the canonical Label → native control → Hint structure for one form v
 - Preserve exact source order: Label, slotted control, Hint.
 - Set the slotted control id to `controlId` and, when Hint exists, set `aria-describedby` to `descriptionId`.
 - Pass the same `validation` and `disabled` values to FormField and the slotted control.
+- FormField normalizes legacy validation aliases for its Hint, but cannot mutate a slotted control; pass the same canonical value to both to preserve border, message and ARIA parity.
 - Use `size` when FormField must own the complete field profile. That explicit value wins over a conflicting slotted-control profile; when omitted, FormField infers the profile from its single sized control and otherwise keeps the medium fallback presentation.
 - Compose complete forms from FormField instances inside a native `<form>`; the design system does not expose separate public Form or Fieldset wrapper components.
 
@@ -48,12 +49,12 @@ Provide the canonical Label → native control → Hint structure for one form v
 ## Accessibility and required behavior
 
 - FormField connects Label and Hint ids but does not mutate attributes on arbitrary slotted content.
-- Required, disabled and invalid semantics must remain native on the slotted control.
+- Required, disabled and Error semantics must remain native on the slotted control; only Error sets `aria-invalid="true"`.
 - Use one unique `controlId` and `descriptionId` per rendered field.
 
 ## Related components
 
-- [Label](/design-system/base-components/inputs/label) and [Hint](/design-system/base-components/hint/hint) are direct dependencies.
+- [Label](/design-system/base-components/inputs/label) and [Hint](/design-system/base-components/hint) are direct dependencies.
 - [Input](/design-system/base-components/inputs/input) and specialist inputs provide the slotted native control.
 
 ## Naming and token contract

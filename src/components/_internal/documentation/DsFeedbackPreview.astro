@@ -1,12 +1,11 @@
 ---
-import Alert from "../../base-components/alerts/Alert.astro";
+import Alert from "../../base-components/feedback-messages/Alert.astro";
+import NotificationAndToast from "../../base-components/feedback-messages/NotificationAndToast.astro";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
-import Notification from "../../base-components/toast-notification/Notification.astro";
-import Toast from "../../base-components/toast-notification/Toast.astro";
 import type { FeedbackStatus } from "../../../lib/feedback/feedbackTypes";
 
 interface Props {
-  kind: "alert" | "notification" | "toast";
+  kind: "alert" | "notification-and-toast";
 }
 
 const { kind } = Astro.props;
@@ -28,33 +27,41 @@ const statusLabels = {
 } as const;
 ---
 
-<div class="feedback-preview" data-component-name="DsFeedbackPreview" data-feedback-preview={kind}>
+<div
+  class="feedback-preview"
+  data-component-name="DsFeedbackPreview"
+  data-feedback-preview={kind}
+  data-feedback-preview-layout={kind === "notification-and-toast" ? "compact" : undefined}
+>
   {kind === "alert" && (
     <div class="feedback-preview__primary" data-ds-preview-target>
-      <Alert title="Settings updated" />
-    </div>
-  )}
-
-  {kind === "notification" && (
-    <div class="feedback-preview__primary" data-ds-preview-target>
-      <Notification
-        id={previewId}
-        title="Changes saved"
-        description="Your latest settings are now available to everyone on the project."
-        status="success"
-        actions={[{ label: "View settings", href: "#api" }, { label: "Learn more", href: "#dependencies" }]}
+      <Alert
+        title="Complete the required fields"
+        description="Name and email are required before the form can be submitted."
+        status="warning"
       />
     </div>
   )}
 
-  {kind === "toast" && (
+  {kind === "notification-and-toast" && (
     <div class="feedback-preview__primary" data-ds-preview-target>
-      <Toast
-        id={previewId}
-        title="Export is ready"
-        description="The generated file can now be downloaded."
-        data-feedback-static-preview
-        duration="persistent"
+      <NotificationAndToast
+        id={`${previewId}-compact`}
+        title="Changes saved"
+        layout="compact"
+        status="success"
+        actions={[{ label: "View settings", href: "#api" }]}
+        data-feedback-layout-preview="compact"
+      />
+      <NotificationAndToast
+        id={`${previewId}-expanded`}
+        title="Changes saved"
+        description="Your latest settings are now available to everyone on the project."
+        layout="expanded"
+        status="success"
+        actions={[{ label: "Upgrade", href: "#api" }, { label: "Learn more", href: "#dependencies" }]}
+        data-feedback-layout-preview="expanded"
+        hidden
       />
     </div>
   )}
@@ -65,64 +72,104 @@ const statusLabels = {
         data-feedback-icon-template={status}
         data-feedback-status-label={statusLabels[status]}
       >
-        <MaterialSymbol class="feedback-message__icon" name={statusIcons[status]} />
+        <MaterialSymbol
+          class="notification-and-toast__icon"
+          name={statusIcons[status]}
+          size="var(--feedback-size-medium-icon-size)"
+        />
       </template>
     ))}
   </div>
 </div>
 
 <script>
+  const syncFeedbackLayout = (preview: HTMLElement, layout: string) => {
+    preview.dataset.feedbackPreviewLayout = layout;
+    preview.querySelectorAll<HTMLElement>("[data-feedback-layout-preview]").forEach((root) => {
+      root.hidden = root.dataset.feedbackLayoutPreview !== layout;
+    });
+  };
+
   const initializeFeedbackPreviews = () => {
     document.querySelectorAll<HTMLElement>("[data-feedback-preview]").forEach((preview) => {
       if (preview.dataset.feedbackPreviewReady === "true") return;
       preview.dataset.feedbackPreviewReady = "true";
 
-      preview.querySelectorAll<HTMLElement>("[data-feedback-static-preview]").forEach((toast) => {
-        toast.hidden = false;
-        toast.dataset.toastState = "visible";
-      });
+      if (preview.dataset.feedbackPreview === "notification-and-toast") {
+        syncFeedbackLayout(preview, preview.dataset.feedbackPreviewLayout ?? "compact");
+      }
 
       preview.addEventListener("click", (event) => {
         if (!(event.target instanceof Element)) return;
         const dismiss = event.target.closest("[data-feedback-dismiss]");
-        const toast = dismiss?.closest<HTMLElement>("[data-feedback-static-preview]");
-        if (!toast) return;
-        toast.hidden = true;
-        toast.dataset.toastState = "closed";
+        const message = dismiss?.closest<HTMLElement>("[data-feedback-layout-preview]");
+        if (message) message.hidden = true;
       });
 
       preview.closest("[data-ds-interactive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
         if (!(event instanceof CustomEvent)) return;
         const target = preview.querySelector<HTMLElement>("[data-ds-preview-target]");
         if (!target) return;
-        const feedbackRoot = target.matches("[data-feedback-root]")
-          ? target
-          : target.querySelector<HTMLElement>("[data-feedback-root]");
 
-        if (feedbackRoot?.hidden) {
-          feedbackRoot.hidden = false;
-          if (feedbackRoot.matches("[data-toast]")) feedbackRoot.dataset.toastState = "visible";
+        if (event.detail?.axisId === "notificationLayout") {
+          syncFeedbackLayout(preview, String(event.detail.value));
+          return;
         }
 
-        if (event.detail?.axisId === "feedbackStatus" && feedbackRoot) {
+        const feedbackRoots = [
+          ...(target.matches("[data-feedback-root]") ? [target] : []),
+          ...target.querySelectorAll<HTMLElement>("[data-feedback-root]"),
+        ];
+
+        if (event.detail?.axisId === "feedbackStatus") {
           const status = String(event.detail.value);
           const template = preview.querySelector<HTMLTemplateElement>(
             `template[data-feedback-icon-template="${status}"]`,
           );
-          const currentIcon = feedbackRoot.querySelector<SVGElement>(".feedback-message__icon");
-          const nextIcon = template?.content.querySelector<SVGElement>(".feedback-message__icon");
-          const statusLabel = feedbackRoot.querySelector<HTMLElement>(".feedback-message__status-label");
-          feedbackRoot.dataset.feedbackStatus = status;
-          if (currentIcon && nextIcon) currentIcon.replaceWith(nextIcon.cloneNode(true));
-          if (statusLabel && template?.dataset.feedbackStatusLabel) {
-            statusLabel.textContent = `${template.dataset.feedbackStatusLabel}: `;
-          }
+          feedbackRoots.forEach((feedbackRoot) => {
+            const currentIcon = feedbackRoot.querySelector<SVGElement>(
+              ".notification-and-toast__icon, .alert__icon",
+            );
+            const nextIcon = template?.content.querySelector<SVGElement>(".notification-and-toast__icon");
+            const statusLabel = feedbackRoot.querySelector<HTMLElement>(
+              ".notification-and-toast__status-label, .alert__status-label",
+            );
+            feedbackRoot.dataset.feedbackStatus = status;
+            if (currentIcon && nextIcon) {
+              const replacement = nextIcon.cloneNode(true) as SVGElement;
+              replacement.setAttribute(
+                "class",
+                currentIcon.classList.contains("alert__icon") ? "alert__icon" : "notification-and-toast__icon",
+              );
+              const currentStyle = currentIcon.getAttribute("style");
+              if (currentStyle) replacement.setAttribute("style", currentStyle);
+              currentIcon.replaceWith(replacement);
+            }
+            if (statusLabel && template?.dataset.feedbackStatusLabel) {
+              statusLabel.textContent = `${template.dataset.feedbackStatusLabel}: `;
+            }
+          });
         }
-        if (event.detail?.axisId === "feedbackEmphasis" && feedbackRoot) {
-          feedbackRoot.dataset.feedbackEmphasis = String(event.detail.value);
+        if (event.detail?.axisId === "feedbackEmphasis") {
+          feedbackRoots.forEach((feedbackRoot) => {
+            feedbackRoot.dataset.feedbackEmphasis = String(event.detail.value);
+          });
         }
-        if (event.detail?.axisId === "feedbackSize" && feedbackRoot) {
-          feedbackRoot.dataset.feedbackSize = String(event.detail.value);
+        if (event.detail?.axisId === "feedbackSize") {
+          const size = String(event.detail.value);
+          const iconSize = {
+            small: "var(--feedback-size-small-icon-size)",
+            medium: "var(--feedback-size-medium-icon-size)",
+            large: "var(--feedback-size-large-icon-size)",
+          }[size];
+          feedbackRoots.forEach((feedbackRoot) => {
+            feedbackRoot.dataset.feedbackSize = size;
+            const icon = feedbackRoot.querySelector<SVGElement>(".alert__icon");
+            if (icon && iconSize) {
+              icon.style.width = iconSize;
+              icon.style.height = iconSize;
+            }
+          });
         }
       });
     });
@@ -142,14 +189,5 @@ const statusLabels = {
 
   .feedback-preview__primary {
     justify-items: center;
-  }
-
-  .feedback-preview__primary :global(.toast[data-feedback-static-preview]) {
-    position: static;
-    inset: auto;
-    display: grid;
-    width: min(100%, var(--toast-max-inline-size));
-    max-height: none;
-    margin: 0;
   }
 </style>

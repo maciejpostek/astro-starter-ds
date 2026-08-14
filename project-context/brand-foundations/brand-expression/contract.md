@@ -287,8 +287,8 @@ Use Align UI as a bounded quality benchmark for feedback status coverage, emphas
 
 ### Activation
 
-- Components: Alert, Notification, Toast
-- Scopes: base-components/alerts, base-components/toast-notification
+- Components: Alert, NotificationAndToast
+- Scopes: base-components/feedback-messages
 - Themes: none
 
 ### Implementation
@@ -316,12 +316,11 @@ Use Align UI as a bounded quality benchmark for feedback status coverage, emphas
 #### Classes
 
 - `alert`
-- `notification`
-- `toast`
+- `notification-and-toast`
 
 #### Attributes
 
-- `data-component-name`: `Alert | Notification | Toast`
+- `data-component-name`: `Alert | NotificationAndToast`
 - `data-feedback-status`: `error | warning | success | info | feature`
 - `data-feedback-emphasis`: `solid | soft | subtle | outline`
 - `data-feedback-size`: `small | medium | large`
@@ -335,8 +334,8 @@ Use Align UI as a bounded quality benchmark for feedback status coverage, emphas
 
 #### Runtime behaviors
 
-- Alert and Notification may dismiss through one delegated native-button behavior.
-- Toast is prerendered by Astro and opens or closes through typed custom events without runtime HTML creation.
+- Alert and NotificationAndToast may dismiss through one delegated native-button behavior.
+- NotificationAndToast with toast delivery is prerendered by Astro and opens or closes through typed custom events without runtime HTML creation.
 
 ### Required
 
@@ -348,7 +347,7 @@ Use Align UI as a bounded quality benchmark for feedback status coverage, emphas
 
 - Copying Align UI code, API, tokens, raw values, content or proprietary assets.
 - Arbitrary icon props, icon slots, runtime markup injection, framework islands or data persistence.
-- Propagation of this benchmark rule outside Alert, Notification and Toast.
+- Propagation of this benchmark rule outside Alert and NotificationAndToast.
 
 ### Validation
 

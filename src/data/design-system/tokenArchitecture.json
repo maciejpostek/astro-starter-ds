@@ -14,7 +14,7 @@
       "dependencies": ["color-primitives"],
       "properties": ["background", "border", "text", "icon", "status", "state"],
       "variants": [],
-      "states": ["default", "focus", "disabled"]
+      "states": ["default", "focus", "disabled", "success", "warning", "error"]
     },
     {
       "id": "global-size",
@@ -90,9 +90,9 @@
       "sourcePaths": ["src/styles/tokens/interaction-effects.css"],
       "consumers": ["*"],
       "dependencies": ["global-color", "global-size"],
-      "properties": ["focus"],
+      "properties": ["focus", "validation"],
       "variants": [],
-      "states": ["focus-visible"]
+      "states": ["focus-visible", "success", "warning", "error"]
     },
     {
       "id": "button-color",
@@ -131,7 +131,7 @@
       "dependencies": ["global-color"],
       "properties": ["background", "border", "text", "placeholder", "icon", "label", "helper"],
       "variants": [],
-      "states": ["default", "hover", "focus", "valid", "invalid", "disabled"]
+      "states": ["default", "none", "hover", "focus", "success", "warning", "error", "valid", "invalid", "disabled"]
     },
     {
       "id": "tab-color",
@@ -195,6 +195,19 @@
       "consumers": ["content-divider"],
       "dependencies": ["size-primitives"],
       "properties": ["min-height"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "bullet-point-size",
+      "scope": "component",
+      "owner": "bullet-point",
+      "domain": "size",
+      "namePattern": "^--bullet-point-(?:icon-size|icon-offset|content-gap)$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["bullet-point"],
+      "dependencies": ["size-primitives"],
+      "properties": ["icon-size", "icon-offset", "content-gap"],
       "variants": [],
       "states": []
     },
@@ -264,6 +277,19 @@
       "states": []
     },
     {
+      "id": "tag-color",
+      "scope": "component",
+      "owner": "tag",
+      "domain": "color",
+      "namePattern": "^--tag-(?:background|border|content)$",
+      "sourcePaths": ["src/styles/tokens/color-components.css"],
+      "consumers": ["tag"],
+      "dependencies": ["global-color"],
+      "properties": ["background", "border", "content"],
+      "variants": ["neutral", "brand", "green", "amber", "red", "sky", "inverse"],
+      "states": ["disabled"]
+    },
+    {
       "id": "pagination-color",
       "scope": "component",
       "owner": "pagination",
@@ -322,7 +348,7 @@
       "domain": "color",
       "namePattern": "^--feedback-(?:error|warning|success|info|feature)-background-(?:solid|soft)$",
       "sourcePaths": ["src/styles/tokens/color-components.css"],
-      "consumers": ["alert", "notification", "toast"],
+      "consumers": ["alert", "notification-and-toast"],
       "dependencies": ["global-color"],
       "properties": ["background"],
       "variants": ["solid", "soft"],
@@ -335,7 +361,7 @@
       "domain": "size",
       "namePattern": "^--feedback-(?:size-(?:small|medium|large)-(?:padding-block|padding-inline|gap|icon-size)|alert-max-inline-size|rich-(?:padding-(?:block-start|inline-end|block-end|inline-start)|header-gap|icon-size)|(?:copy-gap|content-gap|actions-gap))$",
       "sourcePaths": ["src/styles/tokens/size-components.css"],
-      "consumers": ["alert", "notification", "toast"],
+      "consumers": ["alert", "notification-and-toast"],
       "dependencies": ["global-size"],
       "properties": ["padding-block", "padding-inline", "gap", "icon-size"],
       "variants": ["small", "medium", "large"],
@@ -344,11 +370,11 @@
     {
       "id": "toast-size",
       "scope": "component",
-      "owner": "toast",
+      "owner": "notification-and-toast",
       "domain": "size",
       "namePattern": "^--toast-(?:max-inline-size|viewport-inset|enter-offset)$",
       "sourcePaths": ["src/styles/tokens/size-components.css"],
-      "consumers": ["toast"],
+      "consumers": ["notification-and-toast"],
       "dependencies": ["global-size"],
       "properties": ["max-inline-size", "viewport-inset", "enter-offset"],
       "variants": [],

@@ -1,0 +1,37 @@
+---
+import BulletPoint from "../../base-components/bullet-points/BulletPoint.astro";
+---
+
+<div
+  class="bullet-point-preview"
+  data-component-name="DsBulletPointPreview"
+  data-ds-preview-target
+  data-bullet-point-status="included"
+  data-bullet-point-tone="neutral"
+>
+  <ul class="bullet-point-preview__list">
+    <BulletPoint
+      text="Priority support included"
+      data-bullet-point-status-option="included"
+    />
+    <BulletPoint
+      text="Priority support not included"
+      status="excluded"
+      data-bullet-point-status-option="excluded"
+      hidden
+    />
+  </ul>
+</div>
+
+<style>
+  .bullet-point-preview,
+  .bullet-point-preview__list {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .bullet-point-preview__list {
+    margin: 0;
+    padding: 0;
+  }
+</style>

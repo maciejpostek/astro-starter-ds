@@ -59,6 +59,7 @@ Let a user choose one value from a finite, known set while preserving native for
 - Support Arrow Up/Down, Home/End, Enter, Space, Escape, Tab and prefix typeahead while skipping disabled options.
 - Synchronize native `input` and `change` events, required validation, invalid focus, form reset, disabled state, `aria-activedescendant` and `aria-selected`.
 - Preserve visible focus in forced-colors mode and do not rely on color alone for selected or invalid state.
+- Use `none`, `success`, `warning` and `error` for validation. Focus replaces only the status halo, keeps the status border, and Error alone sets `aria-invalid="true"`.
 
 ## Related components
 

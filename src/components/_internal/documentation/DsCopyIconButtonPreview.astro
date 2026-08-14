@@ -1,6 +1,6 @@
 ---
 import CopyIconButton from "../../base-components/buttons/CopyIconButton.astro";
-import Toast from "../../base-components/toast-notification/Toast.astro";
+import NotificationAndToast from "../../base-components/feedback-messages/NotificationAndToast.astro";
 ---
 
 <div
@@ -17,12 +17,14 @@ import Toast from "../../base-components/toast-notification/Toast.astro";
     successToastId="copy-icon-button-preview-success"
     variant="tertiary"
   />
-  <Toast
+  <NotificationAndToast
+    delivery="toast"
     id="copy-icon-button-preview-success"
     title="URL copied to clipboard"
     status="success"
   />
-  <Toast
+  <NotificationAndToast
+    delivery="toast"
     id="copy-icon-button-preview-error"
     title="URL could not be copied"
     status="error"

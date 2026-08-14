@@ -4,7 +4,9 @@ import DsComponentDetail from "../../../../../components/_internal/documentation
 import {
   architecture,
   createDocumentationSummary,
+  documentationFigmaHref,
   isPublicDocumentationComponent,
+  isSingletonBaseComponentPage,
   type ArchitectureComponent,
 } from "../../../../../data/documentationRegistry";
 import { loadComponentRule } from "../../../../../data/componentRuleLoader";
@@ -14,7 +16,12 @@ import {
 
 export function getStaticPaths() {
   return architecture.components
-    .filter((component) => component.categoryKey === "base-components" && isPublicDocumentationComponent(component))
+    .filter(
+      (component) =>
+        component.categoryKey === "base-components" &&
+        isPublicDocumentationComponent(component) &&
+        !isSingletonBaseComponentPage(component.pageKey),
+    )
     .map((component) => ({
       params: { familyKey: component.pageKey, componentSlug: component.id },
       props: { component },
@@ -33,9 +40,7 @@ const pageToc = [
     : []),
   ...(rule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
 ];
-const figmaHref = component.figmaCanonicalNodeId
-  ? `${architecture.figma.fileUrl}?node-id=${component.figmaCanonicalNodeId.replace(":", "-")}`
-  : undefined;
+const figmaHref = documentationFigmaHref(component);
 ---
 
 <DesignSystemLayout

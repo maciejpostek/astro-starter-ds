@@ -32,6 +32,14 @@ const placements = ["top", "bottom", "left", "right"] as const;
         ))}
       </section>
 
+      <Tooltip
+        id="tooltip-responsive-placement"
+        placement="bottom"
+        narrowPlacement="right"
+        text="Responsive placement"
+        label="Explain responsive placement"
+      />
+
       <section aria-label="Info popover placements">
         {placements.map((placement) => (
           <InfoPopover

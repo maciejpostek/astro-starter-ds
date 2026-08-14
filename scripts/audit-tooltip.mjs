@@ -45,7 +45,10 @@ const brandContract = JSON.parse(
 for (const [pattern, message] of [
   [/data-component-name="Tooltip"/u, "Tooltip Guides identity is missing."],
   [/data-tooltip-size=\{size\}/u, "Tooltip size projection is missing."],
+  [/data-tooltip-placement=\{placement\}/u, "Tooltip placement attribute is missing."],
+  [/data-tooltip-placement-narrow=\{narrowPlacement\}/u, "Tooltip narrow placement attribute is missing."],
   [/data-overlay-placement=\{placement\}/u, "Tooltip preferred placement projection is missing."],
+  [/data-overlay-placement-narrow=\{narrowPlacement\}/u, "Tooltip responsive overlay placement projection is missing."],
   [/aria-describedby=\{contentId\}/u, "Tooltip ARIA description relationship is missing."],
   [/role="tooltip"/u, "Tooltip role is missing."],
   [/popover="manual"/u, "Tooltip must use the manual Popover mode."],
@@ -56,6 +59,8 @@ for (const [pattern, message] of [
   [/activateOverlay/u, "Tooltip must use the shared overlay runtime."],
   [/var\(--tooltip-compact-max-inline-size\)/u, "Tooltip compact max-size token is missing."],
   [/var\(--tooltip-tail-size\)/u, "Tooltip tail-size token is missing."],
+  [/body-tiny-regular/u, "Tooltip must use the shared 12 px Body Tiny style."],
+  [/class="tooltip__text"/u, "Tooltip text wrapper is missing."],
   [/@media \(prefers-reduced-motion: reduce\)/u, "Tooltip Reduced Motion treatment is missing."],
   [/@media \(forced-colors: active\)/u, "Tooltip forced-colors treatment is missing."],
 ]) requireMatch(tooltip, pattern, message);
@@ -126,6 +131,7 @@ for (const [pattern, message] of [
   [/surface\.style\.top/u, "Overlay runtime must set standard top positioning."],
   [/tail\.style\.left/u, "Overlay runtime must position the real tail with standard styles."],
   [/data-overlay-resolved-placement/u, "Overlay runtime must expose the collision-resolved placement."],
+  [/NARROW_PLACEMENT_QUERY/u, "Overlay runtime must support the narrow placement breakpoint."],
 ]) requireMatch(runtime, pattern, message);
 
 for (const [name, source] of [["Tooltip", tooltip], ["InfoPopover", infoPopover]]) {
@@ -165,15 +171,15 @@ for (const property of ["tail-size", "compact-max-inline-size", "rich-max-inline
 const records = new Map(registry.components?.map((component) => [component.id, component]));
 const tooltipRecord = records.get("tooltip");
 const infoPopoverRecord = records.get("info-popover");
-if (tooltipRecord?.sourcePath !== tooltipPath || tooltipRecord?.syncStatus !== "astro-only") {
-  errors.push("Tooltip Astro-only registry projection is incomplete.");
+if (tooltipRecord?.sourcePath !== tooltipPath || tooltipRecord?.syncStatus !== "mapped") {
+  errors.push("Tooltip mapped registry projection is incomplete.");
 }
 if (infoPopoverRecord?.sourcePath !== infoPopoverPath || infoPopoverRecord?.role !== "molecule" || infoPopoverRecord?.family !== "tooltip") {
   errors.push("InfoPopover molecule registry projection is incomplete.");
 }
-for (const [id, record] of [["tooltip", tooltipRecord], ["info-popover", infoPopoverRecord]]) {
-  if (record?.figmaCanonicalNodeId !== null || record?.syncStatus !== "astro-only") {
-    errors.push(`${id} must remain Astro-only without a canonical Figma node.`);
+for (const [id, record, nodeId] of [["tooltip", tooltipRecord, "1371:45"], ["info-popover", infoPopoverRecord, "1371:74"]]) {
+  if (record?.figmaCanonicalNodeId !== nodeId || record?.syncStatus !== "mapped") {
+    errors.push(`${id} must preserve its mapped canonical Figma node.`);
   }
   if (!record?.dependencies?.includes("material-symbol")) errors.push(`${id} must declare MaterialSymbol.`);
   if ((record?.slots?.length ?? 1) !== 0) errors.push(`${id} registry must prohibit slots.`);
@@ -198,8 +204,10 @@ for (const id of ["tooltip", "info-popover"]) {
 }
 requireMatch(docs, /id: "tooltipSize"/u, "Tooltip documentation size axis is missing.");
 requireMatch(docs, /id: "placement"/u, "Tooltip family documentation placement axis is missing.");
+requireMatch(docs, /id: "narrowPlacement"/u, "Tooltip documentation narrow-placement axis is missing.");
 requireMatch(interactivePreview, /target\.dataset\.tooltipSize/u, "Documentation does not project Tooltip size changes.");
 requireMatch(interactivePreview, /target\.dataset\.overlayPlacement/u, "Documentation does not project placement changes.");
+requireMatch(interactivePreview, /target\.dataset\.overlayPlacementNarrow/u, "Documentation does not project narrow placement changes.");
 requireMatch(tooltipPreview, /data-ds-preview-target/u, "Tooltip interactive preview target is missing.");
 requireMatch(infoPopoverPreview, /data-ds-preview-target/u, "InfoPopover interactive preview target is missing.");
 for (const boundary of ["DsTooltipPreview", "DsInfoPopoverPreview"]) {
@@ -229,4 +237,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log("Tooltip family audit passed: compact and rich semantics, shared collision positioning, exact tokens, fixed icons, documentation, tests, Brand Contract and Astro-only projections are intact.");
+console.log("Tooltip family audit passed: mapped compact and rich visual mastery, shared Astro collision positioning, exact tokens, fixed icons, documentation, tests and Brand Contract are intact.");

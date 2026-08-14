@@ -4,6 +4,7 @@ import DsComponentDetail from "../../../../../components/_internal/documentation
 import {
   architecture,
   createDocumentationSummary,
+  documentationFigmaHref,
   type ArchitectureComponent,
 } from "../../../../../data/documentationRegistry";
 import { loadComponentRule } from "../../../../../data/componentRuleLoader";
@@ -29,9 +30,7 @@ const pageToc = [
   ...documentationToc,
   ...(rule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
 ];
-const figmaHref = component.figmaCanonicalNodeId
-  ? `${architecture.figma.fileUrl}?node-id=${component.figmaCanonicalNodeId.replace(":", "-")}`
-  : undefined;
+const figmaHref = documentationFigmaHref(component);
 ---
 
 <DesignSystemLayout

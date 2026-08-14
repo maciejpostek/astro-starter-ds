@@ -316,8 +316,9 @@ z opisem oraz dwa położenia ikony.
 **Interpretacja.** Master reprezentuje pojedynczy item, mimo nazwy Accordion.
 Nie modeluje dowolnej liczby elementów ani natywnego runtime disclosure.
 
-**Rekomendacja.** Zachować w MPCOM publiczny, slotowy Accordion oraz prywatny
-`_Parts/Accordion.Item`. Nie wprowadzać osi count ani publicznego prop
+**Rekomendacja.** Publiczny `Accordion` powinien reprezentować pojedynczy
+disclosure i zachować tylko osie jego stanów wizualnych. Slotowy wrapper należy
+nazwać `AccordionList`; nie wprowadzać osi count ani publicznego prop
 odpowiadającego wizualnemu `Flip Icon`.
 
 ### Wspólny wniosek o bindings

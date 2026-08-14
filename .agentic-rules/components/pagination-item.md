@@ -3,11 +3,11 @@
 Status: active.
 
 - Manifest id: `pagination-item`
-- Figma canonical node: none
+- Figma canonical node: `1373:137`
 - Figma page key: `pagination`
 - Astro source: `src/components/base-components/pagination/PaginationItem.astro`
 - Role: `atom`
-- Sync status: `astro-only`
+- Sync status: `mapped`
 
 ## UX purpose
 
@@ -51,7 +51,7 @@ PaginationItem provides one URL-addressable page, boundary or directional destin
 - The root is `li` and the interactive descendant is a native anchor.
 - `current` renders `aria-current="page"` and remains focusable through its URL.
 - `disabled` removes `href`, renders `aria-disabled="true"` and uses `tabindex="-1"`.
-- Previous and Next require non-empty accessible labels; native link keyboard behavior and system focus-visible styling are preserved.
+- Previous and Next require non-empty accessible labels; native link keyboard behavior is preserved and focus-visible uses the global blue focus-ring color plus the canonical `Focused` effect.
 
 ## Related components
 
@@ -62,7 +62,7 @@ PaginationItem provides one URL-addressable page, boundary or directional destin
 
 ## Naming and token contract
 
-Use the canonical `PaginationItem` identity, `pagination-item` root class and registered `pagination-color` and `pagination-size` groups. Do not add item-specific tokens, arbitrary icons or public interaction-state props.
+Use the canonical `PaginationItem` identity, `pagination-item` root class, registered `pagination-color` and `pagination-size` groups, and the existing global focus-ring/effect tokens. Do not add item-specific tokens, arbitrary icons or public interaction-state props.
 
 ## Core decision
 

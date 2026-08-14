@@ -99,17 +99,19 @@ test("places the tail on the trigger-facing edge for every resolved side", () =>
   }
 });
 
-test("validates content, size, placement and optional identifiers", () => {
+test("validates content, size, placement, responsive placement and optional identifiers", () => {
   assert.doesNotThrow(() => validateTooltipContract({
     text: "Short explanation",
     label: "Explain the value",
     size: "medium",
     placement: "left",
+    narrowPlacement: "right",
   }));
   assert.throws(() => validateTooltipContract({ text: " ", label: "Label", size: "small", placement: "top" }), TypeError);
   assert.throws(() => validateTooltipContract({ text: "Text", label: " ", size: "small", placement: "top" }), TypeError);
   assert.throws(() => validateTooltipContract({ text: "Text", label: "Label", size: "large", placement: "top" }), RangeError);
   assert.throws(() => validateTooltipContract({ text: "Text", label: "Label", size: "small", placement: "start" }), RangeError);
+  assert.throws(() => validateTooltipContract({ text: "Text", label: "Label", size: "small", placement: "top", narrowPlacement: "start" }), RangeError);
   assert.throws(() => validateTooltipContract({ text: "Text", label: "Label", size: "small", placement: "top", id: "" }), TypeError);
 
   assert.doesNotThrow(() => validateInfoPopoverContract({
@@ -173,7 +175,12 @@ test("renders complete Tooltip and InfoPopover server-side contracts", async () 
     assert.match(html, /data-tooltip-size="medium"/u);
     for (const placement of ["top", "bottom", "left", "right"]) {
       assert.match(html, new RegExp(`data-overlay-placement="${placement}"`, "u"));
+      assert.match(html, new RegExp(`data-tooltip-placement="${placement}"`, "u"));
     }
+    assert.match(html, /data-overlay-placement-narrow="right"/u);
+    assert.match(html, /data-tooltip-placement-narrow="right"/u);
+    assert.match(html, /class="tooltip__content body-tiny-regular"/u);
+    assert.match(html, /<span class="tooltip__text"[^>]*>Responsive placement<\/span>/u);
     assert.match(html, /role="tooltip" popover="manual" hidden/u);
     assert.match(html, /data-component-name="InfoPopover"/u);
     assert.match(html, /aria-expanded="false" aria-haspopup="dialog"/u);

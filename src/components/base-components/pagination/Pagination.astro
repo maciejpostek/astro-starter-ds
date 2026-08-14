@@ -53,6 +53,7 @@ const resolvedLabels: PaginationLabels = { ...defaultLabels, ...labels };
 const range = createPaginationRange(currentPage, totalPages);
 const isFirstPage = currentPage === 1;
 const isLastPage = currentPage === totalPages;
+const hasCustomItems = Astro.slots.has("default");
 ---
 
 <nav
@@ -70,50 +71,56 @@ const isLastPage = currentPage === totalPages;
   )}
 
   <PaginationGroup class="pagination__list">
-    {showFirstLast && (
-      <PaginationItem
-        kind="first"
-        label={resolvedLabels.first}
-        disabled={isFirstPage}
-        href={isFirstPage ? undefined : getPageHref(1)}
-      />
-    )}
-
-    <PaginationItem
-      kind="previous"
-      label={resolvedLabels.previous}
-      disabled={isFirstPage}
-      href={isFirstPage ? undefined : getPageHref(currentPage - 1)}
-    />
-
-    {range.map((item) => item.type === "ellipsis" ? (
-      <PaginationEllipsis data-pagination-key={item.key} />
+    {hasCustomItems ? (
+      <slot />
     ) : (
-      <PaginationItem
-        kind="page"
-        page={item.page}
-        current={item.page === currentPage}
-        label={item.page === currentPage
-          ? resolvedLabels.currentPage(item.page)
-          : resolvedLabels.page(item.page)}
-        href={getPageHref(item.page)}
-      />
-    ))}
+      <>
+        {showFirstLast && (
+          <PaginationItem
+            kind="first"
+            label={resolvedLabels.first}
+            disabled={isFirstPage}
+            href={isFirstPage ? undefined : getPageHref(1)}
+          />
+        )}
 
-    <PaginationItem
-      kind="next"
-      label={resolvedLabels.next}
-      disabled={isLastPage}
-      href={isLastPage ? undefined : getPageHref(currentPage + 1)}
-    />
+        <PaginationItem
+          kind="previous"
+          label={resolvedLabels.previous}
+          disabled={isFirstPage}
+          href={isFirstPage ? undefined : getPageHref(currentPage - 1)}
+        />
 
-    {showFirstLast && (
-      <PaginationItem
-        kind="last"
-        label={resolvedLabels.last}
-        disabled={isLastPage}
-        href={isLastPage ? undefined : getPageHref(totalPages)}
-      />
+        {range.map((item) => item.type === "ellipsis" ? (
+          <PaginationEllipsis data-pagination-key={item.key} />
+        ) : (
+          <PaginationItem
+            kind="page"
+            page={item.page}
+            current={item.page === currentPage}
+            label={item.page === currentPage
+              ? resolvedLabels.currentPage(item.page)
+              : resolvedLabels.page(item.page)}
+            href={getPageHref(item.page)}
+          />
+        ))}
+
+        <PaginationItem
+          kind="next"
+          label={resolvedLabels.next}
+          disabled={isLastPage}
+          href={isLastPage ? undefined : getPageHref(currentPage + 1)}
+        />
+
+        {showFirstLast && (
+          <PaginationItem
+            kind="last"
+            label={resolvedLabels.last}
+            disabled={isLastPage}
+            href={isLastPage ? undefined : getPageHref(totalPages)}
+          />
+        )}
+      </>
     )}
   </PaginationGroup>
 </nav>

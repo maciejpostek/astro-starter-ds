@@ -21,8 +21,8 @@ Popup interrupts the current flow with one bounded decision, confirmation or imp
 
 ## Avoid when
 
-- The message can remain in the document flow; use Alert or Notification instead.
-- The feedback is transient and non-blocking; use Toast instead.
+- The message can remain in the document flow; use Alert or NotificationAndToast with notification delivery instead.
+- The feedback is transient and non-blocking; use NotificationAndToast with toast delivery instead.
 - The content is a long workflow, navigation destination or arbitrary application surface.
 - More than one independent decision or a complex form is required.
 
@@ -66,7 +66,7 @@ Popup interrupts the current flow with one bounded decision, confirmation or imp
 - [ButtonGroup](/design-system/base-components/buttons/button-group) preserves intrinsic action wrapping.
 - [CheckboxLabel](/design-system/base-components/checkbox-radio/checkbox-label) renders the optional preference.
 - [MaterialSymbol](/design-system/assets/material-symbols) renders the fixed decorative status glyph.
-- Alert, Notification and Toast remain non-modal feedback alternatives.
+- Alert and NotificationAndToast remain non-modal feedback alternatives.
 
 ## Naming and token contract
 
