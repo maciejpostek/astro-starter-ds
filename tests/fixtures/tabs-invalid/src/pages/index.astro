@@ -1,0 +1,8 @@
+---
+import Tab from "../../../../../src/components/base-components/tabs/Tab.astro";
+---
+
+<div role="tablist" aria-label="Invalid tab state">
+  <Tab id="invalid-tab" controls="invalid-panel" selected disabled>Invalid</Tab>
+</div>
+<div id="invalid-panel" role="tabpanel" aria-labelledby="invalid-tab" tabindex="0">Invalid panel</div>

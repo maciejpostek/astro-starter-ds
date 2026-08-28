@@ -118,11 +118,23 @@ identities but do not enter the public Design System registry.
 The desktop sidebar owns brand identity, the icon-based `System | Jasny | Ciemny` theme
 picker, the SearchInput trigger and the complete hierarchical navigation. It
 scrolls independently. Category labels use body-small strong typography and an
-icon from the existing curated Material Symbol catalog. Pages remain directly
-clickable; a separate native-button disclosure controls their component list.
+icon from the existing curated Material Symbol catalog. In Base Components and
+Website Patterns, an empty page or singleton is directly clickable. A
+multi-component family is one non-navigating disclosure button; only its child
+component detail links enter search and Previous/Next navigation, and its old
+family URL redirects to the first canonical child. Do not render family grids,
+comparison cards or `DsFamilyGallery` for these two categories. Examples &
+Templates may retain galleries because selection and comparison are their
+purpose.
 The current page or component uses accent text, an accent left border and strong
 weight. Sidebar status remains available in registry data but is not rendered as
-navigation dots.
+navigation dots. The independently scrolling navigation preserves its scroll
+position across documentation links and same-tab reloads.
+
+An empty Base Components or Website Patterns page is a reserved placeholder.
+Its content column renders only the canonical `h1` using the architecture page
+label. It has no eyebrow, summary, status, TOC, pager, empty-state card,
+preview, API, dependencies or component rule.
 
 Below the compact-layout threshold, the same sidebar DOM becomes a modal panel.
 It must close on Escape, overlay activation and navigation, trap focus while

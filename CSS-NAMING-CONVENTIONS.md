@@ -187,6 +187,8 @@ Typography uses a small approved class API rather than a utility scale:
 .body-base-regular {}
 .body-base-regular-underlined {}
 .body-base-semibold {}
+.caption-small {}
+.caption-tiny {}
 ```
 
 These Text Style classes are complete semantic typography contracts. HTML tags

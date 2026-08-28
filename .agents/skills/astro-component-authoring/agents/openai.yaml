@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astro Component Authoring"
+  short_description: "Build and document reusable Astro components"
+  default_prompt: "Use $astro-component-authoring to create or normalize a reusable Astro design-system component and its documentation."

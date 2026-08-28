@@ -1,0 +1,142 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+
+export interface Props extends Omit<
+  HTMLAttributes<"article">,
+  "aria-labelledby" | "class" | "id" | "title"
+> {
+  title: string;
+  description?: string;
+  showIcon?: boolean;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  id?: string;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  showIcon = true,
+  headingLevel = 3,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof title !== "string" || title.trim().length === 0) {
+  throw new TypeError("BulletCardSimple title must be a non-empty string.");
+}
+if (description !== undefined && (typeof description !== "string" || description.trim().length === 0)) {
+  throw new TypeError("BulletCardSimple description must be a non-empty string when provided.");
+}
+if (typeof showIcon !== "boolean") {
+  throw new TypeError("BulletCardSimple showIcon must be a boolean.");
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("BulletCardSimple headingLevel must be an integer from 2 to 6.");
+}
+if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
+  throw new TypeError("BulletCardSimple id must be a non-empty string when provided.");
+}
+
+const rootId = id ?? `bullet-card-simple-${crypto.randomUUID()}`;
+const headingId = `${rootId}-title`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+const hasActions = Astro.slots.has("actions");
+---
+
+<article
+  {...attributes}
+  id={rootId}
+  class:list={["bullet-card-simple", className]}
+  aria-labelledby={headingId}
+  data-component-name="BulletCardSimple"
+>
+  <div class="bullet-card-simple__header">
+    {showIcon && (
+      <span class="bullet-card-simple__icon" aria-hidden="true">
+        <MaterialSymbol name="language" size="var(--bullet-card-simple-icon-size)" />
+      </span>
+    )}
+    <HeadingTag class="bullet-card-simple__title body-base-semibold" id={headingId}>
+      {title}
+    </HeadingTag>
+  </div>
+
+  {description && (
+    <p class="bullet-card-simple__description body-base-regular">{description}</p>
+  )}
+
+  {hasActions && (
+    <ButtonGroup class="bullet-card-simple__actions" aria-labelledby={headingId}>
+      <slot name="actions" />
+    </ButtonGroup>
+  )}
+</article>
+
+<style>
+  .bullet-card-simple {
+    box-sizing: border-box;
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-inline-start: var(--content-padding-large);
+    border-inline-start: var(--border-width-strong) solid var(--color-border-accent-strong);
+    color: var(--color-text-primary);
+  }
+
+  .bullet-card-simple__header {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--gap-small);
+  }
+
+  .bullet-card-simple__icon {
+    display: grid;
+    inline-size: var(--bullet-card-simple-icon-size);
+    block-size: var(--bullet-card-simple-icon-size);
+    flex: 0 0 var(--bullet-card-simple-icon-size);
+    place-items: center;
+    color: var(--color-icon-accent);
+  }
+
+  .bullet-card-simple__title,
+  .bullet-card-simple__description {
+    min-inline-size: 0;
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .bullet-card-simple__title {
+    flex: 1 1 auto;
+  }
+
+  .bullet-card-simple__description {
+    inline-size: 100%;
+    margin-block-start: var(--space-tiny);
+    color: var(--color-text-secondary);
+  }
+
+  .bullet-card-simple__actions {
+    max-inline-size: 100%;
+    margin-block-start: var(--space-medium);
+  }
+
+  @media (forced-colors: active) {
+    .bullet-card-simple {
+      border-inline-start-color: CanvasText;
+      color: CanvasText;
+    }
+
+    .bullet-card-simple__description,
+    .bullet-card-simple__icon {
+      color: CanvasText;
+    }
+  }
+</style>

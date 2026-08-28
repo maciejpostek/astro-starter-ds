@@ -1,33 +1,15 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import Tab, { type TabSize } from "./Tab.astro";
-import { normalizeTabsState } from "../../../lib/tabs/tabs-model.mjs";
-
-export interface TabsItem {
-  id: string;
-  label: string;
-  disabled?: boolean;
-}
-
-export type TabsItems = readonly [TabsItem, ...TabsItem[]];
 
 type AccessibleName =
   | { "aria-label": string; "aria-labelledby"?: never }
   | { "aria-label"?: never; "aria-labelledby": string };
 
-export type Props = Omit<HTMLAttributes<"div">, "class" | "id"> & AccessibleName & {
-  items: TabsItems;
-  initialTab?: string;
-  size?: TabSize;
-  id?: string;
+export type Props = Omit<HTMLAttributes<"div">, "class" | "role"> & AccessibleName & {
   class?: string;
 };
 
 const {
-  items,
-  initialTab,
-  size = "small",
-  id,
   class: className,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledby,
@@ -37,69 +19,22 @@ const {
 if (!ariaLabel?.trim() && !ariaLabelledby?.trim()) {
   throw new TypeError("Tabs requires aria-label or aria-labelledby.");
 }
-if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
-  throw new TypeError("Tabs id must be a non-empty string when provided.");
+if (!Astro.slots.has("default")) {
+  throw new TypeError("Tabs requires Tab children in its default slot.");
 }
-
-const normalized = normalizeTabsState(items, initialTab);
-for (const item of normalized.items) {
-  if (!Astro.slots.has(item.id)) {
-    throw new TypeError(`Tabs requires a named panel slot for item "${item.id}".`);
-  }
-}
-
-const rootId = id ?? `tabs-${crypto.randomUUID()}`;
-const panels = await Promise.all(normalized.items.map(async (item: TabsItem, index: number) => ({
-  ...item,
-  tabId: `${rootId}-tab-${index + 1}`,
-  panelId: `${rootId}-panel-${index + 1}`,
-  html: await Astro.slots.render(item.id),
-})));
 ---
 
 <div
   {...attributes}
-  id={rootId}
   class:list={["tabs", className]}
+  role="tablist"
+  aria-label={ariaLabel}
+  aria-labelledby={ariaLabelledby}
+  aria-orientation="horizontal"
   data-component-name="Tabs"
   data-tabs-root
 >
-  <div
-    class="tabs__list"
-    role="tablist"
-    aria-label={ariaLabel}
-    aria-labelledby={ariaLabelledby}
-    aria-orientation="horizontal"
-  >
-    {panels.map((item) => (
-      <Tab
-        id={item.tabId}
-        controls={item.panelId}
-        selected={item.id === normalized.activeId}
-        disabled={item.disabled}
-        size={size}
-        data-tabs-trigger
-        data-tab-id={item.id}
-      >
-        {item.label}
-      </Tab>
-    ))}
-  </div>
-
-  {panels.map((item) => (
-    <div
-      id={item.panelId}
-      class="tabs__panel"
-      role="tabpanel"
-      aria-labelledby={item.tabId}
-      tabindex="0"
-      hidden={item.id !== normalized.activeId}
-      data-tabs-panel
-      data-tab-id={item.id}
-    >
-      <Fragment set:html={item.html} />
-    </div>
-  ))}
+  <slot />
 </div>
 
 <script>
@@ -110,56 +45,64 @@ const panels = await Promise.all(normalized.items.map(async (item: TabsItem, ind
   }
 
   const initializeTabs = () => {
-    document.querySelectorAll<HTMLElement>("[data-tabs-root]").forEach((root) => {
+    document.querySelectorAll<HTMLElement>('[data-tabs-root][role="tablist"]').forEach((root) => {
       if (root.dataset.tabsReady === "true") return;
       root.dataset.tabsReady = "true";
 
-      const getTabs = () => Array.from(
-        root.querySelectorAll<HTMLButtonElement>("[data-tabs-trigger]"),
+      const getTabs = () => Array.from(root.children).filter(
+        (child): child is HTMLButtonElement => child instanceof HTMLButtonElement
+          && child.matches('[data-component-name="Tab"][role="tab"]'),
       );
       const getEnabledTabs = () => getTabs().filter((tab) => !tab.disabled);
 
-      const setActive = (nextTab: HTMLButtonElement, emitChange = true) => {
-        if (nextTab.disabled) return;
-        const nextId = nextTab.dataset.tabId;
-        if (!nextId) return;
-
-        const currentTab = getTabs().find((tab) => tab.getAttribute("aria-selected") === "true");
-        const previousId = currentTab?.dataset.tabId;
-
-        getTabs().forEach((tab) => {
-          const isSelected = tab === nextTab;
+      const syncState = (activeTab?: HTMLButtonElement) => {
+        const tabs = getTabs();
+        tabs.forEach((tab) => {
+          const isSelected = tab === activeTab;
           tab.setAttribute("aria-selected", String(isSelected));
           tab.tabIndex = isSelected ? 0 : -1;
-        });
 
-        root.querySelectorAll<HTMLElement>("[data-tabs-panel]").forEach((panel) => {
-          panel.hidden = panel.dataset.tabId !== nextId;
+          const panelId = tab.getAttribute("aria-controls")?.trim();
+          const panel = panelId ? document.getElementById(panelId) : null;
+          if (panel?.getAttribute("role") === "tabpanel") panel.hidden = !isSelected;
         });
+      };
 
-        if (emitChange && previousId !== nextId) {
+      const setActive = (nextTab: HTMLButtonElement | undefined, emitChange = true) => {
+        if (!nextTab || nextTab.disabled || nextTab.parentElement !== root) return;
+        const currentTab = getTabs().find((tab) => tab.getAttribute("aria-selected") === "true");
+        const previousId = currentTab?.id;
+
+        syncState(nextTab);
+
+        if (emitChange && previousId !== nextTab.id) {
           root.dispatchEvent(new CustomEvent("astro-ds:tabs-change", {
             bubbles: true,
-            detail: { id: nextId, previousId },
+            detail: { id: nextTab.id, previousId },
           }));
         }
       };
 
+      const selectedTabs = getTabs().filter(
+        (tab) => !tab.disabled && tab.getAttribute("aria-selected") === "true",
+      );
+      setActive(selectedTabs[0] ?? getEnabledTabs()[0], false);
+
       root.addEventListener("focusin", (event) => {
         if (!(event.target instanceof HTMLButtonElement)) return;
-        if (!event.target.matches("[data-tabs-trigger]")) return;
+        if (!event.target.matches('[data-component-name="Tab"][role="tab"]')) return;
         setActive(event.target);
       });
 
       root.addEventListener("click", (event) => {
         if (!(event.target instanceof Element)) return;
-        const tab = event.target.closest<HTMLButtonElement>("[data-tabs-trigger]");
-        if (tab?.closest("[data-tabs-root]") === root) setActive(tab);
+        const tab = event.target.closest<HTMLButtonElement>('[data-component-name="Tab"][role="tab"]');
+        if (tab?.parentElement === root) setActive(tab);
       });
 
       root.addEventListener("keydown", (event) => {
         if (!(event.target instanceof HTMLButtonElement)) return;
-        if (!event.target.matches("[data-tabs-trigger]")) return;
+        if (!event.target.matches('[data-component-name="Tab"][role="tab"]')) return;
 
         const tabs = getEnabledTabs();
         const currentIndex = tabs.indexOf(event.target);
@@ -192,32 +135,12 @@ const panels = await Promise.all(normalized.items.map(async (item: TabsItem, ind
 
 <style>
   .tabs {
-    inline-size: 100%;
-    min-inline-size: 0;
-  }
-
-  .tabs__list {
     display: flex;
+    inline-size: 100%;
     min-inline-size: 0;
     gap: var(--gap-small);
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scrollbar-width: thin;
-  }
-
-  .tabs__panel {
-    min-inline-size: 0;
-    margin-block-start: var(--space-regular);
-  }
-
-  .tabs__panel:focus-visible {
-    outline: var(--border-width-strong) solid var(--color-state-focus-ring);
-    outline-offset: var(--size-2);
-  }
-
-  @media (forced-colors: active) {
-    .tabs__panel:focus-visible {
-      outline-color: Highlight;
-    }
   }
 </style>

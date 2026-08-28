@@ -1,0 +1,97 @@
+---
+import TopBanner, {
+  type TopBannerStatus,
+} from "../../website-patterns/announcements-banners/TopBanner.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-top-banner" } = Astro.props;
+const statuses: TopBannerStatus[] = ["brand", "info", "success", "warning", "error"];
+---
+
+<div class="top-banner-preview" data-component-name="DsTopBannerPreview" data-top-banner-preview>
+  {statuses.map((status) => (
+    <TopBanner
+      id={`${idPrefix}-${status}`}
+      title="A new regional experience is available"
+      description="Choose the version that best matches your location and preferences."
+      status={status}
+      link={{ label: "Explore options", href: `#${idPrefix}-preview` }}
+      hidden={status !== "brand"}
+      data-ds-preview-target={status === "brand" ? true : undefined}
+    />
+  ))}
+</div>
+
+<script>
+  type TopBannerPreviewState = {
+    status: string;
+    description: boolean;
+    link: boolean;
+    icon: boolean;
+    dismissible: boolean;
+  };
+
+  const initializeTopBannerPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-top-banner-preview]").forEach((preview) => {
+      if (preview.dataset.topBannerPreviewReady === "true") return;
+      preview.dataset.topBannerPreviewReady = "true";
+
+      const state: TopBannerPreviewState = {
+        status: "brand",
+        description: true,
+        link: true,
+        icon: true,
+        dismissible: true,
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>('[data-component-name="TopBanner"]').forEach((banner) => {
+          const active = banner.dataset.topBannerStatus === state.status;
+          banner.hidden = !active;
+          banner.toggleAttribute("data-ds-preview-target", active);
+          banner.querySelector<HTMLElement>(".top-banner__icon")?.toggleAttribute("hidden", !state.icon);
+          banner.querySelector<HTMLElement>("[data-top-banner-description]")
+            ?.toggleAttribute("hidden", !state.description);
+          banner.querySelector<HTMLElement>("[data-top-banner-link]")
+            ?.toggleAttribute("hidden", !state.link);
+          banner.querySelector<HTMLElement>("[data-feedback-dismiss]")
+            ?.toggleAttribute("hidden", !state.dismissible);
+
+          const supportingVisible = state.description || state.link;
+          banner.querySelector<HTMLElement>(".top-banner__separator")
+            ?.toggleAttribute("hidden", !supportingVisible);
+          banner.querySelector<HTMLElement>(".top-banner__supporting")
+            ?.toggleAttribute("hidden", !supportingVisible);
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const value = String(event.detail?.value ?? "");
+
+        if (axisId === "topBannerStatus") state.status = value;
+        if (axisId === "topBannerDescription") state.description = value === "visible";
+        if (axisId === "topBannerLink") state.link = value === "visible";
+        if (axisId === "topBannerIcon") state.icon = value === "visible";
+        if (axisId === "topBannerDismissible") state.dismissible = value === "visible";
+        render();
+      });
+
+      render();
+    });
+  };
+
+  initializeTopBannerPreviews();
+  document.addEventListener("astro:page-load", initializeTopBannerPreviews);
+</script>
+
+<style>
+  .top-banner-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

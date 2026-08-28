@@ -1,0 +1,101 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export type StatTextInlineTrend = "up" | "down";
+export type StatTextInlineIconPosition = "leading" | "trailing";
+
+export interface Props extends Omit<HTMLAttributes<"span">, "class"> {
+  text: string;
+  trend?: StatTextInlineTrend;
+  iconPosition?: StatTextInlineIconPosition;
+  class?: string;
+}
+
+const {
+  text,
+  trend = "up",
+  iconPosition = "trailing",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof text !== "string" || !text.trim()) {
+  throw new TypeError("StatTextInline text must be a non-empty string.");
+}
+if (!(["up", "down"] as const).includes(trend)) {
+  throw new TypeError('StatTextInline trend must be "up" or "down".');
+}
+if (!(["leading", "trailing"] as const).includes(iconPosition)) {
+  throw new TypeError('StatTextInline iconPosition must be "leading" or "trailing".');
+}
+
+const normalizedText = text.trim();
+const iconName = trend === "up" ? "trending_up" : "trending_down";
+---
+
+<span
+  {...attributes}
+  class:list={["stat-text-inline", "caption-small", className]}
+  data-component-name="StatTextInline"
+  data-trend={trend}
+  data-icon-position={iconPosition}
+>
+  {iconPosition === "leading" && (
+    <span class="stat-text-inline__icon" aria-hidden="true">
+      <MaterialSymbol name={iconName} size="var(--stat-text-inline-icon-size)" />
+    </span>
+  )}
+  <span class="stat-text-inline__text">{normalizedText}</span>
+  {iconPosition === "trailing" && (
+    <span class="stat-text-inline__icon" aria-hidden="true">
+      <MaterialSymbol name={iconName} size="var(--stat-text-inline-icon-size)" />
+    </span>
+  )}
+</span>
+
+<style>
+  .stat-text-inline {
+    display: inline-flex;
+    inline-size: fit-content;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    align-items: center;
+    gap: var(--gap-tiny);
+    color: var(--color-text-primary);
+    vertical-align: middle;
+  }
+
+  .stat-text-inline__icon {
+    display: inline-flex;
+    inline-size: var(--stat-text-inline-icon-size);
+    block-size: var(--stat-text-inline-icon-size);
+    flex: 0 0 var(--stat-text-inline-icon-size);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-text-inline__icon :global(svg) {
+    display: block;
+  }
+
+  .stat-text-inline__text {
+    min-inline-size: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .stat-text-inline[data-trend="up"] .stat-text-inline__icon {
+    color: var(--color-status-success-icon);
+  }
+
+  .stat-text-inline[data-trend="down"] .stat-text-inline__icon {
+    color: var(--color-icon-accent);
+  }
+
+  @media (forced-colors: active) {
+    .stat-text-inline,
+    .stat-text-inline__icon {
+      color: CanvasText;
+    }
+  }
+</style>

@@ -21,7 +21,8 @@ Typography Semantic · 11 Variables
 Text Styles
 ├── family, weight and font size → Variable bindings
 ├── line height → native percentage
-└── letter spacing → native percentage
+├── letter spacing → native percentage
+└── Caption reuses the approved Body Small and Tiny size Variables
 ```
 
 Fluid font sizes keep `Min` and `Max` modes. Line height and letter spacing are
@@ -70,7 +71,7 @@ stored on the applied Text Style and select the matching existing Astro token.
 
 ## Global Text Styles
 
-Figma has 21 global Text Styles:
+Figma has 23 global Text Styles:
 
 ```text
 Heading/H1–H6
@@ -79,6 +80,7 @@ Body/Medium/{Regular|Regular Underlined|Semi Bold}
 Body/Base/{Regular|Regular Underlined|Semi Bold}
 Body/Small/{Regular|Regular Underlined|Semi Bold}
 Body/Tiny/{Regular|Regular Underlined|Semi Bold}
+Caption/{Small|Tiny}
 ```
 
 Each global Text Style has exactly three Variable bindings:
@@ -104,9 +106,17 @@ Body/Base/Semi Bold
 ├── fontSize   → Typography Semantic / body/base/font/size
 ├── lineHeight: 150% native
 └── letterSpacing: -1% native
+
+Caption/Small
+├── fontFamily → Typography Foundations / font/family/body
+├── fontWeight → Typography Foundations / font/weight/normal
+├── fontSize   → Typography Semantic / body/small/font/size
+├── lineHeight: 120% native
+├── letterSpacing: -1% native
+└── textCase: UPPER native
 ```
 
-The 21 global styles therefore contain 63 Variable bindings. One Text Style
+The 23 global styles therefore contain 69 Variable bindings. One Text Style
 serves both `Max` and `Min`; only font size changes with collection mode.
 
 Global values:
@@ -117,6 +127,7 @@ Global values:
 | H4, H5 | `120%` | `-4%` |
 | H6 | `120%` | `-2%` |
 | Body Large, Medium, Base, Small, Tiny | `150%` | `-1%` |
+| Caption Small, Tiny | `120%` | `-1%` |
 
 `Body/*/Regular Underlined` uses the same three bindings and relative metrics
 as Regular and sets `textDecoration: UNDERLINE`. Documentation specimens keep
@@ -146,7 +157,7 @@ All component Text Styles map native `-1%` tracking to Astro's existing
 `--letter-spacing-tight` (`-0.01em`) foundation token. Component CSS consumes
 that token locally; no per-component tracking token is created.
 
-Across all 28 local Text Styles this produces 84 Variable bindings. Component
+Across all 30 local Text Styles this produces 90 Variable bindings. Component
 Size still controls component font size, geometry and modes; it no longer owns
 a Figma `line/height` Variable.
 
@@ -160,8 +171,9 @@ a Figma `line/height` Variable.
 5. Convert letter spacing with `percentage / 100 em` and select the matching
    `--letter-spacing-*` token.
 6. Map the style to `.heading-h1`–`.heading-h6`, an explicit
-   `.body-{size}-{regular|regular-underlined|semibold}` class, or the existing
-   component-owned typography contract.
+   `.body-{size}-{regular|regular-underlined|semibold}` class,
+   `.caption-{small|tiny}`, or the existing component-owned typography
+   contract.
 7. Choose HTML heading level from document semantics, not visual style name.
 8. Preserve intentional local percentage overrides on component layers.
 9. If no exact token exists, report a gap. Do not hardcode or create a token
@@ -184,10 +196,12 @@ a Figma `line/height` Variable.
 - `Typography Semantic` has 11 font-size Variables;
 - neither collection contains `line/height/*` or `letter/spacing/*` Variables;
 - `Component Size` has 6 Variables and no `line/height` Variable;
-- all 21 global Text Styles use native percentage line height and tracking;
+- all 23 global Text Styles use native percentage line height and tracking;
+- both Caption Text Styles use native uppercase casing and reuse the existing
+  Body Small/Tiny semantic font-size bindings;
 - the seven component Text Styles use native percentage line height and tracking;
 - every local Text Style has three Variable bindings;
-- global Text Styles total 63 bindings; all 28 local styles total 84 bindings;
+- global Text Styles total 69 bindings; all 30 local styles total 90 bindings;
 - no text layer remains bound to removed typography metric Variables;
 - documentation shows percentages, not resolved pixel endpoints;
 - Min/Max font sizes still match Astro control points;

@@ -1,0 +1,63 @@
+---
+import StatCard from "../../../../../src/components/website-patterns/stats-metrics/StatCard.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const invalidCase = process.env.STAT_CARD_INVALID_CASE;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StatCard contract fixture</title>
+  </head>
+  <body>
+    <main>
+      {invalidCase === "caption" ? (
+        <StatCard caption=" " value="100M" />
+      ) : invalidCase === "value" ? (
+        <StatCard caption="Revenue" value=" " />
+      ) : invalidCase === "description" ? (
+        <StatCard caption="Revenue" value="100M" description=" " />
+      ) : (
+        <>
+          <StatCard
+            id="stat-card-default"
+            caption="Revenue"
+            value="100M"
+            description="Revenue increased year over year"
+            class="stat-card-contract-fixture"
+            data-contract="forwarded"
+          />
+          <StatCard
+            id="stat-card-up"
+            caption="Active customers"
+            value="24K"
+            showTrendingDown={false}
+          />
+          <StatCard
+            id="stat-card-down"
+            caption="Response time decreased"
+            value="180 ms"
+            showTrendingUp={false}
+          />
+          <StatCard
+            id="stat-card-no-trends"
+            caption="Regions"
+            value="12"
+            showTrendingUp={false}
+            showTrendingDown={false}
+          />
+          <StatCard
+            id="stat-card-hidden-caption"
+            caption="Retention rate"
+            value="94%"
+            showCaption={false}
+          />
+        </>
+      )}
+    </main>
+  </body>
+</html>

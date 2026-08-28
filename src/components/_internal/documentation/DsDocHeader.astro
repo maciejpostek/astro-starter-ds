@@ -9,7 +9,7 @@ import type { DocumentationHeaderSegment } from "../../../data/documentationRegi
 import "../../../styles/components/button-controls.css";
 
 interface Props {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   summary: readonly DocumentationHeaderSegment[];
   copyValue?: string;
@@ -36,20 +36,24 @@ const {
   data-component-name={componentName}
 >
   <div class="ds-documentation-page-header__inner">
-    <div class="ds-documentation-page-header__meta">
-      <Eyebrow class="ds-documentation-page-header__eyebrow" text={eyebrow} />
-      {status && <span class="ds-documentation-status">{status}</span>}
-    </div>
+    {(eyebrow || status) && (
+      <div class="ds-documentation-page-header__meta">
+        {eyebrow && <Eyebrow class="ds-documentation-page-header__eyebrow" text={eyebrow} />}
+        {status && <span class="ds-documentation-status">{status}</span>}
+      </div>
+    )}
     <h1 class="heading-h1">{title}</h1>
-    <p class="body-base-regular">
-      {
-        summary.map((segment) =>
-          segment.kind === "link"
-            ? <a href={segment.href}>{segment.text}</a>
-            : segment.text
-        )
-      }
-    </p>
+    {summary.length > 0 && (
+      <p class="body-base-regular">
+        {
+          summary.map((segment) =>
+            segment.kind === "link"
+              ? <a href={segment.href}>{segment.text}</a>
+              : segment.text
+          )
+        }
+      </p>
+    )}
     {sourcePath && (
       <div class="ds-documentation-page-header__source-snippet">
         <code>{sourcePath}</code>

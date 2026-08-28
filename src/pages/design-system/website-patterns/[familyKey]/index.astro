@@ -1,40 +1,97 @@
 ---
 import DesignSystemLayout from "../../../../layouts/DesignSystemLayout.astro";
-import DsFamilyGallery from "../../../../components/_internal/documentation/DsFamilyGallery.astro";
+import DsComponentDetail from "../../../../components/_internal/documentation/DsComponentDetail.astro";
 import {
   architecture,
   componentsByPage,
   createDocumentationSummary,
+  documentationComponentHref,
+  documentationFigmaHref,
+  resolveDocumentationNavigationMode,
+  resolveDocumentationPageMode,
   type ArchitecturePage,
 } from "../../../../data/documentationRegistry";
+import { loadComponentRule } from "../../../../data/componentRuleLoader";
+import { getComponentDocumentationAdapter } from "../../../../data/documentationComponentRegistry";
 
 export function getStaticPaths() {
   return architecture.pages
-    .filter((page) => page.categoryKey === "website-patterns")
+    .filter(
+      (page) =>
+        page.categoryKey === "website-patterns" &&
+        page.documentationVisible !== false,
+    )
     .map((page) => ({ params: { familyKey: page.pageKey }, props: { page } }));
 }
 
 interface Props { page: ArchitecturePage; }
 const { page } = Astro.props;
 const components = componentsByPage.get(`website-patterns/${page.pageKey}`) ?? [];
-const availableCount = components.filter((component) => Boolean(component.sourcePath)).length;
-const pageToc = [{ label: "Variants", href: "#variants" }];
+const pageMode = resolveDocumentationPageMode("website-patterns", page.pageKey);
+const navigationMode = resolveDocumentationNavigationMode("website-patterns", page.pageKey);
+const firstComponent = components[0];
+const firstComponentHref = firstComponent
+  ? documentationComponentHref(firstComponent)
+  : undefined;
+
+if (navigationMode === "disclosure") {
+  if (!firstComponentHref) throw new Error(`Disclosure family ${page.pageKey} has no public components.`);
+  return Astro.redirect(firstComponentHref);
+}
+
+const component = pageMode === "singleton"
+  ? components[0]
+  : undefined;
+const componentRule = component?.agenticRule
+  ? await loadComponentRule(component.agenticRule)
+  : undefined;
+const componentAdapter = component
+  ? getComponentDocumentationAdapter(component.id)
+  : undefined;
+const documentationToc = componentAdapter?.toc ?? [];
+const componentToc = [
+  ...documentationToc,
+  ...(!documentationToc.some((item) => item.href === "#dependencies")
+    ? [{ label: "Dependencies", href: "#dependencies" }]
+    : []),
+  ...(componentRule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
+];
+const pageToc = component ? componentToc : [];
 ---
 
 <DesignSystemLayout
-  title={`${page.pageLabel} - Website Patterns`}
-  pageType="family-gallery"
+  title={component
+    ? `${component.name} - Website Patterns`
+    : `${page.pageLabel} - Website Patterns`}
+  pageType={component ? "component-detail" : "reading"}
   toc={pageToc}
-  header={{
-    eyebrow: "Website Patterns",
-    title: page.pageLabel,
-    summary: createDocumentationSummary(
-      `This family contains ${components.length} canonical website-pattern identities, including ${availableCount} implemented Astro records. Compare`,
-      pageToc,
-      "to inspect responsive previews only where a registered implementation adapter exists.",
-    ),
-    status: availableCount ? "Partially available" : components.length ? "Figma only" : "Empty family",
-  }}
+  header={component
+    ? {
+        eyebrow: "Website Patterns",
+        title: component.name,
+        summary: createDocumentationSummary(
+          component.sourcePath
+            ? "This canonical Astro website pattern combines its registry identity with a responsive implementation contract. Use"
+            : "This canonical Figma pattern identity intentionally has no responsive Astro preview yet. Use",
+          pageToc,
+          component.sourcePath
+            ? "to inspect its composition, dependencies and approved behavior."
+            : "to verify its recorded metadata and implementation boundary.",
+        ),
+        copyValue: component.name,
+        sourcePath: component.sourcePath ?? undefined,
+        figmaHref: documentationFigmaHref(component),
+      }
+    : {
+        title: page.pageLabel,
+        summary: [],
+      }}
 >
-  <DsFamilyGallery page={page} components={components} />
+  {component && (
+    <DsComponentDetail
+      component={component}
+      rule={componentRule}
+      adapter={componentAdapter}
+    />
+  )}
 </DesignSystemLayout>

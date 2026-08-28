@@ -3,7 +3,7 @@
 Status: active.
 
 - Manifest id: `eyebrow`
-- Figma canonical node: `268:5`
+- Figma canonical node: `1472:2907`
 - Figma page key: `eyebrow`
 - Astro source: `src/components/base-components/eyebrow/Eyebrow.astro`
 - Role: `atom`
@@ -38,14 +38,14 @@ heading belongs to without competing with that heading.
 ## Composition and placement
 
 - Place Eyebrow immediately before the heading it introduces in source order.
-- The component owns `--space-eyebrow-bottom`, currently 12px, as the separation from that heading.
+- The component owns `--space-eyebrow-bottom`, currently 8px, as the separation from that heading.
 - Do not add a second consumer-owned margin between Eyebrow and its heading unless a larger composition explicitly owns a different relationship.
 - Keep the marker leading the text; it is decorative and never replaceable through the public API.
 
 ## Responsive behavior
 
 - Primary strategy: `intrinsic`
-- Mechanisms and references: content-driven `inline-size`, `max-inline-size: 100%`, the fixed 8px `--gap-small` relationship and natural wrapping of the text while the marker remains fixed at the 8px `--eyebrow-marker-size`.
+- Mechanisms and references: content-driven `inline-size`, `max-inline-size: 100%`, the fixed 8px `--gap-small` relationship and natural wrapping of the text while the marker remains a 1px by 12px leading line through `--border-width-default` and `--eyebrow-marker-size`.
 - Container queries: none.
 - Viewport queries: none.
 - Reflow, order and visibility: The marker remains before the text in DOM and visual order; short content stays on one line when space permits and may wrap without horizontal overflow in a constrained container.
@@ -71,10 +71,11 @@ the registered `eyebrow-color` group, marker geometry consumes the approved
 tokens. Do not declare local custom properties, add variants or replace the
 marker through props or slots.
 
-Figma represents Eyebrow as one standalone `Component` with a single `Text`
-property and no variant axes. Its master owns only the reusable marker, text,
-semantic gap and visual bindings; the 12px separation from the following
-heading remains Astro composition behavior.
+Figma represents Eyebrow as a one-child `ComponentSet` with a single `Text`
+property and one documentation-only default axis. Astro does not expose that
+structural axis. The reusable child owns only the leading line, text, semantic
+gap and visual bindings; the 8px separation from the following heading remains
+Astro composition behavior.
 
 ## Core decision
 

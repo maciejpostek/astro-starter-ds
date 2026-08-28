@@ -1,0 +1,86 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
+import SectionHeader from "../../website-patterns/page-headers/SectionHeader.astro";
+
+const compositions = [
+  "copy-actions",
+  "heading-details",
+  "eyebrow-heading-details",
+] as const;
+---
+
+<div
+  class="section-header-preview"
+  data-component-name="DsSectionHeaderPreview"
+  data-section-header-preview
+  data-ds-preview-target
+>
+  {compositions.map((composition) => (
+    <div
+      class="section-header-preview__item"
+      data-section-header-preview-composition={composition}
+      hidden={composition !== "copy-actions"}
+    >
+      <SectionHeader
+        composition={composition}
+        eyebrow="Eyebrow"
+        heading="A clear section title"
+        paragraph="Supporting copy explains the purpose of this section and gives readers enough context to choose their next action."
+      >
+        <Button slot="actions">Primary action</Button>
+        <Button slot="actions" variant="secondary">Secondary action</Button>
+        {composition !== "copy-actions" && (
+          <ButtonLink slot="actions" href="#section-header-guidance">
+            Button link
+          </ButtonLink>
+        )}
+      </SectionHeader>
+    </div>
+  ))}
+</div>
+
+<script>
+  const initializeSectionHeaderPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-section-header-preview]").forEach((preview) => {
+      if (preview.dataset.sectionHeaderPreviewReady === "true") return;
+      preview.dataset.sectionHeaderPreviewReady = "true";
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")?.addEventListener(
+        "astro-ds:preview-change",
+        (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "sectionHeaderComposition") {
+            preview
+              .querySelectorAll<HTMLElement>("[data-section-header-preview-composition]")
+              .forEach((item) => {
+                item.hidden = item.dataset.sectionHeaderPreviewComposition !== value;
+              });
+          }
+
+          if (axisId === "sectionHeaderActions") {
+            preview
+              .querySelectorAll<HTMLElement>(".section-header__action-area")
+              .forEach((actions) => {
+                actions.hidden = value === "hidden";
+              });
+          }
+        },
+      );
+    });
+  };
+
+  initializeSectionHeaderPreviews();
+  document.addEventListener("astro:page-load", initializeSectionHeaderPreviews);
+</script>
+
+<style>
+  .section-header-preview,
+  .section-header-preview__item {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

@@ -11,13 +11,13 @@ Status: active.
 
 ## UX purpose
 
-Let a user choose one value from a finite, known set while preserving native form submission and offering richer country, brand or company visuals when they help recognition.
+Let a user choose one value from a finite, known set while preserving native form submission and offering richer country or brand visuals when they help recognition.
 
 ## Use when
 
 - The user must choose exactly one option from a bounded list.
 - A standard form field needs native-backed single-selection behavior.
-- Country, brand or company options benefit from caller-supplied visual identifiers.
+- Country or brand options benefit from caller-supplied visual identifiers.
 
 ## Avoid when
 
@@ -31,14 +31,14 @@ Let a user choose one value from a finite, known set while preserving native for
 - Provide a non-empty `options` array with stable values and concise labels.
 - Provide a visible `label` or an accessible name through `aria-label` or `aria-labelledby`.
 - Keep `hint` supplementary; it must not replace the accessible name.
-- Use `language` and `phone` only for their fixed semantic icons. Country, brand and company visuals are option data, never arbitrary Material Symbol selection.
-- For country options, set `flag` to a canonical slug from the local [Flags catalog](/design-system/assets/flags). Do not derive a flag from the option value or label, and do not combine `flag` with `visual`.
+- Use `language` and `phone` only for their fixed semantic icons. Country and brand visuals are option data, never arbitrary Material Symbol selection.
+- For country options, set `flag` to a canonical slug from the local [Flags catalog](/design-system/assets/flags). For brand options, set `logo` to a canonical mark slug from the local [Logos catalog](/design-system/assets/logos). Do not derive either asset from the option value or label, and do not combine `flag`, `logo`, or `visual`.
 - Keep image visuals recognisable at the control icon size and provide `alt` only when the adjacent option label does not communicate the same information.
 
 ## Composition and placement
 
 - Use Select in forms and settings that need a visible label or hint. Use CompactSelect beside another control and InlineSelect in low-chrome inline compositions.
-- Keep language and phone icons, or caller-owned country, brand and company visuals, centered inside a square leading segment separated from the selected value by a trailing divider. The segment keeps the control surface color and derives its square geometry from the rendered trigger height.
+- Keep language and phone icons, or option-owned country flags and brand marks, centered inside a square leading segment separated from the selected value by a trailing divider. The segment keeps the control surface color and derives its square geometry from the rendered trigger height.
 - Keep the country name visible beside its decorative flag in the standard trigger and every enhanced listbox option. The native fallback remains text-only.
 - Keep enhanced listbox rows at least as tall as the medium Control Size profile. Small controls retain their small label typography while option visuals, checks and visual-to-label spacing use at least the medium profile values.
 - Keep one Select per submitted value. Do not place interactive content inside an option.

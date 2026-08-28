@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { build } from "astro";
 
 const projectFile = (path) => fileURLToPath(new URL(`../${path}`, import.meta.url));
-const componentPath = projectFile("src/components/base-components/bullet-points/BulletPoint.astro");
+const componentPath = projectFile("src/components/website-patterns/bullet-points/BulletPoint.astro");
 const sizeTokensPath = projectFile("src/styles/tokens/size-components.css");
 const tokenRegistryPath = projectFile("src/data/design-system/tokenArchitecture.json");
 const manifestPath = projectFile("src/data/design-system/componentArchitecture.json");

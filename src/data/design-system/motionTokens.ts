@@ -67,6 +67,12 @@ export const motionSemanticGroups: MotionTokenGroup[] = [
         role: "Deliberate open and close duration for disclosure panels.",
       },
       {
+        token: "--motion-duration-accordion-autoplay",
+        defaultValue: "8000ms",
+        reducedValue: "0ms",
+        role: "Default cycle duration for AccordionList autoplay.",
+      },
+      {
         token: "--motion-transition",
         defaultValue: "180ms ease-out",
         reducedValue: "0ms ease-out",

@@ -17,7 +17,7 @@ AccordionList arranges peer Accordion disclosures in one vertical group and coor
 
 - Two or more peer disclosures should be scanned and operated as a group.
 - The user should move between disclosure headings with Arrow keys, Home and End.
-- Product needs explicit `single` or `multiple` open behavior.
+- Product needs explicit `single` or `multiple` open behavior, or an optional timed preview sequence.
 
 ## Avoid when
 
@@ -30,6 +30,8 @@ AccordionList arranges peer Accordion disclosures in one vertical group and coor
 - The default slot accepts public Accordion children.
 - `mode="single"` closes an open sibling when another Accordion opens.
 - `mode="multiple"` leaves other open siblings unchanged.
+- `autoplay` is allowed only in `single` mode. `autoplayDuration` defaults to 8000 ms and `autoplayLoop` defaults to true.
+- Autoplay starts at the first open enabled Accordion or the first enabled child, skips disabled children and leaves the final child open at 100% when looping is off.
 - Content and optional help belong to each Accordion child, not to AccordionList.
 
 ## Composition and placement
@@ -52,6 +54,8 @@ AccordionList arranges peer Accordion disclosures in one vertical group and coor
 - In `single` mode, opening one active child closes active siblings in the same nearest list.
 - Arrow Up, Arrow Down, Home and End move focus among non-disabled direct-list Accordion triggers with wrapping.
 - Nested lists resolve behavior against the nearest `data-component-name="AccordionList"` root.
+- Hover, focus, document visibility and intersection pause autoplay without losing elapsed time. Pointer or keyboard activation stops it until reload and resets every autoplay bar to 0%.
+- Reduced Motion disables autoplay entirely. Timed transitions never move focus and never use `aria-live`.
 
 ## Related components
 
@@ -63,4 +67,4 @@ Use `AccordionList` as the PascalCase public component identity in Astro and Fig
 
 ## Core decision
 
-AccordionList owns only grouping, spacing, keyboard coordination and the single-or-multiple policy. Accordion owns every visual disclosure state.
+AccordionList owns grouping, spacing, keyboard coordination, the single-or-multiple policy and optional autoplay timing. Accordion owns every visual disclosure state and composes ProgressBar.

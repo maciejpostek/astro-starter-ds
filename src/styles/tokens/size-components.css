@@ -8,16 +8,41 @@
  */
 
 :root {
+  /* Progress bar */
+  --progress-bar-block-size: var(--size-2);
+
+  /* Stat text inline */
+  --stat-text-inline-icon-size: var(--size-20);
+
+  /* Stat card */
+  --stat-card-min-height: calc(var(--size-128) + var(--size-12));
+  --stat-card-trend-gap: var(--size-2);
+  --stat-card-trend-icon-size: var(--size-20);
+
   /* Content divider */
   --content-divider-min-height: var(--size-12);
 
+  /* Top banner */
+  --top-banner-min-height: var(--size-40);
+  --top-banner-icon-size: var(--size-20);
+
   /* Eyebrow */
-  --eyebrow-marker-size: var(--size-8);
+  --eyebrow-marker-size: var(--size-12);
 
   /* Bullet point */
   --bullet-point-icon-size: var(--size-20);
   --bullet-point-icon-offset: var(--size-2);
   --bullet-point-content-gap: var(--size-6);
+
+  /* Bullet card simple */
+  --bullet-card-simple-icon-size: var(--size-20);
+
+  /* Bullet icon card */
+  --bullet-icon-card-icon-size: var(--size-20);
+  --bullet-icon-card-section-space: var(--size-20);
+
+  /* Bullet visual card */
+  --bullet-visual-card-stat-icon-size: var(--size-20);
 
   /* Switch */
   --switch-thumb-size: var(--size-14);
@@ -53,7 +78,7 @@
   --pagination-control-padding-inline: var(--size-12);
 
   /* Tooltip */
-  --tooltip-offset: var(--size-8);
+  --tooltip-offset: var(--size-6);
   --tooltip-viewport-padding: var(--size-8);
   --tooltip-tail-size: var(--size-8);
   --tooltip-compact-max-inline-size: var(--size-256);
@@ -93,4 +118,7 @@
   --popup-max-inline-size: calc(var(--size-320) + var(--size-112) + var(--size-8));
   --popup-viewport-inset: var(--content-padding-medium);
   --popup-icon-size: var(--size-24);
+
+  /* Team member card */
+  --team-member-card-horizontal-image-size: var(--size-96);
 }

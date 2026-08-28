@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import Button from "../buttons/Button.astro";
+import ProgressBar from "../progress-bar/ProgressBar.astro";
 import { formatByteCount, getFileFormatLabel, resolveProgress } from "../../../lib/file-upload/fileUploadModel.mjs";
 
 export type FileUploadCardState = "uploading" | "success" | "error";
@@ -55,9 +56,10 @@ const descriptionId = `file-upload-card-${fileId}-description`;
       </span>
     </div>
     {state === "uploading" && (
-      <progress class="file-upload-card__progress" max="100" value={progressValue} aria-label={statusLabel}>
-        {progressValue === undefined ? statusLabel : `${Math.round(progressValue)}%`}
-      </progress>
+      <ProgressBar
+        value={progressValue}
+        label={statusLabel}
+      />
     )}
     {state === "error" && (
       <Button variant="secondary" size="small" showIcon={false} data-file-upload-action="retry">
@@ -104,17 +106,10 @@ const descriptionId = `file-upload-card-${fileId}-description`;
   .file-upload-card__status-marker { inline-size: var(--size-8); block-size: var(--size-8); flex: none; border-radius: var(--radius-full); background: var(--color-status-info-icon); }
   [data-file-upload-card-state="success"] .file-upload-card__status-marker { background: var(--color-status-success-icon); }
   [data-file-upload-card-state="error"] .file-upload-card__status-marker { background: var(--color-status-error-border); }
-  .file-upload-card__progress { inline-size: 100%; block-size: var(--size-6); overflow: hidden; border: 0; border-radius: var(--radius-full); color: var(--color-status-info-icon); background: var(--color-background-muted); }
-  .file-upload-card__progress::-webkit-progress-bar { background: var(--color-background-muted); }
-  .file-upload-card__progress::-webkit-progress-value { background: var(--color-status-info-icon); transition: inline-size var(--motion-transition); }
-  .file-upload-card__progress::-moz-progress-bar { background: var(--color-status-info-icon); }
-  .file-upload-card__progress:indeterminate { background: linear-gradient(90deg, var(--color-background-muted), var(--color-status-info-background), var(--color-background-muted)); background-size: 200% 100%; animation: file-upload-progress var(--motion-duration-fast) var(--motion-ease-standard) infinite alternate; }
   .file-upload-card__actions { align-self: start; justify-self: end; }
   .file-upload-card__action { min-inline-size: var(--control-size-small-min-height); min-block-size: var(--control-size-small-min-height); border: 0; border-radius: var(--radius-control); color: var(--color-text-secondary); background: transparent; cursor: pointer; font: inherit; }
   .file-upload-card__action { display: grid; place-items: center; padding: 0; }
   .file-upload-card__action:hover { color: var(--color-text-primary); background: var(--color-background-subtle); }
   .file-upload-card__action:focus-visible { outline: none; box-shadow: var(--effect-focused); }
-  @keyframes file-upload-progress { from { background-position: 100% 0; } to { background-position: 0 0; } }
-  @media (prefers-reduced-motion: reduce) { .file-upload-card__progress:indeterminate { animation: none; } }
-  @media (forced-colors: active) { .file-upload-card { border-color: CanvasText; background: Canvas; color: CanvasText; } .file-upload-card[data-file-upload-card-state="error"] { border-color: Mark; } .file-upload-card__status-marker { border: var(--border-width-default) solid CanvasText; background: CanvasText; } .file-upload-card__progress { color: Highlight; background: Canvas; } .file-upload-card__action:focus-visible { outline: var(--border-width-strong) solid Highlight; outline-offset: var(--size-2); box-shadow: none; } }
+  @media (forced-colors: active) { .file-upload-card { border-color: CanvasText; background: Canvas; color: CanvasText; } .file-upload-card[data-file-upload-card-state="error"] { border-color: Mark; } .file-upload-card__status-marker { border: var(--border-width-default) solid CanvasText; background: CanvasText; } .file-upload-card__action:focus-visible { outline: var(--border-width-strong) solid Highlight; outline-offset: var(--size-2); box-shadow: none; } }
 </style>

@@ -104,8 +104,8 @@ export const layoutSitePaddingRows: LayoutTokenRow[] = [
   },
   {
     token: "--site-padding-inline-max",
-    value: "var(--size-40)",
-    resolvedValue: "2.5rem / 40px",
+    value: "var(--size-80)",
+    resolvedValue: "5rem / 80px",
     role: "Maximum horizontal page padding from viewport edges.",
   },
 ];
@@ -149,8 +149,8 @@ export const layoutFoundationGroups: LayoutFoundationGroup[] = [
 export const layoutSemanticSitePaddingRows: LayoutTokenRow[] = [
   {
     token: "--site-padding-inline",
-    value: "clamp(var(--site-padding-inline-min), 0.5714rem + 2.1429vw, var(--site-padding-inline-max))",
-    resolvedValue: "16-40px",
+    value: "clamp(var(--site-padding-inline-min), -0.1429rem + 5.7143vw, var(--site-padding-inline-max))",
+    resolvedValue: "16-80px",
     role: "Global horizontal page padding. Layout classes should use this token instead of local viewport padding values.",
   },
 ];
@@ -159,7 +159,7 @@ export const layoutSemanticContainerRows: LayoutTokenRow[] = [
   {
     token: "--container-main",
     value: "calc(100% - 2 * var(--site-padding-inline))",
-    resolvedValue: "Available width minus page padding",
+    resolvedValue: "1280px at 1440px / 288px at 320px",
     role: "Default content canvas width used by the main layout container.",
   },
   {

@@ -1,0 +1,46 @@
+---
+import BulletCardSurface from "../../../../../src/components/website-patterns/bullet-points/BulletCardSurface.astro";
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonLink from "../../../../../src/components/base-components/buttons/ButtonLink.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BulletCardSurface contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <BulletCardSurface
+        id="compact-benefit"
+        title="Compact benefit"
+        showIcon={false}
+        headingLevel={2}
+        data-contract="forwarded"
+      />
+
+      <BulletCardSurface
+        id="visual-benefit"
+        title="Visual benefit"
+        description="A concise description that supports the highlighted benefit."
+        headingLevel={4}
+      >
+        <Fragment slot="actions">
+          <Button showIcon={false}>Get started</Button>
+          <ButtonLink href="#visual-benefit">Learn more</ButtonLink>
+        </Fragment>
+        <img
+          slot="visual"
+          src="/images/project-placeholder.svg"
+          alt="Abstract project preview"
+          width="800"
+          height="600"
+        />
+      </BulletCardSurface>
+    </main>
+  </body>
+</html>

@@ -98,7 +98,7 @@
 }
 
 .architecture-explorer select {
-  padding-inline: var(--content-padding-small) var(--content-padding-large);
+  padding-inline: var(--content-padding-small) var(--content-padding-xlarge);
   cursor: pointer;
 }
 
@@ -262,7 +262,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--gap-tiny);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
   font-weight: var(--font-weight-emphasis);
   line-height: var(--line-height-compact);
@@ -384,7 +384,7 @@
   width: min(26rem, 42%);
   align-content: start;
   gap: var(--gap-medium);
-  padding: var(--content-padding-large);
+  padding: var(--content-padding-xlarge);
   overflow-y: auto;
   border-inline-start: var(--border-width-default) solid var(--color-border-default);
   background: var(--color-background-surface);
@@ -401,7 +401,7 @@
 .architecture-explorer__details-header span,
 .architecture-explorer__facts dt,
 .architecture-explorer__ownership dt {
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
   font-weight: var(--font-weight-emphasis);
   line-height: var(--line-height-compact);

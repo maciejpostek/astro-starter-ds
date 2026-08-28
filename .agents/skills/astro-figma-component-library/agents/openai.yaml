@@ -1,0 +1,11 @@
+interface:
+  display_name: "Astro Figma Component Library"
+  short_description: "Synchronize Astro components with a Figma library"
+  default_prompt: "Use $astro-figma-component-library to audit an Astro component family, build its Figma masters, and document Figma2Astro mappings."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "figma"
+      description: "Inspect and update Figma component libraries"
+policy:
+  allow_implicit_invocation: true

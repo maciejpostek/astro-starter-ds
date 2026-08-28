@@ -4,21 +4,24 @@ import AccordionList from "../../base-components/accordion/AccordionList.astro";
 ---
 
 <div class="ds-preview-renderer-boundary" data-component-name="DsAccordionListPreview">
-  <AccordionList data-ds-preview-target mode="single">
+  <AccordionList data-ds-preview-target mode="single" autoplay>
     <Accordion
       title="What belongs in the system?"
-      content="Tokens, reusable components and operational documentation."
       helpText="See the component contract for scope details."
-    />
+    >
+      <p>Tokens, reusable components and operational documentation.</p>
+    </Accordion>
     <Accordion
       title="How do components stay aligned?"
-      content="Astro remains the source of truth while Figma provides an editable design representation."
       initialOpen
-    />
+    >
+      <p>Astro remains the source of truth while Figma provides an editable design representation.</p>
+    </Accordion>
     <Accordion
       title="Where do tokens come from?"
-      content="Semantic variables map directly to documented CSS custom properties."
-    />
+    >
+      <p>Semantic variables map directly to documented CSS custom properties.</p>
+    </Accordion>
   </AccordionList>
 </div>
 
@@ -27,7 +30,7 @@ import AccordionList from "../../base-components/accordion/AccordionList.astro";
     position: absolute;
     box-sizing: border-box;
     inset-block-start: 50%;
-    inset-inline: var(--content-padding-large);
+    inset-inline: var(--content-padding-xlarge);
     min-inline-size: 0;
     transform: translateY(-50%);
   }

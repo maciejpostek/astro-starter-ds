@@ -25,7 +25,7 @@ Provide a text-like, intrinsic single-select control inside compact copy or meta
 
 ## Content contract
 
-Provide a stable id, at least one option, and `aria-label` or `aria-labelledby`. InlineSelect does not expose visual-purpose or validation variants. A country option may provide a canonical local `flag` slug; do not combine `flag` with `visual`.
+Provide a stable id, at least one option, and `aria-label` or `aria-labelledby`. InlineSelect does not expose visual-purpose or validation variants. An option may provide a canonical local `flag` slug or a canonical mark `logo` slug from the local Logos catalog; do not combine `flag`, `logo`, or `visual`.
 
 ## Composition and placement
 

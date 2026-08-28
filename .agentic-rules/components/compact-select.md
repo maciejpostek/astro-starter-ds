@@ -11,7 +11,7 @@ Status: active.
 
 ## UX purpose
 
-Provide an intrinsic-width, icon-only single-select trigger for compact toolbars and locale, phone, country, brand, or company selection while keeping the same field surface as Select.
+Provide an intrinsic-width, icon-only single-select trigger for compact toolbars and locale, phone, country, or brand selection while keeping the same field surface as Select.
 
 ## Use when
 
@@ -25,7 +25,7 @@ Provide an intrinsic-width, icon-only single-select trigger for compact toolbars
 
 ## Content contract
 
-Provide a stable id, at least one option, and `aria-label` or `aria-labelledby`. The enhanced trigger hides the selected label visually, so its fixed semantic icon or caller-owned option visual must remain unambiguous. Country options use a canonical local `flag` slug with `purpose="country"`; do not combine `flag` with `visual`. Use only the finite semantic purposes owned by the API.
+Provide a stable id, at least one option, and `aria-label` or `aria-labelledby`. The enhanced trigger hides the selected label visually, so its fixed semantic icon or option-owned visual must remain unambiguous. Country options use a canonical local `flag` slug with `purpose="country"`; brand options use a canonical mark `logo` slug from the local Logos catalog with `purpose="brand"`. Do not combine `flag`, `logo`, or `visual`. Use only the finite semantic purposes owned by the API.
 
 ## Composition and placement
 

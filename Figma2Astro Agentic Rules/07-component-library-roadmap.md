@@ -33,17 +33,18 @@ component appears exactly once with its current sync and readiness state.
 | Form Structure | Reserved — no public components |
 | Tabs | `Tab` — `mapped`, node `295:15`, readiness `review/passed`; `Tabs` — `mapped`, node `1372:171`, readiness `review/passed`; `TabMenu` — `mapped`, node `1563:2827`, readiness `review/passed` |
 | Accordion | `Accordion` — `mapped`, node `297:105`, readiness `review/passed`; `AccordionList` — `mapped`, node `299:23`, readiness `review/passed` |
+| Progress Bar | `ProgressBar` — `mapped`, node `1602:90768`, readiness `review/passed` |
 | Tooltip | `Tooltip` — `mapped`, node `1371:45`, readiness `review/passed`; `InfoPopover` — `mapped`, node `1371:74`, readiness `review/passed` |
 | Hint | `Hint` — `mapped`, node `1371:29`, readiness `review/passed` |
 | Feedback Messages | `Alert` — `mapped`, node `1371:202`, readiness `review/passed`; `NotificationAndToast` — `mapped`, node `1371:390`, readiness `review/passed` |
-| Dividers | `ContentDivider` — `mapped`, node `270:10`, readiness `review/passed` |
+| Dividers | `ContentDivider` — `mapped`, node `270:10`, readiness `review/passed`; `TitleRow` — `mapped`, node `1680:6`, readiness `review/passed` |
 | Ratio | `Ratio` — `mapped`, node `1009:2614`, readiness `review/passed` |
 | Breadcrumbs | `Breadcrumb` — `mapped`, node `1009:2627`, readiness `review/passed`; `Breadcrumbs` — `mapped`, node `1448:133`, readiness `review/passed` |
 | Pagination | `PaginationItem` — `mapped`, node `1373:137`, readiness `review/passed`; `PaginationEllipsis` — `mapped`, node `1373:172`, readiness `review/passed`; `PaginationGroup` — `mapped`, node `1373:178`, readiness `review/passed`; `Pagination` — `mapped`, node `1373:203`, readiness `review/passed` |
 | Tag | `Tag` — `mapped`, node `244:19`, readiness `review/passed` |
 | Label | Reserved — no public components |
 | Eyebrow | `Eyebrow` — `mapped`, node `268:5`, readiness `review/passed` |
-| Bullet Points | `BulletPoint` — `mapped`, node `1472:2966`, readiness `review/passed` |
+| Popup | `Popup` — `astro-only`, node `—`, readiness `review/passed` |
 <!-- END GENERATED BASE COMPONENT MAP -->
 
 ## Implemented families
@@ -180,39 +181,49 @@ derives content from the native value and clears it through a native button.
 Canonical Figma master:
 
 - Select — `222:83`.
+- CompactSelect — `1372:25`.
+- InlineSelect — `1372:51`.
 
 Astro sources:
 
 - `src/components/base-components/select/Select.astro`;
-- `src/components/base-components/select/CompactSelect.astro` — Astro-only;
-- `src/components/base-components/select/InlineSelect.astro` — Astro-only.
+- `src/components/base-components/select/CompactSelect.astro`;
+- `src/components/base-components/select/InlineSelect.astro`.
 
 Select is the full-width field with independently optional label and hint.
 CompactSelect is an intrinsic icon-only trigger with the same raised field
 surface, while InlineSelect is a text-like control without label, hint, border,
 or elevation. All three preserve one native select fallback and share the same
-progressively enhanced listbox behavior. The two code-first components and the
-richer Astro runtime remain intentional projection differences until a separate
-explicit Figma task.
+progressively enhanced listbox behavior. Figma keeps eight visual states for
+Select and CompactSelect, five for InlineSelect, and reuses state-scoped private
+purpose sets with `Language | Phone | Country | Brand`. Country and Brand use
+canonical local Flag and Logo instances. Runtime listbox behavior, native form
+events and viewport positioning remain intentional Astro-only mechanics.
 
 ### Base Components / File Upload
 
 Canonical Figma master:
 
 - FileUpload — `221:88`.
+- FileUploadCard — `1372:164`.
 
 Astro sources:
 
 - `src/components/base-components/file-upload/FileUpload.astro`;
-- `src/components/base-components/file-upload/FileUploadCard.astro` — Astro-only.
+- `src/components/base-components/file-upload/FileUploadCard.astro`.
 
 FileUpload adds native file semantics, the canonical Browse Button, client-side
 selection validation and bubbling events while preserving the Figma master as
 the visual state reference. Selected maps to Success and rejected selections
-map to Error; the dropzone owns both validation and focus effects. FileUploadCard is a controlled, transport-agnostic
-status card for uploading, success and error. Align UI is retained only as
-bounded structural evidence; local tokens, fixed Material Symbols and native
-semantics own the production implementation.
+map to Error; the dropzone owns both validation and focus effects. FileUpload
+composes the canonical secondary Button in every state. FileUploadCard is a
+controlled, transport-agnostic status card for uploading, success and error and
+composes canonical ProgressBar, Button and fixed Material Symbol dependencies.
+Figma represents indeterminate progress as a static midpoint snapshot and keeps
+Status Text editable per instance; transport, animation and derived runtime
+announcements remain Astro-owned mechanics. Align UI is retained only as bounded
+structural evidence; local tokens, fixed Material Symbols and native semantics
+own the production implementation.
 
 ### Base Components / Breadcrumbs
 
@@ -280,19 +291,25 @@ symmetrical 16 px wrappers; Astro keeps the decorative leading slot, Boolean
 
 ### Base Components / Tooltip
 
-Tooltip keeps canonical master `1371:45` with 16 variants across Size,
-State and Placement. The private `Tooltip Indicator` set `1488:3566` provides
-Down, Up, Left and Right nested directions, each bound to the inverse surface
-color. Every Tooltip variant uses a Hug `Tooltip Content` wrapper and the
-shared `Body/Tiny/Regular` 12 px Text Style. Astro maps Placement to the
-typed `placement` prop and may additionally use `narrowPlacement` at `48rem`;
-that responsive runtime choice is an intentional code-only projection.
+Tooltip keeps canonical master `1371:45` with 12 variants across Placement and
+State. InfoPopover keeps canonical master `1371:74` with 24 variants across
+Placement, Visibility and State. The private `_Parts/Tooltip.Indicator` set
+`1488:3566` provides `Direction=Down|Up|Left|Right`, each bound to the inverse
+surface color and reused by both public components. Their 16 px design-time
+roots use centered Auto Layout triggers, locked 1:1 ratios and canonical info
+icons set to Fill container; parent-owned scaling is verified at 8, 16, 20 and
+48 px. Focus variants apply `Interaction/Focused` to the reusable component
+root, matching Button and Breadcrumb. Astro maps Placement to the typed
+`placement` prop and may additionally use `narrowPlacement` at `48rem`; that
+responsive runtime choice remains an intentional code-only projection. The
+runtime maps the resolved side Top→Down, Bottom→Up, Left→Right and Right→Left
+and places the full 8 px indicator outside the surface.
 
-### Website Patterns / Modal
+### Base Components / Popup
 
 Astro source:
 
-- `src/components/website-patterns/modal/Popup.astro` — Astro-only.
+- `src/components/base-components/popup/Popup.astro` — Astro-only.
 
 Popup is a native modal decision surface with four fixed semantic statuses,
 horizontal and vertical copy layouts, optional Cancel and preference controls,
@@ -301,6 +318,130 @@ bounded anatomy and overlay-quality evidence. There is no canonical Figma node
 for Popup in this file and no separate Overlay component; native
 `dialog::backdrop` owns full-viewport dimming until a separate explicit Figma
 task authorizes a projection.
+
+### Website Patterns / Page Headers
+
+Canonical Figma master:
+
+- SectionHeader — `274:26` (`intentional-difference`, Astro validation pending).
+
+Live Figma exposes three horizontal Composition variants only: Copy + Actions,
+Heading + Details and Eyebrow + Heading + Details. The public Astro component
+is `src/components/website-patterns/page-headers/SectionHeader.astro` and reuses
+Eyebrow plus ButtonGroup. At component widths of at least `64rem`, Astro maps
+the Figma 12-column spans to columns 1–5 and 9–12, or to eyebrow columns 1–2,
+heading columns 3–6 and details columns 9–12. Below that container threshold,
+Astro intentionally stacks eyebrow, heading, paragraph and actions in source
+order. Required eyebrow content, semantic heading levels and the narrow stack
+are code-only differences; they do not authorize new Figma properties,
+responsive variants or tokens.
+
+### Website Patterns / FAQ
+
+Canonical Figma master:
+
+- FAQ — `2131:4214` (`intentional-difference`, FAQ validation passed; repository validation partial because of unrelated baseline failures).
+
+Astro source:
+
+- `src/components/website-patterns/faq/FAQ.astro`.
+
+FAQ maps `Composition=Split|Stacked` to one public section component that
+reuses Content, AccordionList and Accordion. The Astro API exposes required
+heading content, optional introduction and actions, plus the existing
+AccordionList behavior controls. All Accordion children are grouped inside one
+list, intentionally correcting the disconnected Figma Items Slot and sibling
+Accordion instances. The 1440px Figma variants remain the desktop visual
+reference; Astro uses a component-owned `faq` container and a one-column reflow
+below `64rem`. No new Variables, tokens, icons or Figma mutations are part of
+this implementation, and the manifest remains the mapping while Code Connect
+is unavailable for the current seat.
+
+### Website Patterns / Stats & Metrics
+
+Canonical Figma masters:
+
+- StatCard — `389:41` (`mapped`, Astro visual review pending).
+- StatTextInline — `1783:1425` (`mapped`, Astro visual review pending).
+
+Astro source:
+
+- `src/components/website-patterns/stats-metrics/StatCard.astro`.
+- `src/components/website-patterns/stats-metrics/StatTextInline.astro`.
+
+StatTextInline maps the four `Type=Up|Down` ×
+`Icon=Leading|Trailing` variants to the closed semantic props `trend` and
+`iconPosition`. It reuses `Caption/Small`, the global tiny gap, semantic text
+and trend colors, the approved component icon-size alias and the existing
+`trending_up`/`trending_down` Material Symbols. Astro intentionally replaces
+the fixed 97×20 sample with intrinsic content-safe wrapping and requires the
+visible text to communicate direction because the icon is decorative.
+
+StatCard maps the one-child `Type=Default` ComponentSet as one public Astro
+component without a variant prop. Caption and Value map to required text,
+Show Caption keeps an accessible visually hidden label, both trend booleans
+control fixed decorative Material Symbols, and optional description presence
+replaces Figma's redundant Show Description switch. Astro treats the 199px
+Figma width as visual-review metadata, fills its assigned inline size and
+projects the 140px minimum height, 2px trend gap and 20px icon size through the
+approved `stat-card-size` aliases. No Figma Variable or icon-library change is
+part of this mapping.
+
+### Website Patterns / Hero
+
+Canonical Figma masters:
+
+- HeroBreakout — `1800:389` (`figma-only`).
+- HeroFullVisual — `1788:639` (`figma-only`).
+
+HeroFullVisual uses `Composition=Centered|Left|Section Header` and keeps the
+section shell at the Desktop viewport width. Its inner Content Grid follows
+the semantic site padding; Content and Bullet Points fill up to `Layout Grid
+Columns / span/05`, while the SectionHeader composition fills up to `span/12`.
+The Visual is intentionally full width from `full-start` to `full-end`.
+The master is documented in `DSD/Hero Documentation`; the original Hero
+experiment section contains live instances instead of duplicate masters. No
+Mobile or Tablet composition, Astro component, or public API is approved in
+this phase.
+
+### Website Patterns / Announcements & Banners
+
+Canonical Figma master:
+
+- TopBanner — `1852:2867` (`mapped`, readiness `review/passed`).
+
+Astro source:
+
+- `src/components/website-patterns/announcements-banners/TopBanner.astro`.
+
+TopBanner maps five Brand, Info, Success, Warning and Error variants to a
+closed Material Symbol set and existing inverse or solid feedback colors.
+Figma remains the canonical desktop `1440 × 40` visual reference. Astro treats
+40 as a minimum height, fills its containing block and reflows without clipping
+below the named `top-banner` container threshold. Optional description and link
+data replace Figma's redundant supporting-content visibility switches. Native
+aside and link semantics plus non-persistent shared-runtime dismissal remain
+code-only. The repository manifest is the canonical Figma-to-Astro mapping
+until direct Code Connect access becomes available.
+
+### Website Patterns / Team
+
+Canonical Figma master:
+
+- TeamMemberCard — `1852:3569` (`intentional-difference`, readiness `review/partial`).
+
+Astro source:
+
+- `src/components/website-patterns/team/TeamMemberCard.astro`.
+
+TeamMemberCard maps `Layout=Vertical|Horizontal`, Full Name and Role or
+Position to one semantic article with an optional Ratio-backed image slot.
+Figma visibility booleans map to content presence rather than duplicated
+Astro props. The public component stays fluid instead of copying the 394px and
+350px authoring widths, and the horizontal image uses the approved 96px
+component token instead of Figma's unbound 93px dimension. That one-way token
+projection remains an intentional difference; no Figma Variable or checkpoint
+changes are included in this implementation.
 
 ## Implementation unit
 

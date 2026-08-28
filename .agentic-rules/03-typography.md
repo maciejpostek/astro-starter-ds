@@ -49,15 +49,21 @@ UI colors must continue to consume semantic or component color contracts.
 
 ## Public Text Styles
 
-Exactly 21 public classes exist:
+Exactly 23 public classes exist:
 
 - `.heading-h1` through `.heading-h6`,
 - `.body-{large|medium|base|small|tiny}-regular`,
 - `.body-{large|medium|base|small|tiny}-regular-underlined`,
-- `.body-{large|medium|base|small|tiny}-semibold`.
+- `.body-{large|medium|base|small|tiny}-semibold`,
+- `.caption-{small|tiny}`.
 
 Standalone `.body-large`, `.body-medium`, `.body-base`, `.body-small` and
 `.body-tiny` classes are not part of the API.
+
+Caption is a global Text Style role alongside Heading and Body. Caption Small
+uses 14px and Caption Tiny uses 12px; both use normal weight, compact line
+height, tight tracking and uppercase casing. The Caption classes reuse the
+approved Body size tokens and do not create a parallel font-size scale.
 
 Each class owns the complete contract:
 

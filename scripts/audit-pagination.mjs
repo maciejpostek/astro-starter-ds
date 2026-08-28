@@ -56,8 +56,6 @@ const itemModel = read("src/lib/pagination/pagination-item-model.mjs");
 const docs = read("src/data/documentationComponentRegistry.ts");
 const foundationData = read("src/data/documentationFoundationData.ts");
 const colorPage = read("src/pages/design-system/foundations/color.astro");
-const familyGallery = read("src/components/_internal/documentation/DsFamilyGallery.astro");
-const familyRoute = read("src/pages/design-system/base-components/[familyKey]/index.astro");
 const readiness = read("architecture/component-readiness-contract.json");
 const icons = JSON.parse(read("src/data/design-system/iconLibrary.json") || "{}");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
@@ -186,18 +184,13 @@ for (const previewName of [
     errors.push(`${previewName} must be centered and registered as a readiness preview boundary.`);
   }
 }
-const familyShowcase = read("src/components/_internal/documentation/DsPaginationFamilyShowcase.astro");
 if (
-  !familyShowcase.includes("<PaginationItem")
-  || !familyShowcase.includes("<PaginationEllipsis")
-  || !familyShowcase.includes("<PaginationGroup")
-  || !familyShowcase.includes("<Pagination currentPage={8} totalPages={16}")
-  || !docs.includes('pageKey: "pagination"')
-  || !docs.includes("DsPaginationFamilyShowcase")
-  || !familyGallery.includes("showcaseRenderer")
-  || !familyRoute.includes("getFamilyDocumentationAdapter")
+  !docs.includes('componentId: "pagination-item"')
+  || !docs.includes('componentId: "pagination-ellipsis"')
+  || !docs.includes('componentId: "pagination-group"')
+  || !docs.includes('componentId: "pagination"')
 ) {
-  errors.push("Pagination family showcase is not registered through the central documentation adapter.");
+  errors.push("Every Pagination identity must keep its direct component documentation adapter.");
 }
 
 if (!docs.includes('colorGroups: ["pagination"]')) {

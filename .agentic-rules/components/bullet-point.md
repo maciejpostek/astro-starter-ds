@@ -5,7 +5,7 @@ Status: active.
 - Manifest id: `bullet-point`
 - Figma canonical node: `1472:2966`
 - Figma page key: `bullet-points`
-- Astro source: `src/components/base-components/bullet-points/BulletPoint.astro`
+- Astro source: `src/components/website-patterns/bullet-points/BulletPoint.astro`
 - Role: `atom`
 - Sync status: `mapped`
 

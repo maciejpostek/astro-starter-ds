@@ -44,7 +44,7 @@ export type DocumentationHeaderSegment =
   | { kind: "link"; text: string; href: `#${string}` };
 
 export interface DocumentationPageHeader {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   summary: readonly DocumentationHeaderSegment[];
   copyValue?: string;
@@ -139,27 +139,76 @@ export interface DocumentationNeighbors {
 export type ArchitectureComponent = (typeof architecture.components)[number];
 export type ArchitecturePage = (typeof architecture.pages)[number];
 
+export type DocumentationPageMode = "empty" | "singleton" | "multi";
+export type DocumentationNavigationMode = "page" | "disclosure";
+
+const componentDocumentationCategoryKeys = new Set([
+  "base-components",
+  "website-patterns",
+  "examples-templates",
+]);
+
+const activeDocumentationStatuses = new Set([
+  "mapped",
+  "figma-only",
+  "astro-only",
+  "intentional-difference",
+]);
+
 export const isPublicDocumentationComponent = (component: ArchitectureComponent) =>
   !["internal", "part"].includes(component.role);
 
-export const getPublicDocumentationComponents = (categoryKey: string, pageKey: string) =>
+export const isActivePublicDocumentationComponent = (component: ArchitectureComponent) =>
+  isPublicDocumentationComponent(component) &&
+  activeDocumentationStatuses.has(component.syncStatus) &&
+  component.status !== "deprecated" &&
+  (component as ArchitectureComponent & { documentationVisible?: boolean }).documentationVisible !== false &&
+  architecture.pages.some(
+    (page) =>
+      page.categoryKey === component.categoryKey &&
+      page.pageKey === component.pageKey &&
+      page.documentationVisible !== false,
+  );
+
+export const getActivePublicDocumentationComponents = (categoryKey: string, pageKey: string) =>
   architecture.components.filter(
     (component) =>
       component.categoryKey === categoryKey &&
       component.pageKey === pageKey &&
-      isPublicDocumentationComponent(component),
+      isActivePublicDocumentationComponent(component),
   );
 
-export const isSingletonBaseComponentPage = (pageKey: string) => {
+export const resolveDocumentationPageMode = (
+  categoryKey: string,
+  pageKey: string,
+): DocumentationPageMode => {
   const page = architecture.pages.find(
     (candidate) =>
-      candidate.categoryKey === "base-components" &&
+      candidate.categoryKey === categoryKey &&
       candidate.pageKey === pageKey &&
       candidate.documentationVisible !== false,
   );
 
-  return Boolean(page) && getPublicDocumentationComponents("base-components", pageKey).length === 1;
+  if (!page || !componentDocumentationCategoryKeys.has(categoryKey)) return "empty";
+
+  const componentCount = getActivePublicDocumentationComponents(categoryKey, pageKey).length;
+  if (componentCount === 1) return "singleton";
+  return componentCount > 1 ? "multi" : "empty";
 };
+
+const disclosureOnlyDocumentationCategories = new Set([
+  "base-components",
+  "website-patterns",
+]);
+
+export const resolveDocumentationNavigationMode = (
+  categoryKey: string,
+  pageKey: string,
+): DocumentationNavigationMode =>
+  resolveDocumentationPageMode(categoryKey, pageKey) === "multi" &&
+  disclosureOnlyDocumentationCategories.has(categoryKey)
+    ? "disclosure"
+    : "page";
 
 const categoryType: Record<string, DocumentationPageType> = {
   architecture: "reading",
@@ -209,13 +258,11 @@ export const documentationPageHref = (categoryKey: string, pageKey: string) =>
 
 export const documentationComponentHref = (component: ArchitectureComponent) => {
   const pageHref = documentationPageHref(component.categoryKey, component.pageKey);
-  if (
-    component.categoryKey === "base-components" &&
-    isSingletonBaseComponentPage(component.pageKey)
-  ) {
+  const pageMode = resolveDocumentationPageMode(component.categoryKey, component.pageKey);
+  if (pageMode === "singleton") {
     return pageHref;
   }
-  if (component.categoryKey === "base-components" || component.categoryKey === "website-patterns") {
+  if (pageMode === "multi") {
     return `${pageHref}/${component.id}`;
   }
   if (component.categoryKey === "workspace") return `${pageHref}#canonical-records`;
@@ -248,7 +295,7 @@ export const documentationCategories = architecture.categories
 
 export const componentsByPage = new Map<string, ArchitectureComponent[]>();
 for (const component of architecture.components) {
-  if (!isPublicDocumentationComponent(component)) continue;
+  if (!isActivePublicDocumentationComponent(component)) continue;
   const key = `${component.categoryKey}/${component.pageKey}`;
   const records = componentsByPage.get(key) ?? [];
   records.push(component);
@@ -256,7 +303,11 @@ for (const component of architecture.components) {
 }
 
 export const documentationPages: DocumentationPageRecord[] = architecture.pages
-  .filter((page) => page.documentationVisible !== false)
+  .filter(
+    (page) =>
+      page.documentationVisible !== false &&
+      resolveDocumentationNavigationMode(page.categoryKey, page.pageKey) !== "disclosure",
+  )
   .map((page) => {
   const components = componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
   const available = components.some((component) => Boolean(component.sourcePath));
@@ -273,8 +324,11 @@ export const documentationPages: DocumentationPageRecord[] = architecture.pages
     title: page.pageLabel,
     href: documentationPageHref(page.categoryKey, page.pageKey),
     pageType:
-      page.categoryKey === "base-components" && isSingletonBaseComponentPage(page.pageKey)
+      resolveDocumentationPageMode(page.categoryKey, page.pageKey) === "singleton"
         ? "component-detail"
+        : resolveDocumentationPageMode(page.categoryKey, page.pageKey) === "empty" &&
+            componentDocumentationCategoryKeys.has(page.categoryKey)
+          ? "reading"
         : categoryType[page.categoryKey] ?? "reading",
     status: available || hasHandAuthoredPage ? "available" : components.length ? "figma-only" : "empty",
     toc: [],
@@ -295,10 +349,7 @@ const categorySearchRecords: DocumentationSearchRecord[] = documentationCategori
 }));
 
 const pageSearchRecords: DocumentationSearchRecord[] = documentationPages
-  .filter(
-    (page) =>
-      page.categoryKey !== "base-components" || !isSingletonBaseComponentPage(page.pageKey),
-  )
+  .filter((page) => resolveDocumentationPageMode(page.categoryKey, page.pageKey) !== "singleton")
   .map((page) => ({
   id: `page-${page.id}`,
   label: page.title,
@@ -320,7 +371,7 @@ const pageSearchRecords: DocumentationSearchRecord[] = documentationPages
   }));
 
 const componentSearchRecords: DocumentationSearchRecord[] = architecture.components
-  .filter(isPublicDocumentationComponent)
+  .filter(isActivePublicDocumentationComponent)
   .map((component) => ({
   id: `component-${component.id}`,
   label: component.name,
@@ -345,8 +396,7 @@ const componentSearchRecords: DocumentationSearchRecord[] = architecture.compone
       architecture.categories.find((category) => category.categoryKey === component.categoryKey)?.label ?? ""
     ),
     ...(
-      component.categoryKey === "base-components" &&
-      isSingletonBaseComponentPage(component.pageKey)
+      resolveDocumentationPageMode(component.categoryKey, component.pageKey) === "singleton"
         ? []
         : [component.pageLabel]
     ),
@@ -416,15 +466,17 @@ for (const category of documentationCategories) {
   for (const page of category.pages) {
     const pageHref = documentationPageHref(page.categoryKey, page.pageKey);
     const components = componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
-    const singletonBaseComponent =
-      page.categoryKey === "base-components" && isSingletonBaseComponentPage(page.pageKey)
+    const pageMode = resolveDocumentationPageMode(page.categoryKey, page.pageKey);
+    const navigationMode = resolveDocumentationNavigationMode(page.categoryKey, page.pageKey);
+    const singletonComponent =
+      pageMode === "singleton"
         ? components[0]
         : undefined;
 
-    if (singletonBaseComponent) {
+    if (singletonComponent) {
       navigationRecords.push({
-        id: `component-${singletonBaseComponent.id}`,
-        label: singletonBaseComponent.name,
+        id: `component-${singletonComponent.id}`,
+        label: singletonComponent.name,
         href: pageHref,
         parent: category.displayLabel,
         kind: "component",
@@ -432,13 +484,18 @@ for (const category of documentationCategories) {
       continue;
     }
 
-    navigationRecords.push({
-      id: `page-${page.categoryKey}-${page.pageKey}`,
-      label: page.pageLabel,
-      href: pageHref,
-      parent: category.displayLabel,
-      kind: "page",
-    });
+    if (
+      navigationMode === "page" &&
+      !(pageMode === "empty" && componentDocumentationCategoryKeys.has(page.categoryKey))
+    ) {
+      navigationRecords.push({
+        id: `page-${page.categoryKey}-${page.pageKey}`,
+        label: page.pageLabel,
+        href: pageHref,
+        parent: category.displayLabel,
+        kind: "page",
+      });
+    }
 
     if (!["base-components", "website-patterns"].includes(page.categoryKey)) continue;
     for (const component of components) {

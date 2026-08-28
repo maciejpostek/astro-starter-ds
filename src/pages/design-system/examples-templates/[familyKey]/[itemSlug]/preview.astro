@@ -14,14 +14,15 @@ export function getStaticPaths() {
 
 interface Props { adapter: DocumentationPreviewAdapter; }
 const { adapter } = Astro.props;
-const PreviewComponent = adapter.component;
 ---
 
 <BaseLayout title={`${adapter.componentId} - Responsive preview`} showGridVisualizer={false} showComponentInfo={false} mainClass="main--flush">
   <DsResponsivePreview
     title={adapter.componentId}
     backHref={`/design-system/examples-templates/${adapter.pageKey}`}
-  >
-    <PreviewComponent {...adapter.props} />
-  </DsResponsivePreview>
+    renderer={adapter.component}
+    rendererProps={adapter.props}
+    axes={adapter.axes}
+    scope={`responsive-route-${adapter.id}`}
+  />
 </BaseLayout>

@@ -32,6 +32,7 @@ System ma być:
 | Typography Semantic | Architektura zatwierdzona, wartości do kalibracji |
 | Layout Foundations | Architektura zatwierdzona, wartości do kalibracji |
 | Layout Semantic | Architektura zatwierdzona, wartości do kalibracji |
+| Layout Grid Columns (Figma-only) | Architektura zatwierdzona, projekcja generowana lokalnie |
 
 ---
 
@@ -1140,14 +1141,26 @@ size/
 │   └── hero-top
 │
 ├── component-padding/
+│   ├── none
+│   ├── tiny
+│   ├── xsmall
 │   ├── small
 │   ├── medium
-│   └── large
+│   ├── large
+│   ├── xlarge
+│   ├── xxlarge
+│   └── xxxlarge
 │
 ├── gap/
+│   ├── none
+│   ├── tiny
 │   ├── small
+│   ├── regular
 │   ├── medium
-│   └── large
+│   ├── large
+│   ├── xlarge
+│   ├── xxlarge
+│   └── xxxlarge
 │
 ├── radius/
 │   ├── none
@@ -1188,9 +1201,15 @@ neutralnych komponentów:
 ```css
 :root {
   --content-padding-small: var(--size-12);
-  --content-padding-medium: var(--size-24);
-  --content-padding-large:
-    clamp(var(--size-24), 1rem + 2vw, var(--size-40));
+  --content-padding-medium:
+    clamp(var(--size-16), 0.9643rem + 0.1786vw, var(--size-18));
+  --content-padding-large: var(--size-20);
+  --content-padding-xlarge:
+    clamp(var(--size-24), 1.3571rem + 0.7143vw, var(--size-32));
+  --content-padding-xxlarge:
+    clamp(var(--size-32), 1.8571rem + 0.7143vw, var(--size-40));
+  --content-padding-xxxlarge:
+    clamp(var(--size-40), 2.2143rem + 1.4286vw, var(--size-56));
 }
 ```
 
@@ -1204,8 +1223,12 @@ Gap opisuje relację pomiędzy elementami w flexie lub gridzie:
 ```css
 :root {
   --gap-small: var(--size-8);
-  --gap-medium: clamp(var(--size-12), 0.5rem + 1vw, var(--size-24));
-  --gap-large: clamp(var(--size-24), 1rem + 2vw, var(--size-48));
+  --gap-medium: var(--size-16);
+  --gap-large: var(--size-20);
+  --gap-xlarge:
+    clamp(var(--size-24), 1.3571rem + 0.7143vw, var(--size-32));
+  --gap-xxlarge: var(--size-48);
+  --gap-xxxlarge: var(--size-80);
 }
 ```
 
@@ -1327,8 +1350,8 @@ Token zawiera `clamp()` bezpośrednio w warstwie semantic lub component:
   --section-padding-hero-top:
     clamp(var(--size-64), 2rem + 5vw, var(--size-128));
 
-  --gap-large:
-    clamp(var(--size-24), 1rem + 2vw, var(--size-48));
+  --gap-xlarge:
+    clamp(var(--size-24), 1.3571rem + 0.7143vw, var(--size-32));
 }
 ```
 
@@ -1345,7 +1368,8 @@ Token otrzymuje inną stałą wartość na breakpointcie:
 
 ```css
 :root {
-  --content-padding-medium: var(--size-24);
+  --content-padding-medium:
+    clamp(var(--size-16), 0.9643rem + 0.1786vw, var(--size-18));
   --control-size-large-min-height: var(--size-56);
 }
 
@@ -1843,7 +1867,7 @@ Przykładowa konfiguracja:
   --fluid-viewport-max: 90rem;
 
   --site-padding-inline-min: var(--size-16);
-  --site-padding-inline-max: var(--size-40);
+  --site-padding-inline-max: var(--size-80);
 
   --breakpoint-medium: 64rem;
   --breakpoint-small: 48rem;
@@ -1869,7 +1893,7 @@ viewportu:
   --site-padding-inline:
     clamp(
       var(--site-padding-inline-min),
-      0.5rem + 2vw,
+      -0.1429rem + 5.7143vw,
       var(--site-padding-inline-max)
     );
 }
@@ -1988,6 +2012,69 @@ Grid jest punktem odniesienia dla:
 
 `row-gap` nie jest stałym ustawieniem głównego grida. Konkretna sekcja lub
 komponent aliasuje właściwy globalny token `gap`.
+
+### 15.5.1 Layout Grid Columns W Figmie
+
+Figma utrzymuje lokalną kolekcję `Layout Grid Columns`, która pozostaje
+widoczna w panelu Variables. Każda z jej 24 zmiennych jest indywidualnie ukryta
+przed publikacją. Nie jest to kolejna warstwa tokenów ani źródło wartości dla
+Astro. Kolekcja jest generowaną projekcją kontrolnych punktów
+`Layout Foundations` i `Layout Semantic`, potrzebną wyłącznie dlatego, że Auto
+Layout nie udostępnia odpowiednika CSS `grid-column-start` i `grid-column-end`.
+
+```text
+Layout Grid Columns [Desktop, Mobile]
+├── grid/max-width/span/{01..12}   WIDTH_HEIGHT
+└── grid/offset/start/{01..12}     GAP
+```
+
+Szerokość spanu obejmuje także wewnętrzne guttery. Offset jest mierzony od
+`content-start` do początku wskazanej kolumny i może być używany jako padding
+rodzica albo szerokość kontrolowanego spacera. Nie jest przypinany do surowej
+pozycji `x`.
+
+```text
+column = (container - (columns - 1) * gap) / columns
+
+span(n):
+  m = min(n, columns)
+  round(m * column + (m - 1) * gap)
+
+offset(n):
+  k = min(n - 1, columns)
+  round(k * column + min(k, columns - 1) * gap)
+```
+
+Kolumna Desktop ma matematyczną szerokość `88.3333… px`, ponieważ
+`(1280 - 11 × 20) / 12 = 88.3333…`. Nie zaokrąglamy tej wartości przed
+mnożeniem. Zaokrąglamy dopiero gotowy span lub offset, dzięki czemu wartości
+odpowiadają całopikselowym wymiarom pokazywanym podczas authoringu w Figmie.
+
+```text
+Desktop spans:   88 / 197 / 305 / 413 / 522 / 630 / 738 / 847 / 955 / 1063 / 1172 / 1280
+Desktop offsets: 0 / 108 / 217 / 325 / 433 / 542 / 650 / 758 / 867 / 975 / 1083 / 1192
+```
+
+W trybie Mobile wartości przekraczające czterokolumnowy grid zatrzymują się na
+końcu `container/main`. Kolekcja nie ma WEB code syntax, nie jest rejestrowana
+w `tokenArchitecture.json` i nie tworzy custom properties. Astro nadal używa
+`fr`, named grid lines i natywnych właściwości CSS Grid. Po zmianie viewportu,
+paddingu, liczby kolumn albo guttera kolekcję należy przeliczyć idempotentnie,
+zachowując istniejące Variable ID i bindings. Synchronizator najpierw korzysta
+z ID zapisanych w `componentArchitecture.json`, ale wymaga również obecności
+kolekcji w `getLocalVariableCollectionsAsync()` i kompletu 24 pozycji w
+`variableIds`. Rekord dostępny wyłącznie po ID jest osierocony i nie może
+przejść walidacji. Lookup po pełnej nazwie jest fallbackiem wyłącznie podczas
+pierwszego utworzenia.
+
+Po usunięciu osieroconego rekordu Figma może nadal zwracać jego historyczny,
+niepublikowany uchwyt przy bezpośrednim odczycie po ID. Rekord jest uznany za
+usunięty z aktywnego systemu, gdy nie występuje w normalnej lokalnej enumeracji
+i nie posiada żadnych referencji na canvasie. Takich tombstone ID nie wolno
+ponownie używać ani uwzględniać w checkpointach.
+
+Nie tworzymy zmiennej `column-width`. Sam track bez guttera nie opisuje
+rzeczywistej szerokości spanu i prowadziłby do błędnego ręcznego mnożenia.
 
 ## 15.6 Auto-fit I Auto-fill
 
@@ -2152,12 +2239,12 @@ Przykład zależności:
   --fluid-viewport-max: 90rem;
 
   --site-padding-inline-min: var(--size-16);
-  --site-padding-inline-max: var(--size-40);
+  --site-padding-inline-max: var(--size-80);
 
   --site-padding-inline:
     clamp(
       var(--site-padding-inline-min),
-      0.5rem + 2vw,
+      -0.1429rem + 5.7143vw,
       var(--site-padding-inline-max)
     );
 }

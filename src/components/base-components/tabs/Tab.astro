@@ -31,6 +31,9 @@ if (typeof controls !== "string" || controls.trim().length === 0) {
 if (!Astro.slots.has("default")) {
   throw new TypeError("Tab requires a visible label in its default slot.");
 }
+if (selected && disabled) {
+  throw new RangeError("Tab cannot be both selected and disabled.");
+}
 ---
 
 <button

@@ -30,7 +30,6 @@ export function getPublicComponentRoutes(projectRoot = process.cwd()) {
     family: component.pageKey,
     category: component.categoryKey,
     route:
-      component.categoryKey === "base-components" &&
       (registry.components ?? []).filter(
         (candidate) =>
           candidate.categoryKey === component.categoryKey &&

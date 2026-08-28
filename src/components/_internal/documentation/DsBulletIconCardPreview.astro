@@ -1,0 +1,35 @@
+---
+import BulletIconCard from "../../website-patterns/bullet-points/BulletIconCard.astro";
+import Button from "../../base-components/buttons/Button.astro";
+import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
+import Tag from "../../base-components/tag/Tag.astro";
+---
+
+<div class="bullet-icon-card-preview" data-component-name="DsBulletIconCardPreview">
+  <BulletIconCard
+    id="bullet-icon-card-preview"
+    title="Global availability"
+    description="Reach customers in new markets with one consistent product experience."
+    stat="24 markets supported"
+    layout="vertical"
+    data-ds-preview-target
+  >
+    <Fragment slot="tags">
+      <Tag label="Global" />
+      <Tag label="Scalable" />
+      <Tag label="Localized" />
+    </Fragment>
+    <Fragment slot="actions">
+      <Button showIcon={false}>Get started</Button>
+      <ButtonLink href="#bullet-icon-card-preview">Learn more</ButtonLink>
+    </Fragment>
+  </BulletIconCard>
+</div>
+
+<style>
+  .bullet-icon-card-preview {
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 32.3125rem;
+  }
+</style>

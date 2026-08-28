@@ -691,6 +691,41 @@ const bodyStyleRows: TypographyStyleRow[] = bodyStyleDefinitions.flatMap(
     ] satisfies TypographyStyleRow[]),
 );
 
+const captionStyleRows: TypographyStyleRow[] = [
+  {
+    name: "Caption / Small",
+    className: "caption-small",
+    family: "--font-family-body",
+    size: "--font-size-body-small",
+    weight: "--font-weight-normal",
+    lineHeight: "--line-height-compact",
+    letterSpacing: "--letter-spacing-tight",
+    fontStyle: "--font-style-normal",
+    transform: "--text-transform-uppercase",
+    textWrap: "--text-wrap-wrap",
+    overflowWrap: "--overflow-wrap-break-word",
+    wordBreak: "--word-break-normal",
+    whiteSpace: "--white-space-normal",
+    sample: typographyStyleSample,
+  },
+  {
+    name: "Caption / Tiny",
+    className: "caption-tiny",
+    family: "--font-family-body",
+    size: "--font-size-body-tiny",
+    weight: "--font-weight-normal",
+    lineHeight: "--line-height-compact",
+    letterSpacing: "--letter-spacing-tight",
+    fontStyle: "--font-style-normal",
+    transform: "--text-transform-uppercase",
+    textWrap: "--text-wrap-wrap",
+    overflowWrap: "--overflow-wrap-break-word",
+    wordBreak: "--word-break-normal",
+    whiteSpace: "--white-space-normal",
+    sample: typographyStyleSample,
+  },
+];
+
 export const typographyStyleRows: TypographyStyleRow[] = [
   {
     name: "H1",
@@ -789,6 +824,7 @@ export const typographyStyleRows: TypographyStyleRow[] = [
     sample: typographyStyleSample,
   },
   ...bodyStyleRows,
+  ...captionStyleRows,
 ];
 
 export const utilityTypographyRows: UtilityTypographyRow[] = [

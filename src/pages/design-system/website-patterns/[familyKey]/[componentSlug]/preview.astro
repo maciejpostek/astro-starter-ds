@@ -2,10 +2,15 @@
 import BaseLayout from "../../../../../layouts/BaseLayout.astro";
 import DsResponsivePreview from "../../../../../components/_internal/documentation/DsResponsivePreview.astro";
 import { documentationPreviewAdapters, type DocumentationPreviewAdapter } from "../../../../../data/documentationPreviewRegistry";
+import { resolveDocumentationPageMode } from "../../../../../data/documentationRegistry";
 
 export function getStaticPaths() {
   return documentationPreviewAdapters
-    .filter((adapter) => adapter.categoryKey === "website-patterns")
+    .filter(
+      (adapter) =>
+        adapter.categoryKey === "website-patterns" &&
+        resolveDocumentationPageMode(adapter.categoryKey, adapter.pageKey) === "multi",
+    )
     .map((adapter) => ({
       params: { familyKey: adapter.pageKey, componentSlug: adapter.componentId },
       props: { adapter },
@@ -14,14 +19,15 @@ export function getStaticPaths() {
 
 interface Props { adapter: DocumentationPreviewAdapter; }
 const { adapter } = Astro.props;
-const PreviewComponent = adapter.component;
 ---
 
 <BaseLayout title={`${adapter.componentId} - Responsive preview`} showGridVisualizer={false} showComponentInfo={false} mainClass="main--flush">
   <DsResponsivePreview
     title={adapter.componentId}
-    backHref={`/design-system/website-patterns/${adapter.pageKey}`}
-  >
-    <PreviewComponent {...adapter.props} />
-  </DsResponsivePreview>
+    backHref={adapter.backHref}
+    renderer={adapter.component}
+    rendererProps={adapter.props}
+    axes={adapter.axes}
+    scope={`responsive-route-${adapter.id}`}
+  />
 </BaseLayout>

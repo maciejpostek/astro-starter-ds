@@ -1,9 +1,14 @@
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import DsAccordionListPreview from "../components/_internal/documentation/DsAccordionListPreview.astro";
+import DsAccordionProgressPreview from "../components/_internal/documentation/DsAccordionProgressPreview.astro";
 import DsAccordionPreview from "../components/_internal/documentation/DsAccordionPreview.astro";
 import DsBreadcrumbPreview from "../components/_internal/documentation/DsBreadcrumbPreview.astro";
 import DsBreadcrumbsPreview from "../components/_internal/documentation/DsBreadcrumbsPreview.astro";
+import DsBulletCardSimplePreview from "../components/_internal/documentation/DsBulletCardSimplePreview.astro";
+import DsBulletCardSurfacePreview from "../components/_internal/documentation/DsBulletCardSurfacePreview.astro";
+import DsBulletIconCardPreview from "../components/_internal/documentation/DsBulletIconCardPreview.astro";
 import DsBulletPointPreview from "../components/_internal/documentation/DsBulletPointPreview.astro";
+import DsBulletVisualCardPreview from "../components/_internal/documentation/DsBulletVisualCardPreview.astro";
 import DsButtonGroupPreview from "../components/_internal/documentation/DsButtonGroupPreview.astro";
 import DsButtonLinkPreview from "../components/_internal/documentation/DsButtonLinkPreview.astro";
 import DsButtonPreview from "../components/_internal/documentation/DsButtonPreview.astro";
@@ -13,6 +18,12 @@ import DsCheckboxCardPreview from "../components/_internal/documentation/DsCheck
 import DsCheckboxLabelPreview from "../components/_internal/documentation/DsCheckboxLabelPreview.astro";
 import DsCheckboxPreview from "../components/_internal/documentation/DsCheckboxPreview.astro";
 import DsCompactSelectPreview from "../components/_internal/documentation/DsCompactSelectPreview.astro";
+import DsContentPreview from "../components/_internal/documentation/DsContentPreview.astro";
+import DsFAQPreview from "../components/_internal/documentation/DsFAQPreview.astro";
+import DsSectionHeaderPreview from "../components/_internal/documentation/DsSectionHeaderPreview.astro";
+import DsStatCardPreview from "../components/_internal/documentation/DsStatCardPreview.astro";
+import DsTeamMemberCardPreview from "../components/_internal/documentation/DsTeamMemberCardPreview.astro";
+import DsTopBannerPreview from "../components/_internal/documentation/DsTopBannerPreview.astro";
 import DsIconButtonPreview from "../components/_internal/documentation/DsIconButtonPreview.astro";
 import DsFormFieldPreview from "../components/_internal/documentation/DsFormFieldPreview.astro";
 import DsFileUploadCardPreview from "../components/_internal/documentation/DsFileUploadCardPreview.astro";
@@ -26,8 +37,8 @@ import DsInfoPopoverPreview from "../components/_internal/documentation/DsInfoPo
 import DsLabelPreview from "../components/_internal/documentation/DsLabelPreview.astro";
 import DsPaginationPreview from "../components/_internal/documentation/DsPaginationPreview.astro";
 import DsPopupPreview from "../components/_internal/documentation/DsPopupPreview.astro";
+import DsProgressBarPreview from "../components/_internal/documentation/DsProgressBarPreview.astro";
 import DsPaginationEllipsisPreview from "../components/_internal/documentation/DsPaginationEllipsisPreview.astro";
-import DsPaginationFamilyShowcase from "../components/_internal/documentation/DsPaginationFamilyShowcase.astro";
 import DsPaginationGroupPreview from "../components/_internal/documentation/DsPaginationGroupPreview.astro";
 import DsPaginationItemPreview from "../components/_internal/documentation/DsPaginationItemPreview.astro";
 import DsRadioCardPreview from "../components/_internal/documentation/DsRadioCardPreview.astro";
@@ -39,6 +50,7 @@ import DsSpecializedInputPreview from "../components/_internal/documentation/DsS
 import DsSelectPreview from "../components/_internal/documentation/DsSelectPreview.astro";
 import DsSocialButtonPreview from "../components/_internal/documentation/DsSocialButtonPreview.astro";
 import DsSocialIconButtonPreview from "../components/_internal/documentation/DsSocialIconButtonPreview.astro";
+import DsStatTextInlinePreview from "../components/_internal/documentation/DsStatTextInlinePreview.astro";
 import DsSwitchButtonPreview from "../components/_internal/documentation/DsSwitchButtonPreview.astro";
 import DsSwitchCardPreview from "../components/_internal/documentation/DsSwitchCardPreview.astro";
 import DsSwitchLabelPreview from "../components/_internal/documentation/DsSwitchLabelPreview.astro";
@@ -48,6 +60,7 @@ import DsTabsPreview from "../components/_internal/documentation/DsTabsPreview.a
 import DsTagPreview from "../components/_internal/documentation/DsTagPreview.astro";
 import DsTooltipPreview from "../components/_internal/documentation/DsTooltipPreview.astro";
 import ContentDivider from "../components/base-components/dividers/ContentDivider.astro";
+import TitleRow from "../components/base-components/dividers/TitleRow.astro";
 import {
   getSocialIconLabel,
   socialIconPlatforms,
@@ -62,7 +75,7 @@ export interface DocumentationPreviewOption {
 }
 
 export interface DocumentationPreviewAxis {
-  id: "variant" | "purpose" | "controlSize" | "tooltipSize" | "placement" | "narrowPlacement" | "state" | "separator" | "icon" | "leading" | "checked" | "selection" | "switchPosition" | "type" | "tone" | "removable" | "content" | "clearState" | "platform" | "label" | "hint" | "required" | "feedbackStatus" | "feedbackEmphasis" | "feedbackSize" | "notificationLayout" | "ratio" | "dividerVariant" | "dividerTone" | "bulletPointStatus" | "bulletPointTone" | "popupStatus" | "popupAlignment" | "popupCancel" | "popupPreference" | "popupDismissible";
+  id: "variant" | "purpose" | "controlSize" | "placement" | "state" | "separator" | "icon" | "leading" | "checked" | "selection" | "switchPosition" | "type" | "tone" | "removable" | "content" | "clearState" | "platform" | "label" | "hint" | "required" | "feedbackStatus" | "feedbackEmphasis" | "feedbackSize" | "notificationLayout" | "ratio" | "dividerVariant" | "dividerTone" | "bulletPointStatus" | "bulletPointTone" | "bulletCardSimpleIcon" | "bulletCardSimpleDescription" | "bulletCardSimpleActions" | "bulletIconCardLayout" | "bulletIconCardIcon" | "bulletIconCardStat" | "bulletIconCardStatIcon" | "bulletIconCardTags" | "bulletIconCardActions" | "bulletCardIcon" | "bulletCardDescription" | "bulletCardActions" | "bulletCardVisual" | "contentAlignment" | "contentEyebrow" | "contentParagraph" | "contentActions" | "faqComposition" | "faqEyebrow" | "faqParagraph" | "faqActions" | "faqMode" | "faqAutoplay" | "sectionHeaderComposition" | "sectionHeaderActions" | "teamMemberLayout" | "teamMemberImage" | "teamMemberRole" | "teamMemberRatio" | "statTextInlineTrend" | "statTextInlineIconPosition" | "statCardCaption" | "statCardDescription" | "statCardTrendingUp" | "statCardTrendingDown" | "topBannerStatus" | "topBannerDescription" | "topBannerLink" | "topBannerIcon" | "topBannerDismissible" | "popupStatus" | "popupAlignment" | "popupCancel" | "popupPreference" | "popupDismissible";
   label: string;
   defaultValue: string;
   options: DocumentationPreviewOption[];
@@ -84,27 +97,28 @@ export interface DocumentationDependency {
   description: string;
 }
 
+export interface DocumentationPreview {
+  id?: string;
+  title?: string;
+  heading?: string;
+  renderer: AstroComponentFactory;
+  props: Record<string, unknown>;
+  axes: DocumentationPreviewAxis[];
+  responsivePreview?: {
+    rendererProps?: Record<string, unknown>;
+  };
+}
+
 export interface ComponentDocumentationAdapter {
   componentId: string;
-  preview?: {
-    renderer: AstroComponentFactory;
-    props: Record<string, unknown>;
-    axes: DocumentationPreviewAxis[];
-  };
+  preview?: DocumentationPreview;
+  previews?: DocumentationPreview[];
   apiRows: DocumentationApiRow[];
   foundationReferences: {
     colorGroups: DocumentationComponentColorGroupId[];
   };
   dependencies: DocumentationDependency[];
   toc: DocumentationTocItem[];
-}
-
-export interface FamilyDocumentationAdapter {
-  categoryKey: "base-components" | "website-patterns" | "examples-templates";
-  pageKey: string;
-  showcase: {
-    renderer: AstroComponentFactory;
-  };
 }
 
 const buttonAxes: DocumentationPreviewAxis[] = [
@@ -968,6 +982,136 @@ const eyebrowAdapter: ComponentDocumentationAdapter = {
   toc: commonToc,
 };
 
+export const statTextInlineAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "statTextInlineTrend",
+    label: "Trend",
+    defaultValue: "up",
+    options: [
+      { label: "Up", value: "up" },
+      { label: "Down", value: "down" },
+    ],
+  },
+  {
+    id: "statTextInlineIconPosition",
+    label: "Icon position",
+    defaultValue: "trailing",
+    options: [
+      { label: "Leading", value: "leading" },
+      { label: "Trailing", value: "trailing" },
+    ],
+  },
+];
+
+const statTextInlineAdapter: ComponentDocumentationAdapter = {
+  componentId: "stat-text-inline",
+  preview: {
+    renderer: DsStatTextInlinePreview,
+    props: {},
+    axes: statTextInlineAxes,
+    responsivePreview: {},
+  },
+  apiRows: [
+    { name: "text", type: "string", defaultValue: "required" },
+    { name: "trend", type: '"up" | "down"', defaultValue: '"up"' },
+    { name: "iconPosition", type: '"leading" | "trailing"', defaultValue: '"trailing"' },
+    { name: "span attributes", type: 'HTMLAttributes<"span">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [{
+    target: { kind: "component", id: "material-symbol" },
+    description: "StatTextInline fixes trending_up and trending_down by trend; both glyphs are decorative and cannot be replaced by consumers.",
+  }],
+  toc: commonToc,
+};
+
+export const statCardAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "statCardCaption",
+    label: "Caption",
+    defaultValue: "default",
+    options: [
+      { label: "Default", value: "default" },
+      { label: "Long", value: "long" },
+      { label: "Visually hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "statCardDescription",
+    label: "Description",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Long", value: "long" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "statCardTrendingUp",
+    label: "Trending up",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "statCardTrendingDown",
+    label: "Trending down",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const statCardAdapter: ComponentDocumentationAdapter = {
+  componentId: "stat-card",
+  previews: [
+    {
+      renderer: DsStatCardPreview,
+      props: {},
+      axes: statCardAxes,
+      responsivePreview: {
+        rendererProps: { mode: "responsive" },
+      },
+    },
+    {
+      id: "trend-combinations",
+      heading: "Trend combinations",
+      title: "Both, upward, downward and no trend cues",
+      renderer: DsStatCardPreview,
+      props: { mode: "matrix" },
+      axes: [],
+    },
+    {
+      id: "content-stress",
+      heading: "Content stress",
+      title: "Long localized metric content",
+      renderer: DsStatCardPreview,
+      props: { mode: "stress" },
+      axes: [],
+    },
+  ],
+  apiRows: [
+    { name: "caption", type: "string", defaultValue: "required" },
+    { name: "value", type: "string", defaultValue: "required" },
+    { name: "showCaption", type: "boolean", defaultValue: "true" },
+    { name: "showTrendingUp", type: "boolean", defaultValue: "true" },
+    { name: "showTrendingDown", type: "boolean", defaultValue: "true" },
+    { name: "description", type: "string", defaultValue: "undefined" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "safe attributes forwarded except aria-labelledby" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [{
+    target: { kind: "component", id: "material-symbol" },
+    description: "StatCard uses fixed decorative trending_up and trending_down Material Symbols; consumers cannot replace either glyph.",
+  }],
+  toc: commonToc,
+};
+
 const bulletPointAdapter: ComponentDocumentationAdapter = {
   componentId: "bullet-point",
   preview: {
@@ -1005,6 +1149,274 @@ const bulletPointAdapter: ComponentDocumentationAdapter = {
     target: { kind: "component", id: "material-symbol" },
     description: "BulletPoint uses the fixed check_circle and cancel Material Symbols; consumers cannot select arbitrary glyphs.",
   }],
+  toc: commonToc,
+};
+
+const bulletCardSimpleAdapter: ComponentDocumentationAdapter = {
+  componentId: "bullet-card-simple",
+  preview: {
+    renderer: DsBulletCardSimplePreview,
+    props: {},
+    axes: [
+      {
+        id: "bulletCardSimpleIcon",
+        label: "Icon",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletCardSimpleDescription",
+        label: "Description",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletCardSimpleActions",
+        label: "Actions",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+    ],
+    responsivePreview: {
+      rendererProps: { mode: "responsive" },
+    },
+  },
+  apiRows: [
+    { name: "title", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "undefined" },
+    { name: "showIcon", type: "boolean", defaultValue: "true" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
+    { name: "id", type: "string", defaultValue: "generated" },
+    { name: "actions slot", type: "Button | ButtonLink children", defaultValue: "empty" },
+    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "material-symbol" },
+      description: "MaterialSymbol renders the fixed decorative language glyph; consumers cannot select another icon.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup owns intrinsic wrapping and grouping for optional Button and ButtonLink action children.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const bulletIconCardAdapter: ComponentDocumentationAdapter = {
+  componentId: "bullet-icon-card",
+  preview: {
+    renderer: DsBulletIconCardPreview,
+    props: {},
+    axes: [
+      {
+        id: "bulletIconCardLayout",
+        label: "Layout",
+        defaultValue: "vertical",
+        options: [
+          { label: "Vertical", value: "vertical" },
+          { label: "Horizontal", value: "horizontal" },
+        ],
+      },
+      {
+        id: "bulletIconCardIcon",
+        label: "Leading icon",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletIconCardStat",
+        label: "Stat",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletIconCardStatIcon",
+        label: "Stat icon",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletIconCardTags",
+        label: "Tags",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletIconCardActions",
+        label: "Actions",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+    ],
+  },
+  apiRows: [
+    { name: "title", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "required" },
+    { name: "layout", type: '\"vertical\" | \"horizontal\"', defaultValue: '\"vertical\"' },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
+    { name: "showIcon", type: "boolean", defaultValue: "true" },
+    { name: "stat", type: "string", defaultValue: "undefined" },
+    { name: "showStatIcon", type: "boolean", defaultValue: "true" },
+    { name: "tags slot", type: "repeatable Tag children", defaultValue: "empty" },
+    { name: "actions slot", type: "Button | ButtonLink children", defaultValue: "empty" },
+    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "material-symbol" }, description: "MaterialSymbol renders the fixed decorative language and trending_up glyphs." },
+    { target: { kind: "component", id: "tag" }, description: "Tag is the preferred repeatable metadata child for the tags slot." },
+    { target: { kind: "component", id: "button-group" }, description: "ButtonGroup owns grouping and intrinsic wrapping for action children." },
+  ],
+  toc: commonToc,
+};
+
+const bulletVisualCardAdapter: ComponentDocumentationAdapter = {
+  componentId: "bullet-visual-card",
+  previews: [
+    {
+      id: "canonical-preview",
+      heading: "Canonical composition",
+      renderer: DsBulletVisualCardPreview,
+      props: { scenario: "full" },
+      axes: [],
+    },
+    {
+      id: "minimal-preview",
+      heading: "Minimal composition",
+      renderer: DsBulletVisualCardPreview,
+      props: { scenario: "minimal" },
+      axes: [],
+    },
+    {
+      id: "optional-preview",
+      heading: "Optional regions",
+      renderer: DsBulletVisualCardPreview,
+      props: { scenario: "optional" },
+      axes: [],
+    },
+    {
+      id: "stress-preview",
+      heading: "Content stress and wrapping",
+      renderer: DsBulletVisualCardPreview,
+      props: { scenario: "stress" },
+      axes: [],
+    },
+  ],
+  apiRows: [
+    { name: "title", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "undefined" },
+    { name: "stat", type: "string", defaultValue: "undefined" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
+    { name: "visual slot", type: "Ratio or equivalent meaningful media", defaultValue: "required" },
+    { name: "tags slot", type: "Tag children", defaultValue: "empty" },
+    { name: "actions slot", type: "Button | ButtonLink children", defaultValue: "empty" },
+    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "ratio" }, description: "Ratio owns the preferred 4:3 visual proportion and replacement media content." },
+    { target: { kind: "component", id: "material-symbol" }, description: "MaterialSymbol renders the fixed decorative trending_up glyph for stat copy." },
+    { target: { kind: "component", id: "tag" }, description: "Tag is the preferred repeatable child for compact card metadata." },
+    { target: { kind: "component", id: "button-group" }, description: "ButtonGroup owns intrinsic wrapping for Button and ButtonLink action children." },
+  ],
+  toc: commonToc,
+};
+
+const bulletCardSurfaceAdapter: ComponentDocumentationAdapter = {
+  componentId: "bullet-card-surface",
+  preview: {
+    renderer: DsBulletCardSurfacePreview,
+    props: {},
+    axes: [
+      {
+        id: "bulletCardIcon",
+        label: "Icon",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletCardDescription",
+        label: "Description",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletCardActions",
+        label: "Actions",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+      {
+        id: "bulletCardVisual",
+        label: "Visual",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+    ],
+  },
+  apiRows: [
+    { name: "title", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "optional" },
+    { name: "showIcon", type: "boolean", defaultValue: "true" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
+    { name: "id", type: "string", defaultValue: "generated" },
+    { name: "actions slot", type: "ButtonGroup-compatible actions", defaultValue: "optional" },
+    { name: "visual slot", type: "accessible media in Ratio 4:3", defaultValue: "optional" },
+    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: ["card"] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "material-symbol" },
+      description: "MaterialSymbol renders the fixed decorative language glyph; consumers cannot select another icon.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup owns wrapping and grouping for the optional actions slot.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the fixed 4:3 boundary for optional visual content.",
+    },
+  ],
   toc: commonToc,
 };
 
@@ -1048,6 +1460,24 @@ const contentDividerAdapter: ComponentDocumentationAdapter = {
     { name: "div attributes", type: 'HTMLAttributes<"div"> except role and aria-orientation', defaultValue: "forwarded" },
   ],
   foundationReferences: { colorGroups: ["content-divider"] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const titleRowAdapter: ComponentDocumentationAdapter = {
+  componentId: "title-row",
+  preview: {
+    renderer: TitleRow,
+    props: {
+      text: "Trusted by teams worldwide",
+    },
+    axes: [],
+  },
+  apiRows: [
+    { name: "text", type: "non-empty string", defaultValue: "required" },
+    { name: "paragraph attributes", type: 'HTMLAttributes<"p">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: ["title-row"] },
   dependencies: [],
   toc: commonToc,
 };
@@ -1302,7 +1732,6 @@ const selectAdapter: ComponentDocumentationAdapter = {
           { label: "Phone", value: "phone" },
           { label: "Country", value: "country" },
           { label: "Brand", value: "brand" },
-          { label: "Company", value: "company" },
         ],
       },
       {
@@ -1346,10 +1775,11 @@ const selectAdapter: ComponentDocumentationAdapter = {
   apiRows: [
     { name: "id", type: "string", defaultValue: "required" },
     { name: "options", type: "SelectOption[]", defaultValue: "required" },
-    { name: "options[].flag", type: "canonical flag slug", defaultValue: "undefined; exclusive with visual" },
+    { name: "options[].flag", type: "canonical flag slug", defaultValue: "undefined; exclusive with logo and visual" },
+    { name: "options[].logo", type: "canonical mark slug from Logos", defaultValue: "undefined; exclusive with flag and visual" },
     { name: "label or accessible name", type: "string", defaultValue: "required" },
     { name: "hint", type: "string", defaultValue: "undefined" },
-    { name: "purpose", type: '"basic" | "language" | "phone" | "country" | "brand" | "company"', defaultValue: '"basic"' },
+    { name: "purpose", type: '"basic" | "language" | "phone" | "country" | "brand"', defaultValue: '"basic"' },
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"medium"', typeReferences: controlSizeApiReferences },
     { name: "value", type: "string", defaultValue: "first option" },
     { name: "validation", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
@@ -1361,7 +1791,7 @@ const selectAdapter: ComponentDocumentationAdapter = {
   },
   dependencies: [{
     target: { kind: "component", id: "material-symbol" },
-    description: "Select uses fixed language, call, arrow_drop_down, check and validation Material Symbols; option visuals remain caller-owned data.",
+    description: "Select uses fixed language, call, arrow_drop_down, check and validation Material Symbols; country flags and canonical logo marks remain option-owned data.",
   }],
   toc: commonToc,
 };
@@ -1382,7 +1812,6 @@ const compactSelectAdapter: ComponentDocumentationAdapter = {
           { label: "Phone", value: "phone" },
           { label: "Country", value: "country" },
           { label: "Brand", value: "brand" },
-          { label: "Company", value: "company" },
         ],
       },
       { ...sharedControlSizeAxis, defaultValue: "small" },
@@ -1405,9 +1834,10 @@ const compactSelectAdapter: ComponentDocumentationAdapter = {
   apiRows: [
     { name: "id", type: "string", defaultValue: "required" },
     { name: "options", type: "SelectOption[]", defaultValue: "required" },
-    { name: "options[].flag", type: "canonical flag slug", defaultValue: "undefined; exclusive with visual" },
+    { name: "options[].flag", type: "canonical flag slug", defaultValue: "undefined; exclusive with logo and visual" },
+    { name: "options[].logo", type: "canonical mark slug from Logos", defaultValue: "undefined; exclusive with flag and visual" },
     { name: "accessible name", type: "aria-label | aria-labelledby", defaultValue: "required" },
-    { name: "purpose", type: '"language" | "phone" | "country" | "brand" | "company"', defaultValue: '"language"' },
+    { name: "purpose", type: '"language" | "phone" | "country" | "brand"', defaultValue: '"language"' },
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"small"', typeReferences: controlSizeApiReferences },
     { name: "validation", type: '"none" | "success" | "warning" | "error"; legacy: "default" | "valid" | "invalid"', defaultValue: '"none"' },
     { name: "disabled", type: "boolean", defaultValue: "false" },
@@ -1415,7 +1845,7 @@ const compactSelectAdapter: ComponentDocumentationAdapter = {
   foundationReferences: { colorGroups: ["input"] },
   dependencies: [{
     target: { kind: "component", id: "material-symbol" },
-    description: "CompactSelect uses the fixed semantic and disclosure Material Symbols owned by the shared SelectControl behavior.",
+    description: "CompactSelect uses fixed semantic and disclosure Material Symbols plus option-owned country flags or canonical logo marks.",
   }],
   toc: commonToc,
 };
@@ -1440,7 +1870,8 @@ const inlineSelectAdapter: ComponentDocumentationAdapter = {
   apiRows: [
     { name: "id", type: "string", defaultValue: "required" },
     { name: "options", type: "SelectOption[]", defaultValue: "required" },
-    { name: "options[].flag", type: "canonical flag slug", defaultValue: "undefined; exclusive with visual" },
+    { name: "options[].flag", type: "canonical flag slug", defaultValue: "undefined; exclusive with logo and visual" },
+    { name: "options[].logo", type: "canonical mark slug from Logos", defaultValue: "undefined; exclusive with flag and visual" },
     { name: "accessible name", type: "aria-label | aria-labelledby", defaultValue: "required" },
     { name: "value", type: "string", defaultValue: "first option" },
     { name: "disabled", type: "boolean", defaultValue: "false" },
@@ -1448,7 +1879,7 @@ const inlineSelectAdapter: ComponentDocumentationAdapter = {
   foundationReferences: { colorGroups: ["input"] },
   dependencies: [{
     target: { kind: "component", id: "material-symbol" },
-    description: "InlineSelect uses the fixed disclosure and check Material Symbols owned by the shared SelectControl behavior.",
+    description: "InlineSelect uses fixed disclosure and check Material Symbols and can render option-owned country flags or canonical logo marks.",
   }],
   toc: commonToc,
 };
@@ -1729,22 +2160,19 @@ const tabsAdapter: ComponentDocumentationAdapter = {
   preview: {
     renderer: DsTabsPreview,
     props: {},
-    axes: [sharedControlSizeAxis],
+    axes: [],
   },
   apiRows: [
-    { name: "items", type: "readonly [TabsItem, ...TabsItem[]]", defaultValue: "required" },
-    { name: "initialTab", type: "string", defaultValue: "first enabled item" },
-    { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"small"', typeReferences: controlSizeApiReferences },
-    { name: "id", type: "string", defaultValue: "generated" },
     { name: "aria-label or aria-labelledby", type: "string", defaultValue: "required" },
-    { name: "named panel slots", type: "slot name matching each item.id", defaultValue: "required" },
-    { name: "change event", type: 'CustomEvent<{ id: string; previousId: string }>', defaultValue: '"astro-ds:tabs-change"' },
+    { name: "default slot", type: "direct Tab children", defaultValue: "required; unrestricted count" },
+    { name: "external panels", type: 'role="tabpanel" linked by Tab.controls', defaultValue: "consumer-owned" },
+    { name: "change event", type: 'CustomEvent<{ id: string; previousId?: string }>', defaultValue: '"astro-ds:tabs-change"; Tab DOM ids' },
     { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
   ],
   foundationReferences: { colorGroups: ["tab"] },
   dependencies: [{
     target: { kind: "component", id: "tab" },
-    description: "Tabs composes one canonical Tab trigger for every validated panel item.",
+    description: "Tabs accepts any number of direct canonical Tab children and coordinates their external panels.",
   }],
   toc: commonToc,
 };
@@ -1856,12 +2284,13 @@ const tooltipAdapter: ComponentDocumentationAdapter = {
     props: {},
     axes: [
       {
-        id: "tooltipSize",
-        label: "Size",
-        defaultValue: "medium",
+        id: "state",
+        label: "State",
+        defaultValue: "default",
         options: [
-          { label: "Small", value: "small" },
-          { label: "Medium", value: "medium" },
+          { label: "Default", value: "default" },
+          { label: "Hover", value: "hover" },
+          { label: "Focus", value: "focus-visible" },
         ],
       },
       {
@@ -1875,24 +2304,11 @@ const tooltipAdapter: ComponentDocumentationAdapter = {
           { label: "Right", value: "right" },
         ],
       },
-      {
-        id: "narrowPlacement",
-        label: "Narrow placement (≤48rem)",
-        defaultValue: "default",
-        options: [
-          { label: "Same as default", value: "default" },
-          { label: "Top", value: "top" },
-          { label: "Bottom", value: "bottom" },
-          { label: "Left", value: "left" },
-          { label: "Right", value: "right" },
-        ],
-      },
     ],
   },
   apiRows: [
     { name: "text", type: "string", defaultValue: "required" },
     { name: "label", type: "string", defaultValue: "required" },
-    { name: "size", type: '"small" | "medium"', defaultValue: '"medium"' },
     { name: "placement", type: '"top" | "bottom" | "left" | "right"', defaultValue: '"top"' },
     { name: "narrowPlacement", type: '"top" | "bottom" | "left" | "right"', defaultValue: "undefined (uses placement)" },
     { name: "id", type: "string", defaultValue: "generated" },
@@ -1944,38 +2360,79 @@ const infoPopoverAdapter: ComponentDocumentationAdapter = {
 
 const accordionAdapter: ComponentDocumentationAdapter = {
   componentId: "accordion",
-  preview: {
-    renderer: DsAccordionPreview,
-    props: {},
-    axes: [
-      {
-        id: "state",
-        label: "State",
-        defaultValue: "default",
-        options: [
-          { label: "Default", value: "default" },
-          { label: "Hover", value: "hover" },
-          { label: "Open", value: "open" },
-          { label: "Focus visible", value: "focus-visible" },
-          { label: "Disabled", value: "disabled" },
-        ],
-      },
-      {
-        id: "icon",
-        label: "Info tooltip",
-        defaultValue: "visible",
-        options: [
-          { label: "Visible", value: "visible" },
-          { label: "Hidden", value: "hidden" },
-        ],
-      },
-    ],
-  },
+  previews: [
+    {
+      id: "preview",
+      title: "Accordion — Standard",
+      renderer: DsAccordionPreview,
+      props: {},
+      axes: [
+        {
+          id: "state",
+          label: "State",
+          defaultValue: "default",
+          options: [
+            { label: "Default", value: "default" },
+            { label: "Hover", value: "hover" },
+            { label: "Open", value: "open" },
+            { label: "Focus visible", value: "focus-visible" },
+            { label: "Disabled", value: "disabled" },
+          ],
+        },
+        {
+          id: "icon",
+          label: "Info tooltip",
+          defaultValue: "visible",
+          options: [
+            { label: "Visible", value: "visible" },
+            { label: "Hidden", value: "hidden" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "preview-progress",
+      title: "Accordion — With progress",
+      heading: "With progress",
+      renderer: DsAccordionProgressPreview,
+      props: {},
+      axes: [
+        {
+          id: "state",
+          label: "State",
+          defaultValue: "default",
+          options: [
+            { label: "Default", value: "default" },
+            { label: "Hover", value: "hover" },
+            { label: "Open", value: "open" },
+            { label: "Focus visible", value: "focus-visible" },
+            { label: "Disabled", value: "disabled" },
+          ],
+        },
+        {
+          id: "icon",
+          label: "Info tooltip",
+          defaultValue: "visible",
+          options: [
+            { label: "Visible", value: "visible" },
+            { label: "Hidden", value: "hidden" },
+          ],
+        },
+      ],
+    },
+  ],
   apiRows: [
     { name: "title", type: "string", defaultValue: "required" },
-    { name: "content", type: "string", defaultValue: "required" },
+    { name: "titleSuffix", type: "string", defaultValue: "undefined" },
+    { name: "default slot", type: "rich content", defaultValue: "preferred" },
+    { name: "content", type: "string", defaultValue: "deprecated fallback" },
     { name: "helpText", type: "string", defaultValue: "undefined (Tooltip hidden)" },
     { name: "helpLabel", type: "string", defaultValue: "generated from title" },
+    { name: "showTooltip", type: "boolean", defaultValue: "true" },
+    { name: "showBrandIcon", type: "boolean", defaultValue: "true" },
+    { name: "brandIcon", type: "MaterialSymbolName", defaultValue: '"language"' },
+    { name: "progress", type: "number (0–100)", defaultValue: "undefined" },
+    { name: "progressLabel", type: "string", defaultValue: "undefined (decorative)" },
     { name: "initialOpen", type: "boolean", defaultValue: "false" },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
@@ -1990,7 +2447,11 @@ const accordionAdapter: ComponentDocumentationAdapter = {
     },
     {
       target: { kind: "component", id: "material-symbol" },
-      description: "Accordion uses the fixed arrow_drop_down MaterialSymbol as its disclosure indicator.",
+      description: "Accordion fixes arrow_drop_down for disclosure and accepts a typed local MaterialSymbol for its optional brand icon.",
+    },
+    {
+      target: { kind: "component", id: "progress-bar" },
+      description: "ProgressBar represents manual progress or the active AccordionList autoplay interval.",
     },
   ],
   toc: commonToc,
@@ -2005,6 +2466,9 @@ const accordionListAdapter: ComponentDocumentationAdapter = {
   },
   apiRows: [
     { name: "mode", type: '"single" | "multiple"', defaultValue: '"single"' },
+    { name: "autoplay", type: "boolean", defaultValue: "false" },
+    { name: "autoplayDuration", type: "number", defaultValue: "8000" },
+    { name: "autoplayLoop", type: "boolean", defaultValue: "true" },
     { name: "id", type: "string", defaultValue: "undefined" },
     { name: "default slot", type: "Accordion children", defaultValue: "required by composition" },
     { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
@@ -2014,6 +2478,25 @@ const accordionListAdapter: ComponentDocumentationAdapter = {
     target: { kind: "component", id: "accordion" },
     description: "AccordionList stacks public Accordion components and coordinates their runtime mode.",
   }],
+  toc: commonToc,
+};
+
+const progressBarAdapter: ComponentDocumentationAdapter = {
+  componentId: "progress-bar",
+  preview: {
+    renderer: DsProgressBarPreview,
+    props: {},
+    axes: [],
+  },
+  apiRows: [
+    { name: "value", type: "number", defaultValue: "undefined (indeterminate)" },
+    { name: "max", type: "number", defaultValue: "100" },
+    { name: "label", type: "string", defaultValue: "required unless decorative" },
+    { name: "decorative", type: "boolean", defaultValue: "false" },
+    { name: "progress attributes", type: 'HTMLAttributes<"progress">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
   toc: commonToc,
 };
 
@@ -2132,6 +2615,402 @@ const notificationAndToastAdapter: ComponentDocumentationAdapter = {
   toc: commonToc,
 };
 
+const contentAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "contentAlignment",
+    label: "Alignment",
+    defaultValue: "left",
+    options: [
+      { label: "Left", value: "left" },
+      { label: "Centered", value: "centered" },
+    ],
+  },
+  {
+    id: "contentEyebrow",
+    label: "Eyebrow",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "contentParagraph",
+    label: "Paragraph",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "contentActions",
+    label: "Button group",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const contentAdapter: ComponentDocumentationAdapter = {
+  componentId: "content",
+  preview: {
+    renderer: DsContentPreview,
+    props: {},
+    axes: contentAxes,
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "align", type: '"left" | "centered"', defaultValue: '"left"' },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "eyebrow" }, description: "Content reuses Eyebrow for the optional category cue and its heading spacing." },
+    { target: { kind: "component", id: "button-group" }, description: "Content renders the optional actions slot inside ButtonGroup for grouping and intrinsic wrapping." },
+  ],
+  toc: commonToc,
+};
+
+export const faqAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "faqComposition",
+    label: "Composition",
+    defaultValue: "split",
+    options: [
+      { label: "Split", value: "split" },
+      { label: "Stacked", value: "stacked" },
+    ],
+  },
+  {
+    id: "faqEyebrow",
+    label: "Eyebrow",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "faqParagraph",
+    label: "Paragraph",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "faqActions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "faqMode",
+    label: "Accordion mode",
+    defaultValue: "single",
+    options: [
+      { label: "Single", value: "single" },
+      { label: "Multiple", value: "multiple" },
+    ],
+  },
+  {
+    id: "faqAutoplay",
+    label: "Autoplay",
+    defaultValue: "off",
+    options: [
+      { label: "Off", value: "off" },
+      { label: "On", value: "on" },
+    ],
+  },
+];
+
+const faqAdapter: ComponentDocumentationAdapter = {
+  componentId: "faq",
+  preview: {
+    renderer: DsFAQPreview,
+    props: {},
+    axes: faqAxes,
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-faq-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "composition", type: '"split" | "stacked"', defaultValue: '"split"' },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "accordionMode", type: '"single" | "multiple"', defaultValue: '"single"' },
+    { name: "accordionAutoplay", type: "boolean", defaultValue: "false" },
+    { name: "accordionAutoplayDuration", type: "number", defaultValue: "8000" },
+    { name: "accordionAutoplayLoop", type: "boolean", defaultValue: "true" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "default slot", type: "direct Accordion children", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "FAQ delegates its heading-led introduction, optional copy and action grouping to Content.",
+    },
+    {
+      target: { kind: "component", id: "accordion-list" },
+      description: "AccordionList owns single or multiple coordination, autoplay and repeatable disclosure layout.",
+    },
+    {
+      target: { kind: "component", id: "accordion" },
+      description: "Accordion owns each question, answer panel, focus target and accessible disclosure state.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const sectionHeaderAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "sectionHeaderComposition",
+    label: "Composition",
+    defaultValue: "copy-actions",
+    options: [
+      { label: "Copy + Actions", value: "copy-actions" },
+      { label: "Heading + Details", value: "heading-details" },
+      { label: "Eyebrow + Heading + Details", value: "eyebrow-heading-details" },
+    ],
+    control: "select",
+  },
+  {
+    id: "sectionHeaderActions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const sectionHeaderAdapter: ComponentDocumentationAdapter = {
+  componentId: "section-header",
+  preview: {
+    renderer: DsSectionHeaderPreview,
+    props: {},
+    axes: sectionHeaderAxes,
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "required (Astro-only)" },
+    { name: "paragraph", type: "string", defaultValue: "required" },
+    {
+      name: "composition",
+      type: '"copy-actions" | "heading-details" | "eyebrow-heading-details"',
+      defaultValue: '"copy-actions"',
+    },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2 (Astro-only)" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "header attributes", type: 'HTMLAttributes<"header">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "eyebrow" },
+      description: "SectionHeader reuses Eyebrow for the required category cue and its heading spacing.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "SectionHeader renders optional actions inside ButtonGroup so it owns grouping and intrinsic wrapping.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const teamMemberCardAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "teamMemberLayout",
+    label: "Layout",
+    defaultValue: "vertical",
+    options: [
+      { label: "Vertical", value: "vertical" },
+      { label: "Horizontal", value: "horizontal" },
+    ],
+  },
+  {
+    id: "teamMemberImage",
+    label: "Image",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "teamMemberRole",
+    label: "Role",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "teamMemberRatio",
+    label: "Image ratio",
+    defaultValue: "3:4",
+    options: [
+      { label: "16:9", value: "16:9" },
+      { label: "1:1", value: "1:1" },
+      { label: "2.39:1", value: "2.39:1" },
+      { label: "2:1", value: "2:1" },
+      { label: "2:3", value: "2:3" },
+      { label: "3:2", value: "3:2" },
+      { label: "3:4", value: "3:4" },
+      { label: "4:3", value: "4:3" },
+      { label: "4:5", value: "4:5" },
+      { label: "5:4", value: "5:4" },
+    ],
+    control: "select",
+  },
+];
+
+const teamMemberCardAdapter: ComponentDocumentationAdapter = {
+  componentId: "team-member-card",
+  previews: [
+    {
+      renderer: DsTeamMemberCardPreview,
+      props: {},
+      axes: teamMemberCardAxes,
+    },
+    {
+      id: "responsive-preview",
+      heading: "Responsive preview",
+      title: "Canonical vertical and horizontal layouts",
+      renderer: DsTeamMemberCardPreview,
+      props: { mode: "responsive" },
+      axes: [],
+    },
+  ],
+  apiRows: [
+    { name: "fullName", type: "string", defaultValue: "required" },
+    { name: "roleOrPosition", type: "string", defaultValue: "optional" },
+    { name: "layout", type: '"vertical" | "horizontal"', defaultValue: '"vertical"' },
+    {
+      name: "imageRatio",
+      type: "RatioValue",
+      defaultValue: '"3:4" vertical; "1:1" horizontal',
+      typeReferences: [
+        { value: "RatioValue", target: { kind: "component", id: "ratio" } },
+      ],
+    },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
+    { name: "image slot", type: "Ratio-compatible media", defaultValue: "optional" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the optional media proportion, clipping and replacement content for both layouts.",
+    },
+  ],
+  toc: commonToc,
+};
+
+export const topBannerAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "topBannerStatus",
+    label: "Status",
+    defaultValue: "brand",
+    options: [
+      { label: "Brand", value: "brand" },
+      { label: "Info", value: "info" },
+      { label: "Success", value: "success" },
+      { label: "Warning", value: "warning" },
+      { label: "Error", value: "error" },
+    ],
+    control: "select",
+  },
+  {
+    id: "topBannerDescription",
+    label: "Description",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "topBannerLink",
+    label: "Link",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "topBannerIcon",
+    label: "Icon",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "topBannerDismissible",
+    label: "Dismiss",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const topBannerAdapter: ComponentDocumentationAdapter = {
+  componentId: "top-banner",
+  preview: {
+    renderer: DsTopBannerPreview,
+    props: {},
+    axes: topBannerAxes,
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-top-banner-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "id", type: "string", defaultValue: "required" },
+    { name: "title", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "undefined" },
+    { name: "status", type: '"brand" | "info" | "success" | "warning" | "error"', defaultValue: '"brand"' },
+    { name: "link", type: "TopBannerLink", defaultValue: "undefined" },
+    { name: "showIcon", type: "boolean", defaultValue: "true" },
+    { name: "dismissible", type: "boolean", defaultValue: "true" },
+    { name: "dismissLabel", type: "string", defaultValue: '"Dismiss announcement"' },
+    { name: "statusLabel", type: "string", defaultValue: "derived from status" },
+    { name: "aside attributes", type: 'HTMLAttributes<"aside">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: ["feedback"] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "material-symbol" },
+      description: "TopBanner uses a closed status-to-glyph map plus the fixed close Material Symbol; consumers cannot select glyphs.",
+    },
+  ],
+  toc: commonToc,
+};
+
 const popupAxes: DocumentationPreviewAxis[] = [
   {
     id: "popupStatus",
@@ -2239,8 +3118,15 @@ export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   labelAdapter,
   hintAdapter,
   eyebrowAdapter,
+  statTextInlineAdapter,
+  statCardAdapter,
   bulletPointAdapter,
+  bulletCardSimpleAdapter,
+  bulletIconCardAdapter,
+  bulletVisualCardAdapter,
+  bulletCardSurfaceAdapter,
   contentDividerAdapter,
+  titleRowAdapter,
   ratioAdapter,
   formFieldAdapter,
   searchInputAdapter,
@@ -2269,23 +3155,16 @@ export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   infoPopoverAdapter,
   accordionAdapter,
   accordionListAdapter,
+  progressBarAdapter,
   alertAdapter,
   notificationAndToastAdapter,
+  contentAdapter,
+  faqAdapter,
+  teamMemberCardAdapter,
+  sectionHeaderAdapter,
+  topBannerAdapter,
   popupAdapter,
 ];
 
 export const getComponentDocumentationAdapter = (componentId: string) =>
   componentDocumentationAdapters.find((adapter) => adapter.componentId === componentId);
-
-export const familyDocumentationAdapters: FamilyDocumentationAdapter[] = [
-  {
-    categoryKey: "base-components",
-    pageKey: "pagination",
-    showcase: { renderer: DsPaginationFamilyShowcase },
-  },
-];
-
-export const getFamilyDocumentationAdapter = (categoryKey: string, pageKey: string) =>
-  familyDocumentationAdapters.find((adapter) =>
-    adapter.categoryKey === categoryKey && adapter.pageKey === pageKey
-  );

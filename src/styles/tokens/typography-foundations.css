@@ -1,7 +1,8 @@
 /*
  * Design system typography foundations.
- * Heading and body are public typography roles. Mono is an internal technical
- * role reserved for documentation UI and code snippets.
+ * Heading, body and caption are public typography roles. Caption reuses the
+ * body family and size foundations. Mono is an internal technical role
+ * reserved for documentation UI and code snippets.
  */
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap");

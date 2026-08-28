@@ -2,6 +2,11 @@
 
 Use these rules only for an explicit Figma operation.
 
+For component documentation canvas creation, styling, normalization, or audit,
+load `astro-figma-component-documentation` when it is available. That skill
+owns the Figma-only page wrapper, component-group, ComponentSet presentation,
+variant-matrix, and one-child ComponentSet workflow.
+
 For brand-sensitive reconciliation, the approved Brand Expression Contract is
 visual intent context; it does not replace the sync manifest or runtime-owned
 semantics.

@@ -1,0 +1,118 @@
+---
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import type { DocumentationPreviewAxis } from "../../../data/documentationComponentRegistry";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import DsResponsivePreviewCanvas from "./DsResponsivePreviewCanvas.astro";
+
+interface Props {
+  title: string;
+  renderer: AstroComponentFactory;
+  rendererProps?: Record<string, unknown>;
+  axes?: DocumentationPreviewAxis[];
+  scope: string;
+}
+
+const {
+  title,
+  renderer,
+  rendererProps = {},
+  axes = [],
+  scope,
+} = Astro.props;
+---
+
+<div class="ds-responsive-preview-dialog" data-component-name="DsResponsivePreviewDialog">
+  <button
+    class="ds-responsive-preview-dialog__trigger"
+    type="button"
+    aria-label={`Open ${title} responsive preview`}
+    data-responsive-preview-trigger
+  >
+    <MaterialSymbol name="open_in_full" size="var(--size-20)" />
+  </button>
+
+  <dialog class="ds-responsive-preview-dialog__surface" aria-label={`${title} responsive preview`} data-responsive-preview-dialog>
+    <DsResponsivePreviewCanvas
+      title={title}
+      renderer={renderer}
+      rendererProps={rendererProps}
+      axes={axes}
+      scope={scope}
+    />
+  </dialog>
+</div>
+
+<script>
+  const initializeResponsivePreviewDialogs = () => {
+    document.querySelectorAll<HTMLElement>("[data-component-name=\"DsResponsivePreviewDialog\"]").forEach((root) => {
+      if (root.dataset.responsivePreviewDialogReady === "true") return;
+      root.dataset.responsivePreviewDialogReady = "true";
+
+      const trigger = root.querySelector<HTMLButtonElement>("[data-responsive-preview-trigger]");
+      const dialog = root.querySelector<HTMLDialogElement>("[data-responsive-preview-dialog]");
+      const preview = root.querySelector<HTMLElement>("[data-ds-responsive-preview]");
+      const workspace = root.querySelector<HTMLElement>("[data-preview-workspace]");
+      if (!trigger || !dialog || !preview) return;
+
+      let restoreFocusTarget: HTMLButtonElement | null = null;
+
+      trigger.addEventListener("click", () => {
+        restoreFocusTarget = trigger;
+        if (!dialog.open) dialog.showModal();
+        preview.dispatchEvent(new Event("astro-ds:responsive-preview-open"));
+        preview.querySelector<HTMLButtonElement>("[data-responsive-preview-close]")?.focus();
+      });
+
+      root.addEventListener("astro-ds:responsive-preview-close", () => dialog.close());
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog || event.target === workspace) dialog.close();
+      });
+      dialog.addEventListener("close", () => restoreFocusTarget?.focus());
+    });
+  };
+
+  initializeResponsivePreviewDialogs();
+  document.addEventListener("astro:page-load", initializeResponsivePreviewDialogs);
+</script>
+
+<style>
+  .ds-responsive-preview-dialog__trigger {
+    position: absolute;
+    z-index: 2;
+    inset-block-start: var(--content-padding-small);
+    inset-inline-end: var(--content-padding-small);
+    display: inline-grid;
+    inline-size: var(--control-size-small-min-height);
+    block-size: var(--control-size-small-min-height);
+    place-items: center;
+    border: var(--border-width-default) solid var(--color-border-default);
+    border-radius: var(--radius-button);
+    padding: 0;
+    color: var(--color-text-primary);
+    background: var(--color-background-surface);
+    box-shadow: var(--effect-raised);
+    cursor: pointer;
+  }
+
+  .ds-responsive-preview-dialog__trigger:hover,
+  .ds-responsive-preview-dialog__trigger:focus-visible {
+    border-color: var(--color-border-accent);
+    color: var(--color-text-accent);
+  }
+
+  .ds-responsive-preview-dialog__surface {
+    box-sizing: border-box;
+    inline-size: 100vw;
+    max-inline-size: none;
+    block-size: 100dvh;
+    max-block-size: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: var(--color-background-subtle);
+  }
+
+  .ds-responsive-preview-dialog__surface::backdrop {
+    background: var(--color-background-overlay);
+  }
+</style>

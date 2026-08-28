@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astro Figma Component Documentation"
+  short_description: "Standardize Astro component docs in Figma"
+  default_prompt: "Use $astro-figma-component-documentation to audit and normalize this Figma component documentation canvas."

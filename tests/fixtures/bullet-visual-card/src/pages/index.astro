@@ -1,0 +1,40 @@
+---
+import BulletVisualCard from "../../../../../src/components/website-patterns/bullet-points/BulletVisualCard.astro";
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import Ratio from "../../../../../src/components/base-components/ratio/Ratio.astro";
+import Tag from "../../../../../src/components/base-components/tag/Tag.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BulletVisualCard contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <BulletVisualCard
+        id="full-card"
+        title="Full card"
+        description="Supporting description"
+        stat="24% growth"
+        data-contract="forwarded"
+      >
+        <Ratio slot="visual" ratio="4:3" />
+        <Fragment slot="tags"><Tag label="Feature" /><Tag label="Service" /></Fragment>
+        <Fragment slot="actions"><Button>Open</Button><Button variant="secondary">Compare</Button></Fragment>
+      </BulletVisualCard>
+
+      <BulletVisualCard title="Minimal card"><Ratio slot="visual" ratio="4:3" /></BulletVisualCard>
+      <BulletVisualCard title="Description card" description="Description only"><Ratio slot="visual" ratio="4:3" /></BulletVisualCard>
+      <BulletVisualCard title="Stat card" stat="8% growth" headingLevel={4}><Ratio slot="visual" ratio="4:3" /></BulletVisualCard>
+      <BulletVisualCard title="Tags card">
+        <Ratio slot="visual" ratio="4:3" />
+        <Fragment slot="tags"><Tag label="Research" /></Fragment>
+      </BulletVisualCard>
+    </main>
+  </body>
+</html>

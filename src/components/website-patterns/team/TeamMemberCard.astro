@@ -1,0 +1,129 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import Ratio, { type RatioValue } from "../../base-components/ratio/Ratio.astro";
+
+export type TeamMemberCardLayout = "vertical" | "horizontal";
+export type TeamMemberCardHeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+export interface Props extends Omit<HTMLAttributes<"article">, "class"> {
+  fullName: string;
+  roleOrPosition?: string;
+  layout?: TeamMemberCardLayout;
+  imageRatio?: RatioValue;
+  headingLevel?: TeamMemberCardHeadingLevel;
+  class?: string;
+}
+
+const {
+  fullName,
+  roleOrPosition,
+  layout = "vertical",
+  imageRatio,
+  headingLevel = 3,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof fullName !== "string" || fullName.trim().length === 0) {
+  throw new TypeError("TeamMemberCard fullName must be a non-empty string.");
+}
+if (
+  roleOrPosition !== undefined &&
+  (typeof roleOrPosition !== "string" || roleOrPosition.trim().length === 0)
+) {
+  throw new TypeError("TeamMemberCard roleOrPosition must be a non-empty string when provided.");
+}
+if (!["vertical", "horizontal"].includes(layout)) {
+  throw new TypeError('TeamMemberCard layout must be "vertical" or "horizontal".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("TeamMemberCard headingLevel must be an integer from 2 to 6.");
+}
+
+const hasImage = Astro.slots.has("image");
+const resolvedImageRatio = imageRatio ?? (layout === "horizontal" ? "1:1" : "3:4");
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+---
+
+<article
+  {...attributes}
+  class:list={["team-member-card", className]}
+  data-component-name="TeamMemberCard"
+  data-team-member-card-layout={layout}
+>
+  {hasImage && (
+    <div class="team-member-card__media">
+      <Ratio ratio={resolvedImageRatio}>
+        <slot name="image" />
+      </Ratio>
+    </div>
+  )}
+
+  <div class="team-member-card__content">
+    <HeadingTag
+      class:list={[
+        "team-member-card__name",
+        layout === "vertical" ? "heading-h6" : "body-base-semibold",
+      ]}
+    >
+      {fullName}
+    </HeadingTag>
+    {roleOrPosition && (
+      <p class="team-member-card__role body-base-regular">{roleOrPosition}</p>
+    )}
+  </div>
+</article>
+
+<style>
+  .team-member-card {
+    display: flex;
+    min-inline-size: 0;
+    inline-size: 100%;
+    flex-direction: column;
+    gap: var(--gap-large);
+  }
+
+  .team-member-card__media,
+  .team-member-card__content {
+    min-inline-size: 0;
+  }
+
+  .team-member-card__media {
+    inline-size: 100%;
+  }
+
+  .team-member-card__media > :global([data-component-name="Ratio"]) {
+    border-radius: var(--radius-image);
+  }
+
+  .team-member-card__content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--gap-small);
+  }
+
+  .team-member-card__name,
+  .team-member-card__role {
+    overflow-wrap: anywhere;
+    margin: 0;
+  }
+
+  .team-member-card__name {
+    color: var(--color-text-primary);
+  }
+
+  .team-member-card__role {
+    color: var(--color-text-secondary);
+  }
+
+  .team-member-card[data-team-member-card-layout="horizontal"] {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .team-member-card[data-team-member-card-layout="horizontal"] .team-member-card__media {
+    flex: 0 0 var(--team-member-card-horizontal-image-size);
+    inline-size: var(--team-member-card-horizontal-image-size);
+  }
+</style>

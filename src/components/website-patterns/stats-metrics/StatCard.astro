@@ -1,0 +1,155 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export interface Props extends Omit<HTMLAttributes<"article">, "aria-labelledby" | "class"> {
+  caption: string;
+  value: string;
+  showCaption?: boolean;
+  showTrendingUp?: boolean;
+  showTrendingDown?: boolean;
+  description?: string;
+  class?: string;
+}
+
+const {
+  caption,
+  value,
+  showCaption = true,
+  showTrendingUp = true,
+  showTrendingDown = true,
+  description,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof caption !== "string" || !caption.trim()) {
+  throw new TypeError("StatCard caption must be a non-empty string.");
+}
+if (typeof value !== "string" || !value.trim()) {
+  throw new TypeError("StatCard value must be a non-empty string.");
+}
+if (
+  description !== undefined &&
+  (typeof description !== "string" || !description.trim())
+) {
+  throw new TypeError("StatCard description must be a non-empty string when provided.");
+}
+
+const captionId = id
+  ? `${id}-caption`
+  : `stat-card-${crypto.randomUUID()}-caption`;
+---
+
+<article
+  {...attributes}
+  id={id}
+  class:list={["stat-card", className]}
+  data-component-name="StatCard"
+  aria-labelledby={captionId}
+>
+  <p
+    class="stat-card__caption caption-tiny"
+    id={captionId}
+    data-stat-card-caption={showCaption ? "visible" : "visually-hidden"}
+  >
+    {caption}
+  </p>
+
+  {(showTrendingUp || showTrendingDown) && (
+    <div class="stat-card__trends" aria-hidden="true">
+      {showTrendingUp && (
+        <MaterialSymbol
+          class="stat-card__trend stat-card__trend--up"
+          name="trending_up"
+          size="var(--stat-card-trend-icon-size)"
+        />
+      )}
+      {showTrendingDown && (
+        <MaterialSymbol
+          class="stat-card__trend stat-card__trend--down"
+          name="trending_down"
+          size="var(--stat-card-trend-icon-size)"
+        />
+      )}
+    </div>
+  )}
+
+  <div class="stat-card__copy">
+    <p class="stat-card__value heading-h3">{value}</p>
+
+    {description && (
+      <p class="stat-card__description body-small-regular">{description}</p>
+    )}
+  </div>
+</article>
+
+<style>
+  .stat-card {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    min-block-size: var(--stat-card-min-height);
+    flex-direction: column;
+    justify-content: space-between;
+    padding-inline-start: var(--content-padding-small);
+    border-inline-start: var(--border-width-default) solid var(--color-border-accent-strong);
+    color: var(--color-text-primary);
+    overflow-wrap: anywhere;
+  }
+
+  .stat-card__caption,
+  .stat-card__copy,
+  .stat-card__value,
+  .stat-card__description {
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  .stat-card__caption[data-stat-card-caption="visually-hidden"] {
+    position: absolute;
+    inline-size: var(--size-1);
+    block-size: var(--size-1);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .stat-card__trends {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--stat-card-trend-gap);
+  }
+
+  .stat-card__copy {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-card__trend {
+    display: block;
+    flex: 0 0 var(--stat-card-trend-icon-size);
+  }
+
+  .stat-card__trend--up {
+    color: var(--color-status-success-icon);
+  }
+
+  .stat-card__trend--down {
+    color: var(--color-icon-accent);
+  }
+
+  .stat-card__description {
+    color: var(--color-text-secondary);
+  }
+
+  @media (forced-colors: active) {
+    .stat-card,
+    .stat-card__trend {
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+  }
+</style>

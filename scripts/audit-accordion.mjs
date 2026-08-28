@@ -16,12 +16,15 @@ const read = (path) => {
 
 const accordionPath = "src/components/base-components/accordion/Accordion.astro";
 const listPath = "src/components/base-components/accordion/AccordionList.astro";
+const controllerPath = "src/lib/accordion/accordionController.ts";
 const accordion = read(accordionPath);
 const list = read(listPath);
+const controller = read(controllerPath);
 const accordionRule = read(".agentic-rules/components/accordion.md");
 const listRule = read(".agentic-rules/components/accordion-list.md");
 const docs = read("src/data/documentationComponentRegistry.ts");
 const accordionPreview = read("src/components/_internal/documentation/DsAccordionPreview.astro");
+const accordionProgressPreview = read("src/components/_internal/documentation/DsAccordionProgressPreview.astro");
 const listPreview = read("src/components/_internal/documentation/DsAccordionListPreview.astro");
 const readiness = read("architecture/component-readiness-contract.json");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
@@ -33,19 +36,23 @@ for (const contract of [
   "data-accordion-state",
   "data-accordion-help",
   "data-accordion-disabled",
+  "data-accordion-brand-icon",
+  "data-accordion-progress-manual",
   "<HeadingTag",
   "aria-expanded",
   "aria-controls={panelId}",
   "aria-labelledby={triggerId}",
   "disabled={disabled}",
   "<Tooltip",
+  "<ProgressBar",
+  "<slot />",
+  "titleSuffix",
+  "showBrandIcon",
+  "brandIcon?: MaterialSymbolName",
   'name="arrow_drop_down"',
   "data-accordion-help-trigger",
-  "panel.animate(",
-  "panel.scrollHeight",
-  'window.matchMedia("(prefers-reduced-motion: reduce)")',
   "border: var(--border-width-default) solid var(--color-border-default)",
-  "border-radius: var(--radius-small)",
+  "border-radius: var(--radius-accordion)",
   "var(--effect-focused)",
   "@media (forced-colors: active)",
 ]) {
@@ -55,6 +62,8 @@ for (const contract of [
 for (const contract of [
   'data-component-name="AccordionList"',
   "data-accordion-mode={mode}",
+  "data-accordion-autoplay",
+  "autoplayDuration = 8000",
   "<slot />",
   "gap: var(--gap-small)",
 ]) {
@@ -64,7 +73,18 @@ for (const contract of [
 if (/^\s+(?:state|open)\??:/mu.test(accordion)) {
   errors.push("Accordion exposes a prohibited visual state prop.");
 }
-if (/#[0-9a-f]{3,8}\b/iu.test(`${accordion}\n${list}`)) {
+for (const contract of [
+  "panel.animate(",
+  "panel.scrollHeight",
+  'window.matchMedia("(prefers-reduced-motion: reduce)")',
+  "requestAnimationFrame",
+  "IntersectionObserver",
+  "stopFromInteraction",
+]) {
+  if (!controller.includes(contract)) errors.push(`Accordion controller is missing: ${contract}`);
+}
+
+if (/#[0-9a-f]{3,8}\b/iu.test(`${accordion}\n${list}\n${controller}`)) {
   errors.push("Accordion family contains a raw color value instead of canonical tokens.");
 }
 if (/@container|@media\s*\([^)]*(?:width|height)/u.test(`${accordion}\n${list}`)) {
@@ -84,15 +104,37 @@ for (const contract of [
   'componentId: "accordion"',
   'componentId: "accordion-list"',
   "renderer: DsAccordionPreview",
+  "renderer: DsAccordionProgressPreview",
   "renderer: DsAccordionListPreview",
+  'heading: "With progress"',
   'label: "Info tooltip"',
 ]) {
   if (!docs.includes(contract)) errors.push(`Accordion documentation is missing: ${contract}`);
 }
-if (!accordionPreview.includes("<Accordion") || !listPreview.includes("<AccordionList")) {
+if (!accordionPreview.includes("<Accordion") || accordionPreview.includes("progress={0}") || accordionPreview.includes("data-accordion-progress")) {
+  errors.push("The standard Accordion preview must render without ProgressBar behavior.");
+}
+for (const contract of [
+  "<Accordion",
+  'progress={0}',
+  'selectAxisValue("state", "open")',
+  'selectAxisValue("state", "default")',
+  "progress.hidden = false",
+  'target.closest<HTMLButtonElement>("[data-accordion-trigger]")',
+  'axisId === "state" && value === "open"',
+]) {
+  if (!accordionProgressPreview.includes(contract)) errors.push(`Accordion progress preview is missing: ${contract}`);
+}
+if (docs.includes('label: "Progress"')
+  || docs.includes('label: "Progress visibility"')
+  || accordionProgressPreview.includes('axisId === "progress"')
+  || accordionProgressPreview.includes("progressVisibility")) {
+  errors.push("The dedicated Accordion progress preview must not expose redundant progress controls.");
+}
+if (!listPreview.includes("<AccordionList")) {
   errors.push("Accordion documentation previews are incomplete.");
 }
-for (const previewName of ["DsAccordionPreview", "DsAccordionListPreview"]) {
+for (const previewName of ["DsAccordionPreview", "DsAccordionProgressPreview", "DsAccordionListPreview"]) {
   if (!readiness.includes(`"${previewName}"`)) {
     errors.push(`${previewName} is missing from the readiness boundary contract.`);
   }
@@ -104,7 +146,7 @@ if (!accordionRecord || accordionRecord.sourcePath !== accordionPath || accordio
 if (accordionRecord?.figmaCanonicalNodeId !== "297:105") {
   errors.push("Accordion must map to canonical Figma node 297:105.");
 }
-for (const dependency of ["material-symbol", "tooltip"]) {
+for (const dependency of ["material-symbol", "tooltip", "progress-bar"]) {
   if (!accordionRecord?.dependencies?.includes(dependency)) {
     errors.push(`Accordion registry is missing dependency: ${dependency}.`);
   }

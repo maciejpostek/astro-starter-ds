@@ -32,13 +32,13 @@ const canonicalFiles = {
   "color-semantic.css": 65,
   "color-components.css": 219,
   "size-primitives.css": 27,
-  "size-semantic.css": 52,
-  "size-components.css": 56,
+  "size-semantic.css": 57,
+  "size-components.css": 68,
   "control-sizes.css": 28,
   "typography-foundations.css": 72,
   "layout-foundations.css": 7,
   "layout-semantic.css": 11,
-  "motion-foundations.css": 7,
+  "motion-foundations.css": 8,
   "elevation-foundations.css": 12,
   "interaction-effects.css": 4
 };
@@ -188,15 +188,17 @@ const publicTypographyClasses = [
   "body-small-semibold",
   "body-tiny-regular",
   "body-tiny-regular-underlined",
-  "body-tiny-semibold"
+  "body-tiny-semibold",
+  "caption-small",
+  "caption-tiny"
 ];
 for (const className of publicTypographyClasses) {
   if (!typographyStyles.includes(`.${className}`)) {
     fail(`Missing public typography class: .${className}`);
   }
 }
-if (publicTypographyClasses.length !== 21) {
-  fail(`Typography must expose exactly 21 Text Styles; found ${publicTypographyClasses.length}.`);
+if (publicTypographyClasses.length !== 23) {
+  fail(`Typography must expose exactly 23 Text Styles; found ${publicTypographyClasses.length}.`);
 }
 for (const legacyClass of ["body-large", "body-medium", "body-base", "body-small", "body-tiny"]) {
   if (new RegExp(`\\.${legacyClass}(?!-)`).test(typographyStyles)) {
@@ -273,6 +275,7 @@ const motionFoundations = sources.get("motion-foundations.css") ?? "";
 for (const contract of [
   "--motion-duration-surface-enter:",
   "--motion-duration-disclosure:",
+  "--motion-duration-accordion-autoplay: 8000ms",
   "@media (prefers-reduced-motion: reduce)",
   "--motion-duration-fast: 0ms"
 ]) {
@@ -379,28 +382,94 @@ for (const rulePath of [
   read(join(projectRoot, rulePath));
 }
 
+const figmaVariableCollectionCheckpoints = {
+  "Color Primitives": 69,
+  "Color Semantic": 300,
+  "Sizing Primitives": 27,
+  "Sizing Semantic": 71,
+  "Component Size": 6,
+  "Typography Foundations": 18,
+  "Typography Semantic": 11,
+  "Layout Foundations": 2,
+  "Layout Semantic": 11,
+  "Layout Grid Columns": 24,
+  "Motion Foundations": 8,
+  "Tag Color": 3,
+};
+const figmaRepresentedVariableCount = Object.values(
+  figmaVariableCollectionCheckpoints,
+).reduce((total, count) => total + count, 0);
+
+const figmaLayoutAdapter = read(join(
+  projectRoot,
+  "Figma2Astro Agentic Rules/04-layout.md",
+));
+for (const contract of [
+  "Layout Grid Columns [Desktop, Mobile]",
+  "grid/max-width/span/{01..12}",
+  "grid/offset/start/{01..12}",
+  "Do not create a `column-width` Variable",
+  "never enters CSS",
+  "visible in the local",
+  "invalid orphan",
+  "round(m * column + (m - 1) * gap)",
+  "88 / 197 / 305 / 413 / 522 / 630 / 738 / 847 / 955 / 1063 / 1172 / 1280",
+]) {
+  if (!figmaLayoutAdapter.includes(contract)) {
+    fail(`Figma layout adapter is missing the Layout Grid Columns contract: ${contract}`);
+  }
+}
+
+const componentArchitecture = JSON.parse(read(join(
+  projectRoot,
+  "src/data/design-system/componentArchitecture.json",
+)) || "{}");
+if (componentArchitecture.figma?.variablesCheckpoint !== figmaRepresentedVariableCount) {
+  fail(
+    `Figma variable checkpoint must be ${figmaRepresentedVariableCount}; found ${componentArchitecture.figma?.variablesCheckpoint ?? "missing"}.`,
+  );
+}
+if (
+  componentArchitecture.figma?.variableCollectionsCheckpoint
+  !== Object.keys(figmaVariableCollectionCheckpoints).length
+) {
+  fail(
+    `Figma collection checkpoint must be ${Object.keys(figmaVariableCollectionCheckpoints).length}; found ${componentArchitecture.figma?.variableCollectionsCheckpoint ?? "missing"}.`,
+  );
+}
+if (
+  componentArchitecture.figma?.layoutGridColumnsPublishing
+    ?.collectionHiddenFromPublishing !== false
+  || componentArchitecture.figma?.layoutGridColumnsPublishing
+    ?.variablesHiddenFromPublishing !== true
+) {
+  fail(
+    "Layout Grid Columns must remain locally visible while its Variables are hidden from publishing.",
+  );
+}
+const layoutGridColumnsVariableIds = Object.values(
+  componentArchitecture.figma?.layoutGridColumnsVariableIds ?? {},
+);
+if (
+  componentArchitecture.figma?.layoutGridColumnsCollectionId
+    !== "VariableCollectionId:1899:2"
+  || layoutGridColumnsVariableIds.length !== 24
+  || new Set(layoutGridColumnsVariableIds).size !== 24
+) {
+  fail(
+    "Layout Grid Columns must record one active collection ID and 24 unique Variable IDs.",
+  );
+}
+
 if (errors.length) {
   console.error("Design-system foundation audit failed:");
   errors.forEach((message) => console.error(`- ${message}`));
   process.exit(1);
 }
 
-const figmaRepresentedVariableCount =
-  canonicalFiles["color-primitives.css"] +
-  canonicalFiles["color-semantic.css"] +
-  canonicalFiles["color-components.css"] +
-  canonicalFiles["size-primitives.css"] +
-  canonicalFiles["size-semantic.css"] +
-  6 +
-  18 +
-  11 +
-  2 +
-  canonicalFiles["layout-semantic.css"] +
-  canonicalFiles["motion-foundations.css"];
-
 console.log(
   "Design-system foundation audit passed: " +
     `${declaredTokens.size} unique local token variables, ` +
     `${figmaRepresentedVariableCount} canonical Figma Variables, ` +
-    "21 public class-based typography styles, no typography semantic aliases, and a 12/8/4 responsive grid."
+    "23 public class-based typography styles, no typography semantic aliases, and a 12/8/4 responsive grid."
 );

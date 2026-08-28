@@ -1,0 +1,52 @@
+---
+import CompactSelect from "../../../../../src/components/base-components/select/CompactSelect.astro";
+import InlineSelect from "../../../../../src/components/base-components/select/InlineSelect.astro";
+import Select, { type SelectOption } from "../../../../../src/components/base-components/select/Select.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const options: SelectOption[] = [
+  { value: "figma", label: "Figma", logo: "figma" },
+  { value: "linear", label: "Linear", logo: "linear" },
+  { value: "notion", label: "Notion", logo: "notion" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Select logo contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <Select
+        id="brand-select"
+        label="Brand"
+        name="brand"
+        options={options}
+        purpose="brand"
+        value="figma"
+      />
+      <CompactSelect
+        id="brand-compact-select"
+        aria-label="Brand"
+        name="compact-brand"
+        options={options}
+        purpose="brand"
+        value="linear"
+      />
+      <p>
+        Integration for
+        <InlineSelect
+          id="brand-inline-select"
+          aria-label="Brand"
+          name="inline-brand"
+          options={options}
+          value="notion"
+        />
+      </p>
+    </main>
+  </body>
+</html>

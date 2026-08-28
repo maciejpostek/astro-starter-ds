@@ -26,8 +26,8 @@
    * Content hierarchy plus inverse and accent roles.
    */
   --color-text-primary: var(--color-neutral-950);
-  --color-text-secondary: var(--color-neutral-700);
-  --color-text-tertiary: var(--color-neutral-500);
+  --color-text-secondary: var(--color-neutral-500);
+  --color-text-tertiary: var(--color-neutral-400);
   --color-text-inverse: var(--color-neutral-0);
   --color-text-accent: var(--color-accent-700);
   --color-text-on-accent: var(--color-on-accent);

@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import DsResponsivePreview from "../../../../components/_internal/documentation/DsResponsivePreview.astro";
+import { resolveDocumentationPageMode } from "../../../../data/documentationRegistry";
+import {
+  documentationPreviewAdapters,
+  type DocumentationPreviewAdapter,
+} from "../../../../data/documentationPreviewRegistry";
+
+export function getStaticPaths() {
+  return documentationPreviewAdapters
+    .filter(
+      (adapter) =>
+        adapter.categoryKey === "base-components" &&
+        resolveDocumentationPageMode(adapter.categoryKey, adapter.pageKey) === "singleton",
+    )
+    .map((adapter) => ({
+      params: { familyKey: adapter.pageKey },
+      props: { adapter },
+    }));
+}
+
+interface Props { adapter: DocumentationPreviewAdapter; }
+const { adapter } = Astro.props;
+---
+
+<BaseLayout title={`${adapter.componentId} - Responsive preview`} showGridVisualizer={false} showComponentInfo={false} mainClass="main--flush">
+  <DsResponsivePreview
+    title={adapter.componentId}
+    backHref={`/design-system/base-components/${adapter.pageKey}`}
+    renderer={adapter.component}
+    rendererProps={adapter.props}
+    axes={adapter.axes}
+    scope={`responsive-route-${adapter.id}`}
+  />
+</BaseLayout>

@@ -42,6 +42,42 @@ test("matches compact multi-term queries against visible text", () => {
   assert.ok(getDocumentationVisibleSearchText(record()).includes("Base Components"));
 });
 
+test("finds BulletCardSimple through its visible family and component identity", () => {
+  const bulletCardSimple = record({
+    id: "bullet-card-simple",
+    label: "BulletCardSimple",
+    kind: "Website Pattern",
+    categoryKey: "website-patterns",
+    breadcrumb: ["Website Pattern", "Website Patterns", "Bullet Points"],
+    href: "/design-system/website-patterns/bullet-points/bullet-card-simple",
+    copyValue: "BulletCardSimple",
+    keywords: "bullet card simple",
+  });
+
+  assert.deepEqual(
+    rankDocumentationSearchRecords([bulletCardSimple], "bullet card simple").map((entry) => entry.href),
+    ["/design-system/website-patterns/bullet-points/bullet-card-simple"],
+  );
+});
+
+test("finds BulletIconCard through its visible family and canonical route", () => {
+  const bulletIconCard = record({
+    id: "bullet-icon-card",
+    label: "BulletIconCard",
+    kind: "Website Pattern",
+    categoryKey: "website-patterns",
+    breadcrumb: ["Website Pattern", "Website Patterns", "Bullet Points"],
+    href: "/design-system/website-patterns/bullet-points/bullet-icon-card",
+    copyValue: "BulletIconCard",
+    keywords: "bullet icon card",
+  });
+
+  assert.deepEqual(
+    rankDocumentationSearchRecords([bulletIconCard], "bullet icon card").map((entry) => entry.href),
+    ["/design-system/website-patterns/bullet-points/bullet-icon-card"],
+  );
+});
+
 test("does not return a record matched only by hidden keywords", () => {
   const hiddenOnly = record({ label: "Field", breadcrumb: ["Controls"], keywords: "secret alias" });
   assert.deepEqual(rankDocumentationSearchRecords([hiddenOnly], "secret"), []);

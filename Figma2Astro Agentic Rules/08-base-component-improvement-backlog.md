@@ -21,9 +21,10 @@ public APIs, create tokens, or delete compatibility layers.
   because the curated Material Symbols subset has no dedicated boundary glyphs.
   A future icon-library synchronization can add exact glyphs without changing
   Pagination semantics.
-- Tabs, TabMenu, PaginationGroup, and Pagination are finite design-time
-  fixtures in Figma. Astro remains canonical for array-driven composition,
-  keyboard behavior, URL state, focus management, and runtime cleanup.
+- TabMenu, PaginationGroup, and Pagination remain finite design-time fixtures
+  in Figma. Tabs uses an unrestricted Tab-only native Slot that matches the
+  Astro default-slot composition; Astro remains canonical for keyboard
+  behavior, focus management and external panel visibility.
 - Figma's remote Plugin API cannot create a named Version History checkpoint.
   Auto-history was preserved, but named checkpoints still require a manual
   Figma Desktop action.

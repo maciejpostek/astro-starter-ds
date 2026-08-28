@@ -4,7 +4,7 @@ const representativeRoutes = [
   "/design-system/base-components/buttons/button/",
   "/design-system/base-components/inputs/input/",
   "/design-system/base-components/accordion/accordion/",
-  "/design-system/website-patterns/modal/popup/",
+  "/design-system/base-components/popup/",
 ];
 
 for (const route of representativeRoutes) {

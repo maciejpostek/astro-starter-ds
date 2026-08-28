@@ -1,26 +1,150 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Button from "../components/base-components/buttons/Button.astro";
+import BulletIconCard from "../components/website-patterns/bullet-points/BulletIconCard.astro";
+import ButtonLink from "../components/base-components/buttons/ButtonLink.astro";
 import Eyebrow from "../components/base-components/eyebrow/Eyebrow.astro";
+import Tag from "../components/base-components/tag/Tag.astro";
+import SectionHeader from "../components/website-patterns/page-headers/SectionHeader.astro";
+import StatCard from "../components/website-patterns/stats-metrics/StatCard.astro";
+import componentArchitecture from "../data/design-system/componentArchitecture.json";
+import tokenArchitecture from "../data/design-system/tokenArchitecture.json";
+
+const componentCount = componentArchitecture.components.length;
+const tokenGroupCount = tokenArchitecture.groups.length;
+const categoryCount = new Set(
+  componentArchitecture.components.map((component) => component.categoryKey),
+).size;
 ---
 
-<BaseLayout title="Astro Design System Starter" mainClass="home-page">
-  <section class="home-hero l-section" data-padding="none" data-theme="dark">
+<BaseLayout
+  title="Astro Design System Starter"
+  description="Start building Astro products with reusable components, a token-driven architecture, and documentation designed for people and AI agents."
+  mainClass="home-page"
+>
+  <section class="home-hero l-section" data-padding="hero-top" data-theme="dark">
     <div class="l-container" data-container="main">
       <div class="l-grid" data-grid="site">
-        <div class="home-hero__content l-stack" data-align="center" data-gap="medium">
-          <Eyebrow text="Astro Starter" />
-          <h1 class="heading-h1">
-            Discover Astro Design System Starter documentation
+        <div
+          class="home-hero__content l-stack"
+          data-align="start"
+          data-gap="large"
+          data-grid-span="7"
+        >
+          <Eyebrow text="Astro Design System Starter" />
+          <h1 class="home-hero__heading heading-h1">
+            Build Astro interfaces from a system, not a blank page.
           </h1>
-          <Button
-            variant="primary"
-            size="large"
-            onclick="window.location.assign('/design-system')"
-          >
-            Explore Design System
-          </Button>
+          <p class="home-hero__summary body-base-regular">
+            A production-minded foundation of reusable components, connected tokens,
+            and operational documentation that keeps humans and AI agents working
+            from the same source of truth.
+          </p>
+          <ButtonLink href="/design-system" size="large">
+            Explore the design system
+          </ButtonLink>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-benefits l-section" data-padding="large">
+    <div class="l-container l-stack" data-container="main" data-gap="xlarge">
+      <SectionHeader
+        eyebrow="Reuse first"
+        heading="Everything you need to move from foundations to finished screens."
+        paragraph="Start with governed building blocks instead of rebuilding decisions project by project. Each layer stays connected to the architecture around it."
+        composition="heading-details"
+        headingLevel={2}
+      />
+
+      <div
+        class="l-grid"
+        data-grid="auto-fit"
+        data-columns="3"
+        data-min-width="card"
+        data-gap="large"
+      >
+        <BulletIconCard
+          title="Composable Astro components"
+          description="Use typed, accessible building blocks with explicit variants, slots, and responsive behavior already defined."
+          headingLevel={3}
+        >
+          <Tag slot="tags" label="Astro" tone="brand" />
+          <Tag slot="tags" label="Typed API" />
+          <ButtonLink slot="actions" href="/design-system/base-components/buttons">
+            Browse components
+          </ButtonLink>
+        </BulletIconCard>
+
+        <BulletIconCard
+          title="A token-driven architecture"
+          description="Keep color, spacing, typography, layout, motion, and component decisions traceable through approved semantic aliases."
+          headingLevel={3}
+        >
+          <Tag slot="tags" label="Semantic tokens" tone="brand" />
+          <Tag slot="tags" label="Theme ready" />
+          <ButtonLink slot="actions" href="/design-system/architecture/variables">
+            Inspect variables
+          </ButtonLink>
+        </BulletIconCard>
+
+        <BulletIconCard
+          title="Documentation built into the product"
+          description="Explore live previews, usage contracts, architecture maps, and validation evidence without leaving the starter."
+          headingLevel={3}
+        >
+          <Tag slot="tags" label="Live previews" tone="brand" />
+          <Tag slot="tags" label="AI-native" />
+          <ButtonLink slot="actions" href="/design-system/architecture/component-model">
+            See the architecture
+          </ButtonLink>
+        </BulletIconCard>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-proof l-section" data-padding="large" data-theme="dark">
+    <div class="l-container l-stack" data-container="main" data-gap="xlarge">
+      <SectionHeader
+        eyebrow="One source of truth"
+        heading="A starter that explains how it is built."
+        paragraph="The system connects implementation, documentation, token ownership, and agent rules so every addition has a clear place and a testable contract."
+        composition="copy-actions"
+        headingLevel={2}
+      >
+        <ButtonLink slot="actions" href="/design-system">
+          Open the documentation
+        </ButtonLink>
+      </SectionHeader>
+
+      <div
+        class="l-grid"
+        data-grid="auto-fit"
+        data-columns="3"
+        data-min-width="card"
+        data-gap="large"
+      >
+        <StatCard
+          caption="Registered components"
+          value={`${componentCount}`}
+          description="Mapped through the shared component architecture."
+          showTrendingUp={false}
+          showTrendingDown={false}
+        />
+        <StatCard
+          caption="Registered token groups"
+          value={`${tokenGroupCount}`}
+          description="Organized by owner, scope, domain, and consumer."
+          showTrendingUp={false}
+          showTrendingDown={false}
+        />
+        <StatCard
+          caption="System categories"
+          value={`${categoryCount}`}
+          description="From foundations and assets to reusable website patterns."
+          showTrendingUp={false}
+          showTrendingDown={false}
+        />
       </div>
     </div>
   </section>
@@ -31,27 +155,45 @@ import Eyebrow from "../components/base-components/eyebrow/Eyebrow.astro";
     padding-block-start: 0;
   }
 
-  .home-hero {
-    display: grid;
-    min-block-size: 100svh;
-    place-items: center;
+  .home-hero,
+  .home-proof {
     color: var(--color-text-primary);
     background: var(--color-background-canvas);
   }
 
-  .home-hero__content {
-    grid-column: 5 / 9;
-    justify-items: center;
-    text-align: center;
+  .home-hero {
+    display: grid;
+    min-block-size: 100svh;
+    align-items: center;
   }
 
-  .home-hero__content :global(.eyebrow) {
-    margin-block-end: 0;
+  .home-hero__content {
+    justify-items: start;
+  }
+
+  .home-hero__heading,
+  .home-hero__summary {
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .home-hero__heading {
+    color: var(--color-text-primary);
+    text-wrap: var(--text-wrap-balance);
+  }
+
+  .home-hero__summary {
+    color: var(--color-text-secondary);
+  }
+
+  .home-benefits {
+    color: var(--color-text-primary);
+    background: var(--color-background-surface);
   }
 
   @media (width < 48rem) {
-    .home-hero__content {
-      grid-column: 1 / -1;
+    .home-hero {
+      min-block-size: auto;
     }
   }
 </style>

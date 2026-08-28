@@ -5,12 +5,18 @@ export type AccordionListMode = "single" | "multiple";
 
 export interface Props extends Omit<HTMLAttributes<"div">, "class" | "id"> {
   mode?: AccordionListMode;
+  autoplay?: boolean;
+  autoplayDuration?: number;
+  autoplayLoop?: boolean;
   id?: string;
   class?: string;
 }
 
 const {
   mode = "single",
+  autoplay = false,
+  autoplayDuration = 8000,
+  autoplayLoop = true,
   id,
   class: className,
   ...attributes
@@ -18,6 +24,15 @@ const {
 
 if (mode !== "single" && mode !== "multiple") {
   throw new TypeError('AccordionList mode must be either "single" or "multiple".');
+}
+for (const [name, value] of [["autoplay", autoplay], ["autoplayLoop", autoplayLoop]] as const) {
+  if (typeof value !== "boolean") throw new TypeError(`AccordionList ${name} must be a boolean.`);
+}
+if (!Number.isFinite(autoplayDuration) || autoplayDuration <= 0) {
+  throw new RangeError("AccordionList autoplayDuration must be a finite number greater than 0.");
+}
+if (autoplay && mode !== "single") {
+  throw new TypeError('AccordionList autoplay requires mode="single".');
 }
 if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
   throw new TypeError("AccordionList id must be a non-empty string when provided.");
@@ -30,6 +45,9 @@ if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
   class:list={["accordion-list", className]}
   data-component-name="AccordionList"
   data-accordion-mode={mode}
+  data-accordion-autoplay={autoplay ? "true" : "false"}
+  data-accordion-autoplay-duration={autoplayDuration}
+  data-accordion-autoplay-loop={autoplayLoop ? "true" : "false"}
 >
   <slot />
 </div>

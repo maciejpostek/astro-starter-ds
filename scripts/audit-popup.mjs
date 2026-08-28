@@ -15,7 +15,7 @@ const read = (path) => {
 const requireMatch = (source, pattern, message) => { if (!pattern.test(source)) errors.push(message); };
 const forbidMatch = (source, pattern, message) => { if (pattern.test(source)) errors.push(message); };
 
-const popup = read("src/components/website-patterns/modal/Popup.astro");
+const popup = read("src/components/base-components/popup/Popup.astro");
 const model = read("src/lib/popup/popupModel.mjs");
 const runtime = read("src/lib/popup/popup-runtime.ts");
 const sizes = read("src/styles/tokens/size-components.css");
@@ -82,7 +82,7 @@ for (const dependency of ["global-size", "size-primitives"]) {
 }
 
 const record = registry.components?.find((component) => component.id === "popup");
-if (record?.sourcePath !== "src/components/website-patterns/modal/Popup.astro" || record?.syncStatus !== "astro-only" || record?.figmaCanonicalNodeId !== null) {
+if (record?.sourcePath !== "src/components/base-components/popup/Popup.astro" || record?.syncStatus !== "astro-only" || record?.figmaCanonicalNodeId !== null) {
   errors.push("Popup Astro-only registry projection is incomplete.");
 }
 for (const dependency of ["button", "button-group", "checkbox-label", "material-symbol"]) {
@@ -99,7 +99,7 @@ for (const axis of ["popupStatus", "popupAlignment", "popupCancel", "popupPrefer
 }
 requireMatch(docs, /componentId: "popup"/u, "Popup documentation adapter is missing.");
 requireMatch(preview, /data-component-name="DsPopupPreview"/u, "Popup preview Guides identity is missing.");
-requireMatch(responsiveRegistry, /website-patterns-modal-popup/u, "Popup responsive preview is missing.");
+requireMatch(responsiveRegistry, /base-components-popup-popup/u, "Popup responsive preview is missing.");
 if (!readiness.previewBoundaryComponents?.includes("DsPopupPreview")) errors.push("DsPopupPreview is missing from the readiness boundary contract.");
 
 const benchmark = brand.rules?.find((candidate) => candidate.id === "popup.align-benchmark");

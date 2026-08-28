@@ -37,6 +37,7 @@ Organize related actions into one clear decision area while preserving each chil
 
 - Primary strategy: `intrinsic`
 - Mechanisms and references: `display: flex`, `flex-wrap: wrap` and `--gap-button-group` preserve a usable group at any allocated width.
+- Figma projection: canonical master `204:103` keeps an unrestricted Slot; its internal action slot is `Fill`, uses `Wrap`, and binds both axis gaps to `gap/component/button/group`. Consumer instances use `Fill` only when their parent owns a bounded width.
 - Container queries: none.
 - Viewport queries: none.
 - Reflow, order and visibility: Children wrap in DOM order without visual reordering, duplication or hiding; the group does not create a separate mobile variant.

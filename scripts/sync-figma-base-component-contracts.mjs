@@ -56,16 +56,20 @@ const contractsByName = {
   FileUpload: contract("1062:5", "221:88", 7, { State: ["Default", "Hover", "Focus", "Dragging", "Selected", "Invalid", "Disabled"] }, { Label: "TEXT", Hint: "TEXT", "Show Hint": "BOOLEAN", Output: "TEXT" }),
   FileUploadCard: contract("1062:5", "1372:164", 4, { State: ["Uploading Determinate", "Uploading Indeterminate", "Success", "Error"] }, { "File Name": "TEXT", "Status Text": "TEXT" }),
   Tab: contract("985:2785", "295:15", 5, { State: ["Default", "Hover", "Focus", "Selected", "Disabled"] }, { Label: "TEXT" }),
-  Tabs: contract("985:2785", "1372:171", 1, {}, { "Panel Content": "TEXT" }),
+  Tabs: {
+    ...contract("985:2785", "1372:171", 1, {}, { "Tabs Slot": "SLOT" }),
+    preferredValues: ["Tab"],
+  },
   TabMenu: contract("985:2785", "1563:2827", 5, { State: ["Default", "Hover", "Active", "Focused", "Disabled"] }, { Label: "TEXT" }),
   Accordion: contract("985:2724", "297:105", 8, { Open: ["Closed", "Open"], State: ["Default", "Hover", "Focus Visible", "Disabled"] }, { Title: "TEXT", Content: "TEXT", "Show Help": "BOOLEAN" }),
   AccordionList: contract("985:2724", "299:23", 1, {}, { Items: "SLOT" }),
-  Tooltip: contract("1140:594", "1371:45", 4, { Size: ["Small", "Medium"], State: ["Hidden", "Visible"] }, { Text: "TEXT" }),
-  InfoPopover: contract("1140:594", "1371:74", 2, { State: ["Closed", "Open"] }, { Title: "TEXT", Description: "TEXT" }),
+  Tooltip: contract("1140:594", "1371:45", 12, { Placement: ["Top", "Bottom", "Left", "Right"], State: ["Default", "Hover", "Focus"] }, { Text: "TEXT" }),
+  InfoPopover: contract("1140:594", "1371:74", 24, { Placement: ["Top", "Bottom", "Left", "Right"], Visibility: ["Closed", "Open"], State: ["Default", "Hover", "Focus"] }, { Title: "TEXT", Description: "TEXT" }),
   Hint: contract("1140:595", "1371:29", 4, { Tone: ["Default", "Valid", "Invalid", "Disabled"] }, { Text: "TEXT" }),
   Alert: contract("1140:597", "1371:202", 15, { Status: feedbackStatuses, Emphasis: alertEmphasis }, { Title: "TEXT", Description: "TEXT", "Show Icon": "BOOLEAN" }),
   NotificationAndToast: contract("1140:597", "1371:390", 20, { Status: feedbackStatuses, Emphasis: feedbackEmphasis }, { Layout: "VARIANT", Title: "TEXT", Description: "TEXT", "Primary Action": "TEXT", "Secondary Action": "TEXT", "Show Icon": "BOOLEAN", Dismissible: "BOOLEAN" }),
   ContentDivider: contract("1009:1631", "270:10", 6, { Variant: ["Line", "Text"], Tone: ["Subtle", "Default", "Strong"] }, { Label: "TEXT", "Show Label": "BOOLEAN" }),
+  TitleRow: contract("1009:1631", "1680:6", 1, {}, { Title: "TEXT" }),
   Ratio: contract("964:13169", "1009:2614", 10, { Ratio: ["16:9", "1:1", "2.39:1", "2:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4"] }),
   Breadcrumb: contract("1009:2626", "1009:2627", 5, { State: ["Default", "Hover", "Focus", "Pressed", "Current"] }),
   PaginationItem: contract("1009:5696", "1373:137", 30, { Kind: ["Page", "First", "Previous", "Next", "Last"], State: ["Default", "Hover", "Focus", "Pressed", "Current", "Disabled"] }, { "Accessible Label": "TEXT" }),
@@ -74,6 +78,99 @@ const contractsByName = {
   Pagination: contract("1009:5696", "1373:203", 1, {}, { Summary: "TEXT", "Show Summary": "BOOLEAN", "Pagination Group": "SLOT" }),
   Tag: contract("964:12970", "244:19", 20, { Adornment: ["Both", "None", "Leading", "Remove"], State: ["Default", "Hover", "Pressed", "Focus", "Disabled"] }, { Label: "TEXT" }),
   Eyebrow: contract("964:13167", "268:5", 1, {}, { Text: "TEXT" }),
+  StatTextInline: contract("964:14725", "1783:1425", 4, { Type: ["Up", "Down"], Icon: ["Leading", "Trailing"] }, { Text: "TEXT" }),
+  StatCard: contract("964:14725", "389:41", 1, { Type: ["Default"] }, { Caption: "TEXT", Value: "TEXT", "Show Trending Up": "BOOLEAN", Description: "TEXT", "Show Description": "BOOLEAN", "Show Caption": "BOOLEAN", "Show Trending Down": "BOOLEAN" }),
+  BulletCardSimple: contract("1395:17651", "1901:5727", 1, {}, { Title: "TEXT", Description: "TEXT", "Show Icon": "BOOLEAN", "Show Description": "BOOLEAN", "Show Actions": "BOOLEAN" }),
+  BulletIconCard: contract("1395:17651", "1793:2052", 2, { Layout: ["Vertical", "Horizontal"] }, { Title: "TEXT", Description: "TEXT", "Show Icon": "BOOLEAN", "Show Stat": "BOOLEAN", "Stat Text": "TEXT", "Show Stat Icon": "BOOLEAN", "Show Tags": "BOOLEAN", "Show Actions": "BOOLEAN", Tags: "SLOT" }),
+  BulletVisualCard: contract("1395:17651", "1821:5427", 1, {}, { Title: "TEXT", Description: "TEXT", "Show Description": "BOOLEAN", Stat: "TEXT", "Show Stat": "BOOLEAN", "Show Tags": "BOOLEAN", "Show Actions": "BOOLEAN", Tags: "SLOT" }),
+  BulletCardSurface: contract("1395:17651", "1793:2056", 2, { Visual: ["False", "True"] }, { Title: "TEXT", Description: "TEXT", "Show Icon": "BOOLEAN", "Show Description": "BOOLEAN", "Show Actions": "BOOLEAN" }),
+  SectionHeader: contract(
+    "964:13166",
+    "274:26",
+    3,
+    {
+      Composition: ["Copy + Actions", "Heading + Details", "Eyebrow + Heading + Details"],
+      Flow: ["Horizontal"],
+    },
+    { Heading: "TEXT", Actions: "SLOT", Paragraph: "TEXT" },
+  ),
+  StatTextInline: {
+    ...contract(
+      "964:14725",
+      "1783:1425",
+      4,
+      { Type: ["Up", "Down"], Icon: ["Leading", "Trailing"] },
+      { Text: "TEXT" },
+    ),
+    fixedDependencies: ["Icon/Material/trending_up", "Icon/Material/trending_down"],
+    propertyKeys: { Text: "Text#1783:0" },
+    propertyMapping: { Type: "trend", Icon: "iconPosition", Text: "text" },
+  },
+};
+
+const figmaOnlyContractsByName = {
+  HeroBreakout: contract("964:14724", "1800:389", 1),
+  HeroFullVisual: contract(
+    "964:14724",
+    "1788:639",
+    3,
+    { Composition: ["Centered", "Left", "Section Header"] },
+  ),
+};
+
+figmaOnlyContractsByName.HeroFullVisual.layoutContract = {
+  modeOwner: "ComponentSet",
+  sectionShell: {
+    inlineSizing: "viewport",
+    desktopWidth: 1440,
+  },
+  contentGrid: {
+    inlineSizing: "fill",
+    paddingVariableId: "VariableID:30:2",
+  },
+  contentAndBulletPoints: {
+    inlineSizing: "fill",
+    maxWidthVariableId: "VariableID:1899:11",
+    span: 5,
+  },
+  sectionHeader: {
+    inlineSizing: "fill",
+    maxWidthVariableId: "VariableID:1899:25",
+    span: 12,
+  },
+  visual: {
+    start: "full-start",
+    end: "full-end",
+  },
+  astroMapping: "Use a full-width section shell with an inner container/grid and named content/full lines; do not export Figma measurement variables as CSS tokens.",
+  responsiveStatus: "Desktop only; Mobile and Tablet compositions are not approved.",
+};
+
+const layoutGridColumnsVariableIds = {
+  "grid/max-width/span/01": "VariableID:1899:3",
+  "grid/offset/start/01": "VariableID:1899:4",
+  "grid/max-width/span/02": "VariableID:1899:5",
+  "grid/offset/start/02": "VariableID:1899:6",
+  "grid/max-width/span/03": "VariableID:1899:7",
+  "grid/offset/start/03": "VariableID:1899:8",
+  "grid/max-width/span/04": "VariableID:1899:9",
+  "grid/offset/start/04": "VariableID:1899:10",
+  "grid/max-width/span/05": "VariableID:1899:11",
+  "grid/offset/start/05": "VariableID:1899:12",
+  "grid/max-width/span/06": "VariableID:1899:13",
+  "grid/offset/start/06": "VariableID:1899:14",
+  "grid/max-width/span/07": "VariableID:1899:15",
+  "grid/offset/start/07": "VariableID:1899:16",
+  "grid/max-width/span/08": "VariableID:1899:17",
+  "grid/offset/start/08": "VariableID:1899:18",
+  "grid/max-width/span/09": "VariableID:1899:19",
+  "grid/offset/start/09": "VariableID:1899:20",
+  "grid/max-width/span/10": "VariableID:1899:21",
+  "grid/offset/start/10": "VariableID:1899:22",
+  "grid/max-width/span/11": "VariableID:1899:23",
+  "grid/offset/start/11": "VariableID:1899:24",
+  "grid/max-width/span/12": "VariableID:1899:25",
+  "grid/offset/start/12": "VariableID:1899:26",
 };
 
 contractsByName.Button.fixedDependencies = ["Icon/Material/arrow_forward"];
@@ -86,10 +183,129 @@ contractsByName.SocialIconButton.fixedDependencies = ["Social Icons / Platform=F
 contractsByName.SocialButton.platformPreservationTest = { checks: 390, platforms: 26, passed: false, fallback: "Facebook" };
 contractsByName.SocialIconButton.platformPreservationTest = { checks: 390, platforms: 26, passed: false, fallback: "Facebook" };
 contractsByName.ButtonGroup.preferredValues = ["Button", "ButtonLink", "IconButton", "CopyButton", "CopyIconButton", "SocialButton", "SocialIconButton"];
+contractsByName.ButtonGroup.layoutContract = {
+  masterRoot: {
+    axis: "horizontal",
+    inlineSizing: "fixed",
+    blockSizing: "hug",
+  },
+  actionsSlot: {
+    inlineSizing: "fill",
+    blockSizing: "hug",
+    wrap: true,
+    columnGapVariableId: "VariableID:7:276",
+    rowGapVariableId: "VariableID:7:276",
+  },
+  consumerRule: "Set the ButtonGroup instance to Fill inside a width-owning action region; the internal slot wraps children in source order.",
+};
 contractsByName.SwitchButton.fixedGeometry = { root: "34x24", track: "34x20", thumb: 14 };
 contractsByName.SwitchLabel.fixedDependencies = ["SwitchButton"];
 contractsByName.SwitchCard.fixedDependencies = ["SwitchButton"];
 contractsByName.SwitchCard.defaultWidth = 320;
+contractsByName.BulletCardSimple.fixedDependencies = ["Icon/Material/language", "ButtonGroup"];
+contractsByName.BulletCardSimple.propertyMapping = {
+  Type: "structural-only",
+  Title: "title",
+  Description: "description presence",
+  "Show Description": "description presence",
+  "Show Icon": "showIcon",
+  "Show Actions": "actions slot presence",
+  "Button Group Slot": "actions slot",
+};
+contractsByName.BulletCardSimple.layoutContract = {
+  figmaPresentationWidth: 549,
+  astroInlineSizing: "fluid",
+  responsiveStrategy: "intrinsic",
+  sourceOrder: ["icon", "title", "description", "actions"],
+};
+contractsByName.BulletIconCard.fixedDependencies = ["Icon/Material/language", "Icon/Material/trending_up", "Tag", "ButtonGroup"];
+contractsByName.BulletIconCard.preferredValues = { Tags: ["Tag"] };
+contractsByName.BulletIconCard.propertyMapping = {
+  Title: "title",
+  Description: "description",
+  Layout: "layout",
+  "Show Icon": "showIcon",
+  "Show Stat": "stat presence",
+  "Stat Text": "stat",
+  "Show Stat Icon": "showStatIcon",
+  Tags: "tags slot",
+  "Show Tags": "tags slot presence",
+  "Show Actions": "actions slot presence",
+  ButtonGroup: "actions slot wrapper",
+  headingLevel: "Astro semantic-only",
+};
+contractsByName.BulletIconCard.slotContract = {
+  tags: { required: false, preferredValue: "Tag", childLimit: null, wrap: true },
+  actions: { required: false, preferredValues: ["Button", "ButtonLink"], childLimit: null, wrap: true },
+};
+contractsByName.BulletIconCard.layoutContract = {
+  figmaPresentationWidth: 517,
+  astroInlineSizing: "fluid",
+  responsiveStrategy: "intrinsic",
+  automaticBreakpointSwitch: false,
+  sourceOrder: ["icon", "title", "description", "stat", "tags", "actions"],
+};
+contractsByName.BulletVisualCard.fixedDependencies = ["Ratio", "Icon/Material/trending_up", "Tag", "ButtonGroup"];
+contractsByName.BulletVisualCard.propertyMapping = {
+  Type: "structural-only",
+  Title: "title",
+  Description: "description presence",
+  "Show Description": "description presence",
+  Stat: "stat presence",
+  "Show Stat": "stat presence",
+  Tags: "tags slot",
+  "Show Tags": "tags slot presence",
+  "Show Actions": "actions slot presence",
+  "Button Group Slot": "actions slot",
+};
+contractsByName.BulletVisualCard.slotContract = {
+  visual: { required: true, preferredValue: "Ratio=4:3" },
+  tags: { required: false, preferredValue: "Tag", childLimit: null, wrap: true },
+  actions: { required: false, preferredValues: ["Button", "ButtonLink"], childLimit: null, wrap: true },
+};
+contractsByName.BulletVisualCard.layoutContract = {
+  figmaPresentationWidth: 517,
+  astroInlineSizing: "fluid",
+  mediaRatio: "4:3",
+  sourceOrder: ["visual", "title", "description", "stat", "tags", "actions"],
+};
+contractsByName.BulletCardSurface.fixedDependencies = ["Icon/Material/language", "ButtonGroup", "Ratio"];
+contractsByName.StatTextInline.fixedDependencies = ["Icon/Material/trending_up", "Icon/Material/trending_down"];
+contractsByName.StatTextInline.propertyMapping = {
+  Type: "trend",
+  Icon: "iconPosition",
+  Text: "text",
+};
+contractsByName.StatCard.fixedDependencies = ["Icon/Material/trending_up", "Icon/Material/trending_down"];
+contractsByName.StatCard.propertyMapping = {
+  Type: "structural-only",
+  Caption: "caption",
+  Value: "value",
+  "Show Trending Up": "showTrendingUp",
+  Description: "description",
+  "Show Description": "description-presence",
+  "Show Caption": "showCaption",
+  "Show Trending Down": "showTrendingDown",
+};
+contractsByName.StatCard.layoutContract = {
+  figmaPresentationWidth: 199,
+  figmaMinHeight: 140,
+  astroInlineSizing: "fluid",
+  responsiveStrategy: "intrinsic",
+  sourceOrder: ["caption", "trends", "value", "description"],
+};
+
+contractsByName.SectionHeader.layerNaming = {
+  regions: ["Copy Region", "Heading Region", "Details Region"],
+  groups: ["Heading Group", "Details Stack", "Action Area", "Actions"],
+  content: ["Eyebrow", "Eyebrow Column", "Heading Block", "Heading Text", "Paragraph Block", "Paragraph Text", "ButtonGroup"],
+};
+contractsByName.SectionHeader.actionLayout = {
+  actionAreaInlineSizing: "fill",
+  actionsSlotInlineSizing: "fill",
+  buttonGroupInlineSizing: "fill",
+  wrappingOwner: "ButtonGroup / Button Group Slot",
+};
 
 const privateIconSets = {
   IconButton: {
@@ -109,6 +325,7 @@ const privateIconSets = {
 
 const falseProjectionPattern = /astro-only|no approved canonical|no canonical (?:component )?master|no canonical project figma master|keep figma unchanged|currently shows only chevron|separate explicit (?:figma )?synchronization task/i;
 const socialNames = new Set(["SocialButton", "SocialIconButton"]);
+const intentionalDifferenceNames = new Set([...socialNames, "SectionHeader"]);
 
 for (const component of registry.components ?? []) {
   const figmaContract = contractsByName[component.name];
@@ -117,7 +334,7 @@ for (const component of registry.components ?? []) {
   component.figmaCanonicalNodeId = figmaContract.nodeId;
   component.figmaPageId = figmaContract.pageId;
   component.actualFigmaPageId = figmaContract.pageId;
-  component.syncStatus = socialNames.has(component.name)
+  component.syncStatus = intentionalDifferenceNames.has(component.name)
     ? "intentional-difference"
     : "mapped";
   component.status = component.syncStatus;
@@ -144,6 +361,7 @@ for (const component of registry.components ?? []) {
     Label: /Astro adds native .*required or optional metadata/i,
     Accordion: /Default and Active|required left Tooltip exists only in Astro|private _Parts\/Accordion\.Item|typed items array/i,
     Breadcrumb: /Default and Active/i,
+    Tabs: /finite working composition|typed arrays|layout fixture|unrestricted Tab-only composition/i,
     Tag: /223 existing bindings|current Figma projection remains unchanged|retains size modes/i,
     Eyebrow: /figma-presentation-structure/i,
   };
@@ -171,11 +389,19 @@ for (const component of registry.components ?? []) {
     });
   }
 
-  if (["Tabs", "TabMenu", "PaginationGroup", "Pagination"].includes(component.name)) {
+  if (["TabMenu", "PaginationGroup", "Pagination"].includes(component.name)) {
     if (!uniqueExisting.some((entry) => entry.kind === "design-time-fixture")) uniqueExisting.push({
       kind: "design-time-fixture",
       reason: "Figma exposes a finite working composition, while Astro generates the runtime structure from typed arrays and owns keyboard or URL behavior.",
       instruction: "Treat the Figma composition as a layout fixture, not as a serialization of the Astro runtime API.",
+    });
+  }
+
+  if (component.name === "Tabs" && !uniqueExisting.some((entry) => entry.kind === "property-mapping")) {
+    uniqueExisting.push({
+      kind: "property-mapping",
+      reason: "Figma and Astro expose the same unrestricted Tab-only composition through a native Slot and default slot respectively.",
+      instruction: "Add, remove, duplicate or reorder direct Tab children without a Count property; keep external panels consumer-owned and linked by aria-controls.",
     });
   }
 
@@ -226,7 +452,10 @@ for (const component of registry.components ?? []) {
 }
 
 registry.figmaComponentContracts = Object.fromEntries(
-  Object.entries(contractsByName).map(([name, value]) => {
+  [
+    ...Object.entries(contractsByName),
+    ...Object.entries(figmaOnlyContractsByName),
+  ].map(([name, value]) => {
     const component = registry.components.find((entry) => entry.name === name);
     const enhanced = { ...value };
     if (privateIconSets[name]) enhanced.privateIconArchitecture = privateIconSets[name];
@@ -235,17 +464,23 @@ registry.figmaComponentContracts = Object.fromEntries(
   }),
 );
 
-registry.updatedAt = "2026-08-14";
+registry.updatedAt = "2026-08-27";
 registry.figma = {
   ...registry.figma,
-  expectedPageCount: 77,
-  variablesCheckpoint: 485,
-  legacyVariablesCheckpoint: 5,
-  variableCollectionsCheckpoint: 11,
-  legacyVariableCollectionsCheckpoint: 1,
-  componentNodesCheckpoint: 1242,
-  componentSetsCheckpoint: 324,
-  instancesCheckpoint: 1315,
+  expectedPageCount: 79,
+  variablesCheckpoint: 550,
+  legacyVariablesCheckpoint: 0,
+  variableCollectionsCheckpoint: 12,
+  legacyVariableCollectionsCheckpoint: 0,
+  layoutGridColumnsCollectionId: "VariableCollectionId:1899:2",
+  layoutGridColumnsVariableIds,
+  layoutGridColumnsPublishing: {
+    collectionHiddenFromPublishing: false,
+    variablesHiddenFromPublishing: true,
+  },
+  componentNodesCheckpoint: 1367,
+  componentSetsCheckpoint: 350,
+  instancesCheckpoint: 2542,
 };
 
 const divergenceKey = "figma-form-structure-legacy-quarantine";

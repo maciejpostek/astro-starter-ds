@@ -52,6 +52,12 @@ Website Patterns are practical website families. A family may contain its own
 atoms, molecules, cards, and complete sections so that changes can be reviewed
 together on one Figma canvas and in one Astro folder.
 
+In Astro documentation, a Base Components or Website Patterns page key is a
+navigation family, not a gallery destination. One active component renders
+directly on the page route. Two or more active components render as nested
+detail routes under a non-clickable sidebar disclosure. Zero active components
+render a heading-only placeholder page.
+
 Examples & Templates contain recipes and starters, not hidden public
 primitives. Assets are inputs used by both Base Components and Website
 Patterns.

@@ -3,9 +3,10 @@
 Status: active.
 
 - Manifest id: `popup`
+- Category: `base-components`
+- Architecture page key: `popup`
 - Figma canonical node: none; Astro-only
-- Figma page key: `modal`
-- Astro source: `src/components/website-patterns/modal/Popup.astro`
+- Astro source: `src/components/base-components/popup/Popup.astro`
 - Role: `molecule`
 - Sync status: `astro-only`
 

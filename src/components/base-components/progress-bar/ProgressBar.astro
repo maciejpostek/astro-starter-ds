@@ -1,0 +1,115 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"progress">, "class" | "value" | "max"> {
+  value?: number;
+  max?: number;
+  label?: string;
+  decorative?: boolean;
+  class?: string;
+}
+
+const {
+  value,
+  max = 100,
+  label,
+  decorative = false,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (!Number.isFinite(max) || max <= 0) {
+  throw new RangeError("ProgressBar max must be a finite number greater than 0.");
+}
+if (value !== undefined && (!Number.isFinite(value) || value < 0 || value > max)) {
+  throw new RangeError("ProgressBar value must be a finite number between 0 and max.");
+}
+if (typeof decorative !== "boolean") {
+  throw new TypeError("ProgressBar decorative must be a boolean.");
+}
+if (label !== undefined && (typeof label !== "string" || label.trim().length === 0)) {
+  throw new TypeError("ProgressBar label must be a non-empty string when provided.");
+}
+if (!decorative && !label) {
+  throw new TypeError("ProgressBar requires label unless decorative is true.");
+}
+---
+
+<progress
+  {...attributes}
+  class:list={["progress-bar", className]}
+  value={value}
+  max={max}
+  aria-label={decorative ? undefined : label}
+  aria-hidden={decorative ? "true" : undefined}
+  data-component-name="ProgressBar"
+>
+  {value === undefined ? label : `${Math.round((value / max) * 100)}%`}
+</progress>
+
+<style>
+  .progress-bar {
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: var(--progress-bar-block-size);
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--radius-full);
+    appearance: none;
+    color: var(--color-background-accent);
+    background: var(--color-background-muted);
+  }
+
+  .progress-bar::-webkit-progress-bar {
+    border-radius: inherit;
+    background: var(--color-background-muted);
+  }
+
+  .progress-bar::-webkit-progress-value {
+    border-radius: inherit;
+    background: currentColor;
+    transition: inline-size var(--motion-transition);
+  }
+
+  .progress-bar::-moz-progress-bar {
+    border-radius: inherit;
+    background: currentColor;
+    transition: inline-size var(--motion-transition);
+  }
+
+  .progress-bar:indeterminate {
+    background:
+      linear-gradient(
+        90deg,
+        var(--color-background-muted),
+        currentColor,
+        var(--color-background-muted)
+      );
+    background-size: 200% 100%;
+    animation: progress-bar-indeterminate var(--motion-duration-disclosure) var(--motion-ease-standard) infinite alternate;
+  }
+
+  @keyframes progress-bar-indeterminate {
+    from { background-position: 100% 0; }
+    to { background-position: 0 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-bar {
+      transition: none;
+    }
+
+    .progress-bar:indeterminate {
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .progress-bar {
+      color: Highlight;
+      background: Canvas;
+      forced-color-adjust: auto;
+    }
+  }
+</style>

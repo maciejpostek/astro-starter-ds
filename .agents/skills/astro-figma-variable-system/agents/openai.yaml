@@ -1,0 +1,6 @@
+interface:
+  display_name: "Astro–Figma Variable System"
+  short_description: "Synchronize Astro and Figma design tokens"
+  default_prompt: "Use $astro-figma-variable-system to update this design-system variable consistently in Astro and Figma."
+policy:
+  allow_implicit_invocation: true

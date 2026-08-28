@@ -469,7 +469,7 @@
       "paths": [
         "M13 14.8229V13.3229H15.4375L11.0208 8.92709L7.85417 12.0938L2 6.23959L3.0625 5.17709L7.85417 9.96876L11.0208 6.80209L16.5 12.2604V9.82293H18V14.8229H13Z"
       ],
-      "requiredBySource": false,
+      "requiredBySource": true,
       "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/trending_down/default/20px.svg"
     },
     "trending_up": {
@@ -479,7 +479,7 @@
       "paths": [
         "M3.0625 14.8229L2 13.7604L7.85417 7.90626L11.0208 11.0729L15.4375 6.67709H13V5.17709H18V10.1771H16.5V7.73959L11.0208 13.1979L7.85417 10.0313L3.0625 14.8229Z"
       ],
-      "requiredBySource": false,
+      "requiredBySource": true,
       "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/trending_up/default/20px.svg"
     },
     "upload": {

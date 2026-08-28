@@ -30,13 +30,26 @@
       "states": []
     },
     {
+      "id": "global-layout",
+      "scope": "global",
+      "owner": "global",
+      "domain": "layout",
+      "namePattern": "^--(?:site-padding-inline|container-(?:main|small|full)|site-grid-(?:columns|column-gap)|grid-auto-min-width(?:-(?:small|card|panel|wide))?)$",
+      "sourcePaths": ["src/styles/tokens/layout-semantic.css"],
+      "consumers": ["*"],
+      "dependencies": ["global-size"],
+      "properties": ["padding-inline", "container", "column-count", "column-gap", "min-width"],
+      "variants": [],
+      "states": []
+    },
+    {
       "id": "control-size",
       "scope": "use-case",
       "owner": "control",
       "domain": "size",
       "namePattern": "^--control-(?:size-(?:small|medium|large)-)?[a-z0-9-]+$",
       "sourcePaths": ["src/styles/tokens/control-sizes.css"],
-      "consumers": ["button", "button-link", "icon-button", "copy-button", "copy-icon-button", "social-button", "social-icon-button", "input", "form-field", "label", "hint", "search-input", "select", "compact-select", "inline-select", "url-input", "date-input", "password-input", "share-link-input", "counter-input", "text-area-input", "tab", "tabs", "tab-menu", "tooltip", "info-popover"],
+      "consumers": ["button", "button-link", "icon-button", "copy-button", "copy-icon-button", "social-button", "social-icon-button", "input", "form-field", "label", "hint", "search-input", "select", "compact-select", "inline-select", "url-input", "date-input", "password-input", "share-link-input", "counter-input", "text-area-input", "tab", "tabs", "tab-menu"],
       "dependencies": ["global-size", "typography-foundations"],
       "properties": ["min-height", "padding-inline", "padding-block", "icon-size", "gap", "font-size", "line-height"],
       "variants": ["small", "medium", "large"],
@@ -186,6 +199,45 @@
       "states": []
     },
     {
+      "id": "progress-bar-size",
+      "scope": "component",
+      "owner": "progress-bar",
+      "domain": "size",
+      "namePattern": "^--progress-bar-block-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["progress-bar", "accordion", "file-upload-card"],
+      "dependencies": ["size-primitives"],
+      "properties": ["block-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "stat-text-inline-size",
+      "scope": "component",
+      "owner": "stat-text-inline",
+      "domain": "size",
+      "namePattern": "^--stat-text-inline-icon-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["stat-text-inline"],
+      "dependencies": ["size-primitives"],
+      "properties": ["icon-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "stat-card-size",
+      "scope": "component",
+      "owner": "stat-card",
+      "domain": "size",
+      "namePattern": "^--stat-card-(?:min-height|trend-gap|trend-icon-size)$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["stat-card"],
+      "dependencies": ["size-primitives"],
+      "properties": ["min-height", "trend-gap", "trend-icon-size"],
+      "variants": [],
+      "states": []
+    },
+    {
       "id": "content-divider-size",
       "scope": "component",
       "owner": "content-divider",
@@ -212,6 +264,45 @@
       "states": []
     },
     {
+      "id": "bullet-card-simple-size",
+      "scope": "component",
+      "owner": "bullet-card-simple",
+      "domain": "size",
+      "namePattern": "^--bullet-card-simple-icon-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["bullet-card-simple"],
+      "dependencies": ["size-primitives"],
+      "properties": ["icon-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "bullet-icon-card-size",
+      "scope": "component",
+      "owner": "bullet-icon-card",
+      "domain": "size",
+      "namePattern": "^--bullet-icon-card-(?:icon-size|section-space)$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["bullet-icon-card"],
+      "dependencies": ["size-primitives"],
+      "properties": ["icon-size", "section-space"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "bullet-visual-card-size",
+      "scope": "component",
+      "owner": "bullet-visual-card",
+      "domain": "size",
+      "namePattern": "^--bullet-visual-card-stat-icon-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["bullet-visual-card"],
+      "dependencies": ["size-primitives"],
+      "properties": ["stat-icon-size"],
+      "variants": [],
+      "states": []
+    },
+    {
       "id": "label-color",
       "scope": "component",
       "owner": "label",
@@ -231,7 +322,7 @@
       "domain": "color",
       "namePattern": "^--card-[a-z0-9-]+$",
       "sourcePaths": ["src/styles/tokens/color-components.css"],
-      "consumers": ["switch-card", "checkbox-card", "radio-card", "file-upload-card"],
+      "consumers": ["switch-card", "checkbox-card", "radio-card", "file-upload-card", "bullet-card-surface"],
       "dependencies": ["global-color"],
       "properties": ["background", "border"],
       "variants": [],
@@ -348,10 +439,23 @@
       "domain": "color",
       "namePattern": "^--feedback-(?:error|warning|success|info|feature)-background-(?:solid|soft)$",
       "sourcePaths": ["src/styles/tokens/color-components.css"],
-      "consumers": ["alert", "notification-and-toast"],
+      "consumers": ["alert", "notification-and-toast", "top-banner"],
       "dependencies": ["global-color"],
       "properties": ["background"],
       "variants": ["solid", "soft"],
+      "states": []
+    },
+    {
+      "id": "top-banner-size",
+      "scope": "component",
+      "owner": "top-banner",
+      "domain": "size",
+      "namePattern": "^--top-banner-(?:min-height|icon-size)$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["top-banner"],
+      "dependencies": ["size-primitives"],
+      "properties": ["min-height", "icon-size"],
+      "variants": [],
       "states": []
     },
     {
@@ -390,6 +494,19 @@
       "consumers": ["popup"],
       "dependencies": ["global-size", "size-primitives"],
       "properties": ["max-inline-size", "viewport-inset", "icon-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "team-member-card-size",
+      "scope": "component",
+      "owner": "team-member-card",
+      "domain": "size",
+      "namePattern": "^--team-member-card-horizontal-image-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["team-member-card"],
+      "dependencies": ["size-primitives"],
+      "properties": ["horizontal-image-size"],
       "variants": [],
       "states": []
     }

@@ -1,0 +1,225 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+
+export type BulletIconCardLayout = "vertical" | "horizontal";
+
+export interface Props extends Omit<HTMLAttributes<"article">, "class" | "title"> {
+  title: string;
+  description: string;
+  layout?: BulletIconCardLayout;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  showIcon?: boolean;
+  stat?: string;
+  showStatIcon?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  layout = "vertical",
+  headingLevel = 3,
+  showIcon = true,
+  stat,
+  showStatIcon = true,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof title !== "string" || title.trim().length === 0) {
+  throw new TypeError("BulletIconCard title must be a non-empty string.");
+}
+if (typeof description !== "string" || description.trim().length === 0) {
+  throw new TypeError("BulletIconCard description must be a non-empty string.");
+}
+if (stat !== undefined && (typeof stat !== "string" || stat.trim().length === 0)) {
+  throw new TypeError("BulletIconCard stat must be a non-empty string when provided.");
+}
+if (!(["vertical", "horizontal"] as const).includes(layout)) {
+  throw new RangeError('BulletIconCard layout must be "vertical" or "horizontal".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("BulletIconCard headingLevel must be an integer from 2 to 6.");
+}
+if (typeof showIcon !== "boolean") {
+  throw new TypeError("BulletIconCard showIcon must be a boolean.");
+}
+if (typeof showStatIcon !== "boolean") {
+  throw new TypeError("BulletIconCard showStatIcon must be a boolean.");
+}
+if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
+  throw new TypeError("BulletIconCard id must be a non-empty string when provided.");
+}
+
+const hasTags = Astro.slots.has("tags");
+const hasActions = Astro.slots.has("actions");
+const headingId = id
+  ? `${id}-heading`
+  : `bullet-icon-card-${crypto.randomUUID()}-heading`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+---
+
+<article
+  {...attributes}
+  id={id}
+  class:list={["bullet-icon-card", className]}
+  aria-labelledby={headingId}
+  data-bullet-icon-card-layout={layout}
+  data-component-name="BulletIconCard"
+>
+  {showIcon && (
+    <span class="bullet-icon-card__icon" aria-hidden="true">
+      <MaterialSymbol name="language" size="var(--bullet-icon-card-icon-size)" />
+    </span>
+  )}
+
+  <div class="bullet-icon-card__content">
+    <div class="bullet-icon-card__copy">
+      <HeadingTag class="bullet-icon-card__title body-base-semibold" id={headingId}>
+        {title}
+      </HeadingTag>
+      <p class="bullet-icon-card__description body-base-regular">{description}</p>
+    </div>
+
+    {stat && (
+      <p class="bullet-icon-card__stat caption-small">
+        <span>{stat}</span>
+        {showStatIcon && (
+          <span class="bullet-icon-card__stat-icon" aria-hidden="true">
+            <MaterialSymbol
+              name="trending_up"
+              size="var(--bullet-icon-card-icon-size)"
+            />
+          </span>
+        )}
+      </p>
+    )}
+
+    {hasTags && (
+      <div class="bullet-icon-card__tags">
+        <slot name="tags" />
+      </div>
+    )}
+
+    {hasActions && (
+      <div class="bullet-icon-card__actions">
+        <ButtonGroup aria-labelledby={headingId}>
+          <slot name="actions" />
+        </ButtonGroup>
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .bullet-icon-card {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    align-items: flex-start;
+    gap: var(--gap-large);
+  }
+
+  .bullet-icon-card[data-bullet-icon-card-layout="vertical"] {
+    flex-direction: column;
+  }
+
+  .bullet-icon-card[data-bullet-icon-card-layout="horizontal"] {
+    flex-direction: row;
+  }
+
+  .bullet-icon-card__icon {
+    display: flex;
+    inline-size: var(--bullet-icon-card-icon-size);
+    block-size: var(--bullet-icon-card-icon-size);
+    flex: 0 0 var(--bullet-icon-card-icon-size);
+    align-items: center;
+    justify-content: center;
+    color: var(--color-icon-accent);
+  }
+
+  .bullet-icon-card__content,
+  .bullet-icon-card__copy {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    flex-direction: column;
+  }
+
+  .bullet-icon-card__copy {
+    gap: var(--space-tiny);
+  }
+
+  .bullet-icon-card__title,
+  .bullet-icon-card__description,
+  .bullet-icon-card__stat {
+    min-inline-size: 0;
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .bullet-icon-card__title,
+  .bullet-icon-card__stat {
+    color: var(--color-text-primary);
+  }
+
+  .bullet-icon-card__description {
+    color: var(--color-text-secondary);
+  }
+
+  .bullet-icon-card__stat {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-tiny);
+    margin-block-start: var(--space-regular);
+  }
+
+  .bullet-icon-card__stat-icon {
+    display: flex;
+    inline-size: var(--bullet-icon-card-icon-size);
+    block-size: var(--bullet-icon-card-icon-size);
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-icon-accent);
+  }
+
+  .bullet-icon-card__tags,
+  .bullet-icon-card__actions {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin-block-start: var(--bullet-icon-card-section-space);
+  }
+
+  .bullet-icon-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-small);
+  }
+
+  .bullet-icon-card__actions > :global([data-component-name="ButtonGroup"]) {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .bullet-icon-card__icon[hidden],
+  .bullet-icon-card__stat[hidden],
+  .bullet-icon-card__stat-icon[hidden],
+  .bullet-icon-card__tags[hidden],
+  .bullet-icon-card__actions[hidden] {
+    display: none;
+  }
+
+  @media (forced-colors: active) {
+    .bullet-icon-card__icon,
+    .bullet-icon-card__stat-icon {
+      color: CanvasText;
+    }
+  }
+</style>

@@ -8,12 +8,12 @@ Status: active.
 
 ## UX purpose
 
-Represent one labelled choice inside a tablist and expose its selected panel relationship.
+Represent one labelled choice inside a tablist and expose its external selected-panel relationship.
 
 ## Use when
 
-- The control is composed by Tabs or another conforming tablist.
-- One panel from a small related set is visible at a time.
+- The control is a direct child of Tabs or another conforming tablist.
+- One panel from a related set is visible at a time.
 
 ## Avoid when
 
@@ -22,11 +22,11 @@ Represent one labelled choice inside a tablist and expose its selected panel rel
 
 ## Content contract
 
-Provide non-empty `id`, `controls`, and visible label content. Selected and disabled are native behavioral states.
+Provide non-empty `id`, `controls`, and visible label content. `controls` names the external panel id. Selected and disabled are mutually exclusive states.
 
 ## Composition and placement
 
-Use Tab only inside a `role="tablist"`; Tabs is the preferred owner of keyboard behavior and panels.
+Use Tab only as a direct child of `role="tablist"`. Tabs is the preferred owner of keyboard behavior; the consumer owns the external panel markup and content.
 
 ## Responsive behavior
 
@@ -38,11 +38,11 @@ Use Tab only inside a `role="tablist"`; Tabs is the preferred owner of keyboard 
 
 ## Accessibility and required behavior
 
-Preserve native button semantics, `role="tab"`, `aria-selected`, `aria-controls`, roving tabindex, focus-visible, and disabled behavior.
+Preserve native button semantics, `role="tab"`, stable `id`, `aria-selected`, `aria-controls`, roving tabindex, focus-visible, and disabled behavior. Reject `selected && disabled`.
 
 ## Related components
 
-- Tabs owns tablist behavior and panels.
+- Tabs owns tablist behavior and coordinates external panels.
 - TabMenu owns URL hash navigation.
 
 ## Naming and token contract
@@ -51,4 +51,4 @@ Use `Tab`, root `.tab`, `data-control-size`, and registered `tab-color`, `contro
 
 ## Core decision
 
-Use Tab as the atomic tablist control, never as a generic button or navigation link.
+Use Tab as the atomic tablist control, never as a generic button, navigation link, or panel owner.

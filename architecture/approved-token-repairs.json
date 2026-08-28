@@ -159,6 +159,53 @@
       "consumers": [
         "bullet-point"
       ]
+    },
+    {
+      "id": "bullet-icon-card-size-2026-08-27",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-27",
+      "requestedFor": "Implement the canonical BulletIconCard icon geometry and exact 20px spacing before its optional Tags and Actions regions in Astro and Figma.",
+      "extensionTarget": "bullet-icon-card-size",
+      "sourcePath": "src/styles/tokens/size-components.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#bullet-icon-card-size",
+      "proposedTokens": [
+        { "name": "--bullet-icon-card-icon-size", "aliasSource": "--size-20" },
+        { "name": "--bullet-icon-card-section-space", "aliasSource": "--size-20" }
+      ],
+      "consumers": [
+        "bullet-icon-card"
+      ]
+    },
+    {
+      "id": "stat-text-inline-size-2026-08-27",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-27",
+      "requestedFor": "stat-text-inline",
+      "missingNeed": {
+        "owner": "stat-text-inline",
+        "scope": "component",
+        "domain": "size",
+        "property": "icon-size",
+        "variant": null,
+        "state": null
+      },
+      "extensionTarget": null,
+      "proposedGroup": {
+        "id": "stat-text-inline-size",
+        "scope": "component",
+        "owner": "stat-text-inline",
+        "domain": "size"
+      },
+      "sourcePath": "src/styles/tokens/size-components.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#stat-text-inline-size",
+      "proposedTokens": [
+        { "name": "--stat-text-inline-icon-size", "aliasSource": "--size-20" }
+      ],
+      "consumers": [
+        "stat-text-inline"
+      ]
     }
   ]
 }

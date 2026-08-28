@@ -85,7 +85,7 @@ test("renders native dialog, ARIA, dependency and optional footer contracts", as
 
     const html = await readFile(join(outputDirectory, "index.html"), "utf8");
     const popupSource = await readFile(
-      fileURLToPath(new URL("../src/components/website-patterns/modal/Popup.astro", import.meta.url)),
+      fileURLToPath(new URL("../src/components/base-components/popup/Popup.astro", import.meta.url)),
       "utf8",
     );
     const ids = [...html.matchAll(/\sid="([^"]+)"/gu)].map((match) => match[1]);

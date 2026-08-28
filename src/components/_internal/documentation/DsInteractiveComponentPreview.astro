@@ -6,48 +6,72 @@ import {
   socialIconPlatforms,
 } from "../../../lib/icons/socialIcons";
 import SocialIcons from "../../assets/icons/SocialIcons.astro";
+import DsResponsivePreviewDialog from "./DsResponsivePreviewDialog.astro";
 
 interface Props {
+  id?: string;
   title: string;
   renderer: AstroComponentFactory;
   rendererProps?: Record<string, unknown>;
   axes: DocumentationPreviewAxis[];
+  categoryKey: "base-components" | "website-patterns" | "examples-templates";
+  responsivePreview?: {
+    rendererProps?: Record<string, unknown>;
+    scope: string;
+  };
 }
 
 const {
+  id: previewId = "preview",
   title,
   renderer: PreviewRenderer,
   rendererProps = {},
   axes,
+  categoryKey,
+  responsivePreview,
 } = Astro.props;
 const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
 ---
 
 <section
   class="ds-interactive-component-preview"
-  id="preview"
+  id={previewId}
   aria-label={`${title} interactive preview`}
   data-component-name="DsInteractiveComponentPreview"
   data-ds-doc-section
   data-ds-interactive-preview
+  data-preview-category={categoryKey}
 >
   <div
     class="ds-interactive-component-preview__frame"
     data-has-controls={axes.length > 0 ? "true" : undefined}
   >
     <div class="ds-interactive-component-preview__scene" aria-live="polite">
-      <PreviewRenderer {...rendererProps} />
+      <div class="ds-interactive-component-preview__scene-content" data-ds-preview-scene-content>
+        <div class="ds-interactive-component-preview__scene-canvas" data-ds-preview-scene-canvas>
+          <PreviewRenderer {...rendererProps} />
+        </div>
+      </div>
+      {responsivePreview && (
+        <DsResponsivePreviewDialog
+          title={title}
+          renderer={PreviewRenderer}
+          rendererProps={{ ...rendererProps, ...responsivePreview.rendererProps }}
+          axes={axes}
+          scope={responsivePreview.scope}
+        />
+      )}
     </div>
 
     {axes.length > 0 && (
       <div class="ds-interactive-component-preview__controls" aria-label={`${title} preview controls`}>
         {axes.map((axis) => (
           <div class="ds-interactive-component-preview__control-group" data-ds-preview-axis={axis.id}>
-            <span id={`preview-${axis.id}-label`}>{axis.label}</span>
+            <span id={`${previewId}-${axis.id}-label`}>{axis.label}</span>
             {axis.control === "select" ? (
               <select
                 class="ds-interactive-component-preview__select"
-                aria-labelledby={`preview-${axis.id}-label`}
+                aria-labelledby={`${previewId}-${axis.id}-label`}
                 data-axis-id={axis.id}
                 data-ds-preview-select
               >
@@ -64,7 +88,7 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
               <div
                 class="ds-interactive-component-preview__segmented"
                 role="group"
-                aria-labelledby={`preview-${axis.id}-label`}
+                aria-labelledby={`${previewId}-${axis.id}-label`}
               >
                 {axis.options.map((option) => (
                   <button
@@ -101,6 +125,8 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
 </section>
 
 <script>
+  import { deactivateOverlay, hidePopoverSurface } from "../../../lib/overlays/overlay-runtime";
+
   const syncInteractivePreview = (preview: HTMLElement, axisId: string, value: string) => {
     const target = preview.querySelector<HTMLElement>("[data-ds-preview-target]");
     if (!target) return;
@@ -129,11 +155,12 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
       ...(target.matches(selectionCompositionSelector) ? [target] : []),
       ...target.querySelectorAll<HTMLElement>(selectionCompositionSelector),
     ];
-    const selectRoot = target.matches("[data-select]")
-      ? target
-      : target.querySelector<HTMLElement>("[data-select]");
-    const selectNative = selectRoot?.querySelector<HTMLSelectElement>("[data-select-native]");
-    const selectTrigger = selectRoot?.querySelector<HTMLButtonElement>("[data-select-trigger]");
+    const selectRoots = [
+      ...(target.matches("[data-select]") ? [target] : []),
+      ...target.querySelectorAll<HTMLElement>("[data-select]"),
+    ];
+    const selectRoot = selectRoots.find((root) => !root.closest<HTMLElement>("[data-select-preview-purpose-group]")?.hidden)
+      ?? selectRoots[0];
     const accordionRoot = target.matches('[data-component-name="Accordion"]')
       ? target
       : target.querySelector<HTMLElement>('[data-component-name="Accordion"]');
@@ -168,7 +195,84 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
         item.dataset.tone = value;
       });
     }
-    if (axisId === "purpose" && selectRoot) selectRoot.dataset.selectPurpose = value;
+    if (axisId === "bulletIconCardLayout") {
+      target.dataset.bulletIconCardLayout = value;
+    }
+    if (axisId === "bulletIconCardIcon") {
+      const icon = target.querySelector<HTMLElement>(".bullet-icon-card__icon");
+      if (icon) icon.hidden = value === "hidden";
+    }
+    if (axisId === "bulletIconCardStat") {
+      const stat = target.querySelector<HTMLElement>(".bullet-icon-card__stat");
+      if (stat) stat.hidden = value === "hidden";
+    }
+    if (axisId === "bulletIconCardStatIcon") {
+      const icon = target.querySelector<HTMLElement>(".bullet-icon-card__stat-icon");
+      if (icon) icon.hidden = value === "hidden";
+    }
+    if (axisId === "bulletIconCardTags") {
+      const tags = target.querySelector<HTMLElement>(".bullet-icon-card__tags");
+      if (tags) tags.hidden = value === "hidden";
+    }
+    if (axisId === "bulletIconCardActions") {
+      const actions = target.querySelector<HTMLElement>(".bullet-icon-card__actions");
+      if (actions) actions.hidden = value === "hidden";
+    }
+    if (axisId === "bulletCardSimpleIcon") {
+      target.dataset.bulletCardSimpleIcon = value;
+      const icon = target.querySelector<HTMLElement>(".bullet-card-simple__icon");
+      if (icon) icon.hidden = value === "hidden";
+    }
+    if (axisId === "bulletCardSimpleDescription") {
+      target.dataset.bulletCardSimpleDescription = value;
+      const description = target.querySelector<HTMLElement>(".bullet-card-simple__description");
+      if (description) description.hidden = value === "hidden";
+    }
+    if (axisId === "bulletCardSimpleActions") {
+      target.dataset.bulletCardSimpleActions = value;
+      const actions = target.querySelector<HTMLElement>(".bullet-card-simple__actions");
+      if (actions) actions.hidden = value === "hidden";
+    }
+    if (axisId === "bulletCardIcon") {
+      target.dataset.bulletCardIcon = value;
+      const icon = target.querySelector<HTMLElement>(".bullet-card-surface__icon");
+      if (icon) icon.hidden = value === "hidden";
+    }
+    if (axisId === "bulletCardDescription") {
+      target.dataset.bulletCardDescription = value;
+      const description = target.querySelector<HTMLElement>(".bullet-card-surface__description");
+      if (description) description.hidden = value === "hidden";
+    }
+    if (axisId === "bulletCardActions") {
+      target.dataset.bulletCardActions = value;
+      const actions = target.querySelector<HTMLElement>(".bullet-card-surface__actions");
+      if (actions) actions.hidden = value === "hidden";
+    }
+    if (axisId === "bulletCardVisual") {
+      target.dataset.bulletCardVisual = value;
+      const card = target.querySelector<HTMLElement>('[data-component-name="BulletCardSurface"]');
+      const visual = target.querySelector<HTMLElement>(".bullet-card-surface__visual");
+      const visible = value === "visible";
+      if (card) card.dataset.hasVisual = String(visible);
+      if (visual) visual.hidden = !visible;
+    }
+    if (axisId === "purpose" && selectRoots.length > 0) {
+      const purposeGroups = Array.from(
+        target.querySelectorAll<HTMLElement>("[data-select-preview-purpose-group]"),
+      );
+
+      if (purposeGroups.length > 0) {
+        purposeGroups.forEach((group) => {
+          const isBrandGroup = group.dataset.selectPreviewPurposeGroup === "brand";
+          group.hidden = isBrandGroup !== (value === "brand");
+          group.querySelectorAll<HTMLElement>("[data-select]").forEach((root) => {
+            root.dataset.selectPurpose = isBrandGroup ? "brand" : value;
+          });
+        });
+      } else {
+        selectRoots.forEach((root) => { root.dataset.selectPurpose = value; });
+      }
+    }
     if (axisId === "type") target.dataset.inputType = value;
     if (axisId === "tone") target.dataset.tagTone = value;
     if (axisId === "removable") {
@@ -216,34 +320,38 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
         });
       }
     }
-    if (axisId === "tooltipSize") target.dataset.tooltipSize = value;
     if (axisId === "placement") {
       target.dataset.overlayPlacement = value;
       target.dataset.tooltipPlacement = value;
       window.dispatchEvent(new Event("resize"));
     }
-    if (axisId === "narrowPlacement") {
-      if (value === "default") {
-        delete target.dataset.overlayPlacementNarrow;
-        delete target.dataset.tooltipPlacementNarrow;
-      } else {
-        target.dataset.overlayPlacementNarrow = value;
-        target.dataset.tooltipPlacementNarrow = value;
-      }
-      window.dispatchEvent(new Event("resize"));
+    if (axisId === "label" && selectRoots.length > 0) {
+      selectRoots.forEach((root) => {
+        const label = root.querySelector<HTMLElement>("[data-select-label]");
+        if (label) label.hidden = value === "hidden";
+      });
     }
-    if (axisId === "label" && selectRoot) {
-      const label = selectRoot.querySelector<HTMLElement>("[data-select-label]");
-      if (label) label.hidden = value === "hidden";
-    }
-    if (axisId === "hint" && selectRoot) {
-      const hint = selectRoot.querySelector<HTMLElement>("[data-select-hint]");
-      if (hint) hint.hidden = value === "hidden";
+    if (axisId === "hint" && selectRoots.length > 0) {
+      selectRoots.forEach((root) => {
+        const hint = root.querySelector<HTMLElement>("[data-select-hint]");
+        if (hint) hint.hidden = value === "hidden";
+      });
     }
     if (axisId === "icon") {
       target.dataset.dsPreviewIcon = value;
       const accordionHelp = accordionRoot?.querySelector<HTMLElement>("[data-accordion-help-trigger]");
-      if (accordionHelp) accordionHelp.hidden = value === "hidden";
+      if (accordionHelp) {
+        const shouldHide = value === "hidden";
+        if (shouldHide) {
+          const tooltip = accordionHelp.querySelector<HTMLElement>('[data-component-name="Tooltip"]');
+          const surface = tooltip?.querySelector<HTMLElement>("[data-tooltip-content]");
+          if (tooltip && surface) {
+            deactivateOverlay(tooltip);
+            hidePopoverSurface(surface);
+          }
+        }
+        accordionHelp.hidden = shouldHide;
+      }
     }
     if (axisId === "required") target.dataset.labelRequirement = value;
     if (axisId === "platform") {
@@ -358,23 +466,27 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
         else delete root.dataset.selectionDisabled;
       });
       const validation = value === "success" || value === "warning" || value === "error" ? value : "none";
-      if (selectRoot && selectNative && selectTrigger) {
-        selectRoot.dataset.dsPreviewState = value;
-        selectRoot.dataset.selectValidation = validation;
-        selectRoot.dataset.selectDisabled = value === "disabled" ? "true" : "false";
-        selectTrigger.dataset.dsPreviewState = value;
-        selectTrigger.disabled = value === "disabled";
-        selectNative.disabled = value === "disabled";
+      selectRoots.forEach((root) => {
+        const native = root.querySelector<HTMLSelectElement>("[data-select-native]");
+        const trigger = root.querySelector<HTMLButtonElement>("[data-select-trigger]");
+        if (!native || !trigger) return;
+
+        root.dataset.dsPreviewState = value;
+        root.dataset.selectValidation = validation;
+        root.dataset.selectDisabled = value === "disabled" ? "true" : "false";
+        trigger.dataset.dsPreviewState = value;
+        trigger.disabled = value === "disabled";
+        native.disabled = value === "disabled";
         if (value === "error") {
-          selectTrigger.setAttribute("aria-invalid", "true");
-          selectNative.setAttribute("aria-invalid", "true");
+          trigger.setAttribute("aria-invalid", "true");
+          native.setAttribute("aria-invalid", "true");
         } else {
-          selectTrigger.removeAttribute("aria-invalid");
-          selectNative.removeAttribute("aria-invalid");
+          trigger.removeAttribute("aria-invalid");
+          native.removeAttribute("aria-invalid");
         }
-        const hint = selectRoot.querySelector<HTMLElement>("[data-select-hint]");
+        const hint = root.querySelector<HTMLElement>("[data-select-hint]");
         if (hint) hint.dataset.selectHintTone = validation;
-      }
+      });
       if (target instanceof HTMLAnchorElement) {
         if (value === "disabled") target.setAttribute("aria-disabled", "true");
         else target.removeAttribute("aria-disabled");
@@ -451,7 +563,7 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
       });
     }
 
-    if (selectRoot) selectRoot.dispatchEvent(new CustomEvent("astro-select:refresh"));
+    selectRoots.forEach((root) => root.dispatchEvent(new CustomEvent("astro-select:refresh")));
 
     preview.dispatchEvent(new CustomEvent("astro-ds:preview-change", {
       bubbles: true,
@@ -505,8 +617,68 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
     });
   };
 
+  const desktopWebsitePatternCanvasWidth = 1440;
+
+  const initializeWebsitePatternPreviewScale = (preview: HTMLElement) => {
+    if (preview.dataset.previewCategory !== "website-patterns") return;
+    if (preview.dataset.websitePatternScaleReady === "true") return;
+
+    const sceneContent = preview.querySelector<HTMLElement>("[data-ds-preview-scene-content]");
+    const canvas = preview.querySelector<HTMLElement>("[data-ds-preview-scene-canvas]");
+    if (!sceneContent || !canvas) return;
+
+    preview.dataset.websitePatternScaleReady = "true";
+    canvas.style.inlineSize = `${desktopWebsitePatternCanvasWidth}px`;
+
+    let updateFrame = 0;
+    const updateScale = () => {
+      cancelAnimationFrame(updateFrame);
+      updateFrame = requestAnimationFrame(() => {
+        if (!preview.isConnected) {
+          resizeObserver.disconnect();
+          return;
+        }
+
+        const availableWidth = sceneContent.clientWidth;
+        const availableHeight = sceneContent.clientHeight;
+        if (availableWidth <= 0 || availableHeight <= 0) return;
+
+        const canvasWidth = canvas.offsetWidth;
+        const canvasHeight = canvas.offsetHeight;
+        if (canvasWidth <= 0 || canvasHeight <= 0) return;
+
+        const scale = Math.min(
+          1,
+          availableWidth / canvasWidth,
+          availableHeight / canvasHeight,
+        );
+        const inlineOffset = (availableWidth - canvasWidth) / 2;
+        const blockOffset = (availableHeight - canvasHeight) / 2;
+
+        canvas.style.insetInlineStart = `${inlineOffset}px`;
+        canvas.style.insetBlockStart = `${blockOffset}px`;
+        canvas.style.transform = `scale(${scale})`;
+        preview.dataset.websitePatternScale = scale.toFixed(4);
+        preview.dataset.websitePatternBlockFit = "fit";
+      });
+    };
+
+    const resizeObserver = new ResizeObserver(updateScale);
+    resizeObserver.observe(sceneContent);
+    resizeObserver.observe(canvas);
+    preview.addEventListener("astro-ds:preview-change", updateScale);
+    updateScale();
+  };
+
+  const initializeWebsitePatternPreviewScales = () => {
+    document.querySelectorAll<HTMLElement>("[data-ds-interactive-preview]")
+      .forEach(initializeWebsitePatternPreviewScale);
+  };
+
   initializeInteractivePreviews();
+  initializeWebsitePatternPreviewScales();
   document.addEventListener("astro:page-load", initializeInteractivePreviews);
+  document.addEventListener("astro:page-load", initializeWebsitePatternPreviewScales);
 </script>
 
 <style>
@@ -541,7 +713,7 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
   }
 
   .ds-interactive-component-preview__control-group > span {
-    color: var(--color-text-tertiary);
+    color: var(--color-text-secondary);
     font-family: var(--font-family-body);
     font-size: var(--font-size-body-tiny);
     font-weight: var(--font-weight-strong);
@@ -633,10 +805,48 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
     width: 100%;
     aspect-ratio: 4 / 3;
     place-items: center;
-    overflow: hidden;
+    overflow: auto;
     border: var(--border-width-default) solid var(--color-border-subtle);
     background: var(--color-background-surface);
-    padding: var(--content-padding-large);
+    padding: var(--content-padding-xlarge);
+  }
+
+  .ds-interactive-component-preview__scene-content {
+    display: grid;
+    position: absolute;
+    inset: var(--content-padding-xlarge);
+    min-inline-size: 0;
+    inline-size: auto;
+    min-block-size: 0;
+    block-size: auto;
+    place-items: safe center;
+  }
+
+  .ds-interactive-component-preview__scene-canvas {
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+    min-block-size: 100%;
+    place-items: safe center;
+  }
+
+  .ds-interactive-component-preview[data-preview-category="website-patterns"]
+    .ds-interactive-component-preview__scene {
+    overflow: hidden;
+  }
+
+  .ds-interactive-component-preview[data-preview-category="website-patterns"]
+    .ds-interactive-component-preview__scene-content {
+    display: block;
+    overflow: hidden;
+  }
+
+  .ds-interactive-component-preview[data-preview-category="website-patterns"]
+    .ds-interactive-component-preview__scene-canvas {
+    position: absolute;
+    min-block-size: 0;
+    transform-origin: center center;
+    will-change: transform;
   }
 
   .ds-interactive-component-preview__scene :global([data-ds-preview-icon="hidden"] .button__icon),

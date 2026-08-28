@@ -1,8 +1,14 @@
 ---
 import Accordion from "../../../../../src/components/base-components/accordion/Accordion.astro";
 import AccordionList from "../../../../../src/components/base-components/accordion/AccordionList.astro";
+import { materialSymbolNames } from "../../../../../src/lib/icons/materialSymbols";
 import "../../../../../src/styles/tokens/tokens.css";
 import "../../../../../src/styles/global.css";
+
+const legacyReturnsContent = { content: "Unused products can be returned within thirty days." };
+const legacyUnavailableContent = { content: "Same-day delivery is not available." };
+const legacyAlphaContent = { content: "Alpha answer" };
+const legacyBetaContent = { content: "Beta answer" };
 ---
 
 <!doctype html>
@@ -19,22 +25,30 @@ import "../../../../../src/styles/global.css";
           <Accordion
             id="delivery"
             title="When will it arrive?"
-            content="Most orders arrive within three business days."
+            titleSuffix="Usually in three days"
             helpText="Delivery windows begin after dispatch."
             helpLabel="Explain the delivery window"
+            brandIcon="language"
+            progress={40}
+            progressLabel="Delivery preview progress"
             initialOpen
             headingLevel={4}
-          />
+          >
+            <p>Most orders arrive within three business days.</p>
+            <button type="button">Track an order</button>
+          </Accordion>
           <Accordion
             id="returns"
             title="Can I return it?"
-            content="Unused products can be returned within thirty days."
+            {...legacyReturnsContent}
+            showTooltip={false}
+            showBrandIcon={false}
             headingLevel={4}
           />
           <Accordion
             id="unavailable"
             title="Is same-day delivery available?"
-            content="Same-day delivery is not available."
+            {...legacyUnavailableContent}
             disabled
             headingLevel={4}
           />
@@ -42,9 +56,21 @@ import "../../../../../src/styles/global.css";
       </section>
       <section data-theme="dark">
         <AccordionList mode="multiple">
-          <Accordion title="Alpha" content="Alpha answer" initialOpen />
-          <Accordion title="Beta" content="Beta answer" initialOpen />
+          <Accordion title="Alpha" {...legacyAlphaContent} initialOpen />
+          <Accordion title="Beta" {...legacyBetaContent} initialOpen />
         </AccordionList>
+      </section>
+      <section data-theme="light">
+        <AccordionList id="autoplay-list" mode="single" autoplay autoplayDuration={8000} autoplayLoop={false}>
+          <Accordion title="First autoplay item"><p>First autoplay content.</p></Accordion>
+          <Accordion title="Disabled autoplay item" disabled><p>Skipped content.</p></Accordion>
+          <Accordion title="Last autoplay item"><p>Last autoplay content.</p></Accordion>
+        </AccordionList>
+      </section>
+      <section data-icon-contract>
+        {materialSymbolNames.map((icon) => (
+          <Accordion title={`Icon ${icon}`} brandIcon={icon}><p>Typed local icon.</p></Accordion>
+        ))}
       </section>
     </main>
   </body>

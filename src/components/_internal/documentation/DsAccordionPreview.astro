@@ -6,19 +6,18 @@ import Accordion from "../../base-components/accordion/Accordion.astro";
   <Accordion
     data-ds-preview-target
     title="How quickly will I receive a response?"
-    content="Most requests receive an initial response within one business day."
+    titleSuffix="Usually within one day"
     helpText="Response time starts when a complete request reaches the team."
     helpLabel="Explain how response time is measured"
-  />
+  >
+    <p>Most requests receive an initial response within one business day.</p>
+  </Accordion>
 </div>
 
 <style>
   .ds-preview-renderer-boundary {
-    position: absolute;
     box-sizing: border-box;
-    inset-block-start: 50%;
-    inset-inline: var(--content-padding-large);
     min-inline-size: 0;
-    transform: translateY(calc(var(--size-32) * -1));
+    inline-size: 100%;
   }
 </style>

@@ -32,8 +32,9 @@ for (const repair of contract.repairs ?? []) {
     const [name, alias] = override.split(": ");
     if (source.includes(`${name}: var(${alias})`)) errors.push(`${repair.id}: removed override is still present: ${override}.`);
   }
-  const group = (registry.groups ?? []).find(({ id }) => id === repair.extensionTarget);
-  if (!group) errors.push(`${repair.id}: registry group ${repair.extensionTarget} does not exist.`);
+  const targetGroupId = repair.extensionTarget ?? repair.proposedGroup?.id;
+  const group = (registry.groups ?? []).find(({ id }) => id === targetGroupId);
+  if (!group) errors.push(`${repair.id}: registry group ${targetGroupId ?? "<missing>"} does not exist.`);
   for (const consumer of repair.consumers ?? []) {
     const registered = (registry.groups ?? []).some((candidate) =>
       candidate.sourcePaths?.includes(repair.sourcePath)

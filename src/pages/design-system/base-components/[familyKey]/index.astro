@@ -1,34 +1,46 @@
 ---
 import DesignSystemLayout from "../../../../layouts/DesignSystemLayout.astro";
 import DsComponentDetail from "../../../../components/_internal/documentation/DsComponentDetail.astro";
-import DsFamilyGallery from "../../../../components/_internal/documentation/DsFamilyGallery.astro";
 import {
   architecture,
   componentsByPage,
   createDocumentationSummary,
+  documentationComponentHref,
   documentationFigmaHref,
-  isSingletonBaseComponentPage,
+  resolveDocumentationNavigationMode,
+  resolveDocumentationPageMode,
   type ArchitecturePage,
 } from "../../../../data/documentationRegistry";
 import { loadComponentRule } from "../../../../data/componentRuleLoader";
-import {
-  getComponentDocumentationAdapter,
-  getFamilyDocumentationAdapter,
-} from "../../../../data/documentationComponentRegistry";
+import { getComponentDocumentationAdapter } from "../../../../data/documentationComponentRegistry";
 
 export function getStaticPaths() {
   return architecture.pages
-    .filter((page) => page.categoryKey === "base-components" && page.documentationVisible !== false)
+    .filter(
+      (page) =>
+        page.categoryKey === "base-components" &&
+        page.documentationVisible !== false,
+    )
     .map((page) => ({ params: { familyKey: page.pageKey }, props: { page } }));
 }
 
 interface Props { page: ArchitecturePage; }
 const { page } = Astro.props;
 const components = componentsByPage.get(`base-components/${page.pageKey}`) ?? [];
-const isSingleton = isSingletonBaseComponentPage(page.pageKey);
+const pageMode = resolveDocumentationPageMode("base-components", page.pageKey);
+const navigationMode = resolveDocumentationNavigationMode("base-components", page.pageKey);
+const firstComponent = components[0];
+const firstComponentHref = firstComponent
+  ? documentationComponentHref(firstComponent)
+  : undefined;
+
+if (navigationMode === "disclosure") {
+  if (!firstComponentHref) throw new Error(`Disclosure family ${page.pageKey} has no public components.`);
+  return Astro.redirect(firstComponentHref);
+}
+
+const isSingleton = pageMode === "singleton";
 const component = isSingleton ? components[0] : undefined;
-const availableCount = components.filter((component) => Boolean(component.sourcePath)).length;
-const familyAdapter = getFamilyDocumentationAdapter("base-components", page.pageKey);
 const componentRule = component?.agenticRule
   ? await loadComponentRule(component.agenticRule)
   : undefined;
@@ -43,15 +55,14 @@ const componentToc = [
     : []),
   ...(componentRule ? [{ label: "Component UX rule", href: "#component-rule" }] : []),
 ];
-const familyToc = [{ label: "Variants", href: "#variants" }];
-const pageToc = component ? componentToc : familyToc;
+const pageToc = component ? componentToc : [];
 ---
 
 <DesignSystemLayout
   title={component
     ? `${component.name} - Astro Design System`
     : `${page.pageLabel} - Base Components`}
-  pageType={component ? "component-detail" : "family-gallery"}
+  pageType={component ? "component-detail" : "reading"}
   toc={pageToc}
   header={component
     ? {
@@ -71,27 +82,15 @@ const pageToc = component ? componentToc : familyToc;
         figmaHref: documentationFigmaHref(component),
       }
     : {
-        eyebrow: "Base Components",
         title: page.pageLabel,
-        summary: createDocumentationSummary(
-          `${page.pageLabel} contains ${components.length} canonical component identities, including ${availableCount} with an Astro source implementation. Compare`,
-          pageToc,
-          "to distinguish production previews from registry-backed Figma identities without inventing unavailable APIs.",
-        ),
-        status: availableCount ? "Partially available" : "Figma only",
+        summary: [],
       }}
 >
-  {component ? (
+  {component && (
     <DsComponentDetail
       component={component}
       rule={componentRule}
       adapter={componentAdapter}
-    />
-  ) : (
-    <DsFamilyGallery
-      page={page}
-      components={components}
-      showcaseRenderer={familyAdapter?.showcase.renderer}
     />
   )}
 </DesignSystemLayout>

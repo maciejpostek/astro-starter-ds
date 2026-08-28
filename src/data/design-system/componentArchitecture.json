@@ -1,19 +1,50 @@
 {
   "schemaVersion": "2.0.0",
   "status": "active",
-  "updatedAt": "2026-08-14",
+  "updatedAt": "2026-08-27",
   "sourceContract": "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
   "figma": {
     "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
     "fileUrl": "https://www.figma.com/design/Dga0pMJHvQMUXGiXUKWTAm/Astro---Design-System-Starter",
-    "expectedPageCount": 77,
-    "variablesCheckpoint": 485,
-    "legacyVariablesCheckpoint": 5,
-    "variableCollectionsCheckpoint": 11,
-    "legacyVariableCollectionsCheckpoint": 1,
-    "componentNodesCheckpoint": 1242,
-    "componentSetsCheckpoint": 324,
-    "instancesCheckpoint": 1315,
+    "expectedPageCount": 79,
+    "variablesCheckpoint": 550,
+    "legacyVariablesCheckpoint": 0,
+    "variableCollectionsCheckpoint": 12,
+    "legacyVariableCollectionsCheckpoint": 0,
+    "layoutGridColumnsCollectionId": "VariableCollectionId:1899:2",
+    "layoutGridColumnsVariableIds": {
+      "grid/max-width/span/01": "VariableID:1899:3",
+      "grid/offset/start/01": "VariableID:1899:4",
+      "grid/max-width/span/02": "VariableID:1899:5",
+      "grid/offset/start/02": "VariableID:1899:6",
+      "grid/max-width/span/03": "VariableID:1899:7",
+      "grid/offset/start/03": "VariableID:1899:8",
+      "grid/max-width/span/04": "VariableID:1899:9",
+      "grid/offset/start/04": "VariableID:1899:10",
+      "grid/max-width/span/05": "VariableID:1899:11",
+      "grid/offset/start/05": "VariableID:1899:12",
+      "grid/max-width/span/06": "VariableID:1899:13",
+      "grid/offset/start/06": "VariableID:1899:14",
+      "grid/max-width/span/07": "VariableID:1899:15",
+      "grid/offset/start/07": "VariableID:1899:16",
+      "grid/max-width/span/08": "VariableID:1899:17",
+      "grid/offset/start/08": "VariableID:1899:18",
+      "grid/max-width/span/09": "VariableID:1899:19",
+      "grid/offset/start/09": "VariableID:1899:20",
+      "grid/max-width/span/10": "VariableID:1899:21",
+      "grid/offset/start/10": "VariableID:1899:22",
+      "grid/max-width/span/11": "VariableID:1899:23",
+      "grid/offset/start/11": "VariableID:1899:24",
+      "grid/max-width/span/12": "VariableID:1899:25",
+      "grid/offset/start/12": "VariableID:1899:26"
+    },
+    "layoutGridColumnsPublishing": {
+      "collectionHiddenFromPublishing": false,
+      "variablesHiddenFromPublishing": true
+    },
+    "componentNodesCheckpoint": 1367,
+    "componentSetsCheckpoint": 350,
+    "instancesCheckpoint": 2542,
     "stylesCheckpoint": {
       "text": 28,
       "effect": 7,
@@ -233,7 +264,22 @@
         "CopyIconButton",
         "SocialButton",
         "SocialIconButton"
-      ]
+      ],
+      "layoutContract": {
+        "masterRoot": {
+          "axis": "horizontal",
+          "inlineSizing": "fixed",
+          "blockSizing": "hug"
+        },
+        "actionsSlot": {
+          "inlineSizing": "fill",
+          "blockSizing": "hug",
+          "wrap": true,
+          "columnGapVariableId": "VariableID:7:276",
+          "rowGapVariableId": "VariableID:7:276"
+        },
+        "consumerRule": "Set the ButtonGroup instance to Fill inside a width-owning action region; the internal slot wraps children in source order."
+      }
     },
     "switch-button": {
       "pageId": "1009:2736",
@@ -837,8 +883,11 @@
       "variantCount": 1,
       "axes": {},
       "properties": {
-        "Panel Content": "TEXT"
-      }
+        "Tabs Slot": "SLOT"
+      },
+      "preferredValues": [
+        "Tab"
+      ]
     },
     "tab-menu": {
       "pageId": "985:2785",
@@ -891,15 +940,18 @@
     "tooltip": {
       "pageId": "1140:594",
       "nodeId": "1371:45",
-      "variantCount": 4,
+      "variantCount": 12,
       "axes": {
-        "Size": [
-          "Small",
-          "Medium"
+        "Placement": [
+          "Top",
+          "Bottom",
+          "Left",
+          "Right"
         ],
         "State": [
-          "Hidden",
-          "Visible"
+          "Default",
+          "Hover",
+          "Focus"
         ]
       },
       "properties": {
@@ -909,11 +961,22 @@
     "info-popover": {
       "pageId": "1140:594",
       "nodeId": "1371:74",
-      "variantCount": 2,
+      "variantCount": 24,
       "axes": {
-        "State": [
+        "Placement": [
+          "Top",
+          "Bottom",
+          "Left",
+          "Right"
+        ],
+        "Visibility": [
           "Closed",
           "Open"
+        ],
+        "State": [
+          "Default",
+          "Hover",
+          "Focus"
         ]
       },
       "properties": {
@@ -993,6 +1056,34 @@
         "_Parts/NotificationAndToast.Layout"
       ]
     },
+    "team-member-card": {
+      "pageId": "992:2821",
+      "nodeId": "1852:3569",
+      "variantCount": 2,
+      "axes": {
+        "Layout": [
+          "Vertical",
+          "Horizontal"
+        ]
+      },
+      "properties": {
+        "Full Name": "TEXT",
+        "Role or Position": "TEXT",
+        "Show Image": "BOOLEAN",
+        "Show Role": "BOOLEAN"
+      },
+      "fixedDependencies": [
+        "Ratio"
+      ],
+      "propertyMapping": {
+        "Full Name": "fullName",
+        "Role or Position": "roleOrPosition",
+        "Show Image": "image-slot-presence",
+        "Show Role": "roleOrPosition-presence",
+        "Layout": "layout",
+        "Ratio": "imageRatio"
+      }
+    },
     "content-divider": {
       "pageId": "1009:1631",
       "nodeId": "270:10",
@@ -1011,6 +1102,15 @@
       "properties": {
         "Label": "TEXT",
         "Show Label": "BOOLEAN"
+      }
+    },
+    "title-row": {
+      "pageId": "1009:1631",
+      "nodeId": "1680:6",
+      "variantCount": 1,
+      "axes": {},
+      "properties": {
+        "Title": "TEXT"
       }
     },
     "ratio": {
@@ -1131,6 +1231,414 @@
       "properties": {
         "Text": "TEXT"
       }
+    },
+    "bullet-card-simple": {
+      "pageId": "1395:17651",
+      "nodeId": "1901:5727",
+      "variantCount": 1,
+      "axes": {},
+      "properties": {
+        "Title": "TEXT",
+        "Description": "TEXT",
+        "Show Icon": "BOOLEAN",
+        "Show Description": "BOOLEAN",
+        "Show Actions": "BOOLEAN"
+      },
+      "fixedDependencies": [
+        "Icon/Material/language",
+        "ButtonGroup"
+      ],
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Title": "title",
+        "Description": "description presence",
+        "Show Description": "description presence",
+        "Show Icon": "showIcon",
+        "Show Actions": "actions slot presence",
+        "Button Group Slot": "actions slot"
+      },
+      "layoutContract": {
+        "figmaPresentationWidth": 549,
+        "astroInlineSizing": "fluid",
+        "responsiveStrategy": "intrinsic",
+        "sourceOrder": [
+          "icon",
+          "title",
+          "description",
+          "actions"
+        ]
+      }
+    },
+    "bullet-icon-card": {
+      "pageId": "1395:17651",
+      "nodeId": "1793:2052",
+      "variantCount": 2,
+      "axes": {
+        "Layout": [
+          "Vertical",
+          "Horizontal"
+        ]
+      },
+      "properties": {
+        "Title": "TEXT",
+        "Description": "TEXT",
+        "Show Icon": "BOOLEAN",
+        "Show Stat": "BOOLEAN",
+        "Stat Text": "TEXT",
+        "Show Stat Icon": "BOOLEAN",
+        "Show Tags": "BOOLEAN",
+        "Show Actions": "BOOLEAN",
+        "Tags": "SLOT"
+      },
+      "fixedDependencies": [
+        "Icon/Material/language",
+        "Icon/Material/trending_up",
+        "Tag",
+        "ButtonGroup"
+      ],
+      "preferredValues": {
+        "Tags": [
+          "Tag"
+        ]
+      },
+      "propertyMapping": {
+        "Title": "title",
+        "Description": "description",
+        "Layout": "layout",
+        "Show Icon": "showIcon",
+        "Show Stat": "stat presence",
+        "Stat Text": "stat",
+        "Show Stat Icon": "showStatIcon",
+        "Tags": "tags slot",
+        "Show Tags": "tags slot presence",
+        "Show Actions": "actions slot presence",
+        "ButtonGroup": "actions slot wrapper",
+        "headingLevel": "Astro semantic-only"
+      },
+      "slotContract": {
+        "tags": {
+          "required": false,
+          "preferredValue": "Tag",
+          "childLimit": null,
+          "wrap": true
+        },
+        "actions": {
+          "required": false,
+          "preferredValues": [
+            "Button",
+            "ButtonLink"
+          ],
+          "childLimit": null,
+          "wrap": true
+        }
+      },
+      "layoutContract": {
+        "figmaPresentationWidth": 517,
+        "astroInlineSizing": "fluid",
+        "responsiveStrategy": "intrinsic",
+        "automaticBreakpointSwitch": false,
+        "sourceOrder": [
+          "icon",
+          "title",
+          "description",
+          "stat",
+          "tags",
+          "actions"
+        ]
+      }
+    },
+    "bullet-visual-card": {
+      "pageId": "1395:17651",
+      "nodeId": "1821:5427",
+      "variantCount": 1,
+      "axes": {},
+      "properties": {
+        "Title": "TEXT",
+        "Description": "TEXT",
+        "Show Description": "BOOLEAN",
+        "Stat": "TEXT",
+        "Show Stat": "BOOLEAN",
+        "Show Tags": "BOOLEAN",
+        "Show Actions": "BOOLEAN",
+        "Tags": "SLOT"
+      },
+      "fixedDependencies": [
+        "Ratio",
+        "Icon/Material/trending_up",
+        "Tag",
+        "ButtonGroup"
+      ],
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Title": "title",
+        "Description": "description presence",
+        "Show Description": "description presence",
+        "Stat": "stat presence",
+        "Show Stat": "stat presence",
+        "Tags": "tags slot",
+        "Show Tags": "tags slot presence",
+        "Show Actions": "actions slot presence",
+        "Button Group Slot": "actions slot"
+      },
+      "slotContract": {
+        "visual": {
+          "required": true,
+          "preferredValue": "Ratio=4:3"
+        },
+        "tags": {
+          "required": false,
+          "preferredValue": "Tag",
+          "childLimit": null,
+          "wrap": true
+        },
+        "actions": {
+          "required": false,
+          "preferredValues": [
+            "Button",
+            "ButtonLink"
+          ],
+          "childLimit": null,
+          "wrap": true
+        }
+      },
+      "layoutContract": {
+        "figmaPresentationWidth": 517,
+        "astroInlineSizing": "fluid",
+        "mediaRatio": "4:3",
+        "sourceOrder": [
+          "visual",
+          "title",
+          "description",
+          "stat",
+          "tags",
+          "actions"
+        ]
+      }
+    },
+    "bullet-card-surface": {
+      "pageId": "1395:17651",
+      "nodeId": "1793:2056",
+      "variantCount": 2,
+      "axes": {
+        "Visual": [
+          "False",
+          "True"
+        ]
+      },
+      "properties": {
+        "Title": "TEXT",
+        "Description": "TEXT",
+        "Show Icon": "BOOLEAN",
+        "Show Description": "BOOLEAN",
+        "Show Actions": "BOOLEAN"
+      },
+      "fixedDependencies": [
+        "Icon/Material/language",
+        "ButtonGroup",
+        "Ratio"
+      ]
+    },
+    "section-header": {
+      "pageId": "964:13166",
+      "nodeId": "274:26",
+      "variantCount": 3,
+      "axes": {
+        "Composition": [
+          "Copy + Actions",
+          "Heading + Details",
+          "Eyebrow + Heading + Details"
+        ],
+        "Flow": [
+          "Horizontal"
+        ]
+      },
+      "properties": {
+        "Heading": "TEXT",
+        "Actions": "SLOT",
+        "Paragraph": "TEXT"
+      },
+      "layerNaming": {
+        "regions": [
+          "Copy Region",
+          "Heading Region",
+          "Details Region"
+        ],
+        "groups": [
+          "Heading Group",
+          "Details Stack",
+          "Action Area",
+          "Actions"
+        ],
+        "content": [
+          "Eyebrow",
+          "Eyebrow Column",
+          "Heading Block",
+          "Heading Text",
+          "Paragraph Block",
+          "Paragraph Text",
+          "ButtonGroup"
+        ]
+      },
+      "actionLayout": {
+        "actionAreaInlineSizing": "fill",
+        "actionsSlotInlineSizing": "fill",
+        "buttonGroupInlineSizing": "fill",
+        "wrappingOwner": "ButtonGroup / Button Group Slot"
+      }
+    },
+    "faq": {
+      "pageId": "964:12973",
+      "nodeId": "2131:4214",
+      "variantCount": 2,
+      "axes": {
+        "Composition": [
+          "Split",
+          "Stacked"
+        ]
+      },
+      "properties": {},
+      "fixedDependencies": [
+        "Content",
+        "AccordionList",
+        "Accordion"
+      ],
+      "propertyMapping": {
+        "Composition": "composition",
+        "Content copy and visibility": "Astro heading, eyebrow and paragraph props",
+        "Content actions": "Astro actions slot",
+        "Accordion items": "Astro default slot"
+      },
+      "layoutContract": {
+        "wide": {
+          "split": "Content columns 1-4; AccordionList columns 7-12",
+          "stacked": "Centered Content span 4; centered AccordionList span 6"
+        },
+        "narrow": "Both regions span the available grid below the 64rem component width",
+        "responsiveStrategy": "container",
+        "wrappingOwner": "AccordionList"
+      }
+    },
+    "stat-text-inline": {
+      "pageId": "964:14725",
+      "nodeId": "1783:1425",
+      "variantCount": 4,
+      "axes": {
+        "Type": [
+          "Up",
+          "Down"
+        ],
+        "Icon": [
+          "Leading",
+          "Trailing"
+        ]
+      },
+      "properties": {
+        "Text": "TEXT"
+      },
+      "propertyKeys": {
+        "Text": "Text#1783:0"
+      },
+      "fixedDependencies": [
+        "Icon/Material/trending_up",
+        "Icon/Material/trending_down"
+      ],
+      "propertyMapping": {
+        "Type": "trend",
+        "Icon": "iconPosition",
+        "Text": "text"
+      }
+    },
+    "stat-card": {
+      "pageId": "964:14725",
+      "nodeId": "389:41",
+      "variantCount": 1,
+      "axes": {
+        "Type": [
+          "Default"
+        ]
+      },
+      "properties": {
+        "Caption": "TEXT",
+        "Value": "TEXT",
+        "Show Trending Up": "BOOLEAN",
+        "Description": "TEXT",
+        "Show Description": "BOOLEAN",
+        "Show Caption": "BOOLEAN",
+        "Show Trending Down": "BOOLEAN"
+      },
+      "fixedDependencies": [
+        "Icon/Material/trending_up",
+        "Icon/Material/trending_down"
+      ],
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Caption": "caption",
+        "Value": "value",
+        "Show Trending Up": "showTrendingUp",
+        "Description": "description",
+        "Show Description": "description-presence",
+        "Show Caption": "showCaption",
+        "Show Trending Down": "showTrendingDown"
+      },
+      "layoutContract": {
+        "figmaPresentationWidth": 199,
+        "figmaMinHeight": 140,
+        "astroInlineSizing": "fluid",
+        "responsiveStrategy": "intrinsic",
+        "sourceOrder": [
+          "caption",
+          "trends",
+          "value",
+          "description"
+        ]
+      }
+    },
+    "hero-breakout": {
+      "pageId": "964:14724",
+      "nodeId": "1800:389",
+      "variantCount": 1,
+      "axes": {},
+      "properties": {}
+    },
+    "hero-full-visual": {
+      "pageId": "964:14724",
+      "nodeId": "1788:639",
+      "variantCount": 3,
+      "axes": {
+        "Composition": [
+          "Centered",
+          "Left",
+          "Section Header"
+        ]
+      },
+      "properties": {},
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "sectionShell": {
+          "inlineSizing": "viewport",
+          "desktopWidth": 1440
+        },
+        "contentGrid": {
+          "inlineSizing": "fill",
+          "paddingVariableId": "VariableID:30:2"
+        },
+        "contentAndBulletPoints": {
+          "inlineSizing": "fill",
+          "maxWidthVariableId": "VariableID:1899:11",
+          "span": 5
+        },
+        "sectionHeader": {
+          "inlineSizing": "fill",
+          "maxWidthVariableId": "VariableID:1899:25",
+          "span": 12
+        },
+        "visual": {
+          "start": "full-start",
+          "end": "full-end"
+        },
+        "astroMapping": "Use a full-width section shell with an inner container/grid and named content/full lines; do not export Figma measurement variables as CSS tokens.",
+        "responsiveStatus": "Desktop only; Mobile and Tablet compositions are not approved."
+      }
     }
   },
   "conventions": {
@@ -1196,8 +1704,8 @@
       "figmaPageId": "1065:7",
       "afterCategoryKey": "website-patterns",
       "beforeCategoryKey": "examples-templates",
-      "afterContentOrder": 62,
-      "figmaTargetIndex": 67,
+      "afterContentOrder": 63,
+      "figmaTargetIndex": 68,
       "figmaCurrentIndex": 70,
       "role": "navigation-metadata"
     },
@@ -1207,8 +1715,8 @@
       "figmaPageId": "1065:6",
       "afterCategoryKey": "examples-templates",
       "beforeCategoryKey": "workspace",
-      "afterContentOrder": 66,
-      "figmaTargetIndex": 72,
+      "afterContentOrder": 67,
+      "figmaTargetIndex": 73,
       "figmaCurrentIndex": 63,
       "role": "navigation-metadata"
     }
@@ -1283,7 +1791,7 @@
       "figmaIcon": "▣",
       "folderKey": "examples-templates",
       "figmaPageId": "1062:9",
-      "targetOrder": 63,
+      "targetOrder": 64,
       "figmaCurrentIndex": 65
     },
     {
@@ -1292,7 +1800,7 @@
       "figmaIcon": "◌",
       "folderKey": "workspace",
       "figmaPageId": "444:2078",
-      "targetOrder": 67,
+      "targetOrder": 68,
       "figmaCurrentIndex": 59
     }
   ],
@@ -1539,12 +2047,22 @@
     },
     {
       "categoryKey": "base-components",
+      "pageKey": "progress-bar",
+      "pageLabel": "Progress Bar",
+      "figmaPageName": "     ↪  ❖  Progress Bar",
+      "figmaPageId": "1602:90744",
+      "sourceDirectory": "src/components/base-components/progress-bar",
+      "targetOrder": 25,
+      "figmaCurrentIndex": 23
+    },
+    {
+      "categoryKey": "base-components",
       "pageKey": "tooltip",
       "pageLabel": "Tooltip",
       "figmaPageName": "     ↪  ❖  Tooltip",
       "figmaPageId": "1140:594",
       "sourceDirectory": "src/components/base-components/tooltip",
-      "targetOrder": 25,
+      "targetOrder": 26,
       "figmaCurrentIndex": 23
     },
     {
@@ -1554,7 +2072,7 @@
       "figmaPageName": "     ↪  ❖  Hint",
       "figmaPageId": "1140:595",
       "sourceDirectory": "src/components/base-components/hint",
-      "targetOrder": 26,
+      "targetOrder": 27,
       "figmaCurrentIndex": 24
     },
     {
@@ -1564,7 +2082,7 @@
       "figmaPageName": "     ↪  ❖  Feedback Messages",
       "figmaPageId": "1140:597",
       "sourceDirectory": "src/components/base-components/feedback-messages",
-      "targetOrder": 27,
+      "targetOrder": 28,
       "figmaCurrentIndex": 26
     },
     {
@@ -1574,7 +2092,7 @@
       "figmaPageName": "     ↪  ❖  Dividers",
       "figmaPageId": "1009:1631",
       "sourceDirectory": "src/components/base-components/dividers",
-      "targetOrder": 29,
+      "targetOrder": 30,
       "figmaCurrentIndex": 18
     },
     {
@@ -1584,7 +2102,7 @@
       "figmaPageName": "     ↪  ❖  Ratio",
       "figmaPageId": "964:13169",
       "sourceDirectory": "src/components/base-components/ratio",
-      "targetOrder": 30,
+      "targetOrder": 31,
       "figmaCurrentIndex": 27
     },
     {
@@ -1594,7 +2112,7 @@
       "figmaPageName": "     ↪  ❖  Breadcrumbs",
       "figmaPageId": "1009:2626",
       "sourceDirectory": "src/components/base-components/breadcrumbs",
-      "targetOrder": 31,
+      "targetOrder": 32,
       "figmaCurrentIndex": 28
     },
     {
@@ -1604,7 +2122,7 @@
       "figmaPageName": "     ↪  ❖  Pagination",
       "figmaPageId": "1009:5696",
       "sourceDirectory": "src/components/base-components/pagination",
-      "targetOrder": 32,
+      "targetOrder": 33,
       "figmaCurrentIndex": 29
     },
     {
@@ -1614,7 +2132,7 @@
       "figmaPageName": "     ↪  ❖  Tag",
       "figmaPageId": "964:12970",
       "sourceDirectory": "src/components/base-components/tag",
-      "targetOrder": 33,
+      "targetOrder": 34,
       "figmaCurrentIndex": 30
     },
     {
@@ -1626,7 +2144,7 @@
       "sourceDirectory": "src/components/base-components/label",
       "documentationVisible": false,
       "figmaProjection": false,
-      "targetOrder": 34,
+      "targetOrder": 35,
       "figmaCurrentIndex": 31
     },
     {
@@ -1636,18 +2154,28 @@
       "figmaPageName": "     ↪  ❖  Eyebrow",
       "figmaPageId": "964:13167",
       "sourceDirectory": "src/components/base-components/eyebrow",
-      "targetOrder": 35,
+      "targetOrder": 36,
       "figmaCurrentIndex": 32
     },
     {
-      "categoryKey": "base-components",
+      "categoryKey": "website-patterns",
       "pageKey": "bullet-points",
       "pageLabel": "Bullet Points",
-      "figmaPageName": "     ↪  ❖  Bullet Points",
+      "figmaPageName": "     ↪  ▦  Bullet Points",
       "figmaPageId": "1395:17651",
-      "sourceDirectory": "src/components/base-components/bullet-points",
-      "targetOrder": 36,
+      "sourceDirectory": "src/components/website-patterns/bullet-points",
+      "targetOrder": 37,
       "figmaCurrentIndex": 35
+    },
+    {
+      "categoryKey": "website-patterns",
+      "pageKey": "content",
+      "pageLabel": "Content",
+      "figmaPageName": "     ↪  ▦  Content",
+      "figmaPageId": "1612:92235",
+      "sourceDirectory": "src/components/website-patterns/content",
+      "targetOrder": 37,
+      "figmaCurrentIndex": 40
     },
     {
       "categoryKey": "website-patterns",
@@ -1656,7 +2184,7 @@
       "figmaPageName": "     ↪  ▦  Navigation",
       "figmaPageId": "964:13172",
       "sourceDirectory": "src/components/website-patterns/navigation",
-      "targetOrder": 37,
+      "targetOrder": 38,
       "figmaCurrentIndex": 37
     },
     {
@@ -1666,7 +2194,7 @@
       "figmaPageName": "     ↪  ▦  Announcements & Banners",
       "figmaPageId": "992:2823",
       "sourceDirectory": "src/components/website-patterns/announcements-banners",
-      "targetOrder": 38,
+      "targetOrder": 39,
       "figmaCurrentIndex": 36
     },
     {
@@ -1676,7 +2204,7 @@
       "figmaPageName": "     ↪  ▦  Hero",
       "figmaPageId": "964:14724",
       "sourceDirectory": "src/components/website-patterns/hero",
-      "targetOrder": 39,
+      "targetOrder": 40,
       "figmaCurrentIndex": 47
     },
     {
@@ -1686,7 +2214,7 @@
       "figmaPageName": "     ↪  ▦  Page Headers",
       "figmaPageId": "964:13166",
       "sourceDirectory": "src/components/website-patterns/page-headers",
-      "targetOrder": 40,
+      "targetOrder": 41,
       "figmaCurrentIndex": 48
     },
     {
@@ -1696,7 +2224,7 @@
       "figmaPageName": "     ↪  ▦  Brand & Logo Proof",
       "figmaPageId": "1062:7",
       "sourceDirectory": "src/components/website-patterns/brand-logo-proof",
-      "targetOrder": 41,
+      "targetOrder": 42,
       "figmaCurrentIndex": 63
     },
     {
@@ -1706,7 +2234,7 @@
       "figmaPageName": "     ↪  ▦  Ratings & Reviews",
       "figmaPageId": "964:14729",
       "sourceDirectory": "src/components/website-patterns/ratings-reviews",
-      "targetOrder": 42,
+      "targetOrder": 43,
       "figmaCurrentIndex": 40
     },
     {
@@ -1716,7 +2244,7 @@
       "figmaPageName": "     ↪  ▦  Stats & Metrics",
       "figmaPageId": "964:14725",
       "sourceDirectory": "src/components/website-patterns/stats-metrics",
-      "targetOrder": 43,
+      "targetOrder": 44,
       "figmaCurrentIndex": 41
     },
     {
@@ -1726,7 +2254,7 @@
       "figmaPageName": "     ↪  ▦  Testimonials & Stories",
       "figmaPageId": "964:14728",
       "sourceDirectory": "src/components/website-patterns/testimonials-stories",
-      "targetOrder": 44,
+      "targetOrder": 45,
       "figmaCurrentIndex": 42
     },
     {
@@ -1736,7 +2264,7 @@
       "figmaPageName": "     ↪  ▦  Features",
       "figmaPageId": "964:14722",
       "sourceDirectory": "src/components/website-patterns/features",
-      "targetOrder": 45,
+      "targetOrder": 46,
       "figmaCurrentIndex": 49
     },
     {
@@ -1746,7 +2274,7 @@
       "figmaPageName": "     ↪  ▦  How It Works",
       "figmaPageId": "964:14723",
       "sourceDirectory": "src/components/website-patterns/how-it-works",
-      "targetOrder": 46,
+      "targetOrder": 47,
       "figmaCurrentIndex": 46
     },
     {
@@ -1756,7 +2284,7 @@
       "figmaPageName": "     ↪  ▦  Integrations & Security",
       "figmaPageId": "964:12974",
       "sourceDirectory": "src/components/website-patterns/integrations-security",
-      "targetOrder": 47,
+      "targetOrder": 48,
       "figmaCurrentIndex": 54
     },
     {
@@ -1766,7 +2294,7 @@
       "figmaPageName": "     ↪  ▦  Pricing & Comparison",
       "figmaPageId": "975:773",
       "sourceDirectory": "src/components/website-patterns/pricing-comparison",
-      "targetOrder": 48,
+      "targetOrder": 49,
       "figmaCurrentIndex": 43
     },
     {
@@ -1776,7 +2304,7 @@
       "figmaPageName": "     ↪  ▦  Before & After",
       "figmaPageId": "975:774",
       "sourceDirectory": "src/components/website-patterns/before-after",
-      "targetOrder": 49,
+      "targetOrder": 50,
       "figmaCurrentIndex": 44
     },
     {
@@ -1786,7 +2314,7 @@
       "figmaPageName": "     ↪  ▦  Filtering & Search",
       "figmaPageId": "992:2825",
       "sourceDirectory": "src/components/website-patterns/filtering-search",
-      "targetOrder": 50,
+      "targetOrder": 51,
       "figmaCurrentIndex": 35
     },
     {
@@ -1796,7 +2324,7 @@
       "figmaPageName": "     ↪  ▦  Tabbed Content",
       "figmaPageId": "964:12972",
       "sourceDirectory": "src/components/website-patterns/tabbed-content",
-      "targetOrder": 51,
+      "targetOrder": 52,
       "figmaCurrentIndex": 50
     },
     {
@@ -1806,17 +2334,17 @@
       "figmaPageName": "     ↪  ▦  Sliders & Carousels",
       "figmaPageId": "964:13170",
       "sourceDirectory": "src/components/website-patterns/sliders-carousels",
-      "targetOrder": 52,
+      "targetOrder": 53,
       "figmaCurrentIndex": 51
     },
     {
-      "categoryKey": "website-patterns",
-      "pageKey": "modal",
-      "pageLabel": "Modal",
-      "figmaPageName": "     ↪  ▦  Modal",
+      "categoryKey": "base-components",
+      "pageKey": "popup",
+      "pageLabel": "Popup",
+      "figmaPageName": "     ↪  ❖  Popup",
       "figmaPageId": "1140:599",
-      "sourceDirectory": "src/components/website-patterns/modal",
-      "targetOrder": 53,
+      "sourceDirectory": "src/components/base-components/popup",
+      "targetOrder": 29,
       "figmaCurrentIndex": 52
     },
     {
@@ -1826,7 +2354,7 @@
       "figmaPageName": "     ↪  ▦  CTA",
       "figmaPageId": "964:14726",
       "sourceDirectory": "src/components/website-patterns/cta",
-      "targetOrder": 54,
+      "targetOrder": 55,
       "figmaCurrentIndex": 45
     },
     {
@@ -1836,7 +2364,7 @@
       "figmaPageName": "     ↪  ▦  FAQ",
       "figmaPageId": "964:12973",
       "sourceDirectory": "src/components/website-patterns/faq",
-      "targetOrder": 55,
+      "targetOrder": 56,
       "figmaCurrentIndex": 53
     },
     {
@@ -1846,7 +2374,7 @@
       "figmaPageName": "     ↪  ▦  Blog & Resources",
       "figmaPageId": "964:14727",
       "sourceDirectory": "src/components/website-patterns/blog-resources",
-      "targetOrder": 56,
+      "targetOrder": 57,
       "figmaCurrentIndex": 39
     },
     {
@@ -1856,7 +2384,7 @@
       "figmaPageName": "     ↪  ▦  Rich Text",
       "figmaPageId": "964:9276",
       "sourceDirectory": "src/components/website-patterns/rich-text",
-      "targetOrder": 57,
+      "targetOrder": 58,
       "figmaCurrentIndex": 58
     },
     {
@@ -1866,7 +2394,7 @@
       "figmaPageName": "     ↪  ▦  Newsletter & Lead Capture",
       "figmaPageId": "1062:8",
       "sourceDirectory": "src/components/website-patterns/newsletter-lead-capture",
-      "targetOrder": 58,
+      "targetOrder": 59,
       "figmaCurrentIndex": 64
     },
     {
@@ -1876,7 +2404,7 @@
       "figmaPageName": "     ↪  ▦  Careers",
       "figmaPageId": "964:12975",
       "sourceDirectory": "src/components/website-patterns/careers",
-      "targetOrder": 59,
+      "targetOrder": 60,
       "figmaCurrentIndex": 55
     },
     {
@@ -1886,7 +2414,7 @@
       "figmaPageName": "     ↪  ▦  Team",
       "figmaPageId": "992:2821",
       "sourceDirectory": "src/components/website-patterns/team",
-      "targetOrder": 60,
+      "targetOrder": 61,
       "figmaCurrentIndex": 56
     },
     {
@@ -1896,7 +2424,7 @@
       "figmaPageName": "     ↪  ▦  Contact",
       "figmaPageId": "964:12977",
       "sourceDirectory": "src/components/website-patterns/contact",
-      "targetOrder": 61,
+      "targetOrder": 62,
       "figmaCurrentIndex": 57
     },
     {
@@ -1906,7 +2434,7 @@
       "figmaPageName": "     ↪  ▦  Footer",
       "figmaPageId": "975:1271",
       "sourceDirectory": "src/components/website-patterns/footer",
-      "targetOrder": 62,
+      "targetOrder": 63,
       "figmaCurrentIndex": 38
     },
     {
@@ -1916,7 +2444,7 @@
       "figmaPageName": "     ↪  ▣  Component Recipes",
       "figmaPageId": "1062:10",
       "sourceDirectory": "src/components/examples-templates/component-recipes",
-      "targetOrder": 64,
+      "targetOrder": 65,
       "figmaCurrentIndex": 66
     },
     {
@@ -1926,7 +2454,7 @@
       "figmaPageName": "     ↪  ▣  Starters",
       "figmaPageId": "964:13171",
       "sourceDirectory": "src/components/examples-templates/starters",
-      "targetOrder": 65,
+      "targetOrder": 66,
       "figmaCurrentIndex": 67
     },
     {
@@ -1936,7 +2464,7 @@
       "figmaPageName": "     ↪  ▣  Landing Templates",
       "figmaPageId": "1062:11",
       "sourceDirectory": "src/components/examples-templates/landing-templates",
-      "targetOrder": 66,
+      "targetOrder": 67,
       "figmaCurrentIndex": 68
     },
     {
@@ -1946,7 +2474,7 @@
       "figmaPageName": "     ↪  ◌  Internal Parts",
       "figmaPageId": "1062:12",
       "sourceDirectory": "src/components/_internal/documentation",
-      "targetOrder": 68,
+      "targetOrder": 69,
       "figmaCurrentIndex": 69
     },
     {
@@ -1956,7 +2484,7 @@
       "figmaPageName": "     ↪  ◌  Sandbox",
       "figmaPageId": "1009:5216",
       "sourceDirectory": "src/components/_internal/dev",
-      "targetOrder": 69,
+      "targetOrder": 70,
       "figmaCurrentIndex": 33
     },
     {
@@ -1966,7 +2494,7 @@
       "figmaPageName": "     ↪  ◌  Visual Calibration",
       "figmaPageId": "1062:13",
       "sourceDirectory": "src/components/_internal/behaviors",
-      "targetOrder": 70,
+      "targetOrder": 71,
       "figmaCurrentIndex": 70
     }
   ],
@@ -2658,8 +3186,8 @@
         },
         {
           "kind": "property-mapping",
-          "reason": "Figma uses one unrestricted native Slot; Astro uses the unrestricted default slot with flex wrapping.",
-          "instruction": "Do not introduce a Count prop or child-count limit."
+          "reason": "Figma uses one unrestricted native Slot whose internal action layout fills the allocated width and wraps with gap/component/button/group on both axes; Astro uses the unrestricted default slot with flex wrapping and --gap-button-group.",
+          "instruction": "Set consumer ButtonGroup instances to Fill inside a width-owning action region. Do not introduce a Count prop or child-count limit."
         }
       ],
       "agenticRule": ".agentic-rules/components/button-group.md",
@@ -4285,8 +4813,7 @@
         "language",
         "phone",
         "country",
-        "brand",
-        "company"
+        "brand"
       ],
       "props": [
         "id",
@@ -4373,8 +4900,7 @@
         "language",
         "phone",
         "country",
-        "brand",
-        "company"
+        "brand"
       ],
       "props": [
         "id",
@@ -4605,11 +5131,13 @@
       "family": "file-upload",
       "dependencies": [
         "button",
-        "material-symbol"
+        "material-symbol",
+        "progress-bar"
       ],
       "uses": [
         "button",
-        "material-symbol"
+        "material-symbol",
+        "progress-bar"
       ],
       "syncStatus": "mapped",
       "status": "mapped",
@@ -4668,7 +5196,8 @@
         "global-color",
         "global-size",
         "global-motion",
-        "interaction-effect"
+        "interaction-effect",
+        "progress-bar-size"
       ],
       "readiness": {
         "visual": "review",
@@ -4778,46 +5307,29 @@
           "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
         },
         {
-          "kind": "design-time-fixture",
-          "reason": "Figma exposes a finite working composition, while Astro generates the runtime structure from typed arrays and owns keyboard or URL behavior.",
-          "instruction": "Treat the Figma composition as a layout fixture, not as a serialization of the Astro runtime API."
+          "kind": "property-mapping",
+          "reason": "Figma and Astro expose the same unrestricted Tab-only composition through a native Slot and default slot respectively.",
+          "instruction": "Add, remove, duplicate or reorder direct Tab children without a Count property; keep external panels consumer-owned and linked by aria-controls."
         }
       ],
       "agenticRule": ".agentic-rules/components/tabs.md",
       "variants": [],
       "props": [
-        "items",
-        "initialTab",
-        "size",
-        "id",
         "aria-label",
         "aria-labelledby"
       ],
       "slots": [
-        "named panels by item id"
+        "default: direct Tab children"
       ],
       "attributes": [
         "role=tablist",
-        "role=tabpanel",
-        "data-tabs-root",
-        "data-tab-id"
+        "data-tabs-root"
       ],
-      "states": [
-        "default",
-        "selected",
-        "disabled"
-      ],
+      "states": [],
       "tokens": [
-        "--control-*",
-        "--tab-*",
-        "--effect-focused",
-        "--gap-small",
-        "--space-regular"
+        "--gap-small"
       ],
       "tokenGroups": [
-        "control-size",
-        "tab-color",
-        "interaction-effect",
         "global-size"
       ],
       "readiness": {
@@ -4916,11 +5428,13 @@
       "family": "accordion",
       "dependencies": [
         "material-symbol",
-        "tooltip"
+        "tooltip",
+        "progress-bar"
       ],
       "uses": [
         "material-symbol",
-        "tooltip"
+        "tooltip",
+        "progress-bar"
       ],
       "syncStatus": "mapped",
       "status": "mapped",
@@ -4934,25 +5448,40 @@
           "kind": "api",
           "reason": "Figma projects Open and State as design-time axes while Astro derives runtime state from a native disclosure button.",
           "instruction": "Keep Open and State design-time only; configure initial runtime state with initialOpen."
+        },
+        {
+          "kind": "intentional-difference",
+          "reason": "Astro accepts every typed name from the 50-symbol local Material Symbols set for brandIcon, while Figma intentionally projects only language until the dedicated Accordion icon set grows.",
+          "instruction": "Keep arrow_drop_down fixed in both environments. Treat language as the current Figma brand-icon snapshot, not as an Astro API restriction."
         }
       ],
       "agenticRule": ".agentic-rules/components/accordion.md",
       "variants": [],
       "props": [
         "title",
+        "titleSuffix",
         "content",
         "helpText",
         "helpLabel",
+        "showTooltip",
+        "showBrandIcon",
+        "brandIcon",
+        "progress",
+        "progressLabel",
         "initialOpen",
         "disabled",
         "headingLevel",
         "id"
       ],
-      "slots": [],
+      "slots": [
+        "default"
+      ],
       "attributes": [
         "data-accordion-state",
         "data-accordion-help",
+        "data-accordion-brand-icon",
         "data-accordion-disabled",
+        "data-accordion-progress-manual",
         "aria-expanded",
         "aria-controls",
         "aria-labelledby"
@@ -4977,13 +5506,15 @@
         "--font-weight-strong",
         "--effect-focused",
         "--motion-transition",
-        "--motion-duration-surface-enter",
+        "--motion-duration-disclosure",
+        "--motion-duration-accordion-autoplay",
         "--motion-ease-premium-out"
       ],
       "tokenGroups": [
         "global-color",
         "global-size",
         "global-motion",
+        "progress-bar-size",
         "typography-foundations",
         "interaction-effect"
       ],
@@ -5035,13 +5566,19 @@
       ],
       "props": [
         "mode",
+        "autoplay",
+        "autoplayDuration",
+        "autoplayLoop",
         "id"
       ],
       "slots": [
         "default"
       ],
       "attributes": [
-        "data-accordion-mode"
+        "data-accordion-mode",
+        "data-accordion-autoplay",
+        "data-accordion-autoplay-duration",
+        "data-accordion-autoplay-loop"
       ],
       "states": [],
       "tokens": [
@@ -5049,6 +5586,69 @@
       ],
       "tokenGroups": [
         "global-size"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "progress-bar",
+      "categoryKey": "base-components",
+      "pageKey": "progress-bar",
+      "pageLabel": "Progress Bar",
+      "figmaPageId": "1602:90744",
+      "actualFigmaPageId": "1602:90744",
+      "figmaCanonicalNodeId": "1602:90768",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/progress-bar",
+      "sourcePath": "src/components/base-components/progress-bar/ProgressBar.astro",
+      "name": "ProgressBar",
+      "astroComponent": "ProgressBar",
+      "role": "atom",
+      "layer": "atom",
+      "family": "progress-bar",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma node 1602:90768 still projects the obsolete Tone axis and 0–100% design-time checkpoints, while Astro now has one canonical accent appearance, continuous determinate values and a native indeterminate state.",
+          "instruction": "Remove the Tone axis during the next explicit Figma cleanup. Keep percentage checkpoints for responsive visual review and keep runtime semantics, accessibility and continuous values canonical in Astro."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/progress-bar.md",
+      "variants": [],
+      "props": [
+        "value",
+        "max",
+        "label",
+        "decorative"
+      ],
+      "slots": [],
+      "attributes": [
+        "aria-label",
+        "aria-hidden"
+      ],
+      "states": [
+        "determinate",
+        "indeterminate"
+      ],
+      "tokens": [
+        "--progress-bar-block-size",
+        "--color-background-muted",
+        "--color-background-accent",
+        "--radius-full",
+        "--motion-duration-disclosure",
+        "--motion-transition"
+      ],
+      "tokenGroups": [
+        "progress-bar-size",
+        "global-color",
+        "global-size",
+        "global-motion"
       ],
       "readiness": {
         "visual": "review",
@@ -5092,14 +5692,10 @@
         }
       ],
       "agenticRule": ".agentic-rules/components/tooltip.md",
-      "variants": [
-        "small",
-        "medium"
-      ],
+      "variants": [],
       "props": [
         "text",
         "label",
-        "size",
         "placement",
         "narrowPlacement",
         "id"
@@ -5108,12 +5704,13 @@
       "attributes": [
         "data-tooltip-trigger",
         "data-tooltip-content",
-        "data-tooltip-size",
         "data-tooltip-placement",
         "data-tooltip-placement-narrow",
         "data-overlay-placement",
         "data-overlay-placement-narrow",
         "data-overlay-resolved-placement",
+        "data-overlay-indicator",
+        "data-overlay-indicator-direction",
         "aria-describedby",
         "role=tooltip",
         "popover=manual"
@@ -5130,10 +5727,9 @@
         "--color-background-inverse",
         "--color-text-inverse",
         "--color-icon-secondary",
-        "--color-border-inverse",
-        "--control-min-height",
-        "--control-icon-size",
+        "--color-icon-accent",
         "--content-padding-xsmall",
+        "--content-padding-small",
         "--tooltip-tail-size",
         "--tooltip-compact-max-inline-size",
         "--radius-small",
@@ -5142,7 +5738,6 @@
       ],
       "tokenGroups": [
         "tooltip-size",
-        "control-size",
         "global-color",
         "global-size",
         "global-motion",
@@ -5183,6 +5778,11 @@
           "kind": "figma-projection",
           "reason": "Figma node 1371:74 now provides the visual mastery and bounded design-time properties for InfoPopover.",
           "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "intentional-difference",
+          "reason": "Figma projects static visibility, interaction and preferred-placement snapshots, while Astro owns Popover API behavior, focus lifecycle, light dismissal and collision-resolved placement.",
+          "instruction": "Use the 24 Figma variants for visual review and keep runtime state transitions, accessibility semantics and collision resolution canonical in Astro."
         }
       ],
       "agenticRule": ".agentic-rules/components/info-popover.md",
@@ -5201,6 +5801,8 @@
         "data-info-popover-content",
         "data-overlay-placement",
         "data-overlay-resolved-placement",
+        "data-overlay-indicator",
+        "data-overlay-indicator-direction",
         "aria-controls",
         "aria-expanded",
         "aria-haspopup=dialog",
@@ -5218,16 +5820,11 @@
         "closed"
       ],
       "tokens": [
-        "--color-background-canvas",
-        "--color-background-subtle",
-        "--color-background-muted",
-        "--color-text-primary",
-        "--color-text-secondary",
-        "--color-icon-primary",
+        "--color-background-inverse",
+        "--color-text-inverse",
         "--color-icon-secondary",
-        "--color-border-default",
-        "--control-min-height",
-        "--control-icon-size",
+        "--color-icon-accent",
+        "--color-icon-inverse",
         "--content-padding-small",
         "--gap-tiny",
         "--gap-regular",
@@ -5242,7 +5839,6 @@
       ],
       "tokenGroups": [
         "tooltip-size",
-        "control-size",
         "global-color",
         "global-size",
         "global-motion",
@@ -5309,10 +5905,75 @@
         "--color-border-subtle",
         "--color-border-default",
         "--color-border-strong",
-        "--color-text-tertiary"
+        "--color-text-secondary"
       ],
       "tokenGroups": [
         "content-divider-size",
+        "global-color",
+        "global-size",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "title-row",
+      "categoryKey": "base-components",
+      "pageKey": "dividers",
+      "pageLabel": "Dividers",
+      "figmaPageId": "1009:1631",
+      "actualFigmaPageId": "1009:1631",
+      "figmaCanonicalNodeId": "1680:6",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/dividers",
+      "sourcePath": "src/components/base-components/dividers/TitleRow.astro",
+      "name": "TitleRow",
+      "astroComponent": "TitleRow",
+      "role": "atom",
+      "layer": "atom",
+      "family": "dividers",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma node 1680:6 now provides the visual mastery and bounded design-time properties for TitleRow.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "platform-semantics",
+          "reason": "Figma uses an Auto Layout frame containing a text layer, while Astro collapses the same visual contract into one native paragraph.",
+          "instruction": "Keep the paragraph semantic and let it own the bottom border and padding; do not add a runtime wrapper solely to mirror Figma layers."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/title-row.md",
+      "variants": [],
+      "props": [
+        "text"
+      ],
+      "slots": [],
+      "attributes": [],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--color-border-default",
+        "--color-text-tertiary",
+        "--content-padding-xsmall",
+        "--border-width-default",
+        "--font-family-body",
+        "--font-size-body-small",
+        "--font-weight-normal",
+        "--line-height-normal",
+        "--letter-spacing-tight",
+        "--overflow-wrap-break-word",
+        "--text-transform-none"
+      ],
+      "tokenGroups": [
         "global-color",
         "global-size",
         "typography-foundations"
@@ -5947,6 +6608,11 @@
           "kind": "figma-projection",
           "reason": "Figma node 268:5 now provides the visual mastery and bounded design-time properties for Eyebrow.",
           "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma keeps one structural Property 1=Default axis for its one-child ComponentSet presentation.",
+          "instruction": "Treat the default axis as Figma-only documentation metadata; do not expose it as an Astro prop."
         }
       ],
       "agenticRule": ".agentic-rules/components/eyebrow.md",
@@ -5963,10 +6629,13 @@
         "--eyebrow-text-default",
         "--eyebrow-marker-default",
         "--eyebrow-marker-size",
+        "--border-width-default",
         "--space-eyebrow-bottom",
         "--gap-small",
-        "--font-size-body-small",
-        "--font-weight-normal"
+        "--font-size-body-tiny",
+        "--font-weight-emphasis",
+        "--line-height-compact",
+        "--letter-spacing-tight"
       ],
       "tokenGroups": [
         "eyebrow-color",
@@ -5981,15 +6650,15 @@
     },
     {
       "id": "bullet-point",
-      "categoryKey": "base-components",
+      "categoryKey": "website-patterns",
       "pageKey": "bullet-points",
       "pageLabel": "Bullet Points",
       "figmaPageId": "1395:17651",
       "actualFigmaPageId": "1395:17651",
       "figmaCanonicalNodeId": "1472:2966",
       "figmaCandidateNodeIds": [],
-      "sourceDirectory": "src/components/base-components/bullet-points",
-      "sourcePath": "src/components/base-components/bullet-points/BulletPoint.astro",
+      "sourceDirectory": "src/components/website-patterns/bullet-points",
+      "sourcePath": "src/components/website-patterns/bullet-points/BulletPoint.astro",
       "name": "BulletPoint",
       "astroComponent": "BulletPoint",
       "role": "atom",
@@ -6047,6 +6716,400 @@
       "tokenGroups": [
         "bullet-point-size",
         "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "bullet-card-simple",
+      "categoryKey": "website-patterns",
+      "pageKey": "bullet-points",
+      "pageLabel": "Bullet Points",
+      "figmaPageId": "1395:17651",
+      "actualFigmaPageId": "1395:17651",
+      "figmaCanonicalNodeId": "1901:5727",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/bullet-points",
+      "sourcePath": "src/components/website-patterns/bullet-points/BulletCardSimple.astro",
+      "name": "BulletCardSimple",
+      "astroComponent": "BulletCardSimple",
+      "role": "card",
+      "layer": "card",
+      "family": "bullet-points",
+      "dependencies": [
+        "material-symbol",
+        "button-group"
+      ],
+      "uses": [
+        "material-symbol",
+        "button-group"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma node 1901:5727 now provides the visual mastery and bounded design-time properties for BulletCardSimple.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Type=Default is structural metadata, while Show Description and Show Actions map to description and actions-slot presence in Astro.",
+          "instruction": "Do not expose Type, showDescription or showActions props; keep optional content presence-driven."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma uses a fixed 549px documentation width while Astro fills the inline size allocated by its parent.",
+          "instruction": "Keep the Astro layout intrinsic from 320px through 1440px and never copy the fixture width into public CSS."
+        },
+        {
+          "kind": "icon-representation",
+          "reason": "Figma keeps native 20px geometry on the fixed language master while Astro consumes the approved bullet-card-simple icon-size token.",
+          "instruction": "Keep language fixed and expose no arbitrary icon prop or slot."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/bullet-card-simple.md",
+      "variants": [],
+      "props": [
+        "title",
+        "description",
+        "showIcon",
+        "headingLevel",
+        "id"
+      ],
+      "slots": [
+        "actions"
+      ],
+      "attributes": [
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--bullet-card-simple-icon-size",
+        "--content-padding-large",
+        "--border-width-strong",
+        "--color-border-accent-strong",
+        "--color-icon-accent",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--gap-small",
+        "--space-tiny",
+        "--space-medium",
+        "--overflow-wrap-break-word"
+      ],
+      "tokenGroups": [
+        "bullet-card-simple-size",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "bullet-icon-card",
+      "categoryKey": "website-patterns",
+      "pageKey": "bullet-points",
+      "pageLabel": "Bullet Points",
+      "figmaPageId": "1395:17651",
+      "actualFigmaPageId": "1395:17651",
+      "figmaCanonicalNodeId": "1793:2052",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/bullet-points",
+      "sourcePath": "src/components/website-patterns/bullet-points/BulletIconCard.astro",
+      "name": "BulletIconCard",
+      "astroComponent": "BulletIconCard",
+      "role": "card",
+      "layer": "card",
+      "family": "bullet-points",
+      "dependencies": [
+        "material-symbol",
+        "tag",
+        "button-group"
+      ],
+      "uses": [
+        "material-symbol",
+        "tag",
+        "button-group"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma node 1793:2052 now provides the visual mastery and bounded design-time properties for BulletIconCard.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Show Stat, Show Tags and Show Actions map to optional prop or named-slot presence in Astro; the nested example ButtonGroup maps to the actions slot wrapper.",
+          "instruction": "Do not expose duplicated showStat, showTags or showActions props. Keep stat, tags and actions presence-driven."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma uses a fixed 517px presentation width while Astro fills the inline size assigned by its parent.",
+          "instruction": "Preserve both explicit layouts as fluid intrinsic compositions and do not auto-switch layout at a breakpoint."
+        },
+        {
+          "kind": "semantic-heading",
+          "reason": "Figma stores visual text styles without HTML outline semantics, while Astro exposes headingLevel for h2 through h6.",
+          "instruction": "Keep Body/Base/Semi Bold visual styling independent from the consumer-selected semantic heading rank."
+        },
+        {
+          "kind": "icon-representation",
+          "reason": "Figma uses fixed language and trending_up Material Symbol masters; Astro renders the same curated glyphs through the approved component-owned icon-size token.",
+          "instruction": "Keep both glyphs fixed and decorative. Expose no arbitrary icon prop or slot."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/bullet-icon-card.md",
+      "variants": [
+        "vertical",
+        "horizontal"
+      ],
+      "props": [
+        "title",
+        "description",
+        "layout",
+        "headingLevel",
+        "showIcon",
+        "stat",
+        "showStatIcon"
+      ],
+      "slots": [
+        "tags",
+        "actions"
+      ],
+      "attributes": [
+        "data-bullet-icon-card-layout",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--bullet-icon-card-icon-size",
+        "--bullet-icon-card-section-space",
+        "--gap-large",
+        "--space-tiny",
+        "--space-regular",
+        "--gap-tiny",
+        "--gap-small",
+        "--color-icon-accent",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--overflow-wrap-break-word"
+      ],
+      "tokenGroups": [
+        "bullet-icon-card-size",
+        "global-color",
+        "global-size",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "bullet-visual-card",
+      "categoryKey": "website-patterns",
+      "pageKey": "bullet-points",
+      "pageLabel": "Bullet Points",
+      "figmaPageId": "1395:17651",
+      "actualFigmaPageId": "1395:17651",
+      "figmaCanonicalNodeId": "1821:5427",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/bullet-points",
+      "sourcePath": "src/components/website-patterns/bullet-points/BulletVisualCard.astro",
+      "name": "BulletVisualCard",
+      "astroComponent": "BulletVisualCard",
+      "role": "card",
+      "layer": "card",
+      "family": "bullet-points",
+      "dependencies": [
+        "ratio",
+        "material-symbol",
+        "tag",
+        "button-group"
+      ],
+      "uses": [
+        "ratio",
+        "material-symbol",
+        "tag",
+        "button-group"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma node 1821:5427 now provides the visual mastery and bounded design-time properties for BulletVisualCard.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Type=Default is structural documentation metadata and Show Description, Show Stat, Show Tags and Show Actions map to prop or slot presence in Astro.",
+          "instruction": "Do not expose Type or duplicated Show* boolean props in the Astro API."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma uses a 517px presentation width while Astro fills the inline size assigned by its parent.",
+          "instruction": "Preserve the fluid intrinsic Astro contract and do not copy the Figma fixture width into public CSS."
+        },
+        {
+          "kind": "slot-representation",
+          "reason": "Figma stores a Ratio placeholder and an unrestricted Tags Slot, while Astro requires a meaningful visual slot and composes Tag children through a named slot.",
+          "instruction": "Use Ratio 4:3 as the preferred visual dependency and keep tag count unrestricted."
+        },
+        {
+          "kind": "slot-representation",
+          "reason": "Figma exposes the action content through the nested ButtonGroup Slot, while Astro exposes an actions slot and owns the ButtonGroup wrapper.",
+          "instruction": "Pass Button or ButtonLink children to actions; never nest another ButtonGroup."
+        },
+        {
+          "kind": "icon-representation",
+          "reason": "Figma binds the fixed trending_up master at 20px while Astro renders the same curated Material Symbol through the approved component token.",
+          "instruction": "Keep trending_up fixed and expose no arbitrary icon prop."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/bullet-visual-card.md",
+      "variants": [],
+      "props": [
+        "title",
+        "description",
+        "stat",
+        "headingLevel"
+      ],
+      "slots": [
+        "visual",
+        "tags",
+        "actions"
+      ],
+      "attributes": [
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--bullet-visual-card-stat-icon-size",
+        "--space-media-content",
+        "--space-medium",
+        "--space-regular",
+        "--gap-small",
+        "--gap-tag-group",
+        "--radius-image",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--color-icon-accent"
+      ],
+      "tokenGroups": [
+        "bullet-visual-card-size",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "bullet-card-surface",
+      "categoryKey": "website-patterns",
+      "pageKey": "bullet-points",
+      "pageLabel": "Bullet Points",
+      "figmaPageId": "1395:17651",
+      "actualFigmaPageId": "1395:17651",
+      "figmaCanonicalNodeId": "1793:2056",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/bullet-points",
+      "sourcePath": "src/components/website-patterns/bullet-points/BulletCardSurface.astro",
+      "name": "BulletCardSurface",
+      "astroComponent": "BulletCardSurface",
+      "role": "card",
+      "layer": "card",
+      "family": "bullet-points",
+      "dependencies": [
+        "material-symbol",
+        "button-group",
+        "ratio"
+      ],
+      "uses": [
+        "material-symbol",
+        "button-group",
+        "ratio"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma node 1793:2056 now provides the visual mastery and bounded design-time properties for BulletCardSurface.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Show Description, Show Actions and Visual controls map to description, actions-slot and visual-slot presence in Astro rather than duplicated boolean props.",
+          "instruction": "Keep the Astro API presence-driven and do not expose visual, showDescription or showActions props."
+        },
+        {
+          "kind": "responsive",
+          "reason": "Figma records fixed documentation widths for the compact and visual examples, while Astro must work in arbitrary allocated space.",
+          "instruction": "Keep the compact intrinsic layout and stack content before visual below the local 40rem container threshold; never copy the 588px or 839px presentation widths into public CSS."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/bullet-card-surface.md",
+      "variants": [
+        "without-visual",
+        "with-visual"
+      ],
+      "props": [
+        "title",
+        "description",
+        "showIcon",
+        "headingLevel",
+        "id"
+      ],
+      "slots": [
+        "actions",
+        "visual"
+      ],
+      "attributes": [
+        "data-has-visual",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--card-background-default",
+        "--card-border-default",
+        "--border-width-default",
+        "--radius-small",
+        "--radius-image",
+        "--content-padding-large",
+        "--gap-tiny",
+        "--gap-small",
+        "--gap-large",
+        "--gap-xlarge",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--color-icon-accent",
+        "--size-20",
+        "--overflow-wrap-break-word"
+      ],
+      "tokenGroups": [
+        "card-color",
+        "global-color",
+        "global-size",
         "typography-foundations"
       ],
       "readiness": {
@@ -6418,21 +7481,516 @@
       }
     },
     {
-      "id": "popup",
+      "id": "content",
       "categoryKey": "website-patterns",
-      "pageKey": "modal",
-      "pageLabel": "Modal",
+      "pageKey": "content",
+      "pageLabel": "Content",
+      "figmaPageId": "1612:92235",
+      "actualFigmaPageId": "1612:92235",
+      "figmaCanonicalNodeId": "1644:98902",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/content",
+      "sourcePath": "src/components/website-patterns/content/Content.astro",
+      "name": "Content",
+      "astroComponent": "Content",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "content",
+      "dependencies": [
+        "eyebrow",
+        "button-group"
+      ],
+      "uses": [
+        "eyebrow",
+        "button-group"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma node 1644:98902 provides the visual mastery, left and centered variants, required Heading text and optional Eyebrow, Paragraph and Button Group parts for Content.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic heading levels, native markup, accessibility and public TypeScript props."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes explicit Show Eyebrow, Show Paragraph and Show Button Group booleans; Astro collapses each switch into the presence of the corresponding optional string prop or actions slot.",
+          "instruction": "Do not add redundant show props in Astro. Omit eyebrow, paragraph or the actions slot to remove that part."
+        },
+        {
+          "kind": "intentional-difference",
+          "reason": "Figma uses a 517px component width for deterministic design-time editing, while Astro fills the available inline size and lets the parent section own width constraints.",
+          "instruction": "Keep Content fluid in code and apply any max-inline-size in the consuming section layout."
+        },
+        {
+          "kind": "semantic-projection",
+          "reason": "Figma fixes the visual style to Heading/H4, while Astro exposes headingLevel 2 through 6 independently from that visual style.",
+          "instruction": "Choose headingLevel from the document outline and preserve Heading/H4 only as the visual typography contract."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/content.md",
+      "variants": [
+        "left",
+        "centered"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "align",
+        "headingLevel"
+      ],
+      "slots": [
+        "actions"
+      ],
+      "attributes": [
+        "data-content-align",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--gap-regular",
+        "--gap-medium",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--font-size-h4",
+        "--font-size-body-base"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "global-size",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "faq",
+      "categoryKey": "website-patterns",
+      "pageKey": "faq",
+      "pageLabel": "FAQ",
+      "figmaPageId": "964:12973",
+      "actualFigmaPageId": "964:12973",
+      "figmaCanonicalNodeId": "2131:4214",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/faq",
+      "sourcePath": "src/components/website-patterns/faq/FAQ.astro",
+      "name": "FAQ",
+      "astroComponent": "FAQ",
+      "role": "section",
+      "layer": "section",
+      "family": "faq",
+      "dependencies": [
+        "content",
+        "accordion-list",
+        "accordion"
+      ],
+      "uses": [
+        "content",
+        "accordion-list",
+        "accordion"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes only the Composition axis on the FAQ master, while Astro flattens the nested Content and AccordionList decisions into a small section-level API.",
+          "instruction": "Use heading, eyebrow, paragraph, actions and AccordionList behavior props in Astro. Do not add redundant Figma visibility properties or arbitrary component slots."
+        },
+        {
+          "kind": "slot-representation",
+          "reason": "The Figma AccordionList Slot definition is not connected to the visible Items layer and three Accordions remain siblings of the list in each FAQ variant.",
+          "instruction": "Place every direct Accordion child from the Astro default slot inside exactly one AccordionList; do not reproduce the broken Figma grouping."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma documents only the 1440px desktop compositions, while Astro must remain usable at narrow and intermediate assigned widths.",
+          "instruction": "Use the component-owned faq container. Below 64rem, reflow both regions to one full-width column while preserving source order and the explicit composition alignment."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/faq.md",
+      "variants": [
+        "split",
+        "stacked"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "composition",
+        "headingLevel",
+        "accordionMode",
+        "accordionAutoplay",
+        "accordionAutoplayDuration",
+        "accordionAutoplayLoop"
+      ],
+      "slots": [
+        "actions",
+        "default"
+      ],
+      "attributes": [
+        "data-faq-composition",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--section-padding-large",
+        "--container-main",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--gap-xxxlarge",
+        "--color-background-canvas"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "top-banner",
+      "categoryKey": "website-patterns",
+      "pageKey": "announcements-banners",
+      "pageLabel": "Announcements & Banners",
+      "figmaPageId": "992:2823",
+      "actualFigmaPageId": "992:2823",
+      "figmaCanonicalNodeId": "1852:2867",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/announcements-banners",
+      "sourcePath": "src/components/website-patterns/announcements-banners/TopBanner.astro",
+      "name": "TopBanner",
+      "astroComponent": "TopBanner",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "announcements-banners",
+      "dependencies": [
+        "material-symbol"
+      ],
+      "uses": [
+        "material-symbol"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma ComponentSet 1852:2867 provides the canonical desktop visual mastery, five Status variants, editable copy and bounded visibility switches for TopBanner.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, responsive runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes Show Supporting Content, Show Description and Show Link booleans, while Astro derives supporting content from the presence of description and link data.",
+          "instruction": "Do not add redundant visibility props in Astro. Omit description or link to remove that content."
+        },
+        {
+          "kind": "intentional-difference",
+          "reason": "Figma documents a clipped 1440 by 40 desktop presentation, while Astro fills the available inline size, treats 40 as a minimum height and reflows without clipping below the component threshold.",
+          "instruction": "Keep the Astro component fluid and content-safe; do not reproduce fixed width, fixed height or clipping from the Figma presentation."
+        },
+        {
+          "kind": "runtime-and-semantic-projection",
+          "reason": "Required id, href and native link semantics, labelled aside semantics, accessible status text and non-persistent dismissal are code-only. Direct Code Connect is unavailable, so this manifest mapping is canonical.",
+          "instruction": "Preserve the feedback dismissal event contract and native semantics. Do not add default aria-live or persistence inside TopBanner."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/top-banner.md",
+      "variants": [
+        "brand",
+        "info",
+        "success",
+        "warning",
+        "error"
+      ],
+      "props": [
+        "id",
+        "title",
+        "description",
+        "status",
+        "link",
+        "showIcon",
+        "dismissible",
+        "dismissLabel",
+        "statusLabel"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-top-banner-status",
+        "data-top-banner-icon",
+        "data-top-banner-dismissible",
+        "data-feedback-root",
+        "data-feedback-dismiss",
+        "aria-labelledby",
+        "aria-describedby"
+      ],
+      "states": [
+        "default",
+        "dismissed"
+      ],
+      "tokens": [
+        "--top-banner-min-height",
+        "--top-banner-icon-size",
+        "--color-background-inverse",
+        "--color-text-inverse",
+        "--color-icon-inverse",
+        "--feedback-info-background-solid",
+        "--feedback-success-background-solid",
+        "--feedback-warning-background-solid",
+        "--feedback-error-background-solid",
+        "--site-padding-inline",
+        "--gap-regular",
+        "--gap-small",
+        "--content-padding-small",
+        "--effect-focused"
+      ],
+      "tokenGroups": [
+        "top-banner-size",
+        "feedback-color",
+        "global-layout",
+        "global-color",
+        "global-size",
+        "typography-foundations",
+        "interaction-effect"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "team-member-card",
+      "categoryKey": "website-patterns",
+      "pageKey": "team",
+      "pageLabel": "Team",
+      "figmaPageId": "992:2821",
+      "actualFigmaPageId": "992:2821",
+      "figmaCanonicalNodeId": "1852:3569",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/team",
+      "sourcePath": "src/components/website-patterns/team/TeamMemberCard.astro",
+      "name": "TeamMemberCard",
+      "astroComponent": "TeamMemberCard",
+      "role": "card",
+      "layer": "card",
+      "family": "team",
+      "dependencies": [
+        "ratio"
+      ],
+      "uses": [
+        "ratio"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes Show Image and Show Role booleans, while Astro derives visibility from the image slot and roleOrPosition presence.",
+          "instruction": "Do not add redundant showImage or showRole props. Omit the corresponding content to remove it."
+        },
+        {
+          "kind": "semantic-projection",
+          "reason": "Figma fixes visual text styles, while Astro renders the full name as a semantic h2 through h6 selected independently from the layout-specific typography class.",
+          "instruction": "Choose headingLevel from the document outline without changing the vertical Heading/H6 or horizontal Body/Base/Semibold visual contract."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma uses 394px and 350px authoring widths, while Astro fills the inline size assigned by its parent and keeps layout as an explicit variant.",
+          "instruction": "Do not copy the Figma presentation widths or switch layout at a breakpoint."
+        },
+        {
+          "kind": "token-projection",
+          "reason": "Figma uses an unbound 93px horizontal image dimension, while Astro consumes the approved --team-member-card-horizontal-image-size token aliased to --size-96.",
+          "instruction": "Preserve the documented 93 to 96px intentional difference. The projection remains Astro-only until a separate Figma Variable update is approved."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/team-member-card.md",
+      "variants": [
+        "vertical",
+        "horizontal"
+      ],
+      "props": [
+        "fullName",
+        "roleOrPosition",
+        "layout",
+        "imageRatio",
+        "headingLevel"
+      ],
+      "slots": [
+        "image"
+      ],
+      "attributes": [
+        "data-team-member-card-layout"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--team-member-card-horizontal-image-size",
+        "--gap-large",
+        "--gap-small",
+        "--radius-image",
+        "--color-text-primary",
+        "--color-text-secondary"
+      ],
+      "tokenGroups": [
+        "team-member-card-size",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "hero-breakout",
+      "categoryKey": "website-patterns",
+      "pageKey": "hero",
+      "pageLabel": "Hero",
+      "figmaPageId": "964:14724",
+      "actualFigmaPageId": "964:14724",
+      "figmaCanonicalNodeId": "1800:389",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/hero",
+      "sourcePath": null,
+      "name": "HeroBreakout",
+      "astroComponent": null,
+      "role": "section",
+      "layer": "section",
+      "family": "hero",
+      "dependencies": [
+        "content",
+        "bullet-point",
+        "button-group"
+      ],
+      "uses": [
+        "content",
+        "bullet-point",
+        "button-group"
+      ],
+      "syncStatus": "figma-only",
+      "status": "figma-only",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma ComponentSet 1800:389 is the canonical visual master for the desktop HeroBreakout composition; no Astro component or public API is approved yet.",
+          "instruction": "Keep sourcePath and astroComponent null until a separate implementation request approves the Astro component boundary."
+        },
+        {
+          "kind": "layout",
+          "reason": "At 1440 px, Content Region spans columns 1–6, Content Stack spans columns 1–4, and Visual starts at column 7 and reaches full-end at the right viewport edge.",
+          "instruction": "Figma binds Layout Grid Columns max-width spans to the Fill-sized Content Region and Content Stack. Future Astro implementation must use .l-grid[data-grid=\"breakout\"] and named grid lines; do not export the Figma measurements or reproduce the 413 px, 630 px, or 710 px widths as CSS tokens."
+        },
+        {
+          "kind": "responsive",
+          "reason": "Only the 1440 px Desktop composition is approved in Figma; tablet and mobile layouts have not been designed.",
+          "instruction": "Do not infer a Tablet mode, Device axis, or mobile HeroBreakout arrangement before those layouts are approved."
+        }
+      ],
+      "agenticRule": null,
+      "variants": [],
+      "props": [],
+      "slots": [],
+      "attributes": [],
+      "states": [
+        "default"
+      ],
+      "tokens": [],
+      "tokenGroups": [],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "hero-full-visual",
+      "categoryKey": "website-patterns",
+      "pageKey": "hero",
+      "pageLabel": "Hero",
+      "figmaPageId": "964:14724",
+      "actualFigmaPageId": "964:14724",
+      "figmaCanonicalNodeId": "1788:639",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/hero",
+      "sourcePath": null,
+      "name": "HeroFullVisual",
+      "astroComponent": null,
+      "role": "section",
+      "layer": "section",
+      "family": "hero",
+      "dependencies": [
+        "content",
+        "bullet-point",
+        "ratio",
+        "section-header"
+      ],
+      "uses": [
+        "content",
+        "bullet-point",
+        "ratio",
+        "section-header"
+      ],
+      "syncStatus": "figma-only",
+      "status": "figma-only",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma ComponentSet 1788:639 is the canonical visual master for the desktop HeroFullVisual pattern; no Astro component or public API is approved yet.",
+          "instruction": "Keep sourcePath and astroComponent null until a separate implementation request approves the Astro component boundary."
+        },
+        {
+          "kind": "layout",
+          "reason": "Each variant uses a 1440 px full-width section shell. Content Grid follows the 80 px site padding; Content and Bullet Points use Layout Grid Columns span/05, SectionHeader uses span/12, and Visual runs from full-start to full-end.",
+          "instruction": "Preserve the Fill plus maxWidth bindings in Figma. Future Astro implementation must use a full-width section shell with an inner container/grid and named content/full lines; do not export the 522 px or 1280 px Figma measurements as CSS tokens."
+        },
+        {
+          "kind": "responsive",
+          "reason": "Only the 1440 px Desktop compositions Centered, Left and Section Header are approved in Figma; tablet and mobile layouts have not been designed.",
+          "instruction": "Do not infer a Device axis, Tablet mode, or mobile HeroFullVisual arrangement before those layouts are approved."
+        }
+      ],
+      "agenticRule": null,
+      "variants": [],
+      "props": [],
+      "slots": [],
+      "attributes": [],
+      "states": [
+        "default"
+      ],
+      "tokens": [],
+      "tokenGroups": [],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "popup",
+      "categoryKey": "base-components",
+      "pageKey": "popup",
+      "pageLabel": "Popup",
       "figmaPageId": "1140:599",
       "actualFigmaPageId": "1140:599",
       "figmaCanonicalNodeId": null,
       "figmaCandidateNodeIds": [],
-      "sourceDirectory": "src/components/website-patterns/modal",
-      "sourcePath": "src/components/website-patterns/modal/Popup.astro",
+      "sourceDirectory": "src/components/base-components/popup",
+      "sourcePath": "src/components/base-components/popup/Popup.astro",
       "name": "Popup",
       "astroComponent": "Popup",
       "role": "molecule",
       "layer": "molecule",
-      "family": "modal",
+      "family": "popup",
       "dependencies": [
         "button",
         "button-group",
@@ -6587,21 +8145,170 @@
       "figmaCanonicalNodeId": "389:41",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/website-patterns/stats-metrics",
-      "sourcePath": null,
+      "sourcePath": "src/components/website-patterns/stats-metrics/StatCard.astro",
       "name": "StatCard",
-      "astroComponent": null,
+      "astroComponent": "StatCard",
       "role": "card",
       "layer": "card",
       "family": "stats-metrics",
-      "dependencies": [],
-      "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "dependencies": [
+        "material-symbol"
+      ],
+      "uses": [
+        "material-symbol"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "structural-variant",
+          "reason": "Figma keeps one Type=Default variant to satisfy the canonical one-child ComponentSet documentation structure.",
+          "instruction": "Treat Type as structural-only and do not expose a Type or variant prop in Astro."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma uses a 199px authoring width, while Astro fills the inline size assigned by its parent and treats 199px only as a visual parity fixture.",
+          "instruction": "Keep inline-size fluid, min-inline-size zero and content wrapping intrinsic; do not copy the fixed Figma width into the public component."
+        },
+        {
+          "kind": "accessibility-projection",
+          "reason": "Figma Show Caption removes the visual caption, while Astro keeps a hidden caption in the accessibility tree so the article remains named.",
+          "instruction": "When showCaption is false, visually hide the caption without removing its id or aria-labelledby relationship."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes Description and Show Description separately, while Astro derives description visibility from optional content presence.",
+          "instruction": "Omit description to remove it; do not add a redundant showDescription prop."
+        },
+        {
+          "kind": "token-projection",
+          "reason": "Figma binds existing semantic roles but stores the 140px minimum height, 2px trend gap and 20px icon size as functional geometry; Astro projects them through the approved stat-card-size token group.",
+          "instruction": "Consume only the approved --stat-card-min-height, --stat-card-trend-gap and --stat-card-trend-icon-size aliases; no Figma Variable change is included."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/stat-card.md",
+      "variants": [],
+      "props": [
+        "caption",
+        "value",
+        "showCaption",
+        "showTrendingUp",
+        "showTrendingDown",
+        "description"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-stat-card-caption",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--stat-card-min-height",
+        "--stat-card-trend-gap",
+        "--stat-card-trend-icon-size",
+        "--content-padding-small",
+        "--border-width-default",
+        "--color-border-accent-strong",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--color-status-success-icon",
+        "--color-icon-accent"
+      ],
+      "tokenGroups": [
+        "stat-card-size",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "stat-text-inline",
+      "categoryKey": "website-patterns",
+      "pageKey": "stats-metrics",
+      "pageLabel": "Stats & Metrics",
+      "figmaPageId": "964:14725",
+      "actualFigmaPageId": "964:14725",
+      "figmaCanonicalNodeId": "1783:1425",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/stats-metrics",
+      "sourcePath": "src/components/website-patterns/stats-metrics/StatTextInline.astro",
+      "name": "StatTextInline",
+      "astroComponent": "StatTextInline",
+      "role": "atom",
+      "layer": "atom",
+      "family": "stats-metrics",
+      "dependencies": [
+        "material-symbol"
+      ],
+      "uses": [
+        "material-symbol"
+      ],
+      "syncStatus": "mapped",
+      "status": "mapped",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma names the visual axes Type and Icon, while Astro exposes the semantic props trend and iconPosition and keeps the glyph fixed by trend.",
+          "instruction": "Map Type=Up|Down to trend=up|down and Icon=Leading|Trailing to iconPosition=leading|trailing; do not expose arbitrary glyph selection."
+        },
+        {
+          "kind": "platform-semantics",
+          "reason": "Figma uses a fixed 97×20 sample and visual arrow/color cues, while Astro uses intrinsic content-safe sizing and requires visible text to communicate the direction independently.",
+          "instruction": "Allow localized text to wrap, keep the Material Symbol decorative and preserve logical leading/trailing order in LTR and RTL."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/stat-text-inline.md",
+      "variants": [
+        "up",
+        "down",
+        "leading",
+        "trailing"
+      ],
+      "props": [
+        "text",
+        "trend",
+        "iconPosition"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-trend",
+        "data-icon-position"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--stat-text-inline-icon-size",
+        "--gap-tiny",
+        "--color-text-primary",
+        "--color-status-success-icon",
+        "--color-icon-accent",
+        "--font-family-body",
+        "--font-size-body-small",
+        "--font-weight-normal",
+        "--line-height-compact",
+        "--letter-spacing-tight",
+        "--text-transform-uppercase",
+        "--text-wrap-wrap",
+        "--overflow-wrap-break-word",
+        "--word-break-normal",
+        "--white-space-normal"
+      ],
+      "tokenGroups": [
+        "stat-text-inline-size",
+        "global-color",
+        "global-size",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -6614,21 +8321,80 @@
       "figmaCanonicalNodeId": "274:26",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/website-patterns/page-headers",
-      "sourcePath": null,
+      "sourcePath": "src/components/website-patterns/page-headers/SectionHeader.astro",
       "name": "SectionHeader",
-      "astroComponent": null,
+      "astroComponent": "SectionHeader",
       "role": "molecule",
       "layer": "molecule",
       "family": "page-headers",
-      "dependencies": [],
-      "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "dependencies": [
+        "eyebrow",
+        "button-group"
+      ],
+      "uses": [
+        "eyebrow",
+        "button-group"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma node 274:26 now provides the visual mastery and bounded design-time properties for SectionHeader.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
+        },
+        {
+          "kind": "layout",
+          "reason": "The three horizontal Figma variants represent the 12-column content container. Astro preserves their public spans: copy or heading columns 1-5, action or details columns 9-12, and the split composition with eyebrow columns 1-2 plus heading columns 3-6.",
+          "instruction": "Use the public Astro grid and existing layout tokens. Do not export Figma pixel measurements as CSS tokens or duplicate the shared ButtonGroup wrapping behavior."
+        },
+        {
+          "kind": "slot-representation",
+          "reason": "Figma represents Actions as a Slot property. Astro exposes an optional named actions slot and renders ButtonGroup only when the slot is present.",
+          "instruction": "Place supported action components in the named actions slot; do not render an empty action region or bypass ButtonGroup."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/section-header.md",
+      "variants": [
+        "copy-actions",
+        "heading-details",
+        "eyebrow-heading-details"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "composition",
+        "headingLevel"
+      ],
+      "slots": [
+        "actions"
+      ],
+      "attributes": [
+        "data-section-header-composition",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--site-grid-column-gap",
+        "--space-eyebrow-bottom",
+        "--space-regular",
+        "--space-medium",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--overflow-wrap-break-word"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-color",
+        "global-size",
+        "typography-foundations"
+      ],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {

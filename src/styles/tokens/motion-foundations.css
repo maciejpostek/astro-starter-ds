@@ -12,6 +12,7 @@
   --motion-duration-fast: 180ms;
   --motion-duration-surface-enter: 360ms;
   --motion-duration-disclosure: 600ms;
+  --motion-duration-accordion-autoplay: 8000ms;
   --motion-transition: var(--motion-duration-fast) var(--motion-ease-standard);
 
 }
@@ -26,6 +27,7 @@
     --motion-duration-fast: 0ms;
     --motion-duration-surface-enter: 0ms;
     --motion-duration-disclosure: 0ms;
+    --motion-duration-accordion-autoplay: 0ms;
     --motion-transition: 0ms var(--motion-ease-standard);
   }
 }

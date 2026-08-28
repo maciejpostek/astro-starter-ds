@@ -1,0 +1,51 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import Content from "../../website-patterns/content/Content.astro";
+---
+
+<div class="content-preview" data-component-name="DsContentPreview" data-content-preview>
+  <Content
+    heading="Build consistent sections faster"
+    eyebrow="Content pattern"
+    paragraph="Keep the relationship between supporting copy, headings and actions consistent while the surrounding section remains free to choose its own layout."
+    data-ds-preview-target
+  >
+    <Button slot="actions">Start building</Button>
+    <Button slot="actions" variant="secondary">View guidelines</Button>
+  </Content>
+</div>
+
+<script>
+  const initializeContentPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-content-preview]").forEach((preview) => {
+      if (preview.dataset.contentPreviewReady === "true") return;
+      preview.dataset.contentPreviewReady = "true";
+
+      const content = preview.querySelector<HTMLElement>('[data-component-name="Content"]');
+      const eyebrow = preview.querySelector<HTMLElement>('[data-component-name="Eyebrow"]');
+      const paragraph = preview.querySelector<HTMLElement>(".content__paragraph");
+      const actions = preview.querySelector<HTMLElement>(".content__actions");
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent) || !content) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const value = String(event.detail?.value ?? "");
+
+        if (axisId === "contentAlignment") content.dataset.contentAlign = value;
+        if (axisId === "contentEyebrow" && eyebrow) eyebrow.hidden = value === "hidden";
+        if (axisId === "contentParagraph" && paragraph) paragraph.hidden = value === "hidden";
+        if (axisId === "contentActions" && actions) actions.hidden = value === "hidden";
+      });
+    });
+  };
+
+  initializeContentPreviews();
+  document.addEventListener("astro:page-load", initializeContentPreviews);
+</script>
+
+<style>
+  .content-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

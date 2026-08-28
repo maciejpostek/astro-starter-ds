@@ -1,0 +1,151 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import AccordionList, {
+  type AccordionListMode,
+} from "../../base-components/accordion/AccordionList.astro";
+import Content from "../content/Content.astro";
+
+export type FAQComposition = "split" | "stacked";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  composition?: FAQComposition;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  accordionMode?: AccordionListMode;
+  accordionAutoplay?: boolean;
+  accordionAutoplayDuration?: number;
+  accordionAutoplayLoop?: boolean;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  composition = "split",
+  headingLevel = 2,
+  accordionMode = "single",
+  accordionAutoplay = false,
+  accordionAutoplayDuration = 8000,
+  accordionAutoplayLoop = true,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("FAQ heading must be a non-empty string.");
+}
+if (composition !== "split" && composition !== "stacked") {
+  throw new TypeError('FAQ composition must be either "split" or "stacked".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("FAQ headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("FAQ requires Accordion children in its default slot.");
+}
+
+const rootId = id || `faq-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const contentAlign: "left" | "centered" = composition === "stacked" ? "centered" : "left";
+const hasActions = Astro.slots.has("actions");
+const contentProps = {
+  id: contentId,
+  heading,
+  eyebrow,
+  paragraph,
+  align: contentAlign,
+  headingLevel,
+};
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["faq", "l-section", className]}
+  data-padding="large"
+  data-component-name="FAQ"
+  data-faq-composition={composition}
+  aria-labelledby={headingId}
+>
+  <div class="faq__container l-container" data-container="main">
+    <div class="faq__grid l-grid" data-grid="site" data-gap="site">
+      <div class="faq__intro">
+        {hasActions ? (
+          <Content {...contentProps}>
+            <Fragment slot="actions">
+              <slot name="actions" />
+            </Fragment>
+          </Content>
+        ) : (
+          <Content {...contentProps} />
+        )}
+      </div>
+
+      <div class="faq__details">
+        <AccordionList
+          mode={accordionMode}
+          autoplay={accordionAutoplay}
+          autoplayDuration={accordionAutoplayDuration}
+          autoplayLoop={accordionAutoplayLoop}
+        >
+          <slot />
+        </AccordionList>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    background: var(--color-background-canvas);
+    container: faq / inline-size;
+  }
+
+  .faq__container,
+  .faq__grid,
+  .faq__intro,
+  .faq__details {
+    min-inline-size: 0;
+  }
+
+  .faq__intro {
+    grid-column: 1 / span 4;
+  }
+
+  .faq__details {
+    grid-column: 7 / span 6;
+  }
+
+  .faq[data-faq-composition="stacked"] .faq__grid {
+    row-gap: var(--gap-xxxlarge);
+  }
+
+  .faq[data-faq-composition="stacked"] .faq__intro {
+    grid-column: 5 / span 4;
+  }
+
+  .faq[data-faq-composition="stacked"] .faq__details {
+    grid-column: 4 / span 6;
+  }
+
+  @container faq (width < 64rem) {
+    .faq__grid {
+      row-gap: var(--gap-xxxlarge);
+    }
+
+    .faq__intro,
+    .faq__details,
+    .faq[data-faq-composition="stacked"] .faq__intro,
+    .faq[data-faq-composition="stacked"] .faq__details {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

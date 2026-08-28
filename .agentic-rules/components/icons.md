@@ -31,6 +31,12 @@ the parent's font size. Keep width and height equal and use
 Do not import the complete Google catalog. Do not expose icon selection from a
 consumer component.
 
+Accordion has one explicit bounded exception: its `brandIcon` prop accepts the
+`MaterialSymbolName` union generated from all 50 entries in the local manifest.
+The disclosure icon remains fixed to `arrow_drop_down`. Figma intentionally
+projects only `language` until a dedicated Accordion icon family is expanded;
+this recorded difference does not narrow the Astro type.
+
 A consumer master owns one fixed semantic icon across all states. It exposes no
 INSTANCE_SWAP, icon slot, or arbitrary icon-name prop. A documented Boolean may
 hide the icon. Change a glyph only in the consumer master, then re-check color

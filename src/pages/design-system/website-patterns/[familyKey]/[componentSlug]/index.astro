@@ -5,6 +5,8 @@ import {
   architecture,
   createDocumentationSummary,
   documentationFigmaHref,
+  isActivePublicDocumentationComponent,
+  resolveDocumentationPageMode,
   type ArchitectureComponent,
 } from "../../../../../data/documentationRegistry";
 import { loadComponentRule } from "../../../../../data/componentRuleLoader";
@@ -12,7 +14,12 @@ import { getComponentDocumentationAdapter } from "../../../../../data/documentat
 
 export function getStaticPaths() {
   return architecture.components
-    .filter((component) => component.categoryKey === "website-patterns")
+    .filter(
+      (component) =>
+        component.categoryKey === "website-patterns" &&
+        isActivePublicDocumentationComponent(component) &&
+        resolveDocumentationPageMode(component.categoryKey, component.pageKey) === "multi",
+    )
     .map((component) => ({
       params: { familyKey: component.pageKey, componentSlug: component.id },
       props: { component },

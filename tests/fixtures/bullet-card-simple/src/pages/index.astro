@@ -1,0 +1,39 @@
+---
+import BulletCardSimple from "../../../../../src/components/website-patterns/bullet-points/BulletCardSimple.astro";
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonLink from "../../../../../src/components/base-components/buttons/ButtonLink.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BulletCardSimple contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <BulletCardSimple
+        id="full-card"
+        title="Full card"
+        description="Supporting description"
+        headingLevel={2}
+        data-contract="forwarded"
+      >
+        <Fragment slot="actions">
+          <Button>Open</Button>
+          <ButtonLink href="#full-card">Details</ButtonLink>
+        </Fragment>
+      </BulletCardSimple>
+
+      <BulletCardSimple
+        id="minimal-card"
+        title="Minimal card"
+        showIcon={false}
+        headingLevel={4}
+      />
+    </main>
+  </body>
+</html>

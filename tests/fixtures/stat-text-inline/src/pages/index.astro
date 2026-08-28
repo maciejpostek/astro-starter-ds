@@ -1,0 +1,55 @@
+---
+import StatTextInline from "../../../../../src/components/website-patterns/stats-metrics/StatTextInline.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>StatTextInline contract fixture</title></head>
+  <body>
+    <StatTextInline
+      id="stat-up-leading"
+      text="Revenue increased by 12%"
+      trend="up"
+      iconPosition="leading"
+      class="fixture-class"
+      lang="en"
+      aria-label="Revenue increased by twelve percent"
+      data-forwarded="yes"
+    />
+    <StatTextInline
+      id="stat-up-trailing"
+      text="Revenue increased by 12%"
+      trend="up"
+      iconPosition="trailing"
+    />
+    <StatTextInline
+      id="stat-down-leading"
+      text="Operating costs decreased by 8%"
+      trend="down"
+      iconPosition="leading"
+    />
+    <StatTextInline
+      id="stat-down-trailing"
+      text="Operating costs decreased by 8%"
+      trend="down"
+      iconPosition="trailing"
+    />
+    <StatTextInline id="stat-default" text="  Conversion increased by 4%  " />
+    <div style="inline-size: 10rem">
+      <StatTextInline
+        id="stat-long"
+        text="International recurring revenue increased substantially this quarter"
+      />
+    </div>
+    <section data-theme="dark" dir="rtl">
+      <StatTextInline
+        id="stat-rtl-dark"
+        text="Koszty operacyjne spadły o 8%"
+        trend="down"
+        iconPosition="leading"
+        lang="pl"
+      />
+    </section>
+  </body>
+</html>

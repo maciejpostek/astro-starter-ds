@@ -5,8 +5,8 @@ import {
   architecture,
   createDocumentationSummary,
   documentationFigmaHref,
-  isPublicDocumentationComponent,
-  isSingletonBaseComponentPage,
+  isActivePublicDocumentationComponent,
+  resolveDocumentationPageMode,
   type ArchitectureComponent,
 } from "../../../../../data/documentationRegistry";
 import { loadComponentRule } from "../../../../../data/componentRuleLoader";
@@ -19,8 +19,8 @@ export function getStaticPaths() {
     .filter(
       (component) =>
         component.categoryKey === "base-components" &&
-        isPublicDocumentationComponent(component) &&
-        !isSingletonBaseComponentPage(component.pageKey),
+        isActivePublicDocumentationComponent(component) &&
+        resolveDocumentationPageMode(component.categoryKey, component.pageKey) === "multi",
     )
     .map((component) => ({
       params: { familyKey: component.pageKey, componentSlug: component.id },

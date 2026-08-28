@@ -1,0 +1,139 @@
+---
+import TeamMemberCard from "../../website-patterns/team/TeamMemberCard.astro";
+
+export interface Props {
+  mode?: "interactive" | "responsive";
+}
+
+const { mode = "interactive" } = Astro.props;
+---
+
+{mode === "responsive" ? (
+  <div
+    class="team-member-card-preview team-member-card-preview--responsive"
+    data-component-name="DsTeamMemberCardPreview"
+  >
+    <div class="team-member-card-preview__example" data-preview-layout="vertical">
+      <TeamMemberCard
+        fullName="Maya Thompson"
+        roleOrPosition="Design systems lead"
+        layout="vertical"
+      >
+        <img
+          slot="image"
+          src="/images/project-placeholder.svg"
+          alt="Abstract geometric placeholder representing Maya Thompson"
+        />
+      </TeamMemberCard>
+    </div>
+    <div class="team-member-card-preview__example" data-preview-layout="horizontal">
+      <TeamMemberCard
+        fullName="Jordan Lee"
+        roleOrPosition="Product designer"
+        layout="horizontal"
+      >
+        <img
+          slot="image"
+          src="/images/project-placeholder.svg"
+          alt="Abstract geometric placeholder representing Jordan Lee"
+        />
+      </TeamMemberCard>
+    </div>
+  </div>
+) : (
+  <div
+    class="team-member-card-preview team-member-card-preview--interactive"
+    data-component-name="DsTeamMemberCardPreview"
+    data-team-member-card-preview
+    data-preview-layout="vertical"
+  >
+    <TeamMemberCard
+      fullName="Maya Thompson"
+      roleOrPosition="Design systems lead"
+      layout="vertical"
+      data-ds-preview-target
+    >
+      <img
+        slot="image"
+        src="/images/project-placeholder.svg"
+        alt="Abstract geometric placeholder representing Maya Thompson"
+      />
+    </TeamMemberCard>
+  </div>
+)}
+
+<script>
+  const initializeTeamMemberCardPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-team-member-card-preview]").forEach((preview) => {
+      if (preview.dataset.teamMemberCardPreviewReady === "true") return;
+      preview.dataset.teamMemberCardPreviewReady = "true";
+
+      const card = preview.querySelector<HTMLElement>('[data-component-name="TeamMemberCard"]');
+      const media = preview.querySelector<HTMLElement>(".team-member-card__media");
+      const name = preview.querySelector<HTMLElement>(".team-member-card__name");
+      const role = preview.querySelector<HTMLElement>(".team-member-card__role");
+      const ratio = preview.querySelector<HTMLElement>('[data-component-name="Ratio"]');
+      const controls = preview.closest<HTMLElement>("[data-ds-interactive-preview], [data-ds-responsive-preview]");
+
+      controls?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent) || !card) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const value = String(event.detail?.value ?? "");
+
+        if (axisId === "teamMemberLayout") {
+          card.dataset.teamMemberCardLayout = value;
+          preview.dataset.previewLayout = value;
+          if (ratio) ratio.dataset.ratio = value === "horizontal" ? "1:1" : "3:4";
+          if (name) {
+            name.classList.toggle("heading-h6", value === "vertical");
+            name.classList.toggle("body-base-semibold", value === "horizontal");
+          }
+          const ratioControl = controls.querySelector<HTMLSelectElement>(
+            '[data-ds-preview-select][data-axis-id="teamMemberRatio"], [data-preview-axis-select][data-axis-id="teamMemberRatio"]',
+          );
+          if (ratioControl) ratioControl.value = value === "horizontal" ? "1:1" : "3:4";
+        }
+        if (axisId === "teamMemberImage" && media) media.hidden = value === "hidden";
+        if (axisId === "teamMemberRole" && role) role.hidden = value === "hidden";
+        if (axisId === "teamMemberRatio" && ratio) ratio.dataset.ratio = value;
+      });
+    });
+  };
+
+  initializeTeamMemberCardPreviews();
+  document.addEventListener("astro:page-load", initializeTeamMemberCardPreviews);
+</script>
+
+<style>
+  .team-member-card-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .team-member-card-preview--interactive {
+    inline-size: min(100%, 24.625rem);
+  }
+
+  .team-member-card-preview--interactive[data-preview-layout="horizontal"] {
+    inline-size: min(100%, 21.875rem);
+  }
+
+  .team-member-card-preview--responsive {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-large);
+    align-items: start;
+  }
+
+  .team-member-card-preview__example {
+    min-inline-size: 0;
+  }
+
+  .team-member-card-preview__example[data-preview-layout="vertical"] {
+    inline-size: min(100%, 24.625rem);
+  }
+
+  .team-member-card-preview__example[data-preview-layout="horizontal"] {
+    inline-size: min(100%, 21.875rem);
+  }
+</style>

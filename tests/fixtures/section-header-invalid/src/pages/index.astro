@@ -1,0 +1,21 @@
+---
+import SectionHeader from "../../../../../src/components/website-patterns/page-headers/SectionHeader.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.SECTION_HEADER_INVALID_CASE ?? "heading";
+const validProps = {
+  heading: "Section heading",
+  eyebrow: "Eyebrow",
+  paragraph: "Supporting paragraph",
+};
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { ...validProps, heading: "   " },
+  eyebrow: { ...validProps, eyebrow: "   " },
+  paragraph: { ...validProps, paragraph: "   " },
+  composition: { ...validProps, composition: "centered" },
+  headingLevel: { ...validProps, headingLevel: 1 },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
+---
+
+<SectionHeader {...props} />

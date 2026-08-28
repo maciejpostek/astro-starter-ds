@@ -14,7 +14,7 @@ const routes = [
   "/design-system/",
   "/design-system/foundations/color/",
   "/design-system/base-components/buttons/button/",
-  "/design-system/website-patterns/modal/popup/",
+  "/design-system/base-components/popup/",
 ];
 const thresholds = {
   performance: 0.9,

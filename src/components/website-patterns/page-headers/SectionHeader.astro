@@ -1,0 +1,291 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro";
+
+export type SectionHeaderComposition =
+  | "copy-actions"
+  | "heading-details"
+  | "eyebrow-heading-details";
+
+export interface Props extends Omit<HTMLAttributes<"header">, "class"> {
+  heading: string;
+  eyebrow: string;
+  paragraph: string;
+  composition?: SectionHeaderComposition;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  composition = "copy-actions",
+  headingLevel = 2,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("SectionHeader heading must be a non-empty string.");
+}
+
+if (typeof eyebrow !== "string" || eyebrow.trim().length === 0) {
+  throw new TypeError("SectionHeader eyebrow must be a non-empty string.");
+}
+
+if (typeof paragraph !== "string" || paragraph.trim().length === 0) {
+  throw new TypeError("SectionHeader paragraph must be a non-empty string.");
+}
+
+const compositions: SectionHeaderComposition[] = [
+  "copy-actions",
+  "heading-details",
+  "eyebrow-heading-details",
+];
+
+if (!compositions.includes(composition)) {
+  throw new TypeError(
+    'SectionHeader composition must be "copy-actions", "heading-details", or "eyebrow-heading-details".',
+  );
+}
+
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("SectionHeader headingLevel must be an integer from 2 to 6.");
+}
+
+const hasActions = Astro.slots.has("actions");
+const headingId = id ? `${id}-heading` : `section-header-${crypto.randomUUID()}-heading`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+---
+
+<header
+  {...attributes}
+  id={id}
+  class:list={["section-header", className]}
+  data-component-name="SectionHeader"
+  data-section-header-composition={composition}
+>
+  <div
+    class="section-header__layout l-grid"
+    data-grid="columns"
+    data-columns="12"
+  >
+    {composition === "copy-actions" && (
+      <>
+        <div class="section-header__copy-region">
+          <div class="section-header__heading-group">
+            <Eyebrow text={eyebrow} />
+            <div class="section-header__heading-block">
+              <HeadingTag class="section-header__heading heading-h4" id={headingId}>
+                {heading}
+              </HeadingTag>
+            </div>
+          </div>
+
+          <div class="section-header__paragraph-block">
+            <p class="section-header__paragraph body-base-regular">{paragraph}</p>
+          </div>
+        </div>
+
+        {hasActions && (
+          <div class="section-header__action-area section-header__action-area--copy">
+            <ButtonGroup aria-labelledby={headingId}>
+              <slot name="actions" />
+            </ButtonGroup>
+          </div>
+        )}
+      </>
+    )}
+
+    {composition === "heading-details" && (
+      <>
+        <div class="section-header__heading-region">
+          <div class="section-header__heading-group">
+            <Eyebrow text={eyebrow} />
+            <div class="section-header__heading-block">
+              <HeadingTag class="section-header__heading heading-h4" id={headingId}>
+                {heading}
+              </HeadingTag>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header__details-region">
+          <div class="section-header__paragraph-block">
+            <p class="section-header__paragraph body-base-regular">{paragraph}</p>
+          </div>
+
+          {hasActions && (
+            <div class="section-header__action-area">
+              <ButtonGroup aria-labelledby={headingId}>
+                <slot name="actions" />
+              </ButtonGroup>
+            </div>
+          )}
+        </div>
+      </>
+    )}
+
+    {composition === "eyebrow-heading-details" && (
+      <>
+        <div class="section-header__eyebrow-column">
+          <Eyebrow text={eyebrow} />
+        </div>
+
+        <div class="section-header__heading-block">
+          <HeadingTag class="section-header__heading heading-h4" id={headingId}>
+            {heading}
+          </HeadingTag>
+        </div>
+
+        <div class="section-header__details-region">
+          <div class="section-header__paragraph-block">
+            <p class="section-header__paragraph body-base-regular">{paragraph}</p>
+          </div>
+
+          {hasActions && (
+            <div class="section-header__action-area">
+              <ButtonGroup aria-labelledby={headingId}>
+                <slot name="actions" />
+              </ButtonGroup>
+            </div>
+          )}
+        </div>
+      </>
+    )}
+  </div>
+</header>
+
+<style>
+  .section-header {
+    container-name: section-header;
+    container-type: inline-size;
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .section-header__layout {
+    min-inline-size: 0;
+    inline-size: 100%;
+    gap: 0;
+  }
+
+  .section-header__copy-region,
+  .section-header__heading-region,
+  .section-header__eyebrow-column,
+  .section-header__heading-block,
+  .section-header__details-region,
+  .section-header__action-area {
+    grid-column: 1 / -1;
+    min-inline-size: 0;
+  }
+
+  .section-header__copy-region,
+  .section-header__heading-region,
+  .section-header__heading-group,
+  .section-header__details-region,
+  .section-header__paragraph-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    inline-size: 100%;
+  }
+
+  .section-header__paragraph-block {
+    padding-block-start: var(--space-regular);
+  }
+
+  .section-header__heading,
+  .section-header__paragraph {
+    inline-size: 100%;
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .section-header__heading {
+    color: var(--color-text-primary);
+  }
+
+  .section-header__paragraph {
+    color: var(--color-text-secondary);
+  }
+
+  .section-header__details-region,
+  .section-header__action-area--copy {
+    padding-block-start: var(--space-medium);
+  }
+
+  .section-header__action-area {
+    display: flex;
+    align-items: flex-start;
+    inline-size: 100%;
+  }
+
+  .section-header__details-region .section-header__action-area {
+    padding-block-start: var(--space-medium);
+  }
+
+  .section-header__action-area > :global([data-component-name="ButtonGroup"]) {
+    inline-size: 100%;
+    max-inline-size: 100%;
+  }
+
+  @container section-header (min-width: 64rem) {
+    .section-header__layout {
+      gap: var(--site-grid-column-gap);
+    }
+
+    .section-header__copy-region,
+    .section-header__heading-region,
+    .section-header__eyebrow-column,
+    .section-header__heading-block,
+    .section-header__details-region,
+    .section-header__action-area {
+      grid-row: 1;
+    }
+
+    .section-header[data-section-header-composition="copy-actions"]
+      .section-header__copy-region,
+    .section-header[data-section-header-composition="heading-details"]
+      .section-header__heading-region {
+      grid-column: 1 / span 5;
+    }
+
+    .section-header[data-section-header-composition="copy-actions"]
+      .section-header__action-area--copy,
+    .section-header[data-section-header-composition="heading-details"]
+      .section-header__details-region,
+    .section-header[data-section-header-composition="eyebrow-heading-details"]
+      .section-header__details-region {
+      grid-column: 9 / span 4;
+    }
+
+    .section-header[data-section-header-composition="eyebrow-heading-details"]
+      .section-header__eyebrow-column {
+      grid-column: 1 / span 2;
+    }
+
+    .section-header[data-section-header-composition="eyebrow-heading-details"]
+      .section-header__heading-block {
+      grid-column: 3 / span 4;
+    }
+
+    .section-header__details-region {
+      padding-block-start: 0;
+    }
+
+    .section-header[data-section-header-composition="copy-actions"]
+      .section-header__action-area--copy {
+      justify-content: flex-end;
+    }
+
+    .section-header[data-section-header-composition="copy-actions"]
+      .section-header__action-area--copy
+      > :global([data-component-name="ButtonGroup"]) {
+      justify-content: flex-end;
+    }
+  }
+</style>

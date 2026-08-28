@@ -254,6 +254,16 @@ export const componentColorGroups = {
     ],
     anchorTokens: false,
   }),
+  "title-row": namedColorGroup({
+    id: "title-row",
+    title: "TitleRow",
+    description: "TitleRow reuses the global default border and tertiary text roles without introducing component-specific color tokens.",
+    names: [
+      "--color-border-default",
+      "--color-text-tertiary",
+    ],
+    anchorTokens: false,
+  }),
   ratio: namedColorGroup({
     id: "ratio",
     title: "Ratio",

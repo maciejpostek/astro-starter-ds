@@ -212,7 +212,7 @@
    * Repeated section eyebrow treatment with accent text and marker.
    */
   --eyebrow-text-default: var(--color-text-accent);
-  --eyebrow-marker-default: var(--color-border-accent);
+  --eyebrow-marker-default: var(--color-text-accent);
 
   /* Label
    * Compact metadata and field-label text contracts.

@@ -1,0 +1,193 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+
+export interface Props extends Omit<
+  HTMLAttributes<"article">,
+  "aria-label" | "aria-labelledby" | "class" | "id" | "title"
+> {
+  title: string;
+  description?: string;
+  showIcon?: boolean;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  id?: string;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  showIcon = true,
+  headingLevel = 3,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof title !== "string" || title.trim().length === 0) {
+  throw new TypeError("BulletCardSurface title must be a non-empty string.");
+}
+if (description !== undefined && (typeof description !== "string" || description.trim().length === 0)) {
+  throw new TypeError("BulletCardSurface description must be a non-empty string when provided.");
+}
+if (typeof showIcon !== "boolean") {
+  throw new TypeError("BulletCardSurface showIcon must be a boolean.");
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("BulletCardSurface headingLevel must be an integer from 2 to 6.");
+}
+if (id !== undefined && (typeof id !== "string" || id.trim().length === 0)) {
+  throw new TypeError("BulletCardSurface id must be a non-empty string when provided.");
+}
+
+const rootId = id ?? `bullet-card-surface-${crypto.randomUUID()}`;
+const headingId = `${rootId}-title`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+const hasActions = Astro.slots.has("actions");
+const hasVisual = Astro.slots.has("visual");
+---
+
+<article
+  {...attributes}
+  id={rootId}
+  class:list={["bullet-card-surface", className]}
+  data-component-name="BulletCardSurface"
+  data-has-visual={hasVisual ? "true" : "false"}
+  aria-labelledby={headingId}
+>
+  <div class="bullet-card-surface__layout">
+    <div class="bullet-card-surface__content">
+      <div class="bullet-card-surface__copy">
+        <div class="bullet-card-surface__heading-row">
+          {showIcon && (
+            <span class="bullet-card-surface__icon" aria-hidden="true">
+              <MaterialSymbol name="language" size="var(--size-20)" />
+            </span>
+          )}
+          <HeadingTag class="bullet-card-surface__title body-base-semibold" id={headingId}>
+            {title}
+          </HeadingTag>
+        </div>
+        {description && (
+          <p class="bullet-card-surface__description body-base-regular">{description}</p>
+        )}
+      </div>
+
+      {hasActions && (
+        <ButtonGroup class="bullet-card-surface__actions" aria-labelledby={headingId}>
+          <slot name="actions" />
+        </ButtonGroup>
+      )}
+    </div>
+
+    {hasVisual && (
+      <div class="bullet-card-surface__visual">
+        <Ratio ratio="4:3">
+          <slot name="visual" />
+        </Ratio>
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .bullet-card-surface {
+    container: bullet-card-surface / inline-size;
+    inline-size: 100%;
+    min-inline-size: 0;
+    overflow: clip;
+    border: var(--border-width-default) solid var(--card-border-default);
+    border-radius: var(--radius-small);
+    color: var(--color-text-primary);
+    background: var(--card-background-default);
+  }
+
+  .bullet-card-surface__layout {
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  .bullet-card-surface__content {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--gap-large);
+    padding: var(--content-padding-large);
+  }
+
+  .bullet-card-surface__copy {
+    display: grid;
+    min-inline-size: 0;
+    gap: var(--gap-tiny);
+  }
+
+  .bullet-card-surface__heading-row {
+    display: flex;
+    min-inline-size: 0;
+    align-items: flex-start;
+    gap: var(--gap-small);
+  }
+
+  .bullet-card-surface__icon {
+    display: grid;
+    inline-size: var(--size-20);
+    block-size: var(--size-20);
+    flex: 0 0 var(--size-20);
+    place-items: center;
+    color: var(--color-icon-accent);
+  }
+
+  .bullet-card-surface__title,
+  .bullet-card-surface__description {
+    min-inline-size: 0;
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .bullet-card-surface__description {
+    color: var(--color-text-secondary);
+  }
+
+  .bullet-card-surface__visual {
+    min-inline-size: 0;
+    overflow: hidden;
+    border-radius: var(--radius-image);
+  }
+
+  .bullet-card-surface__visual :global(.ratio) {
+    block-size: 100%;
+  }
+
+  @container bullet-card-surface (min-width: 40rem) {
+    .bullet-card-surface[data-has-visual="true"] .bullet-card-surface__layout {
+      display: flex;
+      align-items: stretch;
+      gap: var(--gap-xlarge);
+    }
+
+    .bullet-card-surface[data-has-visual="true"] .bullet-card-surface__content {
+      box-sizing: content-box;
+      flex: 1 1 0;
+    }
+
+    .bullet-card-surface[data-has-visual="true"] .bullet-card-surface__visual {
+      flex: 1 1 0;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .bullet-card-surface {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .bullet-card-surface__description,
+    .bullet-card-surface__icon {
+      color: CanvasText;
+    }
+  }
+</style>

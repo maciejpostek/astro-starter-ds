@@ -21,7 +21,7 @@
    * Minimum and maximum horizontal distance from viewport edges.
    */
   --site-padding-inline-min: var(--size-16);
-  --site-padding-inline-max: var(--size-40);
+  --site-padding-inline-max: var(--size-80);
 
   /* Container limits
    * Reading content can use the smaller semantic container when a local

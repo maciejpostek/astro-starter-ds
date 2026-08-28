@@ -59,6 +59,7 @@ CSS uses time units:
 ```css
 --motion-duration-fast: 180ms;
 --motion-duration-disclosure: 600ms;
+--motion-duration-accordion-autoplay: 8000ms;
 --motion-transition:
   var(--motion-duration-fast)
   var(--motion-ease-standard);
@@ -71,6 +72,7 @@ The Reduced Motion contract is implemented in code:
   :root {
     --motion-duration-fast: 0ms;
     --motion-duration-disclosure: 0ms;
+    --motion-duration-accordion-autoplay: 0ms;
   }
 }
 ```

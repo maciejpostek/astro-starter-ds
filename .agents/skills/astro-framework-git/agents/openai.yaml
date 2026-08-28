@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astro Framework Git"
+  short_description: "Bezpieczne commity i branche dla projektu Astro"
+  default_prompt: "Użyj $astro-framework-git, aby zaproponować właściwy zapis zmian w Git dla mojego bieżącego zadania."

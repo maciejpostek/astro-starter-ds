@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astro Material Symbols Sync"
+  short_description: "Synchronize Material Symbols across Figma and Astro"
+  default_prompt: "Use $astro-sync-material-symbols to update the Material Symbols profile in Figma and Astro."

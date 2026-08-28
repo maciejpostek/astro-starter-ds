@@ -1,0 +1,29 @@
+---
+import TopBanner from "../../../../../src/components/website-patterns/announcements-banners/TopBanner.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.TOP_BANNER_INVALID_CASE ?? "title";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  id: { id: "   ", title: "Announcement" },
+  title: { id: "invalid-top-banner", title: "   " },
+  status: { id: "invalid-top-banner", title: "Announcement", status: "neutral" },
+  linkLabel: {
+    id: "invalid-top-banner",
+    title: "Announcement",
+    link: { label: "   ", href: "/details" },
+  },
+  linkHref: {
+    id: "invalid-top-banner",
+    title: "Announcement",
+    link: { label: "Details", href: "   " },
+  },
+  target: {
+    id: "invalid-top-banner",
+    title: "Announcement",
+    link: { label: "Details", href: "/details", target: "_parent" },
+  },
+};
+const props = invalidProps[invalidCase] ?? invalidProps.title;
+---
+
+<TopBanner {...props} />

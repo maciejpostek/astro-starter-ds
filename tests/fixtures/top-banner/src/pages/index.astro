@@ -1,0 +1,51 @@
+---
+import TopBanner from "../../../../../src/components/website-patterns/announcements-banners/TopBanner.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const statuses = ["brand", "info", "success", "warning", "error"] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TopBanner contract fixture</title>
+  </head>
+  <body>
+    <main>
+      {statuses.map((status) => (
+        <TopBanner
+          id={`top-banner-${status}`}
+          title={`${status} announcement`}
+          description="Supporting announcement copy"
+          status={status}
+          link={{
+            label: "Read more",
+            href: `https://example.com/${status}`,
+            target: status === "brand" ? "_blank" : "_self",
+          }}
+          data-contract={status === "brand" ? "forwarded" : undefined}
+          class={status === "brand" ? "top-banner-contract-fixture" : undefined}
+        />
+      ))}
+
+      <TopBanner
+        id="top-banner-minimal"
+        title="Minimal announcement"
+        showIcon={false}
+        dismissible={false}
+      />
+
+      <section data-theme="dark" dir="rtl" aria-label="Dark right-to-left example">
+        <TopBanner
+          id="top-banner-dark-rtl"
+          title="Right-to-left announcement"
+          status="info"
+          link={{ label: "Read more", href: "/details" }}
+        />
+      </section>
+    </main>
+  </body>
+</html>

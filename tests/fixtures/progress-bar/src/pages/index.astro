@@ -1,0 +1,15 @@
+---
+import ProgressBar from "../../../../../src/components/base-components/progress-bar/ProgressBar.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>ProgressBar contract fixture</title></head>
+  <body>
+    <ProgressBar id="accent-progress" value={40} label="40 percent complete" data-test="forwarded" />
+    <ProgressBar id="custom-max-progress" value={1} max={4} label="One of four" />
+    <ProgressBar id="indeterminate-progress" label="Loading" />
+    <ProgressBar id="decorative-progress" value={75} decorative />
+  </body>
+</html>

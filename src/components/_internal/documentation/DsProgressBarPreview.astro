@@ -1,0 +1,22 @@
+---
+import ProgressBar from "../../base-components/progress-bar/ProgressBar.astro";
+---
+
+<div class="ds-preview-renderer-boundary" data-component-name="DsProgressBarPreview">
+  <ProgressBar
+    data-ds-preview-target
+    value={40}
+    label="Loading preview"
+  />
+</div>
+
+<style>
+  .ds-preview-renderer-boundary {
+    position: absolute;
+    box-sizing: border-box;
+    inset-block-start: 50%;
+    inset-inline: var(--content-padding-xlarge);
+    min-inline-size: 0;
+    transform: translateY(-50%);
+  }
+</style>

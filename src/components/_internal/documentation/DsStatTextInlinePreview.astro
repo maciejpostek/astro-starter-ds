@@ -1,0 +1,78 @@
+---
+import StatTextInline, {
+  type StatTextInlineIconPosition,
+  type StatTextInlineTrend,
+} from "../../website-patterns/stats-metrics/StatTextInline.astro";
+
+const variants: Array<{
+  trend: StatTextInlineTrend;
+  iconPosition: StatTextInlineIconPosition;
+  text: string;
+}> = [
+  { trend: "up", iconPosition: "trailing", text: "Revenue increased by 12%" },
+  { trend: "up", iconPosition: "leading", text: "Revenue increased by 12%" },
+  { trend: "down", iconPosition: "trailing", text: "Operating costs decreased by 8%" },
+  { trend: "down", iconPosition: "leading", text: "Operating costs decreased by 8%" },
+];
+---
+
+<div
+  class="stat-text-inline-preview"
+  data-component-name="DsStatTextInlinePreview"
+  data-ds-preview-target
+  data-stat-text-inline-preview
+  data-preview-trend="up"
+  data-preview-icon-position="trailing"
+>
+  {variants.map(({ trend, iconPosition, text }) => (
+    <StatTextInline
+      text={text}
+      trend={trend}
+      iconPosition={iconPosition}
+      data-stat-text-inline-option={`${trend}-${iconPosition}`}
+      hidden={trend !== "up" || iconPosition !== "trailing"}
+    />
+  ))}
+</div>
+
+<script>
+  const initializeStatTextInlinePreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-stat-text-inline-preview]").forEach((preview) => {
+      if (preview.dataset.statTextInlinePreviewReady === "true") return;
+      preview.dataset.statTextInlinePreviewReady = "true";
+
+      const render = () => {
+        const selected = `${preview.dataset.previewTrend}-${preview.dataset.previewIconPosition}`;
+        preview.querySelectorAll<HTMLElement>("[data-stat-text-inline-option]").forEach((option) => {
+          option.hidden = option.dataset.statTextInlineOption !== selected;
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "statTextInlineTrend") preview.dataset.previewTrend = value;
+          if (axisId === "statTextInlineIconPosition") preview.dataset.previewIconPosition = value;
+          render();
+        });
+
+      render();
+    });
+  };
+
+  initializeStatTextInlinePreviews();
+  document.addEventListener("astro:page-load", initializeStatTextInlinePreviews);
+</script>
+
+<style>
+  .stat-text-inline-preview {
+    display: flex;
+    min-inline-size: 0;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    align-items: center;
+  }
+</style>

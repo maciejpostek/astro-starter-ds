@@ -1,0 +1,23 @@
+---
+import Accordion from "../../../../../src/components/base-components/accordion/Accordion.astro";
+import FAQ from "../../../../../src/components/website-patterns/faq/FAQ.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.FAQ_INVALID_CASE ?? "heading";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { heading: "   " },
+  composition: { heading: "FAQ", composition: "centered" },
+  headingLevel: { heading: "FAQ", headingLevel: 1 },
+  autoplay: { heading: "FAQ", accordionMode: "multiple", accordionAutoplay: true },
+  slot: { heading: "FAQ" },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
+---
+
+{invalidCase === "slot" ? (
+  <FAQ {...props} />
+) : (
+  <FAQ {...props}>
+    <Accordion title="Valid question"><p>Valid answer.</p></Accordion>
+  </FAQ>
+)}

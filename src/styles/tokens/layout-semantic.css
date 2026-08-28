@@ -9,7 +9,7 @@
   --site-padding-inline:
     clamp(
       var(--site-padding-inline-min),
-      0.5714rem + 2.1429vw,
+      -0.1429rem + 5.7143vw,
       var(--site-padding-inline-max)
     );
 

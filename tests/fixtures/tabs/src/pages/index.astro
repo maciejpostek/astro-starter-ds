@@ -1,15 +1,9 @@
 ---
 import Tab from "../../../../../src/components/base-components/tabs/Tab.astro";
-import Tabs, { type TabsItems } from "../../../../../src/components/base-components/tabs/Tabs.astro";
+import Tabs from "../../../../../src/components/base-components/tabs/Tabs.astro";
 import TabMenu, { type TabMenuItems } from "../../../../../src/components/base-components/tabs/TabMenu.astro";
 import "../../../../../src/styles/tokens/tokens.css";
 import "../../../../../src/styles/global.css";
-
-const tabsItems: TabsItems = [
-  { id: "monthly", label: "Monthly" },
-  { id: "archived", label: "Archived", disabled: true },
-  { id: "yearly", label: "Yearly" },
-];
 
 const menuItems: TabMenuItems = [
   { label: "Overview", href: "#overview" },
@@ -27,34 +21,40 @@ const menuItems: TabMenuItems = [
   <body>
     <main>
       <div role="tablist" aria-label="Standalone atom fixture">
-        <Tab id="standalone-tab" controls="standalone-panel" selected size="large">
-          Standalone
-        </Tab>
+        <Tab id="standalone-tab" controls="standalone-panel" selected size="large">Standalone</Tab>
       </div>
-      <div id="standalone-panel" role="tabpanel" aria-labelledby="standalone-tab">
-        Atom panel
-      </div>
+      <div id="standalone-panel" role="tabpanel" aria-labelledby="standalone-tab" tabindex="0">Atom panel</div>
 
-      <Tabs
-        id="pricing-tabs"
-        class="tabs-contract-fixture"
-        items={tabsItems}
-        initialTab="yearly"
-        aria-label="Billing period"
-        data-contract="pricing"
-      >
-        <p slot="monthly">Monthly billing</p>
-        <p slot="archived">Archived billing</p>
-        <div slot="yearly"><strong>Yearly billing</strong></div>
+      <Tabs class="tabs-contract-fixture" aria-label="Billing period" data-contract="three-tabs">
+        <Tab id="billing-monthly" controls="billing-panel-monthly">Monthly</Tab>
+        <Tab id="billing-archived" controls="billing-panel-archived" disabled>Archived</Tab>
+        <Tab id="billing-yearly" controls="billing-panel-yearly" selected>Yearly</Tab>
       </Tabs>
+      <div id="billing-panel-monthly" role="tabpanel" aria-labelledby="billing-monthly" tabindex="0" hidden>Monthly billing</div>
+      <div id="billing-panel-archived" role="tabpanel" aria-labelledby="billing-archived" tabindex="0" hidden>Archived billing</div>
+      <div id="billing-panel-yearly" role="tabpanel" aria-labelledby="billing-yearly" tabindex="0"><strong>Yearly billing</strong></div>
+
+      <Tabs aria-label="One tab" data-contract="one-tab">
+        <Tab id="single-tab" controls="single-panel" selected>Single</Tab>
+      </Tabs>
+      <div id="single-panel" role="tabpanel" aria-labelledby="single-tab" tabindex="0">Single panel</div>
+
+      <Tabs aria-labelledby="five-tabs-label" data-contract="five-tabs">
+        <Tab id="five-1" controls="five-panel-1" selected>One</Tab>
+        <Tab id="five-2" controls="five-panel-2">Two</Tab>
+        <Tab id="five-3" controls="five-panel-3">Three</Tab>
+        <Tab id="five-4" controls="five-panel-4">Four</Tab>
+        <Tab id="five-5" controls="five-panel-5">Five</Tab>
+      </Tabs>
+      <span id="five-tabs-label">Five tabs</span>
+      {[1, 2, 3, 4, 5].map((index) => (
+        <div id={`five-panel-${index}`} role="tabpanel" aria-labelledby={`five-${index}`} tabindex="0" hidden={index !== 1}>
+          Panel {index}
+        </div>
+      ))}
 
       <div class="sticky-shell">
-        <TabMenu
-          class="tab-menu-contract-fixture"
-          items={menuItems}
-          aria-label="On this page"
-          data-contract="anchors"
-        />
+        <TabMenu class="tab-menu-contract-fixture" items={menuItems} aria-label="On this page" data-contract="anchors" />
       </div>
       <section id="overview"><h2>Overview</h2></section>
       <section id="pricing"><h2>Pricing</h2></section>

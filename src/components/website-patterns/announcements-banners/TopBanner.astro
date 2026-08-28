@@ -1,0 +1,339 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import type { MaterialSymbolName } from "../../../lib/icons/materialSymbols";
+
+export type TopBannerStatus = "brand" | "info" | "success" | "warning" | "error";
+
+export interface TopBannerLink {
+  label: string;
+  href: string;
+  target?: "_self" | "_blank";
+  rel?: string;
+  download?: boolean | string;
+}
+
+export interface Props extends Omit<HTMLAttributes<"aside">, "class" | "title"> {
+  id: string;
+  title: string;
+  description?: string;
+  status?: TopBannerStatus;
+  link?: TopBannerLink;
+  showIcon?: boolean;
+  dismissible?: boolean;
+  dismissLabel?: string;
+  statusLabel?: string;
+  class?: string;
+}
+
+const statuses: TopBannerStatus[] = ["brand", "info", "success", "warning", "error"];
+const icons: Record<TopBannerStatus, MaterialSymbolName> = {
+  brand: "language",
+  info: "info",
+  success: "check_circle",
+  warning: "warning",
+  error: "error",
+};
+const statusLabels: Record<TopBannerStatus, string> = {
+  brand: "Announcement",
+  info: "Information",
+  success: "Success",
+  warning: "Warning",
+  error: "Error",
+};
+
+const {
+  id,
+  title,
+  description,
+  status = "brand",
+  link,
+  showIcon = true,
+  dismissible = true,
+  dismissLabel = "Dismiss announcement",
+  statusLabel = statusLabels[status],
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (!id?.trim()) throw new TypeError("TopBanner id is required and must not be empty.");
+if (!title?.trim()) throw new TypeError("TopBanner title is required and must not be empty.");
+if (!statuses.includes(status)) throw new TypeError(`Unsupported TopBanner status: ${status}`);
+if (!statusLabel?.trim()) throw new TypeError("TopBanner statusLabel must not be empty.");
+if (!dismissLabel?.trim()) throw new TypeError("TopBanner dismissLabel must not be empty.");
+if (link && !link.label?.trim()) throw new TypeError("TopBanner link.label must not be empty.");
+if (link && !link.href?.trim()) throw new TypeError("TopBanner link.href must not be empty.");
+if (link?.target && link.target !== "_self" && link.target !== "_blank") {
+  throw new TypeError(`Unsupported TopBanner link target: ${link.target}`);
+}
+
+const titleId = `${id}-title`;
+const descriptionId = description ? `${id}-description` : undefined;
+const iconName = icons[status];
+const linkRel = link?.rel ?? (link?.target === "_blank" ? "noopener noreferrer" : undefined);
+---
+
+<aside
+  {...attributes}
+  id={id}
+  class:list={["top-banner", className]}
+  data-component-name="TopBanner"
+  data-feedback-root
+  data-feedback-kind="TopBanner"
+  data-top-banner-status={status}
+  data-top-banner-icon={showIcon ? "true" : "false"}
+  data-top-banner-dismissible={dismissible ? "true" : "false"}
+  aria-labelledby={titleId}
+  aria-describedby={descriptionId}
+>
+  <div class="top-banner__layout">
+    <div class="top-banner__content">
+      {showIcon && (
+        <MaterialSymbol
+          class="top-banner__icon"
+          name={iconName}
+          size="var(--top-banner-icon-size)"
+        />
+      )}
+
+      <div class="top-banner__copy">
+        <p class="top-banner__title body-small-semibold" id={titleId}>
+          <span class="top-banner__status-label">{statusLabel}: </span>{title}
+        </p>
+
+        {(description || link) && <span class="top-banner__separator" aria-hidden="true"></span>}
+
+        {(description || link) && (
+          <div class="top-banner__supporting">
+            {description && (
+              <p
+                class="top-banner__description body-small-regular"
+                id={descriptionId}
+                data-top-banner-description
+              >
+                {description}
+              </p>
+            )}
+            {link && (
+              <a
+                class="top-banner__link body-small-regular-underlined"
+                href={link.href}
+                target={link.target}
+                rel={linkRel}
+                download={link.download}
+                data-top-banner-link
+              >
+                {link.label}
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+
+    {dismissible && (
+      <button
+        class="top-banner__dismiss"
+        type="button"
+        aria-label={dismissLabel}
+        data-feedback-dismiss
+      >
+        <MaterialSymbol
+          class="top-banner__dismiss-icon"
+          name="close"
+          size="var(--top-banner-icon-size)"
+        />
+      </button>
+    )}
+  </div>
+</aside>
+
+<script>
+  import { initializeFeedbackRuntime } from "../../../lib/feedback/feedback-runtime";
+  initializeFeedbackRuntime();
+  document.addEventListener("astro:page-load", initializeFeedbackRuntime);
+</script>
+
+<style>
+  .top-banner {
+    container: top-banner / inline-size;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: var(--top-banner-min-height);
+    padding-inline: var(--site-padding-inline);
+    color: var(--color-text-inverse);
+    background: var(--color-background-inverse);
+    font-family: var(--font-family-body);
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+
+  .top-banner__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, max-content) minmax(0, 1fr);
+    align-items: center;
+    min-block-size: var(--top-banner-min-height);
+  }
+
+  .top-banner[hidden] {
+    display: none;
+  }
+
+  .top-banner :is(
+    .top-banner__icon,
+    .top-banner__separator,
+    .top-banner__supporting,
+    .top-banner__description,
+    .top-banner__link,
+    .top-banner__dismiss
+  )[hidden] {
+    display: none;
+  }
+
+  .top-banner[data-top-banner-status="info"] {
+    background: var(--feedback-info-background-solid);
+  }
+
+  .top-banner[data-top-banner-status="success"] {
+    background: var(--feedback-success-background-solid);
+  }
+
+  .top-banner[data-top-banner-status="warning"] {
+    background: var(--feedback-warning-background-solid);
+  }
+
+  .top-banner[data-top-banner-status="error"] {
+    background: var(--feedback-error-background-solid);
+  }
+
+  .top-banner__content {
+    grid-column: 2;
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--gap-regular);
+  }
+
+  .top-banner__copy,
+  .top-banner__supporting {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .top-banner__copy {
+    gap: var(--gap-small);
+  }
+
+  .top-banner__supporting {
+    gap: var(--gap-regular);
+  }
+
+  .top-banner__title,
+  .top-banner__description {
+    min-inline-size: 0;
+    margin: 0;
+    color: inherit;
+    overflow-wrap: anywhere;
+  }
+
+  .top-banner__icon,
+  .top-banner__dismiss-icon {
+    flex: none;
+    color: var(--color-icon-inverse);
+  }
+
+  .top-banner__separator {
+    align-self: stretch;
+    border-inline-start: var(--border-width-default) solid var(--color-icon-inverse);
+  }
+
+  .top-banner__link {
+    border-radius: var(--radius-small);
+    color: inherit;
+  }
+
+  .top-banner__dismiss {
+    grid-column: 3;
+    justify-self: end;
+    display: inline-grid;
+    inline-size: var(--top-banner-min-height);
+    min-block-size: var(--top-banner-min-height);
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-full);
+    padding: 0;
+    color: inherit;
+    background: var(--color-transparent);
+    cursor: pointer;
+  }
+
+  .top-banner__link:focus-visible,
+  .top-banner__dismiss:focus-visible {
+    outline: none;
+    box-shadow: var(--effect-focused);
+  }
+
+  .top-banner__status-label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    border: 0;
+    white-space: nowrap;
+  }
+
+  @container top-banner (max-width: 48rem) {
+    .top-banner__layout {
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: var(--gap-regular);
+      padding-block: var(--content-padding-small);
+    }
+
+    .top-banner__content {
+      grid-column: 1;
+      align-items: flex-start;
+    }
+
+    .top-banner__copy,
+    .top-banner__supporting {
+      align-items: flex-start;
+    }
+
+    .top-banner__separator {
+      display: none;
+    }
+
+    .top-banner__supporting {
+      flex-basis: 100%;
+    }
+
+    .top-banner__dismiss {
+      grid-column: 2;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .top-banner {
+      border-block: var(--border-width-default) solid CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .top-banner__icon,
+    .top-banner__dismiss-icon {
+      color: CanvasText;
+    }
+
+    .top-banner__link:focus-visible,
+    .top-banner__dismiss:focus-visible {
+      outline: var(--border-width-strong) solid CanvasText;
+      outline-offset: var(--border-width-default);
+      box-shadow: none;
+    }
+  }
+</style>

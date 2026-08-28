@@ -1,0 +1,157 @@
+---
+import Accordion from "../../base-components/accordion/Accordion.astro";
+import Button from "../../base-components/buttons/Button.astro";
+import FAQ, {
+  type FAQComposition,
+} from "../../website-patterns/faq/FAQ.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-faq" } = Astro.props;
+const variants = [
+  { composition: "split", accordionMode: "single", autoplay: false },
+  { composition: "split", accordionMode: "single", autoplay: true },
+  { composition: "split", accordionMode: "multiple", autoplay: false },
+  { composition: "stacked", accordionMode: "single", autoplay: false },
+  { composition: "stacked", accordionMode: "single", autoplay: true },
+  { composition: "stacked", accordionMode: "multiple", autoplay: false },
+] as const satisfies ReadonlyArray<{
+  composition: FAQComposition;
+  accordionMode: "single" | "multiple";
+  autoplay: boolean;
+}>;
+
+const questions = [
+  ["What is included in the design system?", "Reusable components, semantic tokens, implementation guidance and the documentation needed to apply them consistently."],
+  ["Can I use the components in more than one project?", "Yes. Keep the public API intact and let each approved brand contract provide the semantic visual expression."],
+  ["How should I propose a new component?", "Start with a proven reusable need, confirm that no existing component owns it, and pass the component-readiness gates before implementation."],
+  ["Does the FAQ support multiple open answers?", "Yes. Choose multiple mode when comparing several answers at once is more useful than a single-disclosure flow."],
+  ["What happens on smaller screens?", "The introduction and disclosure list reflow into one column without changing their reading or keyboard order."],
+  ["How is accessibility handled?", "The section has a labelled heading, while Accordion and AccordionList own disclosure semantics, focus behavior and keyboard navigation."],
+] as const;
+---
+
+<div
+  class="faq-preview"
+  data-component-name="DsFAQPreview"
+  data-faq-preview
+  data-ds-preview-target
+>
+  {variants.map((variant, variantIndex) => {
+    const variantKey = `${variant.composition}-${variant.accordionMode}-${variant.autoplay ? "on" : "off"}`;
+    return (
+      <div
+        class="faq-preview__variant"
+        data-faq-preview-variant={variantKey}
+        hidden={variantIndex !== 0}
+      >
+        <FAQ
+          id={`${idPrefix}-${variantKey}`}
+          heading="Frequently asked questions"
+          eyebrow="Help center"
+          paragraph="Find concise answers about using, extending and maintaining the Astro design system."
+          composition={variant.composition}
+          accordionMode={variant.accordionMode}
+          accordionAutoplay={variant.autoplay}
+          accordionAutoplayDuration={8000}
+        >
+          <Button slot="actions">Contact support</Button>
+          <Button slot="actions" variant="secondary">Read the guide</Button>
+
+          {questions.map(([title, answer], questionIndex) => (
+            <Accordion
+              id={`${idPrefix}-${variantKey}-question-${questionIndex + 1}`}
+              title={title}
+              initialOpen={questionIndex === 0}
+              headingLevel={3}
+            >
+              <p>{answer}</p>
+            </Accordion>
+          ))}
+        </FAQ>
+      </div>
+    );
+  })}
+</div>
+
+<script>
+  type FAQPreviewState = {
+    composition: "split" | "stacked";
+    eyebrow: "visible" | "hidden";
+    paragraph: "visible" | "hidden";
+    actions: "visible" | "hidden";
+    mode: "single" | "multiple";
+    autoplay: "on" | "off";
+  };
+
+  const initializeFAQPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-faq-preview]").forEach((preview) => {
+      if (preview.dataset.faqPreviewReady === "true") return;
+      preview.dataset.faqPreviewReady = "true";
+
+      const state: FAQPreviewState = {
+        composition: "split",
+        eyebrow: "visible",
+        paragraph: "visible",
+        actions: "visible",
+        mode: "single",
+        autoplay: "off",
+      };
+
+      const render = () => {
+        if (state.mode === "multiple") state.autoplay = "off";
+        const key = `${state.composition}-${state.mode}-${state.autoplay}`;
+
+        preview.querySelectorAll<HTMLElement>("[data-faq-preview-variant]").forEach((variant) => {
+          variant.hidden = variant.dataset.faqPreviewVariant !== key;
+          variant.querySelectorAll<HTMLElement>('[data-component-name="Eyebrow"]').forEach((node) => {
+            node.hidden = state.eyebrow === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".content__paragraph").forEach((node) => {
+            node.hidden = state.paragraph === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".content__actions").forEach((node) => {
+            node.hidden = state.actions === "hidden";
+          });
+        });
+
+        if (state.mode === "multiple") {
+          queueMicrotask(() => {
+            const owner = preview.closest<HTMLElement>("[data-ds-interactive-preview], [data-ds-responsive-preview]");
+            owner?.querySelectorAll<HTMLButtonElement>('[data-axis-id="faqAutoplay"]').forEach((control) => {
+              control.setAttribute("aria-pressed", String(control.dataset.axisValue === "off"));
+            });
+          });
+        }
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "faqComposition" && (value === "split" || value === "stacked")) state.composition = value;
+          if (axisId === "faqEyebrow" && (value === "visible" || value === "hidden")) state.eyebrow = value;
+          if (axisId === "faqParagraph" && (value === "visible" || value === "hidden")) state.paragraph = value;
+          if (axisId === "faqActions" && (value === "visible" || value === "hidden")) state.actions = value;
+          if (axisId === "faqMode" && (value === "single" || value === "multiple")) state.mode = value;
+          if (axisId === "faqAutoplay" && (value === "on" || value === "off")) state.autoplay = value;
+          render();
+        });
+    });
+  };
+
+  initializeFAQPreviews();
+  document.addEventListener("astro:page-load", initializeFAQPreviews);
+</script>
+
+<style>
+  .faq-preview,
+  .faq-preview__variant {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

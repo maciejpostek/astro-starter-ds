@@ -1,0 +1,112 @@
+---
+import BulletVisualCard from "../../website-patterns/bullet-points/BulletVisualCard.astro";
+import Button from "../../base-components/buttons/Button.astro";
+import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import Tag from "../../base-components/tag/Tag.astro";
+
+interface Props {
+  scenario?: "full" | "minimal" | "optional" | "stress";
+}
+
+const { scenario = "full" } = Astro.props;
+---
+
+<div
+  class="bullet-visual-card-preview"
+  data-component-name="DsBulletVisualCardPreview"
+  data-preview-scenario={scenario}
+>
+  {scenario === "full" && (
+    <BulletVisualCard
+      title="Bullet Card Title"
+      description="Short description of the feature, benefit, product, or service."
+      stat="Stat text"
+      data-ds-preview-target
+    >
+      <Ratio slot="visual" ratio="4:3" />
+      <Fragment slot="tags">
+        <Tag label="Feature" />
+        <Tag label="Benefit" />
+        <Tag label="Product" />
+        <Tag label="Service" />
+      </Fragment>
+      <Fragment slot="actions">
+        <Button>Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+      </Fragment>
+    </BulletVisualCard>
+  )}
+
+  {scenario === "minimal" && (
+    <BulletVisualCard title="Visual-first card">
+      <Ratio slot="visual" ratio="4:3" />
+    </BulletVisualCard>
+  )}
+
+  {scenario === "optional" && (
+    <div class="bullet-visual-card-preview__grid">
+      <BulletVisualCard title="Description only" description="Supporting copy without stat, tags or actions.">
+        <Ratio slot="visual" ratio="4:3" />
+      </BulletVisualCard>
+      <BulletVisualCard title="Stat only" stat="18% year-over-year growth">
+        <Ratio slot="visual" ratio="4:3" />
+      </BulletVisualCard>
+      <BulletVisualCard title="Tags only">
+        <Ratio slot="visual" ratio="4:3" />
+        <Fragment slot="tags">
+          <Tag label="Research" />
+          <Tag label="Design" />
+        </Fragment>
+      </BulletVisualCard>
+      <BulletVisualCard title="Actions only">
+        <Ratio slot="visual" ratio="4:3" />
+        <Fragment slot="actions">
+          <Button>Open</Button>
+          <ButtonLink href="#preview">Learn more</ButtonLink>
+        </Fragment>
+      </BulletVisualCard>
+    </div>
+  )}
+
+  {scenario === "stress" && (
+    <BulletVisualCard
+      title="A deliberately long card title that proves natural wrapping in narrow assigned containers"
+      description="Long localized or editorial copy may wrap across several lines without changing the reading order, clipping the visual, or forcing horizontal scrolling."
+      stat="127% growth across the previous twelve-month reporting period"
+    >
+      <Ratio slot="visual" ratio="4:3" />
+      <Fragment slot="tags">
+        <Tag label="Accessibility" />
+        <Tag label="Design systems" />
+        <Tag label="Responsive layout" />
+        <Tag label="Localized content" />
+        <Tag label="Performance" />
+        <Tag label="Research" />
+      </Fragment>
+      <Fragment slot="actions">
+        <Button>Review details</Button>
+        <Button variant="secondary">Compare options</Button>
+        <ButtonLink href="#preview">Read methodology</ButtonLink>
+      </Fragment>
+    </BulletVisualCard>
+  )}
+</div>
+
+<style>
+  .bullet-visual-card-preview,
+  .bullet-visual-card-preview__grid {
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+    gap: var(--gap-large);
+  }
+
+  .bullet-visual-card-preview {
+    max-inline-size: 32.3125rem;
+  }
+
+  .bullet-visual-card-preview__grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+</style>

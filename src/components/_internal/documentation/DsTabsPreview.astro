@@ -1,33 +1,42 @@
 ---
-import Tabs, { type TabsItems } from "../../base-components/tabs/Tabs.astro";
-
-const items: TabsItems = [
-  { id: "overview", label: "Overview" },
-  { id: "details", label: "Details" },
-  { id: "activity", label: "Activity" },
-];
+import Tab from "../../base-components/tabs/Tab.astro";
+import Tabs from "../../base-components/tabs/Tabs.astro";
 ---
 
 <div class="ds-preview-renderer-boundary ds-tabs-preview" data-component-name="DsTabsPreview">
-  <Tabs items={items} aria-label="Example tabs" data-ds-preview-target>
-    <span slot="overview"></span>
-    <span slot="details"></span>
-    <span slot="activity"></span>
+  <Tabs aria-label="Example tabs" data-ds-preview-target>
+    <Tab id="tabs-preview-overview" controls="tabs-preview-panel-overview" selected>Overview</Tab>
+    <Tab id="tabs-preview-details" controls="tabs-preview-panel-details">Details</Tab>
+    <Tab id="tabs-preview-activity" controls="tabs-preview-panel-activity" disabled>Activity</Tab>
   </Tabs>
+  <div id="tabs-preview-panel-overview" role="tabpanel" aria-labelledby="tabs-preview-overview" tabindex="0">
+    Overview panel
+  </div>
+  <div id="tabs-preview-panel-details" role="tabpanel" aria-labelledby="tabs-preview-details" tabindex="0" hidden>
+    Details panel
+  </div>
+  <div id="tabs-preview-panel-activity" role="tabpanel" aria-labelledby="tabs-preview-activity" tabindex="0" hidden>
+    Activity panel
+  </div>
 </div>
 
 <style>
   .ds-tabs-preview {
-    display: flex;
+    display: grid;
     inline-size: 100%;
-    justify-content: center;
+    block-size: 100%;
+    grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+    justify-items: center;
   }
 
-  .ds-tabs-preview :global(.tabs__list) {
-    justify-content: center;
+  .ds-tabs-preview > :global([data-component-name="Tabs"]) {
+    grid-row: 2;
   }
 
-  .ds-tabs-preview :global(.tabs__panel) {
-    display: none;
+  .ds-tabs-preview :global([role="tabpanel"]) {
+    min-inline-size: 0;
+    grid-row: 3;
+    align-self: start;
+    margin-block-start: var(--gap-small);
   }
 </style>

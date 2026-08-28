@@ -53,11 +53,10 @@ const descriptionId = `${rootId}-description`;
     aria-label={label}
     popovertarget={contentId}
     popovertargetaction="toggle"
-    data-control-size="small"
     data-info-popover-trigger
     data-overlay-trigger
   >
-    <MaterialSymbol name="info" size="var(--control-icon-size)" />
+    <MaterialSymbol name="info" size="100%" />
   </button>
 
   <div
@@ -71,29 +70,29 @@ const descriptionId = `${rootId}-description`;
     data-info-popover-content
     data-overlay-surface
   >
-    <span class="info-popover__tail" aria-hidden="true" data-overlay-tail></span>
-    <MaterialSymbol
-      class="info-popover__leading-icon"
-      name="info"
-      size="var(--tooltip-rich-icon-size)"
-    />
-    <span class="info-popover__body">
-      <span id={titleId} class="info-popover__title body-small-semibold">{title}</span>
-      <span id={descriptionId} class="info-popover__description body-tiny-regular">
-        {description}
-      </span>
+    <span
+      class="info-popover__indicator"
+      aria-hidden="true"
+      data-overlay-indicator
+      data-overlay-tail
+    ></span>
+    <span class="info-popover__leading-icon" aria-hidden="true">
+      <MaterialSymbol name="info" size="100%" />
     </span>
+    <span id={titleId} class="info-popover__title body-small-semibold">{title}</span>
     <button
       class="info-popover__close"
       type="button"
       aria-label={closeLabel}
       popovertarget={contentId}
       popovertargetaction="hide"
-      data-control-size="small"
       data-info-popover-close
     >
-      <MaterialSymbol name="close" size="var(--control-icon-size)" />
+      <MaterialSymbol name="close" size="100%" />
     </button>
+    <p id={descriptionId} class="info-popover__description body-tiny-regular">
+      {description}
+    </p>
   </div>
 </span>
 
@@ -115,6 +114,7 @@ const descriptionId = `${rootId}-description`;
   };
 
   const nativePopoverSupported = typeof HTMLElement.prototype.showPopover === "function";
+  const infoPopoverAbortControllers = new Map<HTMLElement, AbortController>();
 
   const setOpenState = (root: HTMLElement, open: boolean) => {
     const trigger = root.querySelector<HTMLButtonElement>("[data-info-popover-trigger]");
@@ -158,13 +158,17 @@ const descriptionId = `${rootId}-description`;
   const initializeInfoPopovers = () => {
     document.querySelectorAll<HTMLElement>('[data-component-name="InfoPopover"]').forEach((root) => {
       if (root.dataset.infoPopoverReady === "true") return;
-      root.dataset.infoPopoverReady = "true";
-      root.dataset.infoPopoverOpen = "false";
 
       const trigger = root.querySelector<HTMLButtonElement>("[data-info-popover-trigger]");
       const surface = root.querySelector<PopoverElement>("[data-info-popover-content]");
       const close = root.querySelector<HTMLButtonElement>("[data-info-popover-close]");
       if (!trigger || !surface || !close) return;
+
+      const abortController = new AbortController();
+      const { signal } = abortController;
+      infoPopoverAbortControllers.set(root, abortController);
+      root.dataset.infoPopoverReady = "true";
+      root.dataset.infoPopoverOpen = "false";
 
       let restoreFocus = false;
 
@@ -174,7 +178,7 @@ const descriptionId = `${rootId}-description`;
         event.preventDefault();
         if (surface.classList.contains("is-fallback-open")) closeFallbackPopover(root);
         else openFallbackPopover(root);
-      });
+      }, { signal });
 
       trigger.addEventListener("keydown", (event) => {
         if (event.key !== "Enter" && event.key !== " ") return;
@@ -189,14 +193,14 @@ const descriptionId = `${rootId}-description`;
 
         if (surface.classList.contains("is-fallback-open")) closeFallbackPopover(root);
         else openFallbackPopover(root);
-      });
+      }, { signal });
 
       close.addEventListener("click", (event) => {
         restoreFocus = true;
         if (nativePopoverSupported) return;
         event.preventDefault();
         closeFallbackPopover(root, true);
-      });
+      }, { signal });
 
       if (nativePopoverSupported) {
         surface.addEventListener("toggle", (event) => {
@@ -209,7 +213,7 @@ const descriptionId = `${rootId}-description`;
             trigger.focus();
           }
           if (!open) restoreFocus = false;
-        });
+        }, { signal });
       }
 
       document.addEventListener("pointerdown", (event) => {
@@ -218,7 +222,7 @@ const descriptionId = `${rootId}-description`;
         if (!nativePopoverSupported && surface.classList.contains("is-fallback-open")) {
           closeFallbackPopover(root);
         }
-      }, true);
+      }, { capture: true, signal });
 
       document.addEventListener("keydown", (event) => {
         if (event.key !== "Escape") return;
@@ -233,25 +237,39 @@ const descriptionId = `${rootId}-description`;
         } else {
           closeFallbackPopover(root, true);
         }
-      });
+      }, { signal });
     });
+  };
+
+  const teardownInfoPopovers = () => {
+    infoPopoverAbortControllers.forEach((controller, root) => {
+      controller.abort();
+      deactivateOverlay(root);
+    });
+    infoPopoverAbortControllers.clear();
   };
 
   initializeInfoPopovers();
   document.addEventListener("astro:page-load", initializeInfoPopovers);
+  document.addEventListener("astro:before-swap", teardownInfoPopovers);
 </script>
 
 <style>
   .info-popover {
     display: inline-flex;
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: 100%;
     flex: 0 0 auto;
   }
 
-  .info-popover__trigger,
-  .info-popover__close {
+  .info-popover__trigger {
     display: inline-grid;
-    inline-size: var(--control-min-height);
-    block-size: var(--control-min-height);
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: 100%;
+    min-inline-size: 0;
+    min-block-size: 0;
     flex: 0 0 auto;
     place-items: center;
     border: 0;
@@ -260,22 +278,15 @@ const descriptionId = `${rootId}-description`;
     padding: 0;
     color: var(--color-icon-secondary);
     cursor: pointer;
-    transition: color var(--motion-transition), background-color var(--motion-transition);
+    transition: color var(--motion-transition);
   }
 
-  .info-popover__trigger:hover,
-  .info-popover__close:hover {
-    background: var(--color-background-subtle);
-    color: var(--color-icon-primary);
+  .info-popover__trigger:is(:hover, :active) {
+    color: var(--color-icon-accent);
   }
 
-  .info-popover__trigger:active,
-  .info-popover__close:active {
-    background: var(--color-background-muted);
-  }
-
-  .info-popover__trigger:focus-visible,
-  .info-popover__close:focus-visible {
+  .info-popover__trigger:focus-visible {
+    color: var(--color-icon-accent);
     outline: none;
     box-shadow: var(--effect-focused);
   }
@@ -293,22 +304,25 @@ const descriptionId = `${rootId}-description`;
     position: fixed;
     inset: auto;
     box-sizing: border-box;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: var(--tooltip-rich-icon-size) minmax(0, 1fr) var(--tooltip-rich-icon-size);
+    grid-template-rows: auto auto;
     inline-size: min(
       var(--tooltip-rich-max-inline-size),
       calc(100vw - (var(--tooltip-viewport-padding) * 2))
     );
     max-inline-size: var(--tooltip-rich-max-inline-size);
-    align-items: start;
-    gap: var(--gap-regular);
+    align-items: center;
+    column-gap: var(--gap-regular);
+    row-gap: var(--gap-tiny);
     margin: 0;
-    border: var(--border-width-default) solid var(--color-border-default);
+    border: 0;
     border-radius: var(--radius-medium);
-    background: var(--color-background-canvas);
+    background: var(--color-background-inverse);
     padding: var(--content-padding-small);
-    color: var(--color-text-primary);
+    color: var(--color-text-inverse);
     box-shadow: var(--elevation-surface-floating);
     opacity: 0;
+    overflow: visible;
     overflow-wrap: anywhere;
     transition: opacity var(--motion-transition);
   }
@@ -317,47 +331,78 @@ const descriptionId = `${rootId}-description`;
     opacity: 1;
   }
 
-  .info-popover__tail {
+  .info-popover__indicator {
     position: absolute;
     inline-size: var(--tooltip-tail-size);
     block-size: var(--tooltip-tail-size);
-    background: var(--color-background-canvas);
+    background: var(--color-background-inverse);
   }
 
-  .info-popover__content[data-overlay-resolved-placement="top"] .info-popover__tail {
+  .info-popover__indicator[data-overlay-indicator-direction="down"] {
     clip-path: polygon(0 0, 100% 0, 50% 100%);
   }
 
-  .info-popover__content[data-overlay-resolved-placement="bottom"] .info-popover__tail {
+  .info-popover__indicator[data-overlay-indicator-direction="up"] {
     clip-path: polygon(50% 0, 100% 100%, 0 100%);
   }
 
-  .info-popover__content[data-overlay-resolved-placement="left"] .info-popover__tail {
+  .info-popover__indicator[data-overlay-indicator-direction="right"] {
     clip-path: polygon(0 0, 100% 50%, 0 100%);
   }
 
-  .info-popover__content[data-overlay-resolved-placement="right"] .info-popover__tail {
+  .info-popover__indicator[data-overlay-indicator-direction="left"] {
     clip-path: polygon(100% 0, 0 50%, 100% 100%);
   }
 
   .info-popover__leading-icon {
-    flex: 0 0 auto;
-    color: var(--color-icon-secondary);
+    display: inline-grid;
+    grid-column: 1;
+    grid-row: 1;
+    inline-size: var(--tooltip-rich-icon-size);
+    block-size: var(--tooltip-rich-icon-size);
+    place-items: center;
+    color: var(--color-icon-inverse);
   }
 
-  .info-popover__body {
-    display: grid;
+  .info-popover__title {
+    grid-column: 2;
+    grid-row: 1;
     min-inline-size: 0;
-    gap: var(--gap-tiny);
   }
 
-  .info-popover__title,
+  .info-popover__close {
+    display: inline-grid;
+    box-sizing: border-box;
+    grid-column: 3;
+    grid-row: 1;
+    inline-size: var(--tooltip-rich-icon-size);
+    block-size: var(--tooltip-rich-icon-size);
+    min-inline-size: 0;
+    min-block-size: 0;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-small);
+    background: transparent;
+    padding: 0;
+    color: var(--color-icon-inverse);
+    cursor: pointer;
+    transition: color var(--motion-transition);
+  }
+
+  .info-popover__close:focus-visible {
+    color: var(--color-icon-accent);
+    outline: none;
+    box-shadow: var(--effect-focused);
+  }
+
   .info-popover__description {
+    grid-column: 2 / -1;
+    grid-row: 2;
     display: block;
-  }
-
-  .info-popover__description {
-    color: var(--color-text-secondary);
+    inline-size: 100%;
+    min-inline-size: 0;
+    margin: 0;
+    color: var(--color-text-inverse);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -382,13 +427,12 @@ const descriptionId = `${rootId}-description`;
     }
 
     .info-popover__content {
-      border-color: CanvasText;
       background: Canvas;
       color: CanvasText;
       box-shadow: none;
     }
 
-    .info-popover__tail {
+    .info-popover__indicator {
       background: Canvas;
     }
 

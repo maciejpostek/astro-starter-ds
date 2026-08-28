@@ -90,12 +90,16 @@ export const positionOverlay = (root: HTMLElement) => {
     viewportPadding: readLength(root, "--tooltip-viewport-padding"),
     tailSize,
   });
+  const surfaceStyle = getComputedStyle(surface);
+  const positioningOriginLeft = Number.parseFloat(surfaceStyle.borderLeftWidth) || 0;
+  const positioningOriginTop = Number.parseFloat(surfaceStyle.borderTopWidth) || 0;
 
   surface.setAttribute("data-overlay-resolved-placement", result.placement);
+  tail.setAttribute("data-overlay-indicator-direction", result.indicatorDirection);
   surface.style.left = `${result.left}px`;
   surface.style.top = `${result.top}px`;
-  tail.style.left = `${result.tailLeft}px`;
-  tail.style.top = `${result.tailTop}px`;
+  tail.style.left = `${result.tailLeft - positioningOriginLeft}px`;
+  tail.style.top = `${result.tailTop - positioningOriginTop}px`;
 };
 
 const positionActiveOverlays = () => {

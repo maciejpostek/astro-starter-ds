@@ -3,11 +3,11 @@
 Status: active.
 
 - Manifest id: `file-upload-card`
-- Figma canonical node: none (`astro-only`)
+- Figma canonical node: `1372:164`
 - Figma page key: `file-upload`
 - Astro source: `src/components/base-components/file-upload/FileUploadCard.astro`
 - Role: `card`
-- Sync status: `astro-only`
+- Sync status: `mapped`
 
 ## UX purpose
 
@@ -50,7 +50,7 @@ FileUploadCard presents one controlled file with uploading, success or error sta
 
 ## Accessibility and required behavior
 
-- Use `aria-busy` only while uploading and a native `progress` element for determinate or indeterminate progress.
+- Use `aria-busy` only while uploading and compose ProgressBar for determinate or indeterminate native progress semantics.
 - Associate the article with its file name and metadata/status description.
 - All actions are native buttons with localized accessible labels and visible focus.
 - Emit bubbling `astro-ds:file-upload-action` with `{ fileId, action }`, where action is `cancel`, `retry` or `remove`.
@@ -61,6 +61,7 @@ FileUploadCard presents one controlled file with uploading, success or error sta
 - [FileUpload](/design-system/base-components/file-upload/file-upload) collects and validates local files.
 - [Button](/design-system/base-components/buttons/button) supplies the visible retry action.
 - [MaterialSymbol](/design-system/assets/material-symbols) supplies the fixed document and close glyphs.
+- [ProgressBar](/design-system/base-components/progress-bar/progress-bar) supplies the canonical accent upload indicator.
 - Alert or notification patterns may announce server-wide failure details outside this compact card.
 
 ## Naming and token contract

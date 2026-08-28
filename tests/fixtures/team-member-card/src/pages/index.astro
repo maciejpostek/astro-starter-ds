@@ -1,0 +1,52 @@
+---
+import TeamMemberCard from "../../../../../src/components/website-patterns/team/TeamMemberCard.astro";
+import type { RatioValue } from "../../../../../src/components/base-components/ratio/Ratio.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const ratios: RatioValue[] = ["16:9", "1:1", "2.39:1", "2:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4"];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TeamMemberCard contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <TeamMemberCard
+        id="vertical-card"
+        fullName="Maya Thompson"
+        roleOrPosition="Design systems lead"
+        class="team-member-card-contract-fixture"
+        data-contract="forwarded"
+      >
+        <img slot="image" src="/images/project-placeholder.svg" alt="Abstract geometric placeholder representing Maya Thompson" />
+      </TeamMemberCard>
+
+      <TeamMemberCard
+        id="horizontal-card"
+        fullName="Jordan Lee"
+        roleOrPosition="Product designer"
+        layout="horizontal"
+        headingLevel={4}
+      >
+        <picture slot="image"><img src="/images/project-placeholder.svg" alt="Abstract geometric placeholder representing Jordan Lee" /></picture>
+      </TeamMemberCard>
+
+      <TeamMemberCard id="without-image" fullName="Alex Morgan" roleOrPosition="Engineer" headingLevel={2} />
+      <TeamMemberCard id="without-role" fullName="Sam Rivera" headingLevel={5}>
+        <img slot="image" src="/images/project-placeholder.svg" alt="Abstract geometric placeholder representing Sam Rivera" />
+      </TeamMemberCard>
+      <TeamMemberCard id="heading-six" fullName="Taylor Kim" headingLevel={6} />
+
+      {ratios.map((ratio) => (
+        <TeamMemberCard fullName={`Ratio ${ratio}`} imageRatio={ratio}>
+          <img slot="image" src="/images/project-placeholder.svg" alt="Abstract ratio test placeholder" />
+        </TeamMemberCard>
+      ))}
+    </main>
+  </body>
+</html>

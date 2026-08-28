@@ -371,8 +371,6 @@ Use Align UI only as a bounded benchmark for overlay hierarchy, four physical ta
 
 #### Tokens
 
-- `--control-min-height`
-- `--control-icon-size`
 - `--tooltip-offset`
 - `--tooltip-viewport-padding`
 - `--tooltip-tail-size`
@@ -380,16 +378,10 @@ Use Align UI only as a bounded benchmark for overlay hierarchy, four physical ta
 - `--tooltip-rich-max-inline-size`
 - `--tooltip-rich-icon-size`
 - `--color-background-inverse`
-- `--color-background-canvas`
-- `--color-background-subtle`
-- `--color-background-muted`
-- `--color-border-inverse`
-- `--color-border-default`
 - `--color-text-inverse`
-- `--color-text-primary`
-- `--color-text-secondary`
-- `--color-icon-primary`
 - `--color-icon-secondary`
+- `--color-icon-accent`
+- `--color-icon-inverse`
 - `--elevation-surface-floating`
 - `--effect-focused`
 - `--motion-transition`
@@ -404,25 +396,26 @@ Use Align UI only as a bounded benchmark for overlay hierarchy, four physical ta
 - `data-component-name`: `Tooltip | InfoPopover`
 - `data-overlay-placement`: `top | bottom | left | right as the preferred physical side`
 - `data-overlay-resolved-placement`: `top | bottom | left | right after collision resolution`
-- `data-tooltip-size`: `small | medium on Tooltip`
-- `data-control-size`: `small on fixed info and close actions`
+- `data-overlay-indicator-direction`: `down | up | right | left derived from resolved placement`
 
 #### CSS declarations
 
-- `Tooltip surface`: `existing inverse surface, border, text, spacing, radius and motion aliases`
-- `InfoPopover surface`: `existing adaptive surface, border, text, icon, elevation, spacing and motion aliases`
+- `Tooltip surface`: `existing inverse surface, text, spacing, radius and motion aliases with no border`
+- `InfoPopover surface`: `the same inverse background, text and internal icon roles as Tooltip, plus existing elevation, spacing and motion aliases with no border`
 - `Overlay geometry`: `registered tooltip-size aliases plus runtime standard top and left styles`
 
 #### Runtime behaviors
 
 - Tooltip opens on pointer hover and keyboard focus and closes when they leave or Escape is pressed.
 - InfoPopover uses native Popover API dialog semantics with a no-library fallback, explicit close, Escape and light dismiss.
-- The shared internal positioner tries the preferred side, its opposite and then the side with the greatest space before clamping the surface and tail to the viewport.
+- The shared internal positioner tries the preferred side, its opposite and then the side with the greatest space before clamping the surface and indicator to the viewport.
+- The private 8 px Tooltip Indicator sits fully outside the resolved surface edge, shares its background and points toward the trigger for Tooltip and InfoPopover without a separating border.
+- The shared 6 px optical offset lets the 8 px indicator overlap the trigger box by 2 px, removing the raster gap before the visible information glyph.
 
 ### Required
 
 - Keep Tooltip non-interactive with role=tooltip and InfoPopover interactive with role=dialog.
-- Use fixed local Material Symbols info and close, unique ARIA relationships and the approved small control bridge.
+- Use fixed local Material Symbols info and close, unique ARIA relationships and parent-owned trigger sizing.
 - Keep content concise, theme-adaptive and verifiable in narrow, scrollable and clipped layouts.
 
 ### Forbidden

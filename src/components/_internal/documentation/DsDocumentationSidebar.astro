@@ -5,8 +5,9 @@ import {
   documentationCategories,
   documentationComponentHref,
   documentationPageHref,
-  isSingletonBaseComponentPage,
   normalizeDocumentationPath,
+  resolveDocumentationNavigationMode,
+  resolveDocumentationPageMode,
 } from "../../../data/documentationRegistry";
 import DsDocumentationSearch from "./DsDocumentationSearch.astro";
 import DsDocumentationThemePicker from "./DsDocumentationThemePicker.astro";
@@ -43,7 +44,11 @@ const normalizedActivePath = normalizeDocumentationPath(activePath);
     <DsDocumentationSearch />
   </div>
 
-  <nav class="ds-documentation-sidebar__nav" aria-label="Design system pages">
+  <nav
+    class="ds-documentation-sidebar__nav"
+    aria-label="Design system pages"
+    data-ds-sidebar-scroll-container
+  >
     <div class="ds-documentation-sidebar__groups">
       {
         documentationCategories.map((category) => (
@@ -62,9 +67,11 @@ const normalizedActivePath = normalizeDocumentationPath(activePath);
                 const components = category.categoryKey === "assets"
                   ? []
                   : componentsByPage.get(`${page.categoryKey}/${page.pageKey}`) ?? [];
-                const isSingleton =
-                  category.categoryKey === "base-components" &&
-                  isSingletonBaseComponentPage(page.pageKey);
+                const pageMode = resolveDocumentationPageMode(page.categoryKey, page.pageKey);
+                const isSingleton = pageMode === "singleton";
+                const disclosureOnlyFamily =
+                  resolveDocumentationNavigationMode(page.categoryKey, page.pageKey) ===
+                  "disclosure";
                 const nestedComponents = isSingleton ? [] : components;
                 const activeComponent = nestedComponents.some(
                   (component) =>
@@ -80,14 +87,28 @@ const normalizedActivePath = normalizeDocumentationPath(activePath);
                       class="ds-documentation-sidebar__page-row"
                       data-active-parent={activeComponent ? "true" : undefined}
                     >
-                      <a
-                        class="ds-documentation-sidebar__page"
-                        href={pageHref}
-                        aria-current={currentPage ? "page" : undefined}
-                      >
-                        {page.pageLabel}
-                      </a>
-                      {nestedComponents.length > 0 && (
+                      {disclosureOnlyFamily ? (
+                        <button
+                          class="ds-documentation-sidebar__page ds-documentation-sidebar__page-disclosure"
+                          type="button"
+                          aria-label={`${expanded ? "Collapse" : "Expand"} ${page.pageLabel} components`}
+                          aria-controls={panelId}
+                          aria-expanded={expanded}
+                          data-ds-sidebar-disclosure
+                        >
+                          <span>{page.pageLabel}</span>
+                          <MaterialSymbol name="chevron_right" size="var(--size-16)" />
+                        </button>
+                      ) : (
+                        <a
+                          class="ds-documentation-sidebar__page"
+                          href={pageHref}
+                          aria-current={currentPage ? "page" : undefined}
+                        >
+                          {page.pageLabel}
+                        </a>
+                      )}
+                      {!disclosureOnlyFamily && nestedComponents.length > 0 && (
                         <button
                           class="ds-documentation-sidebar__disclosure"
                           type="button"
@@ -138,6 +159,40 @@ const normalizedActivePath = normalizeDocumentationPath(activePath);
 </aside>
 
 <script>
+  const sidebarScrollStorageKey = "astro-ds-documentation-sidebar-scroll-top";
+  const sidebarScrollContainer = document.querySelector<HTMLElement>(
+    "[data-ds-sidebar-scroll-container]"
+  );
+
+  const persistSidebarScroll = () => {
+    if (!sidebarScrollContainer) return;
+    try {
+      sessionStorage.setItem(sidebarScrollStorageKey, String(sidebarScrollContainer.scrollTop));
+    } catch {
+      // Keep navigation functional when browser storage is unavailable.
+    }
+  };
+
+  if (sidebarScrollContainer) {
+    try {
+      const storedScrollTop = Number(sessionStorage.getItem(sidebarScrollStorageKey));
+      if (Number.isFinite(storedScrollTop) && storedScrollTop >= 0) {
+        requestAnimationFrame(() => {
+          sidebarScrollContainer.scrollTop = storedScrollTop;
+        });
+      }
+    } catch {
+      // Keep the default scroll position when browser storage is unavailable.
+    }
+
+    sidebarScrollContainer.addEventListener("scroll", persistSidebarScroll, { passive: true });
+    sidebarScrollContainer.addEventListener("click", (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest("a[href]")) persistSidebarScroll();
+    });
+    window.addEventListener("pagehide", persistSidebarScroll);
+  }
+
   document.querySelectorAll<HTMLButtonElement>("[data-ds-sidebar-disclosure]").forEach((trigger) => {
     if (trigger.dataset.dsSidebarReady === "true") return;
     trigger.dataset.dsSidebarReady = "true";

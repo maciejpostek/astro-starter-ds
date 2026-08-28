@@ -21,6 +21,8 @@ const paths = {
   core: "src/components/_internal/behaviors/SelectControl.astro",
   types: "src/lib/select/selectTypes.ts",
   flags: "src/lib/select/selectFlags.ts",
+  logos: "src/lib/select/selectLogos.ts",
+  logoAssets: "src/lib/logos/logoAssets.ts",
 };
 const sources = Object.fromEntries(Object.entries(paths).map(([key, path]) => [key, read(path)]));
 const rules = [
@@ -114,8 +116,11 @@ for (const forbidden of ["label?:", "hint?:", "validation?:", "purpose?:", "size
   if (sources.inline.includes(forbidden)) errors.push(`InlineSelect exposes forbidden field API: ${forbidden}`);
 }
 
-for (const purpose of ["basic", "language", "phone", "country", "brand", "company"]) {
+for (const purpose of ["basic", "language", "phone", "country", "brand"]) {
   if (!sources.core.includes(`\"${purpose}\"`)) errors.push(`SelectControl is missing purpose: ${purpose}`);
+}
+if (sources.types.includes('"company"') || sources.core.includes('[data-select-purpose="company"]')) {
+  errors.push("Select still exposes the retired company purpose instead of the consolidated brand purpose.");
 }
 for (const key of ["arrow_drop_down", "check", "language", "call", "info", "error", "warning", "check_circle"]) {
   if (!icons.icons?.[key]) errors.push(`Select family requires missing MaterialSymbol: ${key}`);
@@ -126,10 +131,12 @@ if (/MaterialSymbolName|iconName\??:|<slot/u.test(sources.core)) {
 
 if (
   !sources.types.includes("flag: string")
+  || !sources.types.includes("logo: string")
   || !sources.types.includes("visual?: never")
   || !sources.types.includes("flag?: never")
+  || !sources.types.includes("logo?: never")
 ) {
-  errors.push("SelectOption does not keep flag and visual mutually exclusive.");
+  errors.push("SelectOption does not keep flag, logo and visual mutually exclusive.");
 }
 for (const contract of [
   "import.meta.glob<string>",
@@ -141,13 +148,34 @@ for (const contract of [
   if (!sources.flags.includes(contract)) errors.push(`Select flag resolver is missing contract: ${contract}`);
 }
 for (const contract of [
-  "resolveSelectFlag",
-  "data-select-selected-flag",
-  "data-select-option-flag",
-  "cannot define both flag and visual",
-  '.inline-select .select-control__selected-visual[data-select-selected-flag="true"]',
+  "resolveLogoMark",
+  "invalid logo slug",
+  "/design-system/assets/logos",
 ]) {
-  if (!sources.core.includes(contract)) errors.push(`SelectControl is missing flag contract: ${contract}`);
+  if (!sources.logos.includes(contract)) errors.push(`Select logo resolver is missing contract: ${contract}`);
+}
+for (const contract of [
+  "import.meta.glob<string>",
+  'query: "?url"',
+  "logoRecords",
+  "resolveLogoMark",
+  "markCandidates",
+]) {
+  if (!sources.logoAssets.includes(contract)) errors.push(`Logo asset catalog is missing contract: ${contract}`);
+}
+for (const contract of [
+  "resolveSelectFlag",
+  "resolveSelectLogo",
+  "data-select-selected-flag",
+  "data-select-selected-logo",
+  "data-select-option-flag",
+  "data-select-option-logo",
+  "cannot define both flag and visual",
+  "cannot define both logo and visual",
+  "cannot define both flag and logo",
+  ".inline-select .select-control__selected-visual:is(",
+]) {
+  if (!sources.core.includes(contract)) errors.push(`SelectControl is missing option visual contract: ${contract}`);
 }
 for (const flag of flagLibrary.flags ?? []) {
   if (!existsSync(join(projectRoot, flag.sourcePath))) {
@@ -183,10 +211,21 @@ for (const [index, component] of ["<Select", "<CompactSelect", "<InlineSelect"].
 if (!previews[0].includes('purpose="country"')) {
   errors.push("Select preview does not default to the country purpose.");
 }
-if (!docs.includes('defaultValue: "country"') || !docs.includes('{ name: "options[].flag"')) {
-  errors.push("Select documentation does not expose the canonical flag option contract.");
+for (const preview of previews.slice(0, 2)) {
+  for (const slug of ["figma", "linear", "notion"]) {
+    if (!preview.includes(`logo: "${slug}"`)) {
+      errors.push(`Select visual preview is missing canonical logo mark: ${slug}`);
+    }
+  }
 }
-if (!interaction.includes("astro-select:refresh") || !interaction.includes("selectRoot.dataset.selectPurpose")) {
+if (
+  !docs.includes('defaultValue: "country"')
+  || !docs.includes('{ name: "options[].flag"')
+  || !docs.includes('{ name: "options[].logo"')
+) {
+  errors.push("Select documentation does not expose the canonical flag and logo option contracts.");
+}
+if (!interaction.includes("astro-select:refresh") || !interaction.includes("root.dataset.selectPurpose")) {
   errors.push("Select preview axes are not wired into the shared interaction runtime.");
 }
 

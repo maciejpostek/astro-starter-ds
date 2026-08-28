@@ -1,4 +1,4 @@
-export type SelectPurpose = "basic" | "language" | "phone" | "country" | "brand" | "company";
+export type SelectPurpose = "basic" | "language" | "phone" | "country" | "brand";
 
 export interface SelectOptionImageVisual {
   kind: "image";
@@ -22,10 +22,17 @@ interface SelectOptionBase {
 export type SelectOption = SelectOptionBase & (
   | {
       flag: string;
+      logo?: never;
+      visual?: never;
+    }
+  | {
+      logo: string;
+      flag?: never;
       visual?: never;
     }
   | {
       flag?: never;
+      logo?: never;
       visual?: SelectOptionVisual;
     }
 );

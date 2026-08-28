@@ -1,0 +1,75 @@
+---
+import BulletIconCard from "../../../../../src/components/website-patterns/bullet-points/BulletIconCard.astro";
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonLink from "../../../../../src/components/base-components/buttons/ButtonLink.astro";
+import Tag from "../../../../../src/components/base-components/tag/Tag.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const invalidCase = process.env.BULLET_ICON_CARD_INVALID_CASE;
+const validProps = {
+  title: "Valid title",
+  description: "Valid description",
+};
+const invalidProps: Record<string, Record<string, unknown>> = {
+  title: { ...validProps, title: "   " },
+  description: { ...validProps, description: "   " },
+  stat: { ...validProps, stat: "   " },
+  layout: { ...validProps, layout: "diagonal" },
+  headingLevel: { ...validProps, headingLevel: 1 },
+};
+const rejectedProps = invalidCase ? (invalidProps[invalidCase] ?? invalidProps.title) : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BulletIconCard contract fixture</title>
+  </head>
+  <body>
+    <main>
+      {rejectedProps ? (
+        <BulletIconCard {...rejectedProps as any} />
+      ) : (
+        <Fragment>
+          <BulletIconCard
+            id="full-card"
+            class="fixture-card"
+            title="Global availability"
+            description="Reach customers in every supported market."
+            stat="24 markets supported"
+            layout="horizontal"
+            headingLevel={2}
+            data-contract="forwarded"
+          >
+            <Fragment slot="tags">
+              <Tag label="Global" />
+              <Tag label="Scalable" />
+            </Fragment>
+            <Fragment slot="actions">
+              <Button showIcon={false}>Get started</Button>
+              <ButtonLink href="#full-card">Learn more</ButtonLink>
+            </Fragment>
+          </BulletIconCard>
+
+          <BulletIconCard
+            id="minimal-card"
+            title="Clear explanation"
+            description="Required copy remains complete without optional regions."
+            showIcon={false}
+            headingLevel={4}
+          />
+
+          <BulletIconCard
+            title="Stat without trend icon"
+            description="The stat remains readable as plain text."
+            stat="Always available"
+            showStatIcon={false}
+          />
+        </Fragment>
+      )}
+    </main>
+  </body>
+</html>

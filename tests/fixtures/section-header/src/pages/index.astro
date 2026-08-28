@@ -1,0 +1,75 @@
+---
+import SectionHeader from "../../../../../src/components/website-patterns/page-headers/SectionHeader.astro";
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonLink from "../../../../../src/components/base-components/buttons/ButtonLink.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SectionHeader contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <section class="fixture fixture--wide" data-fixture-width="1280">
+        <SectionHeader
+          id="section-header-copy"
+          class="section-header-contract-fixture"
+          data-forwarded="yes"
+          heading="Build a stronger section introduction"
+          eyebrow="Platform"
+          paragraph="Supporting copy explains the section and gives readers enough context to choose their next action."
+        >
+          <Button slot="actions">Primary action</Button>
+          <Button slot="actions" variant="secondary">Secondary action</Button>
+        </SectionHeader>
+      </section>
+
+      <section class="fixture fixture--tablet" data-fixture-width="768">
+        <SectionHeader
+          composition="heading-details"
+          headingLevel={3}
+          heading="A heading with details and no actions"
+          eyebrow="Editorial"
+          paragraph="This composition proves that an absent actions slot does not create an empty ButtonGroup or action region."
+        />
+      </section>
+
+      <section
+        class="fixture fixture--narrow"
+        data-fixture-width="320"
+        data-theme="dark"
+      >
+        <SectionHeader
+          composition="eyebrow-heading-details"
+          headingLevel={4}
+          heading="A deliberately long heading that exercises wrapping at narrow component widths and at two hundred percent zoom"
+          eyebrow="Long-form example"
+          paragraph="Long supporting content verifies natural wrapping, stable source order and the absence of horizontal overflow when several actions are present."
+        >
+          <Button slot="actions">First action</Button>
+          <Button slot="actions" variant="secondary">Second action</Button>
+          <ButtonLink slot="actions" href="#third-action">Third action</ButtonLink>
+        </SectionHeader>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+    padding: var(--site-padding-inline);
+  }
+
+  .fixture {
+    inline-size: min(100%, 80rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+</style>

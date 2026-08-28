@@ -20,7 +20,8 @@ requireMatch(upload, /astro-ds:file-upload-select/, "FileUpload select event is 
 requireMatch(upload, /astro-ds:file-upload-reject/, "FileUpload reject event is missing.");
 forbidMatch(upload.split("const {", 1)[0], /\bstate\??:/, "FileUpload must not expose a public interaction-state prop.");
 
-requireMatch(card, /<progress/, "FileUploadCard must render native progress.");
+requireMatch(card, /<ProgressBar\b[^>]*label=\{statusLabel\}/, "FileUploadCard must compose the canonical ProgressBar.");
+forbidMatch(card, /<ProgressBar\b[^>]*\btone=/, "FileUploadCard must not use a removed ProgressBar tone API.");
 requireMatch(card, /name="description"/, "FileUploadCard must own the fixed description icon.");
 requireMatch(card, /name="close"/, "FileUploadCard must own the fixed close action icon.");
 requireMatch(card, /<Button[\s\S]*data-file-upload-action="retry"/, "FileUploadCard must compose the canonical Button for retry.");
@@ -45,7 +46,9 @@ const uploadRecord = byId.get("file-upload");
 const cardRecord = byId.get("file-upload-card");
 if (!uploadRecord?.sourcePath || uploadRecord.syncStatus !== "mapped" || uploadRecord.figmaCanonicalNodeId !== "221:88") errors.push("file-upload registry record is incomplete.");
 if (!cardRecord?.sourcePath || cardRecord.role !== "card" || cardRecord.syncStatus !== "mapped" || cardRecord.figmaCanonicalNodeId !== "1372:164") errors.push("file-upload-card registry record is incomplete.");
-if (!cardRecord?.dependencies?.includes("button")) errors.push("file-upload-card must declare its Button dependency.");
+for (const dependency of ["button", "progress-bar"]) {
+  if (!cardRecord?.dependencies?.includes(dependency)) errors.push(`file-upload-card must declare its ${dependency} dependency.`);
+}
 for (const id of ["file-upload", "file-upload-card"]) {
   requireMatch(docs, new RegExp(`componentId: "${id}"`), `${id} documentation adapter is missing.`);
   const record = byId.get(id);

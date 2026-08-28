@@ -1,0 +1,14 @@
+---
+import Select from "../../../../../src/components/base-components/select/Select.astro";
+
+const options = [
+  { value: "unknown", label: "Unknown brand", logo: "unknown-brand" },
+];
+---
+
+<Select
+  id="invalid-brand-select"
+  label="Brand"
+  options={options}
+  purpose="brand"
+/>

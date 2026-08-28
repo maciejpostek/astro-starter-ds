@@ -1,20 +1,38 @@
 ---
 import CompactSelect, { type SelectOption } from "../../base-components/select/CompactSelect.astro";
 
-const options: SelectOption[] = [
+const countryOptions: SelectOption[] = [
   { value: "pl", label: "Poland", flag: "poland" },
   { value: "de", label: "Germany", flag: "germany" },
   { value: "us", label: "United States", flag: "united-states" },
 ];
+
+const brandOptions: SelectOption[] = [
+  { value: "figma", label: "Figma", logo: "figma" },
+  { value: "linear", label: "Linear", logo: "linear" },
+  { value: "notion", label: "Notion", logo: "notion" },
+];
 ---
 
 <div class="ds-compact-select-preview" data-component-name="DsCompactSelectPreview" data-ds-preview-target>
-  <CompactSelect
-    id="compact-select-preview-control"
-    name="compact-country"
-    aria-label="Country"
-    options={options}
-    purpose="country"
-    value="pl"
-  />
+  <div data-select-preview-purpose-group="default">
+    <CompactSelect
+      id="compact-select-preview-control"
+      name="compact-country"
+      aria-label="Country"
+      options={countryOptions}
+      purpose="country"
+      value="pl"
+    />
+  </div>
+  <div data-select-preview-purpose-group="brand" hidden>
+    <CompactSelect
+      id="compact-select-brand-preview-control"
+      name="compact-brand"
+      aria-label="Brand"
+      options={brandOptions}
+      purpose="brand"
+      value="figma"
+    />
+  </div>
 </div>

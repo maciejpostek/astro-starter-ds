@@ -107,14 +107,54 @@ const documentationGuidesToggle = read("src/components/_internal/documentation/D
 const documentationPager = read("src/components/_internal/documentation/DsDocumentationPager.astro");
 const tableOfContents = read("src/components/_internal/documentation/DsTableOfContents.astro");
 const documentationRegistry = read("src/data/documentationRegistry.ts");
+const baseComponentIndexRoute = read("src/pages/design-system/base-components/[familyKey]/index.astro");
 const baseComponentDetailRoute = read("src/pages/design-system/base-components/[familyKey]/[componentSlug]/index.astro");
+const baseComponentPreviewRoute = read("src/pages/design-system/base-components/[familyKey]/preview.astro");
+const baseComponentDetailPreviewRoute = read("src/pages/design-system/base-components/[familyKey]/[componentSlug]/preview.astro");
+const websitePatternIndexRoute = read("src/pages/design-system/website-patterns/[familyKey]/index.astro");
 const websitePatternDetailRoute = read("src/pages/design-system/website-patterns/[familyKey]/[componentSlug]/index.astro");
+const websitePatternPreviewRoute = read("src/pages/design-system/website-patterns/[familyKey]/preview.astro");
+const websitePatternDetailPreviewRoute = read("src/pages/design-system/website-patterns/[familyKey]/[componentSlug]/preview.astro");
 const componentDetailRoutes = `${baseComponentDetailRoute}\n${websitePatternDetailRoute}`;
 const componentInfoLayer = read("src/components/_internal/dev/ComponentInfoLayer.astro");
 const docSection = read("src/components/_internal/documentation/DsDocSection.astro");
 const interactivePreview = read("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
+const responsivePreviewCanvas = read("src/components/_internal/documentation/DsResponsivePreviewCanvas.astro");
+const documentationPreviewRegistry = read("src/data/documentationPreviewRegistry.ts");
 const familyGallery = read("src/components/_internal/documentation/DsFamilyGallery.astro");
 const baseLayout = read("src/layouts/BaseLayout.astro");
+
+const componentDocumentationCategories = new Set([
+  "base-components",
+  "website-patterns",
+  "examples-templates",
+]);
+const activeDocumentationStatuses = new Set([
+  "mapped",
+  "figma-only",
+  "astro-only",
+  "intentional-difference",
+]);
+const documentationPageModes = new Map();
+for (const page of registry.pages.filter(
+  (candidate) =>
+    componentDocumentationCategories.has(candidate.categoryKey) &&
+    candidate.documentationVisible !== false,
+)) {
+  const componentCount = registry.components.filter(
+    (component) =>
+      component.categoryKey === page.categoryKey &&
+      component.pageKey === page.pageKey &&
+      !["internal", "part"].includes(component.role) &&
+      activeDocumentationStatuses.has(component.syncStatus) &&
+      component.status !== "deprecated" &&
+      component.documentationVisible !== false,
+  ).length;
+  documentationPageModes.set(
+    `${page.categoryKey}/${page.pageKey}`,
+    componentCount === 0 ? "empty" : componentCount === 1 ? "singleton" : "multi",
+  );
+}
 
 const definitionIds = Array.from(
   definitionSource.matchAll(/componentId:\s*"([^"]+)"/g),
@@ -245,6 +285,70 @@ for (const absolutePage of collectAstroPages("src/pages/design-system")) {
   }
 }
 
+if (!documentationRegistry.includes('export const resolveDocumentationPageMode = (')
+  || !documentationRegistry.includes('export type DocumentationPageMode = "empty" | "singleton" | "multi"')
+  || /isSingleton(?:Base|Website|Template)ComponentPage/.test(documentationRegistry)) {
+  errors.push("Documentation routing must use one category-neutral empty/singleton/multi resolver.");
+}
+if ((documentationRegistry.match(/resolveDocumentationPageMode\(/g) ?? []).length < 5
+  || !documentationSidebar.includes("resolveDocumentationPageMode(page.categoryKey, page.pageKey)")) {
+  errors.push("Page type, hrefs, search, navigation and sidebar must consume the shared documentation page-mode resolver.");
+}
+if (!documentationRegistry.includes('export type DocumentationNavigationMode = "page" | "disclosure"')
+  || !documentationRegistry.includes("export const resolveDocumentationNavigationMode = (")
+  || !documentationSidebar.includes("resolveDocumentationNavigationMode(page.categoryKey, page.pageKey)")) {
+  errors.push("Documentation must use one shared page-or-disclosure navigation-mode resolver.");
+}
+if (![baseComponentIndexRoute, websitePatternIndexRoute].every(
+  (source) => source.includes("resolveDocumentationPageMode") && source.includes("<DsComponentDetail"),
+)) {
+  errors.push("Base Component and Website Pattern singleton routes must render component detail directly on the family path.");
+}
+if (![baseComponentDetailRoute, websitePatternDetailRoute].every(
+  (source) => source.includes("resolveDocumentationPageMode") && source.includes('=== "multi"'),
+)) {
+  errors.push("Nested component detail routes must be generated only for multi-component families.");
+}
+if (![baseComponentPreviewRoute, websitePatternPreviewRoute].every(
+  (source) => source.includes("resolveDocumentationPageMode") && source.includes('=== "singleton"'),
+) || ![baseComponentDetailPreviewRoute, websitePatternDetailPreviewRoute].every(
+  (source) => source.includes("resolveDocumentationPageMode") && source.includes('=== "multi"'),
+)) {
+  errors.push("Responsive preview routes must be direct for singleton pages and nested only for multi families.");
+}
+if (![baseComponentIndexRoute, websitePatternIndexRoute].every(
+  (source) =>
+    source.includes("resolveDocumentationNavigationMode") &&
+    source.includes('navigationMode === "disclosure"') &&
+    source.includes("documentationComponentHref(firstComponent)") &&
+    source.includes("return Astro.redirect(firstComponentHref)") &&
+    source.includes("summary: []") &&
+    !source.includes("DsFamilyGallery"),
+)) {
+  errors.push("Base Components and Website Patterns must redirect multi-family URLs and render heading-only empty pages without family galleries.");
+}
+if (!documentationSidebar.includes('class="ds-documentation-sidebar__page ds-documentation-sidebar__page-disclosure"')
+  || !documentationStyles.includes(".ds-documentation-sidebar__page-disclosure")) {
+  errors.push("Multi-component Base and Website families must render as non-clickable sidebar disclosures.");
+}
+if (documentationRegistry.includes("documentationFamilyIndex")
+  || JSON.stringify(registry.pages).includes("documentationFamilyIndex")) {
+  errors.push("Base and Website family presentation must come from the shared category policy, not per-page index flags.");
+}
+
+for (const pageIdentity of [
+  "website-patterns/content",
+  "base-components/popup",
+  "website-patterns/page-headers",
+]) {
+  if (documentationPageModes.get(pageIdentity) !== "singleton") {
+    errors.push(`${pageIdentity} must resolve from the active public registry count as a singleton.`);
+  }
+}
+if (documentationPageModes.get("website-patterns/stats-metrics") !== "multi") {
+  errors.push("website-patterns/stats-metrics must resolve as a multi-component disclosure after StatTextInline is mapped.");
+}
+
 if (!designSystemLayout.includes('import DsDocHeader from "../components/_internal/documentation/DsDocHeader.astro"')) {
   errors.push("DesignSystemLayout does not import the canonical DsDocHeader.");
 }
@@ -333,6 +437,8 @@ if (!/<h1\b/.test(docHeader) || (docHeader.match(/<h1\b/g) ?? []).length !== 1) 
 }
 if (!docHeader.includes('import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro"')
   || !docHeader.includes("summary: readonly DocumentationHeaderSegment[]")
+  || !docHeader.includes("{summary.length > 0 && (")
+  || !docHeader.includes("{(eyebrow || status) && (")
   || !docHeader.includes('segment.kind === "link"')
   || !docHeader.includes("<a href={segment.href}")) {
   errors.push("DsDocHeader must use the public Eyebrow and render typed, safe summary links.");
@@ -523,7 +629,7 @@ if (!/\.ds-documentation-pager__link\s*\{[^}]*border-radius:\s*var\(--radius-but
   errors.push("Documentation Previous/Next links must reuse the canonical Button radius.");
 }
 if (/\.ds-documentation-toc\s*\{[^}]*border-left:/s.test(documentationStyles)
-  || !/\.ds-documentation-toc\s*\{[^}]*padding-inline:\s*var\(--content-padding-medium\)\s+var\(--content-padding-large\)/s.test(documentationStyles)
+  || !/\.ds-documentation-toc\s*\{[^}]*padding-inline:\s*var\(--content-padding-medium\)\s+var\(--content-padding-xlarge\)/s.test(documentationStyles)
   || !/\.ds-table-of-contents a\[data-active="true"\]\s*\{[^}]*font-weight:\s*var\(--font-weight-strong\)/s.test(documentationStyles)) {
   errors.push("The right TOC must be borderless, use expanded end padding and match the strong accent active state.");
 }
@@ -607,8 +713,41 @@ const previewSceneIndex = interactivePreview.indexOf('<div class="ds-interactive
 const previewControlsIndex = interactivePreview.indexOf('<div class="ds-interactive-component-preview__controls"');
 if (previewSceneIndex < 0 || previewControlsIndex < 0 || previewSceneIndex > previewControlsIndex
   || !/\.ds-interactive-component-preview__scene\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3/s.test(interactivePreview)
+  || !/data-preview-category=\{categoryKey\}/s.test(interactivePreview)
+  || /\[data-preview-category="base-components"\][^{]*\.ds-interactive-component-preview__scene\s*\{[^}]*aspect-ratio:/s.test(interactivePreview)
+  || !/\.ds-interactive-component-preview__scene\s*\{[^}]*overflow:\s*auto/s.test(interactivePreview)
+  || !/\.ds-interactive-component-preview__scene-content\s*\{[^}]*position:\s*absolute[^}]*inset:\s*var\(--content-padding-xlarge\)[^}]*place-items:\s*safe center/s.test(interactivePreview)
+  || !/\.ds-interactive-component-preview__scene-canvas\s*\{[^}]*place-items:\s*safe center/s.test(interactivePreview)
   || /\.ds-interactive-component-preview__scene\s*\{[^}]*min-height:/s.test(interactivePreview)) {
-  errors.push("Interactive previews must render an exact 4:3 scene before their controls without a fixed minimum height.");
+  errors.push("Interactive previews must render every category at 4:3 with centered, scroll-safe content.");
+}
+if (!interactivePreview.includes("desktopWebsitePatternCanvasWidth = 1440")
+  || !interactivePreview.includes('preview.dataset.previewCategory !== "website-patterns"')
+  || !interactivePreview.includes("availableWidth / canvasWidth")
+  || !interactivePreview.includes("availableHeight / canvasHeight")
+  || !interactivePreview.includes('preview.dataset.websitePatternBlockFit = "fit"')
+  || !/\[data-preview-category="website-patterns"\][^{]*\.ds-interactive-component-preview__scene-canvas\s*\{[^}]*position:\s*absolute[^}]*transform-origin:\s*center center/s.test(interactivePreview)) {
+  errors.push("Website Pattern inline previews must use the shared 1440px center-origin contain scale without affecting other categories.");
+}
+if (!componentDetail.includes('component.categoryKey === "website-patterns" && index === 0')
+  || !componentDetail.includes("categoryKey={previewCategoryKey}")
+  || !componentDetail.includes('scope: `${component.id}-${preview.id ?? "preview"}-responsive-preview`')
+  || !documentationPreviewRegistry.includes("componentDocumentationAdapters")
+  || !documentationPreviewRegistry.includes("architecture.components")
+  || !documentationPreviewRegistry.includes("Boolean(component.sourcePath)")
+  || !documentationPreviewRegistry.includes('component.categoryKey === "website-patterns"')
+  || !documentationPreviewRegistry.includes("documentation?.preview ?? documentation?.previews?.[0]")
+  || !documentationPreviewRegistry.includes("preview.responsivePreview?.rendererProps")
+  || !documentationPreviewRegistry.includes("documentationComponentHref(component)")) {
+  errors.push("Website Pattern Scale and /preview routes must derive from the first canonical Astro-backed documentation preview.");
+}
+if (!responsivePreviewCanvas.includes("data-preview-content")
+  || !/\.ds-responsive-preview-canvas__content\s*\{[^}]*inline-size:\s*100%[^}]*min-block-size:\s*100%[^}]*place-items:\s*center/s.test(responsivePreviewCanvas)) {
+  errors.push("Responsive preview canvas must own the full-width, minimum-height centered content layer.");
+}
+if (!websitePatternPreviewRoute.includes("backHref={adapter.backHref}")
+  || !websitePatternDetailPreviewRoute.includes("backHref={adapter.backHref}")) {
+  errors.push("Website Pattern responsive preview routes must return through their canonical component href.");
 }
 for (const requiredTabContract of [
   "--control-min-height",
@@ -818,7 +957,7 @@ if (!tableCopyCell.includes('id={tokenId}')
   || !colorRow.includes("anchor={anchorToken}")
   || !paletteBlock.includes("anchorToken={anchorTokens}")
   || !componentColorReference.includes("anchorTokens={group.anchorTokens}")
-  || (foundationData.match(/anchorTokens:\s*false/g) ?? []).length !== 5
+  || (foundationData.match(/anchorTokens:\s*false/g) ?? []).length !== 6
   || !typographyFoundationPage.includes('<DsTableCopyCell anchor={false} role="cell" value={row.token} />')
   || !documentationStyles.includes('[data-ds-token-anchor="true"][data-ds-search-target="true"]')
   || !documentationStyles.includes("background: var(--color-background-accent-subtle)")

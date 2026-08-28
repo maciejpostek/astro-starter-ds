@@ -40,7 +40,7 @@ for (const contract of [
   "var(--color-border-subtle)",
   "var(--color-border-default)",
   "var(--color-border-strong)",
-  "var(--color-text-tertiary)",
+  "var(--color-text-secondary)",
   "overflow-wrap: anywhere",
   "@media (forced-colors: active)",
 ]) {

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { componentRuleSections, readComponentRuleContract } from "./lib/component-rule-contract.mjs";
-import { normalizeTabsState, validateTabMenuItems } from "../src/lib/tabs/tabs-model.mjs";
+import { validateTabMenuItems } from "../src/lib/tabs/tabs-model.mjs";
 
 const projectRoot = resolve(process.argv[2] ?? ".");
 const errors = [];
@@ -28,6 +28,7 @@ const registry = JSON.parse(read("src/data/design-system/componentArchitecture.j
 const docs = read("src/data/documentationComponentRegistry.ts");
 const interactivePreview = read("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
 const tabPreview = read("src/components/_internal/documentation/DsTabPreview.astro");
+const tabsPreview = read("src/components/_internal/documentation/DsTabsPreview.astro");
 const foundationData = read("src/data/documentationFoundationData.ts");
 const colorPage = read("src/pages/design-system/foundations/color.astro");
 const readiness = read("architecture/component-readiness-contract.json");
@@ -44,6 +45,7 @@ for (const contract of [
   "var(--tab-background-selected)",
   "var(--effect-focused)",
   "@media (forced-colors: active)",
+  "Tab cannot be both selected and disabled.",
 ]) {
   if (!tab.includes(contract)) errors.push(`Tab is missing contract: ${contract}`);
 }
@@ -52,8 +54,10 @@ if (/\bvariant\??:/u.test(tab)) errors.push("Tab must not expose a public visual
 for (const contract of [
   'data-component-name="Tabs"',
   'role="tablist"',
-  'role="tabpanel"',
-  "Astro.slots.has(item.id)",
+  '<slot />',
+  'Astro.slots.has("default")',
+  'Array.from(root.children)',
+  'document.getElementById(panelId)',
   'event.key === "ArrowRight"',
   'event.key === "ArrowLeft"',
   'event.key === "Home"',
@@ -63,6 +67,9 @@ for (const contract of [
   "document.addEventListener(\"astro:page-load\", initializeTabs)",
 ]) {
   if (!tabs.includes(contract)) errors.push(`Tabs is missing contract: ${contract}`);
+}
+for (const legacy of ["TabsItem", "TabsItems", "initialTab", "tabs__panel", "tabs__list", "named panel slot", "normalizeTabsState"]) {
+  if (tabs.includes(legacy)) errors.push(`Tabs still exposes legacy contract: ${legacy}`);
 }
 
 for (const contract of [
@@ -87,11 +94,11 @@ for (const [source, name] of [[tab, "Tab"], [tabs, "Tabs"], [tabMenu, "TabMenu"]
   if (/--(?:ds|component)-/u.test(source)) errors.push(`${name} invents a forbidden custom property namespace.`);
 }
 
-if (!model.includes("normalizeTabsState") || !model.includes("validateTabMenuItems")) {
-  errors.push("Tabs model must expose both panel and menu validation.");
+if (model.includes("normalizeTabsState") || model.includes("getNextTabId")) {
+  errors.push("Tabs model must not retain runtime helpers owned by the slot-based DOM runtime.");
 }
+if (!model.includes("validateTabMenuItems")) errors.push("Tabs model must retain TabMenu validation.");
 try {
-  normalizeTabsState([{ id: "first", label: "First" }]);
   validateTabMenuItems([{ label: "First", href: "#first" }]);
 } catch (error) {
   errors.push(`Tabs model rejects a valid minimum fixture: ${error.message}`);
@@ -111,9 +118,24 @@ for (const [name, alias] of Object.entries(expectedAliases)) {
 
 const tabColor = tokenArchitecture.groups?.find((group) => group.id === "tab-color");
 const controlSize = tokenArchitecture.groups?.find((group) => group.id === "control-size");
-for (const consumer of ["tab", "tabs", "tab-menu"]) {
+for (const consumer of ["tab", "tab-menu"]) {
   if (!tabColor?.consumers?.includes(consumer)) errors.push(`tab-color is missing consumer ${consumer}.`);
   if (!controlSize?.consumers?.includes(consumer)) errors.push(`control-size is missing consumer ${consumer}.`);
+}
+const tabsRecord = registry.components?.find((component) => component.id === "tabs");
+const tabsFigmaContract = registry.figmaComponentContracts?.tabs;
+if (
+  tabsFigmaContract?.properties?.["Tabs Slot"] !== "SLOT"
+  || tabsFigmaContract?.preferredValues?.join(",") !== "Tab"
+) {
+  errors.push("Tabs Figma contract must expose a Tab-preferred native Slot.");
+}
+if (
+  tabsRecord?.props?.join(",") !== "aria-label,aria-labelledby"
+  || tabsRecord?.slots?.join(",") !== "default: direct Tab children"
+  || tabsRecord?.tokens?.join(",") !== "--gap-small"
+) {
+  errors.push("Tabs registry must describe the slot wrapper instead of the removed item/panel API.");
 }
 
 const expectedRecords = {
@@ -149,6 +171,13 @@ if ((tabPreview.match(/<Tab\b/gu) ?? []).length !== 1 || tabPreview.includes("Ac
 }
 if (!docs.includes('{ label: "Active", value: "selected" }')) {
   errors.push("Tab documentation must expose the selected state through the Active preview control.");
+}
+if (
+  (tabsPreview.match(/<Tab\b/gu) ?? []).length !== 3
+  || !tabsPreview.includes('role="tabpanel"')
+  || tabsPreview.includes("TabsItems")
+) {
+  errors.push("Tabs preview must use direct Tab children and external panels.");
 }
 if (
   !interactivePreview.includes("target.matches('[data-component-name=\"Tab\"][role=\"tab\"]')")

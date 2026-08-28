@@ -1,0 +1,191 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+
+export type BulletVisualCardHeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+export interface Props extends Omit<HTMLAttributes<"article">, "aria-labelledby" | "class" | "title"> {
+  title: string;
+  description?: string;
+  stat?: string;
+  headingLevel?: BulletVisualCardHeadingLevel;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  stat,
+  headingLevel = 3,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof title !== "string" || title.trim().length === 0) {
+  throw new TypeError("BulletVisualCard title must be a non-empty string.");
+}
+for (const [name, value] of [["description", description], ["stat", stat]] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`BulletVisualCard ${name} must be a non-empty string when provided.`);
+  }
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("BulletVisualCard headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("BulletVisualCard requires a visual slot, preferably Ratio with ratio=\"4:3\".");
+}
+
+const hasTags = Astro.slots.has("tags");
+const hasActions = Astro.slots.has("actions");
+const headingId = id
+  ? `${id}-heading`
+  : `bullet-visual-card-${crypto.randomUUID()}-heading`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+---
+
+<article
+  {...attributes}
+  id={id}
+  class:list={["bullet-visual-card", className]}
+  aria-labelledby={headingId}
+  data-component-name="BulletVisualCard"
+>
+  <div class="bullet-visual-card__visual">
+    <slot name="visual" />
+  </div>
+
+  <div class="bullet-visual-card__content">
+    <div class="bullet-visual-card__copy">
+      <HeadingTag
+        class="bullet-visual-card__title body-large-semibold"
+        id={headingId}
+      >
+        {title}
+      </HeadingTag>
+
+      {description && (
+        <p class="bullet-visual-card__description body-base-regular">
+          {description}
+        </p>
+      )}
+
+      {stat && (
+        <p class="bullet-visual-card__stat body-small-regular">
+          <span>{stat}</span>
+          <MaterialSymbol
+            class="bullet-visual-card__stat-icon"
+            name="trending_up"
+            size="var(--bullet-visual-card-stat-icon-size)"
+          />
+        </p>
+      )}
+    </div>
+
+    {hasTags && (
+      <div class="bullet-visual-card__tags">
+        <slot name="tags" />
+      </div>
+    )}
+
+    {hasActions && (
+      <div class="bullet-visual-card__actions">
+        <ButtonGroup aria-labelledby={headingId}>
+          <slot name="actions" />
+        </ButtonGroup>
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .bullet-visual-card {
+    display: flex;
+    min-inline-size: 0;
+    inline-size: 100%;
+    flex-direction: column;
+    gap: var(--space-media-content);
+  }
+
+  .bullet-visual-card__visual {
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: clip;
+    border-radius: var(--radius-image);
+  }
+
+  .bullet-visual-card__visual > :global([data-component-name="Ratio"]) {
+    inline-size: 100%;
+  }
+
+  .bullet-visual-card__content,
+  .bullet-visual-card__copy {
+    display: flex;
+    min-inline-size: 0;
+    inline-size: 100%;
+    flex-direction: column;
+  }
+
+  .bullet-visual-card__content {
+    gap: var(--space-medium);
+  }
+
+  .bullet-visual-card__copy {
+    gap: var(--space-regular);
+  }
+
+  .bullet-visual-card__title,
+  .bullet-visual-card__description,
+  .bullet-visual-card__stat {
+    min-inline-size: 0;
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .bullet-visual-card__title,
+  .bullet-visual-card__stat {
+    color: var(--color-text-primary);
+  }
+
+  .bullet-visual-card__description {
+    color: var(--color-text-secondary);
+  }
+
+  .bullet-visual-card__stat {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-small);
+  }
+
+  .bullet-visual-card__stat-icon {
+    flex: 0 0 auto;
+    color: var(--color-icon-accent);
+  }
+
+  .bullet-visual-card__tags,
+  .bullet-visual-card__actions {
+    display: flex;
+    min-inline-size: 0;
+    inline-size: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .bullet-visual-card__tags {
+    gap: var(--gap-tag-group);
+  }
+
+  .bullet-visual-card__actions > :global([data-component-name="ButtonGroup"]) {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  @media (forced-colors: active) {
+    .bullet-visual-card__stat-icon {
+      color: CanvasText;
+    }
+  }
+</style>

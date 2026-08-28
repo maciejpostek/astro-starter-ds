@@ -4,6 +4,7 @@ import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import type { InputSize, InputValidation } from "../../base-components/inputs/Input.astro";
 import { normalizeValidationState } from "../../../lib/forms/validationState";
 import { resolveSelectFlag } from "../../../lib/select/selectFlags";
+import { resolveSelectLogo } from "../../../lib/select/selectLogos";
 import type {
   SelectOption,
   SelectOptionVisual,
@@ -83,6 +84,7 @@ const optionVisuals = options.map((option): SelectOptionVisual | undefined => {
   const runtimeOption = option as {
     value: string;
     flag?: string;
+    logo?: string;
     visual?: SelectOptionVisual;
   };
 
@@ -92,11 +94,35 @@ const optionVisuals = options.map((option): SelectOptionVisual | undefined => {
     );
   }
 
+  if (runtimeOption.logo !== undefined && runtimeOption.visual !== undefined) {
+    throw new Error(
+      `Select "${id}" option "${runtimeOption.value}" cannot define both logo and visual.`,
+    );
+  }
+
+  if (runtimeOption.flag !== undefined && runtimeOption.logo !== undefined) {
+    throw new Error(
+      `Select "${id}" option "${runtimeOption.value}" cannot define both flag and logo.`,
+    );
+  }
+
   if (runtimeOption.flag !== undefined) {
     return {
       kind: "image",
       src: resolveSelectFlag({
         slug: runtimeOption.flag,
+        selectId: id,
+        optionValue: runtimeOption.value,
+      }),
+      alt: "",
+    };
+  }
+
+  if (runtimeOption.logo !== undefined) {
+    return {
+      kind: "image",
+      src: resolveSelectLogo({
+        slug: runtimeOption.logo,
         selectId: id,
         optionValue: runtimeOption.value,
       }),
@@ -199,6 +225,7 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
         class="select-control__selected-visual"
         data-select-selected-visual
         data-select-selected-flag={selectedOption.flag !== undefined ? "true" : undefined}
+        data-select-selected-logo={selectedOption.logo !== undefined ? "true" : undefined}
       >
         {selectedOptionVisual?.kind === "image" && (
           <img src={selectedOptionVisual.src} alt={selectedOptionVisual.alt ?? ""} />
@@ -237,6 +264,7 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
         data-select-option-index={index}
         data-select-option-label={option.label}
         data-select-option-flag={option.flag !== undefined ? "true" : undefined}
+        data-select-option-logo={option.logo !== undefined ? "true" : undefined}
       >
         <span class="select-control__option-visual" data-select-option-visual aria-hidden="true">
           {optionVisuals[index]?.kind === "image" && (
@@ -393,6 +421,11 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
         selectedVisual.dataset.selectSelectedFlag = "true";
       } else {
         delete selectedVisual.dataset.selectSelectedFlag;
+      }
+      if (selectedListboxOption.dataset.selectOptionLogo === "true") {
+        selectedVisual.dataset.selectSelectedLogo = "true";
+      } else {
+        delete selectedVisual.dataset.selectSelectedLogo;
       }
 
       const baseLabel = trigger.dataset.selectBaseLabel;
@@ -715,7 +748,10 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
   }
 
   .inline-select .select-control__leading:has(
-    .select-control__selected-visual[data-select-selected-flag="true"]
+    .select-control__selected-visual:is(
+      [data-select-selected-flag="true"],
+      [data-select-selected-logo="true"]
+    )
   ) {
     display: inline-flex;
     align-self: center;
@@ -778,15 +814,13 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     [data-select-purpose="language"],
     [data-select-purpose="phone"],
     [data-select-purpose="country"],
-    [data-select-purpose="brand"],
-    [data-select-purpose="company"]
+    [data-select-purpose="brand"]
   ) .select-control__leading,
   .select-control[data-select-purpose="language"] .select-control__purpose-icon--language,
   .select-control[data-select-purpose="phone"] .select-control__purpose-icon--phone,
   .select-control:is(
     [data-select-purpose="country"],
-    [data-select-purpose="brand"],
-    [data-select-purpose="company"]
+    [data-select-purpose="brand"]
   ) .select-control__selected-visual,
   .select-control__option-visual:not(:empty) {
     display: inline-flex;
@@ -810,7 +844,10 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     line-height: var(--line-height-none);
   }
 
-  .inline-select .select-control__selected-visual[data-select-selected-flag="true"] {
+  .inline-select .select-control__selected-visual:is(
+    [data-select-selected-flag="true"],
+    [data-select-selected-logo="true"]
+  ) {
     display: inline-flex;
   }
 

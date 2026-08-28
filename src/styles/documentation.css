@@ -4,7 +4,7 @@
   --ds-documentation-toc-width: 12.5rem;
   --ds-documentation-content-max-width: 50rem;
   --ds-documentation-content-inline-padding: clamp(
-    var(--content-padding-large),
+    var(--content-padding-xlarge),
     4vw,
     var(--section-padding-small)
   );
@@ -24,7 +24,7 @@
   align-items: center;
   border-bottom: var(--border-width-default) solid var(--color-border-subtle);
   background: var(--app-topbar-surface);
-  padding-inline: var(--content-padding-large);
+  padding-inline: var(--content-padding-xlarge);
   backdrop-filter: blur(var(--size-12));
 }
 
@@ -33,7 +33,7 @@
   height: 100%;
   min-width: 0;
   align-items: stretch;
-  gap: var(--gap-large);
+  gap: var(--gap-xlarge);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -174,7 +174,7 @@
   min-height: var(--size-32);
   place-items: center;
   border-radius: var(--radius-full);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
   padding: 0;
 }
@@ -287,6 +287,29 @@
   font-weight: var(--font-weight-emphasis);
 }
 
+.ds-documentation-sidebar__page-disclosure {
+  width: 100%;
+  justify-content: space-between;
+  grid-column: 1 / -1;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.ds-documentation-sidebar__page-disclosure svg {
+  flex: 0 0 auto;
+  color: var(--color-icon-tertiary);
+  transition: transform var(--motion-transition);
+}
+
+.ds-documentation-sidebar__page-disclosure[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
 .ds-documentation-sidebar__page:is(:hover, :focus-visible),
 .ds-documentation-sidebar__component:is(:hover, :focus-visible) {
   color: var(--color-text-primary);
@@ -363,7 +386,7 @@
 
 .ds-documentation-sidebar__component {
   min-height: var(--size-32);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
 }
 
@@ -422,7 +445,7 @@
 .ds-documentation-page-header p,
 .ds-doc-section__body > :where(p, ul, ol),
 [data-ds-doc-section] > :where(p, ul, ol) {
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
 }
 
 .ds-documentation-page-header p {
@@ -438,8 +461,8 @@
   overflow-y: auto;
   background: var(--color-background-canvas);
   grid-column: 3;
-  padding-block: var(--content-padding-large);
-  padding-inline: var(--content-padding-medium) var(--content-padding-large);
+  padding-block: var(--content-padding-xlarge);
+  padding-inline: var(--content-padding-medium) var(--content-padding-xlarge);
   scrollbar-width: thin;
 }
 
@@ -458,7 +481,7 @@
 .ds-table-of-contents a {
   display: block;
   border-left: var(--border-width-default) solid transparent;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
   line-height: var(--line-height-normal);
   padding-left: var(--content-padding-small);
@@ -588,7 +611,7 @@
   align-items: center;
   gap: var(--gap-tiny);
   overflow: hidden;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
   line-height: var(--line-height-normal);
   white-space: nowrap;
@@ -622,8 +645,8 @@
 }
 
 .ds-search-empty {
-  padding: var(--content-padding-large);
-  color: var(--color-text-tertiary);
+  padding: var(--content-padding-xlarge);
+  color: var(--color-text-secondary);
   text-align: center;
 }
 
@@ -633,7 +656,7 @@
   align-items: center;
   gap: var(--gap-medium);
   border-top: var(--border-width-default) solid var(--color-border-subtle);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
   padding: var(--content-padding-small) var(--content-padding-medium);
 }
@@ -694,7 +717,7 @@
 
 .ds-documentation-pager__direction,
 .ds-documentation-pager__parent {
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-body-tiny);
 }
 
@@ -706,7 +729,7 @@
 [data-ds-doc-section],
 [id^="token-"],
 [id^="icon-"] {
-  scroll-margin-top: calc(var(--ds-documentation-topbar-height) + var(--content-padding-large));
+  scroll-margin-top: calc(var(--ds-documentation-topbar-height) + var(--content-padding-xlarge));
 }
 
 [data-ds-doc-section] {
@@ -738,7 +761,7 @@
 @media (width >= 90rem) {
   .ds-documentation-toc {
     position: fixed;
-    right: var(--content-padding-large);
+    right: var(--content-padding-xlarge);
     width: var(--size-256);
   }
 }

@@ -1,0 +1,14 @@
+---
+import StatTextInline from "../../../../../src/components/website-patterns/stats-metrics/StatTextInline.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.STAT_TEXT_INLINE_INVALID_CASE ?? "text";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  text: { text: "   " },
+  trend: { text: "Revenue increased by 12%", trend: "flat" },
+  iconPosition: { text: "Revenue increased by 12%", iconPosition: "center" },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.text) as any;
+---
+
+<StatTextInline {...props} />

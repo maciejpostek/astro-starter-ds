@@ -1,0 +1,853 @@
+---
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import type { DocumentationPreviewAxis } from "../../../data/documentationComponentRegistry";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import Select from "../../base-components/select/Select.astro";
+import Tab from "../../base-components/tabs/Tab.astro";
+import "../../../styles/components/button-controls.css";
+
+interface Props {
+  title: string;
+  renderer: AstroComponentFactory;
+  rendererProps?: Record<string, unknown>;
+  axes?: DocumentationPreviewAxis[];
+  scope: string;
+  backHref?: string;
+  persistToUrl?: boolean;
+}
+
+const {
+  title,
+  renderer: PreviewRenderer,
+  rendererProps = {},
+  axes = [],
+  scope,
+  backHref,
+  persistToUrl = false,
+} = Astro.props;
+const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
+---
+
+<div
+  class="ds-responsive-preview-canvas"
+  data-component-name="DsResponsivePreviewCanvas"
+  data-ds-responsive-preview
+  data-preview-scope={scope}
+  data-preview-persist-url={persistToUrl ? "true" : undefined}
+  data-preview-guides="hidden"
+  data-preview-controls-state="hidden"
+>
+  {backHref ? (
+    <a class="ds-responsive-preview-canvas__back" href={backHref}>← Back</a>
+  ) : (
+    <button
+      class="icon-button ds-responsive-preview-canvas__close"
+      type="button"
+      aria-label="Close responsive preview"
+      data-button-variant="primary"
+      data-control-size="small"
+      data-responsive-preview-close
+    >
+      <MaterialSymbol name="close" size="var(--control-icon-size)" />
+    </button>
+  )}
+
+  <div class="ds-responsive-preview-canvas__workspace" data-preview-workspace>
+    <div class="ds-responsive-preview-canvas__stage" data-preview-stage>
+      <button
+        class="ds-responsive-preview-canvas__handle ds-responsive-preview-canvas__handle--left"
+        type="button"
+        role="slider"
+        aria-label="Resize preview from the left"
+        aria-valuemin="320"
+        aria-valuemax="320"
+        aria-valuenow="320"
+        aria-orientation="horizontal"
+        data-preview-handle="left"
+      ><span aria-hidden="true"></span></button>
+
+      <div
+        class="ds-responsive-preview-canvas__viewport"
+        id={`${scope}-viewport`}
+        role="tabpanel"
+        aria-labelledby={`${scope}-desktop-tab`}
+        data-preview-viewport
+        data-preview-host
+        data-device="desktop"
+      >
+        <div class="ds-responsive-preview-canvas__content" data-preview-content>
+          <PreviewRenderer {...rendererProps} />
+        </div>
+        <div class="ds-responsive-preview-canvas__guides" data-preview-guides hidden aria-hidden="true">
+          <div class="ds-responsive-preview-canvas__guides-grid" aria-hidden="true">
+            {guideColumns.map((column) => <span data-preview-guide-column={column}></span>)}
+          </div>
+          <div class="ds-responsive-preview-canvas__guide-labels" data-preview-guide-labels></div>
+        </div>
+      </div>
+
+      <button
+        class="ds-responsive-preview-canvas__handle ds-responsive-preview-canvas__handle--right"
+        type="button"
+        role="slider"
+        aria-label="Resize preview from the right"
+        aria-valuemin="320"
+        aria-valuemax="320"
+        aria-valuenow="320"
+        aria-orientation="horizontal"
+        data-preview-handle="right"
+      ><span aria-hidden="true"></span></button>
+    </div>
+
+    <button
+      class="icon-button ds-responsive-preview-canvas__controls-toggle"
+      type="button"
+      aria-label="Show component controls"
+      aria-controls={`${scope}-controls`}
+      aria-expanded="false"
+      data-button-variant="tertiary"
+      data-control-size="small"
+      data-preview-controls-toggle
+    >
+      <MaterialSymbol name="filter_list" size="var(--control-icon-size)" />
+    </button>
+
+    <div
+      class="ds-responsive-preview-canvas__controls"
+      id={`${scope}-controls`}
+      aria-label={`${title} preview controls`}
+      data-preview-controls
+      hidden
+    >
+      <div class="ds-responsive-preview-canvas__axis ds-responsive-preview-canvas__axis--viewport">
+        <div class="ds-responsive-preview-canvas__axis-label" id={`${scope}-viewport-label`}>
+          <span>Viewport</span>
+          <span class="ds-responsive-preview-canvas__viewport-separator" aria-hidden="true">·</span>
+          <output data-preview-width aria-live="polite">— px</output>
+        </div>
+        <div
+          class="ds-responsive-preview-canvas__devices"
+          role="tablist"
+          aria-labelledby={`${scope}-viewport-label`}
+        >
+          <Tab
+            id={`${scope}-desktop-tab`}
+            controls={`${scope}-viewport`}
+            selected={true}
+            data-preview-device="desktop"
+          >Desktop</Tab>
+          <Tab
+            id={`${scope}-tablet-tab`}
+            controls={`${scope}-viewport`}
+            data-preview-device="tablet"
+          >Tablet</Tab>
+          <Tab
+            id={`${scope}-mobile-tab`}
+            controls={`${scope}-viewport`}
+            data-preview-device="mobile"
+          >Mobile</Tab>
+        </div>
+      </div>
+
+      {axes.map((axis) => (
+        <div class="ds-responsive-preview-canvas__axis" data-preview-axis={axis.id}>
+          <div class="ds-responsive-preview-canvas__axis-label" id={`${scope}-${axis.id}-label`}>
+            {axis.label}
+          </div>
+          {axis.control === "select" ? (
+            <Select
+              class="ds-responsive-preview-canvas__select"
+              id={`${scope}-${axis.id}-select`}
+              options={axis.options}
+              value={axis.defaultValue}
+              size="small"
+              aria-labelledby={`${scope}-${axis.id}-label`}
+              data-preview-axis-select
+              data-axis-id={axis.id}
+            />
+          ) : (
+            <div
+              class="ds-responsive-preview-canvas__segmented"
+              role="group"
+              aria-labelledby={`${scope}-${axis.id}-label`}
+            >
+              {axis.options.map((option) => (
+                <button
+                  type="button"
+                  aria-pressed={option.value === axis.defaultValue ? "true" : "false"}
+                  data-control-size="small"
+                  data-preview-axis-control
+                  data-axis-id={axis.id}
+                  data-axis-value={option.value}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <div class="ds-responsive-preview-canvas__theme-controls" role="group" aria-label="Preview tools">
+      <button
+        class="icon-button"
+        type="button"
+        aria-label="Use light mode"
+        aria-pressed="true"
+        data-button-variant="primary"
+        data-control-size="small"
+        data-preview-theme-button="light"
+      >
+        <MaterialSymbol name="light_mode" size="var(--control-icon-size)" />
+      </button>
+      <button
+        class="icon-button"
+        type="button"
+        aria-label="Use dark mode"
+        aria-pressed="false"
+        data-button-variant="tertiary"
+        data-control-size="small"
+        data-preview-theme-button="dark"
+      >
+        <MaterialSymbol name="dark_mode" size="var(--control-icon-size)" />
+      </button>
+      <button
+        class="icon-button"
+        type="button"
+        aria-label="Show guides"
+        aria-pressed="false"
+        data-button-variant="tertiary"
+        data-control-size="small"
+        data-preview-guides-button
+      >
+        <MaterialSymbol
+          name="visibility"
+          size="var(--control-icon-size)"
+          data-preview-guides-visible-icon
+          hidden
+        />
+        <MaterialSymbol
+          name="visibility_off"
+          size="var(--control-icon-size)"
+          data-preview-guides-hidden-icon
+        />
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  type Device = "desktop" | "tablet" | "mobile" | "custom";
+  type PreviewTheme = "light" | "dark";
+  type ResizeSession = { pointerId: number; pointerX: number; width: number; side: "left" | "right" };
+
+  const minimumWidth = 320;
+  const presetWidths = { tablet: 768, mobile: 390 } as const;
+
+  const initializeResponsivePreview = (root: HTMLElement) => {
+    if (root.dataset.responsivePreviewReady === "true") return;
+    root.dataset.responsivePreviewReady = "true";
+
+    const workspace = root.querySelector<HTMLElement>("[data-preview-workspace]");
+    const viewport = root.querySelector<HTMLElement>("[data-preview-viewport]");
+    const widthOutput = root.querySelector<HTMLOutputElement>("[data-preview-width]");
+    const handles = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-preview-handle]"));
+    const guides = root.querySelector<HTMLElement>("[data-preview-guides]");
+    const guideLabels = root.querySelector<HTMLElement>("[data-preview-guide-labels]");
+    const guidesButton = root.querySelector<HTMLButtonElement>("[data-preview-guides-button]");
+    const previewControls = root.querySelector<HTMLElement>("[data-preview-controls]");
+    const controlsToggle = root.querySelector<HTMLButtonElement>("[data-preview-controls-toggle]");
+    if (!workspace || !viewport) return;
+
+    let activeDevice: Device = "desktop";
+    let resizeSession: ResizeSession | null = null;
+    const shouldPersistToUrl = root.dataset.previewPersistUrl === "true";
+    const documentationTheme = (): PreviewTheme => document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+
+    const maximumWidth = () => Math.max(minimumWidth, Math.floor(workspace.clientWidth));
+    const clampWidth = (value: number) => Math.min(maximumWidth(), Math.max(minimumWidth, Math.round(value)));
+    const currentWidth = () => Math.round(viewport.getBoundingClientRect().width || minimumWidth);
+
+    const syncHandles = (width: number) => {
+      const maximum = maximumWidth();
+      handles.forEach((handle) => {
+        handle.setAttribute("aria-valuemax", String(maximum));
+        handle.setAttribute("aria-valuenow", String(width));
+        handle.setAttribute("aria-valuetext", `${width} pixels, ${activeDevice} mode`);
+      });
+    };
+
+    const syncControls = (width: number) => {
+      root.querySelectorAll<HTMLButtonElement>("[data-preview-device]").forEach((button) => {
+        const isActive = button.dataset.previewDevice === activeDevice;
+        button.setAttribute("aria-selected", String(isActive));
+        button.tabIndex = isActive ? 0 : -1;
+        if (isActive) viewport.setAttribute("aria-labelledby", button.id);
+      });
+      if (widthOutput) {
+        widthOutput.value = `${width} px`;
+      }
+      syncHandles(width);
+    };
+
+    const writeUrl = (device: Device, width: number) => {
+      if (!shouldPersistToUrl) return;
+      const url = new URL(window.location.href);
+      url.searchParams.set("device", device);
+      if (device === "custom") url.searchParams.set("width", String(width));
+      else url.searchParams.delete("width");
+      url.searchParams.delete("fit");
+      history.replaceState(null, "", url);
+    };
+
+    const applyDevice = (device: Device, requestedWidth?: number, updateUrl = true) => {
+      const width = device === "desktop"
+        ? maximumWidth()
+        : device === "custom"
+          ? clampWidth(requestedWidth ?? currentWidth())
+          : clampWidth(presetWidths[device]);
+      activeDevice = device;
+      viewport.dataset.device = device;
+      viewport.style.inlineSize = `${width}px`;
+      syncControls(width);
+      if (updateUrl) writeUrl(device, width);
+    };
+
+    const applyAxis = (axisId: string, value: string) => {
+      root.querySelectorAll<HTMLButtonElement>(`[data-preview-axis-control][data-axis-id="${axisId}"]`).forEach((control) => {
+        control.setAttribute("aria-pressed", String(control.dataset.axisValue === value));
+      });
+      const select = root.querySelector<HTMLSelectElement>(`[data-preview-axis-select][data-axis-id="${axisId}"]`);
+      if (select) select.value = value;
+      root.dispatchEvent(new CustomEvent("astro-ds:preview-change", {
+        detail: { axisId, value },
+      }));
+    };
+
+    const applyTheme = (theme: PreviewTheme) => {
+      root.dataset.previewTheme = theme;
+      root.dataset.theme = theme;
+      root.querySelectorAll<HTMLButtonElement>("[data-preview-theme-button]").forEach((button) => {
+        const isActive = button.dataset.previewThemeButton === theme;
+        button.setAttribute("aria-pressed", String(isActive));
+        button.dataset.buttonVariant = isActive ? "primary" : "tertiary";
+      });
+    };
+
+    const syncGuideLabels = () => {
+      if (!viewport || !guideLabels || root.dataset.previewGuides !== "visible") return;
+      guideLabels.replaceChildren();
+      const viewportRect = viewport.getBoundingClientRect();
+      const components = Array.from(viewport.querySelectorAll<HTMLElement>("[data-component-name]"))
+        .filter((component) => {
+          const name = component.dataset.componentName;
+          const rect = component.getBoundingClientRect();
+          return Boolean(name)
+            && !name?.startsWith("Ds")
+            && name !== "MaterialSymbol"
+            && rect.width > 0
+            && rect.height > 0;
+        });
+
+      components.forEach((component) => {
+        const rect = component.getBoundingClientRect();
+        const label = document.createElement("span");
+        label.textContent = component.dataset.componentName ?? "Component";
+        label.dataset.previewGuideLabel = "";
+        label.style.insetInlineStart = `${Math.max(0, rect.left - viewportRect.left)}px`;
+        label.style.insetBlockStart = `${Math.max(0, rect.top - viewportRect.top)}px`;
+        guideLabels.append(label);
+      });
+    };
+
+    const applyGuides = (visible: boolean) => {
+      root.dataset.previewGuides = visible ? "visible" : "hidden";
+      guides?.toggleAttribute("hidden", !visible);
+      if (guides) guides.setAttribute("aria-hidden", String(!visible));
+      if (guidesButton) {
+        guidesButton.setAttribute("aria-label", visible ? "Hide guides" : "Show guides");
+        guidesButton.setAttribute("aria-pressed", String(visible));
+        guidesButton.dataset.buttonVariant = visible ? "primary" : "tertiary";
+        guidesButton.querySelector("[data-preview-guides-visible-icon]")?.toggleAttribute("hidden", !visible);
+        guidesButton.querySelector("[data-preview-guides-hidden-icon]")?.toggleAttribute("hidden", visible);
+      }
+      if (visible) syncGuideLabels();
+    };
+
+    const applyControlsVisibility = (visible: boolean) => {
+      root.dataset.previewControlsState = visible ? "visible" : "hidden";
+      previewControls?.toggleAttribute("hidden", !visible);
+      if (controlsToggle) {
+        controlsToggle.setAttribute("aria-label", visible ? "Hide component controls" : "Show component controls");
+        controlsToggle.setAttribute("aria-expanded", String(visible));
+        controlsToggle.dataset.buttonVariant = visible ? "primary" : "tertiary";
+      }
+    };
+
+    const resetPreview = () => {
+      applyDevice("desktop");
+      applyTheme(documentationTheme());
+      applyGuides(false);
+      applyControlsVisibility(false);
+      root.querySelectorAll<HTMLElement>("[data-preview-axis]").forEach((axis) => {
+        const select = axis.querySelector<HTMLSelectElement>("[data-preview-axis-select]");
+        const selectedButton = axis.querySelector<HTMLButtonElement>("[data-preview-axis-control][aria-pressed=\"true\"]");
+        const axisId = select?.dataset.axisId ?? selectedButton?.dataset.axisId;
+        const defaultValue = select?.querySelector<HTMLOptionElement>("option[selected]")?.value
+          ?? axis.querySelector<HTMLButtonElement>("[data-preview-axis-control][aria-pressed=\"true\"]")?.dataset.axisValue;
+        if (axisId && defaultValue) applyAxis(axisId, defaultValue);
+      });
+    };
+
+    const applyInitialDevice = () => {
+      if (!shouldPersistToUrl) {
+        resetPreview();
+        return;
+      }
+      const params = new URLSearchParams(location.search);
+      const requestedDevice = params.get("fit") === "true" ? "desktop" : params.get("device");
+      const device: Device = requestedDevice === "tablet" || requestedDevice === "mobile" || requestedDevice === "custom"
+        ? requestedDevice
+        : "desktop";
+      applyDevice(device, Number(params.get("width")) || undefined, false);
+    };
+
+    root.addEventListener("click", (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest("[data-preview-controls-toggle]")) {
+        applyControlsVisibility(root.dataset.previewControlsState !== "visible");
+        return;
+      }
+
+      if (target?.closest("[data-preview-guides-button]")) {
+        applyGuides(root.dataset.previewGuides !== "visible");
+        return;
+      }
+
+      const theme = target?.closest<HTMLButtonElement>("[data-preview-theme-button]");
+      if (theme?.dataset.previewThemeButton === "light" || theme?.dataset.previewThemeButton === "dark") {
+        applyTheme(theme.dataset.previewThemeButton);
+        return;
+      }
+
+      const device = target?.closest<HTMLButtonElement>("[data-preview-device]");
+      if (device?.dataset.previewDevice) {
+        applyDevice(device.dataset.previewDevice as Device);
+        return;
+      }
+
+      const control = target?.closest<HTMLButtonElement>("[data-preview-axis-control]");
+      if (control?.dataset.axisId && control.dataset.axisValue) {
+        applyAxis(control.dataset.axisId, control.dataset.axisValue);
+        return;
+      }
+
+      if (target?.closest("[data-responsive-preview-close]")) {
+        root.dispatchEvent(new CustomEvent("astro-ds:responsive-preview-close", { bubbles: true }));
+      }
+    });
+
+    root.addEventListener("change", (event) => {
+      const select = event.target instanceof HTMLSelectElement && event.target.matches("[data-preview-axis-select]")
+        ? event.target
+        : null;
+      if (select?.dataset.axisId) applyAxis(select.dataset.axisId, select.value);
+    });
+
+    root.addEventListener("keydown", (event) => {
+      const device = event.target instanceof HTMLButtonElement && event.target.matches("[data-preview-device]")
+        ? event.target
+        : null;
+      if (device && ["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+        const devices = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-preview-device]"));
+        const currentIndex = devices.indexOf(device);
+        if (currentIndex < 0 || devices.length === 0) return;
+        event.preventDefault();
+        const nextIndex = event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? devices.length - 1
+            : (currentIndex + (event.key === "ArrowRight" ? 1 : -1) + devices.length) % devices.length;
+        const next = devices[nextIndex];
+        next.focus();
+        if (next.dataset.previewDevice) applyDevice(next.dataset.previewDevice as Device);
+        return;
+      }
+
+      const target = event.target instanceof HTMLButtonElement && event.target.matches("[data-preview-axis-control]")
+        ? event.target
+        : null;
+      if (!target || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+      const controls = Array.from(target.closest('[role="group"]')?.querySelectorAll<HTMLButtonElement>("[data-preview-axis-control]") ?? []);
+      const currentIndex = controls.indexOf(target);
+      if (currentIndex < 0 || controls.length === 0) return;
+      event.preventDefault();
+      const nextIndex = event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? controls.length - 1
+          : (currentIndex + (["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1) + controls.length) % controls.length;
+      const next = controls[nextIndex];
+      next.focus();
+      if (next.dataset.axisId && next.dataset.axisValue) applyAxis(next.dataset.axisId, next.dataset.axisValue);
+    });
+
+    handles.forEach((handle) => {
+      handle.addEventListener("pointerdown", (event) => {
+        resizeSession = {
+          pointerId: event.pointerId,
+          pointerX: event.clientX,
+          width: currentWidth(),
+          side: handle.dataset.previewHandle === "left" ? "left" : "right",
+        };
+        handle.setPointerCapture(event.pointerId);
+        event.preventDefault();
+      });
+      handle.addEventListener("pointermove", (event) => {
+        if (!resizeSession || event.pointerId !== resizeSession.pointerId || !handle.hasPointerCapture(event.pointerId)) return;
+        const direction = resizeSession.side === "left" ? -1 : 1;
+        applyDevice("custom", resizeSession.width + (event.clientX - resizeSession.pointerX) * direction * 2);
+      });
+      const endResize = (event: PointerEvent) => {
+        if (!resizeSession || event.pointerId !== resizeSession.pointerId) return;
+        if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+        resizeSession = null;
+      };
+      handle.addEventListener("pointerup", endResize);
+      handle.addEventListener("pointercancel", endResize);
+      handle.addEventListener("keydown", (event) => {
+        const step = event.shiftKey ? 64 : 16;
+        let width = currentWidth();
+        if (event.key === "ArrowLeft" || event.key === "ArrowDown") width -= step;
+        else if (event.key === "ArrowRight" || event.key === "ArrowUp") width += step;
+        else if (event.key === "Home") width = minimumWidth;
+        else if (event.key === "End") width = maximumWidth();
+        else return;
+        event.preventDefault();
+        applyDevice("custom", width);
+      });
+    });
+
+    const resizeObserver = new ResizeObserver(() => {
+      const width = activeDevice === "desktop" ? maximumWidth() : currentWidth();
+      applyDevice(activeDevice, width, false);
+      syncGuideLabels();
+    });
+    resizeObserver.observe(workspace);
+    root.addEventListener("astro-ds:responsive-preview-open", resetPreview);
+    applyTheme(documentationTheme());
+    applyGuides(root.dataset.previewGuides === "visible");
+    applyControlsVisibility(root.dataset.previewControlsState === "visible");
+    applyInitialDevice();
+  };
+
+  const initializeResponsivePreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-ds-responsive-preview]").forEach(initializeResponsivePreview);
+  };
+
+  initializeResponsivePreviews();
+  document.addEventListener("astro:page-load", initializeResponsivePreviews);
+</script>
+
+<style>
+  .ds-responsive-preview-canvas {
+    position: relative;
+    display: grid;
+    min-block-size: 100dvh;
+    background: var(--color-background-subtle);
+  }
+
+  .ds-responsive-preview-canvas__close,
+  .ds-responsive-preview-canvas__back {
+    position: absolute;
+    z-index: 20;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    margin: var(--content-padding-small);
+  }
+
+  .ds-responsive-preview-canvas__back {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--control-size-small-min-height);
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .ds-responsive-preview-canvas__workspace {
+    position: relative;
+    display: grid;
+    min-block-size: 0;
+    align-items: start;
+    justify-items: center;
+    overflow: auto;
+  }
+
+  .ds-responsive-preview-canvas__controls {
+    z-index: 10;
+    display: flex;
+    grid-area: 1 / 1;
+    min-inline-size: 0;
+    inline-size: calc(100% - (var(--size-32) * 2));
+    max-inline-size: calc(100% - (var(--size-32) * 2));
+    max-block-size: calc(100dvh - (var(--size-32) * 2) - var(--control-size-small-min-height) - var(--gap-regular));
+    align-self: end;
+    justify-self: start;
+    flex-wrap: wrap;
+    gap: var(--gap-regular);
+    margin-block-start: var(--size-32);
+    margin-block-end: calc(var(--size-32) + var(--control-size-small-min-height) + var(--gap-regular));
+    margin-inline: var(--size-32);
+    overflow: auto;
+  }
+
+  .ds-responsive-preview-canvas__controls[hidden] {
+    display: none;
+  }
+
+  .ds-responsive-preview-canvas__controls-toggle {
+    z-index: 10;
+    grid-area: 1 / 1;
+    align-self: end;
+    justify-self: start;
+    margin: var(--size-32);
+  }
+
+  .ds-responsive-preview-canvas__theme-controls {
+    z-index: 10;
+    display: flex;
+    grid-area: 1 / 1;
+    align-self: end;
+    justify-self: end;
+    gap: var(--gap-tiny);
+    margin: var(--size-32);
+  }
+
+  .ds-responsive-preview-canvas__axis {
+    display: grid;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    flex: 0 0 auto;
+    gap: var(--gap-small);
+  }
+
+  .ds-responsive-preview-canvas__axis-label {
+    display: inline-flex;
+    min-inline-size: 0;
+    align-items: baseline;
+    gap: var(--gap-tiny);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-strong);
+    line-height: var(--line-height-normal);
+    text-transform: var(--text-transform-none);
+  }
+
+  .ds-responsive-preview-canvas__viewport-separator {
+    color: var(--color-text-secondary);
+  }
+
+  .ds-responsive-preview-canvas__devices,
+  .ds-responsive-preview-canvas__segmented {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: var(--gap-tiny);
+  }
+
+  .ds-responsive-preview-canvas output {
+    color: var(--color-text-accent);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-strong);
+    line-height: var(--line-height-normal);
+  }
+
+  :global(.select-control.ds-responsive-preview-canvas__select) {
+    min-inline-size: var(--size-128);
+  }
+
+  .ds-responsive-preview-canvas__segmented {
+    overflow-x: auto;
+  }
+
+  .ds-responsive-preview-canvas__segmented button {
+    display: inline-flex;
+    min-block-size: var(--control-min-height);
+    min-inline-size: 0;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: var(--control-gap);
+    border: var(--border-width-default) solid var(--tab-border-default);
+    border-radius: var(--radius-button);
+    padding: var(--control-padding-block) var(--control-padding-inline);
+    color: var(--tab-text-default);
+    background: var(--tab-background-default);
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    font-size: var(--control-font-size);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--control-line-height);
+    text-align: center;
+    transition:
+      background-color var(--motion-transition),
+      border-color var(--motion-transition),
+      color var(--motion-transition),
+      box-shadow var(--motion-transition);
+    white-space: nowrap;
+  }
+
+  .ds-responsive-preview-canvas__segmented button:hover {
+    border-color: var(--tab-border-hover);
+    color: var(--tab-text-hover);
+    background: var(--tab-background-hover);
+  }
+
+  .ds-responsive-preview-canvas__segmented button:focus-visible {
+    outline: var(--border-width-strong) solid var(--color-state-focus-ring);
+    outline-offset: var(--size-2);
+    box-shadow: var(--effect-focused);
+  }
+
+  .ds-responsive-preview-canvas__segmented button[aria-pressed="true"] {
+    border-color: var(--tab-border-selected);
+    color: var(--tab-text-selected);
+    background: var(--tab-background-selected);
+  }
+
+  .ds-responsive-preview-canvas__stage {
+    position: relative;
+    display: grid;
+    grid-area: 1 / 1;
+    min-inline-size: var(--size-320);
+    min-block-size: 100%;
+    align-self: stretch;
+  }
+
+  .ds-responsive-preview-canvas__viewport {
+    box-sizing: border-box;
+    position: relative;
+    display: grid;
+    min-block-size: 100%;
+    background: var(--color-background-canvas);
+    container-type: inline-size;
+  }
+
+  .ds-responsive-preview-canvas__content {
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+    min-block-size: 100%;
+    place-items: center;
+  }
+
+  .ds-responsive-preview-canvas__guides {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .ds-responsive-preview-canvas__guides-grid {
+    display: grid;
+    inline-size: 100%;
+    block-size: 100%;
+    grid-template-columns: repeat(var(--site-grid-columns), minmax(0, 1fr));
+    gap: var(--site-grid-column-gap);
+    padding-inline: var(--site-padding-inline);
+  }
+
+  .ds-responsive-preview-canvas__guides-grid span {
+    position: relative;
+    min-inline-size: 0;
+    background: color-mix(in oklab, var(--color-background-accent) 8%, transparent);
+  }
+
+  .ds-responsive-preview-canvas__guides-grid span::after {
+    position: absolute;
+    inset-block-end: var(--size-8);
+    inset-inline: 0;
+    display: flex;
+    inline-size: var(--size-24);
+    block-size: var(--size-24);
+    align-items: center;
+    justify-content: center;
+    margin-inline: auto;
+    color: var(--color-text-accent);
+    content: attr(data-preview-guide-column);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-none);
+  }
+
+  .ds-responsive-preview-canvas__guide-labels {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ds-responsive-preview-canvas__guide-labels :global([data-preview-guide-label]) {
+    position: absolute;
+    border-radius: var(--radius-small);
+    padding: var(--size-4) var(--size-8);
+    color: var(--color-text-on-accent);
+    background: var(--color-background-accent);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    line-height: var(--line-height-compact);
+    white-space: nowrap;
+  }
+
+  .ds-responsive-preview-canvas__handle {
+    position: absolute;
+    z-index: 4;
+    inset-block-start: 50%;
+    display: grid;
+    inline-size: var(--size-24);
+    block-size: var(--size-96);
+    place-items: center;
+    border: 0;
+    padding: 0;
+    color: var(--color-text-primary);
+    background: var(--color-transparent);
+    box-shadow: none;
+    cursor: ew-resize;
+    touch-action: none;
+  }
+
+  .ds-responsive-preview-canvas__handle--left {
+    inset-inline-start: 0;
+    transform: translate(0, -50%);
+  }
+
+  .ds-responsive-preview-canvas__handle--right {
+    inset-inline-end: 0;
+    transform: translate(0, -50%);
+  }
+
+  .ds-responsive-preview-canvas__handle span {
+    inline-size: var(--size-2);
+    block-size: var(--size-24);
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    box-shadow: calc(var(--size-4) * -1) 0 currentColor, var(--size-4) 0 currentColor;
+  }
+
+  .ds-responsive-preview-canvas__handle:hover {
+    color: var(--color-text-accent);
+  }
+
+  .ds-responsive-preview-canvas__handle:focus-visible {
+    outline: var(--border-width-strong) solid var(--color-state-focus-ring);
+    outline-offset: var(--size-2);
+    color: var(--color-text-accent);
+  }
+
+</style>

@@ -1,29 +1,52 @@
 ---
 import Select, { type SelectOption } from "../../base-components/select/Select.astro";
 
-const options: SelectOption[] = [
+const countryOptions: SelectOption[] = [
   { value: "pl", label: "Poland", flag: "poland" },
   { value: "de", label: "Germany", flag: "germany" },
   { value: "us", label: "United States", flag: "united-states" },
   { value: "disabled", label: "Unavailable option", disabled: true, visual: { kind: "text", text: "—" } },
 ];
+
+const brandOptions: SelectOption[] = [
+  { value: "figma", label: "Figma", logo: "figma" },
+  { value: "linear", label: "Linear", logo: "linear" },
+  { value: "notion", label: "Notion", logo: "notion" },
+];
 ---
 
 <div class="select-preview" data-component-name="DsSelectPreview" data-ds-preview-target>
-  <Select
-    id="select-preview-control"
-    name="country"
-    label="Select a country"
-    hint="Choose one country from the available options."
-    options={options}
-    purpose="country"
-    value="pl"
-  />
+  <div data-select-preview-purpose-group="default">
+    <Select
+      id="select-preview-control"
+      name="country"
+      label="Select a country"
+      hint="Choose one country from the available options."
+      options={countryOptions}
+      purpose="country"
+      value="pl"
+    />
+  </div>
+  <div data-select-preview-purpose-group="brand" hidden>
+    <Select
+      id="select-brand-preview-control"
+      name="brand"
+      label="Select a brand"
+      hint="Choose one brand from the local logo catalog."
+      options={brandOptions}
+      purpose="brand"
+      value="figma"
+    />
+  </div>
 </div>
 
 <style>
   .select-preview {
     display: grid;
     width: min(100%, 24rem);
+  }
+
+  .select-preview > div {
+    min-width: 0;
   }
 </style>

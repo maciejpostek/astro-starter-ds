@@ -34,7 +34,9 @@
 .body-small-semibold,
 .body-tiny-regular,
 .body-tiny-regular-underlined,
-.body-tiny-semibold {
+.body-tiny-semibold,
+.caption-small,
+.caption-tiny {
   margin: 0;
   color: inherit;
 }
@@ -196,6 +198,28 @@
   overflow-wrap: var(--overflow-wrap-break-word);
   word-break: var(--word-break-normal);
   white-space: var(--white-space-normal);
+}
+
+.caption-small,
+.caption-tiny {
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-normal);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-compact);
+  letter-spacing: var(--letter-spacing-tight);
+  text-transform: var(--text-transform-uppercase);
+  text-wrap: var(--text-wrap-wrap);
+  overflow-wrap: var(--overflow-wrap-break-word);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
+}
+
+.caption-small {
+  font-size: var(--font-size-body-small);
+}
+
+.caption-tiny {
+  font-size: var(--font-size-body-tiny);
 }
 
 .body-large-regular,

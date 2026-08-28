@@ -67,20 +67,53 @@ const usedBy = architecture.components
   .map((candidate) => ({
     ...resolveDocumentationLink({ kind: "component", id: candidate.id }),
     description: `${candidate.name} declares ${component.name} as a direct reusable dependency.`,
-}));
+  }));
+const previews = adapter?.previews
+  ?? (adapter?.preview ? [adapter.preview] : []);
+const previewCategoryKey = component.categoryKey as "base-components" | "website-patterns" | "examples-templates";
+const responsivePreviewFor = (
+  preview: (typeof previews)[number],
+  index: number,
+) => component.categoryKey === "website-patterns" && index === 0
+  ? {
+      rendererProps: preview.responsivePreview?.rendererProps,
+      scope: `${component.id}-${preview.id ?? "preview"}-responsive-preview`,
+    }
+  : undefined;
 ---
 
 {
   adapter ? (
     <>
-      {adapter.preview && (
-        <DsInteractiveComponentPreview
-          title={component.name}
-          renderer={adapter.preview.renderer}
-          rendererProps={adapter.preview.props}
-          axes={adapter.preview.axes}
-        />
-      )}
+      {previews.map((preview, index) => (
+        preview.heading ? (
+          <div class="ds-component-detail__preview-group">
+            <DsSectionHeaderLevel2
+              id={`${preview.id ?? `preview-${index + 1}`}-title`}
+              title={preview.heading}
+            />
+            <DsInteractiveComponentPreview
+              id={preview.id ?? `preview-${index + 1}`}
+              title={preview.title ?? component.name}
+              renderer={preview.renderer}
+              rendererProps={preview.props}
+              axes={preview.axes}
+              categoryKey={previewCategoryKey}
+              responsivePreview={responsivePreviewFor(preview, index)}
+            />
+          </div>
+        ) : (
+          <DsInteractiveComponentPreview
+            id={preview.id ?? (index === 0 ? "preview" : `preview-${index + 1}`)}
+            title={preview.title ?? component.name}
+            renderer={preview.renderer}
+            rendererProps={preview.props}
+            axes={preview.axes}
+            categoryKey={previewCategoryKey}
+            responsivePreview={responsivePreviewFor(preview, index)}
+          />
+        )
+      ))}
 
       <section
         class="ds-component-detail__section"
@@ -183,6 +216,12 @@ const usedBy = architecture.components
     gap: var(--space-medium);
     margin-top: var(--section-padding-small);
     scroll-margin-top: var(--ds-doc-anchor-offset, 0px);
+  }
+
+  .ds-component-detail__preview-group {
+    display: grid;
+    min-width: 0;
+    margin-block-start: var(--section-padding-small);
   }
 
   .ds-component-detail__empty-preview {

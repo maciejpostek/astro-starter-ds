@@ -1,0 +1,106 @@
+---
+import Accordion from "../../../../../src/components/base-components/accordion/Accordion.astro";
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import FAQ from "../../../../../src/components/website-patterns/faq/FAQ.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const questions = [
+  ["Jak zacząć korzystać z systemu?", "Zacznij od istniejących komponentów i tokenów semantycznych, a nowy kontrakt proponuj dopiero po potwierdzeniu luki."],
+  ["Czy komponent działa z długą treścią?", "Tak. Ten celowo długi opis sprawdza naturalne zawijanie, lokalizację i brak poziomego przepełnienia także w bardzo wąskim kontenerze."],
+  ["Kto odpowiada za klawiaturę?", "AccordionList i Accordion zachowują obsługę strzałek, Home, End, Enter i Spacji."],
+] as const;
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FAQ contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="fixture fixture--wide" data-fixture-width="1440">
+        <FAQ
+          id="faq-split"
+          class="faq-contract-fixture"
+          data-forwarded="yes"
+          heading="Najczęściej zadawane pytania"
+          eyebrow="Centrum pomocy"
+          paragraph="Znajdź krótkie odpowiedzi dotyczące wdrożenia i utrzymania systemu."
+        >
+          <Button slot="actions">Skontaktuj się</Button>
+          <Button slot="actions" variant="secondary">Przeczytaj poradnik</Button>
+          {questions.map(([title, answer], index) => (
+            <Accordion id={`faq-split-${index + 1}`} title={title} initialOpen={index === 0} headingLevel={3}>
+              <p>{answer}</p>
+            </Accordion>
+          ))}
+        </FAQ>
+      </div>
+
+      <div class="fixture fixture--desktop" data-fixture-width="1024">
+        <FAQ
+          id="faq-stacked"
+          composition="stacked"
+          headingLevel={3}
+          heading="Questions about implementation"
+          paragraph="The explicit stacked composition remains centered at every assigned width."
+          accordionMode="multiple"
+        >
+          <Accordion id="faq-stacked-one" title="Can more than one answer stay open?" initialOpen headingLevel={4}>
+            <p>Yes, multiple mode preserves independently opened disclosures.</p>
+          </Accordion>
+          <Accordion id="faq-stacked-two" title="Does source order change?" initialOpen headingLevel={4}>
+            <p>No, the introduction always precedes the question list.</p>
+          </Accordion>
+        </FAQ>
+      </div>
+
+      <div class="fixture fixture--tablet" data-fixture-width="768">
+        <FAQ
+          id="faq-autoplay"
+          heading="Autoplay example"
+          accordionAutoplay
+          accordionAutoplayDuration={8000}
+          accordionAutoplayLoop={false}
+        >
+          <Accordion id="faq-autoplay-one" title="First timed answer" initialOpen><p>First answer.</p></Accordion>
+          <Accordion id="faq-autoplay-two" title="Second timed answer"><p>Second answer.</p></Accordion>
+        </FAQ>
+      </div>
+
+      <div class="fixture fixture--narrow" data-fixture-width="320" data-theme="dark" dir="rtl">
+        <FAQ
+          id="faq-rtl"
+          headingLevel={4}
+          heading="الأسئلة الشائعة حول نظام التصميم"
+          eyebrow="مركز المساعدة"
+          paragraph="يختبر هذا المثال التفاف النص واتجاه الكتابة من اليمين إلى اليسار داخل حاوية ضيقة."
+        >
+          <Accordion id="faq-rtl-one" title="هل يحافظ التخطيط على ترتيب القراءة؟" headingLevel={5}>
+            <p>نعم، يبقى ترتيب المصدر والتركيز ثابتًا في جميع الأحجام.</p>
+          </Accordion>
+        </FAQ>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .fixture {
+    inline-size: min(100%, 90rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--tablet { max-inline-size: 48rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

@@ -7,6 +7,13 @@ const oppositePlacement = {
   right: "left",
 };
 
+export const overlayIndicatorDirection = {
+  top: "down",
+  bottom: "up",
+  left: "right",
+  right: "left",
+};
+
 const tieBreakOrder = ["top", "bottom", "right", "left"];
 
 const clamp = (value, minimum, maximum) => {
@@ -107,13 +114,14 @@ export const resolveOverlayPosition = ({
     maximumTailY,
   );
 
-  if (placement === "top") tailTop = overlayRect.height - tailSize / 2;
-  if (placement === "bottom") tailTop = -tailSize / 2;
-  if (placement === "left") tailLeft = overlayRect.width - tailSize / 2;
-  if (placement === "right") tailLeft = -tailSize / 2;
+  if (placement === "top") tailTop = overlayRect.height;
+  if (placement === "bottom") tailTop = -tailSize;
+  if (placement === "left") tailLeft = overlayRect.width;
+  if (placement === "right") tailLeft = -tailSize;
 
   return {
     placement,
+    indicatorDirection: overlayIndicatorDirection[placement],
     left,
     top,
     tailLeft,

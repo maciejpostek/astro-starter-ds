@@ -5,6 +5,7 @@ import "../../../../../src/styles/tokens/tokens.css";
 import "../../../../../src/styles/global.css";
 
 const placements = ["top", "bottom", "left", "right"] as const;
+const triggerSizes = [8, 16, 20, 48] as const;
 ---
 
 <!doctype html>
@@ -16,50 +17,103 @@ const placements = ["top", "bottom", "left", "right"] as const;
   </head>
   <body>
     <main>
-      <section aria-label="Tooltip sizes">
-        <Tooltip id="tooltip-small" size="small" text="Short response window" label="Explain the short response window" />
-        <Tooltip id="tooltip-medium" size="medium" text="Standard response window" label="Explain the standard response window" />
+      <section aria-label="Parent-owned Tooltip trigger sizes">
+        {triggerSizes.map((triggerSize) => (
+          <span
+            class="tooltip-owner"
+            data-tooltip-owner-size={triggerSize}
+            style={`inline-size:${triggerSize}px;block-size:${triggerSize}px`}
+          >
+            <Tooltip
+              id={`tooltip-trigger-${triggerSize}`}
+              text={`${triggerSize} pixel trigger`}
+              label={`Explain the ${triggerSize} pixel trigger`}
+            />
+          </span>
+        ))}
+      </section>
+
+      <section aria-label="Tooltip surface">
+        <span class="tooltip-owner">
+          <Tooltip id="tooltip-surface" text="Standard response window" label="Explain the standard response window" />
+        </span>
       </section>
 
       <section aria-label="Tooltip placements">
         {placements.map((placement) => (
-          <Tooltip
-            id={`tooltip-${placement}`}
-            placement={placement}
-            text={`${placement} placement`}
-            label={`Explain ${placement} placement`}
-          />
+          <span class="tooltip-owner">
+            <Tooltip
+              id={`tooltip-${placement}`}
+              placement={placement}
+              text={`${placement} placement`}
+              label={`Explain ${placement} placement`}
+            />
+          </span>
         ))}
       </section>
 
-      <Tooltip
-        id="tooltip-responsive-placement"
-        placement="bottom"
-        narrowPlacement="right"
-        text="Responsive placement"
-        label="Explain responsive placement"
-      />
+      <span class="tooltip-owner">
+        <Tooltip
+          id="tooltip-responsive-placement"
+          placement="bottom"
+          narrowPlacement="right"
+          text="Responsive placement"
+          label="Explain responsive placement"
+        />
+      </span>
 
       <section aria-label="Info popover placements">
         {placements.map((placement) => (
-          <InfoPopover
-            id={`info-popover-${placement}`}
-            placement={placement}
-            label={`Explain ${placement} response time`}
-            closeLabel={`Close ${placement} response time information`}
-            title={`${placement} response time`}
-            description="Measured during standard business hours and updated after completed requests."
-          />
+          <span class="info-popover-owner">
+            <InfoPopover
+              id={`info-popover-${placement}`}
+              placement={placement}
+              label={`Explain ${placement} response time`}
+              closeLabel={`Close ${placement} response time information`}
+              title={`${placement} response time`}
+              description="Measured during standard business hours and updated after completed requests."
+            />
+          </span>
         ))}
       </section>
 
-      <Tooltip text="Generated relationship" label="Explain generated relationship" />
-      <InfoPopover
-        title="Generated relationship"
-        description="This instance verifies generated identifiers and complete dialog relationships."
-        label="Explain the generated relationship"
-        closeLabel="Close generated relationship information"
-      />
+      <section aria-label="Parent-owned InfoPopover trigger sizes">
+        {triggerSizes.map((triggerSize) => (
+          <span
+            class="info-popover-owner"
+            data-info-popover-owner-size={triggerSize}
+            style={`inline-size:${triggerSize}px;block-size:${triggerSize}px`}
+          >
+            <InfoPopover
+              id={`info-popover-trigger-${triggerSize}`}
+              title={`${triggerSize} pixel trigger`}
+              description="This instance verifies parent-owned trigger geometry."
+              label={`Explain the ${triggerSize} pixel popover trigger`}
+              closeLabel={`Close the ${triggerSize} pixel popover trigger information`}
+            />
+          </span>
+        ))}
+      </section>
+
+      <span class="tooltip-owner">
+        <Tooltip text="Generated relationship" label="Explain generated relationship" />
+      </span>
+      <span class="info-popover-owner">
+        <InfoPopover
+          title="Generated relationship"
+          description="This instance verifies generated identifiers and complete dialog relationships."
+          label="Explain the generated relationship"
+          closeLabel="Close generated relationship information"
+        />
+      </span>
     </main>
+    <style>
+      .tooltip-owner,
+      .info-popover-owner {
+        display: inline-block;
+        inline-size: 20px;
+        block-size: 20px;
+      }
+    </style>
   </body>
 </html>
