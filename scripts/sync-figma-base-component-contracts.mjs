@@ -9,7 +9,8 @@ const registryPath = resolve(
 const registry = JSON.parse(readFileSync(registryPath, "utf8"));
 
 const states = ["Default", "Hover", "Focus", "Pressed", "Disabled"];
-const styles = ["Primary", "Secondary", "Tertiary"];
+const styles = ["Primary", "Secondary", "Tertiary", "Primary Alternate"];
+const legacyButtonStyles = ["Primary", "Secondary", "Tertiary"];
 const feedbackStatuses = ["Error", "Warning", "Success", "Info", "Feature"];
 const alertEmphasis = ["Solid", "Soft", "Subtle"];
 const feedbackEmphasis = ["Solid", "Soft", "Subtle", "Outlined"];
@@ -23,12 +24,12 @@ const contract = (pageId, nodeId, variantCount, axes = {}, properties = {}) => (
 });
 
 const contractsByName = {
-  Button: contract("190:3", "190:131", 15, { Style: styles, State: states }, { Label: "TEXT", "Show Icon": "BOOLEAN" }),
-  ButtonLink: contract("190:3", "959:2706", 5, { State: states }, { Label: "TEXT", "Show Icon": "BOOLEAN" }),
-  IconButton: contract("190:3", "193:110", 15, { Style: styles, State: states }, { Label: "TEXT" }),
-  CopyButton: contract("190:3", "1343:310", 15, { Style: styles, State: states }, { Label: "TEXT" }),
-  CopyIconButton: contract("190:3", "1343:1000", 15, { Style: styles, State: states }, { Label: "TEXT" }),
-  SocialButton: contract("190:3", "1344:95", 15, { Style: styles, State: states }, { Label: "TEXT" }),
+  Button: contract("190:3", "190:131", 20, { Style: styles, State: states }, { Label: "TEXT", "Show Icon": "BOOLEAN" }),
+  ButtonLink: contract("190:3", "959:2706", 10, { Style: ["Default", "Primary Alternate"], State: states }, { Label: "TEXT", "Show Icon": "BOOLEAN" }),
+  IconButton: contract("190:3", "193:110", 15, { Style: legacyButtonStyles, State: states }, { Label: "TEXT" }),
+  CopyButton: contract("190:3", "1343:310", 15, { Style: legacyButtonStyles, State: states }, { Label: "TEXT" }),
+  CopyIconButton: contract("190:3", "1343:1000", 15, { Style: legacyButtonStyles, State: states }, { Label: "TEXT" }),
+  SocialButton: contract("190:3", "1344:95", 15, { Style: legacyButtonStyles, State: states }, { Label: "TEXT" }),
   SocialIconButton: contract("190:3", "1344:1688", 10, { Style: ["Primary", "Secondary"], State: states }, { Label: "TEXT" }),
   ButtonGroup: contract("190:3", "204:103", 1, {}, { "Button Group Slot": "SLOT" }),
   SwitchButton: contract("1009:2736", "206:166", 10, { Checked: ["Off", "On"], State: states }),
@@ -71,6 +72,115 @@ const contractsByName = {
   ContentDivider: contract("1009:1631", "270:10", 6, { Variant: ["Line", "Text"], Tone: ["Subtle", "Default", "Strong"] }, { Label: "TEXT", "Show Label": "BOOLEAN" }),
   TitleRow: contract("1009:1631", "1680:6", 1, {}, { Title: "TEXT" }),
   Ratio: contract("964:13169", "1009:2614", 10, { Ratio: ["16:9", "1:1", "2.39:1", "2:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4"] }),
+  Feature5050Centered: {
+    ...contract(
+      "964:14722",
+      "1980:5357",
+      2,
+      { Visual: ["Right", "Left"] },
+      {
+        "Bullet Points": "SLOT",
+        "Show Bullet Points": "BOOLEAN",
+        "Show Actions": "BOOLEAN",
+      },
+    ),
+    preferredValues: { "Bullet Points": ["BulletPoint"] },
+    fixedDependencies: ["Content", "BulletPoint", "ButtonGroup"],
+    propertyMapping: {
+      Visual: "visualPosition",
+      "Bullet Points": "optional Astro default slot rendered inside one semantic list",
+      "Show Bullet Points": "default slot presence",
+      "Show Actions": "actions slot presence",
+      Content: "required heading plus optional eyebrow and paragraph props",
+      VisualContent: "required Astro visual slot",
+    },
+    layoutContract: {
+      modeOwner: "ComponentSet",
+      wide: "Content and Visual occupy equal six-column halves; Content stays first in source order and is vertically centered while the visual reaches the viewport edge.",
+      narrow: "Content remains inside content-start/content-end and precedes a full-bleed Visual spanning full-start/full-end below the 64rem component width.",
+      responsiveStrategy: "container",
+      visualOwner: "consumer-owned visual slot",
+      heightMapping: "Figma's fixed 800px canvas maps to a wide 100svh minimum; narrow layouts remain content-sized.",
+      astroMapping: "Use the public breakout grid and existing layout, size and color tokens. Round only the wide visual edge facing Content with the image radius and keep the stacked full-bleed visual square. The Visual wrapper owns the canonical CSS checkerboard beneath slotted content; do not add Ratio or request an image asset solely for the placeholder, and do not export fixed canvas measurements as CSS tokens.",
+    },
+  },
+  FeatureSimple: {
+    ...contract(
+      "964:14722",
+      "1980:5361",
+      2,
+      { "Visual Position": ["Right", "Left"] },
+      {
+        Heading: "TEXT",
+        Paragraph: "TEXT",
+        "Show Eyebrow": "BOOLEAN",
+        "Show Paragraph": "BOOLEAN",
+        "Show Button Group": "BOOLEAN",
+        Align: "NESTED_VARIANT",
+        Ratio: "NESTED_VARIANT",
+      },
+    ),
+    fixedDependencies: ["Content", "Ratio"],
+    propertyMapping: {
+      "Visual Position": "visualPosition",
+      Heading: "heading",
+      "Content optional parts": "eyebrow, paragraph and actions presence",
+      "Content Align": "contentAlign",
+      Ratio: "ratio",
+      Visual: "required Astro visual slot",
+    },
+    layoutContract: {
+      modeOwner: "ComponentSet",
+      wide: {
+        right: "Content columns 2-5; Visual columns 7-11",
+        left: "Visual columns 2-6; Content columns 8-11",
+      },
+      narrow: "Both regions span the available grid below the 64rem component width and retain the selected variant order.",
+      responsiveStrategy: "container",
+      visualOwner: "Ratio",
+      astroMapping: "Use the public site grid and existing section/container primitives; do not export Figma Layout Grid Columns measurements as CSS tokens.",
+    },
+  },
+  FeatureScroll: {
+    ...contract("964:14722", "2098:1281", 1, { Type: ["Default"] }, { "Feature Items": "SLOT" }),
+    preferredValues: { "Feature Items": ["_Parts/FeatureScroll.Item"] },
+    fixedDependencies: ["Content", "_Parts/FeatureScroll.Item", "Ratio", "BulletPoint", "Tag", "ButtonGroup"],
+    privatePartContract: {
+      nodeId: "1786:4470",
+      name: "_Parts/FeatureScroll.Item",
+      properties: {
+        Heading: "TEXT",
+        Paragraph: "TEXT",
+        "Show Paragraph": "BOOLEAN",
+        "Bullet Points": "SLOT",
+        "Show Bullet Points": "BOOLEAN",
+        Tags: "SLOT",
+        "Show Tags": "BOOLEAN",
+        Actions: "SLOT",
+        "Show Actions": "BOOLEAN",
+      },
+    },
+    propertyMapping: {
+      Type: "structural-only",
+      "Feature Items": "required Astro default slot with direct labelled list items",
+      Heading: "required heading inside each slotted item",
+      Paragraph: "optional slotted item content",
+      "Bullet Points": "optional BulletPoint composition inside each item",
+      Tags: "optional Tag composition inside each item",
+      Actions: "optional ButtonGroup composition inside each item",
+      "Header Content": "Astro heading, eyebrow, paragraph and actions slot",
+    },
+    layoutContract: {
+      modeOwner: "ComponentSet",
+      wide: "Ordered content occupies columns 1-6 beside a full-height stage in columns 7-12; the active progressively enhanced visual remains sticky inside that stage.",
+      narrow: "Every original visual follows its paired content below the 64rem component width.",
+      responsiveStrategy: "container",
+      itemMinimum: "480px represented by the Astro-only feature-scroll-size group",
+      visualOwner: "Ratio=16:9 as the Astro responsive runtime projection",
+      runtimeOwner: "Astro progressive enhancement with passive scroll synchronization scheduled through requestAnimationFrame; a visual changes only when its card top reaches the sticky viewport top",
+      sourceOrder: ["section introduction", "item content", "item visual"],
+    },
+  },
   Breadcrumb: contract("1009:2626", "1009:2627", 5, { State: ["Default", "Hover", "Focus", "Pressed", "Current"] }),
   PaginationItem: contract("1009:5696", "1373:137", 30, { Kind: ["Page", "First", "Previous", "Next", "Last"], State: ["Default", "Hover", "Focus", "Pressed", "Current", "Disabled"] }, { "Accessible Label": "TEXT" }),
   PaginationEllipsis: contract("1009:5696", "1373:172", 1),
@@ -106,10 +216,94 @@ const contractsByName = {
     propertyKeys: { Text: "Text#1783:0" },
     propertyMapping: { Type: "trend", Icon: "iconPosition", Text: "text" },
   },
+  HeroBreakout: {
+    ...contract("964:14724", "1800:389", 1),
+    fixedDependencies: ["Content", "BulletPoint", "ButtonGroup"],
+    propertyMapping: {
+      Type: "structural-only",
+      "Nested Content": "heading, eyebrow, paragraph and semantic headingLevel",
+      "Bullet Points": "required Astro default slot with direct BulletPoint children",
+      Caption: "optional caption prop",
+      "Nested ButtonGroup": "optional actions slot",
+      Visual: "required Astro visual slot",
+    },
+    layoutContract: {
+      modeOwner: "ComponentSet",
+      figmaPresentationWidth: 1440,
+      figmaPresentationHeight: 800,
+      contentRegion: { start: "content-start", span: 6 },
+      contentStack: { start: 1, span: 4 },
+      visual: {
+        start: "content-column 7",
+        end: "full-end",
+        blockStartInset: "--section-padding-hero-top",
+        blockEnd: "section-end",
+      },
+      responsiveStrategy: "container",
+      narrow: "Below the 64rem component width, Content and CTA retain content-start/content-end inline padding while the following Visual spans full-start/full-end without changing source order.",
+      astroMapping: "Use .l-grid[data-grid=\"breakout\"], named grid lines and a nested six-column grid; do not export fixed Figma measurements or Layout Grid Columns variables as CSS tokens.",
+    },
+  },
+  HeroVisualCenter: {
+    ...contract(
+      "964:14724",
+      "2018:397",
+      1,
+      { Type: ["Default"] },
+      {
+        Eyebrow: "TEXT",
+        Heading: "TEXT",
+        Paragraph: "TEXT",
+        "Show Paragraph": "BOOLEAN",
+        "Show Button Group": "BOOLEAN",
+        "Show Bullet Points": "BOOLEAN",
+        "Bullet Points": "SLOT",
+      },
+    ),
+    fixedDependencies: ["Content", "BulletPoint", "Ratio"],
+    propertyMapping: {
+      Type: "structural-only",
+      Eyebrow: "required eyebrow prop",
+      Heading: "required heading prop",
+      Paragraph: "optional paragraph prop",
+      "Show Paragraph": "paragraph presence",
+      "Show Button Group": "actions slot presence",
+      "Show Bullet Points": "bulletPoints slot presence",
+      "Bullet Points": "bulletPoints slot with direct BulletPoint children",
+      Visual: "required Astro visual slot",
+      headingLevel: "Astro semantic-only",
+    },
+    slotContract: {
+      actions: {
+        required: false,
+        preferredValues: ["Button", "ButtonLink"],
+        childLimit: null,
+        wrap: true,
+      },
+      bulletPoints: {
+        required: false,
+        preferredValue: "BulletPoint",
+        childLimit: null,
+        wrap: true,
+      },
+      visual: { required: true, preferredValue: "Ratio=16:9", childLimit: 1 },
+    },
+    layoutContract: {
+      modeOwner: "ComponentSet",
+      figmaPresentationWidth: 1440,
+      figmaPresentationHeight: 1102,
+      contentSpan: 5,
+      bulletPointsSpan: 12,
+      visual: { start: 2, span: 10 },
+      mediaRatio: "16:9",
+      responsiveStrategy: "container",
+      narrow: "Content, bullet points and visual use the full component width below 64rem without changing source order.",
+      sourceOrder: ["content", "bullet points", "visual"],
+    },
+  },
 };
 
 const figmaOnlyContractsByName = {
-  HeroBreakout: contract("964:14724", "1800:389", 1),
   HeroFullVisual: contract(
     "964:14724",
     "1788:639",
@@ -325,7 +519,22 @@ const privateIconSets = {
 
 const falseProjectionPattern = /astro-only|no approved canonical|no canonical (?:component )?master|no canonical project figma master|keep figma unchanged|currently shows only chevron|separate explicit (?:figma )?synchronization task/i;
 const socialNames = new Set(["SocialButton", "SocialIconButton"]);
-const intentionalDifferenceNames = new Set([...socialNames, "SectionHeader"]);
+const intentionalDifferenceNames = new Set([
+  ...socialNames,
+  "SectionHeader",
+  "Feature5050Centered",
+  "FeatureSimple",
+  "FeatureScroll",
+  "HeroBreakout",
+  "HeroVisualCenter",
+]);
+const retainCuratedDivergences = new Set([
+  "Feature5050Centered",
+  "FeatureSimple",
+  "FeatureScroll",
+  "HeroBreakout",
+  "HeroVisualCenter",
+]);
 
 for (const component of registry.components ?? []) {
   const figmaContract = contractsByName[component.name];
@@ -373,7 +582,7 @@ for (const component of registry.components ?? []) {
     });
   }
 
-  if (!socialNames.has(component.name)) {
+  if (!socialNames.has(component.name) && !retainCuratedDivergences.has(component.name)) {
     uniqueExisting.unshift({
       kind: "figma-projection",
       reason: `Figma node ${figmaContract.nodeId} now provides the visual mastery and bounded design-time properties for ${component.name}.`,

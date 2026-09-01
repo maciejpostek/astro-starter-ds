@@ -49,11 +49,13 @@ for (const contract of [
   'class="section-header__layout l-grid"',
   'data-columns="12"',
   "@container section-header (min-width: 64rem)",
+  "align-items: end;",
   "grid-column: 1 / span 5",
   "grid-column: 9 / span 4",
   "grid-column: 1 / span 2",
   "grid-column: 3 / span 4",
   "var(--site-grid-column-gap)",
+  "margin-block-end: var(--space-section-header-bottom)",
   "var(--space-regular)",
   "var(--space-medium)",
   "var(--color-text-primary)",
@@ -70,7 +72,7 @@ for (const validation of [
   "SectionHeader eyebrow must be a non-empty string.",
   "SectionHeader paragraph must be a non-empty string.",
   'SectionHeader composition must be "copy-actions", "heading-details", or "eyebrow-heading-details".',
-  "SectionHeader headingLevel must be an integer from 2 to 6.",
+  "SectionHeader headingLevel must be an integer from 1 to 6.",
 ]) {
   if (!source.includes(validation)) {
     errors.push(`SectionHeader runtime validation is missing: ${validation}`);
@@ -175,7 +177,9 @@ if (
 }
 if (
   !syncScript.includes("SectionHeader: contract(") ||
-  !syncScript.includes('const intentionalDifferenceNames = new Set([...socialNames, "SectionHeader"])') ||
+  !/const intentionalDifferenceNames = new Set\(\[[\s\S]*?"SectionHeader"[\s\S]*?\]\)/u.test(
+    syncScript,
+  ) ||
   /SectionHeader: contract\([\s\S]{0,220}?\b6,|Flow:\s*\["Horizontal",\s*"Stacked"\]/u.test(
     syncScript,
   )

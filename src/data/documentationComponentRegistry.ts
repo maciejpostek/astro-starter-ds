@@ -1,9 +1,10 @@
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import DsAccordionListPreview from "../components/_internal/documentation/DsAccordionListPreview.astro";
-import DsAccordionProgressPreview from "../components/_internal/documentation/DsAccordionProgressPreview.astro";
 import DsAccordionPreview from "../components/_internal/documentation/DsAccordionPreview.astro";
+import DsAvatarPreview from "../components/_internal/documentation/DsAvatarPreview.astro";
 import DsBreadcrumbPreview from "../components/_internal/documentation/DsBreadcrumbPreview.astro";
 import DsBreadcrumbsPreview from "../components/_internal/documentation/DsBreadcrumbsPreview.astro";
+import DsBlogCardPreview from "../components/_internal/documentation/DsBlogCardPreview.astro";
 import DsBulletCardSimplePreview from "../components/_internal/documentation/DsBulletCardSimplePreview.astro";
 import DsBulletCardSurfacePreview from "../components/_internal/documentation/DsBulletCardSurfacePreview.astro";
 import DsBulletIconCardPreview from "../components/_internal/documentation/DsBulletIconCardPreview.astro";
@@ -19,7 +20,29 @@ import DsCheckboxLabelPreview from "../components/_internal/documentation/DsChec
 import DsCheckboxPreview from "../components/_internal/documentation/DsCheckboxPreview.astro";
 import DsCompactSelectPreview from "../components/_internal/documentation/DsCompactSelectPreview.astro";
 import DsContentPreview from "../components/_internal/documentation/DsContentPreview.astro";
+import DsCallToActionCenteredPreview from "../components/_internal/documentation/DsCallToActionCenteredPreview.astro";
+import DsCallToActionVisualPreview from "../components/_internal/documentation/DsCallToActionVisualPreview.astro";
+import DsRichTextPreview from "../components/_internal/documentation/DsRichTextPreview.astro";
+import DsFeature5050CenteredPreview from "../components/_internal/documentation/DsFeature5050CenteredPreview.astro";
+import DsFeature5050Preview from "../components/_internal/documentation/DsFeature5050Preview.astro";
+import DsFeatureProofPreview from "../components/_internal/documentation/DsFeatureProofPreview.astro";
+import DsFeatureScrollPreview from "../components/_internal/documentation/DsFeatureScrollPreview.astro";
+import DsFeatureSimplePreview from "../components/_internal/documentation/DsFeatureSimplePreview.astro";
 import DsFAQPreview from "../components/_internal/documentation/DsFAQPreview.astro";
+import DsFooterPreview from "../components/_internal/documentation/DsFooterPreview.astro";
+import DsFooterGroupPreview from "../components/_internal/documentation/DsFooterGroupPreview.astro";
+import DsFooterLabelPreview from "../components/_internal/documentation/DsFooterLabelPreview.astro";
+import DsFooterLinkPreview from "../components/_internal/documentation/DsFooterLinkPreview.astro";
+import DsFooterNewsletterFormPreview from "../components/_internal/documentation/DsFooterNewsletterFormPreview.astro";
+import DsFooterSocialLinkPreview from "../components/_internal/documentation/DsFooterSocialLinkPreview.astro";
+import DsHowItWorksPreview from "../components/_internal/documentation/DsHowItWorksPreview.astro";
+import DsHeroAlignBottomPreview from "../components/_internal/documentation/DsHeroAlignBottomPreview.astro";
+import DsHeroBreakoutPreview from "../components/_internal/documentation/DsHeroBreakoutPreview.astro";
+import DsHero5050Preview from "../components/_internal/documentation/DsHero5050Preview.astro";
+import DsHeroFullVisualPreview from "../components/_internal/documentation/DsHeroFullVisualPreview.astro";
+import DsHeroSpaced5050Preview from "../components/_internal/documentation/DsHeroSpaced5050Preview.astro";
+import DsHeroVisualCenterPreview from "../components/_internal/documentation/DsHeroVisualCenterPreview.astro";
+import DsLogoCardPreview from "../components/_internal/documentation/DsLogoCardPreview.astro";
 import DsSectionHeaderPreview from "../components/_internal/documentation/DsSectionHeaderPreview.astro";
 import DsStatCardPreview from "../components/_internal/documentation/DsStatCardPreview.astro";
 import DsTeamMemberCardPreview from "../components/_internal/documentation/DsTeamMemberCardPreview.astro";
@@ -35,15 +58,26 @@ import DsInputPreview from "../components/_internal/documentation/DsInputPreview
 import DsInlineSelectPreview from "../components/_internal/documentation/DsInlineSelectPreview.astro";
 import DsInfoPopoverPreview from "../components/_internal/documentation/DsInfoPopoverPreview.astro";
 import DsLabelPreview from "../components/_internal/documentation/DsLabelPreview.astro";
+import DsMegaMenuPreview from "../components/_internal/documentation/DsMegaMenuPreview.astro";
+import DsMegaMenuPrimaryLinkPreview from "../components/_internal/documentation/DsMegaMenuPrimaryLinkPreview.astro";
+import DsMegaMenuSecondaryLinkPreview from "../components/_internal/documentation/DsMegaMenuSecondaryLinkPreview.astro";
+import DsNavigationPreview from "../components/_internal/documentation/DsNavigationPreview.astro";
+import DsNavigationMenuPreview from "../components/_internal/documentation/DsNavigationMenuPreview.astro";
+import DsNavDropdownPreview from "../components/_internal/documentation/DsNavDropdownPreview.astro";
+import DsNavDropdownLinkPreview from "../components/_internal/documentation/DsNavDropdownLinkPreview.astro";
+import DsNavLinkPreview from "../components/_internal/documentation/DsNavLinkPreview.astro";
 import DsPaginationPreview from "../components/_internal/documentation/DsPaginationPreview.astro";
 import DsPopupPreview from "../components/_internal/documentation/DsPopupPreview.astro";
+import DsPricingCardPreview from "../components/_internal/documentation/DsPricingCardPreview.astro";
 import DsProgressBarPreview from "../components/_internal/documentation/DsProgressBarPreview.astro";
+import DsProgressTabPreview from "../components/_internal/documentation/DsProgressTabPreview.astro";
 import DsPaginationEllipsisPreview from "../components/_internal/documentation/DsPaginationEllipsisPreview.astro";
 import DsPaginationGroupPreview from "../components/_internal/documentation/DsPaginationGroupPreview.astro";
 import DsPaginationItemPreview from "../components/_internal/documentation/DsPaginationItemPreview.astro";
 import DsRadioCardPreview from "../components/_internal/documentation/DsRadioCardPreview.astro";
 import DsRadioLabelPreview from "../components/_internal/documentation/DsRadioLabelPreview.astro";
 import DsRadioPreview from "../components/_internal/documentation/DsRadioPreview.astro";
+import DsRatingPreview from "../components/_internal/documentation/DsRatingPreview.astro";
 import DsRatioPreview from "../components/_internal/documentation/DsRatioPreview.astro";
 import DsSearchInputPreview from "../components/_internal/documentation/DsSearchInputPreview.astro";
 import DsSpecializedInputPreview from "../components/_internal/documentation/DsSpecializedInputPreview.astro";
@@ -57,6 +91,8 @@ import DsSwitchLabelPreview from "../components/_internal/documentation/DsSwitch
 import DsTabMenuPreview from "../components/_internal/documentation/DsTabMenuPreview.astro";
 import DsTabPreview from "../components/_internal/documentation/DsTabPreview.astro";
 import DsTabsPreview from "../components/_internal/documentation/DsTabsPreview.astro";
+import DsTabbedContentPreview from "../components/_internal/documentation/DsTabbedContentPreview.astro";
+import DsSwiperPreview from "../components/_internal/documentation/DsSwiperPreview.astro";
 import DsTagPreview from "../components/_internal/documentation/DsTagPreview.astro";
 import DsTooltipPreview from "../components/_internal/documentation/DsTooltipPreview.astro";
 import ContentDivider from "../components/base-components/dividers/ContentDivider.astro";
@@ -75,7 +111,7 @@ export interface DocumentationPreviewOption {
 }
 
 export interface DocumentationPreviewAxis {
-  id: "variant" | "purpose" | "controlSize" | "placement" | "state" | "separator" | "icon" | "leading" | "checked" | "selection" | "switchPosition" | "type" | "tone" | "removable" | "content" | "clearState" | "platform" | "label" | "hint" | "required" | "feedbackStatus" | "feedbackEmphasis" | "feedbackSize" | "notificationLayout" | "ratio" | "dividerVariant" | "dividerTone" | "bulletPointStatus" | "bulletPointTone" | "bulletCardSimpleIcon" | "bulletCardSimpleDescription" | "bulletCardSimpleActions" | "bulletIconCardLayout" | "bulletIconCardIcon" | "bulletIconCardStat" | "bulletIconCardStatIcon" | "bulletIconCardTags" | "bulletIconCardActions" | "bulletCardIcon" | "bulletCardDescription" | "bulletCardActions" | "bulletCardVisual" | "contentAlignment" | "contentEyebrow" | "contentParagraph" | "contentActions" | "faqComposition" | "faqEyebrow" | "faqParagraph" | "faqActions" | "faqMode" | "faqAutoplay" | "sectionHeaderComposition" | "sectionHeaderActions" | "teamMemberLayout" | "teamMemberImage" | "teamMemberRole" | "teamMemberRatio" | "statTextInlineTrend" | "statTextInlineIconPosition" | "statCardCaption" | "statCardDescription" | "statCardTrendingUp" | "statCardTrendingDown" | "topBannerStatus" | "topBannerDescription" | "topBannerLink" | "topBannerIcon" | "topBannerDismissible" | "popupStatus" | "popupAlignment" | "popupCancel" | "popupPreference" | "popupDismissible";
+  id: "variant" | "eyebrowVariant" | "purpose" | "controlSize" | "placement" | "state" | "separator" | "icon" | "leading" | "checked" | "selection" | "switchPosition" | "type" | "tone" | "removable" | "content" | "clearState" | "platform" | "label" | "hint" | "required" | "feedbackStatus" | "feedbackEmphasis" | "feedbackSize" | "notificationLayout" | "ratio" | "dividerVariant" | "dividerTone" | "buttonGroupAlignment" | "bulletPointStatus" | "bulletPointTone" | "bulletCardSimpleIcon" | "bulletCardSimpleDescription" | "bulletCardSimpleActions" | "bulletIconCardLayout" | "bulletIconCardIcon" | "bulletIconCardStat" | "bulletIconCardStatIcon" | "bulletIconCardTags" | "bulletIconCardActions" | "bulletVisualCardDescription" | "bulletVisualCardStat" | "bulletVisualCardTags" | "bulletVisualCardActions" | "blogCardLayout" | "blogCardMediaPlacement" | "blogCardMedia" | "blogCardTags" | "blogCardDescription" | "blogCardDate" | "blogCardCta" | "bulletCardIcon" | "bulletCardDescription" | "bulletCardActions" | "bulletCardVisual" | "contentAlignment" | "contentTone" | "contentEyebrow" | "contentParagraph" | "contentActions" | "callToActionSurface" | "callToActionVisualPosition" | "callToActionEyebrow" | "callToActionParagraph" | "callToActionActions" | "feature5050VisualPosition" | "feature5050PrimaryBullets" | "feature5050Logos" | "feature5050DetailBullets" | "feature5050CenteredVisualPosition" | "feature5050CenteredEyebrow" | "feature5050CenteredParagraph" | "feature5050CenteredBulletPoints" | "feature5050CenteredActions" | "featureProofVisualPosition" | "featureProofEyebrow" | "featureProofParagraph" | "featureProofActions" | "featureProofKeyPoints" | "featureProofLogoProof" | "featureProofSupportingDetails" | "featureSimpleVisualPosition" | "featureSimpleContentAlign" | "featureSimpleRatio" | "featureSimpleEyebrow" | "featureSimpleParagraph" | "featureSimpleActions" | "faqComposition" | "faqEyebrow" | "faqParagraph" | "faqActions" | "faqMode" | "faqAutoplay" | "hero5050Eyebrow" | "hero5050Paragraph" | "hero5050BulletPoints" | "hero5050Caption" | "hero5050Actions" | "heroAlignBottomEyebrow" | "heroAlignBottomParagraph" | "heroAlignBottomActions" | "heroBreakoutEyebrow" | "heroBreakoutParagraph" | "heroBreakoutCaption" | "heroBreakoutActions" | "heroFullVisualComposition" | "heroFullVisualActions" | "heroSpaced5050Eyebrow" | "heroSpaced5050Paragraph" | "heroSpaced5050Actions" | "heroVisualCenterParagraph" | "heroVisualCenterActions" | "heroVisualCenterBulletPoints" | "sectionHeaderComposition" | "sectionHeaderActions" | "teamMemberLayout" | "teamMemberImage" | "teamMemberRole" | "teamMemberRatio" | "ratingValue" | "statTextInlineTrend" | "statTextInlineIconPosition" | "statTextInlineIcon" | "statCardCaption" | "statCardDescription" | "statCardTrendingUp" | "statCardTrendingDown" | "pricingCardBadge" | "pricingCardSuffix" | "pricingCardNote" | "pricingCardSavings" | "topBannerStatus" | "topBannerDescription" | "topBannerLink" | "topBannerIcon" | "topBannerDismissible" | "popupStatus" | "popupAlignment" | "popupCancel" | "popupPreference" | "popupDismissible" | "navigationDesktopMode" | "navigationState" | "swiperSlidesPerView" | "swiperGap" | "swiperLoop" | "swiperAutoplay" | "swiperNavigation" | "swiperPagination" | "swiperScrollbar" | "swiperSpeed" | "swiperEasing";
   label: string;
   defaultValue: string;
   options: DocumentationPreviewOption[];
@@ -97,6 +133,10 @@ export interface DocumentationDependency {
   description: string;
 }
 
+export type DocumentationPreviewContainer = "full" | "main" | "small";
+export type DocumentationPreviewSizing = "fill" | "bounded" | "intrinsic";
+export type DocumentationPreviewPresentation = "standard" | "responsive";
+
 export interface DocumentationPreview {
   id?: string;
   title?: string;
@@ -104,10 +144,18 @@ export interface DocumentationPreview {
   renderer: AstroComponentFactory;
   props: Record<string, unknown>;
   axes: DocumentationPreviewAxis[];
+  container?: DocumentationPreviewContainer;
+  sizing?: DocumentationPreviewSizing;
+  presentation?: DocumentationPreviewPresentation;
   responsivePreview?: {
     rendererProps?: Record<string, unknown>;
   };
 }
+
+export const usesWebsitePatternResponsivePreview = (
+  categoryKey: "base-components" | "website-patterns" | "examples-templates",
+  preview: DocumentationPreview,
+) => categoryKey === "website-patterns" && preview.presentation !== "standard";
 
 export interface ComponentDocumentationAdapter {
   componentId: string;
@@ -128,6 +176,7 @@ const buttonAxes: DocumentationPreviewAxis[] = [
     defaultValue: "primary",
     options: [
       { label: "Primary", value: "primary" },
+      { label: "Primary Alternate", value: "primary-alternate" },
       { label: "Secondary", value: "secondary" },
       { label: "Tertiary", value: "tertiary" },
     ],
@@ -175,10 +224,11 @@ const buttonAdapter: ComponentDocumentationAdapter = {
   apiRows: [
     {
       name: "variant",
-      type: '"primary" | "secondary" | "tertiary"',
+      type: '"primary" | "primary-alternate" | "secondary" | "tertiary"',
       defaultValue: '"primary"',
       typeReferences: [
         { value: '"primary"', target: { kind: "component-color-group", id: "button-primary" } },
+        { value: '"primary-alternate"', target: { kind: "component-color-group", id: "button-primary-alternate" } },
         { value: '"secondary"', target: { kind: "component-color-group", id: "button-secondary" } },
         { value: '"tertiary"', target: { kind: "component-color-group", id: "button-tertiary" } },
       ],
@@ -199,7 +249,7 @@ const buttonAdapter: ComponentDocumentationAdapter = {
     { name: "default slot", type: "string content", defaultValue: "required" },
   ],
   foundationReferences: {
-    colorGroups: ["button-primary", "button-secondary", "button-tertiary"],
+    colorGroups: ["button-primary", "button-primary-alternate", "button-secondary", "button-tertiary"],
   },
   dependencies: [
     {
@@ -539,16 +589,42 @@ const commonToc: DocumentationTocItem[] = [
 
 const buttonLinkAdapter: ComponentDocumentationAdapter = {
   componentId: "button-link",
-  preview: { renderer: DsButtonLinkPreview, props: {}, axes: [sharedControlSizeAxis, sharedStateAxis, sharedIconAxis] },
+  preview: {
+    renderer: DsButtonLinkPreview,
+    props: {},
+    axes: [
+      {
+        id: "variant",
+        label: "Variant",
+        defaultValue: "default",
+        options: [
+          { label: "Default", value: "default" },
+          { label: "Primary Alternate", value: "primary-alternate" },
+        ],
+      },
+      sharedControlSizeAxis,
+      sharedStateAxis,
+      sharedIconAxis,
+    ],
+  },
   apiRows: [
     { name: "href", type: "string", defaultValue: "required" },
+    {
+      name: "variant",
+      type: '"default" | "primary-alternate"',
+      defaultValue: '"default"',
+      typeReferences: [
+        { value: '"default"', target: { kind: "component-color-group", id: "button-link" } },
+        { value: '"primary-alternate"', target: { kind: "component-color-group", id: "button-link-primary-alternate" } },
+      ],
+    },
     { name: "size", type: '"small" | "medium" | "large"', defaultValue: '"small"', typeReferences: controlSizeApiReferences },
     { name: "showIcon", type: "boolean", defaultValue: "true" },
     { name: "disabled", type: "boolean", defaultValue: "false" },
     { name: "default slot", type: "string content", defaultValue: "required" },
   ],
   foundationReferences: {
-    colorGroups: ["button-link"],
+    colorGroups: ["button-link", "button-link-primary-alternate"],
   },
   dependencies: [{
     target: { kind: "component", id: "material-symbol" },
@@ -800,8 +876,21 @@ const socialIconButtonAdapter: ComponentDocumentationAdapter = {
 
 const buttonGroupAdapter: ComponentDocumentationAdapter = {
   componentId: "button-group",
-  preview: { renderer: DsButtonGroupPreview, props: {}, axes: [] },
+  preview: {
+    renderer: DsButtonGroupPreview,
+    props: {},
+    axes: [{
+      id: "buttonGroupAlignment",
+      label: "Alignment",
+      defaultValue: "left",
+      options: [
+        { label: "Left", value: "left" },
+        { label: "Centered", value: "centered" },
+      ],
+    }],
+  },
   apiRows: [
+    { name: "align", type: '"left" | "centered"', defaultValue: '"left"' },
     { name: "default slot", type: "Button | ButtonLink | IconButton | CopyButton | CopyIconButton | SocialButton | SocialIconButton", defaultValue: "unrestricted" },
     { name: "HTML attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
   ],
@@ -971,14 +1060,59 @@ const eyebrowAdapter: ComponentDocumentationAdapter = {
   preview: {
     renderer: DsEyebrowPreview,
     props: {},
-    axes: [],
+    axes: [{
+      id: "eyebrowVariant",
+      label: "Variant",
+      defaultValue: "default",
+      options: [
+        { label: "Default", value: "default" },
+        { label: "Alternate", value: "alternate" },
+      ],
+    }],
   },
   apiRows: [
     { name: "text", type: "string", defaultValue: "required" },
+    { name: "variant", type: '"default" | "alternate"', defaultValue: '"default"' },
     { name: "paragraph attributes", type: 'HTMLAttributes<"p">', defaultValue: "forwarded" },
   ],
   foundationReferences: { colorGroups: ["eyebrow"] },
   dependencies: [],
+  toc: commonToc,
+};
+
+export const ratingAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "ratingValue",
+    label: "Rating",
+    defaultValue: "5",
+    options: [0, 1, 2, 3, 4, 5].map((value) => ({
+      label: `${value} / 5`,
+      value: String(value),
+    })),
+  },
+];
+
+const ratingAdapter: ComponentDocumentationAdapter = {
+  componentId: "rating",
+  preview: {
+    renderer: DsRatingPreview,
+    props: {},
+    axes: ratingAxes,
+    container: "main",
+    sizing: "intrinsic",
+    presentation: "standard",
+  },
+  apiRows: [
+    { name: "value", type: "0 | 1 | 2 | 3 | 4 | 5", defaultValue: "required" },
+    { name: "ratingLabel", type: "string", defaultValue: "required localized accessible label" },
+    { name: "default slot", type: "phrasing content", defaultValue: "required" },
+    { name: "span attributes", type: 'HTMLAttributes<"span">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [{
+    target: { kind: "component", id: "material-symbol" },
+    description: "Rating fixes star_filled for awarded points and star for unawarded points; both glyphs remain decorative and cannot be replaced by consumers.",
+  }],
   toc: commonToc,
 };
 
@@ -1001,6 +1135,15 @@ export const statTextInlineAxes: DocumentationPreviewAxis[] = [
       { label: "Trailing", value: "trailing" },
     ],
   },
+  {
+    id: "statTextInlineIcon",
+    label: "Icon",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
 ];
 
 const statTextInlineAdapter: ComponentDocumentationAdapter = {
@@ -1009,12 +1152,15 @@ const statTextInlineAdapter: ComponentDocumentationAdapter = {
     renderer: DsStatTextInlinePreview,
     props: {},
     axes: statTextInlineAxes,
-    responsivePreview: {},
+    container: "main",
+    sizing: "intrinsic",
+    presentation: "standard",
   },
   apiRows: [
     { name: "text", type: "string", defaultValue: "required" },
     { name: "trend", type: '"up" | "down"', defaultValue: '"up"' },
     { name: "iconPosition", type: '"leading" | "trailing"', defaultValue: '"trailing"' },
+    { name: "showIcon", type: "boolean", defaultValue: "true" },
     { name: "span attributes", type: 'HTMLAttributes<"span">', defaultValue: "safe attributes forwarded" },
   ],
   foundationReferences: { colorGroups: [] },
@@ -1068,32 +1214,14 @@ export const statCardAxes: DocumentationPreviewAxis[] = [
 
 const statCardAdapter: ComponentDocumentationAdapter = {
   componentId: "stat-card",
-  previews: [
-    {
-      renderer: DsStatCardPreview,
-      props: {},
-      axes: statCardAxes,
-      responsivePreview: {
-        rendererProps: { mode: "responsive" },
-      },
-    },
-    {
-      id: "trend-combinations",
-      heading: "Trend combinations",
-      title: "Both, upward, downward and no trend cues",
-      renderer: DsStatCardPreview,
-      props: { mode: "matrix" },
-      axes: [],
-    },
-    {
-      id: "content-stress",
-      heading: "Content stress",
-      title: "Long localized metric content",
-      renderer: DsStatCardPreview,
-      props: { mode: "stress" },
-      axes: [],
-    },
-  ],
+  preview: {
+    renderer: DsStatCardPreview,
+    props: {},
+    axes: statCardAxes,
+    container: "main",
+    sizing: "bounded",
+    presentation: "standard",
+  },
   apiRows: [
     { name: "caption", type: "string", defaultValue: "required" },
     { name: "value", type: "string", defaultValue: "required" },
@@ -1112,11 +1240,45 @@ const statCardAdapter: ComponentDocumentationAdapter = {
   toc: commonToc,
 };
 
+const logoCardAdapter: ComponentDocumentationAdapter = {
+  componentId: "logo-card",
+  preview: {
+    renderer: DsLogoCardPreview,
+    props: {},
+    axes: [],
+    container: "main",
+    sizing: "bounded",
+    presentation: "standard",
+  },
+  apiRows: [
+    { name: "slug", type: "string", defaultValue: "required" },
+    { name: "alt", type: "string", defaultValue: "required; may be empty when decorative" },
+    { name: "loading", type: '"eager" | "lazy"', defaultValue: "eager" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "safe attributes forwarded except style and data-component-name" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "logo-asset" },
+      description: "Resolves the approved local full wordmark and owns image semantics and proportional fitting.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Owns the fluid 16:9 card geometry without adding a public ratio prop.",
+    },
+  ],
+  toc: commonToc,
+};
+
 const bulletPointAdapter: ComponentDocumentationAdapter = {
   componentId: "bullet-point",
   preview: {
     renderer: DsBulletPointPreview,
     props: {},
+    container: "main",
+    sizing: "intrinsic",
+    presentation: "standard",
     axes: [
       {
         id: "bulletPointStatus",
@@ -1157,6 +1319,9 @@ const bulletCardSimpleAdapter: ComponentDocumentationAdapter = {
   preview: {
     renderer: DsBulletCardSimplePreview,
     props: {},
+    container: "main",
+    sizing: "bounded",
+    presentation: "standard",
     axes: [
       {
         id: "bulletCardSimpleIcon",
@@ -1186,9 +1351,6 @@ const bulletCardSimpleAdapter: ComponentDocumentationAdapter = {
         ],
       },
     ],
-    responsivePreview: {
-      rendererProps: { mode: "responsive" },
-    },
   },
   apiRows: [
     { name: "title", type: "string", defaultValue: "required" },
@@ -1218,6 +1380,9 @@ const bulletIconCardAdapter: ComponentDocumentationAdapter = {
   preview: {
     renderer: DsBulletIconCardPreview,
     props: {},
+    container: "main",
+    sizing: "bounded",
+    presentation: "standard",
     axes: [
       {
         id: "bulletIconCardLayout",
@@ -1289,7 +1454,8 @@ const bulletIconCardAdapter: ComponentDocumentationAdapter = {
   ],
   foundationReferences: { colorGroups: [] },
   dependencies: [
-    { target: { kind: "component", id: "material-symbol" }, description: "MaterialSymbol renders the fixed decorative language and trending_up glyphs." },
+    { target: { kind: "component", id: "material-symbol" }, description: "MaterialSymbol renders the fixed decorative language glyph." },
+    { target: { kind: "component", id: "stat-text-inline" }, description: "StatTextInline owns the optional statistic text, trend glyph and Show Icon behavior." },
     { target: { kind: "component", id: "tag" }, description: "Tag is the preferred repeatable metadata child for the tags slot." },
     { target: { kind: "component", id: "button-group" }, description: "ButtonGroup owns grouping and intrinsic wrapping for action children." },
   ],
@@ -1298,36 +1464,19 @@ const bulletIconCardAdapter: ComponentDocumentationAdapter = {
 
 const bulletVisualCardAdapter: ComponentDocumentationAdapter = {
   componentId: "bullet-visual-card",
-  previews: [
-    {
-      id: "canonical-preview",
-      heading: "Canonical composition",
-      renderer: DsBulletVisualCardPreview,
-      props: { scenario: "full" },
-      axes: [],
-    },
-    {
-      id: "minimal-preview",
-      heading: "Minimal composition",
-      renderer: DsBulletVisualCardPreview,
-      props: { scenario: "minimal" },
-      axes: [],
-    },
-    {
-      id: "optional-preview",
-      heading: "Optional regions",
-      renderer: DsBulletVisualCardPreview,
-      props: { scenario: "optional" },
-      axes: [],
-    },
-    {
-      id: "stress-preview",
-      heading: "Content stress and wrapping",
-      renderer: DsBulletVisualCardPreview,
-      props: { scenario: "stress" },
-      axes: [],
-    },
-  ],
+  preview: {
+    renderer: DsBulletVisualCardPreview,
+    props: {},
+    container: "main",
+    sizing: "bounded",
+    presentation: "standard",
+    axes: [
+      { id: "bulletVisualCardDescription", label: "Description", defaultValue: "visible", options: [{ label: "Visible", value: "visible" }, { label: "Hidden", value: "hidden" }] },
+      { id: "bulletVisualCardStat", label: "Stat", defaultValue: "visible", options: [{ label: "Visible", value: "visible" }, { label: "Hidden", value: "hidden" }] },
+      { id: "bulletVisualCardTags", label: "Tags", defaultValue: "visible", options: [{ label: "Visible", value: "visible" }, { label: "Hidden", value: "hidden" }] },
+      { id: "bulletVisualCardActions", label: "Actions", defaultValue: "visible", options: [{ label: "Visible", value: "visible" }, { label: "Hidden", value: "hidden" }] },
+    ],
+  },
   apiRows: [
     { name: "title", type: "string", defaultValue: "required" },
     { name: "description", type: "string", defaultValue: "undefined" },
@@ -1341,9 +1490,108 @@ const bulletVisualCardAdapter: ComponentDocumentationAdapter = {
   foundationReferences: { colorGroups: [] },
   dependencies: [
     { target: { kind: "component", id: "ratio" }, description: "Ratio owns the preferred 4:3 visual proportion and replacement media content." },
-    { target: { kind: "component", id: "material-symbol" }, description: "MaterialSymbol renders the fixed decorative trending_up glyph for stat copy." },
+    { target: { kind: "component", id: "stat-text-inline" }, description: "StatTextInline owns the optional statistic and its fixed trailing trending_up glyph." },
     { target: { kind: "component", id: "tag" }, description: "Tag is the preferred repeatable child for compact card metadata." },
     { target: { kind: "component", id: "button-group" }, description: "ButtonGroup owns intrinsic wrapping for Button and ButtonLink action children." },
+  ],
+  toc: commonToc,
+};
+
+const blogCardAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "blogCardLayout",
+    label: "Layout",
+    defaultValue: "vertical",
+    options: [
+      { label: "Vertical", value: "vertical" },
+      { label: "Horizontal", value: "horizontal" },
+    ],
+  },
+  {
+    id: "blogCardMediaPlacement",
+    label: "Media placement",
+    defaultValue: "start",
+    options: [
+      { label: "Start", value: "start" },
+      { label: "End", value: "end" },
+    ],
+  },
+  {
+    id: "blogCardMedia",
+    label: "Media",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "blogCardTags",
+    label: "Tags",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "blogCardDescription",
+    label: "Description",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "blogCardDate",
+    label: "Date",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "blogCardCta",
+    label: "CTA",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const blogCardAdapter: ComponentDocumentationAdapter = {
+  componentId: "blog-card",
+  preview: {
+    renderer: DsBlogCardPreview,
+    props: {},
+    axes: blogCardAxes,
+    container: "main",
+    sizing: "bounded",
+    presentation: "standard",
+  },
+  apiRows: [
+    { name: "title", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "undefined" },
+    { name: "date", type: "BlogCardDate", defaultValue: "undefined" },
+    { name: "href", type: "string", defaultValue: "undefined; enables CTA" },
+    { name: "ctaLabel", type: "string", defaultValue: '"Read more" when href is present' },
+    { name: "layout", type: '"vertical" | "horizontal"', defaultValue: '"vertical"' },
+    { name: "mediaPlacement", type: '"start" | "end"', defaultValue: '"start"' },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
+    { name: "visual slot", type: "Ratio-compatible media", defaultValue: "optional; wrapped in Ratio 16:9" },
+    { name: "tags slot", type: "repeatable Tag children", defaultValue: "empty" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "ratio" }, description: "Ratio owns the optional 16:9 media geometry, clipping and checkerboard empty state." },
+    { target: { kind: "component", id: "tag" }, description: "Tag is the preferred repeatable metadata child for the tags slot." },
+    { target: { kind: "component", id: "button-link" }, description: "ButtonLink owns the optional reading action, fixed arrow_forward icon and interaction states." },
   ],
   toc: commonToc,
 };
@@ -1353,6 +1601,9 @@ const bulletCardSurfaceAdapter: ComponentDocumentationAdapter = {
   preview: {
     renderer: DsBulletCardSurfacePreview,
     props: {},
+    container: "main",
+    sizing: "bounded",
+    presentation: "standard",
     axes: [
       {
         id: "bulletCardIcon",
@@ -1513,6 +1764,56 @@ const ratioAdapter: ComponentDocumentationAdapter = {
   ],
   foundationReferences: { colorGroups: ["ratio"] },
   dependencies: [],
+  toc: commonToc,
+};
+
+const avatarImageAdapter: ComponentDocumentationAdapter = {
+  componentId: "avatar-image",
+  preview: {
+    renderer: DsAvatarPreview,
+    props: { mode: "image" },
+    axes: [],
+    container: "main",
+    sizing: "intrinsic",
+  },
+  apiRows: [
+    { name: "default slot", type: "Ratio-compatible image, picture or Astro image", defaultValue: "optional" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the fixed 1:1 geometry, media fitting and checkerboard fallback.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const avatarNameAdapter: ComponentDocumentationAdapter = {
+  componentId: "avatar-name",
+  preview: {
+    renderer: DsAvatarPreview,
+    props: { mode: "name" },
+    axes: [],
+    container: "main",
+    sizing: "intrinsic",
+  },
+  apiRows: [
+    { name: "fullName", type: "non-empty string", defaultValue: "required" },
+    { name: "roleOrPosition", type: "non-empty string", defaultValue: "optional" },
+    { name: "image slot", type: "AvatarImage-compatible media", defaultValue: "optional" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "avatar-image" },
+      description: "AvatarImage owns the portrait size, circular clipping and Ratio composition.",
+    },
+  ],
   toc: commonToc,
 };
 
@@ -1789,10 +2090,16 @@ const selectAdapter: ComponentDocumentationAdapter = {
   foundationReferences: {
     colorGroups: ["input"],
   },
-  dependencies: [{
-    target: { kind: "component", id: "material-symbol" },
-    description: "Select uses fixed language, call, arrow_drop_down, check and validation Material Symbols; country flags and canonical logo marks remain option-owned data.",
-  }],
+  dependencies: [
+    {
+      target: { kind: "component", id: "material-symbol" },
+      description: "Select uses fixed language, call, arrow_drop_down, check and validation Material Symbols.",
+    },
+    {
+      target: { kind: "component", id: "logo-asset" },
+      description: "Select renders canonical option logo marks through LogoAsset while the control icon box owns their height.",
+    },
+  ],
   toc: commonToc,
 };
 
@@ -1843,10 +2150,16 @@ const compactSelectAdapter: ComponentDocumentationAdapter = {
     { name: "disabled", type: "boolean", defaultValue: "false" },
   ],
   foundationReferences: { colorGroups: ["input"] },
-  dependencies: [{
-    target: { kind: "component", id: "material-symbol" },
-    description: "CompactSelect uses fixed semantic and disclosure Material Symbols plus option-owned country flags or canonical logo marks.",
-  }],
+  dependencies: [
+    {
+      target: { kind: "component", id: "material-symbol" },
+      description: "CompactSelect uses fixed semantic and disclosure Material Symbols plus option-owned country flags.",
+    },
+    {
+      target: { kind: "component", id: "logo-asset" },
+      description: "CompactSelect renders canonical option logo marks through LogoAsset at the existing control icon height.",
+    },
+  ],
   toc: commonToc,
 };
 
@@ -1877,10 +2190,16 @@ const inlineSelectAdapter: ComponentDocumentationAdapter = {
     { name: "disabled", type: "boolean", defaultValue: "false" },
   ],
   foundationReferences: { colorGroups: ["input"] },
-  dependencies: [{
-    target: { kind: "component", id: "material-symbol" },
-    description: "InlineSelect uses fixed disclosure and check Material Symbols and can render option-owned country flags or canonical logo marks.",
-  }],
+  dependencies: [
+    {
+      target: { kind: "component", id: "material-symbol" },
+      description: "InlineSelect uses fixed disclosure and check Material Symbols and can render option-owned country flags.",
+    },
+    {
+      target: { kind: "component", id: "logo-asset" },
+      description: "InlineSelect renders canonical option logo marks through LogoAsset at the existing control icon height.",
+    },
+  ],
   toc: commonToc,
 };
 
@@ -2155,6 +2474,30 @@ const tabAdapter: ComponentDocumentationAdapter = {
   toc: commonToc,
 };
 
+const progressTabAdapter: ComponentDocumentationAdapter = {
+  componentId: "progress-tab",
+  preview: {
+    renderer: DsProgressTabPreview,
+    props: {},
+    axes: [],
+  },
+  apiRows: [
+    { name: "id", type: "string", defaultValue: "required" },
+    { name: "controls", type: "string", defaultValue: "required" },
+    { name: "selected", type: "boolean", defaultValue: "false" },
+    { name: "disabled", type: "boolean", defaultValue: "false" },
+    { name: "progress", type: "number; 0–100", defaultValue: "0" },
+    { name: "default slot", type: "visible descriptive text", defaultValue: "required" },
+    { name: "button attributes", type: 'HTMLAttributes<"button">', defaultValue: "forwarded" },
+  ],
+  foundationReferences: { colorGroups: ["tab"] },
+  dependencies: [{
+    target: { kind: "component", id: "progress-bar" },
+    description: "ProgressBar owns the decorative native track and accent fill.",
+  }],
+  toc: commonToc,
+};
+
 const tabsAdapter: ComponentDocumentationAdapter = {
   componentId: "tabs",
   preview: {
@@ -2164,7 +2507,7 @@ const tabsAdapter: ComponentDocumentationAdapter = {
   },
   apiRows: [
     { name: "aria-label or aria-labelledby", type: "string", defaultValue: "required" },
-    { name: "default slot", type: "direct Tab children", defaultValue: "required; unrestricted count" },
+    { name: "default slot", type: "direct Tab or ProgressTab children", defaultValue: "required; unrestricted count" },
     { name: "external panels", type: 'role="tabpanel" linked by Tab.controls', defaultValue: "consumer-owned" },
     { name: "change event", type: 'CustomEvent<{ id: string; previousId?: string }>', defaultValue: '"astro-ds:tabs-change"; Tab DOM ids' },
     { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
@@ -2172,8 +2515,194 @@ const tabsAdapter: ComponentDocumentationAdapter = {
   foundationReferences: { colorGroups: ["tab"] },
   dependencies: [{
     target: { kind: "component", id: "tab" },
-    description: "Tabs accepts any number of direct canonical Tab children and coordinates their external panels.",
+    description: "Tab supplies the compact canonical trigger contract.",
+  }, {
+    target: { kind: "component", id: "progress-tab" },
+    description: "ProgressTab supplies the descriptive timed-trigger contract.",
   }],
+  toc: commonToc,
+};
+
+const tabbedContentAdapter: ComponentDocumentationAdapter = {
+  componentId: "tabbed-content",
+  preview: {
+    renderer: DsTabbedContentPreview,
+    props: {},
+    axes: [],
+    container: "main",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-tabbed-content-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "aria-label or aria-labelledby", type: "string", defaultValue: "required" },
+    { name: "autoplay", type: "boolean", defaultValue: "true" },
+    { name: "autoplayDuration", type: "number", defaultValue: "8000" },
+    { name: "autoplayLoop", type: "boolean", defaultValue: "true" },
+    { name: "tabs slot", type: "at least two direct ProgressTab children", defaultValue: "required; unrestricted count" },
+    { name: "default slot", type: 'matching direct role="tabpanel" children', defaultValue: "required; unrestricted count" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "tabs" },
+      description: "Tabs owns the horizontal tablist, roving tabindex and external panel selection.",
+    },
+    {
+      target: { kind: "component", id: "progress-tab" },
+      description: "ProgressTab owns each descriptive trigger and decorative playback indicator.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the shared 2.39:1 visual stage and checkerboard fallback.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const swiperAdapter: ComponentDocumentationAdapter = {
+  componentId: "swiper",
+  preview: {
+    renderer: DsSwiperPreview,
+    props: {},
+    axes: [
+      {
+        id: "swiperSlidesPerView",
+        label: "Desktop slides",
+        defaultValue: "3",
+        control: "select",
+        options: [
+          { label: "1", value: "1" },
+          { label: "1.5", value: "1.5" },
+          { label: "3", value: "3" },
+          { label: "5", value: "5" },
+        ],
+      },
+      {
+        id: "swiperGap",
+        label: "Gap",
+        defaultValue: "regular",
+        control: "select",
+        options: [
+          { label: "None", value: "none" },
+          { label: "Small", value: "small" },
+          { label: "Regular", value: "regular" },
+          { label: "Large", value: "large" },
+          { label: "X-large", value: "xlarge" },
+        ],
+      },
+      {
+        id: "swiperLoop",
+        label: "Loop",
+        defaultValue: "false",
+        options: [
+          { label: "Off", value: "false" },
+          { label: "On", value: "true" },
+        ],
+      },
+      {
+        id: "swiperAutoplay",
+        label: "Autoplay",
+        defaultValue: "false",
+        options: [
+          { label: "Off", value: "false" },
+          { label: "On", value: "true" },
+        ],
+      },
+      {
+        id: "swiperNavigation",
+        label: "Navigation",
+        defaultValue: "true",
+        options: [
+          { label: "Off", value: "false" },
+          { label: "On", value: "true" },
+        ],
+      },
+      {
+        id: "swiperPagination",
+        label: "Pagination",
+        defaultValue: "bullets",
+        control: "select",
+        options: [
+          { label: "Off", value: "false" },
+          { label: "Bullets", value: "bullets" },
+          { label: "Fraction", value: "fraction" },
+          { label: "Progress bar", value: "progressbar" },
+        ],
+      },
+      {
+        id: "swiperScrollbar",
+        label: "Scrollbar",
+        defaultValue: "false",
+        options: [
+          { label: "Off", value: "false" },
+          { label: "On", value: "true" },
+        ],
+      },
+      {
+        id: "swiperSpeed",
+        label: "Speed",
+        defaultValue: "300",
+        control: "select",
+        options: [
+          { label: "200 ms", value: "200" },
+          { label: "300 ms", value: "300" },
+          { label: "600 ms", value: "600" },
+          { label: "1000 ms", value: "1000" },
+        ],
+      },
+      {
+        id: "swiperEasing",
+        label: "Easing",
+        defaultValue: "standard",
+        control: "select",
+        options: [
+          { label: "Standard", value: "standard" },
+          { label: "Premium in", value: "premium-in" },
+          { label: "Premium out", value: "premium-out" },
+        ],
+      },
+    ],
+    container: "main",
+    sizing: "fill",
+    responsivePreview: { rendererProps: {} },
+  },
+  apiRows: [
+    { name: "aria-label or aria-labelledby", type: "string", defaultValue: "required" },
+    { name: "slidesPerView", type: 'number | "auto"', defaultValue: "1" },
+    { name: "slidesPerViewTablet", type: 'number | "auto"', defaultValue: "inherits slidesPerView" },
+    { name: "slidesPerViewDesktop", type: 'number | "auto"', defaultValue: "inherits tablet" },
+    { name: "gap / gapTablet / gapDesktop", type: '"none"–"xxxlarge"', defaultValue: '"regular" / inherited' },
+    { name: "slidesPerGroup", type: "integer ≥ 1", defaultValue: "1" },
+    { name: "loop / rewind", type: "boolean; mutually exclusive", defaultValue: "false / false" },
+    { name: "centeredSlides", type: "boolean", defaultValue: "false" },
+    { name: "speed", type: "number ≥ 0", defaultValue: "300" },
+    { name: "easing", type: '"standard" | "premium-in" | "premium-out"', defaultValue: '"standard"' },
+    { name: "autoplay / autoplayDelay", type: "boolean / number > 0", defaultValue: "false / 3000" },
+    { name: "navigation / scrollbar / keyboard", type: "boolean", defaultValue: "false / false / true" },
+    { name: "pagination", type: 'false | "bullets" | "fraction" | "progressbar"', defaultValue: "false" },
+    { name: "allowTouchMove / autoHeight", type: "boolean", defaultValue: "true / false" },
+    { name: "initialSlide", type: "integer ≥ 0", defaultValue: "0" },
+    { name: "labels", type: "Partial<SwiperLabels>", defaultValue: "English accessible labels" },
+    { name: "advancedOptions", type: "serializable non-structural Swiper options", defaultValue: "{}" },
+    { name: "default slot", type: "at least two direct data-swiper-slide elements", defaultValue: "required" },
+    { name: "events", type: "ready | slide-change | autoplay-state CustomEvents", defaultValue: "astro-ds:swiper-*" },
+    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "button" },
+      description: "Button supplies the canonical previous, next and autoplay controls.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup owns accessible grouping and control spacing.",
+    },
+  ],
   toc: commonToc,
 };
 
@@ -2270,10 +2799,16 @@ const tagAdapter: ComponentDocumentationAdapter = {
   foundationReferences: {
     colorGroups: ["tag-colors"],
   },
-  dependencies: [{
-    target: { kind: "component", id: "material-symbol" },
-    description: "A removable Tag uses the fixed close MaterialSymbol inside its nested native remove button.",
-  }],
+  dependencies: [
+    {
+      target: { kind: "component", id: "material-symbol" },
+      description: "A removable Tag uses the fixed close MaterialSymbol inside its nested native remove button.",
+    },
+    {
+      target: { kind: "component", id: "logo-asset" },
+      description: "Logo examples use a canonical LogoAsset mark while Tag continues to own the leading visual height.",
+    },
+  ],
   toc: commonToc,
 };
 
@@ -2360,67 +2895,33 @@ const infoPopoverAdapter: ComponentDocumentationAdapter = {
 
 const accordionAdapter: ComponentDocumentationAdapter = {
   componentId: "accordion",
-  previews: [
-    {
-      id: "preview",
-      title: "Accordion — Standard",
-      renderer: DsAccordionPreview,
-      props: {},
-      axes: [
-        {
-          id: "state",
-          label: "State",
-          defaultValue: "default",
-          options: [
-            { label: "Default", value: "default" },
-            { label: "Hover", value: "hover" },
-            { label: "Open", value: "open" },
-            { label: "Focus visible", value: "focus-visible" },
-            { label: "Disabled", value: "disabled" },
-          ],
-        },
-        {
-          id: "icon",
-          label: "Info tooltip",
-          defaultValue: "visible",
-          options: [
-            { label: "Visible", value: "visible" },
-            { label: "Hidden", value: "hidden" },
-          ],
-        },
-      ],
-    },
-    {
-      id: "preview-progress",
-      title: "Accordion — With progress",
-      heading: "With progress",
-      renderer: DsAccordionProgressPreview,
-      props: {},
-      axes: [
-        {
-          id: "state",
-          label: "State",
-          defaultValue: "default",
-          options: [
-            { label: "Default", value: "default" },
-            { label: "Hover", value: "hover" },
-            { label: "Open", value: "open" },
-            { label: "Focus visible", value: "focus-visible" },
-            { label: "Disabled", value: "disabled" },
-          ],
-        },
-        {
-          id: "icon",
-          label: "Info tooltip",
-          defaultValue: "visible",
-          options: [
-            { label: "Visible", value: "visible" },
-            { label: "Hidden", value: "hidden" },
-          ],
-        },
-      ],
-    },
-  ],
+  preview: {
+    renderer: DsAccordionPreview,
+    props: {},
+    axes: [
+      {
+        id: "state",
+        label: "State",
+        defaultValue: "default",
+        options: [
+          { label: "Default", value: "default" },
+          { label: "Hover", value: "hover" },
+          { label: "Open", value: "open" },
+          { label: "Focus visible", value: "focus-visible" },
+          { label: "Disabled", value: "disabled" },
+        ],
+      },
+      {
+        id: "icon",
+        label: "Info tooltip",
+        defaultValue: "visible",
+        options: [
+          { label: "Visible", value: "visible" },
+          { label: "Hidden", value: "hidden" },
+        ],
+      },
+    ],
+  },
   apiRows: [
     { name: "title", type: "string", defaultValue: "required" },
     { name: "titleSuffix", type: "string", defaultValue: "undefined" },
@@ -2626,6 +3127,16 @@ const contentAxes: DocumentationPreviewAxis[] = [
     ],
   },
   {
+    id: "contentTone",
+    label: "Tone",
+    defaultValue: "default",
+    options: [
+      { label: "Default", value: "default" },
+      { label: "On accent", value: "on-accent" },
+      { label: "Inverse", value: "inverse" },
+    ],
+  },
+  {
     id: "contentEyebrow",
     label: "Eyebrow",
     defaultValue: "visible",
@@ -2660,20 +3171,1071 @@ const contentAdapter: ComponentDocumentationAdapter = {
     renderer: DsContentPreview,
     props: {},
     axes: contentAxes,
+    container: "main",
+    sizing: "fill",
   },
   apiRows: [
     { name: "heading", type: "string", defaultValue: "required" },
     { name: "eyebrow", type: "string", defaultValue: "optional" },
     { name: "paragraph", type: "string", defaultValue: "optional" },
     { name: "align", type: '"left" | "centered"', defaultValue: '"left"' },
-    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "tone", type: '"default" | "on-accent" | "inverse"', defaultValue: '"default"' },
+    { name: "headingLevel", type: "1 | 2 | 3 | 4 | 5 | 6", defaultValue: "2" },
     { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
     { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "forwarded" },
   ],
   foundationReferences: { colorGroups: [] },
   dependencies: [
     { target: { kind: "component", id: "eyebrow" }, description: "Content reuses Eyebrow for the optional category cue and its heading spacing." },
-    { target: { kind: "component", id: "button-group" }, description: "Content renders the optional actions slot inside ButtonGroup for grouping and intrinsic wrapping." },
+    { target: { kind: "component", id: "button-group" }, description: "Content renders the optional actions slot inside ButtonGroup and passes its alignment through for grouping, intrinsic wrapping and per-line alignment." },
+  ],
+  toc: commonToc,
+};
+
+const callToActionSurfaceAxis: DocumentationPreviewAxis = {
+  id: "callToActionSurface",
+  label: "Surface",
+  defaultValue: "accent",
+  options: [
+    { label: "Accent", value: "accent" },
+    { label: "Inverse", value: "inverse" },
+  ],
+};
+
+const callToActionOptionalAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "callToActionEyebrow",
+    label: "Eyebrow",
+    defaultValue: "visible",
+    options: [{ label: "Visible", value: "visible" }, { label: "Hidden", value: "hidden" }],
+  },
+  {
+    id: "callToActionParagraph",
+    label: "Paragraph",
+    defaultValue: "visible",
+    options: [{ label: "Visible", value: "visible" }, { label: "Hidden", value: "hidden" }],
+  },
+  {
+    id: "callToActionActions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [{ label: "Visible", value: "visible" }, { label: "Hidden", value: "hidden" }],
+  },
+];
+
+const callToActionCommonApiRows: DocumentationApiRow[] = [
+  { name: "heading", type: "string", defaultValue: "required" },
+  { name: "eyebrow", type: "string", defaultValue: "optional" },
+  { name: "paragraph", type: "string", defaultValue: "optional" },
+  { name: "surface", type: '"accent" | "inverse"', defaultValue: '"accent"' },
+  { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+  { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+  { name: "class", type: "string", defaultValue: "optional; merged" },
+  { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "safe attributes forwarded" },
+];
+
+const callToActionVisualAdapter: ComponentDocumentationAdapter = {
+  componentId: "call-to-action-visual",
+  preview: {
+    renderer: DsCallToActionVisualPreview,
+    props: {},
+    axes: [
+      callToActionSurfaceAxis,
+      {
+        id: "callToActionVisualPosition",
+        label: "Visual position",
+        defaultValue: "right",
+        options: [{ label: "Right", value: "right" }, { label: "Left", value: "left" }],
+      },
+      ...callToActionOptionalAxes,
+    ],
+    container: "main",
+    sizing: "fill",
+    responsivePreview: { rendererProps: { idPrefix: "documentation-call-to-action-visual-responsive" } },
+  },
+  apiRows: [
+    ...callToActionCommonApiRows.slice(0, 4),
+    { name: "visualPosition", type: '"left" | "right"', defaultValue: '"right"' },
+    ...callToActionCommonApiRows.slice(4),
+    { name: "visual slot", type: "16:9 Ratio-compatible media or visual content", defaultValue: "required" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "content" }, description: "Content owns the heading-led copy, bounded text tone and action grouping." },
+    { target: { kind: "component", id: "ratio" }, description: "Ratio owns the required fixed 16:9 visual geometry." },
+  ],
+  toc: commonToc,
+};
+
+const callToActionCenteredAdapter: ComponentDocumentationAdapter = {
+  componentId: "call-to-action-centered",
+  preview: {
+    renderer: DsCallToActionCenteredPreview,
+    props: {},
+    axes: [callToActionSurfaceAxis, ...callToActionOptionalAxes],
+    container: "main",
+    sizing: "fill",
+    responsivePreview: { rendererProps: { idPrefix: "documentation-call-to-action-centered-responsive" } },
+  },
+  apiRows: callToActionCommonApiRows,
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "content" }, description: "Content owns the centered heading-led copy, bounded text tone and action grouping." },
+  ],
+  toc: commonToc,
+};
+
+const richTextAdapter: ComponentDocumentationAdapter = {
+  componentId: "rich-text",
+  preview: {
+    renderer: DsRichTextPreview,
+    props: { kind: "rich-text" },
+    axes: [],
+    container: "small",
+    sizing: "fill",
+  },
+  apiRows: [
+    { name: "default slot", type: "Rich Text block components", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "div attributes", type: 'HTMLAttributes<"div">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "rich-text-heading" }, description: "RichText coordinates external rhythm around semantic editorial headings." },
+    { target: { kind: "component", id: "rich-text-paragraph" }, description: "RichText coordinates ordinary and lead paragraph blocks." },
+    { target: { kind: "component", id: "rich-text-quote" }, description: "RichText reserves stronger surrounding rhythm for quotations." },
+    { target: { kind: "component", id: "rich-text-visual" }, description: "RichText reserves stronger surrounding rhythm for editorial figures." },
+  ],
+  toc: commonToc,
+};
+
+const richTextHeadingAdapter: ComponentDocumentationAdapter = {
+  componentId: "rich-text-heading",
+  preview: {
+    renderer: DsRichTextPreview,
+    props: { kind: "heading" },
+    axes: [],
+    container: "small",
+    sizing: "fill",
+  },
+  apiRows: [
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "required" },
+    { name: "default slot", type: "phrasing content", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "heading attributes", type: 'HTMLAttributes<"h2">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const richTextParagraphAdapter: ComponentDocumentationAdapter = {
+  componentId: "rich-text-paragraph",
+  preview: {
+    renderer: DsRichTextPreview,
+    props: { kind: "paragraph" },
+    axes: [],
+    container: "small",
+    sizing: "fill",
+  },
+  apiRows: [
+    { name: "size", type: '"base" | "large"', defaultValue: '"base"' },
+    { name: "default slot", type: "phrasing content", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "paragraph attributes", type: 'HTMLAttributes<"p">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const richTextQuoteAdapter: ComponentDocumentationAdapter = {
+  componentId: "rich-text-quote",
+  preview: {
+    renderer: DsRichTextPreview,
+    props: { kind: "quote" },
+    axes: [],
+    container: "small",
+    sizing: "fill",
+  },
+  apiRows: [
+    { name: "cite", type: "string", defaultValue: "optional native source URL" },
+    { name: "default slot", type: "phrasing content", defaultValue: "required quotation" },
+    { name: "attribution slot", type: "phrasing content", defaultValue: "optional" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "blockquote attributes", type: 'HTMLAttributes<"blockquote">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const richTextVisualAdapter: ComponentDocumentationAdapter = {
+  componentId: "rich-text-visual",
+  preview: {
+    renderer: DsRichTextPreview,
+    props: { kind: "visual" },
+    axes: [],
+    container: "small",
+    sizing: "fill",
+  },
+  apiRows: [
+    { name: "ratio", type: "RatioValue", defaultValue: '"16:9"' },
+    { name: "default slot", type: "img | picture | video | iframe", defaultValue: "required" },
+    { name: "caption slot", type: "phrasing content", defaultValue: "optional" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "figure attributes", type: 'HTMLAttributes<"figure">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "ratio" }, description: "Ratio owns proportional geometry, clipping and the controlled checkerboard canvas." },
+  ],
+  toc: commonToc,
+};
+
+const featureProofAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "featureProofVisualPosition",
+    label: "Visual position",
+    defaultValue: "right",
+    options: [
+      { label: "Right", value: "right" },
+      { label: "Left", value: "left" },
+    ],
+  },
+  ...[
+    ["featureProofEyebrow", "Eyebrow"],
+    ["featureProofParagraph", "Paragraph"],
+    ["featureProofActions", "Actions"],
+    ["featureProofKeyPoints", "Key points"],
+    ["featureProofLogoProof", "Logo proof"],
+    ["featureProofSupportingDetails", "Supporting details"],
+  ].map(([id, label]) => ({
+    id: id as DocumentationPreviewAxis["id"],
+    label,
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  })),
+];
+
+const featureProofAdapter: ComponentDocumentationAdapter = {
+  componentId: "feature-proof",
+  preview: {
+    renderer: DsFeatureProofPreview,
+    props: {},
+    axes: featureProofAxes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-feature-proof-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "visualPosition", type: '"left" | "right"', defaultValue: '"right"' },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "logoProofTitle", type: "string", defaultValue: "required with logos slot" },
+    { name: "supportingDetailsTitle", type: "string", defaultValue: "required with supportingDetails slot" },
+    { name: "visual slot", type: "Ratio-compatible media or visual content", defaultValue: "required; fixed 1:1 ratio" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "keyPoints slot", type: "BulletPoint children", defaultValue: "optional" },
+    { name: "logos slot", type: "LogoAsset or a link wrapping LogoAsset", defaultValue: "optional; requires logoProofTitle" },
+    { name: "supportingDetails slot", type: "BulletPoint children", defaultValue: "optional; requires supportingDetailsTitle" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "FeatureProof delegates its required heading, optional copy and action grouping to Content.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the fixed 1:1 visual boundary, clipping and fluid media allocation.",
+    },
+    {
+      target: { kind: "component", id: "title-row" },
+      description: "TitleRow labels the optional logo-proof and supporting-details evidence groups.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint provides the semantic list-item contract for key points and supporting details.",
+    },
+    {
+      target: { kind: "component", id: "logo-asset" },
+      description: "FeatureProof gives each direct logo-slot child a shared component token height; LogoAsset fills that parent-owned box.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const feature5050Axes: DocumentationPreviewAxis[] = [
+  {
+    id: "feature5050VisualPosition",
+    label: "Visual position",
+    defaultValue: "end",
+    options: [
+      { label: "End", value: "end" },
+      { label: "Start", value: "start" },
+    ],
+  },
+  ...[
+    ["feature5050PrimaryBullets", "Primary bullets"],
+    ["feature5050Logos", "Logos"],
+    ["feature5050DetailBullets", "Detail bullets"],
+  ].map(([id, label]) => ({
+    id: id as DocumentationPreviewAxis["id"],
+    label,
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  })),
+];
+
+const feature5050Adapter: ComponentDocumentationAdapter = {
+  componentId: "feature-5050",
+  preview: {
+    renderer: DsFeature5050Preview,
+    props: {},
+    axes: feature5050Axes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-feature-5050-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "visualPosition", type: '"start" | "end"', defaultValue: '"end"' },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "logosTitle", type: "string", defaultValue: "required with logos slot" },
+    { name: "detailBulletsTitle", type: "string", defaultValue: "required with detailBullets slot" },
+    { name: "visual slot", type: "meaningful media or visual content", defaultValue: "required" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "primaryBullets slot", type: "direct BulletPoint children", defaultValue: "optional" },
+    { name: "logos slot", type: "LogoAsset or a link wrapping LogoAsset", defaultValue: "optional; requires logosTitle" },
+    { name: "detailBullets slot", type: "direct BulletPoint children", defaultValue: "optional; requires detailBulletsTitle" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "Feature5050 delegates its required heading, optional copy and action composition to Content.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup remains the indirect Content dependency that owns action grouping and wrapping.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint owns semantic list-item content and its fixed included/excluded Material Symbols.",
+    },
+    {
+      target: { kind: "component", id: "title-row" },
+      description: "TitleRow labels the optional logos and detail-bullets groups.",
+    },
+    {
+      target: { kind: "component", id: "logo-asset" },
+      description: "Feature5050 gives each direct logo-slot child a shared component token height; LogoAsset fills that parent-owned box.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const feature5050CenteredAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "feature5050CenteredVisualPosition",
+    label: "Visual position",
+    defaultValue: "right",
+    options: [
+      { label: "Right", value: "right" },
+      { label: "Left", value: "left" },
+    ],
+  },
+  {
+    id: "feature5050CenteredEyebrow",
+    label: "Eyebrow",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "feature5050CenteredParagraph",
+    label: "Paragraph",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "feature5050CenteredBulletPoints",
+    label: "Bullet points",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "feature5050CenteredActions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const feature5050CenteredAdapter: ComponentDocumentationAdapter = {
+  componentId: "feature-50-50-centered",
+  preview: {
+    renderer: DsFeature5050CenteredPreview,
+    props: {},
+    axes: feature5050CenteredAxes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: {
+        idPrefix: "documentation-feature-50-50-centered-responsive",
+      },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "visualPosition", type: '"left" | "right"', defaultValue: '"right"' },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "visual slot", type: "meaningful media or visual content", defaultValue: "required" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "default slot", type: "direct BulletPoint children", defaultValue: "optional" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "Feature5050Centered delegates its heading-led copy and fixed left alignment to Content.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint owns every optional benefit list item and its fixed status Material Symbol.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup owns optional action grouping and intrinsic wrapping after the benefit list.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const featureSimpleAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "featureSimpleVisualPosition",
+    label: "Visual position",
+    defaultValue: "right",
+    options: [
+      { label: "Right", value: "right" },
+      { label: "Left", value: "left" },
+    ],
+  },
+  {
+    id: "featureSimpleContentAlign",
+    label: "Content alignment",
+    defaultValue: "left",
+    options: [
+      { label: "Left", value: "left" },
+      { label: "Centered", value: "centered" },
+    ],
+  },
+  {
+    id: "featureSimpleRatio",
+    label: "Visual ratio",
+    defaultValue: "1:1",
+    options: [
+      { label: "16:9", value: "16:9" },
+      { label: "1:1", value: "1:1" },
+      { label: "2.39:1", value: "2.39:1" },
+      { label: "2:1", value: "2:1" },
+      { label: "2:3", value: "2:3" },
+      { label: "3:2", value: "3:2" },
+      { label: "3:4", value: "3:4" },
+      { label: "4:3", value: "4:3" },
+      { label: "4:5", value: "4:5" },
+      { label: "5:4", value: "5:4" },
+    ],
+    control: "select",
+  },
+  {
+    id: "featureSimpleEyebrow",
+    label: "Eyebrow",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "featureSimpleParagraph",
+    label: "Paragraph",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "featureSimpleActions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const featureSimpleAdapter: ComponentDocumentationAdapter = {
+  componentId: "feature-simple",
+  preview: {
+    renderer: DsFeatureSimplePreview,
+    props: {},
+    axes: featureSimpleAxes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-feature-simple-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "visualPosition", type: '"left" | "right"', defaultValue: '"right"' },
+    { name: "contentAlign", type: '"left" | "centered"', defaultValue: '"left"' },
+    { name: "ratio", type: "RatioValue", defaultValue: '"1:1"' },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "visual slot", type: "Ratio-compatible media or visual content", defaultValue: "required" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "FeatureSimple delegates its required heading, optional copy, alignment and action grouping to Content.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the visual aspect ratio, clipping and fluid media allocation.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const featureScrollAdapter: ComponentDocumentationAdapter = {
+  componentId: "feature-scroll",
+  preview: {
+    renderer: DsFeatureScrollPreview,
+    props: { idPrefix: "documentation-feature-scroll" },
+    axes: [],
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-feature-scroll-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "default slot", type: "at least two direct labelled feature item elements", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "Content owns the heading-led section introduction and optional action grouping.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the required 4:3 visual boundary for every feature item.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint owns optional structured statements inside an item.",
+    },
+    {
+      target: { kind: "component", id: "tag" },
+      description: "Tag owns optional compact metadata inside an item.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup owns optional item actions and their wrapping behavior.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const howItWorksAdapter: ComponentDocumentationAdapter = {
+  componentId: "how-it-works",
+  preview: {
+    renderer: DsHowItWorksPreview,
+    props: { idPrefix: "documentation-how-it-works" },
+    axes: [],
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-how-it-works-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "label", type: "string", defaultValue: "required" },
+    { name: "default slot", type: "at least two direct labelled HowItWorks step elements", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "Content owns each step's eyebrow, heading, paragraph and optional action grouping.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns each step's non-interactive visual boundary.",
+    },
+    {
+      target: { kind: "component", id: "progress-bar" },
+      description: "ProgressBar owns each decorative segment while HowItWorks owns only its vertical allocation.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup is composed by Content when a step supplies optional actions.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const hero5050Axes: DocumentationPreviewAxis[] = [
+  {
+    id: "hero5050Eyebrow",
+    label: "Eyebrow",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "hero5050Paragraph",
+    label: "Paragraph",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "hero5050BulletPoints",
+    label: "Bullet points",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "hero5050Caption",
+    label: "Caption",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "hero5050Actions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const hero5050Adapter: ComponentDocumentationAdapter = {
+  componentId: "hero-50-50",
+  preview: {
+    renderer: DsHero5050Preview,
+    props: {},
+    axes: hero5050Axes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-hero-50-50-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required; semantic h1" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "caption", type: "string", defaultValue: "optional" },
+    { name: "bulletPoints slot", type: "direct BulletPoint children", defaultValue: "optional" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "visual slot", type: "image, picture, video or visual composition", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'Omit<HTMLAttributes<"section">, "aria-labelledby">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "Content owns the optional eyebrow, required H1-styled heading and supporting paragraph rhythm.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint owns each optional evidence statement and its fixed status icon.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup owns optional action grouping and intrinsic wrapping.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const heroFullVisualAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "heroFullVisualComposition",
+    label: "Composition",
+    defaultValue: "centered",
+    options: [
+      { label: "Centered", value: "centered" },
+      { label: "Left", value: "left" },
+      { label: "Section header", value: "section-header" },
+    ],
+  },
+  {
+    id: "heroFullVisualActions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const heroFullVisualAdapter: ComponentDocumentationAdapter = {
+  componentId: "hero-full-visual",
+  preview: {
+    renderer: DsHeroFullVisualPreview,
+    props: {},
+    axes: heroFullVisualAxes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-hero-full-visual-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional; required for section-header" },
+    { name: "paragraph", type: "string", defaultValue: "optional; required for section-header" },
+    { name: "composition", type: '"centered" | "left" | "section-header"', defaultValue: '"centered"' },
+    { name: "headingLevel", type: "1 | 2 | 3 | 4 | 5 | 6", defaultValue: "1" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "bullet-points slot", type: "one or more direct BulletPoint children", defaultValue: "required" },
+    { name: "visual slot", type: "Ratio-compatible media or visual content", defaultValue: "required; fixed 2.39:1 ratio" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'Omit<HTMLAttributes<"section">, "aria-labelledby">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "Content owns the centered and left heading-led copy and optional action grouping.",
+    },
+    {
+      target: { kind: "component", id: "section-header" },
+      description: "SectionHeader owns the wide copy-and-actions relationship in the section-header composition.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint owns each required list item, status tone and fixed Material Symbol.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the panoramic 2.39:1 visual boundary and fluid media allocation.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const heroAlignBottomAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "heroAlignBottomEyebrow",
+    label: "Eyebrow",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "heroAlignBottomParagraph",
+    label: "Paragraph",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "heroAlignBottomActions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const heroAlignBottomAdapter: ComponentDocumentationAdapter = {
+  componentId: "hero-align-bottom",
+  preview: {
+    renderer: DsHeroAlignBottomPreview,
+    props: {},
+    axes: heroAlignBottomAxes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-hero-align-bottom-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "visual slot", type: "image, picture, video or visual composition", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "HeroAlignBottom reuses Content for the optional eyebrow, required heading, supporting paragraph and ButtonGroup-owned actions.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const heroSpaced5050Axes: DocumentationPreviewAxis[] = [
+  {
+    id: "heroSpaced5050Eyebrow",
+    label: "Eyebrow",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "heroSpaced5050Paragraph",
+    label: "Paragraph",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "heroSpaced5050Actions",
+    label: "Actions",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const heroSpaced5050Adapter: ComponentDocumentationAdapter = {
+  componentId: "hero-spaced-50-50",
+  preview: {
+    renderer: DsHeroSpaced5050Preview,
+    props: {},
+    axes: heroSpaced5050Axes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-hero-spaced-50-50-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "headingLevel", type: "1 | 2 | 3 | 4 | 5 | 6", defaultValue: "1" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "visual slot", type: "image, picture, video or visual composition", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "eyebrow" },
+      description: "HeroSpaced5050 reuses Eyebrow for the optional category cue, marker and heading spacing.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "HeroSpaced5050 renders optional actions inside ButtonGroup for accessible grouping and intrinsic wrapping.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const heroVisualCenterAxes: DocumentationPreviewAxis[] = [
+  ...[
+    ["heroVisualCenterParagraph", "Paragraph"],
+    ["heroVisualCenterActions", "Actions"],
+    ["heroVisualCenterBulletPoints", "Bullet points"],
+  ].map(([id, label]) => ({
+    id: id as DocumentationPreviewAxis["id"],
+    label,
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  })),
+];
+
+const heroVisualCenterAdapter: ComponentDocumentationAdapter = {
+  componentId: "hero-visual-center",
+  preview: {
+    renderer: DsHeroVisualCenterPreview,
+    props: {},
+    axes: heroVisualCenterAxes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-hero-visual-center-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "required" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "headingLevel", type: "1 | 2 | 3 | 4 | 5 | 6", defaultValue: "1" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "bulletPoints slot", type: "direct BulletPoint children", defaultValue: "optional" },
+    { name: "visual slot", type: "Ratio-compatible accessible media", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "Content owns the centered eyebrow, heading, optional paragraph and accessible action grouping.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint owns each optional proof statement and its fixed status icon.",
+    },
+    {
+      target: { kind: "component", id: "ratio" },
+      description: "Ratio owns the required 16:9 visual boundary and fluid media allocation.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const heroBreakoutAxes: DocumentationPreviewAxis[] = [
+  ...[
+    ["heroBreakoutEyebrow", "Eyebrow"],
+    ["heroBreakoutParagraph", "Paragraph"],
+    ["heroBreakoutCaption", "Caption"],
+    ["heroBreakoutActions", "Actions"],
+  ].map(([id, label]) => ({
+    id: id as DocumentationPreviewAxis["id"],
+    label,
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  })),
+];
+
+const heroBreakoutAdapter: ComponentDocumentationAdapter = {
+  componentId: "hero-breakout",
+  preview: {
+    renderer: DsHeroBreakoutPreview,
+    props: {},
+    axes: heroBreakoutAxes,
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-hero-breakout-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required" },
+    { name: "eyebrow", type: "string", defaultValue: "optional" },
+    { name: "paragraph", type: "string", defaultValue: "optional" },
+    { name: "caption", type: "string", defaultValue: "optional" },
+    { name: "headingLevel", type: "1 | 2 | 3 | 4 | 5 | 6", defaultValue: "1" },
+    { name: "default slot", type: "one or more direct BulletPoint children", defaultValue: "required" },
+    { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
+    { name: "visual slot", type: "image, picture, video or visual composition", defaultValue: "required" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "section attributes", type: 'HTMLAttributes<"section">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "content" },
+      description: "Content owns the required heading, optional eyebrow and paragraph while HeroBreakout owns their grid allocation.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint owns each semantic list item, fixed included symbol and status presentation.",
+    },
+    {
+      target: { kind: "component", id: "button-group" },
+      description: "ButtonGroup owns optional action grouping, accessible labelling and intrinsic wrapping.",
+    },
   ],
   toc: commonToc,
 };
@@ -2741,6 +4303,8 @@ const faqAdapter: ComponentDocumentationAdapter = {
     renderer: DsFAQPreview,
     props: {},
     axes: faqAxes,
+    container: "full",
+    sizing: "fill",
     responsivePreview: {
       rendererProps: { idPrefix: "documentation-faq-responsive" },
     },
@@ -2807,6 +4371,8 @@ const sectionHeaderAdapter: ComponentDocumentationAdapter = {
     renderer: DsSectionHeaderPreview,
     props: {},
     axes: sectionHeaderAxes,
+    container: "main",
+    sizing: "fill",
   },
   apiRows: [
     { name: "heading", type: "string", defaultValue: "required" },
@@ -2817,7 +4383,7 @@ const sectionHeaderAdapter: ComponentDocumentationAdapter = {
       type: '"copy-actions" | "heading-details" | "eyebrow-heading-details"',
       defaultValue: '"copy-actions"',
     },
-    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2 (Astro-only)" },
+    { name: "headingLevel", type: "1 | 2 | 3 | 4 | 5 | 6", defaultValue: "2 (Astro-only)" },
     { name: "actions slot", type: "ButtonGroup-compatible children", defaultValue: "optional" },
     { name: "header attributes", type: 'HTMLAttributes<"header">', defaultValue: "forwarded" },
   ],
@@ -2885,21 +4451,13 @@ const teamMemberCardAxes: DocumentationPreviewAxis[] = [
 
 const teamMemberCardAdapter: ComponentDocumentationAdapter = {
   componentId: "team-member-card",
-  previews: [
-    {
-      renderer: DsTeamMemberCardPreview,
-      props: {},
-      axes: teamMemberCardAxes,
-    },
-    {
-      id: "responsive-preview",
-      heading: "Responsive preview",
-      title: "Canonical vertical and horizontal layouts",
-      renderer: DsTeamMemberCardPreview,
-      props: { mode: "responsive" },
-      axes: [],
-    },
-  ],
+  preview: {
+    renderer: DsTeamMemberCardPreview,
+    props: {},
+    axes: teamMemberCardAxes,
+    container: "main",
+    sizing: "bounded",
+  },
   apiRows: [
     { name: "fullName", type: "string", defaultValue: "required" },
     { name: "roleOrPosition", type: "string", defaultValue: "optional" },
@@ -2922,6 +4480,91 @@ const teamMemberCardAdapter: ComponentDocumentationAdapter = {
     {
       target: { kind: "component", id: "ratio" },
       description: "Ratio owns the optional media proportion, clipping and replacement content for both layouts.",
+    },
+  ],
+  toc: commonToc,
+};
+
+const pricingCardAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "pricingCardBadge",
+    label: "Badge",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "pricingCardSuffix",
+    label: "Price suffix",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "pricingCardNote",
+    label: "Price note",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+  {
+    id: "pricingCardSavings",
+    label: "Savings",
+    defaultValue: "visible",
+    options: [
+      { label: "Visible", value: "visible" },
+      { label: "Hidden", value: "hidden" },
+    ],
+  },
+];
+
+const pricingCardAdapter: ComponentDocumentationAdapter = {
+  componentId: "pricing-card",
+  preview: {
+    renderer: DsPricingCardPreview,
+    props: {},
+    axes: pricingCardAxes,
+    container: "main",
+    sizing: "bounded",
+  },
+  apiRows: [
+    { name: "title", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "required" },
+    { name: "price", type: "string", defaultValue: "required" },
+    { name: "priceSuffix", type: "string", defaultValue: "optional" },
+    { name: "priceNote", type: "string", defaultValue: "optional" },
+    { name: "featuresTitle", type: "string", defaultValue: "required" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "3" },
+    { name: "badge slot", type: "Tag", defaultValue: "optional; presence creates featured treatment" },
+    { name: "savings slot", type: "Tag", defaultValue: "optional" },
+    { name: "action slot", type: "Button | ButtonLink", defaultValue: "required; one action" },
+    { name: "features slot", type: "BulletPoint children", defaultValue: "required; one or more" },
+    { name: "class", type: "string", defaultValue: "optional; merged" },
+    { name: "article attributes", type: 'HTMLAttributes<"article">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: ["card"] },
+  dependencies: [
+    {
+      target: { kind: "component", id: "tag" },
+      description: "Tag owns the optional badge and savings treatments, including their color modes.",
+    },
+    {
+      target: { kind: "component", id: "bullet-point" },
+      description: "BulletPoint owns every included or excluded feature item inside the semantic list.",
+    },
+    {
+      target: { kind: "component", id: "button" },
+      description: "Button provides the contained action treatment when activation changes application state.",
+    },
+    {
+      target: { kind: "component", id: "button-link" },
+      description: "ButtonLink provides native navigation when the pricing action changes location.",
     },
   ],
   toc: commonToc,
@@ -2985,6 +4628,8 @@ const topBannerAdapter: ComponentDocumentationAdapter = {
     renderer: DsTopBannerPreview,
     props: {},
     axes: topBannerAxes,
+    container: "full",
+    sizing: "fill",
     responsivePreview: {
       rendererProps: { idPrefix: "documentation-top-banner-responsive" },
     },
@@ -3096,6 +4741,292 @@ const popupAdapter: ComponentDocumentationAdapter = {
   toc: commonToc,
 };
 
+const navigationAxes: DocumentationPreviewAxis[] = [
+  {
+    id: "navigationDesktopMode",
+    label: "Desktop mode",
+    defaultValue: "standard",
+    options: [
+      { label: "Standard", value: "standard" },
+      { label: "Menu", value: "menu" },
+    ],
+  },
+  {
+    id: "navigationState",
+    label: "Preview state",
+    defaultValue: "closed",
+    options: [
+      { label: "Closed", value: "closed" },
+      { label: "Dropdown", value: "dropdown" },
+      { label: "Mega menu", value: "mega-menu" },
+      { label: "Full menu", value: "full-menu" },
+    ],
+  },
+];
+
+const navigationAdapter: ComponentDocumentationAdapter = {
+  componentId: "navigation",
+  preview: {
+    renderer: DsNavigationPreview,
+    props: {},
+    axes: navigationAxes,
+    container: "full",
+    sizing: "fill",
+  },
+  apiRows: [
+    { name: "id", type: "string", defaultValue: "required" },
+    { name: "label", type: "string", defaultValue: "required" },
+    { name: "openMenuLabel", type: "string", defaultValue: "required" },
+    { name: "closeMenuLabel", type: "string", defaultValue: "required" },
+    { name: "desktopMode", type: '"standard" | "menu"', defaultValue: '"standard"' },
+    { name: "brand slot", type: "Astro slot", defaultValue: "required" },
+    { name: "menu slot", type: "Astro slot", defaultValue: "required" },
+    { name: "language slot", type: "Astro slot", defaultValue: "optional" },
+    { name: "action slot", type: "Astro slot", defaultValue: "optional" },
+    { name: "nav attributes", type: 'HTMLAttributes<"nav">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "navigation-menu" }, description: "Navigation wraps the menu slot in the canonical list." },
+    { target: { kind: "component", id: "logo-asset" }, description: "The master preview composes an existing brand asset." },
+    { target: { kind: "component", id: "compact-select" }, description: "The optional language slot composes the existing compact selector." },
+    { target: { kind: "component", id: "button" }, description: "The optional action slot composes the existing primary Button." },
+  ],
+  toc: commonToc,
+};
+
+const navigationMenuAdapter: ComponentDocumentationAdapter = {
+  componentId: "navigation-menu",
+  preview: { renderer: DsNavigationMenuPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "default slot", type: "Astro slot", defaultValue: "navigation-family list items" },
+    { name: "list attributes", type: 'HTMLAttributes<"ul">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "nav-link" }, description: "Direct destination item." },
+    { target: { kind: "component", id: "nav-dropdown" }, description: "Compact disclosure item." },
+    { target: { kind: "component", id: "mega-menu" }, description: "Three-column disclosure item." },
+  ],
+  toc: commonToc,
+};
+
+const navLinkAdapter: ComponentDocumentationAdapter = {
+  componentId: "nav-link",
+  preview: { renderer: DsNavLinkPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "href", type: "string", defaultValue: "required" },
+    { name: "default slot", type: "Astro slot", defaultValue: "required label" },
+    { name: "anchor attributes", type: 'HTMLAttributes<"a">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const navDropdownAdapter: ComponentDocumentationAdapter = {
+  componentId: "nav-dropdown",
+  preview: { renderer: DsNavDropdownPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "id", type: "string", defaultValue: "required" },
+    { name: "label", type: "string", defaultValue: "required" },
+    { name: "default slot", type: "Astro slot", defaultValue: "NavDropdownLink children" },
+    { name: "list-item attributes", type: 'HTMLAttributes<"li">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "nav-dropdown-link" }, description: "Renders each dropdown destination." },
+    { target: { kind: "component", id: "material-symbol" }, description: "Renders the fixed disclosure indicator." },
+  ],
+  toc: commonToc,
+};
+
+const navDropdownLinkAdapter: ComponentDocumentationAdapter = {
+  componentId: "nav-dropdown-link",
+  preview: { renderer: DsNavDropdownLinkPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "href", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "optional" },
+    { name: "default slot", type: "Astro slot", defaultValue: "required label" },
+    { name: "anchor attributes", type: 'HTMLAttributes<"a">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const megaMenuAdapter: ComponentDocumentationAdapter = {
+  componentId: "mega-menu",
+  preview: { renderer: DsMegaMenuPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "id", type: "string", defaultValue: "required" },
+    { name: "label", type: "string", defaultValue: "required" },
+    { name: "primaryLabel", type: "string", defaultValue: "required" },
+    { name: "secondaryLabel", type: "string", defaultValue: "required" },
+    { name: "tertiaryLabel", type: "string", defaultValue: "required" },
+    { name: "primary slot", type: "Astro slot", defaultValue: "required" },
+    { name: "secondary slot", type: "Astro slot", defaultValue: "required" },
+    { name: "tertiary slot", type: "Astro slot", defaultValue: "required" },
+    { name: "list-item attributes", type: 'HTMLAttributes<"li">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "mega-menu-primary-link" }, description: "Renders high-hierarchy destinations in the primary column." },
+    { target: { kind: "component", id: "mega-menu-secondary-link" }, description: "Renders supporting destinations in the other columns." },
+    { target: { kind: "component", id: "material-symbol" }, description: "Renders the fixed disclosure indicator." },
+  ],
+  toc: commonToc,
+};
+
+const megaMenuPrimaryLinkAdapter: ComponentDocumentationAdapter = {
+  componentId: "mega-menu-primary-link",
+  preview: { renderer: DsMegaMenuPrimaryLinkPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "href", type: "string", defaultValue: "required" },
+    { name: "description", type: "string", defaultValue: "optional" },
+    { name: "default slot", type: "Astro slot", defaultValue: "required label" },
+    { name: "anchor attributes", type: 'HTMLAttributes<"a">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const megaMenuSecondaryLinkAdapter: ComponentDocumentationAdapter = {
+  componentId: "mega-menu-secondary-link",
+  preview: { renderer: DsMegaMenuSecondaryLinkPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "href", type: "string", defaultValue: "required" },
+    { name: "default slot", type: "Astro slot", defaultValue: "required label" },
+    { name: "anchor attributes", type: 'HTMLAttributes<"a">', defaultValue: "safe attributes forwarded" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const footerAdapter: ComponentDocumentationAdapter = {
+  componentId: "footer",
+  preview: {
+    title: "Footer with newsletter",
+    renderer: DsFooterPreview,
+    props: { idPrefix: "documentation-footer" },
+    axes: [],
+    container: "full",
+    sizing: "fill",
+    responsivePreview: {
+      rendererProps: { idPrefix: "documentation-footer-responsive" },
+    },
+  },
+  apiRows: [
+    { name: "heading", type: "string", defaultValue: "required with action slot; otherwise omitted" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "2" },
+    { name: "copyright", type: "string", defaultValue: "required" },
+    { name: "default slot", type: "Astro slot", defaultValue: "FooterGroup composition" },
+    { name: "action slot", type: "Astro slot", defaultValue: "paired with heading; Button, ButtonLink or FooterNewsletterForm" },
+    { name: "social slot", type: "Astro slot", defaultValue: "optional FooterSocialLink items" },
+    { name: "brand slot", type: "Astro slot", defaultValue: "optional brand asset" },
+    { name: "legal slot", type: "Astro slot", defaultValue: "optional legal FooterLink items" },
+    { name: "footer attributes", type: 'HTMLAttributes<"footer">', defaultValue: "safe attributes forwarded; class merged" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "footer-group" }, description: "Builds the named navigation columns." },
+    { target: { kind: "component", id: "footer-social-link" }, description: "Builds optional social profile links." },
+    { target: { kind: "component", id: "footer-newsletter-form" }, description: "Provides the optional native newsletter action." },
+    { target: { kind: "component", id: "button" }, description: "May be composed in the action slot for an imperative CTA." },
+    { target: { kind: "component", id: "button-link" }, description: "May be composed in the action slot for a destination CTA." },
+    { target: { kind: "component", id: "logo-asset" }, description: "May be composed in the brand slot." },
+  ],
+  toc: commonToc,
+};
+
+const footerGroupAdapter: ComponentDocumentationAdapter = {
+  componentId: "footer-group",
+  preview: { renderer: DsFooterGroupPreview, props: {}, axes: [], container: "main", sizing: "bounded" },
+  apiRows: [
+    { name: "id", type: "string", defaultValue: "required; unique on the page" },
+    { name: "label", type: "string", defaultValue: "required" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "required" },
+    { name: "default slot", type: "Astro slot", defaultValue: "required FooterLink or FooterSocialLink items" },
+    { name: "nav attributes", type: 'HTMLAttributes<"nav">', defaultValue: "safe attributes forwarded except id and aria-labelledby; class merged" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "footer-label" }, description: "Labels the navigation landmark with a semantic heading." },
+    { target: { kind: "component", id: "footer-link" }, description: "Provides standard list links." },
+    { target: { kind: "component", id: "footer-social-link" }, description: "May provide labelled social links in a dedicated group." },
+  ],
+  toc: commonToc,
+};
+
+const footerLabelAdapter: ComponentDocumentationAdapter = {
+  componentId: "footer-label",
+  preview: { renderer: DsFooterLabelPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "text", type: "string", defaultValue: "required" },
+    { name: "headingLevel", type: "2 | 3 | 4 | 5 | 6", defaultValue: "required" },
+    { name: "id", type: "string", defaultValue: "optional" },
+    { name: "heading attributes", type: 'HTMLAttributes<"h2">', defaultValue: "safe attributes forwarded; class merged" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const footerLinkAdapter: ComponentDocumentationAdapter = {
+  componentId: "footer-link",
+  preview: { renderer: DsFooterLinkPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "href", type: "string", defaultValue: "required" },
+    { name: "variant", type: '"navigation" | "legal"', defaultValue: '"navigation"' },
+    { name: "default slot", type: "Astro slot", defaultValue: "required label" },
+    { name: "anchor attributes", type: 'HTMLAttributes<"a">', defaultValue: "safe attributes forwarded, including target, rel, lang and aria-current" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [],
+  toc: commonToc,
+};
+
+const footerSocialLinkAdapter: ComponentDocumentationAdapter = {
+  componentId: "footer-social-link",
+  preview: { renderer: DsFooterSocialLinkPreview, props: {}, axes: [], container: "main", sizing: "intrinsic" },
+  apiRows: [
+    { name: "href", type: "string", defaultValue: "required" },
+    { name: "platform", type: "SocialIconPlatform", defaultValue: "required" },
+    { name: "label", type: "string", defaultValue: "required accessible name" },
+    { name: "presentation", type: '"icon-only" | "labelled"', defaultValue: '"labelled"' },
+    { name: "anchor attributes", type: 'HTMLAttributes<"a">', defaultValue: "safe attributes forwarded except aria-label" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "social-icons" }, description: "Renders the selected platform SVG decoratively inside the native link." },
+  ],
+  toc: commonToc,
+};
+
+const footerNewsletterFormAdapter: ComponentDocumentationAdapter = {
+  componentId: "footer-newsletter-form",
+  preview: { renderer: DsFooterNewsletterFormPreview, props: {}, axes: [], container: "main", sizing: "bounded" },
+  apiRows: [
+    { name: "id", type: "string", defaultValue: "required; unique on the page" },
+    { name: "action", type: "string", defaultValue: "required POST endpoint" },
+    { name: "emailLabel", type: "string", defaultValue: "required" },
+    { name: "submitLabel", type: "string", defaultValue: "required" },
+    { name: "emailName", type: "string", defaultValue: '"email"' },
+    { name: "emailPlaceholder", type: "string", defaultValue: "optional" },
+    { name: "consent slot", type: "Astro slot", defaultValue: "optional consent copy or privacy link" },
+    { name: "form attributes", type: 'HTMLAttributes<"form">', defaultValue: "safe attributes forwarded except id, action and method; class merged" },
+  ],
+  foundationReferences: { colorGroups: [] },
+  dependencies: [
+    { target: { kind: "component", id: "form-field" }, description: "Provides the required visible label and field structure." },
+    { target: { kind: "component", id: "input" }, description: "Provides the required email control." },
+    { target: { kind: "component", id: "button" }, description: "Provides the native submit button." },
+  ],
+  toc: commonToc,
+};
+
 export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   buttonAdapter,
   switchButtonAdapter,
@@ -3118,16 +5049,21 @@ export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   labelAdapter,
   hintAdapter,
   eyebrowAdapter,
+  ratingAdapter,
   statTextInlineAdapter,
   statCardAdapter,
+  logoCardAdapter,
   bulletPointAdapter,
   bulletCardSimpleAdapter,
   bulletIconCardAdapter,
   bulletVisualCardAdapter,
+  blogCardAdapter,
   bulletCardSurfaceAdapter,
   contentDividerAdapter,
   titleRowAdapter,
   ratioAdapter,
+  avatarImageAdapter,
+  avatarNameAdapter,
   formFieldAdapter,
   searchInputAdapter,
   urlInputAdapter,
@@ -3148,6 +5084,7 @@ export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   paginationGroupAdapter,
   paginationAdapter,
   tabAdapter,
+  progressTabAdapter,
   tabsAdapter,
   tabMenuAdapter,
   tagAdapter,
@@ -3159,11 +5096,47 @@ export const componentDocumentationAdapters: ComponentDocumentationAdapter[] = [
   alertAdapter,
   notificationAndToastAdapter,
   contentAdapter,
+  callToActionVisualAdapter,
+  callToActionCenteredAdapter,
+  richTextAdapter,
+  richTextHeadingAdapter,
+  richTextParagraphAdapter,
+  richTextQuoteAdapter,
+  richTextVisualAdapter,
+  tabbedContentAdapter,
+  swiperAdapter,
+  featureProofAdapter,
+  feature5050Adapter,
+  feature5050CenteredAdapter,
+  featureSimpleAdapter,
+  featureScrollAdapter,
+  howItWorksAdapter,
+  hero5050Adapter,
+  heroFullVisualAdapter,
+  heroAlignBottomAdapter,
+  heroBreakoutAdapter,
+  heroSpaced5050Adapter,
+  heroVisualCenterAdapter,
   faqAdapter,
   teamMemberCardAdapter,
+  pricingCardAdapter,
   sectionHeaderAdapter,
   topBannerAdapter,
   popupAdapter,
+  navigationAdapter,
+  navigationMenuAdapter,
+  navLinkAdapter,
+  navDropdownAdapter,
+  navDropdownLinkAdapter,
+  megaMenuAdapter,
+  megaMenuPrimaryLinkAdapter,
+  megaMenuSecondaryLinkAdapter,
+  footerAdapter,
+  footerGroupAdapter,
+  footerLabelAdapter,
+  footerLinkAdapter,
+  footerSocialLinkAdapter,
+  footerNewsletterFormAdapter,
 ];
 
 export const getComponentDocumentationAdapter = (componentId: string) =>

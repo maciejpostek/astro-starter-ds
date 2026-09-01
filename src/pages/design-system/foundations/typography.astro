@@ -24,6 +24,8 @@ import {
   fontStyleRows,
   fontWeightRows,
   headingSizeRows,
+  richTextBodySizeRows,
+  richTextHeadingSizeRows,
   letterSpacingRows,
   lineHeightRows,
   overflowWrapRows,
@@ -109,6 +111,30 @@ const foundationHeader = documentationFoundationHeader("typography");
               name="Body sizes"
               description="Reading and compact interface text sizes."
               rows={bodySizeRows}
+              showMinMax
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="typography-foundations-rich-text-heading-sizes-title">
+            <DsDocumentationBlockTitle id="typography-foundations-rich-text-heading-sizes-title" title="Rich Text heading sizes" />
+
+            <DsTypographyFoundationBlock
+              name="Rich Text heading sizes"
+              description="Independent H1-H6 editorial scale; RichTextHeading uses only H2-H6 while H1 is reserved for an entry hero."
+              rows={richTextHeadingSizeRows}
+              showMinMax
+              showHeader={false}
+            />
+          </section>
+
+          <section aria-labelledby="typography-foundations-rich-text-body-sizes-title">
+            <DsDocumentationBlockTitle id="typography-foundations-rich-text-body-sizes-title" title="Rich Text body sizes" />
+
+            <DsTypographyFoundationBlock
+              name="Rich Text body sizes"
+              description="Independent base and large reading sizes for editorial prose, leads, quotes and captions."
+              rows={richTextBodySizeRows}
               showMinMax
               showHeader={false}
             />

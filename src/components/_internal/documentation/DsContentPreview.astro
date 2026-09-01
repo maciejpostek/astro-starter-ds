@@ -3,7 +3,7 @@ import Button from "../../base-components/buttons/Button.astro";
 import Content from "../../website-patterns/content/Content.astro";
 ---
 
-<div class="content-preview" data-component-name="DsContentPreview" data-content-preview>
+<div class="content-preview" data-component-name="DsContentPreview" data-content-preview data-content-preview-tone="default">
   <Content
     heading="Build consistent sections faster"
     eyebrow="Content pattern"
@@ -25,13 +25,21 @@ import Content from "../../website-patterns/content/Content.astro";
       const eyebrow = preview.querySelector<HTMLElement>('[data-component-name="Eyebrow"]');
       const paragraph = preview.querySelector<HTMLElement>(".content__paragraph");
       const actions = preview.querySelector<HTMLElement>(".content__actions");
+      const buttonGroup = preview.querySelector<HTMLElement>('[data-component-name="ButtonGroup"]');
 
       preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
         if (!(event instanceof CustomEvent) || !content) return;
         const axisId = String(event.detail?.axisId ?? "");
         const value = String(event.detail?.value ?? "");
 
-        if (axisId === "contentAlignment") content.dataset.contentAlign = value;
+        if (axisId === "contentAlignment" && ["left", "centered"].includes(value)) {
+          content.dataset.contentAlign = value;
+          if (buttonGroup) buttonGroup.dataset.buttonGroupAlign = value;
+        }
+        if (axisId === "contentTone" && ["default", "on-accent", "inverse"].includes(value)) {
+          content.dataset.contentTone = value;
+          preview.dataset.contentPreviewTone = value;
+        }
         if (axisId === "contentEyebrow" && eyebrow) eyebrow.hidden = value === "hidden";
         if (axisId === "contentParagraph" && paragraph) paragraph.hidden = value === "hidden";
         if (axisId === "contentActions" && actions) actions.hidden = value === "hidden";
@@ -47,5 +55,14 @@ import Content from "../../website-patterns/content/Content.astro";
   .content-preview {
     min-inline-size: 0;
     inline-size: 100%;
+    padding: var(--content-padding-xlarge);
+  }
+
+  .content-preview[data-content-preview-tone="on-accent"] {
+    background: var(--color-background-accent);
+  }
+
+  .content-preview[data-content-preview-tone="inverse"] {
+    background: var(--color-background-inverse);
   }
 </style>

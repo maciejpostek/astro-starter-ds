@@ -1,0 +1,89 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import HeroAlignBottom from "../../../../../src/components/website-patterns/hero/HeroAlignBottom.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HeroAlignBottom contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="fixture fixture--wide" data-fixture-width="1440">
+        <HeroAlignBottom
+          id="hero-wide"
+          class="hero-contract-fixture"
+          data-forwarded="yes"
+          heading="Zbuduj klarowny pierwszy komunikat"
+          eyebrow="System projektowy"
+          paragraph="Jedna główna obietnica, zwięzły opis i czytelne działania pozostają zakotwiczone przy dolnej krawędzi znaczącej warstwy wizualnej."
+        >
+          <Button slot="actions">Rozpocznij projekt</Button>
+          <Button slot="actions" variant="secondary">Poznaj system</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstrakcyjna kompozycja geometryczna" />
+        </HeroAlignBottom>
+      </div>
+
+      <div class="fixture fixture--desktop" data-fixture-width="1024">
+        <HeroAlignBottom
+          id="hero-minimal"
+          headingLevel={3}
+          heading="A required heading and visual are sufficient"
+        >
+          <picture slot="visual">
+            <img src="/images/project-placeholder.svg" alt="" />
+          </picture>
+        </HeroAlignBottom>
+      </div>
+
+      <div class="fixture fixture--tablet" data-fixture-width="768" data-theme="dark">
+        <HeroAlignBottom
+          id="hero-long"
+          headingLevel={4}
+          eyebrow="Localized content"
+          heading="A deliberately long heading verifies natural wrapping without introducing a second rendering or a layout-only public prop"
+          paragraph="Supporting copy may grow under localization and text zoom. The section remains readable, keeps its source order and avoids horizontal overflow while the visual follows the actions."
+        >
+          <Button slot="actions">Continue with a deliberately long action label</Button>
+          <Button slot="actions" variant="secondary">Review all implementation details</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstract placeholder" />
+        </HeroAlignBottom>
+      </div>
+
+      <div class="fixture fixture--narrow" data-fixture-width="320" data-theme="dark" dir="rtl">
+        <HeroAlignBottom
+          id="hero-rtl"
+          headingLevel={5}
+          eyebrow="نظام التصميم"
+          heading="ابنِ انطباعًا أوليًا واضحًا"
+          paragraph="يتحقق هذا المثال من التفاف النص وترتيب القراءة داخل حاوية ضيقة من اليمين إلى اليسار."
+        >
+          <Button slot="actions">ابدأ الآن</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="تكوين هندسي تجريدي" />
+        </HeroAlignBottom>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .fixture {
+    inline-size: min(100%, 90rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--tablet { max-inline-size: 48rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

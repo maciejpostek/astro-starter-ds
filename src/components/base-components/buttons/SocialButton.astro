@@ -5,9 +5,11 @@ import type { SocialIconPlatform } from "../../../lib/icons/socialIcons";
 import type { ButtonSize, ButtonVariant } from "./Button.astro";
 import "../../../styles/components/button-controls.css";
 
+export type SocialButtonVariant = Exclude<ButtonVariant, "primary-alternate">;
+
 export interface Props extends Omit<HTMLAttributes<"button">, "class" | "type"> {
   platform: SocialIconPlatform;
-  variant?: ButtonVariant;
+  variant?: SocialButtonVariant;
   size?: ButtonSize;
   class?: string;
   type?: "button" | "submit" | "reset";

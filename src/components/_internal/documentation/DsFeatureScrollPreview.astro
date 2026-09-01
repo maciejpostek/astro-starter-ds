@@ -1,0 +1,100 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import Tag from "../../base-components/tag/Tag.astro";
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import FeatureScroll from "../../website-patterns/features/FeatureScroll.astro";
+import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+
+export interface Props {
+  idPrefix?: string;
+}
+
+const {
+  idPrefix = "documentation-feature-scroll",
+} = Astro.props;
+
+const canonicalItems = [
+  {
+    heading: "Keep decisions connected to context",
+    paragraph: "Present related evidence beside the explanation that gives it meaning, without forcing readers through tabs or a carousel.",
+    bullets: ["Ordered narrative", "Contextual visual", "Progressive enhancement"],
+    tags: ["Structure", "Clarity", "Flow"],
+  },
+  {
+    heading: "Reuse the system instead of rebuilding it",
+    paragraph: "Compose approved typography, bullet points, tags, actions and media boundaries while FeatureScroll owns only their relationship.",
+    bullets: ["Canonical dependencies", "Semantic tokens", "Stable anatomy"],
+    tags: ["Reuse", "Tokens", "Astro"],
+  },
+  {
+    heading: "Reflow without losing the story",
+    paragraph: "On narrower containers every visual returns inline after its content, preserving the authored sequence and accessible reading order.",
+    bullets: ["Container-aware", "Source-order safe", "Reduced-motion ready"],
+    tags: ["Responsive", "Accessible", "Resilient"],
+  },
+] as const;
+
+---
+
+<div class="ds-feature-scroll-preview" data-component-name="DsFeatureScrollPreview">
+  <FeatureScroll
+    id={`${idPrefix}-feature`}
+    heading="Features that stay connected to their visual context"
+    eyebrow="Feature scroll"
+    paragraph="Move through an ordered sequence while the active visual remains available beside the content on wider layouts."
+    data-ds-preview-target
+  >
+    <Button slot="actions">Explore the system</Button>
+    <Button slot="actions" variant="secondary">View guidance</Button>
+
+    {canonicalItems.map((item, index) => {
+      const headingId = `${idPrefix}-item-${index + 1}-heading`;
+      return (
+        <li data-feature-scroll-item aria-labelledby={headingId}>
+          <div data-feature-scroll-content>
+            <div data-feature-scroll-copy>
+              <div data-feature-scroll-heading>
+                <DsSectionHeaderLevel3 id={headingId} title={item.heading} />
+              </div>
+              <p class="body-base-regular" data-feature-scroll-paragraph>{item.paragraph}</p>
+            </div>
+
+            <ul data-feature-scroll-bullets>
+              {item.bullets.map((bullet) => <BulletPoint text={bullet} />)}
+            </ul>
+
+            <div data-feature-scroll-tags>
+              {item.tags.map((tag) => <Tag label={tag} />)}
+            </div>
+
+            <div data-feature-scroll-actions>
+              <ButtonGroup aria-labelledby={headingId}>
+                <Button>Read more</Button>
+                <Button variant="secondary">See example</Button>
+                <ButtonLink href="/design-system/website-patterns/features/feature-scroll/">View guidance</ButtonLink>
+              </ButtonGroup>
+            </div>
+          </div>
+
+          <div data-feature-scroll-visual>
+            <Ratio ratio="16:9" aria-hidden="true" />
+          </div>
+        </li>
+      );
+    })}
+  </FeatureScroll>
+</div>
+
+<style>
+  .ds-feature-scroll-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+    padding-block-end: max(
+      var(--space-huge),
+      calc(100svh - var(--feature-scroll-item-min-block-size))
+    );
+  }
+</style>

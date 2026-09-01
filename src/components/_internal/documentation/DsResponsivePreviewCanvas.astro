@@ -1,9 +1,15 @@
 ---
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-import type { DocumentationPreviewAxis } from "../../../data/documentationComponentRegistry";
+import type {
+  DocumentationPreviewAxis,
+  DocumentationPreviewContainer,
+  DocumentationPreviewSizing,
+} from "../../../data/documentationComponentRegistry";
+import ComponentInfoLayer from "../dev/ComponentInfoLayer.astro";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import Select from "../../base-components/select/Select.astro";
 import Tab from "../../base-components/tabs/Tab.astro";
+import DsPreviewLayoutFrame from "./DsPreviewLayoutFrame.astro";
 import "../../../styles/components/button-controls.css";
 
 interface Props {
@@ -11,6 +17,8 @@ interface Props {
   renderer: AstroComponentFactory;
   rendererProps?: Record<string, unknown>;
   axes?: DocumentationPreviewAxis[];
+  container?: DocumentationPreviewContainer;
+  sizing?: DocumentationPreviewSizing;
   scope: string;
   backHref?: string;
   persistToUrl?: boolean;
@@ -21,6 +29,8 @@ const {
   renderer: PreviewRenderer,
   rendererProps = {},
   axes = [],
+  container = "full",
+  sizing = "fill",
   scope,
   backHref,
   persistToUrl = false,
@@ -33,6 +43,8 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
   data-component-name="DsResponsivePreviewCanvas"
   data-ds-responsive-preview
   data-preview-scope={scope}
+  data-preview-container={container}
+  data-preview-sizing={sizing}
   data-preview-persist-url={persistToUrl ? "true" : undefined}
   data-preview-guides="hidden"
   data-preview-controls-state="hidden"
@@ -54,17 +66,19 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
 
   <div class="ds-responsive-preview-canvas__workspace" data-preview-workspace>
     <div class="ds-responsive-preview-canvas__stage" data-preview-stage>
-      <button
-        class="ds-responsive-preview-canvas__handle ds-responsive-preview-canvas__handle--left"
-        type="button"
-        role="slider"
-        aria-label="Resize preview from the left"
-        aria-valuemin="320"
-        aria-valuemax="320"
-        aria-valuenow="320"
-        aria-orientation="horizontal"
-        data-preview-handle="left"
-      ><span aria-hidden="true"></span></button>
+      <div class="ds-responsive-preview-canvas__handle-track ds-responsive-preview-canvas__handle-track--left">
+        <button
+          class="ds-responsive-preview-canvas__handle"
+          type="button"
+          role="slider"
+          aria-label="Resize preview from the left"
+          aria-valuemin="320"
+          aria-valuemax="320"
+          aria-valuenow="320"
+          aria-orientation="horizontal"
+          data-preview-handle="left"
+        ><span aria-hidden="true"></span></button>
+      </div>
 
       <div
         class="ds-responsive-preview-canvas__viewport"
@@ -75,28 +89,37 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
         data-preview-host
         data-device="desktop"
       >
-        <div class="ds-responsive-preview-canvas__content" data-preview-content>
-          <PreviewRenderer {...rendererProps} />
-        </div>
-        <div class="ds-responsive-preview-canvas__guides" data-preview-guides hidden aria-hidden="true">
-          <div class="ds-responsive-preview-canvas__guides-grid" aria-hidden="true">
-            {guideColumns.map((column) => <span data-preview-guide-column={column}></span>)}
+        <DsPreviewLayoutFrame container={container} sizing={sizing}>
+          <div class="ds-responsive-preview-canvas__content" data-preview-content>
+            <PreviewRenderer {...rendererProps} />
           </div>
-          <div class="ds-responsive-preview-canvas__guide-labels" data-preview-guide-labels></div>
-        </div>
+          <div
+            slot="guides"
+            class="ds-responsive-preview-canvas__guides"
+            data-preview-guides
+            hidden
+            aria-hidden="true"
+          >
+            <div class="ds-responsive-preview-canvas__guides-grid" aria-hidden="true">
+              {guideColumns.map((column) => <span data-preview-guide-column={column}></span>)}
+            </div>
+          </div>
+        </DsPreviewLayoutFrame>
       </div>
 
-      <button
-        class="ds-responsive-preview-canvas__handle ds-responsive-preview-canvas__handle--right"
-        type="button"
-        role="slider"
-        aria-label="Resize preview from the right"
-        aria-valuemin="320"
-        aria-valuemax="320"
-        aria-valuenow="320"
-        aria-orientation="horizontal"
-        data-preview-handle="right"
-      ><span aria-hidden="true"></span></button>
+      <div class="ds-responsive-preview-canvas__handle-track ds-responsive-preview-canvas__handle-track--right">
+        <button
+          class="ds-responsive-preview-canvas__handle"
+          type="button"
+          role="slider"
+          aria-label="Resize preview from the right"
+          aria-valuemin="320"
+          aria-valuemax="320"
+          aria-valuenow="320"
+          aria-orientation="horizontal"
+          data-preview-handle="right"
+        ><span aria-hidden="true"></span></button>
+      </div>
     </div>
 
     <button
@@ -235,6 +258,7 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
       </button>
     </div>
   </div>
+  <ComponentInfoLayer scope="preview" />
 </div>
 
 <script>
@@ -253,8 +277,8 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
     const viewport = root.querySelector<HTMLElement>("[data-preview-viewport]");
     const widthOutput = root.querySelector<HTMLOutputElement>("[data-preview-width]");
     const handles = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-preview-handle]"));
+    const handleTracks = Array.from(root.querySelectorAll<HTMLElement>(".ds-responsive-preview-canvas__handle-track"));
     const guides = root.querySelector<HTMLElement>("[data-preview-guides]");
-    const guideLabels = root.querySelector<HTMLElement>("[data-preview-guide-labels]");
     const guidesButton = root.querySelector<HTMLButtonElement>("[data-preview-guides-button]");
     const previewControls = root.querySelector<HTMLElement>("[data-preview-controls]");
     const controlsToggle = root.querySelector<HTMLButtonElement>("[data-preview-controls-toggle]");
@@ -268,6 +292,15 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
     const maximumWidth = () => Math.max(minimumWidth, Math.floor(workspace.clientWidth));
     const clampWidth = (value: number) => Math.min(maximumWidth(), Math.max(minimumWidth, Math.round(value)));
     const currentWidth = () => Math.round(viewport.getBoundingClientRect().width || minimumWidth);
+
+    const syncHandleTracks = () => {
+      const viewportRect = viewport.getBoundingClientRect();
+      handleTracks.forEach((track) => {
+        const isLeft = track.classList.contains("ds-responsive-preview-canvas__handle-track--left");
+        const inlineOffset = isLeft ? viewportRect.left : viewportRect.right - track.offsetWidth;
+        track.style.transform = `translate3d(${inlineOffset}px, 0, 0)`;
+      });
+    };
 
     const syncHandles = (width: number) => {
       const maximum = maximumWidth();
@@ -310,6 +343,7 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
       activeDevice = device;
       viewport.dataset.device = device;
       viewport.style.inlineSize = `${width}px`;
+      syncHandleTracks();
       syncControls(width);
       if (updateUrl) writeUrl(device, width);
     };
@@ -335,32 +369,6 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
       });
     };
 
-    const syncGuideLabels = () => {
-      if (!viewport || !guideLabels || root.dataset.previewGuides !== "visible") return;
-      guideLabels.replaceChildren();
-      const viewportRect = viewport.getBoundingClientRect();
-      const components = Array.from(viewport.querySelectorAll<HTMLElement>("[data-component-name]"))
-        .filter((component) => {
-          const name = component.dataset.componentName;
-          const rect = component.getBoundingClientRect();
-          return Boolean(name)
-            && !name?.startsWith("Ds")
-            && name !== "MaterialSymbol"
-            && rect.width > 0
-            && rect.height > 0;
-        });
-
-      components.forEach((component) => {
-        const rect = component.getBoundingClientRect();
-        const label = document.createElement("span");
-        label.textContent = component.dataset.componentName ?? "Component";
-        label.dataset.previewGuideLabel = "";
-        label.style.insetInlineStart = `${Math.max(0, rect.left - viewportRect.left)}px`;
-        label.style.insetBlockStart = `${Math.max(0, rect.top - viewportRect.top)}px`;
-        guideLabels.append(label);
-      });
-    };
-
     const applyGuides = (visible: boolean) => {
       root.dataset.previewGuides = visible ? "visible" : "hidden";
       guides?.toggleAttribute("hidden", !visible);
@@ -372,7 +380,6 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
         guidesButton.querySelector("[data-preview-guides-visible-icon]")?.toggleAttribute("hidden", !visible);
         guidesButton.querySelector("[data-preview-guides-hidden-icon]")?.toggleAttribute("hidden", visible);
       }
-      if (visible) syncGuideLabels();
     };
 
     const applyControlsVisibility = (visible: boolean) => {
@@ -532,9 +539,9 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
     const resizeObserver = new ResizeObserver(() => {
       const width = activeDevice === "desktop" ? maximumWidth() : currentWidth();
       applyDevice(activeDevice, width, false);
-      syncGuideLabels();
     });
     resizeObserver.observe(workspace);
+    workspace.addEventListener("scroll", syncHandleTracks, { passive: true });
     root.addEventListener("astro-ds:responsive-preview-open", resetPreview);
     applyTheme(documentationTheme());
     applyGuides(root.dataset.previewGuides === "visible");
@@ -554,7 +561,9 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
   .ds-responsive-preview-canvas {
     position: relative;
     display: grid;
+    block-size: 100dvh;
     min-block-size: 100dvh;
+    overflow: hidden;
     background: var(--color-background-subtle);
   }
 
@@ -578,6 +587,7 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
   .ds-responsive-preview-canvas__workspace {
     position: relative;
     display: grid;
+    block-size: 100dvh;
     min-block-size: 0;
     align-items: start;
     justify-items: center;
@@ -585,20 +595,21 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
   }
 
   .ds-responsive-preview-canvas__controls {
+    box-sizing: border-box;
+    position: fixed;
     z-index: 10;
     display: flex;
-    grid-area: 1 / 1;
+    inset-block-end: calc(var(--size-32) + var(--control-size-small-min-height) + var(--gap-regular));
+    inset-inline-start: var(--size-32);
     min-inline-size: 0;
-    inline-size: calc(100% - (var(--size-32) * 2));
-    max-inline-size: calc(100% - (var(--size-32) * 2));
+    inline-size: fit-content;
+    max-inline-size: calc(100vi - (var(--size-32) * 2));
     max-block-size: calc(100dvh - (var(--size-32) * 2) - var(--control-size-small-min-height) - var(--gap-regular));
-    align-self: end;
-    justify-self: start;
     flex-wrap: wrap;
     gap: var(--gap-regular);
-    margin-block-start: var(--size-32);
-    margin-block-end: calc(var(--size-32) + var(--control-size-small-min-height) + var(--gap-regular));
-    margin-inline: var(--size-32);
+    border-radius: var(--radius-button);
+    padding: var(--content-padding-small);
+    background: var(--color-background-surface);
     overflow: auto;
   }
 
@@ -607,21 +618,19 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
   }
 
   .ds-responsive-preview-canvas__controls-toggle {
+    position: fixed;
     z-index: 10;
-    grid-area: 1 / 1;
-    align-self: end;
-    justify-self: start;
-    margin: var(--size-32);
+    inset-block-end: var(--size-32);
+    inset-inline-start: var(--size-32);
   }
 
   .ds-responsive-preview-canvas__theme-controls {
+    position: fixed;
     z-index: 10;
     display: flex;
-    grid-area: 1 / 1;
-    align-self: end;
-    justify-self: end;
+    inset-block-end: var(--size-32);
+    inset-inline-end: var(--size-32);
     gap: var(--gap-tiny);
-    margin: var(--size-32);
   }
 
   .ds-responsive-preview-canvas__axis {
@@ -738,6 +747,10 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
     container-type: inline-size;
   }
 
+  .ds-responsive-preview-canvas__viewport > :global([data-preview-layout-frame]) {
+    min-block-size: 100%;
+  }
+
   .ds-responsive-preview-canvas__content {
     display: grid;
     min-inline-size: 0;
@@ -755,6 +768,7 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
   }
 
   .ds-responsive-preview-canvas__guides-grid {
+    box-sizing: border-box;
     display: grid;
     inline-size: 100%;
     block-size: 100%;
@@ -787,28 +801,32 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
     line-height: var(--line-height-none);
   }
 
-  .ds-responsive-preview-canvas__guide-labels {
-    position: absolute;
-    inset: 0;
+  @container ds-preview-layout (width < 64rem) {
+    .ds-responsive-preview-canvas__guides-grid span:nth-child(n + 9) {
+      display: none;
+    }
   }
 
-  .ds-responsive-preview-canvas__guide-labels :global([data-preview-guide-label]) {
-    position: absolute;
-    border-radius: var(--radius-small);
-    padding: var(--size-4) var(--size-8);
-    color: var(--color-text-on-accent);
-    background: var(--color-background-accent);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-body-tiny);
-    font-weight: var(--font-weight-emphasis);
-    line-height: var(--line-height-compact);
-    white-space: nowrap;
+  @container ds-preview-layout (width < 48rem) {
+    .ds-responsive-preview-canvas__guides-grid span:nth-child(n + 5) {
+      display: none;
+    }
+  }
+
+  .ds-responsive-preview-canvas__handle-track {
+    position: fixed;
+    z-index: 4;
+    inset-block: 0;
+    inset-inline-start: 0;
+    display: grid;
+    inline-size: var(--size-24);
+    block-size: 100dvh;
+    min-block-size: 100dvh;
+    place-items: center;
+    pointer-events: none;
   }
 
   .ds-responsive-preview-canvas__handle {
-    position: absolute;
-    z-index: 4;
-    inset-block-start: 50%;
     display: grid;
     inline-size: var(--size-24);
     block-size: var(--size-96);
@@ -819,17 +837,8 @@ const guideColumns = Array.from({ length: 12 }, (_, index) => index + 1);
     background: var(--color-transparent);
     box-shadow: none;
     cursor: ew-resize;
+    pointer-events: auto;
     touch-action: none;
-  }
-
-  .ds-responsive-preview-canvas__handle--left {
-    inset-inline-start: 0;
-    transform: translate(0, -50%);
-  }
-
-  .ds-responsive-preview-canvas__handle--right {
-    inset-inline-end: 0;
-    transform: translate(0, -50%);
   }
 
   .ds-responsive-preview-canvas__handle span {

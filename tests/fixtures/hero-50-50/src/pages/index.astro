@@ -1,0 +1,91 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import Hero5050 from "../../../../../src/components/website-patterns/hero/Hero5050.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hero5050 contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="fixture fixture--wide" data-fixture-width="1440">
+        <Hero5050
+          id="hero-wide"
+          class="hero-contract-fixture"
+          data-forwarded="yes"
+          heading="Zbuduj wyraźne pierwsze wrażenie"
+          eyebrow="System projektowy"
+          paragraph="Jedna główna obietnica, zwięzły opis i czytelne dowody sąsiadują ze znaczącą warstwą wizualną."
+          caption="Krótki podpis może dodać kontekst do głównych działań."
+        >
+          <BulletPoint slot="bulletPoints" text="Jedna jasna obietnica" />
+          <BulletPoint slot="bulletPoints" text="Skupione dowody" />
+          <BulletPoint slot="bulletPoints" text="Wizualizacja odporna na kadrowanie" />
+          <Button slot="actions">Rozpocznij projekt</Button>
+          <Button slot="actions" variant="secondary">Poznaj system</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstrakcyjna kompozycja geometryczna" />
+        </Hero5050>
+      </div>
+
+      <div class="fixture fixture--desktop" data-fixture-width="1024">
+        <Hero5050 id="hero-minimal" heading="A required heading and visual are sufficient">
+          <picture slot="visual">
+            <img src="/images/project-placeholder.svg" alt="" />
+          </picture>
+        </Hero5050>
+      </div>
+
+      <div class="fixture fixture--tablet" data-fixture-width="768" data-theme="dark">
+        <Hero5050
+          id="hero-long"
+          eyebrow="Localized content"
+          heading="A deliberately long heading verifies natural wrapping without introducing a second rendering or a layout-only public prop"
+          paragraph="Supporting copy may grow under localization and text zoom. The section remains readable, keeps its source order and avoids horizontal overflow while the visual follows all optional content."
+          caption="A longer caption also wraps without changing the relationship between the content and the action group."
+        >
+          <BulletPoint slot="bulletPoints" text="A deliberately long evidence statement verifies wrapping inside the compact content stack" />
+          <Button slot="actions">Continue with a deliberately long action label</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstract placeholder" />
+        </Hero5050>
+      </div>
+
+      <div class="fixture fixture--narrow" data-fixture-width="320" data-theme="dark" dir="rtl">
+        <Hero5050
+          id="hero-rtl"
+          eyebrow="نظام التصميم"
+          heading="ابنِ انطباعًا أوليًا واضحًا"
+          paragraph="يتحقق هذا المثال من التفاف النص وترتيب القراءة داخل حاوية ضيقة من اليمين إلى اليسار."
+          caption="سياق موجز للإجراءات."
+        >
+          <BulletPoint slot="bulletPoints" text="دليل موجز وواضح" />
+          <Button slot="actions">ابدأ الآن</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="تكوين هندسي تجريدي" />
+        </Hero5050>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .fixture {
+    inline-size: min(100%, 90rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--tablet { max-inline-size: 48rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

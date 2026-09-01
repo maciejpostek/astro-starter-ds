@@ -1,0 +1,19 @@
+---
+import ProgressTab from "../../../../../src/components/base-components/tabs/ProgressTab.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const invalidCase = process.env.PROGRESS_TAB_INVALID_CASE;
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>Invalid ProgressTab fixture</title></head>
+  <body>
+    {invalidCase === "id" && <ProgressTab id="" controls="panel">Label</ProgressTab>}
+    {invalidCase === "controls" && <ProgressTab id="tab" controls="">Label</ProgressTab>}
+    {invalidCase === "progress" && <ProgressTab id="tab" controls="panel" progress={101}>Label</ProgressTab>}
+    {invalidCase === "selected-disabled" && <ProgressTab id="tab" controls="panel" selected disabled>Label</ProgressTab>}
+    {invalidCase === "slot" && <ProgressTab id="tab" controls="panel" />}
+  </body>
+</html>

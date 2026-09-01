@@ -17,6 +17,7 @@ Trigger a user action in the current interface, such as submitting, confirming, 
 
 - The user must deliberately execute an action.
 - Primary emphasis identifies the main action in one decision area.
+- Primary Alternate preserves high emphasis on accent-colored surfaces where Primary would lose separation.
 - Secondary supports the primary action; Tertiary keeps a valid action visually quiet.
 
 ## Avoid when
@@ -35,6 +36,7 @@ Trigger a user action in the current interface, such as submitting, confirming, 
 
 - Prefer one Primary Button per local decision area.
 - Place related Secondary or Tertiary actions with the Primary inside `ButtonGroup`.
+- Use Primary Alternate only on an accent-colored surface; it is not a general replacement for Primary.
 - Keep action order stable across responsive layouts and repeated flows.
 
 ## Responsive behavior
@@ -63,4 +65,4 @@ Use the canonical identity, public root class, controlled `data-*` attributes an
 
 ## Core decision
 
-Choose Button only when activation performs an action; select Primary, Secondary, or Tertiary according to relative emphasis within the immediate context.
+Choose Button only when activation performs an action; select Primary Alternate for high-emphasis actions on accent-colored surfaces, otherwise use Primary, Secondary, or Tertiary according to relative emphasis within the immediate context.

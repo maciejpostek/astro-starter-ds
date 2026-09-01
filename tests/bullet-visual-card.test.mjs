@@ -32,7 +32,9 @@ test("keeps the canonical BulletVisualCard API, Figma mapping and token contract
   assert.match(source, /<article\b/u);
   assert.match(source, /aria-labelledby=\{headingId\}/u);
   assert.match(source, /Astro\.slots\.has\("visual"\)/u);
-  assert.match(source, /name="trending_up"/u);
+  assert.match(source, /<StatTextInline/u);
+  assert.match(source, /trend="up"/u);
+  assert.match(source, /iconPosition="trailing"/u);
   assert.match(source, /<ButtonGroup aria-labelledby=\{headingId\}>/u);
   assert.match(source, /TypeError\("BulletVisualCard title must be a non-empty string/u);
   assert.match(source, /RangeError\("BulletVisualCard headingLevel/u);
@@ -45,7 +47,7 @@ test("keeps the canonical BulletVisualCard API, Figma mapping and token contract
   assert.equal(record?.figmaCanonicalNodeId, "1821:5427");
   assert.deepEqual(record?.props, ["title", "description", "stat", "headingLevel"]);
   assert.deepEqual(record?.slots, ["visual", "tags", "actions"]);
-  assert.deepEqual(record?.dependencies, ["ratio", "material-symbol", "tag", "button-group"]);
+  assert.deepEqual(record?.dependencies, ["ratio", "stat-text-inline", "tag", "button-group"]);
   assert.equal(figmaContract?.variantCount, 1);
   assert.equal(figmaContract?.properties?.Tags, "SLOT");
   assert.equal(figmaContract?.propertyMapping?.Type, "structural-only");

@@ -1,0 +1,121 @@
+---
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import Hero5050 from "../../website-patterns/hero/Hero5050.astro";
+import Button from "../../base-components/buttons/Button.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-hero-50-50" } = Astro.props;
+---
+
+<div
+  class="ds-hero-50-50-preview"
+  data-component-name="DsHero5050Preview"
+  data-hero-50-50-preview
+  data-ds-preview-target
+>
+  <Hero5050
+    id={`${idPrefix}-default`}
+    heading="Build a clear first impression"
+    eyebrow="Design system"
+    paragraph="Present one focused promise with concise supporting copy, credible evidence and a visual that carries equal weight."
+    caption="A short caption can add context before the primary actions."
+  >
+    <BulletPoint slot="bulletPoints" text="One clear promise" />
+    <BulletPoint slot="bulletPoints" text="Focused supporting evidence" />
+    <BulletPoint slot="bulletPoints" text="A crop-safe visual" />
+    <Button slot="actions">Start a project</Button>
+    <Button slot="actions" variant="secondary">Explore the system</Button>
+    <span
+      slot="visual"
+      class="ds-hero-50-50-preview__visual-placeholder"
+      aria-hidden="true"
+    ></span>
+  </Hero5050>
+</div>
+
+<script>
+  type Hero5050PreviewState = {
+    eyebrow: "visible" | "hidden";
+    paragraph: "visible" | "hidden";
+    bulletPoints: "visible" | "hidden";
+    caption: "visible" | "hidden";
+    actions: "visible" | "hidden";
+  };
+
+  const initializeHero5050Previews = () => {
+    document.querySelectorAll<HTMLElement>("[data-hero-50-50-preview]").forEach((preview) => {
+      if (preview.dataset.hero5050PreviewReady === "true") return;
+      preview.dataset.hero5050PreviewReady = "true";
+
+      const state: Hero5050PreviewState = {
+        eyebrow: "visible",
+        paragraph: "visible",
+        bulletPoints: "visible",
+        caption: "visible",
+        actions: "visible",
+      };
+
+      const render = () => {
+        for (const [key, selector] of [
+          ["eyebrow", '[data-component-name="Eyebrow"]'],
+          ["paragraph", ".content__paragraph"],
+          ["bulletPoints", ".hero-50-50__bullet-points"],
+          ["caption", ".hero-50-50__caption"],
+          ["actions", ".hero-50-50__actions"],
+        ] as const) {
+          preview.querySelectorAll<HTMLElement>(selector).forEach((node) => {
+            node.hidden = state[key] === "hidden";
+          });
+        }
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+          if (value !== "visible" && value !== "hidden") return;
+
+          const axisToState = {
+            hero5050Eyebrow: "eyebrow",
+            hero5050Paragraph: "paragraph",
+            hero5050BulletPoints: "bulletPoints",
+            hero5050Caption: "caption",
+            hero5050Actions: "actions",
+          } as const;
+          const key = axisToState[axisId as keyof typeof axisToState];
+          if (!key) return;
+          state[key] = value;
+          render();
+        });
+    });
+  };
+
+  initializeHero5050Previews();
+  document.addEventListener("astro:page-load", initializeHero5050Previews);
+</script>
+
+<style>
+  .ds-hero-50-50-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .ds-hero-50-50-preview__visual-placeholder {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    background-image: conic-gradient(
+      var(--color-background-muted) 25%,
+      var(--color-background-surface) 0 50%,
+      var(--color-background-muted) 0 75%,
+      var(--color-background-surface) 0
+    );
+    background-position: left top;
+    background-repeat: repeat;
+    background-size: 32px 32px;
+  }
+</style>

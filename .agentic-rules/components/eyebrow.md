@@ -7,7 +7,7 @@ Status: active.
 - Figma page key: `eyebrow`
 - Astro source: `src/components/base-components/eyebrow/Eyebrow.astro`
 - Role: `atom`
-- Sync status: `mapped`
+- Sync status: `intentional-difference`
 
 ## UX purpose
 
@@ -31,6 +31,7 @@ heading belongs to without competing with that heading.
 ## Content contract
 
 - Prefer one word; use two or three when needed and never exceed four words.
+- `variant` accepts `default` or `alternate`. Use `alternate` only when Eyebrow sits directly on an approved accent surface.
 - Write in sentence case. Capitalize the first letter when the language requires it, but do not write the label in all caps.
 - Use a concise category or subject phrase, not punctuation-heavy copy or a complete sentence.
 - Keep the label meaningful without relying on its blue color or marker.
@@ -41,6 +42,7 @@ heading belongs to without competing with that heading.
 - The component owns `--space-eyebrow-bottom`, currently 8px, as the separation from that heading.
 - Do not add a second consumer-owned margin between Eyebrow and its heading unless a larger composition explicitly owns a different relationship.
 - Keep the marker leading the text; it is decorative and never replaceable through the public API.
+- Keep text and marker on the same variant so the alternate treatment remains visually coherent.
 
 ## Responsive behavior
 
@@ -56,6 +58,7 @@ heading belongs to without competing with that heading.
 - Keep the marker `aria-hidden` because it is decorative and communicates no additional meaning.
 - Preserve authored sentence case and a readable text equivalent; color and the marker must not carry meaning alone.
 - Forward paragraph attributes so the caller can supply an `id`, language or other native metadata when needed.
+- The alternate variant uses the approved on-accent text and icon aliases; it must not be treated as a generic inverse-surface color.
 
 ## Related components
 
@@ -64,20 +67,24 @@ heading belongs to without competing with that heading.
 
 ## Naming and token contract
 
-Use the canonical `Eyebrow` identity and `.eyebrow` public root. Colors consume
-the registered `eyebrow-color` group, marker geometry consumes the approved
+Use the canonical `Eyebrow` identity, `.eyebrow` public root and
+`data-eyebrow-variant` attribute. Colors consume the registered
+`eyebrow-color` group, marker geometry consumes the approved
 `eyebrow-size` group, spacing consumes `--gap-small` and
 `--space-eyebrow-bottom`, and compact typography consumes existing foundation
-tokens. Do not declare local custom properties, add variants or replace the
-marker through props or slots.
+tokens. Default uses `--eyebrow-text-default` and `--eyebrow-marker-default`;
+alternate uses `--eyebrow-text-alternate-default` and
+`--eyebrow-marker-alternate-default`. Do not declare local custom properties,
+add unregistered variants or replace the marker through props or slots.
 
 Figma represents Eyebrow as a one-child `ComponentSet` with a single `Text`
 property and one documentation-only default axis. Astro does not expose that
-structural axis. The reusable child owns only the leading line, text, semantic
-gap and visual bindings; the 8px separation from the following heading remains
-Astro composition behavior.
+structural axis and owns the code-only alternate variant. The reusable child
+owns only the leading line, text, semantic gap and visual bindings; the 8px
+separation from the following heading remains Astro composition behavior.
 
 ## Core decision
 
 Use Eyebrow as one quiet sentence-case category cue immediately above a
-heading; keep it short, decorative-marker-only and non-interactive.
+heading; select alternate only for an accent surface and keep it short,
+decorative-marker-only and non-interactive.

@@ -47,7 +47,8 @@ for (const [name, source, required] of [
     'class="button__icon"',
     "<button",
     "platform: SocialIconPlatform",
-    "variant?: ButtonVariant",
+    'export type SocialButtonVariant = Exclude<ButtonVariant, "primary-alternate">',
+    "variant?: SocialButtonVariant",
     "size?: ButtonSize",
   ]],
   ["SocialIconButton", socialIconButton, [

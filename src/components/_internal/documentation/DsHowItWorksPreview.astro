@@ -1,0 +1,104 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
+import ProgressBar from "../../base-components/progress-bar/ProgressBar.astro";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import Content from "../../website-patterns/content/Content.astro";
+import HowItWorks from "../../website-patterns/how-it-works/HowItWorks.astro";
+
+export interface Props {
+  idPrefix?: string;
+}
+
+const {
+  idPrefix = "documentation-how-it-works",
+} = Astro.props;
+
+const canonicalSteps = [
+  {
+    eyebrow: "Step 01",
+    heading: "Start with the outcome",
+    paragraph: "Define the result the experience should create before choosing screens, components or motion.",
+  },
+  {
+    eyebrow: "Step 02",
+    heading: "Compose the approved building blocks",
+    paragraph: "Bring Content, actions and a stable visual boundary together while each dependency keeps its own contract.",
+  },
+  {
+    eyebrow: "Step 03",
+    heading: "Validate the complete sequence",
+    paragraph: "Review every step in both directions, at narrow widths and with motion preferences respected.",
+  },
+  {
+    eyebrow: "Step 04",
+    heading: "Release a resilient story",
+    paragraph: "Ship the enhanced desktop sequence with the full semantic list preserved as its universal fallback.",
+  },
+] as const;
+
+---
+
+<div
+  class="ds-how-it-works-preview"
+  data-component-name="DsHowItWorksPreview"
+>
+  <HowItWorks
+    id={idPrefix}
+    label="How it works"
+    data-ds-preview-target
+  >
+    {canonicalSteps.map((step, index) => {
+      const contentId = `${idPrefix}-step-${index + 1}`;
+      const headingId = `${contentId}-heading`;
+      return (
+        <li data-how-it-works-step aria-labelledby={headingId}>
+          <div data-how-it-works-progress>
+            <ProgressBar value={0} decorative />
+          </div>
+
+          <div data-how-it-works-panel>
+            <div data-how-it-works-content>
+              {index === 0 ? (
+                <Content
+                  id={contentId}
+                  eyebrow={step.eyebrow}
+                  heading={step.heading}
+                  paragraph={step.paragraph}
+                  headingLevel={2}
+                >
+                  <Fragment slot="actions">
+                    <Button>Start a project</Button>
+                    <ButtonLink href="/design-system/website-patterns/how-it-works/">
+                      Read the guidance
+                    </ButtonLink>
+                  </Fragment>
+                </Content>
+              ) : (
+                <Content
+                  id={contentId}
+                  eyebrow={step.eyebrow}
+                  heading={step.heading}
+                  paragraph={step.paragraph}
+                  headingLevel={2}
+                />
+              )}
+            </div>
+
+            <div data-how-it-works-visual aria-hidden="true">
+              <Ratio ratio="4:3" />
+            </div>
+          </div>
+        </li>
+      );
+    })}
+  </HowItWorks>
+</div>
+
+<style>
+  .ds-how-it-works-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+    padding-block-end: 100svh;
+  }
+</style>

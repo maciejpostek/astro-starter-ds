@@ -8,7 +8,7 @@ Status: active.
 
 ## UX purpose
 
-Group any positive number of related Tab triggers that select external content panels without navigation or page reload.
+Group any positive number of related Tab or ProgressTab triggers that select external content panels without navigation or page reload.
 
 ## Use when
 
@@ -22,11 +22,11 @@ Group any positive number of related Tab triggers that select external content p
 
 ## Content contract
 
-Provide an accessible tablist name and direct Tab children in the default slot. Child count is unrestricted. Author exactly one selected Tab; runtime normalizes zero or multiple selected states to the first enabled direct Tab without an initialization event.
+Provide an accessible tablist name and direct Tab or ProgressTab children in the default slot. Child count is unrestricted. Author exactly one selected child; runtime normalizes zero or multiple selected states to the first enabled direct tab without an initialization event.
 
 ## Composition and placement
 
-Tabs owns only the `role="tablist"` wrapper, horizontal allocation and interaction coordination. Every direct child is a canonical Tab. Consumers own external `role="tabpanel"` elements and connect each one through `Tab.controls` to the panel `id`.
+Tabs owns only the `role="tablist"` wrapper, horizontal allocation and interaction coordination. Every direct child is a canonical Tab or ProgressTab. Consumers own external `role="tabpanel"` elements and connect each one through `controls` to the panel `id`.
 
 ## Responsive behavior
 
@@ -42,7 +42,8 @@ Preserve one accessible tablist name, direct tab children, Arrow Left/Right with
 
 ## Related components
 
-- Tab is the only allowed direct child and owns trigger semantics and state.
+- Tab owns the compact trigger contract.
+- ProgressTab owns the descriptive timed-trigger contract and nested ProgressBar.
 - TabMenu is URL-addressable anchor navigation.
 
 ## Naming and token contract
@@ -51,4 +52,4 @@ Use `Tabs`, root `.tabs`, `data-tabs-root`, and existing `--gap-small`. Do not d
 
 ## Core decision
 
-Tabs is a slot-based tablist wrapper. It never owns child count, panel markup, panel content, generated IDs, or a size API.
+Tabs is a slot-based tablist wrapper for Tab and ProgressTab. It never owns child count, panel markup, panel content, generated IDs, or a size API.

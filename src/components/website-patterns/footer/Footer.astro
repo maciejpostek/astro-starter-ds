@@ -1,0 +1,211 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import type { FooterHeadingLevel } from "./FooterLabel.astro";
+
+export interface Props extends Omit<HTMLAttributes<"footer">, "class"> {
+  heading?: string;
+  headingLevel?: FooterHeadingLevel;
+  copyright: string;
+  class?: string;
+}
+
+const {
+  heading,
+  headingLevel = 2,
+  copyright,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const hasAction = Astro.slots.has("action");
+const hasHeading = typeof heading === "string" && heading.trim().length > 0;
+const hasBrand = Astro.slots.has("brand");
+const hasSocial = Astro.slots.has("social");
+const hasLegal = Astro.slots.has("legal");
+
+if (typeof copyright !== "string" || copyright.trim().length === 0) {
+  throw new TypeError("Footer copyright must be a non-empty string.");
+}
+if (heading !== undefined && !hasHeading) {
+  throw new TypeError("Footer heading must be a non-empty string when provided.");
+}
+if (hasAction !== hasHeading) {
+  throw new TypeError("Footer heading and action slot must be provided together.");
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("Footer headingLevel must be an integer from 2 to 6.");
+}
+
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+---
+
+<footer
+  {...attributes}
+  class:list={["footer", "l-section", className]}
+  data-component-name="Footer"
+  data-footer-has-action={hasAction ? "true" : "false"}
+  data-padding="large"
+>
+  <div class="footer__container l-container" data-container="main">
+    <div class="footer__main l-grid" data-grid="columns" data-columns="12">
+      {hasAction && (
+        <div class="footer__lead">
+          <HeadingTag class="footer__heading heading-h4">{heading}</HeadingTag>
+          <div class="footer__action">
+            <slot name="action" />
+          </div>
+        </div>
+      )}
+
+      <div class="footer__navigation">
+        <div class="footer__groups">
+          <slot />
+        </div>
+
+        {hasSocial && (
+          <ul class="footer__social" aria-label="Social media">
+            <slot name="social" />
+          </ul>
+        )}
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <div class="footer__identity">
+        {hasBrand && (
+          <div class="footer__brand">
+            <slot name="brand" />
+          </div>
+        )}
+        <p class="footer__copyright body-tiny-regular">{copyright}</p>
+      </div>
+
+      {hasLegal && (
+        <ul class="footer__legal">
+          <slot name="legal" />
+        </ul>
+      )}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    container: footer / inline-size;
+    min-inline-size: 0;
+    inline-size: 100%;
+    color: var(--color-text-primary);
+    background: var(--color-background-canvas);
+  }
+
+  .footer__container,
+  .footer__main,
+  .footer__lead,
+  .footer__navigation,
+  .footer__groups,
+  .footer__bottom,
+  .footer__identity {
+    min-inline-size: 0;
+  }
+
+  .footer__container {
+    display: grid;
+    gap: var(--gap-xxxlarge);
+  }
+
+  .footer__main {
+    gap: var(--gap-xlarge);
+  }
+
+  .footer__lead,
+  .footer__navigation {
+    grid-column: 1 / -1;
+  }
+
+  .footer__lead {
+    display: grid;
+    align-content: start;
+    gap: var(--gap-xlarge);
+  }
+
+  .footer__heading,
+  .footer__copyright {
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .footer__heading {
+    color: var(--color-text-primary);
+  }
+
+  .footer__action {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .footer__navigation {
+    display: grid;
+    align-content: start;
+    gap: var(--gap-xlarge);
+  }
+
+  .footer__groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--grid-auto-min-width-small)), 1fr));
+    gap: var(--gap-xlarge) var(--site-grid-column-gap);
+  }
+
+  .footer__social,
+  .footer__legal,
+  .footer__identity,
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .footer__social {
+    gap: var(--gap-medium);
+    list-style: none;
+  }
+
+  .footer__bottom {
+    justify-content: space-between;
+    gap: var(--gap-xlarge);
+    border-block-start: var(--border-width-default) solid var(--color-border-subtle);
+    padding-block-start: var(--content-padding-xlarge);
+  }
+
+  .footer__identity {
+    gap: var(--gap-medium);
+  }
+
+  .footer__brand {
+    min-inline-size: 0;
+    block-size: var(--footer-logo-block-size);
+  }
+
+  .footer__brand > :global(*) {
+    block-size: 100%;
+  }
+
+  .footer__copyright {
+    color: var(--color-text-secondary);
+  }
+
+  .footer__legal {
+    justify-content: flex-end;
+    gap: var(--gap-medium);
+    list-style: none;
+  }
+
+  @container footer (min-width: 64rem) {
+    .footer[data-footer-has-action="true"] .footer__lead {
+      grid-column: 1 / span 4;
+    }
+
+    .footer[data-footer-has-action="true"] .footer__navigation {
+      grid-column: 7 / -1;
+    }
+  }
+</style>

@@ -34,6 +34,16 @@
   margin-inline-end: var(--space-small);
 }
 
+.button[data-button-variant="primary-alternate"] {
+  border-color: var(--button-primary-alternate-border-default);
+  color: var(--button-primary-alternate-text-default);
+  background: var(--button-primary-alternate-background-default);
+}
+
+.button[data-button-variant="primary-alternate"] .button__icon {
+  color: var(--button-primary-alternate-icon-default);
+}
+
 .button[data-button-variant="secondary"] {
   border-color: var(--button-secondary-border-default);
   color: var(--button-secondary-text-default);
@@ -62,6 +72,16 @@
 
 .button:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) .button__icon {
   color: var(--button-primary-icon-hover);
+}
+
+.button[data-button-variant="primary-alternate"]:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
+  border-color: var(--button-primary-alternate-border-hover);
+  color: var(--button-primary-alternate-text-hover);
+  background: var(--button-primary-alternate-background-hover);
+}
+
+.button[data-button-variant="primary-alternate"]:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) .button__icon {
+  color: var(--button-primary-alternate-icon-hover);
 }
 
 .button[data-button-variant="secondary"]:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) {
@@ -94,6 +114,16 @@
   color: var(--button-primary-icon-pressed);
 }
 
+.button[data-button-variant="primary-alternate"]:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
+  border-color: var(--button-primary-alternate-border-pressed);
+  color: var(--button-primary-alternate-text-pressed);
+  background: var(--button-primary-alternate-background-pressed);
+}
+
+.button[data-button-variant="primary-alternate"]:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) .button__icon {
+  color: var(--button-primary-alternate-icon-pressed);
+}
+
 .button[data-button-variant="secondary"]:not(:disabled):is(:active, [data-ds-preview-state="pressed"]) {
   border-color: var(--button-secondary-border-pressed);
   color: var(--button-secondary-text-pressed);
@@ -123,6 +153,16 @@
 
 .button:disabled .button__icon {
   color: var(--button-primary-icon-disabled);
+}
+
+.button[data-button-variant="primary-alternate"]:disabled {
+  border-color: var(--button-primary-alternate-border-disabled);
+  color: var(--button-primary-alternate-text-disabled);
+  background: var(--button-primary-alternate-background-disabled);
+}
+
+.button[data-button-variant="primary-alternate"]:disabled .button__icon {
+  color: var(--button-primary-alternate-icon-disabled);
 }
 
 .button[data-button-variant="secondary"]:disabled {

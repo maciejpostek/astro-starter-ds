@@ -119,8 +119,13 @@ const componentDetailRoutes = `${baseComponentDetailRoute}\n${websitePatternDeta
 const componentInfoLayer = read("src/components/_internal/dev/ComponentInfoLayer.astro");
 const docSection = read("src/components/_internal/documentation/DsDocSection.astro");
 const interactivePreview = read("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
+const previewLayoutFrame = read("src/components/_internal/documentation/DsPreviewLayoutFrame.astro");
 const responsivePreviewCanvas = read("src/components/_internal/documentation/DsResponsivePreviewCanvas.astro");
 const documentationPreviewRegistry = read("src/data/documentationPreviewRegistry.ts");
+const bulletCardSimplePreview = read("src/components/_internal/documentation/DsBulletCardSimplePreview.astro");
+const bulletIconCardPreview = read("src/components/_internal/documentation/DsBulletIconCardPreview.astro");
+const bulletVisualCardPreview = read("src/components/_internal/documentation/DsBulletVisualCardPreview.astro");
+const bulletCardSurfacePreview = read("src/components/_internal/documentation/DsBulletCardSurfacePreview.astro");
 const familyGallery = read("src/components/_internal/documentation/DsFamilyGallery.astro");
 const baseLayout = read("src/layouts/BaseLayout.astro");
 
@@ -338,6 +343,7 @@ if (documentationRegistry.includes("documentationFamilyIndex")
 
 for (const pageIdentity of [
   "website-patterns/content",
+  "website-patterns/ratings-reviews",
   "base-components/popup",
   "website-patterns/page-headers",
 ]) {
@@ -671,6 +677,15 @@ if (!componentInfoLayer.includes('`Component name: ${getComponentName(target)}`'
   || componentInfoLayer.includes("if (isInteractiveTarget(event.target)) return;")) {
   errors.push("Guides ComponentInfoLayer must copy the prefixed identity and suppress component activation while inspection is active.");
 }
+if (!componentInfoLayer.includes('scope?: "document" | "preview"')
+  || !componentInfoLayer.includes("data-component-info-scope={scope}")
+  || !componentInfoLayer.includes('previewRoot.dataset.previewGuides !== "visible"')
+  || !responsivePreviewCanvas.includes('import ComponentInfoLayer from "../dev/ComponentInfoLayer.astro"')
+  || !responsivePreviewCanvas.includes('<ComponentInfoLayer scope="preview" />')
+  || responsivePreviewCanvas.includes("data-preview-guide-label")
+  || responsivePreviewCanvas.includes("syncGuideLabels")) {
+  errors.push("Responsive preview Guides must reuse the cursor-following ComponentInfoLayer without persistent component labels.");
+}
 if (!docSection.includes("<DsSectionHeaderLevel2") || !docSection.includes("aria-labelledby={titleId}")) {
   errors.push("DsDocSection does not own a canonical accessible Level 2 heading.");
 }
@@ -723,27 +738,200 @@ if (previewSceneIndex < 0 || previewControlsIndex < 0 || previewSceneIndex > pre
 }
 if (!interactivePreview.includes("desktopWebsitePatternCanvasWidth = 1440")
   || !interactivePreview.includes('preview.dataset.previewCategory !== "website-patterns"')
+  || !interactivePreview.includes('preview.dataset.previewPresentation !== "responsive"')
   || !interactivePreview.includes("availableWidth / canvasWidth")
   || !interactivePreview.includes("availableHeight / canvasHeight")
   || !interactivePreview.includes('preview.dataset.websitePatternBlockFit = "fit"')
   || !/\[data-preview-category="website-patterns"\][^{]*\.ds-interactive-component-preview__scene-canvas\s*\{[^}]*position:\s*absolute[^}]*transform-origin:\s*center center/s.test(interactivePreview)) {
   errors.push("Website Pattern inline previews must use the shared 1440px center-origin contain scale without affecting other categories.");
 }
-if (!componentDetail.includes('component.categoryKey === "website-patterns" && index === 0')
+if (!definitionSource.includes("export const usesWebsitePatternResponsivePreview")
+  || !definitionSource.includes('categoryKey === "website-patterns" && preview.presentation !== "standard"')
+  || !componentDetail.includes("usesWebsitePatternResponsivePreview(previewCategoryKey, preview) && index === 0")
   || !componentDetail.includes("categoryKey={previewCategoryKey}")
+  || !componentDetail.includes('previewContainer={preview.container ?? "full"}')
+  || !componentDetail.includes('previewSizing={preview.sizing ?? "fill"}')
+  || !componentDetail.includes('canonicalPreviewPresentation = previews[0]?.presentation ?? "responsive"')
+  || !componentDetail.includes("previewPresentation={preview.presentation ?? canonicalPreviewPresentation}")
+  || !componentDetail.includes('container: preview.container ?? "full"')
+  || !componentDetail.includes('sizing: preview.sizing ?? "fill"')
   || !componentDetail.includes('scope: `${component.id}-${preview.id ?? "preview"}-responsive-preview`')
   || !documentationPreviewRegistry.includes("componentDocumentationAdapters")
   || !documentationPreviewRegistry.includes("architecture.components")
   || !documentationPreviewRegistry.includes("Boolean(component.sourcePath)")
   || !documentationPreviewRegistry.includes('component.categoryKey === "website-patterns"')
   || !documentationPreviewRegistry.includes("documentation?.preview ?? documentation?.previews?.[0]")
+  || !documentationPreviewRegistry.includes("usesWebsitePatternResponsivePreview(component.categoryKey, preview)")
   || !documentationPreviewRegistry.includes("preview.responsivePreview?.rendererProps")
+  || !documentationPreviewRegistry.includes('container: preview.container ?? "full"')
+  || !documentationPreviewRegistry.includes('sizing: preview.sizing ?? "fill"')
   || !documentationPreviewRegistry.includes("documentationComponentHref(component)")) {
-  errors.push("Website Pattern Scale and /preview routes must derive from the first canonical Astro-backed documentation preview.");
+  errors.push("Eligible Website Pattern Scale and /preview routes must derive from the first canonical Astro-backed documentation preview, while standard presentations opt out.");
+}
+const documentationAdapterBlocks = new Map(
+  Array.from(definitionSource.matchAll(
+    /const\s+\w+Adapter:\s*ComponentDocumentationAdapter\s*=\s*\{([\s\S]*?)\n\};/g,
+  )).flatMap((match) => {
+    const componentId = match[1].match(/componentId:\s*"([^"]+)"/)?.[1];
+    return componentId ? [[componentId, match[1]]] : [];
+  }),
+);
+for (const [componentId, adapterBlock] of documentationAdapterBlocks) {
+  if (/\bpreviews\s*:/.test(adapterBlock)) {
+    errors.push(`Documentation adapter ${componentId} must use one canonical preview; additional resilience cases belong in automated tests.`);
+  }
+}
+const allowedPreviewContainers = new Set(["full", "main", "small"]);
+const allowedPreviewSizingModes = new Set(["fill", "bounded", "intrinsic"]);
+const allowedPreviewPresentations = new Set(["standard", "responsive"]);
+const standardWebsitePatternPreviews = new Set([
+  "blog-card",
+  "bullet-point",
+  "bullet-card-simple",
+  "bullet-icon-card",
+  "bullet-visual-card",
+  "bullet-card-surface",
+  "logo-card",
+  "rating",
+  "stat-card",
+  "stat-text-inline",
+]);
+const expectedWebsitePatternContainers = new Map([
+  ["bullet-point", "main"],
+  ["bullet-card-simple", "main"],
+  ["bullet-icon-card", "main"],
+  ["bullet-visual-card", "main"],
+  ["bullet-card-surface", "main"],
+  ["content", "main"],
+  ["faq", "full"],
+  ["rating", "main"],
+  ["section-header", "main"],
+  ["stat-card", "main"],
+  ["stat-text-inline", "main"],
+  ["team-member-card", "main"],
+  ["top-banner", "full"],
+]);
+const expectedWebsitePatternSizing = new Map([
+  ["bullet-point", "intrinsic"],
+  ["bullet-card-simple", "bounded"],
+  ["bullet-icon-card", "bounded"],
+  ["bullet-visual-card", "bounded"],
+  ["bullet-card-surface", "bounded"],
+  ["content", "fill"],
+  ["faq", "fill"],
+  ["rating", "intrinsic"],
+  ["section-header", "fill"],
+  ["stat-card", "bounded"],
+  ["stat-text-inline", "intrinsic"],
+  ["team-member-card", "bounded"],
+  ["top-banner", "fill"],
+]);
+for (const component of registry.components.filter(
+  (candidate) => candidate.categoryKey === "website-patterns" && Boolean(candidate.sourcePath),
+)) {
+  const adapterBlock = documentationAdapterBlocks.get(component.id);
+  if (!adapterBlock) {
+    errors.push(`Astro-backed Website Pattern ${component.id} must have a documentation adapter with a preview container.`);
+    continue;
+  }
+  const container = adapterBlock.match(/container:\s*"([^"]+)"/)?.[1];
+  if (!container || !allowedPreviewContainers.has(container)) {
+    errors.push(`Astro-backed Website Pattern ${component.id} must declare preview container full, main or small.`);
+    continue;
+  }
+  const expected = expectedWebsitePatternContainers.get(component.id);
+  if (expected && container !== expected) {
+    errors.push(`Website Pattern ${component.id} must use the ${expected} preview container.`);
+  }
+  const sizing = adapterBlock.match(/sizing:\s*"([^"]+)"/)?.[1];
+  if (!sizing || !allowedPreviewSizingModes.has(sizing)) {
+    errors.push(`Astro-backed Website Pattern ${component.id} must declare preview sizing fill, bounded or intrinsic.`);
+    continue;
+  }
+  const expectedSizing = expectedWebsitePatternSizing.get(component.id);
+  if (expectedSizing && sizing !== expectedSizing) {
+    errors.push(`Website Pattern ${component.id} must use the ${expectedSizing} preview sizing mode.`);
+  }
+  const presentation = adapterBlock.match(/presentation:\s*"([^"]+)"/)?.[1] ?? "responsive";
+  if (!allowedPreviewPresentations.has(presentation)) {
+    errors.push(`Website Pattern ${component.id} must use the standard or responsive preview presentation.`);
+    continue;
+  }
+  const expectedPresentation = standardWebsitePatternPreviews.has(component.id)
+    ? "standard"
+    : "responsive";
+  if (presentation !== expectedPresentation) {
+    errors.push(`Website Pattern ${component.id} must use the ${expectedPresentation} preview presentation.`);
+  }
+  if (presentation === "standard" && /responsivePreview\s*:/.test(adapterBlock)) {
+    errors.push(`Standard Website Pattern ${component.id} must not declare responsive preview renderer overrides.`);
+  }
+}
+if (!definitionSource.includes('export type DocumentationPreviewContainer = "full" | "main" | "small"')
+  || !definitionSource.includes('export type DocumentationPreviewSizing = "fill" | "bounded" | "intrinsic"')
+  || !definitionSource.includes('export type DocumentationPreviewPresentation = "standard" | "responsive"')
+  || !definitionSource.includes("container?: DocumentationPreviewContainer")
+  || !definitionSource.includes("sizing?: DocumentationPreviewSizing")
+  || !definitionSource.includes("presentation?: DocumentationPreviewPresentation")
+  || !interactivePreview.includes("<DsPreviewLayoutFrame container={previewContainer} sizing={previewSizing}>")
+  || !responsivePreviewCanvas.includes("<DsPreviewLayoutFrame container={container} sizing={sizing}>")
+  || !responsivePreviewCanvas.includes('slot="guides"')
+  || !websitePatternPreviewRoute.includes("container={adapter.container}")
+  || !websitePatternPreviewRoute.includes("sizing={adapter.sizing}")
+  || !websitePatternDetailPreviewRoute.includes("container={adapter.container}")
+  || !websitePatternDetailPreviewRoute.includes("sizing={adapter.sizing}")) {
+  errors.push("Website Pattern container, sizing and presentation classification must flow through inline preview and eligible dialog and /preview renderers.");
+}
+if (!previewLayoutFrame.includes('data-component-name="DsPreviewLayoutFrame"')
+  || !previewLayoutFrame.includes('class="ds-preview-layout-frame__container l-container"')
+  || !previewLayoutFrame.includes("data-container={container}")
+  || !previewLayoutFrame.includes("data-preview-sizing={sizing}")
+  || !previewLayoutFrame.includes("data-preview-specimen-frame")
+  || !/\.ds-preview-layout-frame\s*\{[^}]*container:\s*ds-preview-layout\s*\/\s*inline-size/s.test(previewLayoutFrame)
+  || !/\.ds-preview-layout-frame__scope\s*\{[^}]*--site-padding-inline:[^}]*cqi[^}]*--container-main:\s*calc\(100% - 2 \* var\(--site-padding-inline\)\)[^}]*--container-small:[^}]*var\(--container-small-max\)[^}]*--container-full:\s*100%[^}]*--site-grid-columns:\s*12[^}]*--site-grid-column-gap:[^}]*cqi[^}]*place-items:\s*center/s.test(previewLayoutFrame)
+  || !/@container ds-preview-layout \(width < 64rem\)[^{]*\{[^}]*--site-grid-columns:\s*8/s.test(previewLayoutFrame)
+  || !/@container ds-preview-layout \(width < 48rem\)[^{]*\{[^}]*--site-grid-columns:\s*4/s.test(previewLayoutFrame)
+  || !/\.ds-preview-layout-frame__container\s*\{[^}]*place-items:\s*center/s.test(previewLayoutFrame)
+  || !/data-preview-sizing="fill"\]\s*\{[^}]*inline-size:\s*100%/s.test(previewLayoutFrame)
+  || !/data-preview-sizing="bounded"\]\s*\{[^}]*inline-size:\s*100%[^}]*max-inline-size:\s*32\.3125rem/s.test(previewLayoutFrame)
+  || !/data-preview-sizing="intrinsic"\]\s*\{[^}]*inline-size:\s*fit-content/s.test(previewLayoutFrame)
+  || /\.ds-preview-layout-frame[^}]*:global\(\[data-component-name/s.test(previewLayoutFrame)) {
+  errors.push("DsPreviewLayoutFrame must own centered container layout, specimen sizing and container-relative site semantics without styling rendered components.");
+}
+for (const [name, source] of [
+  ["BulletCardSimple", bulletCardSimplePreview],
+  ["BulletIconCard", bulletIconCardPreview],
+  ["BulletVisualCard", bulletVisualCardPreview],
+  ["BulletCardSurface", bulletCardSurfacePreview],
+]) {
+  if (/max-inline-size:/.test(source) || /data-preview-mode=/.test(source)) {
+    errors.push(`${name} preview must delegate bounded specimen width to DsPreviewLayoutFrame.`);
+  }
 }
 if (!responsivePreviewCanvas.includes("data-preview-content")
   || !/\.ds-responsive-preview-canvas__content\s*\{[^}]*inline-size:\s*100%[^}]*min-block-size:\s*100%[^}]*place-items:\s*center/s.test(responsivePreviewCanvas)) {
   errors.push("Responsive preview canvas must own the full-width, minimum-height centered content layer.");
+}
+if (!/\.ds-responsive-preview-canvas__controls\s*\{[^}]*position:\s*fixed[^}]*inset-block-end:/s.test(responsivePreviewCanvas)
+  || !/\.ds-responsive-preview-canvas__controls-toggle\s*\{[^}]*position:\s*fixed[^}]*inset-block-end:\s*var\(--size-32\)[^}]*inset-inline-start:\s*var\(--size-32\)/s.test(responsivePreviewCanvas)
+  || !/\.ds-responsive-preview-canvas__theme-controls\s*\{[^}]*position:\s*fixed[^}]*inset-block-end:\s*var\(--size-32\)[^}]*inset-inline-end:\s*var\(--size-32\)/s.test(responsivePreviewCanvas)) {
+  errors.push("Responsive preview controls must remain fixed to the browser viewport when a Website Pattern is taller than it.");
+}
+if (!/\.ds-responsive-preview-canvas__controls\s*\{[^}]*box-sizing:\s*border-box[^}]*inline-size:\s*fit-content[^}]*border-radius:\s*var\(--radius-button\)[^}]*padding:\s*var\(--content-padding-small\)[^}]*background:\s*var\(--color-background-surface\)/s.test(responsivePreviewCanvas)) {
+  errors.push("Responsive preview variant controls must share one token-backed surface wrapper with 12px padding and the Tab radius.");
+}
+if (!responsivePreviewCanvas.includes("ds-responsive-preview-canvas__handle-track--left")
+  || !responsivePreviewCanvas.includes("ds-responsive-preview-canvas__handle-track--right")
+  || !/\.ds-responsive-preview-canvas\s*\{[^}]*block-size:\s*100dvh[^}]*overflow:\s*hidden/s.test(responsivePreviewCanvas)
+  || !/\.ds-responsive-preview-canvas__workspace\s*\{[^}]*block-size:\s*100dvh[^}]*overflow:\s*auto/s.test(responsivePreviewCanvas)
+  || !responsivePreviewCanvas.includes("const syncHandleTracks = () =>")
+  || !responsivePreviewCanvas.includes("workspace.addEventListener(\"scroll\", syncHandleTracks")
+  || !/\.ds-responsive-preview-canvas__handle-track\s*\{[^}]*position:\s*fixed[^}]*inset-block:\s*0[^}]*block-size:\s*100dvh[^}]*min-block-size:\s*100dvh[^}]*place-items:\s*center/s.test(responsivePreviewCanvas)
+  || !/\.ds-responsive-preview-canvas__handle\s*\{[^}]*inline-size:\s*var\(--size-24\)[^}]*block-size:\s*var\(--size-96\)[^}]*pointer-events:\s*auto/s.test(responsivePreviewCanvas)) {
+  errors.push("Responsive preview resize handles must keep their original hit area centered in viewport-height fixed edge tracks.");
+}
+if (!/\.ds-responsive-preview-canvas__guides-grid\s*\{[^}]*box-sizing:\s*border-box[^}]*padding-inline:\s*var\(--site-padding-inline\)/s.test(responsivePreviewCanvas)) {
+  errors.push("Responsive preview guides must keep their site padding inside the simulated viewport width.");
 }
 if (!websitePatternPreviewRoute.includes("backHref={adapter.backHref}")
   || !websitePatternDetailPreviewRoute.includes("backHref={adapter.backHref}")) {
@@ -816,7 +1004,8 @@ for (const requiredContract of [
   "Internal documentation links use typed targets",
   "An implemented Base Component or Website Pattern without a documentation",
   "DesignSystemLayout",
-  "Full-screen responsive preview routes",
+  "Eligible full-screen responsive preview routes",
+  "presentation: standard | responsive",
   "Canonical heading hierarchy",
   "Do not skip a level",
   "HeaderLevel components do not accept descriptions",

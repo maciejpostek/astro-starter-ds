@@ -1,0 +1,11 @@
+---
+import Eyebrow from "../../../../../src/components/base-components/eyebrow/Eyebrow.astro";
+
+const invalidCase = process.env.EYEBROW_INVALID_CASE ?? "text";
+---
+
+{invalidCase === "variant" ? (
+  <Eyebrow text="Invalid variant" variant={"inverse" as any} />
+) : (
+  <Eyebrow text="   " />
+)}

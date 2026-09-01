@@ -1,0 +1,27 @@
+---
+import Eyebrow from "../../../../../src/components/base-components/eyebrow/Eyebrow.astro";
+import Content from "../../../../../src/components/website-patterns/content/Content.astro";
+import CallToActionVisual from "../../../../../src/components/website-patterns/cta/CallToActionVisual.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>Eyebrow contract fixture</title></head>
+  <body>
+    <main>
+      <Eyebrow id="eyebrow-default" text="Default" data-forwarded="yes" />
+      <div data-theme="light"><Eyebrow id="eyebrow-alternate-light" text="Alternate light" variant="alternate" /></div>
+      <div data-theme="dark"><Eyebrow id="eyebrow-alternate-dark" text="Alternate dark" variant="alternate" /></div>
+      <Content id="content-on-accent" heading="On accent" eyebrow="Category" tone="on-accent" />
+      <Content id="content-inverse" heading="Inverse" eyebrow="Category" tone="inverse" />
+      <CallToActionVisual id="cta-accent" heading="Accent CTA" eyebrow="Call to action">
+        <span slot="visual" aria-hidden="true"></span>
+      </CallToActionVisual>
+      <CallToActionVisual id="cta-inverse" heading="Inverse CTA" eyebrow="Call to action" surface="inverse">
+        <span slot="visual" aria-hidden="true"></span>
+      </CallToActionVisual>
+    </main>
+  </body>
+</html>

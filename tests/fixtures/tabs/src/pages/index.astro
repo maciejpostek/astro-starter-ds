@@ -1,5 +1,6 @@
 ---
 import Tab from "../../../../../src/components/base-components/tabs/Tab.astro";
+import ProgressTab from "../../../../../src/components/base-components/tabs/ProgressTab.astro";
 import Tabs from "../../../../../src/components/base-components/tabs/Tabs.astro";
 import TabMenu, { type TabMenuItems } from "../../../../../src/components/base-components/tabs/TabMenu.astro";
 import "../../../../../src/styles/tokens/tokens.css";
@@ -26,7 +27,7 @@ const menuItems: TabMenuItems = [
       <div id="standalone-panel" role="tabpanel" aria-labelledby="standalone-tab" tabindex="0">Atom panel</div>
 
       <Tabs class="tabs-contract-fixture" aria-label="Billing period" data-contract="three-tabs">
-        <Tab id="billing-monthly" controls="billing-panel-monthly">Monthly</Tab>
+        <ProgressTab id="billing-monthly" controls="billing-panel-monthly" progress={25}>Monthly</ProgressTab>
         <Tab id="billing-archived" controls="billing-panel-archived" disabled>Archived</Tab>
         <Tab id="billing-yearly" controls="billing-panel-yearly" selected>Yearly</Tab>
       </Tabs>

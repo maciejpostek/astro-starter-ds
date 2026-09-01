@@ -1,0 +1,34 @@
+---
+import AvatarImage from "../../../../../src/components/base-components/avatar/AvatarImage.astro";
+import AvatarName from "../../../../../src/components/base-components/avatar/AvatarName.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><title>Avatar fixture</title></head>
+  <body>
+    <main>
+      <AvatarImage id="standalone-avatar" class="avatar-contract-fixture" data-forwarded="yes">
+        <span data-avatar-fixture-visual aria-hidden="true"></span>
+      </AvatarImage>
+      <AvatarImage id="empty-avatar" />
+
+      <section id="complete-avatar-name">
+        <AvatarName fullName="Maya Thompson" roleOrPosition="Design systems lead" data-forwarded="yes">
+          <span slot="image" data-avatar-fixture-visual aria-hidden="true"></span>
+        </AvatarName>
+      </section>
+      <section id="avatar-name-without-role">
+        <AvatarName fullName="Jordan Lee" />
+      </section>
+      <section id="long-avatar-name">
+        <AvatarName
+          fullName="Aleksandra Marianna Nowak-Kowalska"
+          roleOrPosition="Principal international design systems and accessibility consultant"
+        />
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import LogoAsset from "../../../../../src/components/assets/logos/LogoAsset.astro";
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import FeatureProof from "../../../../../src/components/website-patterns/features/FeatureProof.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FeatureProof contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="fixture fixture--wide" data-fixture-width="1440">
+        <FeatureProof
+          id="feature-proof-right"
+          class="feature-proof-contract-fixture"
+          data-forwarded="yes"
+          heading="Dowód połączony z obietnicą funkcji"
+          eyebrow="Feature proof"
+          paragraph="Zwięzła narracja łączy korzyść, wiarygodne dowody oraz istotne szczegóły."
+          logoProofTitle="Zaufali nam"
+          supportingDetailsTitle="Dodatkowe informacje"
+        >
+          <Button slot="actions">Poznaj funkcję</Button>
+          <Button slot="actions" variant="secondary">Zobacz dowody</Button>
+          <BulletPoint slot="keyPoints" text="Szybsze decyzje" />
+          <BulletPoint slot="keyPoints" text="Wspólny kontekst" />
+          <LogoAsset slot="logos" slug="github" variant="mark" alt="GitHub" />
+          <BulletPoint slot="supportingDetails" text="Bez duplikowania zależności" />
+          <span slot="visual" aria-hidden="true"></span>
+        </FeatureProof>
+      </div>
+
+      <div class="fixture fixture--desktop" data-fixture-width="1024">
+        <FeatureProof
+          id="feature-proof-left"
+          heading="Visual begins the selected proof story"
+          paragraph="The left variant retains visual-first source order at every assigned width."
+          visualPosition="left"
+          headingLevel={3}
+        >
+          <BulletPoint slot="keyPoints" text="One focused proof point" />
+          <span slot="visual" aria-hidden="true"></span>
+        </FeatureProof>
+      </div>
+
+      <div class="fixture fixture--tablet" data-fixture-width="768">
+        <FeatureProof
+          id="feature-proof-tablet"
+          heading="Long localized feature heading that verifies natural wrapping without horizontal overflow"
+          paragraph="Supporting evidence remains readable when the parent assigns an intermediate width and the section reflows to one column."
+          supportingDetailsTitle="Implementation details"
+        >
+          <BulletPoint slot="supportingDetails" text="Container-aware layout" />
+          <BulletPoint slot="supportingDetails" text="Intrinsic wrapping" />
+          <span slot="visual" aria-hidden="true"></span>
+        </FeatureProof>
+      </div>
+
+      <div class="fixture fixture--narrow" data-fixture-width="320" data-theme="dark" dir="rtl">
+        <FeatureProof
+          id="feature-proof-rtl"
+          heading="دليل موثوق مرتبط بالميزة"
+          eyebrow="إثبات"
+          paragraph="يتحقق هذا المثال من اتجاه الكتابة والتفاف النص وترتيب المحتوى داخل حاوية ضيقة."
+          visualPosition="left"
+          headingLevel={4}
+          logoProofTitle="فرق موثوقة"
+        >
+          <LogoAsset slot="logos" slug="medium" variant="mark" alt="Medium" />
+          <span slot="visual" aria-hidden="true"></span>
+        </FeatureProof>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .fixture {
+    inline-size: min(100%, 90rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--tablet { max-inline-size: 48rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

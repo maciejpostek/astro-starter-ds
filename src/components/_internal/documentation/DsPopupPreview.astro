@@ -6,14 +6,10 @@ import type { PopupStatus } from "../../../lib/popup/popupTypes";
 
 interface Props {
   initialOpen?: boolean;
-  longContent?: boolean;
-  direction?: "ltr" | "rtl";
 }
 
-const { initialOpen = false, longContent = false, direction = "ltr" } = Astro.props;
-const description = longContent
-  ? "This update will be visible to everyone with access to the project. Review ownership, permissions and release timing before continuing. The Popup body remains the only scrollable region when content exceeds the viewport. Confirm the affected audience, check the final labels and verify that every dependent workflow is ready. This extended fixture intentionally repeats decision context so the responsive preview can validate a stable footer and reachable actions at narrow widths and short viewport heights."
-  : "This update will be visible to everyone with access to the project. You can review the result before publishing.";
+const { initialOpen = false } = Astro.props;
+const description = "This update will be visible to everyone with access to the project. You can review the result before publishing.";
 const statuses: PopupStatus[] = ["error", "warning", "success", "info"];
 const statusIcons = {
   error: "error",
@@ -50,7 +46,6 @@ const statusLabels = {
     title="Confirm this change"
     description={description}
     initialOpen={initialOpen}
-    dir={direction}
   />
 
   <div hidden data-popup-preview-templates>

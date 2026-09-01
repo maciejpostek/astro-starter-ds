@@ -1,0 +1,71 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import CallToActionCentered, { type CallToActionSurface } from "../../website-patterns/cta/CallToActionCentered.astro";
+
+interface Props { idPrefix?: string; }
+
+const { idPrefix = "documentation-call-to-action-centered" } = Astro.props;
+const surfaces = ["accent", "inverse"] as const satisfies ReadonlyArray<CallToActionSurface>;
+---
+
+<div class="call-to-action-centered-preview" data-component-name="DsCallToActionCenteredPreview" data-call-to-action-centered-preview data-ds-preview-target>
+  {surfaces.map((surface) => (
+    <div
+      class="call-to-action-centered-preview__variant"
+      data-call-to-action-centered-preview-surface={surface}
+      hidden={surface !== "accent"}
+    >
+      <CallToActionCentered
+        id={`${idPrefix}-${surface}`}
+        heading="Ready to make the next move?"
+        eyebrow="Call to action"
+        paragraph="Keep the invitation focused and give people one clear way to continue."
+        surface={surface}
+      >
+        <Button slot="actions" variant={surface === "accent" ? "primary-alternate" : "primary"}>Get started</Button>
+        <Button slot="actions" variant="secondary">Talk to us</Button>
+      </CallToActionCentered>
+    </div>
+  ))}
+</div>
+
+<script>
+  const initializeCallToActionCenteredPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-call-to-action-centered-preview]").forEach((preview) => {
+      if (preview.dataset.callToActionCenteredPreviewReady === "true") return;
+      preview.dataset.callToActionCenteredPreviewReady = "true";
+      const state = { surface: "accent", eyebrow: "visible", paragraph: "visible", actions: "visible" };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>("[data-call-to-action-centered-preview-surface]").forEach((variant) => {
+          variant.hidden = variant.dataset.callToActionCenteredPreviewSurface !== state.surface;
+          variant.querySelectorAll<HTMLElement>('[data-component-name="Eyebrow"]').forEach((node) => { node.hidden = state.eyebrow === "hidden"; });
+          variant.querySelectorAll<HTMLElement>(".content__paragraph").forEach((node) => { node.hidden = state.paragraph === "hidden"; });
+          variant.querySelectorAll<HTMLElement>(".content__actions").forEach((node) => { node.hidden = state.actions === "hidden"; });
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const value = String(event.detail?.value ?? "");
+        if (axisId === "callToActionSurface" && (value === "accent" || value === "inverse")) state.surface = value;
+        if (axisId === "callToActionEyebrow" && (value === "visible" || value === "hidden")) state.eyebrow = value;
+        if (axisId === "callToActionParagraph" && (value === "visible" || value === "hidden")) state.paragraph = value;
+        if (axisId === "callToActionActions" && (value === "visible" || value === "hidden")) state.actions = value;
+        render();
+      });
+    });
+  };
+
+  initializeCallToActionCenteredPreviews();
+  document.addEventListener("astro:page-load", initializeCallToActionCenteredPreviews);
+</script>
+
+<style>
+  .call-to-action-centered-preview,
+  .call-to-action-centered-preview__variant {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

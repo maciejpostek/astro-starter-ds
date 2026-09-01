@@ -206,6 +206,56 @@
       "consumers": [
         "stat-text-inline"
       ]
+    },
+    {
+      "id": "feature-scroll-size-2026-08-31",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-31",
+      "requestedFor": "Implement the canonical FeatureScroll 480px wide-item rhythm as a content-safe Astro minimum without changing the raw Figma geometry.",
+      "missingNeed": {
+        "owner": "feature-scroll",
+        "scope": "component",
+        "domain": "size",
+        "property": "item-min-block-size",
+        "variant": null,
+        "state": null
+      },
+      "extensionTarget": null,
+      "proposedGroup": {
+        "id": "feature-scroll-size",
+        "scope": "component",
+        "owner": "feature-scroll",
+        "domain": "size"
+      },
+      "sourcePath": "src/styles/tokens/size-components.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#feature-scroll-size",
+      "proposedTokens": [
+        {
+          "name": "--feature-scroll-item-min-block-size",
+          "value": "calc(var(--size-320) + var(--size-160))"
+        }
+      ],
+      "consumers": [
+        "feature-scroll"
+      ]
+    },
+    {
+      "id": "eyebrow-alternate-color-2026-08-31",
+      "approvalStatus": "approved",
+      "approvedBy": "user",
+      "approvedAt": "2026-08-31",
+      "requestedFor": "Add a contrasting Eyebrow alternate variant for accent surfaces and apply it through Content to accent Call-to-Action patterns.",
+      "extensionTarget": "eyebrow-color",
+      "sourcePath": "src/styles/tokens/color-components.css",
+      "registryProjection": "src/data/design-system/tokenArchitecture.json#eyebrow-color",
+      "proposedTokens": [
+        { "name": "--eyebrow-text-alternate-default", "aliasSource": "--color-text-on-accent" },
+        { "name": "--eyebrow-marker-alternate-default", "aliasSource": "--color-icon-on-accent" }
+      ],
+      "consumers": [
+        "eyebrow"
+      ]
     }
   ]
 }

@@ -30,7 +30,8 @@ test("keeps the canonical BulletIconCard API, mapping and approved token contrac
   assert.match(source, /data-component-name="BulletIconCard"/u);
   assert.match(source, /data-bullet-icon-card-layout=\{layout\}/u);
   assert.match(source, /name="language" size="var\(--bullet-icon-card-icon-size\)"/u);
-  assert.match(source, /name="trending_up"/u);
+  assert.match(source, /<StatTextInline/u);
+  assert.match(source, /showIcon=\{showStatIcon\}/u);
   assert.match(source, /<ButtonGroup aria-labelledby=\{headingId\}>/u);
   assert.match(source, /title must be a non-empty string/u);
   assert.match(source, /description must be a non-empty string/u);
@@ -46,7 +47,7 @@ test("keeps the canonical BulletIconCard API, mapping and approved token contrac
   assert.equal(record?.figmaCanonicalNodeId, "1793:2052");
   assert.deepEqual(record?.props, ["title", "description", "layout", "headingLevel", "showIcon", "stat", "showStatIcon"]);
   assert.deepEqual(record?.slots, ["tags", "actions"]);
-  assert.deepEqual(record?.dependencies, ["material-symbol", "tag", "button-group"]);
+  assert.deepEqual(record?.dependencies, ["material-symbol", "stat-text-inline", "tag", "button-group"]);
   assert.equal(figmaContract?.variantCount, 2);
   assert.deepEqual(figmaContract?.axes?.Layout, ["Vertical", "Horizontal"]);
   assert.equal(figmaContract?.properties?.Tags, "SLOT");

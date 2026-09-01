@@ -1,0 +1,242 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+export type PricingCardHeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+export interface Props extends Omit<
+  HTMLAttributes<"article">,
+  "aria-labelledby" | "class" | "id" | "title"
+> {
+  title: string;
+  description: string;
+  price: string;
+  priceSuffix?: string;
+  priceNote?: string;
+  featuresTitle: string;
+  headingLevel?: PricingCardHeadingLevel;
+  id?: string;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  price,
+  priceSuffix,
+  priceNote,
+  featuresTitle,
+  headingLevel = 3,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const requireNonEmpty = (value: unknown, name: string) => {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new TypeError(`PricingCard ${name} must be a non-empty string.`);
+  }
+};
+
+requireNonEmpty(title, "title");
+requireNonEmpty(description, "description");
+requireNonEmpty(price, "price");
+requireNonEmpty(featuresTitle, "featuresTitle");
+if (priceSuffix !== undefined) requireNonEmpty(priceSuffix, "priceSuffix");
+if (priceNote !== undefined) requireNonEmpty(priceNote, "priceNote");
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("PricingCard headingLevel must be an integer from 2 to 6.");
+}
+if (id !== undefined) requireNonEmpty(id, "id");
+if (!Astro.slots.has("action")) {
+  throw new TypeError('PricingCard requires an "action" slot.');
+}
+if (!Astro.slots.has("features")) {
+  throw new TypeError('PricingCard requires a "features" slot.');
+}
+
+const rootId = id ?? `pricing-card-${crypto.randomUUID()}`;
+const headingId = `${rootId}-title`;
+const featuresHeadingId = `${rootId}-features-title`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+const hasBadge = Astro.slots.has("badge");
+const hasSavings = Astro.slots.has("savings");
+---
+
+<article
+  {...attributes}
+  id={rootId}
+  class:list={["pricing-card", className]}
+  aria-labelledby={headingId}
+  data-component-name="PricingCard"
+  data-pricing-card-featured={hasBadge ? "true" : "false"}
+>
+  {hasBadge && (
+    <div class="pricing-card__badge">
+      <slot name="badge" />
+    </div>
+  )}
+
+  <div class="pricing-card__header">
+    <HeadingTag class="pricing-card__title heading-h5" id={headingId}>
+      {title}
+    </HeadingTag>
+    <p class="pricing-card__description body-base-regular">{description}</p>
+  </div>
+
+  <div class="pricing-card__price-block">
+    <p class="pricing-card__price-row">
+      <span class="pricing-card__price heading-h2">{price}</span>
+      {priceSuffix && (
+        <span class="pricing-card__price-suffix body-large-regular">{priceSuffix}</span>
+      )}
+    </p>
+    {priceNote && (
+      <p class="pricing-card__price-note body-small-regular">{priceNote}</p>
+    )}
+    {hasSavings && (
+      <div class="pricing-card__savings">
+        <slot name="savings" />
+      </div>
+    )}
+  </div>
+
+  <div class="pricing-card__action">
+    <slot name="action" />
+  </div>
+
+  <div class="pricing-card__features">
+    <p class="pricing-card__features-title body-base-semibold" id={featuresHeadingId}>
+      {featuresTitle}
+    </p>
+    <ul class="pricing-card__features-list" aria-labelledby={featuresHeadingId}>
+      <slot name="features" />
+    </ul>
+  </div>
+</article>
+
+<style>
+  .pricing-card {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: 100%;
+    flex-direction: column;
+    gap: var(--gap-large);
+    border: var(--border-width-default) solid var(--card-border-default);
+    border-radius: var(--radius-small);
+    padding: var(--content-padding-large);
+    color: var(--color-text-primary);
+    background: var(--card-background-default);
+  }
+
+  .pricing-card[data-pricing-card-featured="true"] {
+    border-color: var(--card-border-selected);
+  }
+
+  .pricing-card__badge {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 0;
+    inset-inline: 0;
+    inline-size: fit-content;
+    max-inline-size: calc(100% - var(--content-padding-large));
+    margin-inline: auto;
+    transform: translateY(-50%);
+  }
+
+  .pricing-card__header,
+  .pricing-card__price-block,
+  .pricing-card__features {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+  }
+
+  .pricing-card__header,
+  .pricing-card__price-block {
+    gap: var(--gap-tiny);
+  }
+
+  .pricing-card__title,
+  .pricing-card__description,
+  .pricing-card__price-row,
+  .pricing-card__price-note,
+  .pricing-card__features-title,
+  .pricing-card__features-list {
+    min-inline-size: 0;
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .pricing-card__description,
+  .pricing-card__price-suffix,
+  .pricing-card__price-note {
+    color: var(--color-text-secondary);
+  }
+
+  .pricing-card__price-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--gap-small);
+  }
+
+  .pricing-card__price,
+  .pricing-card__price-suffix {
+    min-inline-size: 0;
+  }
+
+  .pricing-card .pricing-card__price {
+    max-inline-size: 100%;
+    overflow-wrap: var(--overflow-wrap-anywhere);
+    text-wrap: var(--text-wrap-wrap);
+  }
+
+  .pricing-card__savings {
+    display: flex;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    flex-wrap: wrap;
+    margin-block-start: var(--space-small);
+  }
+
+  .pricing-card__action {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .pricing-card__action > :global([data-component-name="Button"]),
+  .pricing-card__action > :global([data-component-name="ButtonLink"]) {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    justify-content: center;
+  }
+
+  .pricing-card__features {
+    gap: var(--gap-regular);
+  }
+
+  .pricing-card__features-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+    padding: 0;
+  }
+
+  @media (forced-colors: active) {
+    .pricing-card,
+    .pricing-card[data-pricing-card-featured="true"] {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .pricing-card__description,
+    .pricing-card__price-suffix,
+    .pricing-card__price-note {
+      color: CanvasText;
+    }
+  }
+</style>

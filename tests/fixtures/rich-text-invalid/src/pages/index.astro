@@ -1,0 +1,17 @@
+---
+import RichText from "../../../../../src/components/website-patterns/rich-text/RichText.astro";
+import RichTextHeading from "../../../../../src/components/website-patterns/rich-text/RichTextHeading.astro";
+import RichTextParagraph from "../../../../../src/components/website-patterns/rich-text/RichTextParagraph.astro";
+import RichTextQuote from "../../../../../src/components/website-patterns/rich-text/RichTextQuote.astro";
+import RichTextVisual from "../../../../../src/components/website-patterns/rich-text/RichTextVisual.astro";
+
+const invalidCase = process.env.RICH_TEXT_INVALID_CASE ?? "heading-level";
+---
+
+{invalidCase === "heading-level" && <RichTextHeading headingLevel={1 as never}>Invalid H1</RichTextHeading>}
+{invalidCase === "paragraph-size" && <RichTextParagraph size={"display" as never}>Invalid size</RichTextParagraph>}
+{invalidCase === "rich-text-slot" && <RichText />}
+{invalidCase === "heading-slot" && <RichTextHeading headingLevel={2} />}
+{invalidCase === "paragraph-slot" && <RichTextParagraph />}
+{invalidCase === "quote-slot" && <RichTextQuote />}
+{invalidCase === "visual-slot" && <RichTextVisual />}

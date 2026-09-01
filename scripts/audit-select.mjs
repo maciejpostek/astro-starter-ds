@@ -23,6 +23,7 @@ const paths = {
   flags: "src/lib/select/selectFlags.ts",
   logos: "src/lib/select/selectLogos.ts",
   logoAssets: "src/lib/logos/logoAssets.ts",
+  logoAssetComponent: "src/components/assets/logos/LogoAsset.astro",
 };
 const sources = Object.fromEntries(Object.entries(paths).map(([key, path]) => [key, read(path)]));
 const rules = [
@@ -158,6 +159,7 @@ for (const contract of [
   "import.meta.glob<string>",
   'query: "?url"',
   "logoRecords",
+  "resolveLogoAsset",
   "resolveLogoMark",
   "markCandidates",
 ]) {
@@ -166,6 +168,7 @@ for (const contract of [
 for (const contract of [
   "resolveSelectFlag",
   "resolveSelectLogo",
+  "<LogoAsset",
   "data-select-selected-flag",
   "data-select-selected-logo",
   "data-select-option-flag",
@@ -250,9 +253,13 @@ for (const [id, sourcePath, rulePath, role, status, nodeId] of [
     errors.push(`${id} registry source and rule mapping is incomplete.`);
     continue;
   }
-  if (record.role !== role || record.syncStatus !== status || record.figmaCanonicalNodeId !== nodeId || !record.dependencies?.includes("material-symbol")) {
-    errors.push(`${id} registry role, status, or MaterialSymbol dependency is incomplete.`);
+  if (record.role !== role || record.syncStatus !== status || record.figmaCanonicalNodeId !== nodeId || !record.dependencies?.includes("material-symbol") || !record.dependencies?.includes("logo-asset")) {
+    errors.push(`${id} registry role, status, MaterialSymbol or LogoAsset dependency is incomplete.`);
   }
+}
+
+if (!sources.logoAssetComponent.includes('data-component-name="LogoAsset"') || !sources.logoAssetComponent.includes("block-size: 100%")) {
+  errors.push("Select LogoAsset dependency does not expose the stable parent-sized renderer contract.");
 }
 
 const selectRecord = registry.components?.find((component) => component.id === "select");

@@ -49,7 +49,7 @@ test("renders public Accordion and slotted AccordionList contracts", async () =>
     assert.match(html, /aria-expanded="true"/u);
     assert.match(html, /aria-expanded="false"/u);
     assert.match(html, /\sdisabled/u);
-    assert.equal(Object.keys(iconLibrary.icons).length, 50);
+    assert.equal(Object.keys(iconLibrary.icons).length, 52);
     for (const icon of Object.keys(iconLibrary.icons)) {
       assert.match(html, new RegExp(`data-accordion-brand-icon="${icon}"`, "u"));
     }

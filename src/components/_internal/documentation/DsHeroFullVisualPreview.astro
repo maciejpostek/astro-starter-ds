@@ -1,0 +1,106 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import HeroFullVisual from "../../website-patterns/hero/HeroFullVisual.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-hero-full-visual" } = Astro.props;
+const compositions = ["centered", "left", "section-header"] as const;
+---
+
+<div
+  class="ds-hero-full-visual-preview"
+  data-component-name="DsHeroFullVisualPreview"
+  data-hero-full-visual-preview
+  data-ds-preview-target
+>
+  {compositions.map((composition) => (
+    <div
+      data-hero-full-visual-preview-composition={composition}
+      hidden={composition !== "centered"}
+    >
+      <HeroFullVisual
+        id={`${idPrefix}-${composition}`}
+        composition={composition}
+        heading={composition === "section-header"
+          ? "Connect promise and action"
+          : "Build a clear first impression"}
+        eyebrow="Design system"
+        paragraph="Present one focused promise with concise supporting copy, scannable benefits and a panoramic visual."
+        headingLevel={2}
+      >
+        <Button slot="actions">Start a project</Button>
+        <Button slot="actions" variant="secondary">Explore the system</Button>
+        <BulletPoint slot="bullet-points" text="Reusable UI" tone="status" />
+        <BulletPoint slot="bullet-points" text="Accessible defaults" tone="status" />
+        <BulletPoint slot="bullet-points" text="Responsive layouts" tone="status" />
+        <span slot="visual" aria-hidden="true"></span>
+      </HeroFullVisual>
+    </div>
+  ))}
+</div>
+
+<script>
+  type HeroFullVisualPreviewState = {
+    composition: "centered" | "left" | "section-header";
+    actions: "visible" | "hidden";
+  };
+
+  const initializeHeroFullVisualPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-hero-full-visual-preview]").forEach((preview) => {
+      if (preview.dataset.heroFullVisualPreviewReady === "true") return;
+      preview.dataset.heroFullVisualPreviewReady = "true";
+
+      const state: HeroFullVisualPreviewState = {
+        composition: "centered",
+        actions: "visible",
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>("[data-hero-full-visual-preview-composition]").forEach((node) => {
+          node.hidden = node.dataset.heroFullVisualPreviewComposition !== state.composition;
+        });
+        preview.querySelectorAll<HTMLElement>(
+          ".content__actions, .section-header__action-area",
+        ).forEach((node) => {
+          node.hidden = state.actions === "hidden";
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (
+            axisId === "heroFullVisualComposition" &&
+            (value === "centered" || value === "left" || value === "section-header")
+          ) {
+            state.composition = value;
+          }
+          if (
+            axisId === "heroFullVisualActions" &&
+            (value === "visible" || value === "hidden")
+          ) {
+            state.actions = value;
+          }
+          render();
+        });
+    });
+  };
+
+  initializeHeroFullVisualPreviews();
+  document.addEventListener("astro:page-load", initializeHeroFullVisualPreviews);
+</script>
+
+<style>
+  .ds-hero-full-visual-preview,
+  .ds-hero-full-visual-preview > [data-hero-full-visual-preview-composition] {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

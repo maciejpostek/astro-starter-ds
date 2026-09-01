@@ -1,0 +1,548 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "aria-label" | "aria-labelledby" | "class"> {
+  label: string;
+  class?: string;
+}
+
+const {
+  label,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof label !== "string" || label.trim().length === 0) {
+  throw new TypeError("HowItWorks label must be a non-empty string.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("HowItWorks requires at least two steps in its default slot.");
+}
+---
+
+<section
+  {...attributes}
+  class:list={["how-it-works", className]}
+  data-component-name="HowItWorks"
+  data-how-it-works-ready="false"
+  data-how-it-works-valid="pending"
+  aria-label={label}
+>
+  <div class="how-it-works__frame" data-how-it-works-pin>
+    <div class="how-it-works__container l-container" data-container="main">
+      <ol class="how-it-works__steps" data-how-it-works-steps>
+        <slot />
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from "gsap";
+  import ScrollTrigger from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const howItWorksCleanups = new Map<HTMLElement, () => void>();
+  const focusableSelector = [
+    "a[href]",
+    "button",
+    "input",
+    "select",
+    "textarea",
+    "summary",
+    "iframe",
+    "video[controls]",
+    "audio[controls]",
+    '[tabindex]:not([tabindex="-1"])',
+    '[contenteditable="true"]',
+  ].join(",");
+
+  const resolveScrollContainer = (element: HTMLElement) => {
+    let parent = element.parentElement;
+    while (parent) {
+      if (/(auto|scroll)/u.test(getComputedStyle(parent).overflowY)) return parent;
+      parent = parent.parentElement;
+    }
+    return undefined;
+  };
+
+  const initializeHowItWorks = (root: HTMLElement) => {
+    if (root.dataset.howItWorksInitialized === "true") return;
+    root.dataset.howItWorksInitialized = "true";
+
+    const frame = root.querySelector<HTMLElement>(":scope > [data-how-it-works-pin]");
+    const list = frame?.querySelector<HTMLOListElement>("[data-how-it-works-steps]");
+    const steps = list
+      ? Array.from(list.querySelectorAll<HTMLElement>(":scope > li[data-how-it-works-step]"))
+      : [];
+    const parts = steps.map((step) => {
+      const progressRegion = step.querySelector<HTMLElement>(":scope > [data-how-it-works-progress]");
+      const progress = progressRegion?.querySelector<HTMLProgressElement>(
+        ':scope > [data-component-name="ProgressBar"][aria-hidden="true"]',
+      );
+      const panel = step.querySelector<HTMLElement>(":scope > [data-how-it-works-panel]");
+      const content = panel?.querySelector<HTMLElement>(":scope > [data-how-it-works-content]");
+      const visual = panel?.querySelector<HTMLElement>(":scope > [data-how-it-works-visual]");
+      const contentComponent = content?.querySelector<HTMLElement>(
+        ':scope > [data-component-name="Content"]',
+      );
+      const ratio = visual?.querySelector<HTMLElement>(
+        ':scope > [data-component-name="Ratio"]',
+      );
+      const labelledBy = step.getAttribute("aria-labelledby");
+      const heading = labelledBy ? step.querySelector<HTMLElement>(`#${CSS.escape(labelledBy)}`) : null;
+      const focusableVisual = visual?.querySelector(focusableSelector);
+
+      return {
+        step,
+        progress,
+        panel,
+        content,
+        visual,
+        contentComponent,
+        ratio,
+        heading,
+        focusableVisual,
+      };
+    });
+
+    const isValid = Boolean(
+      frame
+      && list
+      && steps.length >= 2
+      && parts.every((part) => (
+        part.progress
+        && part.panel
+        && part.content
+        && part.visual
+        && part.contentComponent
+        && part.ratio
+        && part.heading
+        && !part.focusableVisual
+      )),
+    );
+
+    root.dataset.howItWorksValid = isValid ? "true" : "false";
+    if (!isValid || !frame) {
+      root.dataset.howItWorksReady = "false";
+      console.error(
+        "HowItWorks requires at least two labelled direct li steps. Each step needs a decorative ProgressBar, a direct panel with Content, and a non-interactive visual containing Ratio.",
+      );
+      return;
+    }
+
+    let mediaContext = gsap.matchMedia();
+    let componentIsWide = root.getBoundingClientRect().width >= 1024;
+
+    const resetStaticState = () => {
+      root.dataset.howItWorksReady = "false";
+      root.removeAttribute("data-how-it-works-enhanced");
+      root.removeAttribute("data-how-it-works-active");
+      parts.forEach(({ step, panel, content, visual, progress }) => {
+        step.removeAttribute("data-how-it-works-active");
+        panel?.removeAttribute("aria-hidden");
+        if (panel) panel.inert = false;
+        if (progress) progress.value = 0;
+        gsap.set([content, visual], { clearProps: "opacity" });
+      });
+    };
+
+    const installDesktopSequence = () => {
+      mediaContext.add(
+        "(min-width: 64rem) and (min-height: 40rem) and (prefers-reduced-motion: no-preference)",
+        () => {
+          if (!componentIsWide) return;
+
+          root.dataset.howItWorksEnhanced = "true";
+          root.dataset.howItWorksReady = "true";
+
+          const progressElements = parts.map(({ progress }) => progress!);
+          const contentElements = parts.map(({ content }) => content!);
+          const visualElements = parts.map(({ visual }) => visual!);
+          const timeline = gsap.timeline({ paused: true });
+          const scrollStepViewportFraction = 0.35;
+          const progressDuration = 0.32;
+          const exitDuration = 0.16;
+          const revealDuration = 0.22;
+          const staggerDelay = 0.06;
+          let activeIndex = -1;
+          let focusLocked = false;
+          let pendingProgress = 0;
+          let completedSteps = 0;
+          let targetCompletedSteps = 0;
+          let hasSynchronized = false;
+          let isTransitioning = false;
+          const scrollContainer = resolveScrollContainer(root);
+
+          const setActiveStep = (index: number) => {
+            const nextIndex = Math.max(0, Math.min(index, parts.length - 1));
+            if (nextIndex === activeIndex) return;
+            activeIndex = nextIndex;
+            root.dataset.howItWorksActive = String(nextIndex);
+            parts.forEach(({ step, panel }, stepIndex) => {
+              const isActive = stepIndex === nextIndex;
+              step.dataset.howItWorksActive = isActive ? "true" : "false";
+              panel!.setAttribute("aria-hidden", isActive ? "false" : "true");
+              panel!.inert = !isActive;
+            });
+          };
+
+          gsap.set(progressElements, { value: 0 });
+          gsap.set(contentElements, { opacity: 0 });
+          gsap.set(visualElements, { opacity: 0 });
+          gsap.set([contentElements[0], visualElements[0]], { opacity: 1 });
+
+          const applyCompletedState = (nextCompletedSteps: number) => {
+            completedSteps = nextCompletedSteps;
+            targetCompletedSteps = nextCompletedSteps;
+            const nextActiveIndex = Math.min(nextCompletedSteps, parts.length - 1);
+            progressElements.forEach((progress, index) => {
+              progress.value = index < nextCompletedSteps ? 100 : 0;
+            });
+            gsap.set(contentElements, { opacity: 0 });
+            gsap.set(visualElements, { opacity: 0 });
+            gsap.set([contentElements[nextActiveIndex], visualElements[nextActiveIndex]], { opacity: 1 });
+            setActiveStep(nextActiveIndex);
+          };
+
+          const runTowardTarget = () => {
+            if (focusLocked || isTransitioning || completedSteps === targetCompletedSteps) return;
+
+            const direction = targetCompletedSteps > completedSteps ? 1 : -1;
+            const nextCompletedSteps = completedSteps + direction;
+            const currentIndex = Math.min(completedSteps, parts.length - 1);
+            const nextIndex = Math.min(nextCompletedSteps, parts.length - 1);
+
+            isTransitioning = true;
+            timeline.clear().pause(0);
+            timeline.eventCallback("onComplete", () => {
+              completedSteps = nextCompletedSteps;
+              isTransitioning = false;
+              runTowardTarget();
+            });
+
+            if (direction > 0) {
+              timeline.to(progressElements[completedSteps], {
+                value: 100,
+                duration: progressDuration,
+                ease: "power1.out",
+              });
+            }
+
+            if (nextIndex !== currentIndex) {
+              timeline.to(
+                [visualElements[currentIndex], contentElements[currentIndex]],
+                {
+                  opacity: 0,
+                  duration: exitDuration,
+                  ease: "power1.in",
+                  stagger: staggerDelay,
+                },
+              );
+              timeline.call(() => setActiveStep(nextIndex));
+              timeline.to(
+                [contentElements[nextIndex], visualElements[nextIndex]],
+                {
+                  opacity: 1,
+                  duration: revealDuration,
+                  ease: "power1.out",
+                  stagger: staggerDelay,
+                },
+              );
+            }
+
+            if (direction < 0) {
+              timeline.to(progressElements[nextCompletedSteps], {
+                value: 0,
+                duration: progressDuration,
+                ease: "power1.out",
+              });
+            }
+
+            timeline.play(0);
+          };
+
+          const completedStepsForProgress = (progress: number) => Math.min(
+            Math.round(progress * parts.length),
+            parts.length,
+          );
+
+          const synchronize = (progress: number) => {
+            pendingProgress = Math.max(0, Math.min(progress, 1));
+            targetCompletedSteps = completedStepsForProgress(pendingProgress);
+            if (!hasSynchronized) {
+              hasSynchronized = true;
+              applyCompletedState(targetCompletedSteps);
+              return;
+            }
+            if (focusLocked) return;
+            runTowardTarget();
+          };
+
+          const scrollTrigger = ScrollTrigger.create({
+            trigger: root,
+            scroller: scrollContainer,
+            pin: frame,
+            pinSpacing: true,
+            start: "top top",
+            end: () => `+=${parts.length * frame.clientHeight * scrollStepViewportFraction}`,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
+            onUpdate: (self) => synchronize(self.progress),
+            onRefresh: (self) => synchronize(self.progress),
+          });
+
+          const handleFocusIn = (event: FocusEvent) => {
+            const target = event.target;
+            if (!(target instanceof Node)) return;
+            const activePanel = parts[activeIndex]?.panel;
+            if (activePanel?.contains(target)) {
+              focusLocked = true;
+              if (isTransitioning) timeline.pause();
+            }
+          };
+          const handleFocusOut = () => {
+            queueMicrotask(() => {
+              const activePanel = parts[activeIndex]?.panel;
+              if (activePanel?.contains(document.activeElement)) return;
+              focusLocked = false;
+              targetCompletedSteps = completedStepsForProgress(pendingProgress);
+              if (isTransitioning) timeline.resume();
+              else runTowardTarget();
+            });
+          };
+          root.addEventListener("focusin", handleFocusIn);
+          root.addEventListener("focusout", handleFocusOut);
+
+          const refresh = () => ScrollTrigger.refresh();
+          const media = Array.from(root.querySelectorAll<HTMLImageElement | HTMLVideoElement>("img, video"));
+          media.forEach((element) => {
+            element.addEventListener("load", refresh, { once: true });
+            element.addEventListener("loadedmetadata", refresh, { once: true });
+          });
+          window.addEventListener("astro-ds:locomotive-ready", refresh);
+
+          synchronize(scrollTrigger.progress);
+          ScrollTrigger.refresh();
+
+          return () => {
+            root.removeEventListener("focusin", handleFocusIn);
+            root.removeEventListener("focusout", handleFocusOut);
+            window.removeEventListener("astro-ds:locomotive-ready", refresh);
+            media.forEach((element) => {
+              element.removeEventListener("load", refresh);
+              element.removeEventListener("loadedmetadata", refresh);
+            });
+            scrollTrigger.kill();
+            timeline.kill();
+            resetStaticState();
+          };
+        },
+      );
+    };
+
+    installDesktopSequence();
+
+    const resizeObserver = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(([entry]) => {
+          if (!entry) return;
+          const nextIsWide = entry.contentRect.width >= 1024;
+          if (nextIsWide === componentIsWide) return;
+          componentIsWide = nextIsWide;
+          mediaContext.revert();
+          mediaContext = gsap.matchMedia();
+          resetStaticState();
+          installDesktopSequence();
+        });
+    resizeObserver?.observe(root);
+
+    howItWorksCleanups.set(root, () => {
+      resizeObserver?.disconnect();
+      mediaContext.revert();
+      resetStaticState();
+      root.removeAttribute("data-how-it-works-initialized");
+    });
+  };
+
+  const initializeHowItWorksSections = () => {
+    document.querySelectorAll<HTMLElement>('[data-component-name="HowItWorks"]')
+      .forEach(initializeHowItWorks);
+  };
+
+  initializeHowItWorksSections();
+  document.addEventListener("astro:page-load", initializeHowItWorksSections);
+  document.addEventListener("astro:before-swap", () => {
+    howItWorksCleanups.forEach((cleanup) => cleanup());
+    howItWorksCleanups.clear();
+  });
+</script>
+
+<style>
+  .how-it-works {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: clip;
+    background: var(--color-background-canvas);
+    container: how-it-works / inline-size;
+  }
+
+  .how-it-works__frame,
+  .how-it-works__container,
+  .how-it-works__steps {
+    min-inline-size: 0;
+  }
+
+  .how-it-works__frame {
+    inline-size: 100%;
+  }
+
+  .how-it-works__container {
+    padding-block: var(--section-padding-large);
+  }
+
+  .how-it-works__steps {
+    display: flex;
+    inline-size: 100%;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    gap: var(--space-huge);
+    list-style: none;
+  }
+
+  .how-it-works__steps > :global([data-how-it-works-step]) {
+    min-inline-size: 0;
+  }
+
+  .how-it-works__steps > :global([data-how-it-works-step] > [data-how-it-works-progress]) {
+    display: none;
+  }
+
+  .how-it-works__steps > :global([data-how-it-works-step] > [data-how-it-works-panel]) {
+    display: grid;
+    min-inline-size: 0;
+    gap: var(--gap-large);
+  }
+
+  .how-it-works__steps :global([data-how-it-works-content]),
+  .how-it-works__steps :global([data-how-it-works-visual]) {
+    min-inline-size: 0;
+  }
+
+  @container how-it-works (width >= 64rem) {
+    .how-it-works:not([data-how-it-works-enhanced="true"])
+      .how-it-works__steps
+      > :global([data-how-it-works-step] > [data-how-it-works-panel]) {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--site-grid-column-gap);
+      align-items: center;
+    }
+
+    .how-it-works:not([data-how-it-works-enhanced="true"])
+      .how-it-works__steps
+      :global([data-how-it-works-content]) {
+      grid-column: 2 / span 4;
+    }
+
+    .how-it-works:not([data-how-it-works-enhanced="true"])
+      .how-it-works__steps
+      :global([data-how-it-works-visual]) {
+      grid-column: 7 / span 6;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"] .how-it-works__frame {
+      block-size: 100svh;
+      overflow: clip;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"] .how-it-works__container {
+      block-size: 100%;
+      padding-block: 0;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"] .how-it-works__steps {
+      position: relative;
+      block-size: 100%;
+      justify-content: center;
+      gap: var(--gap-small);
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"]
+      .how-it-works__steps
+      > :global([data-how-it-works-step]) {
+      display: contents;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"]
+      .how-it-works__steps
+      > :global([data-how-it-works-step] > [data-how-it-works-progress]) {
+      position: relative;
+      z-index: 2;
+      display: block;
+      inline-size: var(--progress-bar-block-size);
+      block-size: var(--space-huge);
+      direction: ltr;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"]
+      .how-it-works__steps
+      > :global([data-how-it-works-step] > [data-how-it-works-progress] > [data-component-name="ProgressBar"]) {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+      inline-size: var(--space-huge);
+      transform: translate(-50%, -50%) rotate(90deg);
+      transform-origin: center;
+      transition: none;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"]
+      .how-it-works__steps
+      :global([data-component-name="ProgressBar"]::-webkit-progress-value),
+    .how-it-works[data-how-it-works-enhanced="true"]
+      .how-it-works__steps
+      :global([data-component-name="ProgressBar"]::-moz-progress-bar) {
+      transition: none;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"]
+      .how-it-works__steps
+      > :global([data-how-it-works-step] > [data-how-it-works-panel]) {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--site-grid-column-gap);
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"]
+      .how-it-works__steps
+      :global([data-how-it-works-content]) {
+      grid-column: 2 / span 4;
+      pointer-events: auto;
+    }
+
+    .how-it-works[data-how-it-works-enhanced="true"]
+      .how-it-works__steps
+      :global([data-how-it-works-visual]) {
+      grid-column: 7 / span 6;
+    }
+  }
+
+  @media (min-width: 64rem) and (min-height: 40rem) and (prefers-reduced-motion: no-preference) {
+    .how-it-works {
+      isolation: isolate;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .how-it-works {
+      border-block: var(--border-width-default) solid CanvasText;
+    }
+  }
+</style>

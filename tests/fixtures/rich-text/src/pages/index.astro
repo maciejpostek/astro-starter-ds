@@ -1,0 +1,63 @@
+---
+import RichText from "../../../../../src/components/website-patterns/rich-text/RichText.astro";
+import RichTextHeading from "../../../../../src/components/website-patterns/rich-text/RichTextHeading.astro";
+import RichTextParagraph from "../../../../../src/components/website-patterns/rich-text/RichTextParagraph.astro";
+import RichTextQuote from "../../../../../src/components/website-patterns/rich-text/RichTextQuote.astro";
+import RichTextVisual from "../../../../../src/components/website-patterns/rich-text/RichTextVisual.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rich Text contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <article aria-labelledby="article-title">
+        <h1 id="article-title" class="rich-text-heading-h1">One page-level article heading</h1>
+        <RichText
+          id="article-body"
+          class="rich-text-contract-fixture"
+          data-contract="forwarded"
+          aria-label="Article body"
+        >
+          <RichTextParagraph id="lead" size="large">
+            Lead copy can include a <a href="/semantic-link">descriptive link</a>, <strong>strong importance</strong> and <em>emphasis</em>.
+          </RichTextParagraph>
+          <RichTextHeading id="heading-2" headingLevel={2}>Primary article section</RichTextHeading>
+          <RichTextParagraph id="body-default">Base is the default long-form reading size.</RichTextParagraph>
+          <RichTextHeading id="heading-3" headingLevel={3}>Nested section</RichTextHeading>
+          <RichTextHeading id="heading-4" headingLevel={4}>Fourth-level detail</RichTextHeading>
+          <RichTextHeading id="heading-5" headingLevel={5}>Fifth-level detail</RichTextHeading>
+          <RichTextHeading id="heading-6" headingLevel={6}>Sixth-level detail</RichTextHeading>
+          <RichTextQuote
+            id="quoted-source"
+            cite="https://example.com/source"
+            class="quote-contract-fixture"
+            data-contract="forwarded"
+          >
+            A quotation remains a quotation independently of its visual treatment.
+            <span slot="attribution">Ada Example, <cite>Editorial Systems</cite></span>
+          </RichTextQuote>
+          <RichTextVisual
+            id="image-figure"
+            ratio="4:3"
+            class="visual-contract-fixture"
+            data-contract="forwarded"
+          >
+            <img src="/editorial-diagram.webp" alt="Diagram showing the semantic blocks of an article" />
+            <span slot="caption">A contextual caption for the editorial diagram.</span>
+          </RichTextVisual>
+          <RichTextVisual id="video-figure">
+            <iframe src="about:blank" title="Video explaining semantic article structure"></iframe>
+            <span slot="caption">The surrounding article provides a text summary of the embedded video.</span>
+          </RichTextVisual>
+        </RichText>
+      </article>
+    </main>
+  </body>
+</html>

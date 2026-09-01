@@ -46,7 +46,12 @@ accept V1.0 contracts and normalizes their missing roles.
 
 Component creation is default-deny. Creating a page or section does not grant
 permission to create a public component, token, registry record, or API. A
-missing asset returns a blocked result with existing alternatives.
+missing project image does not block composition: preserve its geometry with
+the canonical CSS checkerboard, finish the page or section, and return an
+`assetRequest` asking the user which image to provide. Do not invent, fetch,
+generate, or choose substitute media without explicit authorization. A result
+with unresolved asset requests is accepted as a composition handoff but is not
+release-ready.
 
 ## 2. Resolve Context
 
@@ -64,6 +69,16 @@ paths, a byte-counted `readPlan`, skipped contexts, validators, alternatives,
 and missing inputs. `declaredSourceBytes` measures materialized source content;
 for exact token work this is the selected definitions and referenced aliases,
 not the entire token library.
+
+When `readPlan.selection` is present, materialize only its inclusive line
+range. Registry and Guides selections identify one `componentId`; a missing or
+ambiguous selection blocks the task instead of silently loading the full file.
+`requiredReads` remains a compatible unique path list, while `readPlan` owns
+the precise source boundary and byte accounting.
+
+Component identity resolves in deterministic tiers: canonical `id`, `name` or
+`astroComponent`; qualified `Component.variant`; then one unique canonical
+prefix. Bare variants are not component aliases, and multiple matches block.
 
 It does not return the complete component registry or token library. Context
 budgets are enforced in bytes:
@@ -141,7 +156,7 @@ changes.
 Repair reads the component source, direct dependencies, and its family rule.
 Extend reads the component source/API, family and component-category rules,
 the canonical Component Readiness rule, and only the affected registry and
-Guides projections. Repair also reads Component Readiness when the prompt
+Guides projections through scoped `readPlan.selection` ranges. Repair also reads Component Readiness when the prompt
 concerns readiness, Guides identity, or a reusable component boundary.
 
 Both routes pass styling needs through the token resolver. `repair` or

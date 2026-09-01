@@ -1,0 +1,329 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import NavigationMenu from "./NavigationMenu.astro";
+import "../../../styles/components/button-controls.css";
+
+export type NavigationDesktopMode = "standard" | "menu";
+
+export interface Props extends Omit<HTMLAttributes<"nav">, "aria-label" | "class" | "id"> {
+  id: string;
+  label: string;
+  openMenuLabel: string;
+  closeMenuLabel: string;
+  desktopMode?: NavigationDesktopMode;
+  class?: string;
+}
+
+const {
+  id,
+  label,
+  openMenuLabel,
+  closeMenuLabel,
+  desktopMode = "standard",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+for (const [name, value] of Object.entries({ id, label, openMenuLabel, closeMenuLabel })) {
+  if (typeof value !== "string" || value.trim().length === 0) throw new TypeError(`Navigation ${name} must be a non-empty string.`);
+}
+if (desktopMode !== "standard" && desktopMode !== "menu") throw new TypeError('Navigation desktopMode must be either "standard" or "menu".');
+for (const slot of ["brand", "menu"] as const) {
+  if (!Astro.slots.has(slot)) throw new TypeError(`Navigation requires the ${slot} slot.`);
+}
+
+const panelId = `${id}-panel`;
+const hasLanguage = Astro.slots.has("language");
+const hasAction = Astro.slots.has("action");
+---
+
+<nav
+  {...attributes}
+  id={id}
+  class:list={["navigation", className]}
+  aria-label={label}
+  data-component-name="Navigation"
+  data-navigation-root
+  data-navigation-desktop-mode={desktopMode}
+  data-navigation-presentation={desktopMode === "menu" ? "full" : "standard"}
+  data-navigation-full-open="false"
+>
+  <div class="navigation__backdrop" hidden aria-hidden="true" data-navigation-backdrop></div>
+  <div class="navigation__bar">
+    <div class="navigation__inner">
+      <div class="navigation__brand"><slot name="brand" /></div>
+      <div id={panelId} class="navigation__panel" data-navigation-panel>
+        <NavigationMenu>
+          <slot name="menu" />
+        </NavigationMenu>
+        {(hasLanguage || hasAction) && (
+          <div class="navigation__utilities">
+            {hasLanguage && <div class="navigation__language"><slot name="language" /></div>}
+            {hasAction && <div class="navigation__action"><slot name="action" /></div>}
+          </div>
+        )}
+      </div>
+      <button
+        class="navigation__toggle icon-button"
+        type="button"
+        aria-label={openMenuLabel}
+        aria-expanded="false"
+        aria-controls={panelId}
+        data-control-size="small"
+        data-button-variant="tertiary"
+        data-navigation-open-label={openMenuLabel}
+        data-navigation-close-label={closeMenuLabel}
+        data-navigation-toggle
+      >
+        <span class="navigation__toggle-lines" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<script>
+  import { initializeNavigationRuntime } from "../../../lib/navigation/navigationController";
+  initializeNavigationRuntime();
+</script>
+
+<style>
+  .navigation {
+    position: fixed;
+    z-index: 100;
+    inset-block-start: 0;
+    inset-inline: 0;
+    inline-size: 100%;
+    color: var(--color-text-primary);
+  }
+
+  .navigation__bar {
+    position: relative;
+    z-index: 3;
+    block-size: var(--navigation-bar-height);
+    border-block-end: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+    box-shadow: var(--elevation-surface-subtle);
+  }
+
+  .navigation__inner {
+    display: grid;
+    inline-size: var(--container-main);
+    block-size: 100%;
+    min-inline-size: 0;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--gap-large);
+    margin-inline: auto;
+  }
+
+  .navigation__brand {
+    display: flex;
+    min-inline-size: 0;
+    block-size: var(--navigation-logo-block-size);
+    align-items: center;
+    justify-self: start;
+  }
+
+  .navigation__brand :global(a) {
+    display: inline-flex;
+    block-size: 100%;
+  }
+
+  .navigation__panel {
+    display: contents;
+  }
+
+  .navigation__panel > :global(.navigation-menu) {
+    grid-column: 2;
+  }
+
+  .navigation__utilities {
+    display: flex;
+    min-inline-size: 0;
+    grid-column: 3;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--gap-regular);
+  }
+
+  .navigation__language,
+  .navigation__action {
+    min-inline-size: 0;
+  }
+
+  .navigation__toggle {
+    display: none;
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .navigation__toggle-lines {
+    position: relative;
+    display: grid;
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+    align-content: space-between;
+    padding-block: var(--content-padding-tiny);
+  }
+
+  .navigation__toggle-lines span {
+    display: block;
+    inline-size: 100%;
+    block-size: var(--border-width-strong);
+    border-radius: var(--radius-full);
+    background: currentColor;
+    transform-origin: center;
+    transition: opacity var(--motion-transition), transform var(--motion-transition);
+  }
+
+  .navigation[data-navigation-full-open="true"] .navigation__toggle-lines span:nth-child(1) {
+    transform: translateY(var(--content-padding-tiny)) rotate(45deg);
+  }
+
+  .navigation[data-navigation-full-open="true"] .navigation__toggle-lines span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .navigation[data-navigation-full-open="true"] .navigation__toggle-lines span:nth-child(3) {
+    transform: translateY(calc(var(--content-padding-tiny) * -1)) rotate(-45deg);
+  }
+
+  .navigation__backdrop {
+    position: fixed;
+    z-index: 1;
+    inset-block-start: var(--navigation-bar-height);
+    inset-inline: 0;
+    block-size: calc(100dvb - var(--navigation-bar-height));
+    background: var(--color-background-overlay);
+    backdrop-filter: blur(var(--navigation-backdrop-blur));
+    animation: navigation-backdrop-enter var(--motion-duration-fast) var(--motion-ease-standard) both;
+  }
+
+  .navigation[data-navigation-presentation="full"] .navigation__inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .navigation[data-navigation-presentation="full"] .navigation__toggle {
+    display: inline-flex;
+    grid-column: 2;
+  }
+
+  .navigation[data-navigation-presentation="full"] .navigation__panel {
+    position: fixed;
+    z-index: 2;
+    inset-block-start: var(--navigation-bar-height);
+    inset-inline: 0;
+    display: none;
+    block-size: calc(100dvb - var(--navigation-bar-height));
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--gap-xlarge);
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: color-mix(in oklab, var(--color-background-canvas) 92%, transparent);
+    padding: var(--content-padding-xlarge) var(--site-padding-inline) var(--content-padding-xxlarge);
+  }
+
+  .navigation[data-navigation-presentation="full"][data-navigation-full-open="true"] .navigation__panel {
+    display: flex;
+    animation: navigation-panel-enter var(--motion-duration-surface-enter) var(--motion-ease-premium-out) both;
+  }
+
+  .navigation[data-navigation-presentation="full"] .navigation__utilities {
+    inline-size: 100%;
+    align-items: stretch;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: var(--gap-regular);
+    margin-block-start: auto;
+    padding-block-start: var(--content-padding-large);
+    border-block-start: var(--border-width-default) solid var(--color-border-subtle);
+  }
+
+  .navigation[data-navigation-presentation="full"] .navigation__action {
+    margin-inline-start: auto;
+  }
+
+  @keyframes navigation-backdrop-enter {
+    from { opacity: 0; }
+  }
+
+  @keyframes navigation-panel-enter {
+    from {
+      opacity: 0;
+      translate: 0 calc(var(--gap-small) * -1);
+    }
+  }
+
+  @media (width < 64rem) {
+    .navigation__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .navigation__toggle {
+      display: inline-flex;
+      grid-column: 2;
+    }
+
+    .navigation__panel {
+      position: fixed;
+      z-index: 2;
+      inset-block-start: var(--navigation-bar-height);
+      inset-inline: 0;
+      display: none;
+      block-size: calc(100dvb - var(--navigation-bar-height));
+      min-inline-size: 0;
+      flex-direction: column;
+      gap: var(--gap-xlarge);
+      overflow: auto;
+      overscroll-behavior: contain;
+      background: color-mix(in oklab, var(--color-background-canvas) 92%, transparent);
+      padding: var(--content-padding-xlarge) var(--site-padding-inline) var(--content-padding-xxlarge);
+    }
+
+    .navigation[data-navigation-full-open="true"] .navigation__panel {
+      display: flex;
+      animation: navigation-panel-enter var(--motion-duration-surface-enter) var(--motion-ease-premium-out) both;
+    }
+
+    .navigation__utilities {
+      inline-size: 100%;
+      align-items: stretch;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: var(--gap-regular);
+      margin-block-start: auto;
+      padding-block-start: var(--content-padding-large);
+      border-block-start: var(--border-width-default) solid var(--color-border-subtle);
+    }
+
+    .navigation__action {
+      margin-inline-start: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .navigation__toggle-lines span,
+    .navigation__backdrop,
+    .navigation__panel {
+      animation: none;
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .navigation__bar,
+    .navigation[data-navigation-presentation="full"] .navigation__panel {
+      border-color: CanvasText;
+    }
+
+    .navigation__backdrop {
+      background: Canvas;
+      opacity: 0.8;
+      backdrop-filter: none;
+      forced-color-adjust: none;
+    }
+  }
+</style>

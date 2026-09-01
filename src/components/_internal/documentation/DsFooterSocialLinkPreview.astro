@@ -1,0 +1,18 @@
+---
+import FooterSocialLink from "../../website-patterns/footer/FooterSocialLink.astro";
+---
+
+<ul class="ds-footer-social-link-preview" data-component-name="DsFooterSocialLinkPreview" data-ds-preview-target>
+  <FooterSocialLink href="#instagram" platform="instagram" label="Instagram" presentation="icon-only" />
+  <FooterSocialLink href="#linkedin" platform="linkedin" label="LinkedIn" presentation="labelled" />
+</ul>
+
+<style>
+  .ds-footer-social-link-preview {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-medium);
+    list-style: none;
+  }
+</style>

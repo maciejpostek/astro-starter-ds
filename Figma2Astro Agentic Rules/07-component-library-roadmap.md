@@ -24,14 +24,14 @@ component appears exactly once with its current sync and readiness state.
 <!-- BEGIN GENERATED BASE COMPONENT MAP -->
 | Family page | Public components |
 | --- | --- |
-| Buttons | `Button` — `mapped`, node `190:131`, readiness `review/passed`; `ButtonLink` — `mapped`, node `959:2706`, readiness `review/passed`; `IconButton` — `mapped`, node `193:110`, readiness `review/passed`; `CopyButton` — `mapped`, node `1343:310`, readiness `review/passed`; `CopyIconButton` — `mapped`, node `1343:1000`, readiness `review/passed`; `SocialButton` — `intentional-difference`, node `1344:95`, readiness `review/passed`; `SocialIconButton` — `intentional-difference`, node `1344:1688`, readiness `review/passed`; `ButtonGroup` — `mapped`, node `204:103`, readiness `review/passed` |
+| Buttons | `Button` — `mapped`, node `190:131`, readiness `review/passed`; `ButtonLink` — `mapped`, node `959:2706`, readiness `review/passed`; `IconButton` — `mapped`, node `193:110`, readiness `review/passed`; `CopyButton` — `mapped`, node `1343:310`, readiness `review/passed`; `CopyIconButton` — `mapped`, node `1343:1000`, readiness `review/passed`; `SocialButton` — `intentional-difference`, node `1344:95`, readiness `review/passed`; `SocialIconButton` — `intentional-difference`, node `1344:1688`, readiness `review/passed`; `ButtonGroup` — `intentional-difference`, node `204:103`, readiness `review/passed` |
 | Switch | `SwitchButton` — `mapped`, node `206:166`, readiness `review/passed`; `SwitchLabel` — `mapped`, node `1346:108`, readiness `review/passed`; `SwitchCard` — `mapped`, node `1347:215`, readiness `review/passed` |
 | Inputs | `Input` — `mapped`, node `215:29`, readiness `review/passed`; `Label` — `mapped`, node `216:9`, readiness `review/passed`; `SearchInput` — `mapped`, node `223:137`, readiness `review/passed`; `FormField` — `mapped`, node `224:122`, readiness `review/passed`; `UrlInput` — `mapped`, node `1369:104`, readiness `review/passed`; `DateInput` — `mapped`, node `1369:151`, readiness `review/passed`; `PasswordInput` — `mapped`, node `1369:456`, readiness `review/passed`; `ShareLinkInput` — `mapped`, node `1369:216`, readiness `review/passed`; `CounterInput` — `mapped`, node `1369:311`, readiness `review/passed`; `TextAreaInput` — `mapped`, node `1369:482`, readiness `review/passed` |
 | Checkbox & Radio | `Checkbox` — `mapped`, node `219:110`, readiness `review/passed`; `Radio` — `mapped`, node `220:80`, readiness `review/passed`; `CheckboxLabel` — `mapped`, node `1370:36`, readiness `review/passed`; `RadioLabel` — `mapped`, node `1370:126`, readiness `review/passed`; `CheckboxCard` — `mapped`, node `1370:451`, readiness `review/passed`; `RadioCard` — `mapped`, node `1370:611`, readiness `review/passed` |
 | Select | `Select` — `mapped`, node `222:83`, readiness `review/passed`; `CompactSelect` — `mapped`, node `1372:25`, readiness `review/passed`; `InlineSelect` — `mapped`, node `1372:51`, readiness `review/passed` |
 | File Upload | `FileUpload` — `mapped`, node `221:88`, readiness `review/passed`; `FileUploadCard` — `mapped`, node `1372:164`, readiness `review/passed` |
 | Form Structure | Reserved — no public components |
-| Tabs | `Tab` — `mapped`, node `295:15`, readiness `review/passed`; `Tabs` — `mapped`, node `1372:171`, readiness `review/passed`; `TabMenu` — `mapped`, node `1563:2827`, readiness `review/passed` |
+| Tabs | `Tab` — `mapped`, node `295:15`, readiness `review/passed`; `ProgressTab` — `astro-only`, node `—`, readiness `review/passed`; `Tabs` — `intentional-difference`, node `1372:171`, readiness `review/passed`; `TabMenu` — `mapped`, node `1563:2827`, readiness `review/passed` |
 | Accordion | `Accordion` — `mapped`, node `297:105`, readiness `review/passed`; `AccordionList` — `mapped`, node `299:23`, readiness `review/passed` |
 | Progress Bar | `ProgressBar` — `mapped`, node `1602:90768`, readiness `review/passed` |
 | Tooltip | `Tooltip` — `mapped`, node `1371:45`, readiness `review/passed`; `InfoPopover` — `mapped`, node `1371:74`, readiness `review/passed` |
@@ -39,11 +39,12 @@ component appears exactly once with its current sync and readiness state.
 | Feedback Messages | `Alert` — `mapped`, node `1371:202`, readiness `review/passed`; `NotificationAndToast` — `mapped`, node `1371:390`, readiness `review/passed` |
 | Dividers | `ContentDivider` — `mapped`, node `270:10`, readiness `review/passed`; `TitleRow` — `mapped`, node `1680:6`, readiness `review/passed` |
 | Ratio | `Ratio` — `mapped`, node `1009:2614`, readiness `review/passed` |
+| Avatar | `AvatarImage` — `astro-only`, node `—`, readiness `review/partial`; `AvatarName` — `astro-only`, node `—`, readiness `review/partial` |
 | Breadcrumbs | `Breadcrumb` — `mapped`, node `1009:2627`, readiness `review/passed`; `Breadcrumbs` — `mapped`, node `1448:133`, readiness `review/passed` |
 | Pagination | `PaginationItem` — `mapped`, node `1373:137`, readiness `review/passed`; `PaginationEllipsis` — `mapped`, node `1373:172`, readiness `review/passed`; `PaginationGroup` — `mapped`, node `1373:178`, readiness `review/passed`; `Pagination` — `mapped`, node `1373:203`, readiness `review/passed` |
 | Tag | `Tag` — `mapped`, node `244:19`, readiness `review/passed` |
 | Label | Reserved — no public components |
-| Eyebrow | `Eyebrow` — `mapped`, node `268:5`, readiness `review/passed` |
+| Eyebrow | `Eyebrow` — `intentional-difference`, node `268:5`, readiness `review/passed` |
 | Popup | `Popup` — `astro-only`, node `—`, readiness `review/passed` |
 <!-- END GENERATED BASE COMPONENT MAP -->
 
@@ -357,6 +358,98 @@ below `64rem`. No new Variables, tokens, icons or Figma mutations are part of
 this implementation, and the manifest remains the mapping while Code Connect
 is unavailable for the current seat.
 
+### Website Patterns / Features
+
+Canonical Figma master:
+
+- FeatureSimple — `1980:5361` (`intentional-difference`, Astro visual review pending).
+- FeatureProof — `1980:5348` (`intentional-difference`, Astro visual review pending).
+- Feature5050 — `1980:5351` (`intentional-difference`, Astro visual review pending).
+- Feature5050Centered — `1980:5357` (`intentional-difference`, Astro visual review pending).
+- FeatureScroll — `2098:1281` (`intentional-difference`, Astro visual review pending).
+
+Astro source:
+
+- `src/components/website-patterns/features/FeatureSimple.astro`.
+- `src/components/website-patterns/features/FeatureProof.astro`.
+- `src/components/website-patterns/features/Feature5050.astro`.
+- `src/components/website-patterns/features/Feature5050Centered.astro`.
+- `src/components/website-patterns/features/FeatureScroll.astro`.
+
+FeatureSimple maps `Visual Position=Right|Left` to one public section that
+reuses Content and Ratio. Heading and visual remain required; nested Content
+visibility switches map to optional content or the actions Slot, while
+alignment and Ratio remain bounded public props. The two 1440px Figma variants
+are the Desktop visual reference. Astro preserves their 12-column spans and
+adds a component-owned stack below `64rem`, retaining each variant's source
+order. No new Variables, tokens, icons or Figma mutations are part of this
+mapping, and the repository manifest remains canonical while Code Connect is
+unavailable for the current seat.
+
+FeatureProof maps `Visual Position=Right|Left` to one public proof-led feature
+section that reuses Content, Ratio, TitleRow and BulletPoint. Heading and visual
+remain required; Astro intentionally fixes Ratio at `1:1` while Figma retains
+the source `2:3` geometry. Optional actions, key points,
+logos and supporting details map from Figma visibility properties to Astro
+content presence. Logo and supporting-detail titles are coupled to their named
+slots, while consumer-owned local logo assets remain composition content rather
+than a new public component. The two 1440px Figma variants are the Desktop
+visual reference. Astro preserves their 12-column spans and adds a
+component-owned stack below `64rem`, retaining each variant's source order. No
+new Variables, tokens, icons or Figma mutations are part of this mapping, and
+the repository manifest remains canonical while Code Connect is unavailable
+for the current seat.
+
+Feature5050 maps `Visual Position=Right|Left` to logical Astro placement
+`end|start` in one content-first public section. Content and its indirect
+ButtonGroup dependency own the introduction and actions; BulletPoint and
+TitleRow own semantic supporting lists and labelled groups. Figma visibility
+booleans become named-slot presence, with titles required for logos and detail
+bullets. The two 1440 × 800 variants remain Desktop visual references, while
+Astro keeps Content first in the DOM for both positions, uses a `100svh` wide
+minimum, stretches the ratio-free Visual through the full section row and
+applies `--content-padding-xxlarge` only on the Content side adjacent to the
+Visual. Below the `64rem` component threshold it removes the viewport minimum
+and adjacent-side padding, then stacks Content before Visual. Fixed canvas,
+region and Layout Grid Columns measurements do not become CSS or tokens. The
+Astro-only LogoAsset renderer resolves approved catalog variants inside the
+Feature5050-owned height token; it does not create a Figma logo component or
+mutate Figma. The repository manifest remains canonical while Code Connect is
+unavailable for the current seat.
+
+Feature5050Centered maps `Visual=Right|Left` to the closed Astro
+`visualPosition="right"|"left"` prop in one content-first public section.
+Content owns the required heading and optional eyebrow and paragraph;
+BulletPoint children occupy one semantic default-slot list and actions occupy
+one ButtonGroup. The consumer-owned visual Slot replaces Figma's empty media
+frame. The two 1440 × 800 variants remain Desktop visual references. Astro
+uses equal breakout halves with vertically centered Content and a viewport-edge
+visual with radius only on the Content-facing edge, keeps Content first in the
+DOM for both positions, and stacks Content before a square, full-bleed Visual
+below the `64rem` component threshold. The Visual wrapper owns the canonical
+CSS Checkerboard Visual Placeholder beneath slotted content and does not add
+Ratio or request an image asset solely for the empty frame. The fixed Figma height
+maps to a wide `100svh` minimum while narrow layouts stay content-sized. No new
+Variables, tokens, icons or Figma mutations are part of this mapping, and the
+repository manifest remains canonical while Code Connect is unavailable for
+the current seat.
+
+FeatureScroll maps the single structural `Type=Default` variant and native
+`Feature Items` Slot to one public section with a strict default-slot anatomy;
+the private Figma item helper does not become a second public Astro component.
+Content owns the introduction, while Ratio at 16:9, BulletPoint, Tag and
+ButtonGroup remain canonical nested dependencies. Astro progressively enhances
+the wide layout with one responsive 16:9 sticky visual viewport, the approved
+minimum item height, one shared-width center border and non-interactive,
+`aria-hidden` stage clones. Passive, animation-frame-scheduled scroll
+synchronization changes the image only when the next card top reaches the
+sticky viewport top. Without JavaScript, with invalid anatomy, and below the
+`64rem` component threshold, every authored visual remains inline after its
+content in source order. The approved Astro-only `feature-scroll-size` token
+projects Figma's raw 480px item rhythm as a content-safe minimum; it does not
+authorize a Figma Variable change. The manifest remains canonical while Code
+Connect is unavailable for the current seat.
+
 ### Website Patterns / Stats & Metrics
 
 Canonical Figma masters:
@@ -391,18 +484,87 @@ part of this mapping.
 
 Canonical Figma masters:
 
-- HeroBreakout — `1800:389` (`figma-only`).
-- HeroFullVisual — `1788:639` (`figma-only`).
+- HeroBreakout — `1800:389` (`intentional-difference`) maps to
+  `src/components/website-patterns/hero/HeroBreakout.astro`.
+- Hero5050 — canonical Component `1980:3690` inside documentation ComponentSet
+  `2034:5586` (`intentional-difference`) maps to
+  `src/components/website-patterns/hero/Hero5050.astro`.
+- HeroAlignBottom — `2031:402` (`intentional-difference`) maps to
+  `src/components/website-patterns/hero/HeroAlignBottom.astro`.
+- HeroSpaced5050 — `2041:5984` (`intentional-difference`) maps to
+  `src/components/website-patterns/hero/HeroSpaced5050.astro`.
+- HeroVisualCenter — `2018:397` (`intentional-difference`) maps to
+  `src/components/website-patterns/hero/HeroVisualCenter.astro`.
+- HeroFullVisual — `1788:639` (`intentional-difference`) maps to
+  `src/components/website-patterns/hero/HeroFullVisual.astro`.
+
+Hero5050 preserves the approved Desktop equal split with Content and optional
+BulletPoint evidence in columns 1–4, Caption and Actions across columns 1–6,
+and Visual from column seven to `full-end`. Astro maps Figma visibility
+properties to content presence, requires semantic visual markup, fixes the
+page title to `h1`, uses `100svh` as a wide minimum-height mechanic and adds a
+source-order-preserving stack below the `64rem` component container: Content
+keeps the main inline padding while the 4:3 Visual spans `full-start / full-end`.
+Fixed Figma dimensions remain presentation metadata. Validation is
+tracked in the architecture manifest and visual readiness remains `review`
+until human runtime acceptance.
+
+HeroBreakout preserves the Desktop content region across columns 1–6, its
+compact Content and required BulletPoint list across the first four nested
+columns, the lower Caption and ButtonGroup area across all six, and Visual
+from column seven to `full-end`. Unlike Hero5050, the Visual starts after the
+approved hero-top inset and continues to the section end. Astro maps optional
+copy and actions to presence, requires accessible visual content, defaults the
+page-opening heading to `h1`, and adds a source-order-preserving stack below
+the `64rem` component container. In that narrow stack Content retains the main
+inline padding while Visual spans `full-start / full-end`. Fixed Figma
+dimensions remain presentation metadata; validation is tracked in the
+architecture manifest and visual readiness remains `review` until human
+screenshot acceptance.
+
+HeroAlignBottom reuses canonical Content in columns 1–4 and places the required
+Visual in columns 6–12, with Content aligned to the bottom of the shared row.
+Astro exposes the Content copy as props, forwards optional actions, requires a
+replaceable visual Slot and adds the accepted source-order-preserving stack
+below a `64rem` component container because the Figma master defines Desktop
+only. The 1440 × 800 master and 738 × 640 visual remain documentation review
+fixtures rather than public API or tokens. Validation is tracked in the
+architecture manifest; visual readiness remains `review` until human runtime
+acceptance.
+
+HeroSpaced5050 is the alternate Astro-backed public component on the Hero page. It
+keeps the approved Desktop 50–50 composition with content in columns 1–6 and
+Visual from column seven to `full-end`, while Astro maps Figma visibility
+booleans to content presence, requires a visual Slot, owns semantic heading
+rank and adds a source-order-preserving stack below a `64rem` component
+container. In that stack, content remains on the padded content lines and
+Visual spans edge to edge from `full-start` to `full-end`. The fixed 1440 × 800
+Figma canvas and derived widths remain
+presentation metadata. Validation is mapped in the architecture manifest;
+visual readiness remains `review` until human runtime acceptance.
+
+HeroVisualCenter is the centered Astro-backed public composition. It preserves
+the Desktop `5 / 12 / 10` relationship for Content, Bullet Points and the 16:9
+Visual while mapping the optional Figma visibility controls to paragraph,
+actions and bullet-point presence. Eyebrow, Heading and Visual remain required;
+Astro owns semantic heading rank and adds an accepted source-order-preserving
+full-width reflow below the `64rem` component container. Fixed Figma dimensions
+and Layout Grid Columns remain presentation metadata. Validation is tracked in
+the architecture manifest; visual readiness remains `review` until human
+runtime acceptance.
 
 HeroFullVisual uses `Composition=Centered|Left|Section Header` and keeps the
 section shell at the Desktop viewport width. Its inner Content Grid follows
 the semantic site padding; Content and Bullet Points fill up to `Layout Grid
 Columns / span/05`, while the SectionHeader composition fills up to `span/12`.
-The Visual is intentionally full width from `full-start` to `full-end`.
-The master is documented in `DSD/Hero Documentation`; the original Hero
-experiment section contains live instances instead of duplicate masters. No
-Mobile or Tablet composition, Astro component, or public API is approved in
-this phase.
+Astro maps those relationships to the public breakout and site grids, delegates
+the introduction to Content or SectionHeader, requires direct BulletPoint
+children and renders the Visual through Ratio at `2.39:1` from `full-start` to
+`full-end`. Heading rank remains semantic and defaults to `h1`. Figma stays
+Desktop-only; Astro intentionally reflows the bounded content regions below
+the `64rem` component threshold without changing source order or adding a
+Device prop. The master remains documented in `DSD/Hero Documentation`, and
+visual readiness stays `review` until human runtime acceptance.
 
 ### Website Patterns / Announcements & Banners
 
@@ -442,6 +604,25 @@ Astro props. The public component stays fluid instead of copying the 394px and
 component token instead of Figma's unbound 93px dimension. That one-way token
 projection remains an intentional difference; no Figma Variable or checkpoint
 changes are included in this implementation.
+
+### Website Patterns / Blog & Resources
+
+Canonical Figma master:
+
+- BlogCard — `1852:2902` (`intentional-difference`, Astro visual review pending).
+
+Astro source:
+
+- `src/components/website-patterns/blog-resources/BlogCard.astro`.
+
+BlogCard maps the four `Layout × Media Placement` Figma variants to one
+semantic article with optional 16:9 visual and Tag slots, optional date and
+description content, and an href-driven ButtonLink. Figma visibility switches
+map to content presence instead of duplicated `show*` props. Astro stays fluid,
+lets horizontal tracks stack intrinsically, preserves source order and allows
+localized copy to grow without clipping. The 600px vertical and 748px
+horizontal widths remain documentation fixtures. No new Variable, token, icon,
+Figma mutation or Code Connect mapping is included.
 
 ## Implementation unit
 

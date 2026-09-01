@@ -1,0 +1,42 @@
+---
+import LogoCard from "../../../../../src/components/website-patterns/brand-logo-proof/LogoCard.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const invalidCase = process.env.LOGO_CARD_INVALID_CASE;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LogoCard contract fixture</title>
+  </head>
+  <body>
+    <main>
+      {invalidCase === "slug" ? (
+        <LogoCard slug=" " alt="Invalid" />
+      ) : invalidCase === "alt" ? (
+        <LogoCard slug="github" alt={undefined as unknown as string} />
+      ) : invalidCase === "loading" ? (
+        <LogoCard slug="github" alt="GitHub" loading={"auto" as "eager"} />
+      ) : invalidCase === "unknown-slug" ? (
+        <LogoCard slug="unknown-company" alt="Unknown company" />
+      ) : (
+        <>
+          <LogoCard
+            id="logo-card-informative"
+            slug="github"
+            alt="GitHub"
+            class="logo-card-contract-fixture"
+            data-contract="forwarded"
+          />
+          <LogoCard id="logo-card-decorative" slug="airbnb" alt="" />
+          <LogoCard id="logo-card-lazy" slug="atlassian" alt="Atlassian" loading="lazy" />
+          <LogoCard id="logo-card-wide" slug="companies-tools" alt="Companies.tools" />
+        </>
+      )}
+    </main>
+  </body>
+</html>

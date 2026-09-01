@@ -1,0 +1,32 @@
+---
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import HeroBreakout from "../../../../../src/components/website-patterns/hero/HeroBreakout.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.HERO_BREAKOUT_INVALID_CASE ?? "heading";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { heading: "   " },
+  eyebrow: { heading: "Hero", eyebrow: "" },
+  paragraph: { heading: "Hero", paragraph: "   " },
+  caption: { heading: "Hero", caption: "" },
+  headingLevel: { heading: "Hero", headingLevel: 7 },
+  bullets: { heading: "Hero" },
+  visual: { heading: "Hero" },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
+---
+
+{invalidCase === "bullets" ? (
+  <HeroBreakout {...props}>
+    <div slot="visual">Valid visual</div>
+  </HeroBreakout>
+) : invalidCase === "visual" ? (
+  <HeroBreakout {...props}>
+    <BulletPoint text="Valid bullet" />
+  </HeroBreakout>
+) : (
+  <HeroBreakout {...props}>
+    <BulletPoint text="Valid bullet" />
+    <div slot="visual">Valid visual</div>
+  </HeroBreakout>
+)}

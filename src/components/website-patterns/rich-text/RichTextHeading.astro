@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+export type RichTextHeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+export interface Props extends Omit<HTMLAttributes<"h2">, "class"> {
+  headingLevel: RichTextHeadingLevel;
+  class?: string;
+}
+
+const { headingLevel, class: className, ...attributes } = Astro.props;
+
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("RichTextHeading headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("RichTextHeading requires default-slot content.");
+}
+
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+---
+
+<HeadingTag
+  {...attributes}
+  class:list={["rich-text-heading", `rich-text-heading-h${headingLevel}`, className]}
+  data-component-name="RichTextHeading"
+  data-rich-text-heading-level={headingLevel}
+>
+  <slot />
+</HeadingTag>
+
+<style>
+  .rich-text-heading {
+    min-inline-size: 0;
+    inline-size: 100%;
+    color: var(--color-text-primary);
+  }
+</style>

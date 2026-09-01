@@ -4,20 +4,20 @@ import Button from "../../base-components/buttons/Button.astro";
 import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
 
 interface Props {
-  mode?: "canonical" | "responsive";
+  idPrefix?: string;
 }
 
-const { mode = "canonical" } = Astro.props;
+const { idPrefix = "documentation-bullet-card-simple" } = Astro.props;
+const previewId = `${idPrefix}-preview`;
 ---
 
 <div
   class="bullet-card-simple-preview"
   data-component-name="DsBulletCardSimplePreview"
   data-bullet-card-simple-preview
-  data-preview-mode={mode}
 >
   <BulletCardSimple
-    id="bullet-card-simple-preview"
+    id={previewId}
     title="Bullet Card Title"
     description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset."
     data-ds-preview-target
@@ -25,7 +25,7 @@ const { mode = "canonical" } = Astro.props;
     <Fragment slot="actions">
       <Button>Button</Button>
       <Button variant="secondary">Button</Button>
-      <ButtonLink href="#bullet-card-simple-preview">Button Link</ButtonLink>
+      <ButtonLink href={`#${previewId}`}>Button Link</ButtonLink>
     </Fragment>
   </BulletCardSimple>
 </div>
@@ -34,10 +34,5 @@ const { mode = "canonical" } = Astro.props;
   .bullet-card-simple-preview {
     inline-size: 100%;
     min-inline-size: 0;
-    max-inline-size: 34.3125rem;
-  }
-
-  .bullet-card-simple-preview[data-preview-mode="responsive"] {
-    max-inline-size: none;
   }
 </style>

@@ -1,0 +1,311 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import TitleRow from "../../base-components/dividers/TitleRow.astro";
+import Content from "../content/Content.astro";
+
+export type Feature5050VisualPosition = "start" | "end";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "aria-labelledby" | "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  visualPosition?: Feature5050VisualPosition;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  logosTitle?: string;
+  detailBulletsTitle?: string;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  visualPosition = "end",
+  headingLevel = 2,
+  logosTitle,
+  detailBulletsTitle,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("Feature5050 heading must be a non-empty string.");
+}
+for (const [name, value] of [
+  ["eyebrow", eyebrow],
+  ["paragraph", paragraph],
+  ["logosTitle", logosTitle],
+  ["detailBulletsTitle", detailBulletsTitle],
+] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`Feature5050 ${name} must be a non-empty string when provided.`);
+  }
+}
+if (visualPosition !== "start" && visualPosition !== "end") {
+  throw new TypeError('Feature5050 visualPosition must be either "start" or "end".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("Feature5050 headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("Feature5050 requires visual content in its visual slot.");
+}
+
+const hasActions = Astro.slots.has("actions");
+const hasPrimaryBullets = Astro.slots.has("primaryBullets");
+const hasLogos = Astro.slots.has("logos");
+const hasDetailBullets = Astro.slots.has("detailBullets");
+
+if (hasLogos && !logosTitle) {
+  throw new TypeError("Feature5050 logosTitle is required when the logos slot is used.");
+}
+if (hasDetailBullets && !detailBulletsTitle) {
+  throw new TypeError("Feature5050 detailBulletsTitle is required when the detailBullets slot is used.");
+}
+
+const rootId = id || `feature-5050-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const logosTitleId = `${rootId}-logos-title`;
+const detailBulletsTitleId = `${rootId}-detail-bullets-title`;
+const contentProps = {
+  id: contentId,
+  heading,
+  eyebrow,
+  paragraph,
+  align: "left" as const,
+  headingLevel,
+};
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["feature-5050", "l-section", className]}
+  data-padding="none"
+  data-component-name="Feature5050"
+  data-feature-visual-position={visualPosition}
+  aria-labelledby={headingId}
+>
+  <div class="feature-5050__layout l-grid" data-grid="breakout">
+    <div class="feature-5050__content-region">
+      {hasActions ? (
+        <Content {...contentProps}>
+          <Fragment slot="actions">
+            <slot name="actions" />
+          </Fragment>
+        </Content>
+      ) : (
+        <Content {...contentProps} />
+      )}
+
+      {(hasPrimaryBullets || hasLogos || hasDetailBullets) && (
+        <div class="feature-5050__details">
+          {hasPrimaryBullets && (
+            <ul class="feature-5050__primary-bullets">
+              <slot name="primaryBullets" />
+            </ul>
+          )}
+
+          {hasLogos && (
+            <div class="feature-5050__group" role="group" aria-labelledby={logosTitleId}>
+              <TitleRow id={logosTitleId} text={logosTitle!} />
+              <div class="feature-5050__logos">
+                <slot name="logos" />
+              </div>
+            </div>
+          )}
+
+          {hasDetailBullets && (
+            <div class="feature-5050__group">
+              <TitleRow id={detailBulletsTitleId} text={detailBulletsTitle!} />
+              <ul class="feature-5050__detail-bullets" aria-labelledby={detailBulletsTitleId}>
+                <slot name="detailBullets" />
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+
+    <div class="feature-5050__visual">
+      <slot name="visual" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .feature-5050 {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: hidden;
+    background: var(--color-background-canvas);
+    container: feature-5050 / inline-size;
+  }
+
+  .feature-5050__layout {
+    min-block-size: 100svh;
+  }
+
+  .feature-5050__layout,
+  .feature-5050__content-region,
+  .feature-5050__details,
+  .feature-5050__group,
+  .feature-5050__primary-bullets,
+  .feature-5050__detail-bullets,
+  .feature-5050__logos,
+  .feature-5050__visual {
+    min-inline-size: 0;
+  }
+
+  .feature-5050__content-region {
+    display: flex;
+    grid-column: content-start / span 6;
+    grid-row: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--gap-xlarge);
+    padding-inline-end: var(--content-padding-xxlarge);
+    padding-block: var(--section-padding-small);
+  }
+
+  .feature-5050[data-feature-visual-position="start"] .feature-5050__content-region {
+    grid-column: content-column 7 / span 6;
+    padding-inline-start: var(--content-padding-xxlarge);
+    padding-inline-end: 0;
+  }
+
+  .feature-5050__details,
+  .feature-5050__group,
+  .feature-5050__primary-bullets {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .feature-5050__details {
+    gap: var(--gap-xlarge);
+  }
+
+  .feature-5050__group {
+    gap: var(--gap-medium);
+  }
+
+  .feature-5050__primary-bullets,
+  .feature-5050__detail-bullets {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .feature-5050__primary-bullets {
+    gap: var(--gap-regular);
+  }
+
+  .feature-5050__logos,
+  .feature-5050__detail-bullets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--gap-medium);
+  }
+
+  .feature-5050__logos {
+    align-items: center;
+  }
+
+  .feature-5050__logos > :global(*) {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    block-size: var(--feature-5050-logo-block-size);
+    flex: 0 0 auto;
+  }
+
+  .feature-5050__logos > :global([data-component-name="LogoAsset"]) {
+    block-size: var(--feature-5050-logo-block-size);
+  }
+
+  .feature-5050__logos > :global(a) {
+    display: inline-flex;
+  }
+
+  .feature-5050__logos > :global(a > [data-component-name="LogoAsset"]) {
+    block-size: 100%;
+  }
+
+  .feature-5050__visual {
+    position: relative;
+    display: flex;
+    grid-column: content-column 7 / full-end;
+    grid-row: 1;
+    align-self: stretch;
+    overflow: hidden;
+    border-radius: var(--radius-medium);
+    background: var(--color-background-surface);
+  }
+
+  .feature-5050__visual::before {
+    position: absolute;
+    inset: 0;
+    background-image: conic-gradient(
+      var(--color-background-muted) 25%,
+      var(--color-background-surface) 0 50%,
+      var(--color-background-muted) 0 75%,
+      var(--color-background-surface) 0
+    );
+    background-position: left top;
+    background-repeat: repeat;
+    background-size: 32px 32px;
+    content: "";
+    pointer-events: none;
+  }
+
+  .feature-5050[data-feature-visual-position="start"] .feature-5050__visual {
+    grid-column: full-start / content-column 7;
+  }
+
+  .feature-5050__visual > :global(img),
+  .feature-5050__visual > :global(picture),
+  .feature-5050__visual > :global(video) {
+    position: relative;
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    object-fit: cover;
+  }
+
+  .feature-5050__visual > :global(picture) > :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  @container feature-5050 (width < 64rem) {
+    .feature-5050__layout {
+      min-block-size: auto;
+      row-gap: var(--gap-xxlarge);
+    }
+
+    .feature-5050__content-region,
+    .feature-5050__visual,
+    .feature-5050[data-feature-visual-position="start"] .feature-5050__content-region,
+    .feature-5050[data-feature-visual-position="start"] .feature-5050__visual {
+      grid-column: content-start / content-end;
+      grid-row: auto;
+    }
+
+    .feature-5050__content-region,
+    .feature-5050[data-feature-visual-position="start"] .feature-5050__content-region {
+      padding-inline: 0;
+    }
+
+    .feature-5050__visual > :global(img),
+    .feature-5050__visual > :global(picture),
+    .feature-5050__visual > :global(video) {
+      block-size: auto;
+    }
+  }
+</style>

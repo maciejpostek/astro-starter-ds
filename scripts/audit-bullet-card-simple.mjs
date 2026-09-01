@@ -22,6 +22,7 @@ const docs = read("src/data/documentationComponentRegistry.ts");
 const preview = read("src/components/_internal/documentation/DsBulletCardSimplePreview.astro");
 const previewController = read("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
 const previewRegistry = read("src/data/documentationPreviewRegistry.ts");
+const previewLayoutFrame = read("src/components/_internal/documentation/DsPreviewLayoutFrame.astro");
 const sizeTokens = read("src/styles/tokens/size-components.css");
 const semanticSizeTokens = read("src/styles/tokens/size-semantic.css");
 const tokenRegistry = JSON.parse(read("src/data/design-system/tokenArchitecture.json") || "{}");
@@ -113,11 +114,16 @@ for (const axisId of ["bulletCardSimpleIcon", "bulletCardSimpleDescription", "bu
     errors.push(`BulletCardSimple interactive documentation is missing ${axisId}.`);
   }
 }
-if (!preview.includes('data-component-name="DsBulletCardSimplePreview"') || !preview.includes('data-preview-mode={mode}')) {
-  errors.push("BulletCardSimple preview does not expose canonical and responsive documentation modes.");
+if (!preview.includes('data-component-name="DsBulletCardSimplePreview"')
+  || /data-preview-mode=|max-inline-size:/.test(preview)) {
+  errors.push("BulletCardSimple preview must delegate canonical width to the shared layout frame.");
 }
-if (!docs.includes('rendererProps: { mode: "responsive" }') || !previewRegistry.includes('component.categoryKey === "website-patterns"')) {
-  errors.push("BulletCardSimple responsive preview route is not registered.");
+if (!docs.includes('componentId: "bullet-card-simple"')
+  || !/componentId:\s*"bullet-card-simple"[\s\S]*?sizing:\s*"bounded"/.test(docs)
+  || !/componentId:\s*"bullet-card-simple"[\s\S]*?presentation:\s*"standard"/.test(docs)
+  || !previewLayoutFrame.includes('data-preview-sizing="bounded"')
+  || !previewRegistry.includes("usesWebsitePatternResponsivePreview(component.categoryKey, preview)")) {
+  errors.push("BulletCardSimple must use the standard bounded preview and opt out of the responsive route.");
 }
 if (!readiness.previewBoundaryComponents?.includes("DsBulletCardSimplePreview")) {
   errors.push("BulletCardSimple documentation preview is not registered as an internal preview boundary.");

@@ -1,0 +1,10 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonGroup from "../../../../../src/components/base-components/buttons/ButtonGroup.astro";
+
+const invalidAlign = "end" as any;
+---
+
+<ButtonGroup align={invalidAlign} aria-label="Invalid actions">
+  <Button>Continue</Button>
+</ButtonGroup>

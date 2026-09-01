@@ -75,6 +75,49 @@ Consumers use one fixed semantic MaterialSymbol glyph across all states. They
 must not expose icon swap, icon slots, or arbitrary icon-name props. See
 `.agentic-rules/components/icons.md`.
 
+## CSS Checkerboard Visual Placeholder
+
+`CSS Checkerboard Visual Placeholder` is the canonical empty-state treatment
+for image, media and other visual regions in public components.
+
+- Use a CSS-only repeating checkerboard. Do not use PNG, JPG, SVG or another
+  image asset solely to represent missing visual content.
+- When the visual region needs proportional geometry, reuse an empty `Ratio`;
+  it owns the aspect ratio, clipping and checkerboard placeholder.
+- When a grid, container or viewport already owns the required geometry, keep
+  that geometry and apply the same CSS-only checkerboard to the visual wrapper.
+  Do not add `Ratio` solely to obtain the placeholder.
+- Build the checkerboard with `conic-gradient`, the registered
+  `--color-background-surface` and `--color-background-muted` semantic tokens,
+  and the canonical `32px 32px` repeating tile. Do not introduce raw colors,
+  image requests, component tokens or custom properties for this treatment.
+- Keep the checkerboard below slotted or rendered content. A real image, video
+  or visual paints above it and therefore hides it automatically; do not add a
+  public placeholder prop or conditional asset swap.
+- Treat the checkerboard as decorative. It receives no role, alternative text
+  or accessible name; the real media keeps its own accessibility contract.
+
+### Missing project visuals during composition
+
+- Continue building the complete page, section, card or template when a
+  project image has not been supplied. A missing image alone is not a blocker.
+- Preserve the intended visual geometry with this checkerboard and mark the
+  local placeholder node with `data-visual-placeholder="missing-asset"`. This
+  marker is composition metadata, not a public component prop.
+- Never hallucinate, generate, download or select a substitute image without
+  explicit authorization. Do not use a neutral starter illustration to make a
+  project composition appear complete.
+- At handoff, return one `assetRequest` for every visible missing-asset marker.
+  Include its route and component location, intended subject or purpose,
+  expected aspect ratio, whether the final media is informative or decorative,
+  and a direct question asking which asset the user wants inserted.
+- The composition may be accepted with asset requests, but it is not
+  release-ready until every marker is replaced by real media and informative
+  media has appropriate alternative text.
+- Documentation previews and test fixtures may intentionally demonstrate an
+  empty checkerboard without creating an asset request; do not confuse those
+  controlled specimens with missing project content.
+
 ## Validation
 
 The canonical reusable-component Definition of Done is

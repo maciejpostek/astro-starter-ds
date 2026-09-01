@@ -57,9 +57,10 @@ Required behavior:
 - do not repeat the page and component as two sidebar or search entries;
 - do not show an expand/collapse disclosure;
 - use the page route for links, backlinks, pagination, and search;
-- use
-  `/design-system/<category>/<page-key>/preview`
-  for the responsive preview;
+- when the canonical preview presentation is `responsive`, use
+  `/design-system/<category>/<page-key>/preview` for the responsive preview;
+- when the presentation is `standard`, expose no Scale action and generate no
+  standalone preview path;
 - render exactly one page-level `h1` using the component name.
 
 The page key still owns source grouping. Its label may differ from the component
@@ -83,6 +84,10 @@ Component route:
 Preview route:
 
 `/design-system/<category>/<page-key>/<component-id>/preview`
+
+Generate this route only when the component's canonical preview presentation
+is `responsive`. A `standard` presentation remains entirely on the component
+detail page.
 
 Required behavior:
 
@@ -145,5 +150,11 @@ Documentation validation must fail when:
 - an empty Base Components or Website Patterns page renders anything beyond
   its canonical page-level heading;
 - preview and backlink routes disagree with the canonical component href;
+- a `standard` Website Pattern exposes Scale or a standalone `/preview` route,
+  or a `responsive` Website Pattern lacks either surface;
+- an Astro-backed Website Pattern canonical preview omits its `full`, `main`
+  or `small` documentation container profile, omits its `fill`, `bounded` or
+  `intrinsic` specimen sizing mode, or its inline, dialog and route projections
+  disagree;
 - more than one count-based page-mode resolver exists;
 - Figma-only records receive fabricated Astro previews or APIs.

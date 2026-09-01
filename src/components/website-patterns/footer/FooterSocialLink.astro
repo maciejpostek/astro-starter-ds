@@ -1,0 +1,94 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import SocialIcons from "../../assets/icons/SocialIcons.astro";
+import type { SocialIconPlatform } from "../../../lib/icons/socialIcons";
+
+export type FooterSocialLinkPresentation = "icon-only" | "labelled";
+
+export interface Props extends Omit<HTMLAttributes<"a">, "aria-label" | "class" | "href"> {
+  href: string;
+  platform: SocialIconPlatform;
+  label: string;
+  presentation?: FooterSocialLinkPresentation;
+  class?: string;
+}
+
+const {
+  href,
+  platform,
+  label,
+  presentation = "labelled",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof href !== "string" || href.trim().length === 0) {
+  throw new TypeError("FooterSocialLink href must be a non-empty string.");
+}
+if (typeof label !== "string" || label.trim().length === 0) {
+  throw new TypeError("FooterSocialLink label must be a non-empty string.");
+}
+if (presentation !== "icon-only" && presentation !== "labelled") {
+  throw new TypeError('FooterSocialLink presentation must be either "icon-only" or "labelled".');
+}
+---
+
+<li
+  class:list={["footer-social-link", className]}
+  data-component-name="FooterSocialLink"
+  data-footer-social-link-presentation={presentation}
+  data-social-platform={platform}
+>
+  <a
+    {...attributes}
+    aria-label={presentation === "icon-only" ? label : undefined}
+    class="footer-social-link__anchor body-base-regular"
+    href={href}
+  >
+    <span class="footer-social-link__icon" aria-hidden="true">
+      <SocialIcons platform={platform} variant="monochrome" />
+    </span>
+    {presentation === "labelled" && (
+      <span class="footer-social-link__label">{label}</span>
+    )}
+  </a>
+</li>
+
+<style>
+  .footer-social-link {
+    min-inline-size: 0;
+    list-style: none;
+  }
+
+  .footer-social-link__anchor {
+    display: inline-flex;
+    max-inline-size: 100%;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: color var(--motion-transition);
+  }
+
+  .footer-social-link__icon {
+    display: block;
+    inline-size: var(--footer-social-icon-size);
+    block-size: var(--footer-social-icon-size);
+    flex: 0 0 auto;
+  }
+
+  .footer-social-link__label {
+    min-inline-size: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .footer-social-link__anchor:is(:hover, :focus-visible) {
+    color: var(--color-text-accent);
+  }
+
+  @media (forced-colors: active) {
+    .footer-social-link__anchor:is(:hover, :focus-visible) {
+      text-decoration: underline;
+    }
+  }
+</style>

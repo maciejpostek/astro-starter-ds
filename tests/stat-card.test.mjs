@@ -105,8 +105,8 @@ test("keeps the approved StatCard Astro, token, Figma and documentation contract
   for (const axis of ["statCardCaption", "statCardDescription", "statCardTrendingUp", "statCardTrendingDown"]) {
     assert.match(docs, new RegExp(`id: "${axis}"`, "u"));
   }
-  assert.match(preview, /mode === "matrix"/u);
-  assert.match(preview, /mode === "stress" \|\| mode === "responsive"/u);
+  assert.doesNotMatch(preview, /mode\?:|mode\s*===|stat-card-preview--(?:matrix|stress|responsive)/u);
+  assert.doesNotMatch(docs.match(/componentId:\s*"stat-card"[\s\S]*?toc:\s*commonToc/u)?.[0] ?? "", /\bpreviews\s*:/u);
   assert.match(preview, /astro-ds:preview-change/u);
   assert.match(previewRegistry, /componentDocumentationAdapters/u);
   assert.match(previewRegistry, /component\.categoryKey === "website-patterns"/u);
@@ -130,8 +130,9 @@ test("renders every StatCard visibility combination with labelled article semant
     assert.match(html, /<article\b(?=[^>]*id="stat-card-default")(?=[^>]*data-component-name="StatCard")(?=[^>]*data-contract="forwarded")(?=[^>]*aria-labelledby="stat-card-default-caption")(?=[^>]*class="[^"]*stat-card-contract-fixture[^"]*")[^>]*>/u);
     assert.match(html, /id="stat-card-hidden-caption-caption"[^>]*data-stat-card-caption="visually-hidden"/u);
     assert.match(html, /id="stat-card-hidden-caption"[^>]*aria-labelledby="stat-card-hidden-caption-caption"/u);
-    assert.equal((html.match(/data-material-symbol="trending_up"/gu) ?? []).length, 3);
-    assert.equal((html.match(/data-material-symbol="trending_down"/gu) ?? []).length, 3);
+    assert.equal((html.match(/data-material-symbol="trending_up"/gu) ?? []).length, 4);
+    assert.equal((html.match(/data-material-symbol="trending_down"/gu) ?? []).length, 4);
+    assert.match(html, /id="stat-card-content-stress"[\s\S]*?100,000,000\.00 USD[\s\S]*?localized wrapping/u);
 
     const defaultStart = html.indexOf('id="stat-card-default"');
     const defaultEnd = html.indexOf("</article>", defaultStart);

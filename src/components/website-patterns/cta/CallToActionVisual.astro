@@ -1,0 +1,172 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import Content, { type ContentTone } from "../content/Content.astro";
+
+export type CallToActionVisualPosition = "left" | "right";
+export type CallToActionSurface = "accent" | "inverse";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  visualPosition?: CallToActionVisualPosition;
+  surface?: CallToActionSurface;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  visualPosition = "right",
+  surface = "accent",
+  headingLevel = 2,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("CallToActionVisual heading must be a non-empty string.");
+}
+for (const [name, value] of [["eyebrow", eyebrow], ["paragraph", paragraph]] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`CallToActionVisual ${name} must be a non-empty string when provided.`);
+  }
+}
+if (visualPosition !== "left" && visualPosition !== "right") {
+  throw new TypeError('CallToActionVisual visualPosition must be either "left" or "right".');
+}
+if (surface !== "accent" && surface !== "inverse") {
+  throw new TypeError('CallToActionVisual surface must be either "accent" or "inverse".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("CallToActionVisual headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("CallToActionVisual requires visual content in its visual slot.");
+}
+
+const rootId = id || `call-to-action-visual-${crypto.randomUUID()}`;
+const contentTone: ContentTone = surface === "accent" ? "on-accent" : "inverse";
+const hasActions = Astro.slots.has("actions");
+const contentProps = {
+  id: `${rootId}-content`,
+  heading,
+  eyebrow,
+  paragraph,
+  align: "left" as const,
+  tone: contentTone,
+  headingLevel,
+};
+---
+
+<div
+  {...attributes}
+  id={rootId}
+  class:list={["call-to-action-visual", "l-grid", className]}
+  data-grid="columns"
+  data-columns="12"
+  data-gap="none"
+  data-component-name="CallToActionVisual"
+  data-call-to-action-surface={surface}
+  data-call-to-action-visual-position={visualPosition}
+>
+  <div class="call-to-action-visual__content-region l-grid" data-grid="columns" data-columns="6" data-gap="site">
+    <div class="call-to-action-visual__content">
+      {hasActions ? (
+        <Content {...contentProps}>
+          <Fragment slot="actions"><slot name="actions" /></Fragment>
+        </Content>
+      ) : (
+        <Content {...contentProps} />
+      )}
+    </div>
+  </div>
+
+  <div class="call-to-action-visual__visual">
+    <Ratio ratio="16:9"><slot name="visual" /></Ratio>
+  </div>
+</div>
+
+<style>
+  .call-to-action-visual {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: hidden;
+    container: call-to-action-visual / inline-size;
+  }
+
+  .call-to-action-visual[data-call-to-action-surface="accent"] {
+    background: var(--color-background-accent);
+  }
+
+  .call-to-action-visual[data-call-to-action-surface="inverse"] {
+    background: var(--color-background-inverse);
+  }
+
+  .call-to-action-visual__content-region,
+  .call-to-action-visual__content,
+  .call-to-action-visual__visual {
+    min-inline-size: 0;
+  }
+
+  .call-to-action-visual__content-region,
+  .call-to-action-visual__visual {
+    grid-row: 1;
+  }
+
+  .call-to-action-visual__content-region {
+    align-content: center;
+    padding: var(--content-padding-xxxlarge);
+  }
+
+  .call-to-action-visual[data-call-to-action-visual-position="right"] .call-to-action-visual__content-region {
+    grid-column: 1 / span 6;
+  }
+
+  .call-to-action-visual[data-call-to-action-visual-position="right"] .call-to-action-visual__visual {
+    grid-column: 7 / span 6;
+  }
+
+  .call-to-action-visual[data-call-to-action-visual-position="left"] .call-to-action-visual__content-region {
+    grid-column: 7 / span 6;
+  }
+
+  .call-to-action-visual[data-call-to-action-visual-position="left"] .call-to-action-visual__visual {
+    grid-column: 1 / span 6;
+  }
+
+  .call-to-action-visual[data-call-to-action-visual-position="right"] .call-to-action-visual__content {
+    grid-column: 1 / span 4;
+  }
+
+  .call-to-action-visual[data-call-to-action-visual-position="left"] .call-to-action-visual__content {
+    grid-column: 3 / span 4;
+  }
+
+  .call-to-action-visual__visual > :global([data-component-name="Ratio"]) {
+    inline-size: 100%;
+  }
+
+  @container call-to-action-visual (width < 64rem) {
+    .call-to-action-visual__content-region,
+    .call-to-action-visual__visual,
+    .call-to-action-visual[data-call-to-action-visual-position="right"] .call-to-action-visual__content-region,
+    .call-to-action-visual[data-call-to-action-visual-position="right"] .call-to-action-visual__visual,
+    .call-to-action-visual[data-call-to-action-visual-position="left"] .call-to-action-visual__content-region,
+    .call-to-action-visual[data-call-to-action-visual-position="left"] .call-to-action-visual__visual {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    .call-to-action-visual__content,
+    .call-to-action-visual[data-call-to-action-visual-position="right"] .call-to-action-visual__content,
+    .call-to-action-visual[data-call-to-action-visual-position="left"] .call-to-action-visual__content {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

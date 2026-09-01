@@ -71,6 +71,14 @@ Report:
 - validators and runtime widths exercised;
 - intentional Figma/Astro differences;
 - remaining risks and visual-review status;
+- structured `assetRequests` for every visible project checkerboard, including
+  location, purpose, aspect ratio, accessibility intent and the question the
+  user must answer;
 - the next user decision.
+
+Missing project visuals do not turn an otherwise valid composition handoff
+into `blocked`. They do keep release readiness incomplete. Before finishing,
+verify that every `data-visual-placeholder="missing-asset"` marker has one
+matching asset request and that no unapproved substitute image was introduced.
 
 Do not claim unrelated dirty-worktree changes as part of the component task.

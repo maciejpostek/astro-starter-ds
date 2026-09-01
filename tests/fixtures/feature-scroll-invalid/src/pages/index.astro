@@ -1,0 +1,29 @@
+---
+import FeatureScroll from "../../../../../src/components/website-patterns/features/FeatureScroll.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.FEATURE_SCROLL_INVALID_CASE ?? "heading";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { heading: "   " },
+  eyebrow: { heading: "Features", eyebrow: "   " },
+  paragraph: { heading: "Features", paragraph: "" },
+  headingLevel: { heading: "Features", headingLevel: 1 },
+  slot: { heading: "Features" },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
+---
+
+{invalidCase === "slot" ? (
+  <FeatureScroll {...props} />
+) : (
+  <FeatureScroll {...props}>
+    <li data-feature-scroll-item aria-labelledby="valid-item-heading">
+      <div data-feature-scroll-content><h3 id="valid-item-heading">Valid item</h3></div>
+      <div data-feature-scroll-visual aria-hidden="true"></div>
+    </li>
+    <li data-feature-scroll-item aria-labelledby="valid-item-two-heading">
+      <div data-feature-scroll-content><h3 id="valid-item-two-heading">Valid item two</h3></div>
+      <div data-feature-scroll-visual aria-hidden="true"></div>
+    </li>
+  </FeatureScroll>
+)}

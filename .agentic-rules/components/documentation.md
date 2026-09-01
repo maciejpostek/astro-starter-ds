@@ -44,7 +44,7 @@ column as part of one rich-text flow. It must not create a separate surface,
 divider or full-width band. Its heading, summary, compact source snippet and
 ButtonGroup align naturally with the page content below. The heading-to-summary
 and summary-to-resource relationships add `--size-12` to the compact base gap.
-Full-screen responsive preview routes
+Eligible full-screen responsive preview routes
 are the only exception:
 they use `BaseLayout` and `DsResponsivePreview` without the standard
 documentation shell.
@@ -256,6 +256,29 @@ or registry API.
 Documentation preview state is ephemeral unless a route contract explicitly
 requires persistence.
 
+Every Astro-backed Website Pattern preview declares two independent layout
+decisions. `container: full | main | small` records who owns page padding and
+the site container. `sizing: fill | bounded | intrinsic` records how much of
+that container the rendered specimen should consume. Use `fill` for sections
+and horizontal patterns, `bounded` for fluid cards or column-sized patterns,
+and `intrinsic` for content-sized components. Resolve both from the production
+allocation contract, never from an Atomic Design role, a component name or a
+fixed Figma fixture width. `DsPreviewLayoutFrame` alone applies documentation
+width and centering; the public component receives no preview prop, width,
+padding or max-width. Inline, dialog and `/preview` surfaces must consume the
+same adapter values.
+
+The canonical Website Pattern preview also resolves a separate
+`presentation: standard | responsive` policy. `standard` renders only the
+canonical 4:3 interactive preview and must not expose Scale or generate a
+standalone `/preview` route. `responsive` adds the shared full-screen canvas
+and route. Choose from the responsive evidence the component needs, not from
+its category, Atomic Design role, name, container or sizing alone; an explicit
+user choice is authoritative. Presentation remains documentation
+configuration and never becomes a public component prop. The optional
+`responsivePreview` object only overrides responsive renderer props and does
+not enable the canvas by itself.
+
 API union values that correspond to canonical Foundations must use typed
 documentation link targets. Control Size values link to the Control Size
 Foundation section; fixed component-owned geometry such as Tag remains local
@@ -292,7 +315,9 @@ For every implemented registry record:
 1. Add one typed component documentation definition.
 2. Add one small preview renderer for the canonical component.
 3. Declare preview axes, API rows, typed Foundation color-group references and
-   dependency reasons in the definition.
+   dependency reasons in the definition. For an Astro-backed Website Pattern,
+   also declare its container profile, specimen sizing mode and, when the
+   default responsive canvas is not appropriate, `presentation: standard`.
 4. Reuse the dynamic component route and `DsComponentDetail`; do not create a
    component-specific page route or table.
 5. Pass source and canonical Figma resources to the shared page header and

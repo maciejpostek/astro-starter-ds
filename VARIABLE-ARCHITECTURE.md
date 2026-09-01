@@ -2033,6 +2033,14 @@ Szerokość spanu obejmuje także wewnętrzne guttery. Offset jest mierzony od
 rodzica albo szerokość kontrolowanego spacera. Nie jest przypinany do surowej
 pozycji `x`.
 
+Podczas przenoszenia do Astro nazwa spanu jest kontraktem, a liczba pikseli
+wyłącznie kontrolnym wymiarem Figmy. `grid/max-width/span/02` oznacza
+`grid-column-end: span 2`; jeżeli kompozycja określa także start, zapisujemy
+`grid-column: <start> / span 2`. `grid/offset/start/NN` mapuje się na linię
+`grid-column-start`, nie na szerokość, margines, padding ani token CSS. Dzięki
+temu przeglądarka oblicza płynne szerokości ścieżek dla aktualnego viewportu,
+podczas gdy Figma nadal używa stałych wartości dla swoich ramek kontrolnych.
+
 ```text
 column = (container - (columns - 1) * gap) / columns
 

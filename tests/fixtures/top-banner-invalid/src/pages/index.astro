@@ -1,5 +1,7 @@
 ---
-import TopBanner from "../../../../../src/components/website-patterns/announcements-banners/TopBanner.astro";
+import TopBanner, {
+  type Props as TopBannerProps,
+} from "../../../../../src/components/website-patterns/announcements-banners/TopBanner.astro";
 import "../../../../../src/styles/tokens/tokens.css";
 
 const invalidCase = process.env.TOP_BANNER_INVALID_CASE ?? "title";
@@ -23,7 +25,7 @@ const invalidProps: Record<string, Record<string, unknown>> = {
     link: { label: "Details", href: "/details", target: "_parent" },
   },
 };
-const props = invalidProps[invalidCase] ?? invalidProps.title;
+const props = (invalidProps[invalidCase] ?? invalidProps.title) as unknown as TopBannerProps;
 ---
 
 <TopBanner {...props} />

@@ -61,7 +61,9 @@ test("renders canonical logo marks across the Select family", async () => {
 
   assert.equal((html.match(/data-select-selected-logo="true"/gu) ?? []).length, 3);
   assert.equal((html.match(/data-select-option-logo="true"/gu) ?? []).length, 9);
-  assert.equal((html.match(/<img src="[^"]+" alt(?:\s|>)/gu) ?? []).length, 12);
+  assert.equal((html.match(/data-component-name="LogoAsset"/gu) ?? []).length, 12);
+  assert.equal((html.match(/data-logo-variant="mark"/gu) ?? []).length, 12);
+  assert.equal((html.match(/<img\b(?=[^>]*\ssrc="[^"]+")(?=[^>]*\salt(?:=|\s|>))[^>]*>/gu) ?? []).length, 12);
   assert.match(html, /data-select-kind="standard"[\s\S]*?data-select-purpose="brand"[\s\S]*?data-select-value[^>]*>Figma</u);
   assert.match(html, /data-select-kind="compact"[\s\S]*?data-select-purpose="brand"[\s\S]*?data-select-value[^>]*>Linear</u);
   assert.match(html, /data-select-kind="inline"[\s\S]*?data-select-value[^>]*>Notion</u);

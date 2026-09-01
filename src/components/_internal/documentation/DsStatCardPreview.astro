@@ -1,62 +1,19 @@
 ---
 import StatCard from "../../website-patterns/stats-metrics/StatCard.astro";
-
-export interface Props {
-  mode?: "interactive" | "matrix" | "responsive" | "stress";
-}
-
-const { mode = "interactive" } = Astro.props;
-const combinations = [
-  { label: "Both trend cues", up: true, down: true },
-  { label: "Upward cue only", up: true, down: false },
-  { label: "Downward cue only", up: false, down: true },
-  { label: "No trend cues", up: false, down: false },
-];
 ---
 
-{mode === "matrix" ? (
-  <div class="stat-card-preview stat-card-preview--matrix" data-component-name="DsStatCardPreview">
-    {combinations.map(({ label, up, down }) => (
-      <StatCard
-        caption={label}
-        value="100M"
-        description="Stat description text"
-        showTrendingUp={up}
-        showTrendingDown={down}
-      />
-    ))}
-  </div>
-) : mode === "stress" || mode === "responsive" ? (
-  <div
-    class:list={[
-      "stat-card-preview",
-      "stat-card-preview--stress",
-      mode === "responsive" && "stat-card-preview--responsive",
-    ]}
-    data-component-name="DsStatCardPreview"
-    data-stat-card-preview={mode === "responsive" ? true : undefined}
-  >
-    <StatCard
-      caption="Annual recurring revenue across all active international subscriptions"
-      value="100,000,000.00 USD"
-      description="Long supporting copy verifies localized wrapping, natural height growth and content safety without changing semantic source order."
-      data-ds-preview-target
-    />
-  </div>
-) : (
-  <div
-    class="stat-card-preview stat-card-preview--interactive"
-    data-component-name="DsStatCardPreview"
-    data-stat-card-preview
-  >
-    <StatCard
-      caption="Caption"
-      value="100M"
-      description="Stat description text"
-      data-ds-preview-target
-    />
-  </div>
-)}
+<div
+  class="stat-card-preview"
+  data-component-name="DsStatCardPreview"
+  data-stat-card-preview
+>
+  <StatCard
+    caption="Caption"
+    value="100M"
+    description="Stat description text"
+    data-ds-preview-target
+  />
+</div>
 
 <script>
   const initializeStatCardPreviews = () => {
@@ -105,25 +62,6 @@ const combinations = [
 <style>
   .stat-card-preview {
     min-inline-size: 0;
-    inline-size: 100%;
-  }
-
-  .stat-card-preview--interactive {
     inline-size: min(100%, 12.4375rem);
-  }
-
-  .stat-card-preview--matrix {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.4375rem), 1fr));
-    align-items: start;
-    gap: var(--space-large);
-  }
-
-  .stat-card-preview--stress {
-    inline-size: min(100%, 20rem);
-  }
-
-  .stat-card-preview--responsive {
-    inline-size: 100%;
   }
 </style>

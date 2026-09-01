@@ -1,11 +1,17 @@
 ---
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-import type { DocumentationPreviewAxis } from "../../../data/documentationComponentRegistry";
+import type {
+  DocumentationPreviewAxis,
+  DocumentationPreviewContainer,
+  DocumentationPreviewPresentation,
+  DocumentationPreviewSizing,
+} from "../../../data/documentationComponentRegistry";
 import {
   getSocialIconLabel,
   socialIconPlatforms,
 } from "../../../lib/icons/socialIcons";
 import SocialIcons from "../../assets/icons/SocialIcons.astro";
+import DsPreviewLayoutFrame from "./DsPreviewLayoutFrame.astro";
 import DsResponsivePreviewDialog from "./DsResponsivePreviewDialog.astro";
 
 interface Props {
@@ -15,8 +21,13 @@ interface Props {
   rendererProps?: Record<string, unknown>;
   axes: DocumentationPreviewAxis[];
   categoryKey: "base-components" | "website-patterns" | "examples-templates";
+  previewContainer?: DocumentationPreviewContainer;
+  previewSizing?: DocumentationPreviewSizing;
+  previewPresentation?: DocumentationPreviewPresentation;
   responsivePreview?: {
     rendererProps?: Record<string, unknown>;
+    container: DocumentationPreviewContainer;
+    sizing: DocumentationPreviewSizing;
     scope: string;
   };
 }
@@ -28,6 +39,9 @@ const {
   rendererProps = {},
   axes,
   categoryKey,
+  previewContainer = "full",
+  previewSizing = "fill",
+  previewPresentation = "responsive",
   responsivePreview,
 } = Astro.props;
 const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
@@ -41,6 +55,9 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
   data-ds-doc-section
   data-ds-interactive-preview
   data-preview-category={categoryKey}
+  data-preview-container={previewContainer}
+  data-preview-sizing={previewSizing}
+  data-preview-presentation={previewPresentation}
 >
   <div
     class="ds-interactive-component-preview__frame"
@@ -49,7 +66,9 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
     <div class="ds-interactive-component-preview__scene" aria-live="polite">
       <div class="ds-interactive-component-preview__scene-content" data-ds-preview-scene-content>
         <div class="ds-interactive-component-preview__scene-canvas" data-ds-preview-scene-canvas>
-          <PreviewRenderer {...rendererProps} />
+          <DsPreviewLayoutFrame container={previewContainer} sizing={previewSizing}>
+            <PreviewRenderer {...rendererProps} />
+          </DsPreviewLayoutFrame>
         </div>
       </div>
       {responsivePreview && (
@@ -58,6 +77,8 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
           renderer={PreviewRenderer}
           rendererProps={{ ...rendererProps, ...responsivePreview.rendererProps }}
           axes={axes}
+          container={responsivePreview.container}
+          sizing={responsivePreview.sizing}
           scope={responsivePreview.scope}
         />
       )}
@@ -207,7 +228,7 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
       if (stat) stat.hidden = value === "hidden";
     }
     if (axisId === "bulletIconCardStatIcon") {
-      const icon = target.querySelector<HTMLElement>(".bullet-icon-card__stat-icon");
+      const icon = target.querySelector<HTMLElement>(".bullet-icon-card__stat .stat-text-inline__icon");
       if (icon) icon.hidden = value === "hidden";
     }
     if (axisId === "bulletIconCardTags") {
@@ -216,6 +237,22 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
     }
     if (axisId === "bulletIconCardActions") {
       const actions = target.querySelector<HTMLElement>(".bullet-icon-card__actions");
+      if (actions) actions.hidden = value === "hidden";
+    }
+    if (axisId === "bulletVisualCardDescription") {
+      const description = target.querySelector<HTMLElement>(".bullet-visual-card__description");
+      if (description) description.hidden = value === "hidden";
+    }
+    if (axisId === "bulletVisualCardStat") {
+      const stat = target.querySelector<HTMLElement>(".bullet-visual-card__stat");
+      if (stat) stat.hidden = value === "hidden";
+    }
+    if (axisId === "bulletVisualCardTags") {
+      const tags = target.querySelector<HTMLElement>(".bullet-visual-card__tags");
+      if (tags) tags.hidden = value === "hidden";
+    }
+    if (axisId === "bulletVisualCardActions") {
+      const actions = target.querySelector<HTMLElement>(".bullet-visual-card__actions");
       if (actions) actions.hidden = value === "hidden";
     }
     if (axisId === "bulletCardSimpleIcon") {
@@ -621,6 +658,7 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
 
   const initializeWebsitePatternPreviewScale = (preview: HTMLElement) => {
     if (preview.dataset.previewCategory !== "website-patterns") return;
+    if (preview.dataset.previewPresentation !== "responsive") return;
     if (preview.dataset.websitePatternScaleReady === "true") return;
 
     const sceneContent = preview.querySelector<HTMLElement>("[data-ds-preview-scene-content]");
@@ -830,18 +868,18 @@ const hasPlatformAxis = axes.some((axis) => axis.id === "platform");
     place-items: safe center;
   }
 
-  .ds-interactive-component-preview[data-preview-category="website-patterns"]
+  .ds-interactive-component-preview[data-preview-category="website-patterns"][data-preview-presentation="responsive"]
     .ds-interactive-component-preview__scene {
     overflow: hidden;
   }
 
-  .ds-interactive-component-preview[data-preview-category="website-patterns"]
+  .ds-interactive-component-preview[data-preview-category="website-patterns"][data-preview-presentation="responsive"]
     .ds-interactive-component-preview__scene-content {
     display: block;
     overflow: hidden;
   }
 
-  .ds-interactive-component-preview[data-preview-category="website-patterns"]
+  .ds-interactive-component-preview[data-preview-category="website-patterns"][data-preview-presentation="responsive"]
     .ds-interactive-component-preview__scene-canvas {
     position: absolute;
     min-block-size: 0;

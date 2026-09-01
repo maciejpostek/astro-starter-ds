@@ -108,6 +108,35 @@ test("named section composition resolves only selected components and dependenci
   );
 });
 
+test("canonical component identities outrank variants and ambiguous prefixes block", () => {
+  const canonicalTask = routeAgentRequest({
+    prompt: "Reuse SectionHeader.",
+    projectRoot
+  });
+  const canonical = resolveAgentContext({ task: canonicalTask, projectRoot });
+  assert.equal(canonicalTask.status, "ready");
+  assert.equal(canonical.components[0].name, "SectionHeader");
+
+  const qualifiedVariantTask = routeAgentRequest({
+    prompt: "Reuse HeroFullVisual.section-header.",
+    projectRoot
+  });
+  const qualifiedVariant = resolveAgentContext({
+    task: qualifiedVariantTask,
+    projectRoot
+  });
+  assert.equal(qualifiedVariantTask.status, "ready");
+  assert.equal(qualifiedVariant.components[0].name, "HeroFullVisual");
+
+  const ambiguousTask = routeAgentRequest({
+    prompt: "Repair Hero without changing its API.",
+    explicitComponentIds: ["Hero"],
+    projectRoot
+  });
+  assert.equal(ambiguousTask.status, "blocked");
+  assert.match(ambiguousTask.blockedReason, /Ambiguous component identity/u);
+});
+
 test("responsive composition loads the full intrinsic-first strategy", () => {
   const task = routeAgentRequest({
     prompt: "Compose a responsive section with ButtonGroup.",
@@ -450,6 +479,30 @@ test("mapped FormField repair loads its primary source and implemented dependenc
   assert.ok(
     extend.readPlan.some((read) => read.reason === "guides-projection")
   );
+  const registryProjection = extend.readPlan.find(
+    (read) => read.reason === "registry-projection"
+  );
+  const guidesProjection = extend.readPlan.find(
+    (read) => read.reason === "guides-projection"
+  );
+  assert.deepEqual(registryProjection?.selection, {
+    kind: "component-registry-record",
+    componentId: "form-field",
+    startLine: registryProjection.selection.startLine,
+    endLine: registryProjection.selection.endLine,
+    bytes: registryProjection.selection.bytes
+  });
+  assert.deepEqual(guidesProjection?.selection, {
+    kind: "guides-adapter",
+    componentId: "form-field",
+    startLine: guidesProjection.selection.startLine,
+    endLine: guidesProjection.selection.endLine,
+    bytes: guidesProjection.selection.bytes
+  });
+  assert.ok(registryProjection.selection.startLine < registryProjection.selection.endLine);
+  assert.ok(guidesProjection.selection.startLine < guidesProjection.selection.endLine);
+  assert.ok(registryProjection.bytes < 32 * 1024);
+  assert.ok(guidesProjection.bytes < 16 * 1024);
   assert.equal(extend.declaredSourceBytes <= extend.sourceLimitBytes, true);
 });
 
@@ -589,6 +642,16 @@ test("token gaps block until the exact draft is approved and then resume", () =>
   const resumed = resolveAgentContext({ task: approvedTask, projectRoot });
   assert.equal(resumed.status, "ready");
   assert.equal(resumed.phase, "normal");
+  assert.equal(
+    resumed.readPlan.find((read) => read.reason === "registry-projection")
+      ?.selection?.componentId,
+    "switch-button"
+  );
+  assert.equal(
+    resumed.readPlan.find((read) => read.reason === "guides-projection")
+      ?.selection?.componentId,
+    "switch-button"
+  );
 });
 
 test("reuse and compose cannot create or extend token groups", () => {

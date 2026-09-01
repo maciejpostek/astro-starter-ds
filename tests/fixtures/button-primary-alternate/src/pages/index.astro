@@ -1,0 +1,22 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonLink from "../../../../../src/components/base-components/buttons/ButtonLink.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>Primary Alternate contract fixture</title></head>
+  <body>
+    <section data-theme="light">
+      <Button id="alternate-button" variant="primary-alternate">Continue</Button>
+      <Button id="alternate-button-disabled" variant="primary-alternate" disabled>Continue</Button>
+      <ButtonLink id="alternate-link" href="/details" variant="primary-alternate">Details</ButtonLink>
+      <ButtonLink id="alternate-link-disabled" href="/details" variant="primary-alternate" disabled>Details</ButtonLink>
+    </section>
+    <section data-theme="dark">
+      <Button variant="primary-alternate">Continue</Button>
+      <ButtonLink href="/details" variant="primary-alternate">Details</ButtonLink>
+    </section>
+  </body>
+</html>

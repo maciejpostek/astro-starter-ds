@@ -1,0 +1,47 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Ratio, { type RatioValue } from "../../base-components/ratio/Ratio.astro";
+
+export interface Props extends Omit<HTMLAttributes<"figure">, "class"> {
+  ratio?: RatioValue;
+  class?: string;
+}
+
+const { ratio = "16:9", class: className, ...attributes } = Astro.props;
+const hasCaption = Astro.slots.has("caption");
+
+if (!Astro.slots.has("default")) {
+  throw new TypeError("RichTextVisual requires default-slot media content.");
+}
+---
+
+<figure
+  {...attributes}
+  class:list={["rich-text-visual", className]}
+  data-component-name="RichTextVisual"
+>
+  <Ratio ratio={ratio}>
+    <slot />
+  </Ratio>
+  {hasCaption && (
+    <figcaption class="rich-text-visual__caption body-tiny-regular">
+      <slot name="caption" />
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .rich-text-visual {
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+    gap: var(--gap-regular);
+    color: var(--color-text-primary);
+  }
+
+  .rich-text-visual__caption {
+    min-inline-size: 0;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+</style>

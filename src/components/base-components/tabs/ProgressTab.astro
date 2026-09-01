@@ -1,0 +1,114 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ProgressBar from "../progress-bar/ProgressBar.astro";
+
+export interface Props extends Omit<HTMLAttributes<"button">, "class" | "id" | "role" | "type"> {
+  id: string;
+  controls: string;
+  selected?: boolean;
+  disabled?: boolean;
+  progress?: number;
+  class?: string;
+}
+
+const {
+  id,
+  controls,
+  selected = false,
+  disabled = false,
+  progress = 0,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof id !== "string" || id.trim().length === 0) {
+  throw new TypeError("ProgressTab id must be a non-empty string.");
+}
+if (typeof controls !== "string" || controls.trim().length === 0) {
+  throw new TypeError("ProgressTab controls must be a non-empty panel id.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("ProgressTab requires visible text in its default slot.");
+}
+if (selected && disabled) {
+  throw new RangeError("ProgressTab cannot be both selected and disabled.");
+}
+if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
+  throw new RangeError("ProgressTab progress must be a finite number between 0 and 100.");
+}
+---
+
+<button
+  {...attributes}
+  id={id}
+  class:list={["progress-tab", className]}
+  type="button"
+  role="tab"
+  aria-selected={selected ? "true" : "false"}
+  aria-controls={controls}
+  tabindex={selected && !disabled ? 0 : -1}
+  disabled={disabled}
+  data-component-name="ProgressTab"
+  data-progress-tab
+>
+  <ProgressBar
+    class="progress-tab__progress"
+    value={progress}
+    decorative
+    data-progress-tab-progress
+  />
+  <span class="progress-tab__label body-base-regular"><slot /></span>
+</button>
+
+<style>
+  .progress-tab {
+    display: flex;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: var(--grid-auto-min-width-small);
+    flex: 1 0 var(--grid-auto-min-width-small);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-small);
+    border: 0;
+    padding: 0;
+    background: var(--tab-background-default);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    text-align: start;
+    transition: box-shadow var(--motion-transition);
+  }
+
+  .progress-tab__label {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+    opacity: 0.5;
+    transition: opacity var(--motion-transition);
+  }
+
+  .progress-tab:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) .progress-tab__label,
+  .progress-tab[aria-selected="true"] .progress-tab__label {
+    opacity: 1;
+  }
+
+  .progress-tab:disabled {
+    color: var(--tab-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .progress-tab:disabled .progress-tab__label {
+    opacity: 1;
+  }
+
+  .progress-tab:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {
+    outline: var(--border-width-strong) solid var(--color-state-focus-ring);
+    outline-offset: var(--size-2);
+    box-shadow: var(--effect-focused);
+  }
+
+  @media (forced-colors: active) {
+    .progress-tab:disabled {
+      color: GrayText;
+    }
+  }
+</style>

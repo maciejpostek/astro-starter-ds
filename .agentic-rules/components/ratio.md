@@ -36,7 +36,12 @@ and prevents overflowing content from escaping that boundary.
 
 ## Composition and placement
 
-- Ratio owns only the proportional canvas, clipping and placeholder.
+- Ratio implements the `CSS Checkerboard Visual Placeholder` contract from
+  `.agentic-rules/05-components.md` and owns only the proportional canvas,
+  clipping and placeholder.
+- Render the checkerboard on the root `::before` layer and keep
+  `.ratio__content` above it so real slotted content covers the placeholder
+  automatically.
 - The default slot fills the canvas. Direct images and videos use `object-fit: cover`; use a consumer class when a different crop is intentional.
 - Captions and surrounding figure semantics live outside Ratio so they do not get clipped.
 - Do not nest Ratio solely to create padding or decoration.
@@ -65,12 +70,15 @@ and prevents overflowing content from escaping that boundary.
 ## Naming and token contract
 
 Use the canonical `Ratio` identity, `.ratio` root and `data-ratio` preset. The
-placeholder surface consumes only the registered global
-`--color-background-surface` semantic token. Aspect ratios, tile geometry,
-clipping and media fit are native mechanics; do not create Ratio tokens or
+placeholder consumes the registered global `--color-background-surface` and
+`--color-background-muted` semantic tokens. Its native `conic-gradient` uses a
+`32px 32px` repeating tile. Aspect ratios, clipping and media fit are also
+native mechanics. Do not use a raster placeholder asset, create Ratio tokens or
 declare component custom properties.
 
 ## Core decision
 
 Use Ratio as one fluid, clipped visual canvas with a documented preset and
-consumer-owned media semantics; do not recreate proportional wrappers locally.
+consumer-owned media semantics. An empty Ratio uses the canonical CSS
+checkerboard; real content covers it without a separate state or prop. Do not
+recreate proportional wrappers locally.

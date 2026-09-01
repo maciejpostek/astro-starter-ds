@@ -30,7 +30,7 @@ with a concise title and optional supporting evidence, tags and actions.
 ## Content contract
 
 - Write a concise, non-empty title that names the card subject.
-- Keep description and stat copy self-contained; the `trending_up` icon is decorative.
+- Keep description and stat copy self-contained; Astro composes StatTextInline with `trend="up"` and a decorative trailing icon.
 - Use short tags as metadata, not as a replacement for the title or description.
 - Keep actions specific to the card subject and use clear verb-led labels.
 
@@ -53,28 +53,33 @@ with a concise title and optional supporting evidence, tags and actions.
 
 - The root is an `article` labelled by its visible heading; callers choose the heading level to preserve page hierarchy.
 - The title and required visual must be present. Optional string props must be non-empty when supplied.
-- The fixed `trending_up` Material Symbol is hidden from assistive technology, so stat text must communicate the complete meaning.
+- The nested StatTextInline hides its fixed `trending_up` Material Symbol from assistive technology, so stat text must communicate the complete meaning.
 - Actions retain native Button or ButtonLink keyboard and focus behavior in source order.
 
 ## Related components
 
 - [BulletPoint](/design-system/website-patterns/bullet-points/bullet-point) communicates one included or excluded list statement without a media-led card shell.
 - [Ratio](/design-system/base-components/ratio) owns the media proportion and replacement content.
+- [StatTextInline](/design-system/website-patterns/stats-metrics/stat-text-inline) owns optional statistic rendering.
 - [Tag](/design-system/base-components/tag) owns compact metadata labels.
 - [ButtonGroup](/design-system/base-components/buttons/button-group) owns wrapping action layout.
 
 ## Naming and token contract
 
 Use the canonical `BulletVisualCard` identity and `.bullet-visual-card` root.
-The component consumes the approved `bullet-visual-card-size` group only for
-the fixed stat glyph and reuses global semantic spacing, radius, color and
-typography contracts. Do not declare local custom properties, expose `Type`,
-`Show*`, an icon selector or a fixed card width.
+The component reuses global semantic spacing, radius, color and typography
+contracts. The approved `bullet-visual-card-size` token remains registered
+temporarily for live Figma parity while Astro delegates glyph geometry to
+StatTextInline. Do not declare local custom properties, expose `Type`, `Show*`,
+an icon selector or a fixed card width.
 
 Figma uses one structural `Type=Default` child, a 517px presentation width and
 BOOLEAN controls for optional regions. Astro remains fluid and maps those
 controls to prop or slot presence. The Figma Ratio placeholder maps to the
 required `visual` slot, while its nested ButtonGroup Slot maps to `actions`.
+The live master still embeds the stat representation directly; nesting
+StatTextInline is a controlled divergence until a separate Figma update is
+approved.
 
 ## Core decision
 

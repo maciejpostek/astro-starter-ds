@@ -1,0 +1,130 @@
+---
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
+import Button from "../../base-components/buttons/Button.astro";
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import Feature5050, {
+  type Feature5050VisualPosition,
+} from "../../website-patterns/features/Feature5050.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-feature-5050" } = Astro.props;
+const positions = ["end", "start"] as const satisfies ReadonlyArray<Feature5050VisualPosition>;
+---
+
+<div
+  class="ds-feature-5050-preview"
+  data-component-name="DsFeature5050Preview"
+  data-feature-5050-preview
+  data-ds-preview-target
+>
+  {positions.map((visualPosition, index) => (
+    <div
+      class="ds-feature-5050-preview__variant"
+      data-feature-5050-preview-variant={visualPosition}
+      hidden={index !== 0}
+    >
+      <Feature5050
+        id={`${idPrefix}-${visualPosition}`}
+        heading="Turn one important capability into a complete, credible story"
+        eyebrow="Feature 50-50"
+        paragraph="Combine a concise introduction with evidence, customer marks and a significant visual while preserving a predictable reading order across every assigned container width and localized content length."
+        visualPosition={visualPosition}
+        logosTitle="Trusted by product teams"
+        detailBulletsTitle="What teams gain"
+      >
+        <Button slot="actions">Explore the capability</Button>
+        <Button slot="actions" variant="secondary">Read the details</Button>
+
+        <BulletPoint slot="primaryBullets" text="One accessible content-first structure at every width" status="included" tone="status" />
+        <BulletPoint slot="primaryBullets" text="Supporting evidence stays grouped with the feature narrative" status="included" tone="status" />
+        <BulletPoint slot="primaryBullets" text="Long translated statements wrap without creating horizontal overflow" status="included" tone="status" />
+
+        <LogoAsset slot="logos" slug="github" variant="full" alt="GitHub" />
+        <LogoAsset slot="logos" slug="jitter" variant="full" alt="Jitter" />
+        <LogoAsset slot="logos" slug="medium" variant="full" alt="Medium" />
+
+        <BulletPoint slot="detailBullets" text="Logical start and end placement" status="included" tone="status" />
+        <BulletPoint slot="detailBullets" text="Container-owned responsive reflow" status="included" tone="status" />
+
+        <span
+          slot="visual"
+          class="ds-feature-5050-preview__visual-placeholder"
+          aria-hidden="true"
+        ></span>
+      </Feature5050>
+    </div>
+  ))}
+</div>
+
+<script>
+  type Feature5050PreviewState = {
+    visualPosition: "start" | "end";
+    primaryBullets: "visible" | "hidden";
+    logos: "visible" | "hidden";
+    detailBullets: "visible" | "hidden";
+  };
+
+  const initializeFeature5050Previews = () => {
+    document.querySelectorAll<HTMLElement>("[data-feature-5050-preview]").forEach((preview) => {
+      if (preview.dataset.feature5050PreviewReady === "true") return;
+      preview.dataset.feature5050PreviewReady = "true";
+
+      const state: Feature5050PreviewState = {
+        visualPosition: "end",
+        primaryBullets: "visible",
+        logos: "visible",
+        detailBullets: "visible",
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>("[data-feature-5050-preview-variant]").forEach((variant) => {
+          variant.hidden = variant.getAttribute("data-feature-5050-preview-variant") !== state.visualPosition;
+          variant.querySelectorAll<HTMLElement>(".feature-5050__primary-bullets").forEach((node) => {
+            node.hidden = state.primaryBullets === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".feature-5050__group").forEach((node) => {
+            const hasLogos = Boolean(node.querySelector(".feature-5050__logos"));
+            node.hidden = hasLogos ? state.logos === "hidden" : state.detailBullets === "hidden";
+          });
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "feature5050VisualPosition" && (value === "start" || value === "end")) state.visualPosition = value;
+          if (axisId === "feature5050PrimaryBullets" && (value === "visible" || value === "hidden")) state.primaryBullets = value;
+          if (axisId === "feature5050Logos" && (value === "visible" || value === "hidden")) state.logos = value;
+          if (axisId === "feature5050DetailBullets" && (value === "visible" || value === "hidden")) state.detailBullets = value;
+          render();
+        });
+    });
+  };
+
+  initializeFeature5050Previews();
+  document.addEventListener("astro:page-load", initializeFeature5050Previews);
+</script>
+
+<style>
+  .ds-feature-5050-preview,
+  .ds-feature-5050-preview__variant {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .ds-feature-5050-preview__visual-placeholder {
+    display: block;
+    inline-size: 100%;
+    min-block-size: 20rem;
+  }
+
+  :global([data-theme="dark"]) .ds-feature-5050-preview :global([data-component-name="LogoAsset"]) {
+    filter: invert(1);
+  }
+</style>

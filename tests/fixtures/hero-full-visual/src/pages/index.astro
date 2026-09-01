@@ -1,0 +1,63 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import HeroFullVisual from "../../../../../src/components/website-patterns/hero/HeroFullVisual.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HeroFullVisual contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <HeroFullVisual
+        id="hero-centered"
+        class="hero-contract-fixture"
+        data-forwarded="yes"
+        heading="Build a clear first impression"
+        paragraph="A centered opening promise with concise supporting context."
+      >
+        <BulletPoint slot="bullet-points" text="Reusable foundations" />
+        <BulletPoint slot="bullet-points" text="Accessible by default" tone="status" />
+        <img slot="visual" src="/images/project-placeholder.svg" alt="Abstract centered visual" />
+      </HeroFullVisual>
+
+      <HeroFullVisual
+        id="hero-left"
+        composition="left"
+        heading="Keep the content aligned to the start"
+        eyebrow="Platform"
+        paragraph="This example proves actions, long text and list items can wrap without changing source order."
+        headingLevel={2}
+      >
+        <Button slot="actions">Start a project</Button>
+        <Button slot="actions" variant="secondary">Explore the system</Button>
+        <BulletPoint slot="bullet-points" text="One clear promise" />
+        <BulletPoint slot="bullet-points" text="Focused supporting evidence" />
+        <BulletPoint slot="bullet-points" text="A crop-safe panoramic visual" />
+        <img slot="visual" src="/images/project-placeholder.svg" alt="Abstract left-aligned visual" />
+      </HeroFullVisual>
+
+      <div data-theme="dark" dir="rtl">
+        <HeroFullVisual
+          id="hero-section-header"
+          composition="section-header"
+          heading="اربط الوعد الرئيسي بالإجراء التالي"
+          eyebrow="نظام التصميم"
+          paragraph="يتحقق هذا المثال من ترتيب القراءة والالتفاف الطبيعي في تخطيط من اليمين إلى اليسار."
+          headingLevel={3}
+        >
+          <Button slot="actions">ابدأ المشروع</Button>
+          <BulletPoint slot="bullet-points" text="أساس متين وقابل لإعادة الاستخدام" />
+          <BulletPoint slot="bullet-points" text="تجربة واضحة ويمكن الوصول إليها" />
+          <img slot="visual" src="/images/project-placeholder.svg" alt="تكوين تجريدي بعرض كامل" />
+        </HeroFullVisual>
+      </div>
+    </main>
+  </body>
+</html>

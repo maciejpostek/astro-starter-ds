@@ -94,9 +94,9 @@ test("renders native dialog, ARIA, dependency and optional footer contracts", as
 
     assert.equal(new Set(ids).size, ids.length);
     assert.ok([...labelledIds, ...describedIds].every((id) => ids.includes(id)));
-    assert.equal((html.match(/data-component-name="Popup"/gu) ?? []).length, 10);
-    assert.equal((html.match(/<dialog\b/gu) ?? []).length, 10);
-    assert.equal((html.match(/<form\b[^>]*method="dialog"/gu) ?? []).length, 10);
+    assert.equal((html.match(/data-component-name="Popup"/gu) ?? []).length, 11);
+    assert.equal((html.match(/<dialog\b/gu) ?? []).length, 11);
+    assert.equal((html.match(/<form\b[^>]*method="dialog"/gu) ?? []).length, 11);
     for (const status of popupStatuses) {
       assert.match(html, new RegExp(`data-popup-status="${status}"`, "u"));
       assert.match(html, new RegExp(`data-material-symbol="${popupStatusIcons[status]}"`, "u"));
@@ -109,6 +109,8 @@ test("renders native dialog, ARIA, dependency and optional footer contracts", as
     assert.match(html, />Apply</u);
     assert.match(html, />Back</u);
     assert.match(html, /Remember this choice/u);
+    assert.match(html, /<dialog\b(?=[^>]*id="popup-rtl-content-stress")(?=[^>]*dir="rtl")[^>]*>/u);
+    assert.match(html, /اتجاه الكتابة من اليمين إلى اليسار/u);
     assert.match(html, /\schecked/u);
     assert.doesNotMatch(html, /<astro-island\b/u);
     assert.doesNotMatch(popupSource, /(?:^|[;{]\s*)--[a-z0-9-]+\s*:/imu);
@@ -127,6 +129,17 @@ test("renders native dialog, ARIA, dependency and optional footer contracts", as
       rm(join(fixtureRoot, ".astro"), { recursive: true, force: true }),
     ]);
   }
+});
+
+test("keeps responsive Popup documentation on the canonical renderer and content", async () => {
+  const [preview, registry] = await Promise.all([
+    readFile(fileURLToPath(new URL("../src/components/_internal/documentation/DsPopupPreview.astro", import.meta.url)), "utf8"),
+    readFile(fileURLToPath(new URL("../src/data/documentationPreviewRegistry.ts", import.meta.url)), "utf8"),
+  ]);
+
+  assert.doesNotMatch(preview, /longContent|direction\?:|dir=\{direction\}/u);
+  assert.match(registry, /popup:\s*\{ initialOpen: true \}/u);
+  assert.doesNotMatch(registry, /popup:\s*\{[^}]*longContent|popup:\s*\{[^}]*direction/u);
 });
 
 test("runtime source preserves the complete event and focus contract", async () => {

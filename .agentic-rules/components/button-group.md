@@ -7,7 +7,7 @@ Status: active.
 - Figma page key: `buttons`
 - Astro source: `src/components/base-components/buttons/ButtonGroup.astro`
 - Role: molecule
-- Sync status: mapped
+- Sync status: intentional-difference
 
 ## UX purpose
 
@@ -26,21 +26,24 @@ Organize related actions into one clear decision area while preserving each chil
 ## Content contract
 
 - Use the default slot for complete interactive components only.
+- `align` accepts `left` or `centered`; `left` is the backward-compatible default and follows the logical inline start in the current writing direction.
 - Keep labels distinct and avoid duplicate actions in one group.
 
 ## Composition and placement
 
 - Order actions by task priority and preserve that order when wrapping.
+- The consuming parent positions the ButtonGroup as one allocation. ButtonGroup owns the alignment of children within every wrapped line through `data-button-group-align`.
+- A centered parent that exposes a shared alignment contract must pass `align="centered"` explicitly instead of overriding ButtonGroup internals with a descendant selector.
 - Child count is unrestricted, but large groups should be simplified for comprehension.
 
 ## Responsive behavior
 
 - Primary strategy: `intrinsic`
-- Mechanisms and references: `display: flex`, `flex-wrap: wrap` and `--gap-button-group` preserve a usable group at any allocated width.
-- Figma projection: canonical master `204:103` keeps an unrestricted Slot; its internal action slot is `Fill`, uses `Wrap`, and binds both axis gaps to `gap/component/button/group`. Consumer instances use `Fill` only when their parent owns a bounded width.
+- Mechanisms and references: `display: flex`, `flex-wrap: wrap`, `justify-content: flex-start | center`, `data-button-group-align` and `--gap-button-group` preserve a usable group at any allocated width.
+- Figma projection: canonical master `204:103` keeps an unrestricted Slot; its internal action slot is `Fill`, uses `Wrap`, and binds both axis gaps to `gap/component/button/group`. It has no approved alignment axis, so Astro's `left | centered` prop remains an intentional code-only difference. Consumer instances use `Fill` only when their parent owns a bounded width.
 - Container queries: none.
 - Viewport queries: none.
-- Reflow, order and visibility: Children wrap in DOM order without visual reordering, duplication or hiding; the group does not create a separate mobile variant.
+- Reflow, order and visibility: Children wrap in DOM order without visual reordering, duplication or hiding. Every wrapped line follows the selected alignment, and the group does not create a separate mobile variant.
 
 ## Accessibility and required behavior
 
@@ -54,8 +57,8 @@ Organize related actions into one clear decision area while preserving each chil
 
 ## Naming and token contract
 
-Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
+Use `ButtonGroup`, `.button-group`, `data-button-group-align`, the closed `left | centered` variant and the registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. Alignment uses the native flex contract and creates no token need. A confirmed styling gap still requires an approved `tokenDraft` before implementation.
 
 ## Core decision
 
-Use ButtonGroup when several independent actions form one local choice set; the Slot controls composition, not a fixed child count.
+Use ButtonGroup when several independent actions form one local choice set; the Slot controls composition, `align` controls every line, and no fixed child count is introduced.

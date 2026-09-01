@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
 import type { InputSize, InputValidation } from "../../base-components/inputs/Input.astro";
 import { normalizeValidationState } from "../../../lib/forms/validationState";
 import { resolveSelectFlag } from "../../../lib/select/selectFlags";
@@ -12,6 +13,11 @@ import type {
 } from "../../../lib/select/selectTypes";
 
 export type SelectKind = "standard" | "compact" | "inline";
+
+type ResolvedSelectOptionVisual = SelectOptionVisual | {
+  kind: "logo";
+  slug: string;
+};
 
 type NativeSelectAttributes = Omit<
   HTMLAttributes<"select">,
@@ -80,7 +86,7 @@ const size = requestedSize ?? (kind === "standard" ? "medium" : "small");
 const validationState = normalizeValidationState(validation);
 const selectedOption = options.find((option) => option.value === value) ?? options[0];
 const selectedIndex = options.indexOf(selectedOption);
-const optionVisuals = options.map((option): SelectOptionVisual | undefined => {
+const optionVisuals = options.map((option): ResolvedSelectOptionVisual | undefined => {
   const runtimeOption = option as {
     value: string;
     flag?: string;
@@ -119,14 +125,14 @@ const optionVisuals = options.map((option): SelectOptionVisual | undefined => {
   }
 
   if (runtimeOption.logo !== undefined) {
+    resolveSelectLogo({
+      slug: runtimeOption.logo,
+      selectId: id,
+      optionValue: runtimeOption.value,
+    });
     return {
-      kind: "image",
-      src: resolveSelectLogo({
-        slug: runtimeOption.logo,
-        selectId: id,
-        optionValue: runtimeOption.value,
-      }),
-      alt: "",
+      kind: "logo",
+      slug: runtimeOption.logo,
     };
   }
 
@@ -230,7 +236,10 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
         {selectedOptionVisual?.kind === "image" && (
           <img src={selectedOptionVisual.src} alt={selectedOptionVisual.alt ?? ""} />
         )}
-        {selectedOptionVisual?.kind === "text" && <span>{selectedOptionVisual.text}</span>}
+        {selectedOptionVisual?.kind === "logo" && (
+          <LogoAsset slug={selectedOptionVisual.slug} variant="mark" alt="" />
+        )}
+        {selectedOptionVisual?.kind === "text" && <span data-select-text-visual>{selectedOptionVisual.text}</span>}
       </span>
     </span>
     <span class="select-control__content">
@@ -270,7 +279,10 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
           {optionVisuals[index]?.kind === "image" && (
             <img src={optionVisuals[index].src} alt={optionVisuals[index].alt ?? ""} />
           )}
-          {optionVisuals[index]?.kind === "text" && <span>{optionVisuals[index].text}</span>}
+          {optionVisuals[index]?.kind === "logo" && (
+            <LogoAsset slug={optionVisuals[index].slug} variant="mark" alt="" />
+          )}
+          {optionVisuals[index]?.kind === "text" && <span data-select-text-visual>{optionVisuals[index].text}</span>}
         </span>
         <span class="select-control__option-label">{option.label}</span>
         <MaterialSymbol
@@ -826,8 +838,8 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     display: inline-flex;
   }
 
-  .select-control__selected-visual :is(img, span),
-  .select-control__option-visual :is(img, span) {
+  .select-control__selected-visual > :is(img, span),
+  .select-control__option-visual > :is(img, span) {
     display: grid;
     width: 100%;
     height: 100%;
@@ -835,8 +847,8 @@ const listboxLabelledBy = label ? labelId : ariaLabelledBy;
     object-fit: contain;
   }
 
-  .select-control__selected-visual span,
-  .select-control__option-visual span {
+  .select-control__selected-visual > [data-select-text-visual],
+  .select-control__option-visual > [data-select-text-visual] {
     border-radius: var(--radius-full);
     color: var(--color-text-secondary);
     background: var(--color-background-surface);

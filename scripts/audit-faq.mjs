@@ -119,8 +119,8 @@ if (record?.slots?.join(",") !== "actions,default") {
 }
 if (record?.divergences?.length !== 3) errors.push("FAQ must record all three intentional differences.");
 if (record?.readiness?.visual !== "review") errors.push("FAQ visual readiness must remain review.");
-if (record?.readiness?.validation !== "partial") {
-  errors.push("FAQ validation readiness must remain partial until unrelated repository baseline failures are cleared.");
+if (record?.readiness?.validation !== "passed") {
+  errors.push("FAQ validation readiness must be passed after its component tests and repository blockers are cleared.");
 }
 
 if (

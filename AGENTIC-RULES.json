@@ -1,7 +1,7 @@
 {
   "version": "1.1.0",
   "name": "AI-Native Design System V1.1 Role-Aware Router",
-  "description": "Compact role-aware router. Classify once, preserve constraints, resolve a flow-specific bounded Context Pack, reuse by default, validate the affected scope, and return an accepted or blocked result.",
+  "description": "V1.1 agent router.",
   "taskContractSchema": "architecture/agent-task.schema.json",
   "runtime": {
     "routeCommand": "npm run agent:route -- --prompt=<request>",
@@ -49,6 +49,7 @@
       "blocked"
     ]
   },
+  "visualAssetPolicy": { "missingVisualBlocksComposition": false, "placeholder": "css-checkerboard", "marker": "data-visual-placeholder=missing-asset", "inventFetchOrGenerate": "explicit-authorization-only", "handoffField": "assetRequests", "releaseReadyWithMissingVisuals": false },
   "creationGate": {
     "default": "blocked",
     "requires": "An explicit request for a new reusable or design-system component.",
@@ -228,16 +229,7 @@
     ]
   },
   "resultContract": {
-    "fields": [
-      "status",
-      "intent",
-      "reused",
-      "createdComponents",
-      "changedFiles",
-      "readinessGates",
-      "validation",
-      "missingInput"
-    ],
+    "fields": ["status", "intent", "reused", "createdComponents", "changedFiles", "readinessGates", "validation", "assetRequests", "missingInput"],
     "trackedRunHistory": false
   },
   "targetSemantics": {

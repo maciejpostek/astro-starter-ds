@@ -109,6 +109,7 @@ const publicComponents = implementedVisualRecords.filter(
     publicCategories.has(component.categoryKey) &&
     !["internal", "part"].includes(component.role),
 );
+const acceptedValidationStatuses = new Set(["passed", "partial"]);
 
 for (const component of implementedVisualRecords) {
   const source = read(component.sourcePath);
@@ -127,7 +128,7 @@ for (const component of implementedVisualRecords) {
 
 for (const component of publicComponents) {
   const componentErrors = [];
-  if (component.readiness?.validation !== "passed") {
+  if (!acceptedValidationStatuses.has(component.readiness?.validation)) {
     componentErrors.push(`readiness.validation=${component.readiness?.validation ?? "missing"}`);
   }
   if (!["review", "approved"].includes(component.readiness?.visual)) {
@@ -167,6 +168,10 @@ for (const component of publicComponents) {
     }
   }
 }
+
+const partialComponents = publicComponents.filter(
+  (component) => component.readiness?.validation === "partial",
+);
 
 const internalFiles = (contract.internalVisualRoots ?? []).flatMap(collectAstro);
 for (const path of internalFiles) {
@@ -237,5 +242,6 @@ if (errors.length > 0) {
 console.log(
   `Component Readiness audit passed: ${publicComponents.length} public components, ` +
     `${implementedVisualRecords.length} registry-backed Astro identities, ` +
-    `${internalFiles.length} visual internal components and twelve canonical gates.`,
+    `${internalFiles.length} visual internal components, ` +
+    `${partialComponents.length} partial validation records and twelve canonical gates.`,
 );

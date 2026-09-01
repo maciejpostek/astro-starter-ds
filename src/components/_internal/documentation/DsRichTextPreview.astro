@@ -1,0 +1,79 @@
+---
+import RichText from "../../website-patterns/rich-text/RichText.astro";
+import RichTextHeading from "../../website-patterns/rich-text/RichTextHeading.astro";
+import RichTextParagraph from "../../website-patterns/rich-text/RichTextParagraph.astro";
+import RichTextQuote from "../../website-patterns/rich-text/RichTextQuote.astro";
+import RichTextVisual from "../../website-patterns/rich-text/RichTextVisual.astro";
+
+export interface Props {
+  kind?: "rich-text" | "heading" | "paragraph" | "quote" | "visual";
+}
+
+const { kind = "rich-text" } = Astro.props;
+---
+
+<div class="ds-rich-text-preview" data-component-name="DsRichTextPreview">
+  {kind === "rich-text" && (
+    <RichText data-ds-preview-target>
+      <RichTextParagraph size="large">
+        A reusable editorial flow keeps long-form content readable while page-level metadata remains outside the component.
+      </RichTextParagraph>
+      <RichTextHeading headingLevel={2}>Structure content for readers first</RichTextHeading>
+      <RichTextParagraph>
+        Use semantic blocks for paragraphs, headings, quotations and visual context instead of recreating article rhythm with local combo classes.
+      </RichTextParagraph>
+      <RichTextQuote cite="https://example.com/editorial-source">
+        Clear structure helps people scan, understand and return to the information they need.
+        <span slot="attribution">Editorial design principle</span>
+      </RichTextQuote>
+      <RichTextVisual ratio="16:9">
+        <span aria-hidden="true"></span>
+        <span slot="caption">Controlled documentation checkerboard; production media supplies its own alternative text.</span>
+      </RichTextVisual>
+    </RichText>
+  )}
+
+  {kind === "heading" && (
+    <div class="ds-rich-text-preview__stack" data-ds-preview-target>
+      <RichTextHeading headingLevel={2}>Rich Text heading level two</RichTextHeading>
+      <RichTextHeading headingLevel={3}>Rich Text heading level three</RichTextHeading>
+      <RichTextHeading headingLevel={4}>Rich Text heading level four</RichTextHeading>
+      <RichTextHeading headingLevel={5}>Rich Text heading level five</RichTextHeading>
+      <RichTextHeading headingLevel={6}>Rich Text heading level six</RichTextHeading>
+    </div>
+  )}
+
+  {kind === "paragraph" && (
+    <div class="ds-rich-text-preview__stack" data-ds-preview-target>
+      <RichTextParagraph size="large">Large is reserved for an intentional lead or prominent editorial introduction.</RichTextParagraph>
+      <RichTextParagraph>Base is the default reading size for ordinary long-form paragraphs.</RichTextParagraph>
+    </div>
+  )}
+
+  {kind === "quote" && (
+    <RichTextQuote cite="https://example.com/source" data-ds-preview-target>
+      Semantic quotation markup keeps meaning independent from its accent presentation.
+      <span slot="attribution">Example attribution</span>
+    </RichTextQuote>
+  )}
+
+  {kind === "visual" && (
+    <RichTextVisual ratio="16:9" data-ds-preview-target>
+      <span aria-hidden="true"></span>
+      <span slot="caption">Optional caption associated with the editorial figure.</span>
+    </RichTextVisual>
+  )}
+</div>
+
+<style>
+  .ds-rich-text-preview,
+  .ds-rich-text-preview__stack {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .ds-rich-text-preview__stack {
+    display: grid;
+    gap: var(--gap-large);
+  }
+</style>

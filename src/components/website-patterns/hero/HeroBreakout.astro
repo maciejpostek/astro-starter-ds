@@ -1,0 +1,250 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import Content from "../content/Content.astro";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  caption?: string;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  caption,
+  headingLevel = 1,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("HeroBreakout heading must be a non-empty string.");
+}
+
+for (const [name, value] of [
+  ["eyebrow", eyebrow],
+  ["paragraph", paragraph],
+  ["caption", caption],
+] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`HeroBreakout ${name} must be a non-empty string when provided.`);
+  }
+}
+
+if (![1, 2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("HeroBreakout headingLevel must be an integer from 1 to 6.");
+}
+
+if (!Astro.slots.has("default")) {
+  throw new TypeError("HeroBreakout requires BulletPoint children in its default slot.");
+}
+
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("HeroBreakout requires visual content in its visual slot.");
+}
+
+const rootId = id || `hero-breakout-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const captionId = `${rootId}-caption`;
+const hasActions = Astro.slots.has("actions");
+const hasCta = Boolean(caption) || hasActions;
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["hero-breakout", "l-section", className]}
+  data-padding="none"
+  data-component-name="HeroBreakout"
+  aria-labelledby={headingId}
+>
+  <div class="hero-breakout__layout l-grid" data-grid="breakout">
+    <div class="hero-breakout__content-region">
+      <div
+        class="hero-breakout__content-grid l-grid"
+        data-grid="columns"
+        data-columns="6"
+      >
+        <div class="hero-breakout__content-stack">
+          <Content
+            id={contentId}
+            heading={heading}
+            eyebrow={eyebrow}
+            paragraph={paragraph}
+            headingLevel={headingLevel}
+          />
+
+          <ul class="hero-breakout__bullet-points">
+            <slot />
+          </ul>
+        </div>
+
+        {hasCta && (
+          <div class="hero-breakout__cta-area">
+            {caption && (
+              <p class="hero-breakout__caption body-tiny-regular" id={captionId}>
+                {caption}
+              </p>
+            )}
+
+            {hasActions && (
+              <div class="hero-breakout__actions">
+                <ButtonGroup aria-labelledby={caption ? captionId : headingId}>
+                  <slot name="actions" />
+                </ButtonGroup>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="hero-breakout__visual">
+      <slot name="visual" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-breakout {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: hidden;
+    background: var(--color-background-canvas);
+    container: hero-breakout / inline-size;
+  }
+
+  .hero-breakout__layout {
+    min-block-size: 100svh;
+  }
+
+  .hero-breakout__content-region,
+  .hero-breakout__content-grid,
+  .hero-breakout__content-stack,
+  .hero-breakout__cta-area,
+  .hero-breakout__actions,
+  .hero-breakout__visual {
+    min-inline-size: 0;
+  }
+
+  .hero-breakout__content-region {
+    grid-column: content-start / span 6;
+    padding-block: var(--section-padding-hero-top) var(--section-padding-small);
+  }
+
+  .hero-breakout__content-grid {
+    min-block-size: 100%;
+    grid-template-rows: auto 1fr auto;
+    gap: 0 var(--site-grid-column-gap);
+  }
+
+  .hero-breakout__content-stack {
+    display: flex;
+    grid-column: 1 / span 4;
+    grid-row: 1;
+    flex-direction: column;
+  }
+
+  .hero-breakout__bullet-points {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+    margin: 0;
+    padding: var(--space-medium) 0 0;
+  }
+
+  .hero-breakout__cta-area {
+    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-large);
+  }
+
+  .hero-breakout__caption {
+    inline-size: 100%;
+    margin: 0;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .hero-breakout__actions,
+  .hero-breakout__actions > :global([data-component-name="ButtonGroup"]) {
+    max-inline-size: 100%;
+    inline-size: fit-content;
+  }
+
+  .hero-breakout__visual {
+    display: flex;
+    grid-column: content-column 7 / full-end;
+    align-self: stretch;
+    overflow: hidden;
+    margin-block-start: var(--section-padding-hero-top);
+    background: var(--color-background-surface);
+  }
+
+  .hero-breakout__visual > :global(img),
+  .hero-breakout__visual > :global(picture),
+  .hero-breakout__visual > :global(video) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    object-fit: cover;
+  }
+
+  .hero-breakout__visual > :global(picture) > :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  @container hero-breakout (width < 64rem) {
+    .hero-breakout__layout {
+      min-block-size: auto;
+    }
+
+    .hero-breakout__content-region {
+      grid-column: content-start / content-end;
+    }
+
+    .hero-breakout__visual {
+      grid-column: full-start / full-end;
+    }
+
+    .hero-breakout__content-grid {
+      min-block-size: auto;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
+      row-gap: var(--gap-large);
+    }
+
+    .hero-breakout__content-stack,
+    .hero-breakout__cta-area {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    .hero-breakout__visual {
+      min-block-size: 0;
+      margin-block-start: 0;
+    }
+
+    .hero-breakout__visual > :global(img),
+    .hero-breakout__visual > :global(picture),
+    .hero-breakout__visual > :global(video) {
+      block-size: auto;
+    }
+  }
+</style>

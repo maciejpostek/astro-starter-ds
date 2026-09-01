@@ -1,0 +1,88 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import HeroVisualCenter from "../../website-patterns/hero/HeroVisualCenter.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-hero-visual-center" } = Astro.props;
+---
+
+<div
+  class="ds-hero-visual-center-preview"
+  data-component-name="DsHeroVisualCenterPreview"
+  data-hero-visual-center-preview
+  data-ds-preview-target
+>
+  <HeroVisualCenter
+    id={`${idPrefix}-default`}
+    heading="Put your primary promise at the center"
+    eyebrow="Design system"
+    paragraph="Combine a concise message with focused actions, scannable proof points and one clear visual story."
+    headingLevel={2}
+  >
+    <Button slot="actions">Start a project</Button>
+    <Button slot="actions" variant="secondary">Explore the system</Button>
+    <BulletPoint slot="bulletPoints" text="Reusable foundations" tone="status" />
+    <BulletPoint slot="bulletPoints" text="Accessible by default" tone="status" />
+    <BulletPoint slot="bulletPoints" text="Responsive composition" tone="status" />
+    <Fragment slot="visual" />
+  </HeroVisualCenter>
+</div>
+
+<script>
+  type HeroVisualCenterPreviewState = {
+    paragraph: "visible" | "hidden";
+    actions: "visible" | "hidden";
+    bulletPoints: "visible" | "hidden";
+  };
+
+  const initializeHeroVisualCenterPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-hero-visual-center-preview]").forEach((preview) => {
+      if (preview.dataset.heroVisualCenterPreviewReady === "true") return;
+      preview.dataset.heroVisualCenterPreviewReady = "true";
+
+      const state: HeroVisualCenterPreviewState = {
+        paragraph: "visible",
+        actions: "visible",
+        bulletPoints: "visible",
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>(".content__paragraph").forEach((node) => {
+          node.hidden = state.paragraph === "hidden";
+        });
+        preview.querySelectorAll<HTMLElement>(".content__actions").forEach((node) => {
+          node.hidden = state.actions === "hidden";
+        });
+        preview.querySelectorAll<HTMLElement>(".hero-visual-center__bullet-points").forEach((node) => {
+          node.hidden = state.bulletPoints === "hidden";
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "heroVisualCenterParagraph" && (value === "visible" || value === "hidden")) state.paragraph = value;
+          if (axisId === "heroVisualCenterActions" && (value === "visible" || value === "hidden")) state.actions = value;
+          if (axisId === "heroVisualCenterBulletPoints" && (value === "visible" || value === "hidden")) state.bulletPoints = value;
+          render();
+        });
+    });
+  };
+
+  initializeHeroVisualCenterPreviews();
+  document.addEventListener("astro:page-load", initializeHeroVisualCenterPreviews);
+</script>
+
+<style>
+  .ds-hero-visual-center-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

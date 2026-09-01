@@ -33,7 +33,8 @@ for (const contract of [
   'Astro.slots.has("tags")',
   'Astro.slots.has("actions")',
   'name="language"',
-  'name="trending_up"',
+  '<StatTextInline',
+  'showIcon={showStatIcon}',
   'size="var(--bullet-icon-card-icon-size)"',
   "gap: var(--gap-large)",
   "gap: var(--space-tiny)",
@@ -73,7 +74,7 @@ if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePa
 if (record?.figmaCanonicalNodeId !== "1793:2052" || figmaContract?.nodeId !== "1793:2052") {
   errors.push("BulletIconCard registry does not preserve canonical Figma node 1793:2052.");
 }
-if (record?.dependencies?.join(",") !== "material-symbol,tag,button-group") {
+if (record?.dependencies?.join(",") !== "material-symbol,stat-text-inline,tag,button-group") {
   errors.push("BulletIconCard dependencies do not match the locked composition contract.");
 }
 if (record?.props?.join(",") !== "title,description,layout,headingLevel,showIcon,stat,showStatIcon" || record?.slots?.join(",") !== "tags,actions") {

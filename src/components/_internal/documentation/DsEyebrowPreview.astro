@@ -1,18 +1,46 @@
 ---
-import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro";
+import Eyebrow, { type EyebrowVariant } from "../../base-components/eyebrow/Eyebrow.astro";
 import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
+
+const variants = ["default", "alternate"] as const satisfies ReadonlyArray<EyebrowVariant>;
 ---
 
 <div
   class="eyebrow-preview"
   data-component-name="DsEyebrowPreview"
+  data-eyebrow-preview
   data-ds-preview-target
 >
-  <div class="eyebrow-preview__composition">
-    <Eyebrow text="Case studies" />
-    <DsSectionHeaderLevel3 title="Selected work" />
-  </div>
+  {variants.map((variant) => (
+    <div
+      class="eyebrow-preview__composition"
+      data-eyebrow-preview-variant={variant}
+      hidden={variant !== "default"}
+    >
+      <Eyebrow text="Case studies" variant={variant} />
+      <DsSectionHeaderLevel3 title="Selected work" />
+    </div>
+  ))}
 </div>
+
+<script>
+  const initializeEyebrowPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-eyebrow-preview]").forEach((preview) => {
+      if (preview.dataset.eyebrowPreviewReady === "true") return;
+      preview.dataset.eyebrowPreviewReady = "true";
+      preview.closest("[data-ds-interactive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent) || event.detail?.axisId !== "eyebrowVariant") return;
+        const value = String(event.detail.value ?? "");
+        preview.querySelectorAll<HTMLElement>("[data-eyebrow-preview-variant]").forEach((variant) => {
+          variant.hidden = variant.dataset.eyebrowPreviewVariant !== value;
+        });
+      });
+    });
+  };
+
+  initializeEyebrowPreviews();
+  document.addEventListener("astro:page-load", initializeEyebrowPreviews);
+</script>
 
 <style>
   .eyebrow-preview {
@@ -26,9 +54,19 @@ import DsSectionHeaderLevel3 from "./DsSectionHeaderLevel3.astro";
     max-inline-size: 100%;
   }
 
+  .eyebrow-preview__composition[data-eyebrow-preview-variant="alternate"] {
+    padding: var(--content-padding-large);
+    background: var(--color-background-accent);
+  }
+
   .eyebrow-preview__composition > :global([data-component-name="DsSectionHeaderLevel3"]) {
     margin: 0;
     border: 0;
     padding: 0;
+  }
+
+  .eyebrow-preview__composition[data-eyebrow-preview-variant="alternate"]
+    > :global([data-component-name="DsSectionHeaderLevel3"] h3) {
+    color: var(--color-text-on-accent);
   }
 </style>

@@ -7,6 +7,7 @@ const invalidProps: Record<string, Record<string, unknown>> = {
   text: { text: "   " },
   trend: { text: "Revenue increased by 12%", trend: "flat" },
   iconPosition: { text: "Revenue increased by 12%", iconPosition: "center" },
+  showIcon: { text: "Revenue increased by 12%", showIcon: "yes" },
 };
 const props = (invalidProps[invalidCase] ?? invalidProps.text) as any;
 ---

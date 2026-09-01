@@ -1,0 +1,80 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import CallToActionVisual, {
+  type CallToActionSurface,
+  type CallToActionVisualPosition,
+} from "../../website-patterns/cta/CallToActionVisual.astro";
+
+interface Props { idPrefix?: string; }
+
+const { idPrefix = "documentation-call-to-action-visual" } = Astro.props;
+const surfaces = ["accent", "inverse"] as const satisfies ReadonlyArray<CallToActionSurface>;
+const positions = ["right", "left"] as const satisfies ReadonlyArray<CallToActionVisualPosition>;
+---
+
+<div class="call-to-action-visual-preview" data-component-name="DsCallToActionVisualPreview" data-call-to-action-preview data-ds-preview-target>
+  {surfaces.flatMap((surface) => positions.map((visualPosition) => (
+    <div
+      class="call-to-action-visual-preview__variant"
+      data-call-to-action-preview-surface={surface}
+      data-call-to-action-preview-position={visualPosition}
+      hidden={surface !== "accent" || visualPosition !== "right"}
+    >
+      <CallToActionVisual
+        id={`${idPrefix}-${surface}-${visualPosition}`}
+        heading="Turn the next step into real momentum"
+        eyebrow="Call to action"
+        paragraph="Pair a focused invitation with one visual and a clear route forward."
+        surface={surface}
+        visualPosition={visualPosition}
+      >
+        <Button slot="actions" variant={surface === "accent" ? "primary-alternate" : "primary"}>Start now</Button>
+        <Button slot="actions" variant="secondary">Learn more</Button>
+        <span slot="visual" aria-hidden="true"></span>
+      </CallToActionVisual>
+    </div>
+  )))}
+</div>
+
+<script>
+  const initializeCallToActionVisualPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-call-to-action-preview]").forEach((preview) => {
+      if (preview.dataset.callToActionPreviewReady === "true") return;
+      preview.dataset.callToActionPreviewReady = "true";
+      const state = { surface: "accent", position: "right", eyebrow: "visible", paragraph: "visible", actions: "visible" };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>("[data-call-to-action-preview-surface]").forEach((variant) => {
+          variant.hidden = variant.dataset.callToActionPreviewSurface !== state.surface
+            || variant.dataset.callToActionPreviewPosition !== state.position;
+          variant.querySelectorAll<HTMLElement>('[data-component-name="Eyebrow"]').forEach((node) => { node.hidden = state.eyebrow === "hidden"; });
+          variant.querySelectorAll<HTMLElement>(".content__paragraph").forEach((node) => { node.hidden = state.paragraph === "hidden"; });
+          variant.querySelectorAll<HTMLElement>(".content__actions").forEach((node) => { node.hidden = state.actions === "hidden"; });
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const value = String(event.detail?.value ?? "");
+        if (axisId === "callToActionSurface" && (value === "accent" || value === "inverse")) state.surface = value;
+        if (axisId === "callToActionVisualPosition" && (value === "left" || value === "right")) state.position = value;
+        if (axisId === "callToActionEyebrow" && (value === "visible" || value === "hidden")) state.eyebrow = value;
+        if (axisId === "callToActionParagraph" && (value === "visible" || value === "hidden")) state.paragraph = value;
+        if (axisId === "callToActionActions" && (value === "visible" || value === "hidden")) state.actions = value;
+        render();
+      });
+    });
+  };
+
+  initializeCallToActionVisualPreviews();
+  document.addEventListener("astro:page-load", initializeCallToActionVisualPreviews);
+</script>
+
+<style>
+  .call-to-action-visual-preview,
+  .call-to-action-visual-preview__variant {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

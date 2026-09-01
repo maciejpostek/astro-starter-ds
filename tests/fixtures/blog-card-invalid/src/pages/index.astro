@@ -1,0 +1,21 @@
+---
+import BlogCard from "../../../../../src/components/website-patterns/blog-resources/BlogCard.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.BLOG_CARD_INVALID_CASE ?? "title";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  title: { title: "   " },
+  description: { title: "Article", description: "" },
+  dateLabel: { title: "Article", date: { label: "", dateTime: "2026-08-31" } },
+  dateTime: { title: "Article", date: { label: "August 31, 2026", dateTime: "" } },
+  href: { title: "Article", href: "" },
+  ctaRelationship: { title: "Article", ctaLabel: "Read article" },
+  ctaLabel: { title: "Article", href: "/article", ctaLabel: "" },
+  layout: { title: "Article", layout: "stacked" },
+  mediaPlacement: { title: "Article", mediaPlacement: "left" },
+  headingLevel: { title: "Article", headingLevel: 1 },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.title) as any;
+---
+
+<BlogCard {...props} />

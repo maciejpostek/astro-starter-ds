@@ -1,0 +1,96 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import Content from "../../../../../src/components/website-patterns/content/Content.astro";
+import HeroVisualCenter from "../../../../../src/components/website-patterns/hero/HeroVisualCenter.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HeroVisualCenter contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="fixture fixture--wide">
+        <HeroVisualCenter
+          id="hero-wide"
+          class="hero-contract-fixture"
+          data-forwarded="yes"
+          heading="Zbuduj wyraźną, centralną obietnicę"
+          eyebrow="System projektowy"
+          paragraph="Krótki opis, powiązane działania i dowody prowadzą do jednego dostępnego wizualu."
+        >
+          <Button slot="actions">Rozpocznij projekt</Button>
+          <Button slot="actions" variant="secondary">Poznaj system</Button>
+          <BulletPoint slot="bulletPoints" text="Spójne fundamenty" tone="status" />
+          <BulletPoint slot="bulletPoints" text="Dostępność w kontrakcie" tone="status" />
+          <BulletPoint slot="bulletPoints" text="Responsywny układ" tone="status" />
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstrakcyjna kompozycja geometryczna" />
+        </HeroVisualCenter>
+      </div>
+
+      <div class="fixture fixture--desktop">
+        <HeroVisualCenter
+          id="hero-minimal"
+          headingLevel={2}
+          heading="Wymagane treści tworzą kompletny wariant minimalny"
+          eyebrow="Minimalny"
+        >
+          <img slot="visual" src="/images/project-placeholder.svg" alt="" />
+        </HeroVisualCenter>
+      </div>
+
+      <div class="fixture fixture--tablet" data-theme="dark">
+        <HeroVisualCenter
+          id="hero-long"
+          headingLevel={3}
+          heading="A deliberately long localized heading verifies natural wrapping without a second rendering path"
+          eyebrow="Localized content"
+          paragraph="Supporting copy may grow under localization and text zoom while every region stays readable and avoids horizontal overflow."
+        >
+          <BulletPoint slot="bulletPoints" text="A deliberately long proof point validates wrapping inside a constrained component container" />
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstract placeholder" />
+        </HeroVisualCenter>
+      </div>
+
+      <div class="fixture fixture--narrow" data-theme="dark" dir="rtl">
+        <HeroVisualCenter
+          id="hero-rtl"
+          headingLevel={4}
+          heading="ابنِ رسالة مركزية واضحة"
+          eyebrow="نظام التصميم"
+          paragraph="يتحقق هذا المثال من التفاف النص وترتيب القراءة من اليمين إلى اليسار."
+        >
+          <Button slot="actions">ابدأ الآن</Button>
+          <BulletPoint slot="bulletPoints" text="محتوى قصير وقابل للمسح" tone="status" />
+          <img slot="visual" src="/images/project-placeholder.svg" alt="تكوين هندسي تجريدي" />
+        </HeroVisualCenter>
+      </div>
+
+      <Content id="content-h1-regression" heading="Content supports an explicit H1" headingLevel={1} />
+      <Content id="content-default-regression" heading="Content keeps H2 as its default" />
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .fixture {
+    inline-size: min(100%, 90rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--tablet { max-inline-size: 48rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

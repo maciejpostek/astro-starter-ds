@@ -3,11 +3,18 @@ import BulletIconCard from "../../website-patterns/bullet-points/BulletIconCard.
 import Button from "../../base-components/buttons/Button.astro";
 import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
 import Tag from "../../base-components/tag/Tag.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-bullet-icon-card" } = Astro.props;
+const previewId = `${idPrefix}-preview`;
 ---
 
 <div class="bullet-icon-card-preview" data-component-name="DsBulletIconCardPreview">
   <BulletIconCard
-    id="bullet-icon-card-preview"
+    id={previewId}
     title="Global availability"
     description="Reach customers in new markets with one consistent product experience."
     stat="24 markets supported"
@@ -21,7 +28,7 @@ import Tag from "../../base-components/tag/Tag.astro";
     </Fragment>
     <Fragment slot="actions">
       <Button showIcon={false}>Get started</Button>
-      <ButtonLink href="#bullet-icon-card-preview">Learn more</ButtonLink>
+      <ButtonLink href={`#${previewId}`}>Learn more</ButtonLink>
     </Fragment>
   </BulletIconCard>
 </div>
@@ -30,6 +37,5 @@ import Tag from "../../base-components/tag/Tag.astro";
   .bullet-icon-card-preview {
     inline-size: 100%;
     min-inline-size: 0;
-    max-inline-size: 32.3125rem;
   }
 </style>

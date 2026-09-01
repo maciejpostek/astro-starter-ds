@@ -1,0 +1,19 @@
+---
+import Rating from "../../../../../src/components/website-patterns/ratings-reviews/Rating.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.RATING_INVALID_CASE ?? "missingValue";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  missingValue: { ratingLabel: "Rating 5 out of 5 stars" },
+  negativeValue: { value: -1, ratingLabel: "Rating -1 out of 5 stars" },
+  highValue: { value: 6, ratingLabel: "Rating 6 out of 5 stars" },
+  fractionalValue: { value: 4.5, ratingLabel: "Rating 4.5 out of 5 stars" },
+  ratingLabel: { value: 5, ratingLabel: "   " },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.missingValue) as any;
+const hasSlot = invalidCase !== "slot";
+---
+
+{hasSlot ? <Rating {...props}>Trusted by 500 brands</Rating> : (
+  <Rating value={5} ratingLabel="Rating 5 out of 5 stars" />
+)}

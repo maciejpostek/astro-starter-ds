@@ -1,0 +1,60 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ProgressBar from "../../../../../src/components/base-components/progress-bar/ProgressBar.astro";
+import Ratio from "../../../../../src/components/base-components/ratio/Ratio.astro";
+import Content from "../../../../../src/components/website-patterns/content/Content.astro";
+import HowItWorks from "../../../../../src/components/website-patterns/how-it-works/HowItWorks.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const steps = [
+  ["Step one", "Define the intended outcome."],
+  ["Step two", "Compose the approved dependencies."],
+  ["Step three", "Validate the complete sequence."],
+] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HowItWorks contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <HowItWorks
+        id="how-it-works-canonical"
+        class="how-it-works-contract-fixture"
+        label="How the process works"
+        data-forwarded="yes"
+      >
+        {steps.map(([heading, paragraph], index) => {
+          const contentId = `how-it-works-canonical-step-${index + 1}`;
+          const headingId = `${contentId}-heading`;
+          return (
+            <li data-how-it-works-step aria-labelledby={headingId}>
+              <div data-how-it-works-progress>
+                <ProgressBar value={0} decorative />
+              </div>
+              <div data-how-it-works-panel>
+                <div data-how-it-works-content>
+                  {index === 0 ? (
+                    <Content id={contentId} eyebrow={`0${index + 1}`} heading={heading} paragraph={paragraph}>
+                      <Fragment slot="actions"><Button>Continue</Button></Fragment>
+                    </Content>
+                  ) : (
+                    <Content id={contentId} eyebrow={`0${index + 1}`} heading={heading} paragraph={paragraph} />
+                  )}
+                </div>
+                <div data-how-it-works-visual aria-hidden="true">
+                  <Ratio ratio="4:3" />
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </HowItWorks>
+    </main>
+  </body>
+</html>

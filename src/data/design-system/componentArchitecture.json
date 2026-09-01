@@ -1,7 +1,7 @@
 {
   "schemaVersion": "2.0.0",
   "status": "active",
-  "updatedAt": "2026-08-27",
+  "updatedAt": "2026-08-31",
   "sourceContract": "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
   "figma": {
     "fileKey": "Dga0pMJHvQMUXGiXUKWTAm",
@@ -57,12 +57,13 @@
     "button": {
       "pageId": "190:3",
       "nodeId": "190:131",
-      "variantCount": 15,
+      "variantCount": 20,
       "axes": {
         "Style": [
           "Primary",
           "Secondary",
-          "Tertiary"
+          "Tertiary",
+          "Primary Alternate"
         ],
         "State": [
           "Default",
@@ -83,8 +84,12 @@
     "button-link": {
       "pageId": "190:3",
       "nodeId": "959:2706",
-      "variantCount": 5,
+      "variantCount": 10,
       "axes": {
+        "Style": [
+          "Default",
+          "Primary Alternate"
+        ],
         "State": [
           "Default",
           "Hover",
@@ -99,6 +104,38 @@
       },
       "fixedDependencies": [
         "Icon/Material/arrow_forward"
+      ]
+    },
+    "top-banner": {
+      "pageId": "992:2823",
+      "nodeId": "1852:2867",
+      "variantCount": 5,
+      "axes": {
+        "Status": [
+          "Brand",
+          "Info",
+          "Success",
+          "Warning",
+          "Error"
+        ]
+      },
+      "properties": {
+        "Title": "TEXT",
+        "Show Icon": "BOOLEAN",
+        "Show Supporting Content": "BOOLEAN",
+        "Description": "TEXT",
+        "Show Description": "BOOLEAN",
+        "Link Label": "TEXT",
+        "Show Link": "BOOLEAN",
+        "Dismissible": "BOOLEAN"
+      },
+      "fixedDependencies": [
+        "Icon/Material/language",
+        "Icon/Material/info",
+        "Icon/Material/check_circle",
+        "Icon/Material/warning",
+        "Icon/Material/error",
+        "Icon/Material/close"
       ]
     },
     "icon-button": {
@@ -1084,6 +1121,74 @@
         "Ratio": "imageRatio"
       }
     },
+    "blog-card": {
+      "pageId": "964:14727",
+      "nodeId": "1852:2902",
+      "variantCount": 4,
+      "axes": {
+        "Layout": [
+          "Vertical",
+          "Horizontal"
+        ],
+        "Media Placement": [
+          "Start",
+          "End"
+        ]
+      },
+      "properties": {
+        "Title": "TEXT",
+        "Date": "TEXT",
+        "Description": "TEXT",
+        "Show Media": "BOOLEAN",
+        "Show Tags": "BOOLEAN",
+        "Show Description": "BOOLEAN",
+        "Show Date": "BOOLEAN",
+        "Show CTA": "BOOLEAN",
+        "Tags": "SLOT"
+      },
+      "fixedDependencies": [
+        "Ratio",
+        "Tag",
+        "ButtonLink",
+        "Icon/Material/arrow_forward"
+      ],
+      "propertyMapping": {
+        "Title": "title",
+        "Date": "date-presence",
+        "Description": "description-presence",
+        "Show Media": "visual-slot-presence",
+        "Show Tags": "tags-slot-presence",
+        "Show Description": "description-presence",
+        "Show Date": "date-presence",
+        "Show CTA": "href-presence",
+        "Tags": "tags-slot",
+        "Layout": "layout",
+        "Media Placement": "mediaPlacement"
+      },
+      "slotContract": {
+        "visual": {
+          "required": false,
+          "ownedWrapper": "Ratio=16:9"
+        },
+        "tags": {
+          "required": false,
+          "preferredValue": "Tag",
+          "childLimit": null,
+          "wrap": true
+        }
+      },
+      "layoutContract": {
+        "figmaPresentationWidths": {
+          "vertical": 600,
+          "horizontal": 748,
+          "horizontalRegion": 364
+        },
+        "astroInlineSizing": "fluid",
+        "responsiveStrategy": "intrinsic",
+        "mediaRatio": "16:9",
+        "sourceOrder": "mediaPlacement controls whether visual precedes or follows content"
+      }
+    },
     "content-divider": {
       "pageId": "1009:1631",
       "nodeId": "270:10",
@@ -1518,6 +1623,290 @@
         "wrappingOwner": "AccordionList"
       }
     },
+    "feature-proof": {
+      "pageId": "964:14722",
+      "nodeId": "1980:5348",
+      "variantCount": 2,
+      "axes": {
+        "Visual Position": [
+          "Right",
+          "Left"
+        ]
+      },
+      "properties": {
+        "Key Points": "SLOT",
+        "Logos": "SLOT",
+        "Supporting Details": "SLOT",
+        "Show Actions": "BOOLEAN",
+        "Show Key Points": "BOOLEAN",
+        "Show Logo Proof": "BOOLEAN",
+        "Show Supporting Details": "BOOLEAN"
+      },
+      "preferredValues": {
+        "Key Points": [
+          "BulletPoint"
+        ],
+        "Logos": [
+          "GitHub",
+          "Jitter",
+          "Medium"
+        ],
+        "Supporting Details": [
+          "BulletPoint"
+        ]
+      },
+      "directDependencies": [
+        "Content",
+        "BulletPoint",
+        "TitleRow",
+        "Ratio"
+      ],
+      "propertyMapping": {
+        "Visual Position": "visualPosition",
+        "Content copy": "heading, eyebrow and paragraph",
+        "Content actions": "optional actions slot",
+        "Key Points": "optional keyPoints slot with BulletPoint children",
+        "Logos": "optional logos slot paired with logoProofTitle",
+        "Supporting Details": "optional supportingDetails slot paired with supportingDetailsTitle",
+        "Visibility booleans": "Astro content and slot presence",
+        "Visual": "required Astro visual slot inside fixed Ratio=1:1; Figma remains 2:3"
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "wide": {
+          "right": "Content columns 2-5; Visual columns 7-11",
+          "left": "Visual columns 2-6; Content columns 8-11"
+        },
+        "narrow": "Both regions span the available grid below the 64rem component width and retain the selected variant order.",
+        "responsiveStrategy": "container",
+        "visualOwner": "Figma Ratio=2:3; Astro Ratio=1:1",
+        "proofOwner": "FeatureProof content region with BulletPoint and TitleRow dependencies",
+        "astroMapping": "Use the public site grid and existing section/container primitives; do not export Figma Layout Grid Columns measurements as CSS tokens."
+      }
+    },
+    "feature-5050": {
+      "pageId": "964:14722",
+      "nodeId": "1980:5351",
+      "variantCount": 2,
+      "axes": {
+        "Visual Position": [
+          "Right",
+          "Left"
+        ]
+      },
+      "properties": {
+        "Show Primary Bullets": "BOOLEAN",
+        "Show Logos": "BOOLEAN",
+        "Show Detail Bullets": "BOOLEAN",
+        "Primary Bullets": "SLOT",
+        "Logos": "SLOT",
+        "Detail Bullets": "SLOT"
+      },
+      "preferredValues": {
+        "Primary Bullets": [
+          "BulletPoint"
+        ],
+        "Logos": [
+          "GitHub_full",
+          "Jitter_full",
+          "Medium_full"
+        ],
+        "Detail Bullets": [
+          "BulletPoint"
+        ]
+      },
+      "directDependencies": [
+        "Content",
+        "ButtonGroup",
+        "BulletPoint",
+        "TitleRow"
+      ],
+      "propertyMapping": {
+        "Visual Position=Left": "visualPosition=start",
+        "Visual Position=Right": "visualPosition=end",
+        "Content copy": "heading, eyebrow and paragraph",
+        "Content actions": "optional actions slot",
+        "Primary Bullets": "optional primaryBullets slot with direct BulletPoint children",
+        "Logos": "optional logos slot paired with logosTitle",
+        "Detail Bullets": "optional detailBullets slot paired with detailBulletsTitle",
+        "Visibility booleans": "Astro named-slot presence",
+        "Visual": "required Astro visual slot"
+      },
+      "layoutContract": {
+        "modeOwner": "Variants",
+        "expectedModeOwner": "ComponentSet",
+      "wide": {
+        "end": "Content spans six columns from content-start with content-padding-xxlarge on its visual-adjacent inline-end; Visual starts at content column seven, reaches full-end and stretches through the full 100svh-minimum section row without a ratio contract.",
+        "start": "Visual reaches from full-start to content column seven and stretches through the full 100svh-minimum section row without a ratio contract; Content spans the remaining six content columns with content-padding-xxlarge on its visual-adjacent inline-start."
+      },
+      "narrow": "Both regions span content-start to content-end below the 64rem component width, with Content before Visual, content-height layout and no visual-adjacent inline padding.",
+        "responsiveStrategy": "container",
+        "sourceOrder": [
+          "content",
+          "visual"
+        ],
+      "astroMapping": "Use the public breakout grid and logical start/end placement. The ratio-free Visual wrapper owns the canonical CSS checkerboard beneath slotted media; do not request an image asset solely for the placeholder or export Figma Layout Grid Columns measurements or fixed canvas dimensions as CSS tokens."
+      }
+    },
+    "feature-50-50-centered": {
+      "pageId": "964:14722",
+      "nodeId": "1980:5357",
+      "variantCount": 2,
+      "axes": {
+        "Visual": [
+          "Right",
+          "Left"
+        ]
+      },
+      "properties": {
+        "Bullet Points": "SLOT",
+        "Show Bullet Points": "BOOLEAN",
+        "Show Actions": "BOOLEAN"
+      },
+      "preferredValues": {
+        "Bullet Points": [
+          "BulletPoint"
+        ]
+      },
+      "directDependencies": [
+        "Content",
+        "BulletPoint",
+        "ButtonGroup"
+      ],
+      "propertyMapping": {
+        "Visual": "visualPosition",
+        "Content copy": "heading, eyebrow and paragraph",
+        "Bullet Points": "optional Astro default slot with direct BulletPoint children",
+        "Show Bullet Points": "default-slot presence",
+        "Show Actions": "actions-slot presence",
+        "Visual Region": "required Astro visual slot"
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "wide": {
+          "right": "Content occupies the first six content tracks and Visual reaches from content column seven to full-end.",
+          "left": "Visual reaches from full-start to content column seven and Content occupies the remaining six content tracks."
+        },
+        "narrow": "Content spans content-start to content-end and Visual spans full-start to full-end below the 64rem component width, with Content first.",
+        "responsiveStrategy": "container",
+        "sourceOrder": [
+          "content",
+          "visual"
+        ],
+        "minimumBlockSize": "100svh at wide widths; content-height below 64rem",
+        "wrappingOwner": "ButtonGroup and BulletPoint",
+        "astroMapping": "Use the public breakout grid and a nested six-column content grid; do not export Figma fixed dimensions or Layout Grid Columns measurements as CSS tokens."
+      }
+    },
+    "feature-simple": {
+      "pageId": "964:14722",
+      "nodeId": "1980:5361",
+      "variantCount": 2,
+      "axes": {
+        "Visual Position": [
+          "Right",
+          "Left"
+        ]
+      },
+      "properties": {
+        "Heading": "TEXT",
+        "Paragraph": "TEXT",
+        "Show Eyebrow": "BOOLEAN",
+        "Show Paragraph": "BOOLEAN",
+        "Show Button Group": "BOOLEAN",
+        "Align": "NESTED_VARIANT",
+        "Ratio": "NESTED_VARIANT"
+      },
+      "directDependencies": [
+        "Content",
+        "Ratio"
+      ],
+      "propertyMapping": {
+        "Visual Position": "visualPosition",
+        "Heading": "heading",
+        "Content optional parts": "eyebrow, paragraph and actions presence",
+        "Content Align": "contentAlign",
+        "Ratio": "ratio",
+        "Visual": "required Astro visual slot"
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "wide": {
+          "right": "Content columns 2-5; Visual columns 7-11",
+          "left": "Visual columns 2-6; Content columns 8-11"
+        },
+        "crossAxisAlignment": "Content and Visual are vertically centered relative to each other in the wide shared grid row.",
+        "narrow": "Both regions span the available grid below the 64rem component width and retain the selected variant order.",
+        "responsiveStrategy": "container",
+        "visualOwner": "Ratio",
+        "astroMapping": "Use the public site grid and existing section/container primitives; do not export Figma Layout Grid Columns measurements as CSS tokens."
+      }
+    },
+    "feature-scroll": {
+      "pageId": "964:14722",
+      "nodeId": "2098:1281",
+      "variantCount": 1,
+      "axes": {
+        "Type": [
+          "Default"
+        ]
+      },
+      "properties": {
+        "Feature Items": "SLOT"
+      },
+      "preferredValues": {
+        "Feature Items": [
+          "_Parts/FeatureScroll.Item"
+        ]
+      },
+      "directDependencies": [
+        "Content",
+        "_Parts/FeatureScroll.Item",
+        "Ratio",
+        "BulletPoint",
+        "Tag",
+        "ButtonGroup"
+      ],
+      "privatePartContract": {
+        "nodeId": "1786:4470",
+        "name": "_Parts/FeatureScroll.Item",
+        "properties": {
+          "Heading": "TEXT",
+          "Paragraph": "TEXT",
+          "Show Paragraph": "BOOLEAN",
+          "Bullet Points": "SLOT",
+          "Show Bullet Points": "BOOLEAN",
+          "Tags": "SLOT",
+          "Show Tags": "BOOLEAN",
+          "Actions": "SLOT",
+          "Show Actions": "BOOLEAN"
+        }
+      },
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Feature Items": "required Astro default slot with direct labelled list items",
+        "Heading": "required heading inside each slotted item",
+        "Paragraph": "optional slotted item content",
+        "Bullet Points": "optional BulletPoint composition inside each item",
+        "Tags": "optional Tag composition inside each item",
+        "Actions": "optional ButtonGroup composition inside each item",
+        "Header Content": "Astro heading, eyebrow, paragraph and actions slot"
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "wide": "Ordered content occupies columns 1-6 beside a full-height stage in columns 7-12; the active progressively enhanced visual remains sticky inside that stage.",
+        "narrow": "Every original visual follows its paired content below the 64rem component width.",
+        "responsiveStrategy": "container",
+        "itemMinimum": "480px represented by the Astro-only feature-scroll-size group",
+        "visualOwner": "Ratio=16:9 as the Astro responsive runtime projection",
+        "runtimeOwner": "Astro progressive enhancement with passive scroll synchronization scheduled through requestAnimationFrame; a visual changes only when its card top reaches the sticky viewport top",
+        "sourceOrder": [
+          "section introduction",
+          "item content",
+          "item visual"
+        ]
+      }
+    },
     "stat-text-inline": {
       "pageId": "964:14725",
       "nodeId": "1783:1425",
@@ -1593,12 +1982,262 @@
         ]
       }
     },
+    "hero-align-bottom": {
+      "pageId": "964:14724",
+      "nodeId": "2031:402",
+      "variantCount": 1,
+      "axes": {
+        "Type": [
+          "Default"
+        ]
+      },
+      "properties": {},
+      "directDependencies": [
+        "Content"
+      ],
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Heading": "heading-via-content",
+        "Eyebrow": "eyebrow-via-content",
+        "Paragraph": "paragraph-via-content",
+        "Actions": "actions-slot-via-content",
+        "Visual": "visual-slot"
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "figmaPresentationWidth": 1440,
+        "figmaPresentationHeight": 800,
+        "sectionPaddingSnapshot": {
+          "blockStart": 112,
+          "inline": 80,
+          "blockEnd": 48
+        },
+        "contentRegion": {
+          "start": "content-column 1",
+          "span": 4,
+          "blockAlignment": "end"
+        },
+        "visualRegion": {
+          "start": "content-column 6",
+          "span": 7,
+          "fixtureWidth": 738,
+          "fixtureHeight": 640
+        },
+        "astroMapping": "Use .l-container[data-container=\"main\"] and .l-grid[data-grid=\"site\"] with Content in columns 1-4, Visual in columns 6-12 and bottom alignment; do not export solved Figma measurements as CSS tokens or public props.",
+        "responsiveStatus": "Astro adds an intentional source-order-preserving full-width stack below the 64rem component-container threshold because Figma defines Desktop only."
+      }
+    },
+    "hero-50-50": {
+      "pageId": "964:14724",
+      "nodeId": "1980:3690",
+      "documentationSetId": "2034:5586",
+      "variantCount": 1,
+      "axes": {},
+      "properties": {
+        "Bullet Points": "SLOT",
+        "Show Bullet Points": "BOOLEAN",
+        "Caption": "TEXT",
+        "Show Caption": "BOOLEAN",
+        "Show Actions": "BOOLEAN"
+      },
+      "directDependencies": [
+        "Content",
+        "BulletPoint",
+        "ButtonGroup"
+      ],
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Nested Content copy": "heading, eyebrow and paragraph",
+        "Bullet Points": "bulletPoints-slot",
+        "Show Bullet Points": "bulletPoints-slot-presence",
+        "Caption": "caption",
+        "Show Caption": "caption-presence",
+        "Show Actions": "actions-slot-presence",
+        "Visual Region": "required-visual-slot"
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "figmaPresentationWidth": 1440,
+        "figmaPresentationHeight": 800,
+        "contentRegion": {
+          "start": "content-start",
+          "span": 6
+        },
+        "contentStack": {
+          "span": 4
+        },
+        "actionArea": {
+          "span": 6
+        },
+        "visual": {
+          "start": "content-column 7",
+          "end": "full-end"
+        },
+        "astroMapping": "Use .l-grid[data-grid=\"breakout\"] with named lines, a nested six-column content grid, 100svh wide minimum height and a component-owned narrow stack; do not export Figma measurements as CSS tokens.",
+        "responsiveStatus": "Astro adds an intentional source-order-preserving stack below the 64rem component-container threshold: content stays inside the padded content lines and the 4:3 visual spans full-start to full-end without inline padding."
+      }
+    },
     "hero-breakout": {
       "pageId": "964:14724",
       "nodeId": "1800:389",
       "variantCount": 1,
       "axes": {},
-      "properties": {}
+      "properties": {},
+      "directDependencies": [
+        "Content",
+        "BulletPoint",
+        "ButtonGroup"
+      ],
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Nested Content": "heading, eyebrow, paragraph and semantic headingLevel",
+        "Bullet Points": "required Astro default slot with direct BulletPoint children",
+        "Caption": "optional caption prop",
+        "Nested ButtonGroup": "optional actions slot",
+        "Visual": "required Astro visual slot"
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "figmaPresentationWidth": 1440,
+        "figmaPresentationHeight": 800,
+        "contentRegion": {
+          "start": "content-start",
+          "span": 6
+        },
+        "contentStack": {
+          "start": 1,
+          "span": 4
+        },
+        "visual": {
+          "start": "content-column 7",
+          "end": "full-end",
+          "blockStartInset": "--section-padding-hero-top",
+          "blockEnd": "section-end"
+        },
+        "responsiveStrategy": "container",
+        "narrow": "Below the 64rem component width, Content and CTA retain content-start/content-end inline padding while the following Visual spans full-start/full-end without changing source order.",
+        "astroMapping": "Use .l-grid[data-grid=\"breakout\"], named grid lines and a nested six-column grid; do not export fixed Figma measurements or Layout Grid Columns variables as CSS tokens."
+      }
+    },
+    "hero-spaced-50-50": {
+      "pageId": "964:14724",
+      "nodeId": "2041:5984",
+      "variantCount": 1,
+      "axes": {},
+      "properties": {
+        "Heading": "TEXT",
+        "Show Eyebrow": "BOOLEAN",
+        "Paragraph": "TEXT",
+        "Show Paragraph": "BOOLEAN",
+        "Show Actions": "BOOLEAN"
+      },
+      "directDependencies": [
+        "Eyebrow",
+        "ButtonGroup"
+      ],
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Heading": "heading",
+        "Show Eyebrow": "eyebrow-presence",
+        "Paragraph": "paragraph",
+        "Show Paragraph": "paragraph-presence",
+        "Show Actions": "actions-slot-presence"
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "figmaPresentationWidth": 1440,
+        "figmaPresentationHeight": 800,
+        "contentRegion": {
+          "start": "content-start",
+          "span": 6
+        },
+        "headingRegion": {
+          "span": 5
+        },
+        "detailsRegion": {
+          "span": 4
+        },
+        "visual": {
+          "start": "content-column 7",
+          "end": "full-end"
+        },
+        "astroMapping": "Use .l-grid[data-grid=\"breakout\"] with named lines, a nested six-column content grid and a container-owned narrow stack; do not export Figma measurements as CSS tokens.",
+        "responsiveStatus": "Astro adds an intentional source-order-preserving stack below the 64rem component-container threshold; content stays on the padded content lines while Visual spans full-start to full-end."
+      }
+    },
+    "hero-visual-center": {
+      "pageId": "964:14724",
+      "nodeId": "2018:397",
+      "variantCount": 1,
+      "axes": {},
+      "properties": {
+        "Bullet Points": "SLOT",
+        "Eyebrow": "TEXT",
+        "Heading": "TEXT",
+        "Paragraph": "TEXT",
+        "Show Paragraph": "BOOLEAN",
+        "Show Button Group": "BOOLEAN",
+        "Show Bullet Points": "BOOLEAN"
+      },
+      "directDependencies": [
+        "Content",
+        "BulletPoint",
+        "Ratio"
+      ],
+      "propertyMapping": {
+        "Type": "structural-only",
+        "Eyebrow": "eyebrow",
+        "Heading": "heading",
+        "Paragraph": "paragraph",
+        "Show Paragraph": "paragraph-presence",
+        "Show Button Group": "actions-slot-presence",
+        "Bullet Points": "bulletPoints-slot",
+        "Show Bullet Points": "bulletPoints-slot-presence",
+        "Visual Region": "required-visual-slot"
+      },
+      "slotContract": {
+        "bulletPoints": {
+          "required": false,
+          "preferredValue": "BulletPoint",
+          "childLimit": null,
+          "wrap": true
+        },
+        "actions": {
+          "required": false,
+          "preferredValues": [
+            "Button",
+            "ButtonLink"
+          ],
+          "childLimit": null,
+          "wrap": true
+        },
+        "visual": {
+          "required": true,
+          "astroOnly": true,
+          "ratio": "16:9"
+        }
+      },
+      "layoutContract": {
+        "modeOwner": "ComponentSet",
+        "figmaPresentationWidth": 1440,
+        "figmaPresentationHeight": 1102,
+        "content": {
+          "span": 5,
+          "alignment": "center"
+        },
+        "bulletPoints": {
+          "span": 12,
+          "alignment": "center",
+          "wrap": true
+        },
+        "visual": {
+          "span": 10,
+          "alignment": "center",
+          "ratio": "16:9"
+        },
+        "astroMapping": "Use a main container and site grid. Derive the centered five-column Content width from the twelve-column grid gap, keep Bullet Points on the full grid and place Visual at column 2 / span 10; do not export Figma measurements as CSS tokens.",
+        "responsiveStatus": "Astro adds an intentional source-order-preserving full-width reflow below the 64rem component-container threshold."
+      }
     },
     "hero-full-visual": {
       "pageId": "964:14724",
@@ -1612,6 +2251,22 @@
         ]
       },
       "properties": {},
+      "directDependencies": [
+        "Content",
+        "SectionHeader",
+        "BulletPoint",
+        "Ratio"
+      ],
+      "propertyMapping": {
+        "Composition": "composition",
+        "Centered Content": "Content align=centered",
+        "Left Content": "Content align=left",
+        "Section Header": "SectionHeader composition=copy-actions",
+        "Actions": "optional actions slot forwarded to the active introduction dependency",
+        "Bullet Points": "required bullet-points slot with direct BulletPoint children",
+        "Visual": "required visual slot inside Ratio 2.39:1",
+        "Heading level": "Astro semantic-only"
+      },
       "layoutContract": {
         "modeOwner": "ComponentSet",
         "sectionShell": {
@@ -1637,7 +2292,7 @@
           "end": "full-end"
         },
         "astroMapping": "Use a full-width section shell with an inner container/grid and named content/full lines; do not export Figma measurement variables as CSS tokens.",
-        "responsiveStatus": "Desktop only; Mobile and Tablet compositions are not approved."
+        "responsiveStatus": "Figma remains Desktop-only. Astro intentionally reflows the content regions below the 64rem component-container threshold while keeping the visual full-bleed and preserving DOM order."
       }
     }
   },
@@ -1930,7 +2585,7 @@
       "pageLabel": "Logos",
       "figmaPageName": "     ↪  ◆  Logos",
       "figmaPageId": "964:9571",
-      "sourceDirectory": "src/assets/logos",
+      "sourceDirectory": "src/components/assets/logos",
       "targetOrder": 12,
       "figmaCurrentIndex": 12
     },
@@ -2107,6 +2762,15 @@
     },
     {
       "categoryKey": "base-components",
+      "pageKey": "avatar",
+      "pageLabel": "Avatar",
+      "sourceDirectory": "src/components/base-components/avatar",
+      "documentationVisible": true,
+      "figmaProjection": false,
+      "targetOrder": 31.5
+    },
+    {
+      "categoryKey": "base-components",
       "pageKey": "breadcrumbs",
       "pageLabel": "Breadcrumbs",
       "figmaPageName": "     ↪  ❖  Breadcrumbs",
@@ -2220,11 +2884,11 @@
     {
       "categoryKey": "website-patterns",
       "pageKey": "brand-logo-proof",
-      "pageLabel": "Brand & Logo Proof",
+      "pageLabel": "Client Logos",
       "figmaPageName": "     ↪  ▦  Brand & Logo Proof",
       "figmaPageId": "1062:7",
       "sourceDirectory": "src/components/website-patterns/brand-logo-proof",
-      "targetOrder": 42,
+      "targetOrder": 45,
       "figmaCurrentIndex": 63
     },
     {
@@ -2234,7 +2898,7 @@
       "figmaPageName": "     ↪  ▦  Ratings & Reviews",
       "figmaPageId": "964:14729",
       "sourceDirectory": "src/components/website-patterns/ratings-reviews",
-      "targetOrder": 43,
+      "targetOrder": 42,
       "figmaCurrentIndex": 40
     },
     {
@@ -2244,7 +2908,7 @@
       "figmaPageName": "     ↪  ▦  Stats & Metrics",
       "figmaPageId": "964:14725",
       "sourceDirectory": "src/components/website-patterns/stats-metrics",
-      "targetOrder": 44,
+      "targetOrder": 43,
       "figmaCurrentIndex": 41
     },
     {
@@ -2254,7 +2918,7 @@
       "figmaPageName": "     ↪  ▦  Testimonials & Stories",
       "figmaPageId": "964:14728",
       "sourceDirectory": "src/components/website-patterns/testimonials-stories",
-      "targetOrder": 45,
+      "targetOrder": 44,
       "figmaCurrentIndex": 42
     },
     {
@@ -2522,7 +3186,7 @@
       "divergences": [
         {
           "kind": "representation",
-          "reason": "Figma stores 50 curated Icon/Material masters while Astro uses one typed inline-SVG renderer.",
+          "reason": "Figma stores 50 curated Icon/Material masters while Astro uses one typed inline-SVG renderer for 52 local entries; star and star_filled await an explicit Figma synchronization operation.",
           "instruction": "Resolve glyph identities through src/data/design-system/iconLibrary.json; never expose consumer INSTANCE_SWAP or an arbitrary icon prop."
         }
       ],
@@ -2588,6 +3252,58 @@
       }
     },
     {
+      "id": "logo-asset",
+      "categoryKey": "assets",
+      "pageKey": "logos",
+      "pageLabel": "Logos",
+      "figmaPageId": "964:9571",
+      "actualFigmaPageId": "964:9571",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/assets/logos",
+      "sourcePath": "src/components/assets/logos/LogoAsset.astro",
+      "name": "LogoAsset",
+      "astroComponent": "LogoAsset",
+      "role": "asset",
+      "layer": "asset",
+      "family": "logos",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "runtime-renderer",
+          "reason": "The Logos Figma page stores individual brand assets, while Astro needs one catalog-backed renderer that can fill consumer-owned geometry.",
+          "instruction": "Resolve only approved local logo slugs and mark/full variants. The parent owns the rendered block size; LogoAsset exposes no size, width, height, style or arbitrary source prop."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/logo-asset.md",
+      "variants": [
+        "mark",
+        "full"
+      ],
+      "props": [
+        "slug",
+        "variant",
+        "alt",
+        "loading"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-component-name",
+        "data-logo-slug",
+        "data-logo-variant"
+      ],
+      "states": [],
+      "tokens": [],
+      "tokenGroups": [],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
       "id": "button",
       "categoryKey": "base-components",
       "pageKey": "buttons",
@@ -2620,12 +3336,13 @@
         {
           "kind": "property-mapping",
           "reason": "Figma Style maps to the Astro variant prop, while Figma State variants map to native CSS interaction states.",
-          "instruction": "Use variant for primary, secondary, or tertiary. Do not expose a public state prop."
+          "instruction": "Use variant for primary, primary-alternate, secondary, or tertiary. Do not expose a public state prop."
         }
       ],
       "agenticRule": ".agentic-rules/components/button.md",
       "variants": [
         "primary",
+        "primary-alternate",
         "secondary",
         "tertiary"
       ],
@@ -2653,6 +3370,7 @@
       "tokens": [
         "--control-*",
         "--button-primary-*",
+        "--button-primary-alternate-*",
         "--button-secondary-*",
         "--button-tertiary-*"
       ],
@@ -2702,9 +3420,13 @@
         }
       ],
       "agenticRule": ".agentic-rules/components/button-link.md",
-      "variants": [],
+      "variants": [
+        "default",
+        "primary-alternate"
+      ],
       "props": [
         "href",
+        "variant",
         "size",
         "showIcon",
         "disabled"
@@ -2713,7 +3435,8 @@
         "default"
       ],
       "attributes": [
-        "data-control-size"
+        "data-control-size",
+        "data-button-variant"
       ],
       "states": [
         "default",
@@ -2726,7 +3449,8 @@
         "--control-gap",
         "--control-icon-size",
         "--control-font-size",
-        "--button-link-*"
+        "--button-link-*",
+        "--button-link-primary-alternate-*"
       ],
       "tokenGroups": [
         "control-size",
@@ -3176,8 +3900,8 @@
         "social-button",
         "social-icon-button"
       ],
-      "syncStatus": "mapped",
-      "status": "mapped",
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
       "divergences": [
         {
           "kind": "figma-projection",
@@ -3188,13 +3912,26 @@
           "kind": "property-mapping",
           "reason": "Figma uses one unrestricted native Slot whose internal action layout fills the allocated width and wraps with gap/component/button/group on both axes; Astro uses the unrestricted default slot with flex wrapping and --gap-button-group.",
           "instruction": "Set consumer ButtonGroup instances to Fill inside a width-owning action region. Do not introduce a Count prop or child-count limit."
+        },
+        {
+          "kind": "code-only-alignment",
+          "reason": "Astro exposes left and centered alignment so every wrapped action line can follow the consuming composition, while Figma node 204:103 has no approved alignment axis.",
+          "instruction": "Use ButtonGroup align=\"centered\" when a centered Content or another explicitly centered composition owns the action relationship. Keep the Figma master unchanged until a separate Figma operation approves an alignment axis."
         }
       ],
       "agenticRule": ".agentic-rules/components/button-group.md",
-      "variants": [],
-      "props": [],
+      "variants": [
+        "left",
+        "centered"
+      ],
+      "props": [
+        "align"
+      ],
       "slots": [
         "default"
+      ],
+      "attributes": [
+        "data-button-group-align"
       ],
       "states": [],
       "tokens": [
@@ -3229,11 +3966,6 @@
       "syncStatus": "mapped",
       "status": "mapped",
       "divergences": [
-        {
-          "kind": "figma-projection",
-          "reason": "Figma node 206:166 now provides the visual mastery and bounded design-time properties for SwitchButton.",
-          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, runtime behavior and public TypeScript props."
-        },
         {
           "kind": "property-mapping",
           "reason": "Figma Checked variants map to the initial checked prop, while Figma State variants map to native checkbox interaction states and a private documentation preview hook.",
@@ -3335,7 +4067,7 @@
         "disabled"
       ],
       "tokens": [
-        "--gap-small",
+        "--gap-regular",
         "--switch-*"
       ],
       "tokenGroups": [
@@ -4778,10 +5510,12 @@
       "layer": "molecule",
       "family": "select",
       "dependencies": [
-        "material-symbol"
+        "material-symbol",
+        "logo-asset"
       ],
       "uses": [
-        "material-symbol"
+        "material-symbol",
+        "logo-asset"
       ],
       "syncStatus": "mapped",
       "status": "mapped",
@@ -4881,10 +5615,12 @@
       "layer": "atom",
       "family": "select",
       "dependencies": [
-        "material-symbol"
+        "material-symbol",
+        "logo-asset"
       ],
       "uses": [
-        "material-symbol"
+        "material-symbol",
+        "logo-asset"
       ],
       "syncStatus": "mapped",
       "status": "mapped",
@@ -4964,10 +5700,12 @@
       "layer": "atom",
       "family": "select",
       "dependencies": [
-        "material-symbol"
+        "material-symbol",
+        "logo-asset"
       ],
       "uses": [
-        "material-symbol"
+        "material-symbol",
+        "logo-asset"
       ],
       "syncStatus": "mapped",
       "status": "mapped",
@@ -5277,6 +6015,88 @@
       }
     },
     {
+      "id": "progress-tab",
+      "categoryKey": "base-components",
+      "pageKey": "tabs",
+      "pageLabel": "Tabs",
+      "figmaPageId": "985:2785",
+      "actualFigmaPageId": "985:2785",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/tabs",
+      "sourcePath": "src/components/base-components/tabs/ProgressTab.astro",
+      "name": "ProgressTab",
+      "astroComponent": "ProgressTab",
+      "role": "atom",
+      "layer": "atom",
+      "family": "tabs",
+      "dependencies": [
+        "progress-bar"
+      ],
+      "uses": [
+        "progress-bar"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "benchmark-adaptation",
+          "reason": "ProgressTab is an Astro-only timed tab trigger derived from the approved Tabs contract and the supplied visual benchmark; no canonical Figma master was requested.",
+          "instruction": "Keep native tab semantics, ProgressBar composition and Astro runtime state canonical; do not invent a Figma projection during code-first work."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/progress-tab.md",
+      "variants": [],
+      "props": [
+        "id",
+        "controls",
+        "selected",
+        "disabled",
+        "progress"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-progress-tab",
+        "role=tab",
+        "aria-selected",
+        "aria-controls"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "selected",
+        "disabled",
+        "progressing"
+      ],
+      "tokens": [
+        "--tab-*",
+        "--progress-bar-block-size",
+        "--color-background-muted",
+        "--color-background-accent",
+        "--effect-focused",
+        "--grid-auto-min-width-small",
+        "--gap-small",
+        "--motion-transition"
+      ],
+      "tokenGroups": [
+        "tab-color",
+        "progress-bar-size",
+        "interaction-effect",
+        "global-color",
+        "global-size",
+        "global-layout",
+        "global-motion",
+        "typography-foundations"
+      ],
+    "readiness": {
+      "visual": "review",
+      "validation": "passed"
+      }
+    },
+    {
       "id": "tabs",
       "categoryKey": "base-components",
       "pageKey": "tabs",
@@ -5293,13 +6113,15 @@
       "layer": "molecule",
       "family": "tabs",
       "dependencies": [
-        "tab"
+        "tab",
+        "progress-tab"
       ],
       "uses": [
-        "tab"
+        "tab",
+        "progress-tab"
       ],
-      "syncStatus": "mapped",
-      "status": "mapped",
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
       "divergences": [
         {
           "kind": "figma-projection",
@@ -5308,8 +6130,8 @@
         },
         {
           "kind": "property-mapping",
-          "reason": "Figma and Astro expose the same unrestricted Tab-only composition through a native Slot and default slot respectively.",
-          "instruction": "Add, remove, duplicate or reorder direct Tab children without a Count property; keep external panels consumer-owned and linked by aria-controls."
+          "reason": "Figma retains a Tab-preferred unrestricted Slot, while Astro extends the same native tab contract to direct Tab or ProgressTab children for timed tabbed content.",
+          "instruction": "Add, remove, duplicate or reorder direct Tab or ProgressTab children without a Count property; keep external panels consumer-owned and linked by aria-controls."
         }
       ],
       "agenticRule": ".agentic-rules/components/tabs.md",
@@ -5319,7 +6141,7 @@
         "aria-labelledby"
       ],
       "slots": [
-        "default: direct Tab children"
+        "default: direct Tab or ProgressTab children"
       ],
       "attributes": [
         "role=tablist",
@@ -5451,7 +6273,7 @@
         },
         {
           "kind": "intentional-difference",
-          "reason": "Astro accepts every typed name from the 50-symbol local Material Symbols set for brandIcon, while Figma intentionally projects only language until the dedicated Accordion icon set grows.",
+          "reason": "Astro accepts every typed name from the 52-symbol local Material Symbols set for brandIcon, while Figma intentionally projects only language until the dedicated Accordion icon set grows.",
           "instruction": "Keep arrow_drop_down fixed in both environments. Treat language as the current Figma brand-icon snapshot, not as an Astro API restriction."
         }
       ],
@@ -6046,6 +6868,7 @@
         "default"
       ],
       "tokens": [
+        "--color-background-muted",
         "--color-background-surface"
       ],
       "tokenGroups": [
@@ -6054,6 +6877,124 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      }
+    },
+    {
+      "id": "avatar-image",
+      "categoryKey": "base-components",
+      "pageKey": "avatar",
+      "pageLabel": "Avatar",
+      "figmaPageId": null,
+      "actualFigmaPageId": null,
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/avatar",
+      "sourcePath": "src/components/base-components/avatar/AvatarImage.astro",
+      "name": "AvatarImage",
+      "astroComponent": "AvatarImage",
+      "role": "atom",
+      "layer": "atom",
+      "family": "avatar",
+      "dependencies": [
+        "ratio"
+      ],
+      "uses": [
+        "ratio"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-boundary",
+          "reason": "AvatarImage is an explicitly requested Astro-only portrait primitive; no Figma operation or canonical master was requested.",
+          "instruction": "Keep Ratio composition, the slot API and token-backed geometry canonical in Astro until a separate Figma task is approved."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/avatar-image.md",
+      "variants": [],
+      "props": [],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--avatar-image-size",
+        "--radius-full"
+      ],
+      "tokenGroups": [
+        "avatar-size",
+        "global-size"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "avatar-name",
+      "categoryKey": "base-components",
+      "pageKey": "avatar",
+      "pageLabel": "Avatar",
+      "figmaPageId": null,
+      "actualFigmaPageId": null,
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/base-components/avatar",
+      "sourcePath": "src/components/base-components/avatar/AvatarName.astro",
+      "name": "AvatarName",
+      "astroComponent": "AvatarName",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "avatar",
+      "dependencies": [
+        "avatar-image"
+      ],
+      "uses": [
+        "avatar-image"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-boundary",
+          "reason": "AvatarName is an explicitly requested Astro-only compact person identity; no Figma operation or canonical master was requested.",
+          "instruction": "Keep the typed content API, AvatarImage composition and intrinsic horizontal layout canonical in Astro until a separate Figma task is approved."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/avatar-name.md",
+      "variants": [],
+      "props": [
+        "fullName",
+        "roleOrPosition"
+      ],
+      "slots": [
+        "image"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--gap-small",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--white-space-nowrap"
+      ],
+      "tokenGroups": [
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
       }
     },
     {
@@ -6495,10 +7436,12 @@
       "layer": "atom",
       "family": "tag",
       "dependencies": [
-        "material-symbol"
+        "material-symbol",
+        "logo-asset"
       ],
       "uses": [
-        "material-symbol"
+        "material-symbol",
+        "logo-asset"
       ],
       "syncStatus": "mapped",
       "status": "mapped",
@@ -6601,8 +7544,8 @@
       "family": "eyebrow",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "mapped",
-      "status": "mapped",
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
       "divergences": [
         {
           "kind": "figma-projection",
@@ -6613,21 +7556,34 @@
           "kind": "property-mapping",
           "reason": "Figma keeps one structural Property 1=Default axis for its one-child ComponentSet presentation.",
           "instruction": "Treat the default axis as Figma-only documentation metadata; do not expose it as an Astro prop."
+        },
+        {
+          "kind": "code-only-variant",
+          "reason": "Astro adds an alternate Eyebrow treatment for approved accent surfaces while the canonical Figma master has no corresponding visual variant.",
+          "instruction": "Use variant=alternate only on accent surfaces. Keep the bounded variant canonical in Astro until a separate Figma operation is requested."
         }
       ],
       "agenticRule": ".agentic-rules/components/eyebrow.md",
-      "variants": [],
+      "variants": [
+        "default",
+        "alternate"
+      ],
       "props": [
-        "text"
+        "text",
+        "variant"
       ],
       "slots": [],
-      "attributes": [],
+      "attributes": [
+        "data-eyebrow-variant"
+      ],
       "states": [
         "default"
       ],
       "tokens": [
         "--eyebrow-text-default",
         "--eyebrow-marker-default",
+        "--eyebrow-text-alternate-default",
+        "--eyebrow-marker-alternate-default",
         "--eyebrow-marker-size",
         "--border-width-default",
         "--space-eyebrow-bottom",
@@ -6831,11 +7787,13 @@
       "family": "bullet-points",
       "dependencies": [
         "material-symbol",
+        "stat-text-inline",
         "tag",
         "button-group"
       ],
       "uses": [
         "material-symbol",
+        "stat-text-inline",
         "tag",
         "button-group"
       ],
@@ -6864,8 +7822,8 @@
         },
         {
           "kind": "icon-representation",
-          "reason": "Figma uses fixed language and trending_up Material Symbol masters; Astro renders the same curated glyphs through the approved component-owned icon-size token.",
-          "instruction": "Keep both glyphs fixed and decorative. Expose no arbitrary icon prop or slot."
+          "reason": "Astro now composes StatTextInline for the statistic, while the live Figma BulletIconCard master still embeds its fixed trending_up representation directly.",
+          "instruction": "Keep the language glyph fixed in BulletIconCard, delegate showStatIcon to StatTextInline showIcon in Astro, and synchronize the nested Figma composition in a later approved Figma task."
         }
       ],
       "agenticRule": ".agentic-rules/components/bullet-icon-card.md",
@@ -6935,13 +7893,13 @@
       "family": "bullet-points",
       "dependencies": [
         "ratio",
-        "material-symbol",
+        "stat-text-inline",
         "tag",
         "button-group"
       ],
       "uses": [
         "ratio",
-        "material-symbol",
+        "stat-text-inline",
         "tag",
         "button-group"
       ],
@@ -6975,8 +7933,8 @@
         },
         {
           "kind": "icon-representation",
-          "reason": "Figma binds the fixed trending_up master at 20px while Astro renders the same curated Material Symbol through the approved component token.",
-          "instruction": "Keep trending_up fixed and expose no arbitrary icon prop."
+          "reason": "Astro now composes StatTextInline with trend=up and iconPosition=trailing, while the live Figma BulletVisualCard master still embeds its fixed trending_up representation directly.",
+          "instruction": "Keep the Astro API presence-driven, preserve the existing Figma parity token until the future nested-component synchronization, and expose no arbitrary icon prop."
         }
       ],
       "agenticRule": ".agentic-rules/components/bullet-visual-card.md",
@@ -7504,8 +8462,8 @@
         "eyebrow",
         "button-group"
       ],
-      "syncStatus": "mapped",
-      "status": "mapped",
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
       "divergences": [
         {
           "kind": "figma-projection",
@@ -7524,8 +8482,13 @@
         },
         {
           "kind": "semantic-projection",
-          "reason": "Figma fixes the visual style to Heading/H4, while Astro exposes headingLevel 2 through 6 independently from that visual style.",
-          "instruction": "Choose headingLevel from the document outline and preserve Heading/H4 only as the visual typography contract."
+          "reason": "Figma fixes the visual style to Heading/H4, while Astro exposes headingLevel 1 through 6 independently from that visual style.",
+          "instruction": "Choose headingLevel from the document outline, reserve h1 for a top-level page-title composition such as Hero5050 and preserve Heading/H4 only as the visual typography contract."
+        },
+        {
+          "kind": "code-only-tone",
+          "reason": "Astro exposes default, on-accent and inverse text tones for surface-owning compositions, while the canonical Figma Content master has no approved tone axis.",
+          "instruction": "Keep the bounded tone prop canonical in Astro. Map on-accent to the dependency-owned alternate Eyebrow variant; inverse keeps the default Eyebrow until a distinct inverse contract is approved."
         }
       ],
       "agenticRule": ".agentic-rules/components/content.md",
@@ -7538,6 +8501,7 @@
         "eyebrow",
         "paragraph",
         "align",
+        "tone",
         "headingLevel"
       ],
       "slots": [
@@ -7545,6 +8509,7 @@
       ],
       "attributes": [
         "data-content-align",
+        "data-content-tone",
         "aria-labelledby"
       ],
       "states": [
@@ -7555,6 +8520,8 @@
         "--gap-medium",
         "--color-text-primary",
         "--color-text-secondary",
+        "--color-text-on-accent",
+        "--color-text-inverse",
         "--font-size-h4",
         "--font-size-body-base"
       ],
@@ -7566,6 +8533,656 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      }
+    },
+    {
+      "id": "rich-text",
+      "categoryKey": "website-patterns",
+      "pageKey": "rich-text",
+      "pageLabel": "Rich Text",
+      "figmaPageId": "964:9276",
+      "actualFigmaPageId": "964:9276",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/rich-text",
+      "sourcePath": "src/components/website-patterns/rich-text/RichText.astro",
+      "name": "RichText",
+      "astroComponent": "RichText",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "rich-text",
+      "dependencies": [
+        "rich-text-heading",
+        "rich-text-paragraph",
+        "rich-text-quote",
+        "rich-text-visual"
+      ],
+      "uses": [
+        "rich-text-heading",
+        "rich-text-paragraph",
+        "rich-text-quote",
+        "rich-text-visual"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "RichText is an Astro-only long-form flow; no canonical Figma component node was requested.",
+          "instruction": "Keep semantic article composition, SEO boundaries, sibling rhythm and the slot-based API canonical in Astro until a separate Figma operation is approved."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/rich-text.md",
+      "variants": [],
+      "props": [],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--space-medium",
+        "--space-large"
+      ],
+      "tokenGroups": [
+        "global-size"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "rich-text-heading",
+      "categoryKey": "website-patterns",
+      "pageKey": "rich-text",
+      "pageLabel": "Rich Text",
+      "figmaPageId": "964:9276",
+      "actualFigmaPageId": "964:9276",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/rich-text",
+      "sourcePath": "src/components/website-patterns/rich-text/RichTextHeading.astro",
+      "name": "RichTextHeading",
+      "astroComponent": "RichTextHeading",
+      "role": "atom",
+      "layer": "atom",
+      "family": "rich-text",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "RichTextHeading is an Astro-only semantic H2-H6 component with no canonical Figma node.",
+          "instruction": "Keep heading rank, runtime validation and editorial Text Style mapping canonical in Astro."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/rich-text-heading.md",
+      "variants": [
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6"
+      ],
+      "props": [
+        "headingLevel"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-rich-text-heading-level"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--font-size-rich-text-h2",
+        "--font-size-rich-text-h3",
+        "--font-size-rich-text-h4",
+        "--font-size-rich-text-h5",
+        "--font-size-rich-text-h6",
+        "--color-text-primary"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "rich-text-paragraph",
+      "categoryKey": "website-patterns",
+      "pageKey": "rich-text",
+      "pageLabel": "Rich Text",
+      "figmaPageId": "964:9276",
+      "actualFigmaPageId": "964:9276",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/rich-text",
+      "sourcePath": "src/components/website-patterns/rich-text/RichTextParagraph.astro",
+      "name": "RichTextParagraph",
+      "astroComponent": "RichTextParagraph",
+      "role": "atom",
+      "layer": "atom",
+      "family": "rich-text",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "RichTextParagraph is an Astro-only editorial paragraph with no canonical Figma node.",
+          "instruction": "Keep native paragraph semantics and the bounded base/large API canonical in Astro."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/rich-text-paragraph.md",
+      "variants": [
+        "base",
+        "large"
+      ],
+      "props": [
+        "size"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-rich-text-body-size"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--font-size-rich-text-body-base",
+        "--font-size-rich-text-body-large",
+        "--color-text-secondary"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "rich-text-quote",
+      "categoryKey": "website-patterns",
+      "pageKey": "rich-text",
+      "pageLabel": "Rich Text",
+      "figmaPageId": "964:9276",
+      "actualFigmaPageId": "964:9276",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/rich-text",
+      "sourcePath": "src/components/website-patterns/rich-text/RichTextQuote.astro",
+      "name": "RichTextQuote",
+      "astroComponent": "RichTextQuote",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "rich-text",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "RichTextQuote is an Astro-only semantic quotation with no canonical Figma node.",
+          "instruction": "Keep blockquote, optional attribution and native cite behavior canonical in Astro."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/rich-text-quote.md",
+      "variants": [],
+      "props": [],
+      "slots": [
+        "default",
+        "attribution"
+      ],
+      "attributes": [
+        "data-component-name",
+        "cite"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--content-padding-large",
+        "--gap-small",
+        "--border-width-strong",
+        "--color-border-accent",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--font-size-rich-text-body-base",
+        "--font-size-rich-text-body-large"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "global-size",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "rich-text-visual",
+      "categoryKey": "website-patterns",
+      "pageKey": "rich-text",
+      "pageLabel": "Rich Text",
+      "figmaPageId": "964:9276",
+      "actualFigmaPageId": "964:9276",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/rich-text",
+      "sourcePath": "src/components/website-patterns/rich-text/RichTextVisual.astro",
+      "name": "RichTextVisual",
+      "astroComponent": "RichTextVisual",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "rich-text",
+      "dependencies": [
+        "ratio"
+      ],
+      "uses": [
+        "ratio"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "RichTextVisual is an Astro-only figure composition with no canonical Figma node.",
+          "instruction": "Keep figure and caption semantics canonical in Astro while Ratio owns geometry and placeholder presentation."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/rich-text-visual.md",
+      "variants": [],
+      "props": [
+        "ratio"
+      ],
+      "slots": [
+        "default",
+        "caption"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--gap-regular",
+        "--color-text-primary",
+        "--font-size-body-tiny"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "global-size",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "tabbed-content",
+      "categoryKey": "website-patterns",
+      "pageKey": "tabbed-content",
+      "pageLabel": "Tabbed Content",
+      "figmaPageId": "964:12972",
+      "actualFigmaPageId": "964:12972",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/tabbed-content",
+      "sourcePath": "src/components/website-patterns/tabbed-content/TabbedContent.astro",
+      "name": "TabbedContent",
+      "astroComponent": "TabbedContent",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "tabbed-content",
+      "dependencies": [
+        "tabs",
+        "progress-tab",
+        "ratio"
+      ],
+      "uses": [
+        "tabs",
+        "progress-tab",
+        "ratio"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "runtime-pattern",
+          "reason": "TabbedContent is an Astro-only progressive timed-tab pattern based on the supplied benchmark; the existing Figma page has no approved canonical component node.",
+          "instruction": "Keep the slot-based API, native tab semantics, 2.39:1 Ratio geometry and visibility-aware runtime canonical in Astro until a separate Figma operation is requested."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/tabbed-content.md",
+      "variants": [],
+      "props": [
+        "aria-label",
+        "aria-labelledby",
+        "autoplay",
+        "autoplayDuration",
+        "autoplayLoop"
+      ],
+      "slots": [
+        "tabs",
+        "default"
+      ],
+      "attributes": [
+        "data-tabbed-content-autoplay",
+        "data-tabbed-content-autoplay-duration",
+        "data-tabbed-content-autoplay-loop",
+        "data-tabbed-content-mode",
+        "data-tabbed-content-valid"
+      ],
+      "states": [
+        "autoplay",
+        "paused",
+        "manual",
+        "invalid"
+      ],
+      "tokens": [
+        "--gap-large",
+        "--gap-small",
+        "--size-24"
+      ],
+      "tokenGroups": [
+        "global-size"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "swiper",
+      "categoryKey": "website-patterns",
+      "pageKey": "sliders-carousels",
+      "pageLabel": "Sliders & Carousels",
+      "figmaPageId": "964:13170",
+      "actualFigmaPageId": "964:13170",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/sliders-carousels",
+      "sourcePath": "src/components/website-patterns/sliders-carousels/Swiper.astro",
+      "name": "Swiper",
+      "astroComponent": "Swiper",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "sliders-carousels",
+      "dependencies": [
+        "button",
+        "button-group"
+      ],
+      "uses": [
+        "button",
+        "button-group"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "runtime-pattern",
+          "reason": "Swiper is an Astro-only container-responsive carousel powered by Swiper Core; the family page has no approved canonical Figma component node.",
+          "instruction": "Keep the direct data-swiper-slide slot contract, bounded serializable options, optional canonical controls and lifecycle-aware runtime authoritative in Astro until a separate Figma operation is requested."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/swiper.md",
+      "variants": [],
+      "props": [
+        "aria-label",
+        "aria-labelledby",
+        "slidesPerView",
+        "slidesPerViewTablet",
+        "slidesPerViewDesktop",
+        "gap",
+        "gapTablet",
+        "gapDesktop",
+        "slidesPerGroup",
+        "loop",
+        "rewind",
+        "centeredSlides",
+        "speed",
+        "easing",
+        "autoplay",
+        "autoplayDelay",
+        "navigation",
+        "pagination",
+        "scrollbar",
+        "keyboard",
+        "allowTouchMove",
+        "autoHeight",
+        "initialSlide",
+        "labels",
+        "advancedOptions",
+        "class"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-swiper-slide",
+        "data-swiper-ready",
+        "data-swiper-valid",
+        "data-swiper-state",
+        "role",
+        "aria-roledescription"
+      ],
+      "states": [
+        "idle",
+        "ready",
+        "playing",
+        "paused",
+        "invalid"
+      ],
+      "tokens": [
+        "--gap-none",
+        "--gap-tiny",
+        "--gap-small",
+        "--gap-regular",
+        "--gap-medium",
+        "--gap-large",
+        "--gap-xlarge",
+        "--gap-xxlarge",
+        "--gap-xxxlarge",
+        "--motion-ease-standard",
+        "--motion-ease-premium-in",
+        "--motion-ease-premium-out",
+        "--color-text-secondary",
+        "--color-background-muted",
+        "--color-background-strong",
+        "--color-background-accent",
+        "--effect-focused"
+      ],
+      "tokenGroups": [
+        "global-size",
+        "global-motion",
+        "global-color",
+        "interaction-effect",
+        "control-size",
+        "button-color"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "call-to-action-visual",
+      "categoryKey": "website-patterns",
+      "pageKey": "cta",
+      "pageLabel": "CTA",
+      "figmaPageId": "964:14726",
+      "actualFigmaPageId": "964:14726",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/cta",
+      "sourcePath": "src/components/website-patterns/cta/CallToActionVisual.astro",
+      "name": "CallToActionVisual",
+      "astroComponent": "CallToActionVisual",
+      "role": "section",
+      "layer": "section",
+      "family": "cta",
+      "dependencies": [
+        "content",
+        "ratio"
+      ],
+      "uses": [
+        "content",
+        "ratio"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "CallToActionVisual is an Astro-only bounded CTA composition; no canonical Figma component node was requested.",
+          "instruction": "Keep the Content-first source order, required Ratio 16:9 visual, container-owned responsive layout and bounded surface API canonical in Astro until a separate Figma operation is approved."
+        },
+        {
+          "kind": "known-inverse-contrast-condition",
+          "reason": "The default accent surface now receives the dependency-owned alternate Eyebrow variant; the inverse surface still has no dedicated adaptive Eyebrow contract.",
+          "instruction": "Keep the alternate Eyebrow mapping inside Content for on-accent only. Do not patch the inverse surface locally."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/call-to-action-visual.md",
+      "variants": [
+        "accent",
+        "inverse",
+        "left",
+        "right"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "surface",
+        "visualPosition",
+        "headingLevel"
+      ],
+      "slots": [
+        "visual",
+        "actions"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-call-to-action-surface",
+        "data-call-to-action-visual-position"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--color-background-accent",
+        "--color-background-inverse",
+        "--content-padding-xxxlarge",
+        "--site-grid-column-gap"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "global-size",
+        "global-layout"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
+      }
+    },
+    {
+      "id": "call-to-action-centered",
+      "categoryKey": "website-patterns",
+      "pageKey": "cta",
+      "pageLabel": "CTA",
+      "figmaPageId": "964:14726",
+      "actualFigmaPageId": "964:14726",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/cta",
+      "sourcePath": "src/components/website-patterns/cta/CallToActionCentered.astro",
+      "name": "CallToActionCentered",
+      "astroComponent": "CallToActionCentered",
+      "role": "section",
+      "layer": "section",
+      "family": "cta",
+      "dependencies": [
+        "content"
+      ],
+      "uses": [
+        "content"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "CallToActionCentered is an Astro-only bounded CTA composition; no canonical Figma component node was requested.",
+          "instruction": "Keep the centered Content allocation, container-owned responsive layout and bounded surface API canonical in Astro until a separate Figma operation is approved."
+        },
+        {
+          "kind": "known-inverse-contrast-condition",
+          "reason": "The default accent surface now receives the dependency-owned alternate Eyebrow variant; the inverse surface still has no dedicated adaptive Eyebrow contract.",
+          "instruction": "Keep the alternate Eyebrow mapping inside Content for on-accent only. Do not patch the inverse surface locally."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/call-to-action-centered.md",
+      "variants": [
+        "accent",
+        "inverse"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "surface",
+        "headingLevel"
+      ],
+      "slots": [
+        "actions"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-call-to-action-surface"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--color-background-accent",
+        "--color-background-inverse",
+        "--content-padding-xxxlarge",
+        "--site-grid-column-gap"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "global-size",
+        "global-layout"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "partial"
       }
     },
     {
@@ -7652,6 +9269,628 @@
         "global-layout",
         "global-size",
         "global-color"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "feature-proof",
+      "categoryKey": "website-patterns",
+      "pageKey": "features",
+      "pageLabel": "Features",
+      "figmaPageId": "964:14722",
+      "actualFigmaPageId": "964:14722",
+      "figmaCanonicalNodeId": "1980:5348",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/features",
+      "sourcePath": "src/components/website-patterns/features/FeatureProof.astro",
+      "name": "FeatureProof",
+      "astroComponent": "FeatureProof",
+      "role": "section",
+      "layer": "section",
+      "family": "features",
+      "dependencies": [
+        "content",
+        "ratio",
+        "title-row",
+        "bullet-point",
+        "logo-asset"
+      ],
+      "uses": [
+        "content",
+        "ratio",
+        "title-row",
+        "bullet-point",
+        "logo-asset"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma ComponentSet 1980:5348 provides the canonical Desktop visual mastery and Visual Position axis for FeatureProof.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, responsive behavior and the public TypeScript API."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes nested Content values and Show booleans, while Astro flattens content and derives optional proof visibility from props and named-slot presence.",
+          "instruction": "Do not add redundant Show props or expose nested component replacement. Omit optional content and supply only the proof slots that contain meaningful evidence."
+        },
+        {
+          "kind": "slot-representation",
+          "reason": "Figma prefers named logo component instances, while Astro resolves approved local mark or full assets through the shared LogoAsset renderer.",
+          "instruction": "Use LogoAsset directly or inside a meaningful link. FeatureProof owns each direct slot wrapper's block size; LogoAsset owns catalog resolution, aspect-ratio preservation and alternative text."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma documents two fixed 1440px Desktop compositions without Tablet or Mobile masters.",
+          "instruction": "Astro preserves the wide 12-column relationships and intentionally stacks both regions below the 64rem feature-proof container threshold using existing layout tokens."
+        },
+        {
+          "kind": "fixed-dependency",
+          "reason": "Figma uses Ratio=2:3, while the approved Astro implementation intentionally uses a square visual boundary.",
+          "instruction": "Keep Ratio fixed at 1:1 in Astro, retain Figma 2:3 as documented source metadata and do not expose a ratio prop."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/feature-proof.md",
+      "variants": [
+        "left",
+        "right"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "visualPosition",
+        "headingLevel",
+        "logoProofTitle",
+        "supportingDetailsTitle"
+      ],
+      "slots": [
+        "visual",
+        "actions",
+        "keyPoints",
+        "logos",
+        "supportingDetails"
+      ],
+      "attributes": [
+        "data-feature-proof-visual-position",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--section-padding-large",
+        "--container-main",
+        "--site-padding-inline",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--gap-regular",
+        "--gap-medium",
+        "--gap-xlarge",
+        "--gap-xxlarge",
+        "--feature-proof-logo-block-size",
+        "--color-background-canvas",
+        "--color-background-surface",
+        "--radius-image"
+      ],
+      "tokenGroups": [
+        "feature-proof-size",
+        "global-layout",
+        "global-size",
+        "global-color"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "feature-5050",
+      "categoryKey": "website-patterns",
+      "pageKey": "features",
+      "pageLabel": "Features",
+      "figmaPageId": "964:14722",
+      "actualFigmaPageId": "964:14722",
+      "figmaCanonicalNodeId": "1980:5351",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/features",
+      "sourcePath": "src/components/website-patterns/features/Feature5050.astro",
+      "name": "Feature5050",
+      "astroComponent": "Feature5050",
+      "role": "section",
+      "layer": "section",
+      "family": "features",
+      "dependencies": [
+        "content",
+        "button-group",
+        "bullet-point",
+        "title-row",
+        "logo-asset"
+      ],
+      "uses": [
+        "content",
+        "button-group",
+        "bullet-point",
+        "title-row",
+        "logo-asset"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma ComponentSet 1980:5351 provides the canonical two-variant Desktop visual mastery and supporting-slot anatomy for Feature5050.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, responsive behavior and the public TypeScript API."
+        },
+        {
+          "kind": "logical-property-mapping",
+          "reason": "Figma names the axis Left and Right, while Astro must support logical writing directions.",
+          "instruction": "Map Figma Left to visualPosition=start and Right to visualPosition=end; do not expose physical left/right values in the Astro API."
+        },
+        {
+          "kind": "slot-presence",
+          "reason": "Figma exposes Show Primary Bullets, Show Logos and Show Detail Bullets booleans alongside native Slots.",
+          "instruction": "Astro derives each optional region from named-slot presence. Do not add redundant show props or fixed child-count props."
+        },
+        {
+          "kind": "source-order",
+          "reason": "The Figma Left variant presents the visual first, while Astro keeps meaningful content first for reading and focus order.",
+          "instruction": "Render Content before Visual for both variants and change only their wide grid placement. Do not duplicate markup or use CSS order to alter focus sequence."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma documents fixed 1440 by 800 Desktop variants without Tablet or Mobile masters.",
+          "instruction": "Translate the wide minimum height to 100svh, stretch the Visual through the full section row without a Ratio contract, and apply content-padding-xxlarge only to the Content side adjacent to Visual. Below the 64rem feature-5050 container threshold, remove the viewport minimum and adjacent-side padding, then stack Content before Visual."
+        },
+        {
+          "kind": "measurement-projection",
+          "reason": "Figma uses fixed canvas, region and Layout Grid Columns measurements for design-time authoring.",
+          "instruction": "Preserve their grid intent through named public layout lines; do not copy 1440, 800, 630, 522 or Layout Grid Columns values into component CSS or token sources."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/feature-5050.md",
+      "variants": [
+        "start",
+        "end"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "visualPosition",
+        "headingLevel",
+        "logosTitle",
+        "detailBulletsTitle"
+      ],
+      "slots": [
+        "visual",
+        "actions",
+        "primaryBullets",
+        "logos",
+        "detailBullets"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-feature-visual-position",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--site-padding-inline",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--section-padding-small",
+        "--content-padding-xxlarge",
+        "--gap-regular",
+        "--gap-medium",
+        "--gap-xlarge",
+        "--gap-xxlarge",
+        "--feature-5050-logo-block-size",
+        "--radius-medium",
+        "--color-background-canvas",
+        "--color-background-surface",
+        "--color-background-muted"
+      ],
+      "tokenGroups": [
+        "feature-5050-size",
+        "global-layout",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "feature-50-50-centered",
+      "categoryKey": "website-patterns",
+      "pageKey": "features",
+      "pageLabel": "Features",
+      "figmaPageId": "964:14722",
+      "actualFigmaPageId": "964:14722",
+      "figmaCanonicalNodeId": "1980:5357",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/features",
+      "sourcePath": "src/components/website-patterns/features/Feature5050Centered.astro",
+      "name": "Feature5050Centered",
+      "astroComponent": "Feature5050Centered",
+      "role": "section",
+      "layer": "section",
+      "family": "features",
+      "dependencies": [
+        "content",
+        "button-group",
+        "bullet-point"
+      ],
+      "uses": [
+        "content",
+        "button-group",
+        "bullet-point"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma ComponentSet 1980:5357 provides two fixed Desktop visual references and the physical Visual=Right|Left axis.",
+          "instruction": "Use Figma for the approved full-height composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, responsive behavior and the public TypeScript API."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes Show Bullet Points and Show Actions booleans while its nested Content copy is not surfaced on the parent master.",
+          "instruction": "Astro flattens Content copy to heading, eyebrow and paragraph, and derives both optional regions from slot presence. Do not add redundant Show props or a nested Content replacement API."
+        },
+        {
+          "kind": "visual-and-source-order",
+          "reason": "Figma owns an empty Visual frame and presents it first in the Left variant, while Astro needs meaningful consumer media and stable reading order.",
+          "instruction": "Require the visual slot, render Content before Visual for both variants and change only wide CSS grid placement. Use the canonical CSS Checkerboard Visual Placeholder beneath slotted content without adding Ratio or an image request. The consumer owns media alternative text, captions and controls."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma documents fixed 1440 by 800 Desktop variants without Tablet or Mobile masters.",
+          "instruction": "Translate the wide minimum height to 100svh, retain the approved breakout relationship and stack Content before a full-bleed Visual below the 64rem component threshold. Apply the existing image radius only to the wide visual edge facing Content and remove it in the stacked mode. Do not copy fixed pixel measurements into CSS or token sources."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/feature-50-50-centered.md",
+      "variants": [
+        "left",
+        "right"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "visualPosition",
+        "headingLevel"
+      ],
+      "slots": [
+        "visual",
+        "actions",
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-feature-50-50-centered-visual-position",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--site-padding-inline",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--section-padding-small",
+        "--content-padding-xxlarge",
+        "--gap-regular",
+        "--space-medium",
+        "--space-large",
+        "--radius-none",
+        "--radius-image",
+        "--color-background-canvas",
+        "--color-background-muted",
+        "--color-background-surface"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "feature-simple",
+      "categoryKey": "website-patterns",
+      "pageKey": "features",
+      "pageLabel": "Features",
+      "figmaPageId": "964:14722",
+      "actualFigmaPageId": "964:14722",
+      "figmaCanonicalNodeId": "1980:5361",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/features",
+      "sourcePath": "src/components/website-patterns/features/FeatureSimple.astro",
+      "name": "FeatureSimple",
+      "astroComponent": "FeatureSimple",
+      "role": "section",
+      "layer": "section",
+      "family": "features",
+      "dependencies": [
+        "content",
+        "ratio"
+      ],
+      "uses": [
+        "content",
+        "ratio"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma ComponentSet 1980:5361 provides the canonical Desktop visual mastery and Visual Position axis for FeatureSimple.",
+          "instruction": "Use Figma for visual composition and variant exploration. Astro remains canonical for semantic HTML, accessibility, responsive behavior and the public TypeScript API."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes nested Content visibility and alignment plus Ratio configuration, while Astro flattens those consumer decisions into content presence, contentAlign, ratio and named slots.",
+          "instruction": "Do not add redundant Show props or expose nested component replacement. Omit optional content, pass actions through the actions slot and provide required visual content through the visual slot."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma documents two fixed 1440px Desktop compositions without Tablet or Mobile masters.",
+          "instruction": "Astro preserves the wide 12-column relationships and intentionally stacks both regions below the 64rem feature-simple container threshold using existing layout tokens."
+        },
+        {
+          "kind": "source-order",
+          "reason": "Each Astro visualPosition variant renders its DOM in the same order as its wide visual composition and retains that order when stacked.",
+          "instruction": "Do not use CSS order to contradict the selected variant or create breakpoint-only duplicate markup."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/feature-simple.md",
+      "variants": [
+        "left",
+        "right"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "visualPosition",
+        "contentAlign",
+        "ratio",
+        "headingLevel"
+      ],
+      "slots": [
+        "visual",
+        "actions"
+      ],
+      "attributes": [
+        "data-feature-simple-visual-position",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--section-padding-large",
+        "--container-main",
+        "--site-padding-inline",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--gap-xxlarge",
+        "--color-background-canvas",
+        "--color-background-surface",
+        "--radius-image"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "feature-scroll",
+      "categoryKey": "website-patterns",
+      "pageKey": "features",
+      "pageLabel": "Features",
+      "figmaPageId": "964:14722",
+      "actualFigmaPageId": "964:14722",
+      "figmaCanonicalNodeId": "2098:1281",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/features",
+      "sourcePath": "src/components/website-patterns/features/FeatureScroll.astro",
+      "name": "FeatureScroll",
+      "astroComponent": "FeatureScroll",
+      "role": "section",
+      "layer": "section",
+      "family": "features",
+      "dependencies": [
+        "content",
+        "ratio",
+        "bullet-point",
+        "tag",
+        "button-group"
+      ],
+      "uses": [
+        "content",
+        "ratio",
+        "bullet-point",
+        "tag",
+        "button-group"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "structural-variant",
+          "reason": "Figma keeps one Type=Default variant to satisfy the canonical one-child ComponentSet documentation structure.",
+          "instruction": "Treat Type as structural-only and do not expose a Type or variant prop in Astro."
+        },
+        {
+          "kind": "slot-representation",
+          "reason": "Figma uses private _Parts/FeatureScroll.Item instances inside one native Feature Items Slot, while the approved Astro scope allows only one new public component.",
+          "instruction": "Use the required default-slot list-item anatomy and canonical nested dependencies; do not create a public FeatureScrollItem or a fixed Count prop."
+        },
+        {
+          "kind": "runtime-responsive",
+          "reason": "Figma documents one static 1440px visual, while Astro must synchronize paired visuals progressively, keep the shared desktop geometry responsive and preserve an inline narrow and no-JavaScript fallback.",
+          "instruction": "Use the feature-scroll container, a shared preferred 16:9 aspect ratio and approved minimum height for cards and the sticky viewport, one non-doubled center border, non-interactive aria-hidden stage clones and passive requestAnimationFrame scroll synchronization. Switch only when the next card top reaches the sticky viewport top, without scroll-jacking, focus movement, aria-live or alternate source order."
+        },
+        {
+          "kind": "token-projection",
+          "reason": "Figma stores the 480px item height as raw functional geometry; Astro projects it as a content-safe minimum through the approved feature-scroll-size group.",
+          "instruction": "Consume only --feature-scroll-item-min-block-size in Astro, allow content to grow, and make no Figma Variable change."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/feature-scroll.md",
+      "variants": [],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "headingLevel"
+      ],
+      "slots": [
+        "actions",
+        "default"
+      ],
+      "attributes": [
+        "data-feature-scroll-ready",
+        "data-feature-scroll-valid",
+        "data-feature-scroll-item",
+        "data-feature-scroll-content",
+        "data-feature-scroll-visual",
+        "data-feature-scroll-active",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default",
+        "active"
+      ],
+      "tokens": [
+        "--feature-scroll-item-min-block-size",
+        "--section-padding-large",
+        "--container-main",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--space-huge",
+        "--content-padding-xlarge",
+        "--gap-regular",
+        "--gap-large",
+        "--gap-xxlarge",
+        "--gap-tag-group",
+        "--color-background-canvas",
+        "--color-border-default",
+        "--motion-transition"
+      ],
+      "tokenGroups": [
+        "feature-scroll-size",
+        "global-layout",
+        "global-size",
+        "global-color",
+        "global-motion",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "how-it-works",
+      "categoryKey": "website-patterns",
+      "pageKey": "how-it-works",
+      "pageLabel": "How It Works",
+      "figmaPageId": "964:14723",
+      "actualFigmaPageId": "964:14723",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/how-it-works",
+      "sourcePath": "src/components/website-patterns/how-it-works/HowItWorks.astro",
+      "name": "HowItWorks",
+      "astroComponent": "HowItWorks",
+      "role": "section",
+      "layer": "section",
+      "family": "how-it-works",
+      "dependencies": [
+        "content",
+        "ratio",
+        "progress-bar",
+        "button-group"
+      ],
+      "uses": [
+        "content",
+        "ratio",
+        "progress-bar",
+        "button-group"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "benchmark-adaptation",
+          "reason": "HowItWorks is an Astro-only full-viewport process sequence derived from the behavior and structural relationships visible in the supplied benchmark screenshots; no canonical Figma component operation was requested.",
+          "instruction": "Keep the semantic ordered list, GSAP progressive enhancement, segment progress, responsive static fallback and dependency contracts canonical in Astro. Do not copy benchmark assets, external APIs or raw visual values."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/how-it-works.md",
+      "variants": [],
+      "props": [
+        "label"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-how-it-works-ready",
+        "data-how-it-works-valid",
+        "data-how-it-works-enhanced",
+        "data-how-it-works-active",
+        "data-how-it-works-step",
+        "aria-label",
+        "aria-labelledby"
+      ],
+      "states": [
+        "static",
+        "enhanced",
+        "active",
+        "invalid"
+      ],
+      "tokens": [
+        "--section-padding-large",
+        "--container-main",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--space-huge",
+        "--gap-small",
+        "--gap-large",
+        "--progress-bar-block-size",
+        "--color-background-canvas",
+        "--border-width-default"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color",
+        "global-motion",
+        "typography-foundations",
+        "progress-bar-size"
       ],
       "readiness": {
         "visual": "review",
@@ -7837,7 +10076,6 @@
       "tokens": [
         "--team-member-card-horizontal-image-size",
         "--gap-large",
-        "--gap-small",
         "--radius-image",
         "--color-text-primary",
         "--color-text-secondary"
@@ -7854,6 +10092,198 @@
       }
     },
     {
+      "id": "blog-card",
+      "categoryKey": "website-patterns",
+      "pageKey": "blog-resources",
+      "pageLabel": "Blog & Resources",
+      "figmaPageId": "964:14727",
+      "actualFigmaPageId": "964:14727",
+      "figmaCanonicalNodeId": "1852:2902",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/blog-resources",
+      "sourcePath": "src/components/website-patterns/blog-resources/BlogCard.astro",
+      "name": "BlogCard",
+      "astroComponent": "BlogCard",
+      "role": "card",
+      "layer": "card",
+      "family": "blog-resources",
+      "dependencies": [
+        "ratio",
+        "tag",
+        "button-link"
+      ],
+      "uses": [
+        "ratio",
+        "tag",
+        "button-link"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes Show Media, Show Tags, Show Description, Show Date and Show CTA booleans, while Astro derives visibility from content, href and Slot presence.",
+          "instruction": "Do not add redundant show* props. Omit the corresponding content, href or Slot to remove that region."
+        },
+        {
+          "kind": "semantic-projection",
+          "reason": "Figma fixes visual text styles and a display date string, while Astro renders a labelled article with a selectable semantic heading level, native time metadata and a native ButtonLink action.",
+          "instruction": "Keep title hierarchy independent from visual typography, require date label and dateTime together, and preserve ButtonLink as the only card-owned interaction."
+        },
+        {
+          "kind": "responsive-layout",
+          "reason": "Figma uses fixed 600px vertical and 748px horizontal presentation widths, while Astro fills its assigned inline size and lets horizontal tracks stack intrinsically when they cannot remain readable.",
+          "instruction": "Keep the public component fluid, use --grid-auto-min-width-card for intrinsic horizontal reflow and never copy Figma fixture widths into public CSS."
+        },
+        {
+          "kind": "content-growth",
+          "reason": "Figma review frames bound title and description height, while Astro must preserve localized and long editorial content without clipping.",
+          "instruction": "Allow natural wrapping and block-size growth; do not add line-clamp or max-height truncation."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/blog-card.md",
+      "variants": [
+        "vertical",
+        "horizontal"
+      ],
+      "props": [
+        "title",
+        "description",
+        "date",
+        "href",
+        "ctaLabel",
+        "layout",
+        "mediaPlacement",
+        "headingLevel"
+      ],
+      "slots": [
+        "visual",
+        "tags"
+      ],
+      "attributes": [
+        "data-blog-card-layout",
+        "data-blog-card-media-placement",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--grid-auto-min-width-card",
+        "--space-media-content",
+        "--space-medium",
+        "--space-regular",
+        "--gap-small",
+        "--gap-tag-group",
+        "--radius-image",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--font-family-body",
+        "--font-size-body-tiny",
+        "--font-weight-emphasis",
+        "--letter-spacing-tight",
+        "--line-height-none",
+        "--text-transform-none",
+        "--overflow-wrap-break-word"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "hero-align-bottom",
+      "categoryKey": "website-patterns",
+      "pageKey": "hero",
+      "pageLabel": "Hero",
+      "figmaPageId": "964:14724",
+      "actualFigmaPageId": "964:14724",
+      "figmaCanonicalNodeId": "2031:402",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/hero",
+      "sourcePath": "src/components/website-patterns/hero/HeroAlignBottom.astro",
+      "name": "HeroAlignBottom",
+      "astroComponent": "HeroAlignBottom",
+      "role": "section",
+      "layer": "section",
+      "family": "hero",
+      "dependencies": [
+        "content"
+      ],
+      "uses": [
+        "content"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma keeps the one-child structural variant Type=Default so the canonical master remains documented as a ComponentSet; it is not a consumer choice.",
+          "instruction": "Do not expose Type in Astro. Keep the one-child ComponentSet relationship as Figma documentation metadata."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma nests a fixed left-aligned Content instance and a fixed Visual Region inside the master.",
+          "instruction": "Astro flattens Content copy into heading, eyebrow, paragraph and headingLevel props, forwards actions through the optional actions Slot, and requires replaceable visual Slot content while still rendering the canonical Content dependency."
+        },
+        {
+          "kind": "layout-fixture",
+          "reason": "The approved Figma master is a fixed 1440 by 800 Desktop representation with a 738 by 640 Visual Region.",
+          "instruction": "Keep those measurements only as visual-review fixtures. The public component uses the main container, site-grid spans and natural visual height without fixed dimensions, ratio props or new tokens."
+        },
+        {
+          "kind": "responsive",
+          "reason": "Figma does not define Tablet or Mobile compositions for HeroAlignBottom.",
+          "instruction": "Astro preserves the wide 4 + 7 column relationship and bottom alignment, then intentionally stacks Content before Visual below the 64rem component-container threshold without changing DOM or focus order."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/hero-align-bottom.md",
+      "variants": [],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "headingLevel"
+      ],
+      "slots": [
+        "actions",
+        "visual"
+      ],
+      "attributes": [
+        "data-component-name",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--container-main",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--section-padding-hero-top",
+        "--section-padding-small",
+        "--gap-xlarge",
+        "--color-background-canvas",
+        "--color-background-surface",
+        "--radius-image"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
       "id": "hero-breakout",
       "categoryKey": "website-patterns",
       "pageKey": "hero",
@@ -7863,9 +10293,9 @@
       "figmaCanonicalNodeId": "1800:389",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/website-patterns/hero",
-      "sourcePath": null,
+      "sourcePath": "src/components/website-patterns/hero/HeroBreakout.astro",
       "name": "HeroBreakout",
-      "astroComponent": null,
+      "astroComponent": "HeroBreakout",
       "role": "section",
       "layer": "section",
       "family": "hero",
@@ -7879,35 +10309,352 @@
         "bullet-point",
         "button-group"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
       "divergences": [
         {
           "kind": "figma-projection",
-          "reason": "Figma ComponentSet 1800:389 is the canonical visual master for the desktop HeroBreakout composition; no Astro component or public API is approved yet.",
-          "instruction": "Keep sourcePath and astroComponent null until a separate implementation request approves the Astro component boundary."
+          "reason": "Figma ComponentSet 1800:389 remains the canonical visual master for the desktop HeroBreakout composition, while Astro flattens its nested Content, BulletPoint and ButtonGroup decisions into a bounded public API.",
+          "instruction": "Use typed content props, direct BulletPoint children and named actions and visual slots. Keep the one-child Type=Default axis structural-only."
         },
         {
           "kind": "layout",
-          "reason": "At 1440 px, Content Region spans columns 1–6, Content Stack spans columns 1–4, and Visual starts at column 7 and reaches full-end at the right viewport edge.",
-          "instruction": "Figma binds Layout Grid Columns max-width spans to the Fill-sized Content Region and Content Stack. Future Astro implementation must use .l-grid[data-grid=\"breakout\"] and named grid lines; do not export the Figma measurements or reproduce the 413 px, 630 px, or 710 px widths as CSS tokens."
+          "reason": "At 1440 px, Content Region spans columns 1–6, Content Stack spans columns 1–4, and the top-inset Visual starts at column 7, reaches full-end at the right viewport edge and continues to the section end.",
+          "instruction": "Astro uses .l-grid[data-grid=\"breakout\"], named lines, a nested six-column grid and --section-padding-hero-top for the Visual inset. Do not export the 413 px, 630 px, 710 px, 800 px or 1440 px measurements as CSS or tokens."
         },
         {
           "kind": "responsive",
           "reason": "Only the 1440 px Desktop composition is approved in Figma; tablet and mobile layouts have not been designed.",
-          "instruction": "Do not infer a Tablet mode, Device axis, or mobile HeroBreakout arrangement before those layouts are approved."
+          "instruction": "Astro intentionally stacks introduction, benefits, optional CTA and Visual below the 64rem hero-breakout container threshold while preserving source order; Content retains the main inline padding and Visual spans full-start/full-end. Do not project that behavior back to Figma without a separate task."
+        },
+        {
+          "kind": "media-slot",
+          "reason": "The Figma Visual is an image-fill placeholder rather than an approved product asset or bounded media API.",
+          "instruction": "Astro requires the visual slot and leaves image alternatives, iframe titles, media controls and captions to the consumer."
+        },
+        {
+          "kind": "semantic-projection",
+          "reason": "Figma fixes the visible heading style, while Astro separates that style from semantic heading rank and defaults a page-opening HeroBreakout to h1.",
+          "instruction": "Choose headingLevel 1 through 6 from the document outline and keep the approved Heading/H4 visual treatment through Content."
         }
       ],
-      "agenticRule": null,
+      "agenticRule": ".agentic-rules/components/hero-breakout.md",
       "variants": [],
-      "props": [],
-      "slots": [],
-      "attributes": [],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "caption",
+        "headingLevel"
+      ],
+      "slots": [
+        "default",
+        "actions",
+        "visual"
+      ],
+      "attributes": [
+        "aria-labelledby"
+      ],
       "states": [
         "default"
       ],
-      "tokens": [],
-      "tokenGroups": [],
+      "tokens": [
+        "--section-padding-hero-top",
+        "--section-padding-small",
+        "--site-grid-column-gap",
+        "--gap-small",
+        "--gap-large",
+        "--space-medium",
+        "--color-background-canvas",
+        "--color-background-surface",
+        "--color-text-primary"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "hero-50-50",
+      "categoryKey": "website-patterns",
+      "pageKey": "hero",
+      "pageLabel": "Hero",
+      "figmaPageId": "964:14724",
+      "actualFigmaPageId": "964:14724",
+      "figmaCanonicalNodeId": "1980:3690",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/hero",
+      "sourcePath": "src/components/website-patterns/hero/Hero5050.astro",
+      "name": "Hero5050",
+      "astroComponent": "Hero5050",
+      "role": "section",
+      "layer": "section",
+      "family": "hero",
+      "dependencies": [
+        "content",
+        "bullet-point",
+        "button-group"
+      ],
+      "uses": [
+        "content",
+        "bullet-point",
+        "button-group"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma keeps canonical component 1980:3690 inside the one-child documentation ComponentSet 2034:5586 with structural Type=Default metadata.",
+          "instruction": "Map the supplied component node as canonical, retain the set relationship as documentation metadata and do not expose Type in Astro."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes a Bullet Points Slot plus Show Bullet Points, Show Caption and Show Actions booleans while nested Content copy remains editable inside the Content instance.",
+          "instruction": "Astro flattens heading, eyebrow, paragraph and caption into string props, maps visibility to content presence and exposes bulletPoints and actions as optional Slots."
+        },
+        {
+          "kind": "semantic-projection",
+          "reason": "Figma fixes the visual text style to Heading/H4 and does not model the document outline, while Hero5050 is restricted to the first main section.",
+          "instruction": "Render the required Content heading as a fixed semantic h1 and do not expose headingLevel."
+        },
+        {
+          "kind": "responsive",
+          "reason": "The approved Figma master is a fixed 1440 by 800 Desktop representation without Tablet or Mobile variants.",
+          "instruction": "Astro preserves the named-line 50-50 layout and 100svh wide minimum height, then below a 64rem component-container threshold keeps content inside the padded content lines and stacks it before a 4:3 visual spanning full-start to full-end without changing DOM order."
+        },
+        {
+          "kind": "media-projection",
+          "reason": "Figma uses a crop-safe image fill in the Visual Region, while production media requires semantic markup, alternative text and optional native controls.",
+          "instruction": "Require a visual Slot, let the caller own media semantics and alternative text, and let Hero5050 own only the crop boundary and object-fit relationship."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/hero-50-50.md",
+      "variants": [],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "caption"
+      ],
+      "slots": [
+        "bulletPoints",
+        "actions",
+        "visual"
+      ],
+      "attributes": [
+        "data-component-name",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--site-grid-column-gap",
+        "--site-padding-inline",
+        "--section-padding-hero-top",
+        "--section-padding-small",
+        "--space-medium",
+        "--gap-small",
+        "--gap-large",
+        "--color-background-canvas",
+        "--color-background-surface",
+        "--color-text-primary"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "hero-spaced-50-50",
+      "categoryKey": "website-patterns",
+      "pageKey": "hero",
+      "pageLabel": "Hero",
+      "figmaPageId": "964:14724",
+      "actualFigmaPageId": "964:14724",
+      "figmaCanonicalNodeId": "2041:5984",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/hero",
+      "sourcePath": "src/components/website-patterns/hero/HeroSpaced5050.astro",
+      "name": "HeroSpaced5050",
+      "astroComponent": "HeroSpaced5050",
+      "role": "section",
+      "layer": "section",
+      "family": "hero",
+      "dependencies": [
+        "eyebrow",
+        "button-group"
+      ],
+      "uses": [
+        "eyebrow",
+        "button-group"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma keeps the one-child structural variant Type=Default so the single master remains documented as a ComponentSet; it is not a consumer choice.",
+          "instruction": "Do not expose Type in Astro. Keep the ComponentSet structure as Figma documentation metadata."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma represents optional eyebrow, paragraph and actions with Show booleans, while the visual is replaced through a design-time image fill.",
+          "instruction": "Astro maps optional regions to content presence, exposes actions as an optional Slot, requires a visual Slot and keeps headingLevel as a semantic Astro-only prop."
+        },
+        {
+          "kind": "responsive",
+          "reason": "The approved Figma master is a fixed 1440 by 800 Desktop representation without Tablet or Mobile variants.",
+          "instruction": "Astro preserves the wide named-line composition, uses 100svh only as a wide minimum-height mechanic and stacks padded content before a full-start to full-end visual below a 64rem component-container threshold without changing DOM order."
+        },
+        {
+          "kind": "dependency-spacing",
+          "reason": "The nested Figma Eyebrow projection and the canonical Astro Eyebrow express their heading relationship through different authoring mechanics.",
+          "instruction": "Reuse the canonical Astro Eyebrow and its approved spacing. Do not add a Hero-specific override merely to reproduce the Figma dependency snapshot."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/hero-spaced-50-50.md",
+      "variants": [],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "headingLevel"
+      ],
+      "slots": [
+        "actions",
+        "visual"
+      ],
+      "attributes": [
+        "data-component-name",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--site-grid-column-gap",
+        "--site-padding-inline",
+        "--section-padding-hero-top",
+        "--section-padding-small",
+        "--gap-large",
+        "--color-background-canvas",
+        "--color-background-surface",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--overflow-wrap-break-word"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
+      "id": "hero-visual-center",
+      "categoryKey": "website-patterns",
+      "pageKey": "hero",
+      "pageLabel": "Hero",
+      "figmaPageId": "964:14724",
+      "actualFigmaPageId": "964:14724",
+      "figmaCanonicalNodeId": "2018:397",
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/hero",
+      "sourcePath": "src/components/website-patterns/hero/HeroVisualCenter.astro",
+      "name": "HeroVisualCenter",
+      "astroComponent": "HeroVisualCenter",
+      "role": "section",
+      "layer": "section",
+      "family": "hero",
+      "dependencies": [
+        "content",
+        "bullet-point",
+        "ratio"
+      ],
+      "uses": [
+        "content",
+        "bullet-point",
+        "ratio"
+      ],
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "figma-projection",
+          "reason": "Figma keeps the one-child structural variant Type=Default so the single visual master remains documented as ComponentSet 2018:397.",
+          "instruction": "Do not expose Type in Astro. Keep the ComponentSet structure as Figma documentation metadata."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma exposes Show Paragraph, Show Button Group and Show Bullet Points booleans plus a native Bullet Points Slot.",
+          "instruction": "Astro maps optional regions to paragraph, actions and bulletPoints content presence. Do not add redundant visibility props."
+        },
+        {
+          "kind": "semantic-and-media-projection",
+          "reason": "Figma fixes Heading/H4 visual styling and represents the Ratio region as design content, while production needs a document heading rank and semantic media markup.",
+          "instruction": "Expose headingLevel from 1 through 6 with default 1, preserve the H4 visual style through Content, require a visual Slot and keep Ratio fixed at 16:9."
+        },
+        {
+          "kind": "responsive",
+          "reason": "The approved Figma master documents only the fixed 1440 px Desktop composition without Tablet or Mobile variants.",
+          "instruction": "Astro preserves the centered five-column Content, twelve-column Bullet Points and ten-column Visual at wide widths, then reflows all regions to full width below a 64rem component-container threshold without changing DOM order."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/hero-visual-center.md",
+      "variants": [],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "headingLevel"
+      ],
+      "slots": [
+        "actions",
+        "bulletPoints",
+        "visual"
+      ],
+      "attributes": [
+        "data-component-name",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--section-padding-hero-top",
+        "--section-padding-large",
+        "--container-main",
+        "--site-grid-columns",
+        "--site-grid-column-gap",
+        "--space-large",
+        "--space-xlarge",
+        "--gap-large",
+        "--color-background-canvas"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
       "readiness": {
         "visual": "review",
         "validation": "passed"
@@ -7923,9 +10670,9 @@
       "figmaCanonicalNodeId": "1788:639",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/website-patterns/hero",
-      "sourcePath": null,
+      "sourcePath": "src/components/website-patterns/hero/HeroFullVisual.astro",
       "name": "HeroFullVisual",
-      "astroComponent": null,
+      "astroComponent": "HeroFullVisual",
       "role": "section",
       "layer": "section",
       "family": "hero",
@@ -7941,35 +10688,76 @@
         "ratio",
         "section-header"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
       "divergences": [
         {
           "kind": "figma-projection",
-          "reason": "Figma ComponentSet 1788:639 is the canonical visual master for the desktop HeroFullVisual pattern; no Astro component or public API is approved yet.",
-          "instruction": "Keep sourcePath and astroComponent null until a separate implementation request approves the Astro component boundary."
+          "reason": "Figma ComponentSet 1788:639 remains the canonical visual master for the three Desktop HeroFullVisual compositions.",
+          "instruction": "Use Figma for visual composition and Astro for semantic HTML, accessibility, responsive behavior and the public TypeScript contract."
+        },
+        {
+          "kind": "property-mapping",
+          "reason": "Figma Composition maps to the closed centered, left and section-header union. Nested actions map to an optional Slot, while Bullet Points and Visual are required compositional Slots in Astro.",
+          "instruction": "Forward actions to the active Content or SectionHeader dependency, require direct BulletPoint children in the semantic list and render visual content through Ratio at 2.39:1."
         },
         {
           "kind": "layout",
           "reason": "Each variant uses a 1440 px full-width section shell. Content Grid follows the 80 px site padding; Content and Bullet Points use Layout Grid Columns span/05, SectionHeader uses span/12, and Visual runs from full-start to full-end.",
-          "instruction": "Preserve the Fill plus maxWidth bindings in Figma. Future Astro implementation must use a full-width section shell with an inner container/grid and named content/full lines; do not export the 522 px or 1280 px Figma measurements as CSS tokens."
+          "instruction": "Preserve the Fill plus maxWidth bindings in Figma. Astro uses the public breakout and site grids with named content/full lines; do not export the 522 px or 1280 px Figma measurements as CSS tokens."
         },
         {
           "kind": "responsive",
-          "reason": "Only the 1440 px Desktop compositions Centered, Left and Section Header are approved in Figma; tablet and mobile layouts have not been designed.",
-          "instruction": "Do not infer a Device axis, Tablet mode, or mobile HeroFullVisual arrangement before those layouts are approved."
+          "reason": "Only the 1440 px Desktop compositions Centered, Left and Section Header are approved in Figma; Astro additionally needs content-safe behavior at narrower assigned widths.",
+          "instruction": "Keep Figma Desktop-only. Astro intentionally expands the intro and list to the available content width below 64rem, preserves source order and keeps the visual on full-start/full-end without introducing a Device prop."
+        },
+        {
+          "kind": "semantic-heading",
+          "reason": "Figma fixes the visual heading style, while Astro permits headingLevel 1 through 6 and defaults the page-opening HeroFullVisual heading to h1.",
+          "instruction": "Keep visual typography dependency-owned. Content and SectionHeader accept h1 for delegated page-title use while retaining their own h2 defaults."
         }
       ],
-      "agenticRule": null,
-      "variants": [],
-      "props": [],
-      "slots": [],
-      "attributes": [],
+      "agenticRule": ".agentic-rules/components/hero-full-visual.md",
+      "variants": [
+        "centered",
+        "left",
+        "section-header"
+      ],
+      "props": [
+        "heading",
+        "eyebrow",
+        "paragraph",
+        "composition",
+        "headingLevel"
+      ],
+      "slots": [
+        "actions",
+        "bullet-points",
+        "visual"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-hero-full-visual-composition",
+        "aria-labelledby"
+      ],
       "states": [
         "default"
       ],
-      "tokens": [],
-      "tokenGroups": [],
+      "tokens": [
+        "--site-grid-column-gap",
+        "--site-padding-inline",
+        "--section-padding-hero-top",
+        "--gap-large",
+        "--space-large",
+        "--space-xlarge",
+        "--color-background-canvas"
+      ],
+      "tokenGroups": [
+        "global-layout",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
       "readiness": {
         "visual": "review",
         "validation": "passed"
@@ -8078,6 +10866,70 @@
       }
     },
     {
+      "id": "logo-card",
+      "categoryKey": "website-patterns",
+      "pageKey": "brand-logo-proof",
+      "pageLabel": "Client Logos",
+      "figmaPageId": "1062:7",
+      "actualFigmaPageId": "1062:7",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/brand-logo-proof",
+      "sourcePath": "src/components/website-patterns/brand-logo-proof/LogoCard.astro",
+      "name": "LogoCard",
+      "astroComponent": "LogoCard",
+      "role": "card",
+      "layer": "card",
+      "family": "brand-logo-proof",
+      "dependencies": [
+        "logo-asset",
+        "ratio"
+      ],
+      "uses": [
+        "logo-asset",
+        "ratio"
+      ],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "code-first-boundary",
+          "reason": "LogoCard is an explicitly requested Astro-only client wordmark card; no Figma component operation or canonical master was requested.",
+          "instruction": "Keep the 16:9 Ratio composition, full LogoAsset variant, minimal typed API and token-backed logo height canonical in Astro until a separate Figma task is approved."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/logo-card.md",
+      "variants": [],
+      "props": [
+        "slug",
+        "alt",
+        "loading"
+      ],
+      "slots": [],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--logo-card-logo-block-size",
+        "--content-padding-large",
+        "--border-width-default",
+        "--color-background-canvas",
+        "--color-border-subtle"
+      ],
+      "tokenGroups": [
+        "logo-card-size",
+        "global-size",
+        "global-color"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      }
+    },
+    {
       "id": "trust-badge",
       "categoryKey": "website-patterns",
       "pageKey": "ratings-reviews",
@@ -8095,13 +10947,19 @@
       "family": "ratings-reviews",
       "dependencies": [],
       "uses": [],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
+      "syncStatus": "deprecated",
+      "status": "deprecated",
+      "divergences": [
+        {
+          "kind": "legacy-component-consolidation",
+          "reason": "The former public TrustBadge responsibility is consolidated into the Astro Rating component while the existing Figma master remains unchanged for recoverability.",
+          "instruction": "Do not use TrustBadge for new work; replace existing usage with Rating and keep Figma changes outside this Astro-only task."
+        }
+      ],
       "agenticRule": null,
       "readiness": {
         "visual": "approved",
-        "validation": "not-run"
+        "validation": "passed"
       }
     },
     {
@@ -8114,9 +10972,9 @@
       "figmaCanonicalNodeId": "526:1710",
       "figmaCandidateNodeIds": [],
       "sourceDirectory": "src/components/website-patterns/ratings-reviews",
-      "sourcePath": null,
+      "sourcePath": "src/components/website-patterns/ratings-reviews/Rating.astro",
       "name": "Rating",
-      "astroComponent": null,
+      "astroComponent": "Rating",
       "role": "molecule",
       "layer": "molecule",
       "family": "ratings-reviews",
@@ -8126,13 +10984,65 @@
       "uses": [
         "material-symbol"
       ],
-      "syncStatus": "figma-only",
-      "status": "figma-only",
-      "divergences": [],
-      "agenticRule": null,
+      "syncStatus": "intentional-difference",
+      "status": "intentional-difference",
+      "divergences": [
+        {
+          "kind": "component-consolidation",
+          "reason": "Astro combines the five-star score and rich trust label in one Rating identity while the legacy Figma Rating and TrustBadge masters remain unchanged.",
+          "instruction": "Use Rating as the sole public Ratings & Reviews component in Astro; do not restore TrustBadge or project this consolidation to Figma without a separate explicit operation."
+        },
+        {
+          "kind": "icon-projection",
+          "reason": "Astro renders the local star_filled and star Material Symbols for awarded and unawarded points; both assets remain pending explicit Figma synchronization.",
+          "instruction": "Keep the fixed five-icon mapping canonical in Astro and do not expose icon selection, icon slots or half-star values."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/rating.md",
+      "variants": [],
+      "props": [
+        "value",
+        "ratingLabel"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-rating-value"
+      ],
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "tokens": [
+        "--gap-none",
+        "--gap-small",
+        "--color-icon-primary",
+        "--color-text-primary",
+        "--font-family-body",
+        "--font-size-body-small",
+        "--font-weight-normal",
+        "--line-height-normal",
+        "--letter-spacing-tight",
+        "--text-transform-none",
+        "--text-wrap-pretty",
+        "--overflow-wrap-break-word",
+        "--word-break-normal",
+        "--white-space-normal"
+      ],
+      "tokenGroups": [
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
       "readiness": {
-        "visual": "approved",
-        "validation": "not-run"
+        "visual": "review",
+        "validation": "passed"
       }
     },
     {
@@ -8254,8 +11164,8 @@
       "divergences": [
         {
           "kind": "property-mapping",
-          "reason": "Figma names the visual axes Type and Icon, while Astro exposes the semantic props trend and iconPosition and keeps the glyph fixed by trend.",
-          "instruction": "Map Type=Up|Down to trend=up|down and Icon=Leading|Trailing to iconPosition=leading|trailing; do not expose arbitrary glyph selection."
+          "reason": "Figma names the visual axes Type and Icon, while Astro exposes trend, iconPosition and the Astro-only showIcon visibility control and keeps the glyph fixed by trend.",
+          "instruction": "Map Type=Up|Down to trend=up|down and Icon=Leading|Trailing to iconPosition=leading|trailing; showIcon defaults to true until the future Figma Show Icon property is approved; do not expose arbitrary glyph selection."
         },
         {
           "kind": "platform-semantics",
@@ -8273,7 +11183,8 @@
       "props": [
         "text",
         "trend",
-        "iconPosition"
+        "iconPosition",
+        "showIcon"
       ],
       "slots": [],
       "attributes": [
@@ -8396,6 +11307,496 @@
         "visual": "review",
         "validation": "passed"
       }
+    },
+    {
+      "id": "navigation",
+      "categoryKey": "website-patterns",
+      "pageKey": "navigation",
+      "pageLabel": "Navigation",
+      "figmaPageId": "964:13172",
+      "actualFigmaPageId": "964:13172",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/navigation",
+      "sourcePath": "src/components/website-patterns/navigation/Navigation.astro",
+      "name": "Navigation",
+      "astroComponent": "Navigation",
+      "role": "section",
+      "layer": "section",
+      "family": "navigation",
+      "dependencies": ["navigation-menu", "logo-asset", "compact-select", "button"],
+      "uses": ["navigation-menu"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "code-first-family",
+        "reason": "The Navigation family is intentionally authored and documented directly in Astro; no Figma operation or canonical node was requested.",
+        "instruction": "Keep the semantic shell, responsive runtime and slot API canonical in Astro until a separate Figma operation is explicitly requested."
+      }],
+      "agenticRule": ".agentic-rules/components/navigation.md",
+      "variants": ["standard", "menu"],
+      "props": ["id", "label", "openMenuLabel", "closeMenuLabel", "desktopMode"],
+      "slots": ["brand", "menu", "language", "action"],
+      "attributes": ["data-component-name", "data-navigation-root", "data-navigation-desktop-mode", "data-navigation-presentation", "data-navigation-full-open"],
+      "states": ["closed", "dropdown", "mega-menu", "full-menu"],
+      "tokens": ["--navigation-*", "--container-main", "--site-padding-inline", "--color-background-*", "--color-border-subtle", "--elevation-surface-*", "--motion-*"],
+      "tokenGroups": ["navigation-size", "global-layout", "global-size", "global-color", "global-motion", "global-elevation", "interaction-effect", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "navigation-menu",
+      "categoryKey": "website-patterns",
+      "pageKey": "navigation",
+      "pageLabel": "Navigation",
+      "figmaPageId": "964:13172",
+      "actualFigmaPageId": "964:13172",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/navigation",
+      "sourcePath": "src/components/website-patterns/navigation/NavigationMenu.astro",
+      "name": "NavigationMenu",
+      "astroComponent": "NavigationMenu",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "navigation",
+      "dependencies": ["nav-link", "nav-dropdown", "mega-menu"],
+      "uses": ["nav-link", "nav-dropdown", "mega-menu"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "NavigationMenu is an Astro-only semantic list shared by standard and full presentations.", "instruction": "Keep one list and let Navigation presentation state reflow it without duplicating focusable content." }],
+      "agenticRule": ".agentic-rules/components/navigation-menu.md",
+      "variants": [],
+      "props": [],
+      "slots": ["default"],
+      "attributes": ["data-component-name"],
+      "states": ["standard", "full"],
+      "tokens": ["--gap-medium", "--gap-small"],
+      "tokenGroups": ["global-size"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "nav-link",
+      "categoryKey": "website-patterns",
+      "pageKey": "navigation",
+      "pageLabel": "Navigation",
+      "figmaPageId": "964:13172",
+      "actualFigmaPageId": "964:13172",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/navigation",
+      "sourcePath": "src/components/website-patterns/navigation/NavLink.astro",
+      "name": "NavLink",
+      "astroComponent": "NavLink",
+      "role": "atom",
+      "layer": "atom",
+      "family": "navigation",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "NavLink is an Astro-only navigation-specific native anchor.", "instruction": "Use aria-current on the anchor for the active destination and preserve native link behavior." }],
+      "agenticRule": ".agentic-rules/components/nav-link.md",
+      "variants": [],
+      "props": ["href"],
+      "slots": ["default"],
+      "attributes": ["data-component-name", "aria-current"],
+      "states": ["default", "hover", "focus-visible", "current"],
+      "tokens": ["--control-size-*", "--color-text-*", "--color-background-subtle", "--motion-transition"],
+      "tokenGroups": ["control-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "nav-dropdown",
+      "categoryKey": "website-patterns",
+      "pageKey": "navigation",
+      "pageLabel": "Navigation",
+      "figmaPageId": "964:13172",
+      "actualFigmaPageId": "964:13172",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/navigation",
+      "sourcePath": "src/components/website-patterns/navigation/NavDropdown.astro",
+      "name": "NavDropdown",
+      "astroComponent": "NavDropdown",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "navigation",
+      "dependencies": ["nav-dropdown-link", "material-symbol"],
+      "uses": ["nav-dropdown-link", "material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "NavDropdown is an Astro-only disclosure with desktop popover and full-menu accordion presentations.", "instruction": "Preserve the shared trigger/panel identity and navigation controller contract across both presentations." }],
+      "agenticRule": ".agentic-rules/components/nav-dropdown.md",
+      "variants": [],
+      "props": ["id", "label"],
+      "slots": ["default"],
+      "attributes": ["data-component-name", "data-navigation-disclosure", "data-navigation-disclosure-state", "aria-expanded", "aria-controls"],
+      "states": ["closed", "open"],
+      "tokens": ["--navigation-bar-height", "--control-size-*", "--color-*", "--elevation-surface-floating", "--motion-*"],
+      "tokenGroups": ["navigation-size", "control-size", "global-layout", "global-size", "global-color", "global-motion", "global-elevation", "interaction-effect", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "nav-dropdown-link",
+      "categoryKey": "website-patterns",
+      "pageKey": "navigation",
+      "pageLabel": "Navigation",
+      "figmaPageId": "964:13172",
+      "actualFigmaPageId": "964:13172",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/navigation",
+      "sourcePath": "src/components/website-patterns/navigation/NavDropdownLink.astro",
+      "name": "NavDropdownLink",
+      "astroComponent": "NavDropdownLink",
+      "role": "atom",
+      "layer": "atom",
+      "family": "navigation",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "NavDropdownLink is the Astro-only content-safe link row for NavDropdown.", "instruction": "Keep the optional description short and preserve a native anchor as the only interaction." }],
+      "agenticRule": ".agentic-rules/components/nav-dropdown-link.md",
+      "variants": [],
+      "props": ["href", "description"],
+      "slots": ["default"],
+      "attributes": ["data-component-name"],
+      "states": ["default", "hover", "focus-visible"],
+      "tokens": ["--color-text-*", "--color-background-subtle", "--content-padding-small", "--motion-transition"],
+      "tokenGroups": ["global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "mega-menu",
+      "categoryKey": "website-patterns",
+      "pageKey": "navigation",
+      "pageLabel": "Navigation",
+      "figmaPageId": "964:13172",
+      "actualFigmaPageId": "964:13172",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/navigation",
+      "sourcePath": "src/components/website-patterns/navigation/MegaMenu.astro",
+      "name": "MegaMenu",
+      "astroComponent": "MegaMenu",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "navigation",
+      "dependencies": ["mega-menu-primary-link", "mega-menu-secondary-link", "material-symbol"],
+      "uses": ["mega-menu-primary-link", "mega-menu-secondary-link", "material-symbol"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "MegaMenu is an Astro-only three-column navigation disclosure informed by supplied benchmarks.", "instruction": "Keep the three semantic slots, source order and runtime disclosure behavior canonical in Astro." }],
+      "agenticRule": ".agentic-rules/components/mega-menu.md",
+      "variants": [],
+      "props": ["id", "label", "primaryLabel", "secondaryLabel", "tertiaryLabel"],
+      "slots": ["primary", "secondary", "tertiary"],
+      "attributes": ["data-component-name", "data-navigation-disclosure", "data-navigation-disclosure-state", "aria-expanded", "aria-controls"],
+      "states": ["closed", "open"],
+      "tokens": ["--navigation-bar-height", "--control-size-*", "--container-main", "--color-*", "--elevation-surface-raised", "--motion-*"],
+      "tokenGroups": ["navigation-size", "control-size", "global-layout", "global-size", "global-color", "global-motion", "global-elevation", "interaction-effect", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "mega-menu-primary-link",
+      "categoryKey": "website-patterns",
+      "pageKey": "navigation",
+      "pageLabel": "Navigation",
+      "figmaPageId": "964:13172",
+      "actualFigmaPageId": "964:13172",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/navigation",
+      "sourcePath": "src/components/website-patterns/navigation/MegaMenuPrimaryLink.astro",
+      "name": "MegaMenuPrimaryLink",
+      "astroComponent": "MegaMenuPrimaryLink",
+      "role": "atom",
+      "layer": "atom",
+      "family": "navigation",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "MegaMenuPrimaryLink is the Astro-only high-emphasis link for the first mega-menu column.", "instruction": "Use only for primary destinations and keep any optional description concise." }],
+      "agenticRule": ".agentic-rules/components/mega-menu-primary-link.md",
+      "variants": [],
+      "props": ["href", "description"],
+      "slots": ["default"],
+      "attributes": ["data-component-name"],
+      "states": ["default", "hover", "focus-visible"],
+      "tokens": ["--color-text-*", "--color-background-subtle", "--content-padding-xsmall", "--motion-transition"],
+      "tokenGroups": ["global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "mega-menu-secondary-link",
+      "categoryKey": "website-patterns",
+      "pageKey": "navigation",
+      "pageLabel": "Navigation",
+      "figmaPageId": "964:13172",
+      "actualFigmaPageId": "964:13172",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/navigation",
+      "sourcePath": "src/components/website-patterns/navigation/MegaMenuSecondaryLink.astro",
+      "name": "MegaMenuSecondaryLink",
+      "astroComponent": "MegaMenuSecondaryLink",
+      "role": "atom",
+      "layer": "atom",
+      "family": "navigation",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "MegaMenuSecondaryLink is the Astro-only standard link for the secondary and tertiary columns.", "instruction": "Use the same component in both supporting columns to preserve hierarchy." }],
+      "agenticRule": ".agentic-rules/components/mega-menu-secondary-link.md",
+      "variants": [],
+      "props": ["href"],
+      "slots": ["default"],
+      "attributes": ["data-component-name"],
+      "states": ["default", "hover", "focus-visible"],
+      "tokens": ["--control-size-small-min-height", "--color-text-*", "--color-background-subtle", "--motion-transition"],
+      "tokenGroups": ["control-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "footer",
+      "categoryKey": "website-patterns",
+      "pageKey": "footer",
+      "pageLabel": "Footer",
+      "figmaPageId": "975:1271",
+      "actualFigmaPageId": "975:1271",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/footer",
+      "sourcePath": "src/components/website-patterns/footer/Footer.astro",
+      "name": "Footer",
+      "astroComponent": "Footer",
+      "role": "section",
+      "layer": "section",
+      "family": "footer",
+      "dependencies": ["footer-group", "footer-social-link", "footer-newsletter-form", "button", "button-link", "logo-asset"],
+      "uses": ["footer-group", "footer-social-link", "footer-newsletter-form", "button", "button-link", "logo-asset"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{
+        "kind": "code-first-family",
+        "reason": "The Footer family is intentionally authored and documented directly in Astro; the supplied references informed its shared anatomy, but no Figma operation or canonical node was requested.",
+        "instruction": "Keep the semantic footer shell, source order, responsive reflow and slot API canonical in Astro until a separate Figma operation is explicitly requested."
+      }],
+      "agenticRule": ".agentic-rules/components/footer.md",
+      "variants": [],
+      "props": ["heading", "headingLevel", "copyright"],
+      "slots": ["default", "action", "social", "brand", "legal"],
+      "attributes": ["data-component-name", "data-footer-has-action"],
+      "states": ["without-action", "with-action"],
+      "tokens": ["--footer-logo-block-size", "--container-main", "--site-padding-inline", "--site-grid-column-gap", "--gap-*", "--space-*", "--color-*"],
+      "tokenGroups": ["footer-size", "global-layout", "global-size", "global-color", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "footer-group",
+      "categoryKey": "website-patterns",
+      "pageKey": "footer",
+      "pageLabel": "Footer",
+      "figmaPageId": "975:1271",
+      "actualFigmaPageId": "975:1271",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/footer",
+      "sourcePath": "src/components/website-patterns/footer/FooterGroup.astro",
+      "name": "FooterGroup",
+      "astroComponent": "FooterGroup",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "footer",
+      "dependencies": ["footer-label", "footer-link", "footer-social-link"],
+      "uses": ["footer-label", "footer-link", "footer-social-link"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "FooterGroup is an Astro-only named navigation landmark for one footer link category.", "instruction": "Preserve the labelled nav and list semantics; compose only footer link items in its default slot." }],
+      "agenticRule": ".agentic-rules/components/footer-group.md",
+      "variants": [],
+      "props": ["id", "label", "headingLevel"],
+      "slots": ["default"],
+      "attributes": ["data-component-name", "aria-labelledby"],
+      "states": ["default"],
+      "tokens": ["--gap-small"],
+      "tokenGroups": ["global-size", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "footer-label",
+      "categoryKey": "website-patterns",
+      "pageKey": "footer",
+      "pageLabel": "Footer",
+      "figmaPageId": "975:1271",
+      "actualFigmaPageId": "975:1271",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/footer",
+      "sourcePath": "src/components/website-patterns/footer/FooterLabel.astro",
+      "name": "FooterLabel",
+      "astroComponent": "FooterLabel",
+      "role": "atom",
+      "layer": "atom",
+      "family": "footer",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "FooterLabel is an Astro-only semantic heading whose document level remains independent from its visual style.", "instruction": "Select the heading level from page hierarchy and keep the compact label treatment token-backed." }],
+      "agenticRule": ".agentic-rules/components/footer-label.md",
+      "variants": [],
+      "props": ["text", "headingLevel", "id"],
+      "slots": [],
+      "attributes": ["data-component-name"],
+      "states": ["default"],
+      "tokens": ["--color-text-secondary", "--font-*", "--line-height-*"],
+      "tokenGroups": ["global-color", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "footer-link",
+      "categoryKey": "website-patterns",
+      "pageKey": "footer",
+      "pageLabel": "Footer",
+      "figmaPageId": "975:1271",
+      "actualFigmaPageId": "975:1271",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/footer",
+      "sourcePath": "src/components/website-patterns/footer/FooterLink.astro",
+      "name": "FooterLink",
+      "astroComponent": "FooterLink",
+      "role": "atom",
+      "layer": "atom",
+      "family": "footer",
+      "dependencies": [],
+      "uses": [],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "FooterLink is the Astro-only native link item shared by navigation and legal footer lists.", "instruction": "Keep the anchor native, preserve forwarded safe link attributes and use the legal variant only for supporting policy links." }],
+      "agenticRule": ".agentic-rules/components/footer-link.md",
+      "variants": ["navigation", "legal"],
+      "props": ["href", "variant"],
+      "slots": ["default"],
+      "attributes": ["data-component-name", "data-footer-link-variant", "aria-current"],
+      "states": ["default", "hover", "focus-visible", "current"],
+      "tokens": ["--color-text-*", "--motion-transition", "--font-*"],
+      "tokenGroups": ["global-color", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "footer-social-link",
+      "categoryKey": "website-patterns",
+      "pageKey": "footer",
+      "pageLabel": "Footer",
+      "figmaPageId": "975:1271",
+      "actualFigmaPageId": "975:1271",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/footer",
+      "sourcePath": "src/components/website-patterns/footer/FooterSocialLink.astro",
+      "name": "FooterSocialLink",
+      "astroComponent": "FooterSocialLink",
+      "role": "atom",
+      "layer": "atom",
+      "family": "footer",
+      "dependencies": ["social-icons"],
+      "uses": ["social-icons"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "FooterSocialLink is an Astro-only native profile link composed with the existing decorative SocialIcons renderer.", "instruction": "Use icon-only or labelled presentation without changing the native anchor into a button." }],
+      "agenticRule": ".agentic-rules/components/footer-social-link.md",
+      "variants": ["icon-only", "labelled"],
+      "props": ["href", "platform", "label", "presentation"],
+      "slots": [],
+      "attributes": ["data-component-name", "data-footer-social-link-presentation", "data-social-platform"],
+      "states": ["default", "hover", "focus-visible"],
+      "tokens": ["--footer-social-icon-size", "--color-*", "--motion-transition", "--font-*"],
+      "tokenGroups": ["footer-size", "global-color", "global-motion", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "footer-newsletter-form",
+      "categoryKey": "website-patterns",
+      "pageKey": "footer",
+      "pageLabel": "Footer",
+      "figmaPageId": "975:1271",
+      "actualFigmaPageId": "975:1271",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/footer",
+      "sourcePath": "src/components/website-patterns/footer/FooterNewsletterForm.astro",
+      "name": "FooterNewsletterForm",
+      "astroComponent": "FooterNewsletterForm",
+      "role": "molecule",
+      "layer": "molecule",
+      "family": "footer",
+      "dependencies": ["form-field", "input", "button"],
+      "uses": ["form-field", "input", "button"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [{ "kind": "code-first-family", "reason": "FooterNewsletterForm is an Astro-only progressive-enhancement form with no vendor integration or client runtime.", "instruction": "Preserve native POST submission, the label/input association and a submit button; integrate provider behavior outside this component." }],
+      "agenticRule": ".agentic-rules/components/footer-newsletter-form.md",
+      "variants": [],
+      "props": ["id", "action", "emailLabel", "submitLabel", "emailName", "emailPlaceholder"],
+      "slots": ["consent"],
+      "attributes": ["data-component-name"],
+      "states": ["default", "valid", "invalid"],
+      "tokens": ["--input-*", "--button-*", "--control-*", "--gap-*", "--color-*"],
+      "tokenGroups": ["control-size", "input-color", "button-color", "global-size", "global-color", "typography-foundations", "interaction-effect"],
+      "readiness": { "visual": "review", "validation": "passed" }
+    },
+    {
+      "id": "pricing-card",
+      "categoryKey": "website-patterns",
+      "pageKey": "pricing-comparison",
+      "pageLabel": "Pricing & Comparison",
+      "figmaPageId": "975:773",
+      "actualFigmaPageId": "975:773",
+      "figmaCanonicalNodeId": null,
+      "figmaCandidateNodeIds": [],
+      "sourceDirectory": "src/components/website-patterns/pricing-comparison",
+      "sourcePath": "src/components/website-patterns/pricing-comparison/PricingCard.astro",
+      "name": "PricingCard",
+      "astroComponent": "PricingCard",
+      "role": "card",
+      "layer": "card",
+      "family": "pricing-comparison",
+      "dependencies": ["tag", "bullet-point", "button", "button-link"],
+      "uses": ["tag", "bullet-point", "button", "button-link"],
+      "syncStatus": "astro-only",
+      "status": "astro-only",
+      "divergences": [
+        {
+          "kind": "benchmark-adaptation",
+          "reason": "PricingCard is an Astro-only plan card informed by the anatomy visible in the supplied benchmarks; no canonical component node was requested.",
+          "instruction": "Keep the semantic article, slot API, token-backed surface and pricing content contract canonical in Astro; do not copy benchmark APIs, values, content or assets."
+        }
+      ],
+      "agenticRule": ".agentic-rules/components/pricing-card.md",
+      "variants": ["default", "featured"],
+      "props": ["title", "description", "price", "priceSuffix", "priceNote", "featuresTitle", "headingLevel", "id"],
+      "slots": ["badge", "savings", "action", "features"],
+      "attributes": ["data-component-name", "data-pricing-card-featured", "aria-labelledby"],
+      "states": ["default", "featured"],
+      "tokens": [
+        "--card-background-default",
+        "--card-border-default",
+        "--card-border-selected",
+        "--color-text-primary",
+        "--color-text-secondary",
+        "--content-padding-large",
+        "--gap-*",
+        "--space-small",
+        "--radius-small",
+        "--border-width-default"
+      ],
+      "tokenGroups": ["card-color", "global-color", "global-size", "typography-foundations"],
+      "readiness": { "visual": "review", "validation": "passed" }
     },
     {
       "id": "dsd-component-page-template",

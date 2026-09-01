@@ -1,0 +1,12 @@
+---
+import HowItWorks from "../../../../../src/components/website-patterns/how-it-works/HowItWorks.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.HOW_IT_WORKS_INVALID_CASE ?? "label";
+---
+
+{invalidCase === "slot" ? (
+  <HowItWorks label="Process" />
+) : (
+  <HowItWorks label="   "><div>Invalid</div></HowItWorks>
+)}

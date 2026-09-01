@@ -1,0 +1,105 @@
+---
+import PricingCard from "../../../../../src/components/website-patterns/pricing-comparison/PricingCard.astro";
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonLink from "../../../../../src/components/base-components/buttons/ButtonLink.astro";
+import Tag from "../../../../../src/components/base-components/tag/Tag.astro";
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const invalidCase = process.env.PRICING_CARD_INVALID_CASE;
+const validProps = {
+  title: "Valid plan",
+  description: "Valid description",
+  price: "$25",
+  featuresTitle: "What's included",
+};
+const invalidProps: Record<string, Record<string, unknown>> = {
+  title: { ...validProps, title: "   " },
+  description: { ...validProps, description: "   " },
+  price: { ...validProps, price: "   " },
+  priceSuffix: { ...validProps, priceSuffix: "   " },
+  priceNote: { ...validProps, priceNote: "   " },
+  featuresTitle: { ...validProps, featuresTitle: "   " },
+  headingLevel: { ...validProps, headingLevel: 1 },
+  id: { ...validProps, id: "   " },
+};
+const rejectedProps = invalidCase && invalidCase !== "action" && invalidCase !== "features"
+  ? (invalidProps[invalidCase] ?? invalidProps.title)
+  : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PricingCard contract fixture</title>
+  </head>
+  <body>
+    <main>
+      {rejectedProps ? (
+        <PricingCard {...rejectedProps as any}>
+          <Button slot="action" showIcon={false}>Continue</Button>
+          <BulletPoint slot="features" text="Included feature" />
+        </PricingCard>
+      ) : invalidCase === "action" ? (
+        <PricingCard {...validProps}>
+          <BulletPoint slot="features" text="Included feature" />
+        </PricingCard>
+      ) : invalidCase === "features" ? (
+        <PricingCard {...validProps}>
+          <Button slot="action" showIcon={false}>Continue</Button>
+        </PricingCard>
+      ) : (
+        <Fragment>
+          <PricingCard
+            id="full-card"
+            class="fixture-card"
+            title="Pro"
+            description="For growing teams that need more capacity and support."
+            price="$25"
+            priceSuffix="/ month"
+            priceNote="Billed monthly. Taxes may apply."
+            featuresTitle="What's included"
+            headingLevel={2}
+            data-contract="forwarded"
+          >
+            <Tag slot="badge" label="Most popular" tone="brand" />
+            <Tag slot="savings" label="Save $120" tone="green" />
+            <Button slot="action" showIcon={false}>Get started</Button>
+            <Fragment slot="features">
+              <BulletPoint text="Up to 4 vCPU and 8 GB per instance" />
+              <BulletPoint text="Unlimited custom domains" />
+            </Fragment>
+          </PricingCard>
+
+          <PricingCard
+            id="minimal-card"
+            title="Starter"
+            description="The required regions remain complete on their own."
+            price="$5"
+            featuresTitle="Starter includes"
+            headingLevel={4}
+          >
+            <ButtonLink slot="action" href="#minimal-card">Choose Starter</ButtonLink>
+            <BulletPoint slot="features" text="One workspace" />
+          </PricingCard>
+
+          <PricingCard id="heading-three" {...validProps} headingLevel={3}>
+            <Button slot="action" showIcon={false}>Continue</Button>
+            <BulletPoint slot="features" text="Included feature" />
+          </PricingCard>
+          <PricingCard id="heading-five" {...validProps} headingLevel={5}>
+            <Button slot="action" showIcon={false}>Continue</Button>
+            <BulletPoint slot="features" text="Included feature" />
+          </PricingCard>
+          <PricingCard id="heading-six" {...validProps} headingLevel={6}>
+            <Button slot="action" showIcon={false}>Continue</Button>
+            <BulletPoint slot="features" text="Included feature" />
+          </PricingCard>
+        </Fragment>
+      )}
+    </main>
+  </body>
+</html>

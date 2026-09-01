@@ -55,8 +55,22 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "assetRequests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["location", "purpose", "aspectRatio", "accessibility", "question"],
+        "properties": {
+          "location": { "type": "string", "minLength": 1 },
+          "purpose": { "type": "string", "minLength": 1 },
+          "aspectRatio": { "type": "string", "minLength": 1 },
+          "accessibility": { "enum": ["informative", "decorative", "undecided"] },
+          "question": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
     "repairAttempts": { "type": "integer", "minimum": 0, "maximum": 2 },
     "summary": { "type": "string" }
   }
 }
-

@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type RichTextParagraphSize = "base" | "large";
+
+export interface Props extends Omit<HTMLAttributes<"p">, "class"> {
+  size?: RichTextParagraphSize;
+  class?: string;
+}
+
+const { size = "base", class: className, ...attributes } = Astro.props;
+
+if (!["base", "large"].includes(size)) {
+  throw new TypeError('RichTextParagraph size must be "base" or "large".');
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("RichTextParagraph requires default-slot content.");
+}
+---
+
+<p
+  {...attributes}
+  class:list={["rich-text-paragraph", `rich-text-body-${size}-regular`, className]}
+  data-component-name="RichTextParagraph"
+  data-rich-text-body-size={size}
+>
+  <slot />
+</p>
+
+<style>
+  .rich-text-paragraph {
+    min-inline-size: 0;
+    inline-size: 100%;
+    color: var(--color-text-secondary);
+  }
+</style>

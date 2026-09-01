@@ -107,6 +107,23 @@ Use logical properties, `min-inline-size: 0`, fluid inline sizing, natural
 wrapping, and dependency-owned reflow before adding queries. Never duplicate
 markup or reorder semantics only for a breakpoint.
 
+### Missing project visuals
+
+Missing project media does not block page or section composition. Keep the
+approved visual geometry with the canonical CSS checkerboard and place
+`data-visual-placeholder="missing-asset"` on a local placeholder node. Do not
+add a public placeholder prop or change the reusable component API.
+
+Do not invent, generate, download or select replacement media without explicit
+authorization. Complete the remaining composition and collect one structured
+asset request per visible placeholder: route and component location, purpose,
+expected aspect ratio, informative or decorative intent, and the direct
+question the user must answer. The composition can be handed off with these
+requests, but release readiness remains incomplete until real media replaces
+every missing-asset marker and informative media has suitable alternative text.
+An intentional checkerboard in design-system documentation or a test fixture
+does not create an asset request.
+
 ## 8. Figma-to-Astro mapping
 
 When a canonical Figma node is explicitly in scope:
@@ -122,7 +139,73 @@ When a canonical Figma node is explicitly in scope:
 - keep Figma canonical for visual composition and Astro canonical for runtime
   semantics, accessibility, behavior, and public API.
 
-## 9. Required projections
+## 9. Documentation preview layout
+
+Documentation presents one representative canonical use case per component by
+default. That specimen should be sufficient to understand the component's
+purpose, composition and primary behavior. Do not create separate preview
+sections for minimum-valid anatomy, content growth, localization, RTL, stress
+data, or additional use cases unless the user explicitly asks for those
+documentation surfaces.
+
+Keep resilience and edge-case coverage in automated tests rather than exposing
+every test fixture as documentation UI. Documentation examples use English or
+Polish only; do not introduce other languages or RTL/localization specimens
+without an explicit request. Internal preview components may still support the
+minimum private inputs needed by the one canonical adapter, but must not grow a
+mode API solely to render extra documentation cases.
+
+Every Astro-backed Website Pattern documentation preview must declare one
+documentation-only container profile:
+
+- `full` when the component owns its site padding or inner container and is
+  intentionally composed against the full viewport width;
+- `main` when the consuming page is expected to provide the main site
+  container;
+- `small` when the component contract intentionally uses the approved narrow
+  reading container.
+
+Resolve ownership from the component root, layout CSS and component UX rule.
+Never infer the profile only from its category, Atomic Design layer or role.
+
+It must also declare one specimen sizing mode:
+
+- `fill` when the component is a section or horizontal pattern intended to
+  consume the full width of the selected documentation container;
+- `bounded` when the public root is fluid but the pattern is normally placed
+  in a card or column-sized allocation and must remain centered within the
+  preview canvas;
+- `intrinsic` when the component owns a natural content-driven width and the
+  preview must not force it to fill the selected container.
+
+Resolve sizing from the component's allocation contract, not from a `Card`
+name, Atomic Design role or fixed Figma fixture width. The private preview
+frame owns container width, specimen width and centering; never add preview
+width, padding, max-width or a documentation prop to the public component.
+Inline, dialog and `/preview` projections must consume the same adapter values.
+
+Website Patterns also resolve one documentation presentation independently of
+their container and sizing classifications:
+
+- `standard` renders only the canonical 4:3 interactive preview used by Base
+  Components. It does not expose Scale and does not generate a standalone
+  `/preview` route;
+- `responsive` keeps the same inline preview and additionally exposes Scale,
+  the shared responsive canvas and its standalone `/preview` route.
+
+Use `standard` when the regular scene is sufficient to inspect an intrinsic or
+bounded pattern and a viewport-level canvas adds no meaningful responsive
+evidence. Use `responsive` when section composition, container behavior,
+breakpoints or viewport-width reflow are part of the component's contract. Do
+not infer the presentation solely from the Website Patterns category, Atomic
+Design role, component name, `container` profile or `sizing` mode. Resolve an
+explicit user request for standard-only or responsive preview exactly. The
+presentation belongs to the canonical documentation adapter and must never
+become a public component prop. `responsivePreview` remains only an optional
+renderer-props override for a responsive presentation; its presence is not the
+enablement policy.
+
+## 10. Required projections
 
 A completed public component normally includes:
 
@@ -130,7 +213,8 @@ A completed public component normally includes:
 - one concise component UX rule using the repository rule schema;
 - architecture page/component and Figma contract records where applicable;
 - documentation adapter with preview, API, dependencies, and TOC;
-- responsive preview adapter when the category supports it;
+- responsive preview adapter only when the canonical preview presentation is
+  `responsive`;
 - generated architecture or page-map projections selected by the repository;
 - readiness status: validation reflects executed checks, visual remains
   `review` until human acceptance.

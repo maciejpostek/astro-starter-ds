@@ -35,8 +35,18 @@ When the destination is known, pass it as a validated repository-relative
 Public component creation is default-deny. A page or section composition does
 not authorize a new design-system component, token, registry record, or public
 API. Create a public component only after an explicit request for a new
-reusable or design-system component. If an asset is missing, return existing
-alternatives and a blocked result.
+reusable or design-system component.
+
+A missing project image must not block page, section, card, or template
+composition. Keep the intended visual geometry with the canonical CSS
+checkerboard, mark the local placeholder with
+`data-visual-placeholder="missing-asset"`, and complete the remaining layout.
+Never invent, download, generate, or select a substitute image without explicit
+authorization. At handoff, return one `assetRequest` per visible placeholder
+with its page/component location, purpose, expected aspect ratio, accessibility
+intent, and a direct question asking the user which image to provide. Missing
+visuals keep release readiness incomplete, but they do not make an otherwise
+valid composition blocked.
 
 For exact token edits and named component reuse, do not load family rules,
 project brand context, Art Direction, Figma rules, or a full build unless the

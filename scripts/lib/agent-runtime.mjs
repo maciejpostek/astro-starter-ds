@@ -121,47 +121,88 @@ export const readComponentRegistry = (projectRoot = ".") =>
     )
   );
 
-const componentAliases = (record) =>
+const canonicalComponentAliases = (record) =>
   unique([
+    record.id,
     record.name,
-    record.astroComponent,
-    ...(record.variants ?? [])
-      .flatMap((variant) =>
-        typeof variant === "string"
-          ? [variant, `${record.name}.${variant}`]
-          : [variant.name, `${record.name}.${variant.name}`]
-      )
+    record.astroComponent
   ]);
+
+const qualifiedVariantAliases = (record) =>
+  unique(
+    (record.variants ?? []).flatMap((variant) => {
+      const variantName =
+        typeof variant === "string" ? variant : variant.name;
+      return variantName ? [`${record.name}.${variantName}`] : [];
+    })
+  );
 
 const componentPromptAliases = (record) =>
   unique([
     record.name,
     record.astroComponent,
-    ...(record.variants ?? []).map((variant) =>
-      `${record.name}.${typeof variant === "string" ? variant : variant.name}`
-    )
+    ...qualifiedVariantAliases(record)
   ]);
 
-const resolveComponentRecord = (id, records) => {
+const resolveComponentIdentity = (id, records, { exactOnly = false } = {}) => {
   const normalizedId = normalize(id);
-  const exact = records.find((record) =>
-    componentAliases(record).some((alias) => normalize(alias) === normalizedId)
+  const resolveTier = (matches, matchKind) => {
+    if (matches.length === 1) {
+      return { status: "resolved", record: matches[0], records: matches, matchKind };
+    }
+    if (matches.length > 1) {
+      return { status: "ambiguous", record: null, records: matches, matchKind };
+    }
+    return null;
+  };
+  const canonical = resolveTier(
+    records.filter((record) =>
+      canonicalComponentAliases(record).some(
+        (alias) => normalize(alias) === normalizedId
+      )
+    ),
+    "canonical"
   );
-  if (exact) return exact;
+  if (canonical) return canonical;
+
+  const qualifiedVariant = resolveTier(
+    records.filter((record) =>
+      qualifiedVariantAliases(record).some(
+        (alias) => normalize(alias) === normalizedId
+      )
+    ),
+    "qualified-variant"
+  );
+  if (qualifiedVariant) return qualifiedVariant;
+  if (exactOnly) {
+    return { status: "missing", record: null, records: [], matchKind: null };
+  }
 
   const prefix = normalize(id.split(".")[0]);
   const prefixMatches = records.filter((record) => {
-    const name = normalize(record.name);
-    return name === prefix || name.startsWith(prefix) || prefix.startsWith(name);
+    return canonicalComponentAliases(record).some((alias) => {
+      const name = normalize(alias);
+      return name === prefix || name.startsWith(prefix) || prefix.startsWith(name);
+    });
   });
-  return prefixMatches.length === 1 ? prefixMatches[0] : undefined;
+  return (
+    resolveTier(prefixMatches, "prefix") ?? {
+      status: "missing",
+      record: null,
+      records: [],
+      matchKind: null
+    }
+  );
+};
+
+const resolveComponentRecord = (id, records) => {
+  const resolution = resolveComponentIdentity(id, records);
+  return resolution.status === "resolved" ? resolution.record : undefined;
 };
 
 const resolveExactComponentRecord = (id, records) => {
-  const normalizedId = normalize(id);
-  return records.find((record) =>
-    componentAliases(record).some((alias) => normalize(alias) === normalizedId)
-  );
+  const resolution = resolveComponentIdentity(id, records, { exactOnly: true });
+  return resolution.status === "resolved" ? resolution.record : undefined;
 };
 
 const extractPromptTokenIds = (prompt) =>
@@ -636,16 +677,25 @@ export const routeAgentRequest = ({
   ]);
   const resolvedComponents = [];
   const missingComponents = [];
+  const ambiguousComponents = [];
 
   for (const id of candidateIds) {
-    const record =
+    const resolution =
       explicitCreation &&
       creationPrimary &&
       normalize(id) === normalize(creationPrimary)
-        ? resolveExactComponentRecord(id, records)
-        : resolveComponentRecord(id, records);
-    if (record) resolvedComponents.push({ requestedId: id, record });
-    else missingComponents.push(id);
+        ? resolveComponentIdentity(id, records, { exactOnly: true })
+        : resolveComponentIdentity(id, records);
+    if (resolution.status === "resolved") {
+      resolvedComponents.push({ requestedId: id, record: resolution.record });
+    } else if (resolution.status === "ambiguous") {
+      ambiguousComponents.push({
+        requestedId: id,
+        candidates: resolution.records.map((record) => record.name)
+      });
+    } else {
+      missingComponents.push(id);
+    }
   }
 
   const resolvedByRecordName = new Map();
@@ -665,6 +715,7 @@ export const routeAgentRequest = ({
     ...[...resolvedByRecordName.values()].map(
       ({ requestedId }) => requestedId
     ),
+    ...ambiguousComponents.map(({ requestedId }) => requestedId),
     ...missingComponents
   ]);
   const intent = inferIntent({
@@ -767,6 +818,19 @@ export const routeAgentRequest = ({
     });
 
   if (inspectedTargetFile.error) return blocked(inspectedTargetFile.error);
+
+  if (ambiguousComponents.length > 0) {
+    return blocked(
+      `Ambiguous component identit${
+        ambiguousComponents.length === 1 ? "y" : "ies"
+      }: ${ambiguousComponents
+        .map(
+          ({ requestedId, candidates }) =>
+            `${requestedId} (${candidates.join(", ")})`
+        )
+        .join("; ")}. Use one canonical component name or a qualified Component.variant identity.`
+    );
+  }
 
   if (
     intent === "create" &&
@@ -1222,6 +1286,95 @@ const validatePlannedPath = (path, projectRoot, { mustExist = false } = {}) => {
   return { path: relativePath, absolutePath, error: null };
 };
 
+const sourceLines = (source) => source.split("\n");
+
+const selectLineBlock = ({
+  source,
+  marker,
+  startPattern,
+  endPattern,
+  kind,
+  componentId
+}) => {
+  const lines = sourceLines(source);
+  const markerIndexes = lines
+    .map((line, index) => (line.trim() === marker ? index : -1))
+    .filter((index) => index >= 0);
+  if (markerIndexes.length !== 1) {
+    return {
+      selection: null,
+      error:
+        markerIndexes.length === 0
+          ? `Missing ${kind} projection for ${componentId}.`
+          : `Ambiguous ${kind} projection for ${componentId}.`
+    };
+  }
+
+  const markerIndex = markerIndexes[0];
+  let startIndex = markerIndex;
+  while (startIndex >= 0 && !startPattern.test(lines[startIndex])) {
+    startIndex -= 1;
+  }
+  let endIndex = markerIndex;
+  while (endIndex < lines.length && !endPattern.test(lines[endIndex])) {
+    endIndex += 1;
+  }
+  if (startIndex < 0 || endIndex >= lines.length) {
+    return {
+      selection: null,
+      error: `Could not bound ${kind} projection for ${componentId}.`
+    };
+  }
+
+  const excerpt = lines.slice(startIndex, endIndex + 1).join("\n");
+  return {
+    selection: {
+      kind,
+      componentId,
+      startLine: startIndex + 1,
+      endLine: endIndex + 1,
+      bytes: Buffer.byteLength(excerpt, "utf8")
+    },
+    error: null
+  };
+};
+
+const resolveProjectionSelection = ({
+  path,
+  projectRoot,
+  kind,
+  componentId
+}) => {
+  const inspected = validatePlannedPath(path, projectRoot, { mustExist: true });
+  if (inspected.error) return { inspected, selection: null, error: inspected.error };
+  const source = readFileSync(inspected.absolutePath, "utf8");
+  const resolved =
+    kind === "component-registry-record"
+      ? selectLineBlock({
+          source,
+          marker: `"id": "${componentId}",`,
+          startPattern: /^    \{\s*$/u,
+          endPattern: /^    \},?\s*$/u,
+          kind,
+          componentId
+        })
+      : kind === "guides-adapter"
+        ? selectLineBlock({
+            source,
+            marker: `componentId: "${componentId}",`,
+            startPattern:
+              /^const [A-Za-z0-9]+Adapter: ComponentDocumentationAdapter = \{\s*$/u,
+            endPattern: /^\};\s*$/u,
+            kind,
+            componentId
+          })
+        : {
+            selection: null,
+            error: `Unknown projection selection kind: ${kind}.`
+          };
+  return { inspected, ...resolved };
+};
+
 const resolveCreationDraft = (draft, registry, projectRoot) => {
   if (!draft) return { draft: null, page: null, errors: [] };
   const errors = [];
@@ -1393,8 +1546,17 @@ export const resolveAgentContext = ({
   }
 
   const readPlan = [];
-  const addRead = (path, reason, target = null, bytes = null) => {
-    if (!path || readPlan.some((read) => read.path === path)) return;
+  const addRead = (
+    path,
+    reason,
+    target = null,
+    bytes = null,
+    selection = null
+  ) => {
+    const readKey = selection
+      ? `${path}:${selection.kind}:${selection.componentId}`
+      : `${path}:full`;
+    if (!path || readPlan.some((read) => read.key === readKey)) return;
     const inspected = validatePlannedPath(path, absoluteRoot, {
       mustExist: true
     });
@@ -1403,11 +1565,32 @@ export const resolveAgentContext = ({
       return;
     }
     readPlan.push({
+      key: readKey,
       path: inspected.path,
       reason,
       target,
-      bytes: bytes ?? statSync(inspected.absolutePath).size
+      bytes: bytes ?? statSync(inspected.absolutePath).size,
+      ...(selection ? { selection } : {})
     });
+  };
+  const addProjectionRead = (path, reason, componentId, kind) => {
+    const resolved = resolveProjectionSelection({
+      path,
+      projectRoot: absoluteRoot,
+      kind,
+      componentId
+    });
+    if (resolved.error) {
+      missing.push(resolved.error);
+      return;
+    }
+    addRead(
+      resolved.inspected.path,
+      reason,
+      componentId,
+      resolved.selection.bytes,
+      resolved.selection
+    );
   };
   const addComponentSources = (selected, reason) => {
     for (const component of selected) {
@@ -1482,26 +1665,30 @@ export const resolveAgentContext = ({
       addRead(rule, "component-family-rule");
     }
   } else if (task.intent === "extend") {
-    addComponentSources(
-      components.filter((component) => component.role === "primary"),
-      "component-source-and-api"
+    const primaryComponents = components.filter(
+      (component) => component.role === "primary"
     );
+    addComponentSources(primaryComponents, "component-source-and-api");
     for (const rule of unique(
-      components
-        .filter((component) => component.role === "primary")
-        .map((component) => component.agenticRule)
+      primaryComponents.map((component) => component.agenticRule)
     )) {
       addRead(rule, "component-family-rule");
     }
     addRead(".agentic-rules/05-components.md", "component-category-rule");
-    addRead(
-      "src/data/design-system/componentArchitecture.json",
-      "registry-projection"
-    );
-    addRead(
-      "src/data/documentationComponentRegistry.ts",
-      "guides-projection"
-    );
+    for (const component of primaryComponents) {
+      addProjectionRead(
+        "src/data/design-system/componentArchitecture.json",
+        "registry-projection",
+        component.id,
+        "component-registry-record"
+      );
+      addProjectionRead(
+        "src/data/documentationComponentRegistry.ts",
+        "guides-projection",
+        component.id,
+        "guides-adapter"
+      );
+    }
     if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
   }
 
@@ -1681,12 +1868,14 @@ export const resolveAgentContext = ({
               "Start with semantic structure, fluid typography and sizing, then use intrinsic layout before adding a query.",
               "Use container queries for parent-width component changes and viewport queries only for viewport-owned changes.",
               "Use component props and data attributes for finite variants.",
+              "Missing project images do not block composition; preserve their geometry with the canonical CSS checkerboard and mark each local placeholder data-visual-placeholder=missing-asset.",
+              "Never invent, fetch, generate or choose substitute media without explicit authorization; return one structured assetRequest per visible marker and keep release readiness incomplete until replacement.",
               "Do not create or extend a public component in compose mode."
             ]
           }
         : null,
-    requiredReads: readPlan.map((read) => read.path),
-    readPlan,
+    requiredReads: unique(readPlan.map((read) => read.path)),
+    readPlan: readPlan.map(({ key, ...read }) => read),
     declaredSourceBytes,
     sourceLimitBytes,
     skippedContexts: task.excludedContexts,

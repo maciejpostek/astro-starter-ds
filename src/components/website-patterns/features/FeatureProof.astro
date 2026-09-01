@@ -1,0 +1,265 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import TitleRow from "../../base-components/dividers/TitleRow.astro";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import Content from "../content/Content.astro";
+
+export type FeatureProofVisualPosition = "left" | "right";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  visualPosition?: FeatureProofVisualPosition;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  logoProofTitle?: string;
+  supportingDetailsTitle?: string;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  visualPosition = "right",
+  headingLevel = 2,
+  logoProofTitle,
+  supportingDetailsTitle,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("FeatureProof heading must be a non-empty string.");
+}
+for (const [name, value] of [
+  ["eyebrow", eyebrow],
+  ["paragraph", paragraph],
+  ["logoProofTitle", logoProofTitle],
+  ["supportingDetailsTitle", supportingDetailsTitle],
+] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`FeatureProof ${name} must be a non-empty string when provided.`);
+  }
+}
+if (visualPosition !== "left" && visualPosition !== "right") {
+  throw new TypeError('FeatureProof visualPosition must be either "left" or "right".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("FeatureProof headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("FeatureProof requires visual content in its visual slot.");
+}
+
+const hasActions = Astro.slots.has("actions");
+const hasKeyPoints = Astro.slots.has("keyPoints");
+const hasLogos = Astro.slots.has("logos");
+const hasSupportingDetails = Astro.slots.has("supportingDetails");
+
+if (hasLogos !== Boolean(logoProofTitle)) {
+  throw new TypeError("FeatureProof logos and logoProofTitle must be provided together.");
+}
+if (hasSupportingDetails !== Boolean(supportingDetailsTitle)) {
+  throw new TypeError("FeatureProof supportingDetails and supportingDetailsTitle must be provided together.");
+}
+
+const hasProof = hasKeyPoints || hasLogos || hasSupportingDetails;
+const rootId = id || `feature-proof-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const contentProps = {
+  id: contentId,
+  heading,
+  eyebrow,
+  paragraph,
+  headingLevel,
+};
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["feature-proof", "l-section", className]}
+  data-padding="large"
+  data-component-name="FeatureProof"
+  data-feature-proof-visual-position={visualPosition}
+  aria-labelledby={headingId}
+>
+  <div class="feature-proof__container l-container" data-container="main">
+    <div class="feature-proof__grid l-grid" data-grid="site" data-gap="site">
+      {visualPosition === "left" && (
+        <div class="feature-proof__visual">
+          <Ratio ratio="1:1">
+            <slot name="visual" />
+          </Ratio>
+        </div>
+      )}
+
+      <div class="feature-proof__content">
+        {hasActions ? (
+          <Content {...contentProps}>
+            <Fragment slot="actions">
+              <slot name="actions" />
+            </Fragment>
+          </Content>
+        ) : (
+          <Content {...contentProps} />
+        )}
+
+        {hasProof && (
+          <div class="feature-proof__proof">
+            {hasKeyPoints && (
+              <ul class="feature-proof__key-points">
+                <slot name="keyPoints" />
+              </ul>
+            )}
+
+            {hasLogos && logoProofTitle && (
+              <div class="feature-proof__logo-proof">
+                <TitleRow text={logoProofTitle} />
+                <div class="feature-proof__logos">
+                  <slot name="logos" />
+                </div>
+              </div>
+            )}
+
+            {hasSupportingDetails && supportingDetailsTitle && (
+              <div class="feature-proof__supporting-details">
+                <TitleRow text={supportingDetailsTitle} />
+                <ul class="feature-proof__supporting-list">
+                  <slot name="supportingDetails" />
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {visualPosition === "right" && (
+        <div class="feature-proof__visual">
+          <Ratio ratio="1:1">
+            <slot name="visual" />
+          </Ratio>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .feature-proof {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    background: var(--color-background-canvas);
+    container: feature-proof / inline-size;
+  }
+
+  .feature-proof__container,
+  .feature-proof__grid,
+  .feature-proof__content,
+  .feature-proof__visual,
+  .feature-proof__proof,
+  .feature-proof__logo-proof,
+  .feature-proof__supporting-details {
+    min-inline-size: 0;
+  }
+
+  .feature-proof__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--gap-xlarge);
+  }
+
+  .feature-proof__proof,
+  .feature-proof__logo-proof,
+  .feature-proof__supporting-details,
+  .feature-proof__key-points,
+  .feature-proof__supporting-list {
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+
+  .feature-proof__proof {
+    flex-direction: column;
+    gap: var(--gap-xlarge);
+  }
+
+  .feature-proof__logo-proof,
+  .feature-proof__supporting-details,
+  .feature-proof__key-points {
+    flex-direction: column;
+    gap: var(--gap-regular);
+  }
+
+  .feature-proof__logos,
+  .feature-proof__supporting-list {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--gap-medium);
+  }
+
+  .feature-proof__logos {
+    align-items: center;
+  }
+
+  .feature-proof__logos > :global(*) {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    block-size: var(--feature-proof-logo-block-size);
+    flex: 0 0 auto;
+  }
+
+  .feature-proof__logos > :global([data-component-name="LogoAsset"]) {
+    block-size: var(--feature-proof-logo-block-size);
+  }
+
+  .feature-proof__logos > :global(a) {
+    display: inline-flex;
+  }
+
+  .feature-proof__logos > :global(a > [data-component-name="LogoAsset"]) {
+    block-size: 100%;
+  }
+
+  .feature-proof[data-feature-proof-visual-position="right"] .feature-proof__content {
+    grid-column: 2 / span 4;
+  }
+
+  .feature-proof[data-feature-proof-visual-position="right"] .feature-proof__visual {
+    grid-column: 7 / span 5;
+  }
+
+  .feature-proof[data-feature-proof-visual-position="left"] .feature-proof__visual {
+    grid-column: 2 / span 5;
+  }
+
+  .feature-proof[data-feature-proof-visual-position="left"] .feature-proof__content {
+    grid-column: 8 / span 4;
+  }
+
+  .feature-proof__visual > :global([data-component-name="Ratio"]) {
+    border-radius: var(--radius-image);
+  }
+
+  @container feature-proof (width < 64rem) {
+    .feature-proof__grid {
+      row-gap: var(--gap-xxlarge);
+    }
+
+    .feature-proof__content,
+    .feature-proof__visual,
+    .feature-proof[data-feature-proof-visual-position="right"] .feature-proof__content,
+    .feature-proof[data-feature-proof-visual-position="right"] .feature-proof__visual,
+    .feature-proof[data-feature-proof-visual-position="left"] .feature-proof__content,
+    .feature-proof[data-feature-proof-visual-position="left"] .feature-proof__visual {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

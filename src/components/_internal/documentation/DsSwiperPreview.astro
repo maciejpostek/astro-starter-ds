@@ -1,0 +1,115 @@
+---
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import BulletVisualCard from "../../website-patterns/bullet-points/BulletVisualCard.astro";
+import Swiper from "../../website-patterns/sliders-carousels/Swiper.astro";
+
+const slides = [
+  ["Flexible foundations", "One shared carousel contract keeps every instance consistent."],
+  ["Container responsive", "Slides adapt to the space assigned to the component."],
+  ["Accessible controls", "Keyboard, navigation and announcements are owned by the pattern."],
+  ["Composable content", "Any direct element can become a slide through one data attribute."],
+  ["Safe configuration", "Advanced options stay serializable and cannot replace structural rules."],
+  ["Lifecycle ready", "Instances clean up and initialize again across Astro page transitions."],
+] as const;
+---
+
+<div class="swiper-preview" data-component-name="DsSwiperPreview">
+  <Swiper
+    aria-label="Swiper pattern examples"
+    autoplay={false}
+    gap="regular"
+    loop={false}
+    navigation
+    pagination="bullets"
+    scrollbar={false}
+    slidesPerView={1}
+    slidesPerViewTablet={2}
+    slidesPerViewDesktop={3}
+    speed={300}
+    data-ds-preview-target
+  >
+    {slides.map(([title, description]) => (
+      <BulletVisualCard
+        title={title}
+        description={description}
+        data-swiper-slide
+      >
+        <Ratio slot="visual" ratio="4:3" aria-hidden="true" />
+      </BulletVisualCard>
+    ))}
+  </Swiper>
+</div>
+
+<script>
+  const initializeSwiperPreviews = () => {
+    document.querySelectorAll<HTMLElement>('[data-component-name="DsSwiperPreview"]').forEach((preview) => {
+      if (preview.dataset.swiperPreviewReady === "true") return;
+      preview.dataset.swiperPreviewReady = "true";
+      const controls = preview.closest<HTMLElement>("[data-ds-interactive-preview], [data-ds-responsive-preview]");
+      controls?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        if (!axisId.startsWith("swiper")) return;
+        const value = String(event.detail?.value ?? "");
+        const root = preview.querySelector<HTMLElement>('[data-component-name="Swiper"]');
+        if (!root) return;
+
+        try {
+          const config = JSON.parse(root.dataset.swiperConfig ?? "{}") as Record<string, unknown>;
+          if (axisId === "swiperSlidesPerView") {
+            config.slidesPerViewDesktop = value === "auto" ? "auto" : Number(value);
+            root.dataset.swiperSlidesPerViewDesktop = value;
+          }
+          if (axisId === "swiperGap") {
+            config.gap = value;
+            config.gapTablet = value;
+            config.gapDesktop = value;
+            root.dataset.swiperGap = value;
+            root.dataset.swiperGapTablet = value;
+            root.dataset.swiperGapDesktop = value;
+          }
+          if (axisId === "swiperLoop") {
+            config.loop = value === "true";
+            if (config.loop) config.rewind = false;
+            root.dataset.swiperLoop = value;
+          }
+          if (axisId === "swiperAutoplay") {
+            config.autoplay = value === "true";
+            root.dataset.swiperAutoplay = value;
+          }
+          if (axisId === "swiperNavigation") {
+            config.navigation = value === "true";
+            root.dataset.swiperNavigation = value;
+          }
+          if (axisId === "swiperPagination") {
+            config.pagination = value === "false" ? false : value;
+            root.dataset.swiperPagination = value;
+          }
+          if (axisId === "swiperScrollbar") {
+            config.scrollbar = value === "true";
+            root.dataset.swiperScrollbar = value;
+          }
+          if (axisId === "swiperSpeed") config.speed = Number(value);
+          if (axisId === "swiperEasing") {
+            config.easing = value;
+            root.dataset.swiperEasing = value;
+          }
+          root.dataset.swiperConfig = JSON.stringify(config);
+          root.dispatchEvent(new CustomEvent("astro-ds:swiper-config-change", { bubbles: true }));
+        } catch {
+          console.error("The Swiper documentation preview contains an invalid configuration.");
+        }
+      });
+    });
+  };
+
+  initializeSwiperPreviews();
+  document.addEventListener("astro:page-load", initializeSwiperPreviews);
+</script>
+
+<style>
+  .swiper-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

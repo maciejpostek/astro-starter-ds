@@ -1,0 +1,11 @@
+---
+import NavDropdown from "../../website-patterns/navigation/NavDropdown.astro";
+import NavDropdownLink from "../../website-patterns/navigation/NavDropdownLink.astro";
+---
+<ul class="nav-dropdown-preview" data-component-name="DsNavDropdownPreview" data-ds-preview-target>
+  <NavDropdown id="documentation-nav-dropdown" label="Solutions">
+    <NavDropdownLink href="#start" description="For teams building their first system.">Get started</NavDropdownLink>
+    <NavDropdownLink href="#scale">Scale</NavDropdownLink>
+  </NavDropdown>
+</ul>
+<style>.nav-dropdown-preview { min-block-size: 15rem; list-style: none; }</style>

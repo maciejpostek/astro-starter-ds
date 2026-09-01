@@ -117,7 +117,7 @@
       "consumers": ["button", "button-link", "icon-button", "copy-button", "copy-icon-button", "social-button", "social-icon-button", "file-upload"],
       "dependencies": ["global-color"],
       "properties": ["background", "border", "text", "icon"],
-      "variants": ["primary", "secondary", "tertiary", "link"],
+      "variants": ["primary", "primary-alternate", "secondary", "tertiary", "link", "link-primary-alternate"],
       "states": ["default", "hover", "pressed", "disabled"]
     },
     {
@@ -153,7 +153,7 @@
       "domain": "color",
       "namePattern": "^--tab-[a-z0-9-]+$",
       "sourcePaths": ["src/styles/tokens/color-components.css"],
-      "consumers": ["tab", "tabs", "tab-menu"],
+      "consumers": ["tab", "tabs", "progress-tab", "tab-menu"],
       "dependencies": ["global-color"],
       "properties": ["background", "border", "text", "icon", "menu-background", "menu-border", "menu-text", "menu-indicator"],
       "variants": [],
@@ -182,7 +182,7 @@
       "consumers": ["eyebrow"],
       "dependencies": ["global-color"],
       "properties": ["text", "marker"],
-      "variants": [],
+      "variants": ["default", "alternate"],
       "states": ["default"]
     },
     {
@@ -205,7 +205,7 @@
       "domain": "size",
       "namePattern": "^--progress-bar-block-size$",
       "sourcePaths": ["src/styles/tokens/size-components.css"],
-      "consumers": ["progress-bar", "accordion", "file-upload-card"],
+      "consumers": ["progress-bar", "progress-tab", "accordion", "file-upload-card"],
       "dependencies": ["size-primitives"],
       "properties": ["block-size"],
       "variants": [],
@@ -234,6 +234,58 @@
       "consumers": ["stat-card"],
       "dependencies": ["size-primitives"],
       "properties": ["min-height", "trend-gap", "trend-icon-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "logo-card-size",
+      "scope": "component",
+      "owner": "logo-card",
+      "domain": "size",
+      "namePattern": "^--logo-card-logo-block-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["logo-card"],
+      "dependencies": ["size-primitives"],
+      "properties": ["logo-block-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "feature-scroll-size",
+      "scope": "component",
+      "owner": "feature-scroll",
+      "domain": "size",
+      "namePattern": "^--feature-scroll-item-min-block-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["feature-scroll"],
+      "dependencies": ["size-primitives"],
+      "properties": ["item-min-block-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "feature-5050-size",
+      "scope": "component",
+      "owner": "feature-5050",
+      "domain": "size",
+      "namePattern": "^--feature-5050-logo-block-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["feature-5050"],
+      "dependencies": ["size-primitives"],
+      "properties": ["logo-block-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "feature-proof-size",
+      "scope": "component",
+      "owner": "feature-proof",
+      "domain": "size",
+      "namePattern": "^--feature-proof-logo-block-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["feature-proof"],
+      "dependencies": ["size-primitives"],
+      "properties": ["logo-block-size"],
       "variants": [],
       "states": []
     },
@@ -322,7 +374,7 @@
       "domain": "color",
       "namePattern": "^--card-[a-z0-9-]+$",
       "sourcePaths": ["src/styles/tokens/color-components.css"],
-      "consumers": ["switch-card", "checkbox-card", "radio-card", "file-upload-card", "bullet-card-surface"],
+      "consumers": ["switch-card", "checkbox-card", "radio-card", "file-upload-card", "bullet-card-surface", "pricing-card"],
       "dependencies": ["global-color"],
       "properties": ["background", "border"],
       "variants": [],
@@ -507,6 +559,59 @@
       "consumers": ["team-member-card"],
       "dependencies": ["size-primitives"],
       "properties": ["horizontal-image-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "avatar-size",
+      "scope": "component",
+      "owner": "avatar",
+      "domain": "size",
+      "namePattern": "^--avatar-image-size$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": ["avatar-image"],
+      "dependencies": ["size-primitives"],
+      "properties": ["image-size"],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "navigation-size",
+      "scope": "component",
+      "owner": "navigation",
+      "domain": "size",
+      "namePattern": "^--navigation-(?:bar-height|logo-block-size|backdrop-blur)$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": [
+        "navigation",
+        "nav-dropdown",
+        "mega-menu"
+      ],
+      "dependencies": ["size-primitives"],
+      "properties": [
+        "bar-height",
+        "logo-block-size",
+        "backdrop-blur"
+      ],
+      "variants": [],
+      "states": []
+    },
+    {
+      "id": "footer-size",
+      "scope": "component",
+      "owner": "footer",
+      "domain": "size",
+      "namePattern": "^--footer-(?:social-icon-size|logo-block-size)$",
+      "sourcePaths": ["src/styles/tokens/size-components.css"],
+      "consumers": [
+        "footer",
+        "footer-social-link"
+      ],
+      "dependencies": ["size-primitives"],
+      "properties": [
+        "social-icon-size",
+        "logo-block-size"
+      ],
       "variants": [],
       "states": []
     }

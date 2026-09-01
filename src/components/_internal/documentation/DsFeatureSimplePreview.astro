@@ -1,0 +1,114 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import FeatureSimple, {
+  type FeatureSimpleVisualPosition,
+} from "../../website-patterns/features/FeatureSimple.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-feature-simple" } = Astro.props;
+const positions = ["right", "left"] as const satisfies ReadonlyArray<FeatureSimpleVisualPosition>;
+---
+
+<div
+  class="feature-simple-preview"
+  data-component-name="DsFeatureSimplePreview"
+  data-feature-simple-preview
+  data-ds-preview-target
+>
+  {positions.map((visualPosition, index) => (
+    <div
+      class="feature-simple-preview__variant"
+      data-feature-simple-preview-variant={visualPosition}
+      hidden={index !== 0}
+    >
+      <FeatureSimple
+        id={`${idPrefix}-${visualPosition}`}
+        heading="A focused feature with a clear visual story"
+        eyebrow="Feature"
+        paragraph="Pair concise supporting copy with one meaningful visual while preserving the shared content, action and media contracts."
+        visualPosition={visualPosition}
+      >
+        <Button slot="actions">Explore the feature</Button>
+        <Button slot="actions" variant="secondary">View details</Button>
+        <span slot="visual" aria-hidden="true"></span>
+      </FeatureSimple>
+    </div>
+  ))}
+</div>
+
+<script>
+  type FeatureSimplePreviewState = {
+    visualPosition: "left" | "right";
+    contentAlign: "left" | "centered";
+    ratio: "16:9" | "1:1" | "2.39:1" | "2:1" | "2:3" | "3:2" | "3:4" | "4:3" | "4:5" | "5:4";
+    eyebrow: "visible" | "hidden";
+    paragraph: "visible" | "hidden";
+    actions: "visible" | "hidden";
+  };
+
+  const initializeFeatureSimplePreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-feature-simple-preview]").forEach((preview) => {
+      if (preview.dataset.featureSimplePreviewReady === "true") return;
+      preview.dataset.featureSimplePreviewReady = "true";
+
+      const state: FeatureSimplePreviewState = {
+        visualPosition: "right",
+        contentAlign: "left",
+        ratio: "1:1",
+        eyebrow: "visible",
+        paragraph: "visible",
+        actions: "visible",
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>("[data-feature-simple-preview-variant]").forEach((variant) => {
+          variant.hidden = variant.dataset.featureSimplePreviewVariant !== state.visualPosition;
+          variant.querySelectorAll<HTMLElement>('[data-component-name="Content"]').forEach((node) => {
+            node.dataset.contentAlign = state.contentAlign;
+          });
+          variant.querySelectorAll<HTMLElement>('[data-component-name="Ratio"]').forEach((node) => {
+            node.dataset.ratio = state.ratio;
+          });
+          variant.querySelectorAll<HTMLElement>('[data-component-name="Eyebrow"]').forEach((node) => {
+            node.hidden = state.eyebrow === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".content__paragraph").forEach((node) => {
+            node.hidden = state.paragraph === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".content__actions").forEach((node) => {
+            node.hidden = state.actions === "hidden";
+          });
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "featureSimpleVisualPosition" && (value === "left" || value === "right")) state.visualPosition = value;
+          if (axisId === "featureSimpleContentAlign" && (value === "left" || value === "centered")) state.contentAlign = value;
+          if (axisId === "featureSimpleRatio" && ["16:9", "1:1", "2.39:1", "2:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4"].includes(value)) state.ratio = value as FeatureSimplePreviewState["ratio"];
+          if (axisId === "featureSimpleEyebrow" && (value === "visible" || value === "hidden")) state.eyebrow = value;
+          if (axisId === "featureSimpleParagraph" && (value === "visible" || value === "hidden")) state.paragraph = value;
+          if (axisId === "featureSimpleActions" && (value === "visible" || value === "hidden")) state.actions = value;
+          render();
+        });
+    });
+  };
+
+  initializeFeatureSimplePreviews();
+  document.addEventListener("astro:page-load", initializeFeatureSimplePreviews);
+</script>
+
+<style>
+  .feature-simple-preview,
+  .feature-simple-preview__variant {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+</style>

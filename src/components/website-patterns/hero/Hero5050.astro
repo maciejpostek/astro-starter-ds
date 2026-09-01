@@ -1,0 +1,224 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import Content from "../content/Content.astro";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "aria-labelledby" | "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  caption?: string;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  caption,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("Hero5050 heading must be a non-empty string.");
+}
+
+for (const [name, value] of [
+  ["eyebrow", eyebrow],
+  ["paragraph", paragraph],
+  ["caption", caption],
+] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`Hero5050 ${name} must be a non-empty string when provided.`);
+  }
+}
+
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("Hero5050 requires visual content in its visual slot.");
+}
+
+const hasBulletPoints = Astro.slots.has("bulletPoints");
+const hasActions = Astro.slots.has("actions");
+const hasActionArea = Boolean(caption || hasActions);
+const rootId = id || `hero-50-50-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["hero-50-50", "l-section", className]}
+  data-padding="none"
+  data-component-name="Hero5050"
+  aria-labelledby={headingId}
+>
+  <div class="hero-50-50__layout l-grid" data-grid="breakout">
+    <div class="hero-50-50__content-region">
+      <div class="hero-50-50__content-layout l-grid" data-grid="columns" data-columns="6">
+        <div class="hero-50-50__content-stack">
+          <Content
+            id={contentId}
+            heading={heading}
+            eyebrow={eyebrow}
+            paragraph={paragraph}
+            align="left"
+            headingLevel={1}
+          />
+
+          {hasBulletPoints && (
+            <ul class="hero-50-50__bullet-points">
+              <slot name="bulletPoints" />
+            </ul>
+          )}
+        </div>
+
+        {hasActionArea && (
+          <div class="hero-50-50__action-area">
+            {caption && <p class="hero-50-50__caption body-tiny-regular">{caption}</p>}
+
+            {hasActions && (
+              <div class="hero-50-50__actions">
+                <ButtonGroup aria-labelledby={headingId}>
+                  <slot name="actions" />
+                </ButtonGroup>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="hero-50-50__visual">
+      <slot name="visual" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-50-50 {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: hidden;
+    background: var(--color-background-canvas);
+    container: hero-50-50 / inline-size;
+  }
+
+  .hero-50-50__layout {
+    min-block-size: 100svh;
+  }
+
+  .hero-50-50__content-region,
+  .hero-50-50__content-layout,
+  .hero-50-50__content-stack,
+  .hero-50-50__bullet-points,
+  .hero-50-50__action-area,
+  .hero-50-50__actions,
+  .hero-50-50__visual {
+    min-inline-size: 0;
+  }
+
+  .hero-50-50__content-region {
+    grid-column: content-start / span 6;
+    padding-block: var(--section-padding-hero-top) var(--section-padding-small);
+  }
+
+  .hero-50-50__content-layout {
+    min-block-size: 100%;
+    grid-template-rows: auto 1fr auto;
+    gap: 0 var(--site-grid-column-gap);
+  }
+
+  .hero-50-50__content-stack {
+    grid-column: 1 / span 4;
+    grid-row: 1;
+  }
+
+  .hero-50-50__bullet-points {
+    display: flex;
+    margin: 0;
+    padding: var(--space-medium) 0 0;
+    list-style: none;
+    flex-direction: column;
+    gap: var(--gap-small);
+  }
+
+  .hero-50-50__action-area {
+    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    flex-direction: column;
+    gap: var(--gap-large);
+  }
+
+  .hero-50-50__caption {
+    inline-size: 100%;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+
+  .hero-50-50__actions,
+  .hero-50-50__actions > :global([data-component-name="ButtonGroup"]) {
+    inline-size: 100%;
+  }
+
+  .hero-50-50__visual {
+    display: flex;
+    grid-column: content-column 7 / full-end;
+    align-self: stretch;
+    overflow: hidden;
+    background: var(--color-background-surface);
+  }
+
+  .hero-50-50__visual > :global(img),
+  .hero-50-50__visual > :global(picture),
+  .hero-50-50__visual > :global(video) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    object-fit: cover;
+  }
+
+  .hero-50-50__visual > :global(picture) > :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  @container hero-50-50 (width < 64rem) {
+    .hero-50-50__layout {
+      min-block-size: auto;
+      row-gap: 0;
+    }
+
+    .hero-50-50__content-region {
+      grid-column: content-start / content-end;
+    }
+
+    .hero-50-50__visual {
+      grid-column: full-start / full-end;
+    }
+
+    .hero-50-50__content-layout {
+      min-block-size: auto;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
+      row-gap: var(--gap-large);
+    }
+
+    .hero-50-50__content-stack,
+    .hero-50-50__action-area {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    .hero-50-50__visual {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>

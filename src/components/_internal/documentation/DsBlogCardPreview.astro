@@ -1,0 +1,84 @@
+---
+import BlogCard from "../../website-patterns/blog-resources/BlogCard.astro";
+import Tag from "../../base-components/tag/Tag.astro";
+
+const date = {
+  label: "August 31, 2026",
+  dateTime: "2026-08-31",
+};
+---
+
+<div
+  class="ds-blog-card-preview"
+  data-component-name="DsBlogCardPreview"
+  data-blog-card-preview
+  data-preview-layout="vertical"
+>
+  <BlogCard
+    title="Design systems that scale with the product"
+    description="A practical guide to keeping shared interface decisions coherent as teams and products grow."
+    date={date}
+    href="#blog-card-preview-destination"
+    layout="vertical"
+    mediaPlacement="start"
+    data-ds-preview-target
+  >
+    <span slot="visual" aria-hidden="true"></span>
+    <Fragment slot="tags"><Tag label="Design systems" /><Tag label="Guide" /></Fragment>
+  </BlogCard>
+</div>
+
+<script>
+  const initializeBlogCardPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-blog-card-preview]").forEach((preview) => {
+      if (preview.dataset.blogCardPreviewReady === "true") return;
+      preview.dataset.blogCardPreviewReady = "true";
+
+      const card = preview.querySelector<HTMLElement>('[data-component-name="BlogCard"]');
+      const media = preview.querySelector<HTMLElement>(".blog-card__media");
+      const content = preview.querySelector<HTMLElement>(".blog-card__content");
+      const tags = preview.querySelector<HTMLElement>(".blog-card__tags");
+      const dateElement = preview.querySelector<HTMLElement>(".blog-card__date");
+      const description = preview.querySelector<HTMLElement>(".blog-card__description");
+      const cta = preview.querySelector<HTMLElement>('[data-component-name="ButtonLink"]');
+      const controls = preview.closest<HTMLElement>("[data-ds-interactive-preview], [data-ds-responsive-preview]");
+
+      controls?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent) || !card) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const value = String(event.detail?.value ?? "");
+
+        if (axisId === "blogCardLayout") {
+          card.dataset.blogCardLayout = value;
+          preview.dataset.previewLayout = value;
+          description?.classList.toggle("body-base-regular", value === "vertical");
+          description?.classList.toggle("body-small-regular", value === "horizontal");
+        }
+        if (axisId === "blogCardMediaPlacement" && media && content) {
+          card.dataset.blogCardMediaPlacement = value;
+          if (value === "start") card.insertBefore(media, content);
+          else card.append(media);
+        }
+        if (axisId === "blogCardMedia" && media) media.hidden = value === "hidden";
+        if (axisId === "blogCardTags" && tags) tags.hidden = value === "hidden";
+        if (axisId === "blogCardDescription" && description) description.hidden = value === "hidden";
+        if (axisId === "blogCardDate" && dateElement) dateElement.hidden = value === "hidden";
+        if (axisId === "blogCardCta" && cta) cta.hidden = value === "hidden";
+      });
+    });
+  };
+
+  initializeBlogCardPreviews();
+  document.addEventListener("astro:page-load", initializeBlogCardPreviews);
+</script>
+
+<style>
+  .ds-blog-card-preview {
+    min-inline-size: 0;
+    inline-size: min(100%, 37.5rem);
+  }
+
+  .ds-blog-card-preview[data-preview-layout="horizontal"] {
+    inline-size: min(100%, 46.75rem);
+  }
+</style>

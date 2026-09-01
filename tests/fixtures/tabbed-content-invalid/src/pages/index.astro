@@ -1,0 +1,43 @@
+---
+import ProgressTab from "../../../../../src/components/base-components/tabs/ProgressTab.astro";
+import TabbedContent from "../../../../../src/components/website-patterns/tabbed-content/TabbedContent.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const invalidCase = process.env.TABBED_CONTENT_INVALID_CASE;
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>Invalid TabbedContent fixture</title></head>
+  <body>
+    {invalidCase === "name" && (
+      <TabbedContent aria-label="">
+        <ProgressTab slot="tabs" id="invalid-tab" controls="invalid-panel">Label</ProgressTab>
+        <div id="invalid-panel" role="tabpanel" aria-labelledby="invalid-tab">Panel</div>
+      </TabbedContent>
+    )}
+    {invalidCase === "duration" && (
+      <TabbedContent aria-label="Example" autoplayDuration={0}>
+        <ProgressTab slot="tabs" id="invalid-tab" controls="invalid-panel">Label</ProgressTab>
+        <div id="invalid-panel" role="tabpanel" aria-labelledby="invalid-tab">Panel</div>
+      </TabbedContent>
+    )}
+    {invalidCase === "autoplay" && (
+      <TabbedContent aria-label="Example" autoplay={"yes" as any}>
+        <ProgressTab slot="tabs" id="invalid-tab" controls="invalid-panel">Label</ProgressTab>
+        <div id="invalid-panel" role="tabpanel" aria-labelledby="invalid-tab">Panel</div>
+      </TabbedContent>
+    )}
+    {invalidCase === "tabs-slot" && (
+      <TabbedContent aria-label="Example">
+        <div id="invalid-panel" role="tabpanel" aria-labelledby="invalid-tab">Panel</div>
+      </TabbedContent>
+    )}
+    {invalidCase === "panel-slot" && (
+      <TabbedContent aria-label="Example">
+        <ProgressTab slot="tabs" id="invalid-tab" controls="invalid-panel">Label</ProgressTab>
+      </TabbedContent>
+    )}
+  </body>
+</html>

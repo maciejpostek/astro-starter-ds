@@ -1,0 +1,74 @@
+---
+import ProgressTab from "../../base-components/tabs/ProgressTab.astro";
+import TabbedContent from "../../website-patterns/tabbed-content/TabbedContent.astro";
+
+export interface Props {
+  idPrefix?: string;
+  autoplayDuration?: number;
+}
+
+const {
+  idPrefix = "documentation-tabbed-content",
+  autoplayDuration = 8000,
+} = Astro.props;
+
+const items = [
+  "Evaluate adoption with reliable evidence",
+  "Understand the impact of the system",
+  "Build shared mastery across teams",
+] as const;
+---
+
+<div class="ds-tabbed-content-preview" data-component-name="DsTabbedContentPreview">
+  <TabbedContent
+    aria-label="Evidence views"
+    autoplayDuration={autoplayDuration}
+    data-ds-preview-target
+  >
+    {items.map((label, index) => (
+      <ProgressTab
+        slot="tabs"
+        id={`${idPrefix}-tab-${index + 1}`}
+        controls={`${idPrefix}-panel-${index + 1}`}
+        selected={index === 0}
+      >
+        {label}
+      </ProgressTab>
+    ))}
+
+    {items.map((label, index) => (
+      <div
+        id={`${idPrefix}-panel-${index + 1}`}
+        role="tabpanel"
+        aria-labelledby={`${idPrefix}-tab-${index + 1}`}
+        tabindex="0"
+        hidden={index !== 0}
+      >
+        <span class="ds-tabbed-content-preview__label body-base-semibold">{label}</span>
+      </div>
+    ))}
+  </TabbedContent>
+</div>
+
+<style>
+  .ds-tabbed-content-preview {
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .ds-tabbed-content-preview :global([role="tabpanel"]) {
+    display: grid;
+    place-items: center;
+  }
+
+  .ds-tabbed-content-preview :global([role="tabpanel"][hidden]) {
+    display: none;
+  }
+
+  .ds-tabbed-content-preview__label {
+    padding: var(--content-padding-medium);
+    border-radius: var(--radius-card);
+    background: var(--color-background-surface);
+    color: var(--color-text-primary);
+  }
+</style>

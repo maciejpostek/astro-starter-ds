@@ -1,0 +1,83 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import {
+  resolveLogoAsset,
+  type LogoVariant,
+} from "../../../lib/logos/logoAssets";
+
+type ReservedLogoAssetAttribute =
+  | "class"
+  | "data-component-name"
+  | "data-logo-slug"
+  | "data-logo-variant"
+  | "style";
+
+export interface Props
+  extends Omit<HTMLAttributes<"span">, ReservedLogoAssetAttribute> {
+  slug: string;
+  variant: LogoVariant;
+  alt: string;
+  loading?: "eager" | "lazy";
+  class?: string;
+}
+
+const {
+  slug,
+  variant,
+  alt,
+  loading = "eager",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof slug !== "string" || slug.trim().length === 0) {
+  throw new TypeError("LogoAsset slug must be a non-empty string.");
+}
+if (variant !== "mark" && variant !== "full") {
+  throw new TypeError('LogoAsset variant must be either "mark" or "full".');
+}
+if (typeof alt !== "string") {
+  throw new TypeError("LogoAsset alt must be a string. Use an empty string for decorative logos.");
+}
+if (loading !== "eager" && loading !== "lazy") {
+  throw new TypeError('LogoAsset loading must be either "eager" or "lazy".');
+}
+
+const asset = resolveLogoAsset(slug, variant);
+---
+
+<span
+  {...attributes}
+  class:list={["logo-asset", className]}
+  data-component-name="LogoAsset"
+  data-logo-slug={slug}
+  data-logo-variant={variant}
+>
+  <img
+    class="logo-asset__image"
+    src={asset.src}
+    alt={alt}
+    loading={loading}
+    decoding="async"
+  />
+</span>
+
+<style>
+  .logo-asset {
+    display: inline-grid;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    block-size: 100%;
+    flex: 0 0 auto;
+    place-items: center;
+  }
+
+  .logo-asset__image {
+    display: block;
+    inline-size: auto;
+    max-inline-size: 100%;
+    block-size: 100%;
+    max-block-size: 100%;
+    object-fit: contain;
+  }
+</style>

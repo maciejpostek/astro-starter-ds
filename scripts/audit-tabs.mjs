@@ -16,9 +16,11 @@ const read = (path) => {
 };
 
 const tabPath = "src/components/base-components/tabs/Tab.astro";
+const progressTabPath = "src/components/base-components/tabs/ProgressTab.astro";
 const tabsPath = "src/components/base-components/tabs/Tabs.astro";
 const tabMenuPath = "src/components/base-components/tabs/TabMenu.astro";
 const tab = read(tabPath);
+const progressTab = read(progressTabPath);
 const tabs = read(tabsPath);
 const tabMenu = read(tabMenuPath);
 const model = read("src/lib/tabs/tabs-model.mjs");
@@ -28,6 +30,7 @@ const registry = JSON.parse(read("src/data/design-system/componentArchitecture.j
 const docs = read("src/data/documentationComponentRegistry.ts");
 const interactivePreview = read("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
 const tabPreview = read("src/components/_internal/documentation/DsTabPreview.astro");
+const progressTabPreview = read("src/components/_internal/documentation/DsProgressTabPreview.astro");
 const tabsPreview = read("src/components/_internal/documentation/DsTabsPreview.astro");
 const foundationData = read("src/data/documentationFoundationData.ts");
 const colorPage = read("src/pages/design-system/foundations/color.astro");
@@ -52,6 +55,18 @@ for (const contract of [
 if (/\bvariant\??:/u.test(tab)) errors.push("Tab must not expose a public visual variant.");
 
 for (const contract of [
+  'data-component-name="ProgressTab"',
+  'role="tab"',
+  "<ProgressBar",
+  "data-progress-tab-progress",
+  "ProgressTab cannot be both selected and disabled.",
+  "ProgressTab progress must be a finite number between 0 and 100.",
+  "var(--grid-auto-min-width-small)",
+]) {
+  if (!progressTab.includes(contract)) errors.push(`ProgressTab is missing contract: ${contract}`);
+}
+
+for (const contract of [
   'data-component-name="Tabs"',
   'role="tablist"',
   '<slot />',
@@ -60,10 +75,14 @@ for (const contract of [
   'document.getElementById(panelId)',
   'event.key === "ArrowRight"',
   'event.key === "ArrowLeft"',
+  'event.key === "ArrowDown"',
+  'event.key === "ArrowUp"',
   'event.key === "Home"',
   'event.key === "End"',
   'getComputedStyle(root).direction === "rtl"',
   'new CustomEvent("astro-ds:tabs-change"',
+  'root.addEventListener("astro-ds:tabs-select"',
+  'data-component-name="ProgressTab"',
   "document.addEventListener(\"astro:page-load\", initializeTabs)",
 ]) {
   if (!tabs.includes(contract)) errors.push(`Tabs is missing contract: ${contract}`);
@@ -89,7 +108,7 @@ if (tabMenu.includes("position: sticky")) errors.push("TabMenu must not own stic
 if (/history\.(?:pushState|replaceState)/u.test(tabMenu)) errors.push("TabMenu scrollspy must not write browser history.");
 if (/^\s+offset\??:/mu.test(tabMenu)) errors.push("TabMenu must not expose a public offset prop.");
 
-for (const [source, name] of [[tab, "Tab"], [tabs, "Tabs"], [tabMenu, "TabMenu"]]) {
+for (const [source, name] of [[tab, "Tab"], [progressTab, "ProgressTab"], [tabs, "Tabs"], [tabMenu, "TabMenu"]]) {
   if (/#[0-9a-f]{3,8}\b/iu.test(source)) errors.push(`${name} contains a raw color value.`);
   if (/--(?:ds|component)-/u.test(source)) errors.push(`${name} invents a forbidden custom property namespace.`);
 }
@@ -122,6 +141,9 @@ for (const consumer of ["tab", "tab-menu"]) {
   if (!tabColor?.consumers?.includes(consumer)) errors.push(`tab-color is missing consumer ${consumer}.`);
   if (!controlSize?.consumers?.includes(consumer)) errors.push(`control-size is missing consumer ${consumer}.`);
 }
+if (!tabColor?.consumers?.includes("progress-tab")) errors.push("tab-color is missing consumer progress-tab.");
+const progressSize = tokenArchitecture.groups?.find((group) => group.id === "progress-bar-size");
+if (!progressSize?.consumers?.includes("progress-tab")) errors.push("progress-bar-size is missing consumer progress-tab.");
 const tabsRecord = registry.components?.find((component) => component.id === "tabs");
 const tabsFigmaContract = registry.figmaComponentContracts?.tabs;
 if (
@@ -132,7 +154,7 @@ if (
 }
 if (
   tabsRecord?.props?.join(",") !== "aria-label,aria-labelledby"
-  || tabsRecord?.slots?.join(",") !== "default: direct Tab children"
+  || tabsRecord?.slots?.join(",") !== "default: direct Tab or ProgressTab children"
   || tabsRecord?.tokens?.join(",") !== "--gap-small"
 ) {
   errors.push("Tabs registry must describe the slot wrapper instead of the removed item/panel API.");
@@ -140,7 +162,8 @@ if (
 
 const expectedRecords = {
   tab: { path: tabPath, status: "mapped", dependency: null },
-  tabs: { path: tabsPath, status: "mapped", nodeId: "1372:171", dependency: "tab" },
+  "progress-tab": { path: progressTabPath, status: "astro-only", dependency: "progress-bar" },
+  tabs: { path: tabsPath, status: "intentional-difference", nodeId: "1372:171", dependencies: ["tab", "progress-tab"] },
   "tab-menu": { path: tabMenuPath, status: "mapped", nodeId: "1563:2827", dependency: null },
 };
 for (const [id, expected] of Object.entries(expectedRecords)) {
@@ -149,18 +172,21 @@ for (const [id, expected] of Object.entries(expectedRecords)) {
     errors.push(`Registry projection is incomplete for ${id}.`);
     continue;
   }
-  if (record.readiness?.visual !== "review" || record.readiness?.validation !== "passed") {
-    errors.push(`${id} readiness must keep visual review and passed validation.`);
+  if (record.readiness?.visual !== "review" || !["partial", "passed"].includes(record.readiness?.validation)) {
+    errors.push(`${id} readiness must keep visual review and a valid validation state.`);
+  }
+  if (expected.dependencies && expected.dependencies.some((dependency) => !record.dependencies?.includes(dependency))) {
+    errors.push(`${id} is missing one of its declared dependencies.`);
   }
   if (expected.dependency && !record.dependencies?.includes(expected.dependency)) {
     errors.push(`${id} must depend on ${expected.dependency}.`);
   }
-  if (!expected.dependency && record.dependencies?.length) {
+  if (!expected.dependency && !expected.dependencies && record.dependencies?.length) {
     errors.push(`${id} must not declare an artificial component dependency.`);
   }
 }
 
-for (const id of ["tab", "tabs", "tab-menu"]) {
+for (const id of ["tab", "progress-tab", "tabs", "tab-menu"]) {
   if (!docs.includes(`componentId: "${id}"`)) errors.push(`Missing documentation adapter for ${id}.`);
 }
 if (!docs.includes('componentId: "tab-menu"') || !docs.includes("sharedControlSizeAxis") || !docs.includes('{ label: "Current", value: "current" }')) {
@@ -171,6 +197,9 @@ if ((tabPreview.match(/<Tab\b/gu) ?? []).length !== 1 || tabPreview.includes("Ac
 }
 if (!docs.includes('{ label: "Active", value: "selected" }')) {
   errors.push("Tab documentation must expose the selected state through the Active preview control.");
+}
+if (!progressTabPreview.includes("<ProgressTab") || !progressTabPreview.includes("progress={48}")) {
+  errors.push("ProgressTab preview must render a determinate canonical trigger.");
 }
 if (
   (tabsPreview.match(/<Tab\b/gu) ?? []).length !== 3
@@ -186,7 +215,7 @@ if (
 ) {
   errors.push("Interactive documentation must map the Tab Active control to aria-selected.");
 }
-for (const preview of ["DsTabPreview", "DsTabsPreview", "DsTabMenuPreview"]) {
+for (const preview of ["DsTabPreview", "DsProgressTabPreview", "DsTabsPreview", "DsTabMenuPreview"]) {
   if (!readiness.includes(`"${preview}"`)) errors.push(`${preview} is missing from the readiness boundary.`);
   if (!read(`src/components/_internal/documentation/${preview}.astro`).includes(`data-component-name="${preview}"`)) {
     errors.push(`${preview} is missing stable preview identity.`);
@@ -199,7 +228,7 @@ if (!colorPage.includes('groupId="tab"') || !colorPage.includes('groupId="tab-me
   errors.push("TabMenu color foundation projection is incomplete.");
 }
 
-for (const ruleName of ["tab", "tabs", "tab-menu"]) {
+for (const ruleName of ["tab", "progress-tab", "tabs", "tab-menu"]) {
   const rule = read(`.agentic-rules/components/${ruleName}.md`);
   for (const { heading, content } of componentRuleSections(rule, componentRuleContract.headings)) {
     if (!content) errors.push(`${ruleName} rule is missing: ${heading}`);
@@ -225,5 +254,5 @@ if (errors.length) {
 }
 
 console.log(
-  "Tabs family audit passed: mapped Tab, Tabs and TabMenu visual mastery, native semantics, approved tokens, docs and bounded runtime divergence.",
+  "Tabs family audit passed: Tab, ProgressTab, Tabs and TabMenu preserve native semantics, approved tokens, documentation and bounded runtime divergence.",
 );

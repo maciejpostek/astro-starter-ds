@@ -1,6 +1,10 @@
 ---
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-import type { DocumentationPreviewAxis } from "../../../data/documentationComponentRegistry";
+import type {
+  DocumentationPreviewAxis,
+  DocumentationPreviewContainer,
+  DocumentationPreviewSizing,
+} from "../../../data/documentationComponentRegistry";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import DsResponsivePreviewCanvas from "./DsResponsivePreviewCanvas.astro";
 
@@ -9,6 +13,8 @@ interface Props {
   renderer: AstroComponentFactory;
   rendererProps?: Record<string, unknown>;
   axes?: DocumentationPreviewAxis[];
+  container?: DocumentationPreviewContainer;
+  sizing?: DocumentationPreviewSizing;
   scope: string;
 }
 
@@ -17,6 +23,8 @@ const {
   renderer,
   rendererProps = {},
   axes = [],
+  container = "full",
+  sizing = "fill",
   scope,
 } = Astro.props;
 ---
@@ -37,6 +45,8 @@ const {
       renderer={renderer}
       rendererProps={rendererProps}
       axes={axes}
+      container={container}
+      sizing={sizing}
       scope={scope}
     />
   </dialog>

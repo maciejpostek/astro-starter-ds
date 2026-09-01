@@ -1,0 +1,278 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import Content from "../content/Content.astro";
+
+export type Feature5050CenteredVisualPosition = "left" | "right";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "aria-labelledby" | "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  visualPosition?: Feature5050CenteredVisualPosition;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  visualPosition = "right",
+  headingLevel = 2,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("Feature5050Centered heading must be a non-empty string.");
+}
+for (const [name, value] of [["eyebrow", eyebrow], ["paragraph", paragraph]] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`Feature5050Centered ${name} must be a non-empty string when provided.`);
+  }
+}
+if (visualPosition !== "left" && visualPosition !== "right") {
+  throw new TypeError('Feature5050Centered visualPosition must be either "left" or "right".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("Feature5050Centered headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("Feature5050Centered requires visual content in its visual slot.");
+}
+
+const rootId = id || `feature-50-50-centered-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const hasBulletPoints = Astro.slots.has("default");
+const hasActions = Astro.slots.has("actions");
+const contentProps = {
+  id: contentId,
+  heading,
+  eyebrow,
+  paragraph,
+  align: "left" as const,
+  headingLevel,
+};
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["feature-50-50-centered", "l-section", className]}
+  data-padding="none"
+  data-component-name="Feature5050Centered"
+  data-feature-50-50-centered-visual-position={visualPosition}
+  aria-labelledby={headingId}
+>
+  <div class="feature-50-50-centered__layout l-grid" data-grid="breakout">
+    <div class="feature-50-50-centered__content-region">
+      <div
+        class="feature-50-50-centered__content-inset l-grid"
+        data-grid="columns"
+        data-columns="6"
+        data-gap="site"
+      >
+        <div class="feature-50-50-centered__content-stack">
+          <Content {...contentProps} />
+
+          {hasBulletPoints && (
+            <ul class="feature-50-50-centered__bullet-points">
+              <slot />
+            </ul>
+          )}
+
+          {hasActions && (
+            <div
+              class="feature-50-50-centered__actions"
+              data-after-bullet-points={String(hasBulletPoints)}
+            >
+              <ButtonGroup aria-labelledby={headingId}>
+                <slot name="actions" />
+              </ButtonGroup>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-50-50-centered__visual">
+      <slot name="visual" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .feature-50-50-centered {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: hidden;
+    background: var(--color-background-canvas);
+    container: feature-50-50-centered / inline-size;
+  }
+
+  .feature-50-50-centered__layout {
+    min-block-size: 100svh;
+  }
+
+  .feature-50-50-centered__content-region,
+  .feature-50-50-centered__content-inset,
+  .feature-50-50-centered__content-stack,
+  .feature-50-50-centered__bullet-points,
+  .feature-50-50-centered__actions,
+  .feature-50-50-centered__visual {
+    min-inline-size: 0;
+  }
+
+  .feature-50-50-centered__content-region,
+  .feature-50-50-centered__visual {
+    grid-row: 1;
+  }
+
+  .feature-50-50-centered__content-region {
+    display: flex;
+    grid-column: content-start / span 6;
+    align-items: center;
+    padding-block: var(--section-padding-small);
+  }
+
+  .feature-50-50-centered__content-inset {
+    inline-size: 100%;
+    padding-inline-end: var(--content-padding-xxlarge);
+  }
+
+  .feature-50-50-centered__content-stack {
+    grid-column: 1 / span 5;
+  }
+
+  .feature-50-50-centered[data-feature-50-50-centered-visual-position="left"]
+    .feature-50-50-centered__content-region {
+    grid-column: content-column 7 / span 6;
+  }
+
+  .feature-50-50-centered[data-feature-50-50-centered-visual-position="left"]
+    .feature-50-50-centered__content-inset {
+    padding-inline: 0;
+  }
+
+  .feature-50-50-centered[data-feature-50-50-centered-visual-position="left"]
+    .feature-50-50-centered__content-stack {
+    grid-column: 2 / span 5;
+  }
+
+  .feature-50-50-centered__bullet-points {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-regular);
+    margin: 0;
+    padding: var(--space-medium) 0 var(--space-large);
+    list-style: none;
+  }
+
+  .feature-50-50-centered__actions[data-after-bullet-points="false"] {
+    margin-block-start: var(--space-large);
+  }
+
+  .feature-50-50-centered__actions,
+  .feature-50-50-centered__actions > :global([data-component-name="ButtonGroup"]) {
+    inline-size: 100%;
+  }
+
+  .feature-50-50-centered__visual {
+    position: relative;
+    display: flex;
+    grid-column: content-column 7 / full-end;
+    align-self: stretch;
+    overflow: hidden;
+    border-radius: var(--radius-none);
+    border-start-start-radius: var(--radius-image);
+    border-end-start-radius: var(--radius-image);
+    background: var(--color-background-surface);
+  }
+
+  .feature-50-50-centered__visual::before {
+    position: absolute;
+    inset: 0;
+    background-image: conic-gradient(
+      var(--color-background-muted) 25%,
+      var(--color-background-surface) 0 50%,
+      var(--color-background-muted) 0 75%,
+      var(--color-background-surface) 0
+    );
+    background-position: left top;
+    background-repeat: repeat;
+    background-size: 32px 32px;
+    content: "";
+    pointer-events: none;
+  }
+
+  .feature-50-50-centered[data-feature-50-50-centered-visual-position="left"]
+    .feature-50-50-centered__visual {
+    grid-column: full-start / content-column 7;
+    border-start-start-radius: var(--radius-none);
+    border-start-end-radius: var(--radius-image);
+    border-end-start-radius: var(--radius-none);
+    border-end-end-radius: var(--radius-image);
+  }
+
+  .feature-50-50-centered__visual > :global(img),
+  .feature-50-50-centered__visual > :global(picture),
+  .feature-50-50-centered__visual > :global(video) {
+    position: relative;
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    object-fit: cover;
+  }
+
+  .feature-50-50-centered__visual > :global(picture) > :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  @container feature-50-50-centered (width < 64rem) {
+    .feature-50-50-centered__layout {
+      min-block-size: auto;
+    }
+
+    .feature-50-50-centered__content-region,
+    .feature-50-50-centered[data-feature-50-50-centered-visual-position="left"]
+      .feature-50-50-centered__content-region {
+      grid-column: content-start / content-end;
+      grid-row: auto;
+    }
+
+    .feature-50-50-centered__visual,
+    .feature-50-50-centered[data-feature-50-50-centered-visual-position="left"]
+      .feature-50-50-centered__visual {
+      grid-column: full-start / full-end;
+      grid-row: auto;
+      border-radius: var(--radius-none);
+    }
+
+    .feature-50-50-centered__content-inset,
+    .feature-50-50-centered[data-feature-50-50-centered-visual-position="left"]
+      .feature-50-50-centered__content-inset {
+      grid-template-columns: minmax(0, 1fr);
+      padding-inline: 0;
+    }
+
+    .feature-50-50-centered__content-stack,
+    .feature-50-50-centered[data-feature-50-50-centered-visual-position="left"]
+      .feature-50-50-centered__content-stack {
+      grid-column: 1 / -1;
+    }
+
+    .feature-50-50-centered__visual > :global(img),
+    .feature-50-50-centered__visual > :global(picture),
+    .feature-50-50-centered__visual > :global(video) {
+      block-size: auto;
+    }
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type FooterLinkVariant = "navigation" | "legal";
+
+export interface Props extends Omit<HTMLAttributes<"a">, "class" | "href"> {
+  href: string;
+  variant?: FooterLinkVariant;
+  class?: string;
+}
+
+const {
+  href,
+  variant = "navigation",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof href !== "string" || href.trim().length === 0) {
+  throw new TypeError("FooterLink href must be a non-empty string.");
+}
+if (variant !== "navigation" && variant !== "legal") {
+  throw new TypeError('FooterLink variant must be either "navigation" or "legal".');
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("FooterLink requires label content in its default slot.");
+}
+---
+
+<li
+  class:list={["footer-link", className]}
+  data-component-name="FooterLink"
+  data-footer-link-variant={variant}
+>
+  <a
+    {...attributes}
+    class:list={[
+      "footer-link__anchor",
+      variant === "legal" ? "body-tiny-regular" : "body-base-regular",
+    ]}
+    href={href}
+  >
+    <slot />
+  </a>
+</li>
+
+<style>
+  .footer-link {
+    min-inline-size: 0;
+    list-style: none;
+  }
+
+  .footer-link__anchor {
+    display: inline-flex;
+    max-inline-size: 100%;
+    color: var(--color-text-primary);
+    overflow-wrap: var(--overflow-wrap-break-word);
+    text-decoration: none;
+    transition: color var(--motion-transition);
+  }
+
+  .footer-link[data-footer-link-variant="legal"] .footer-link__anchor {
+    color: var(--color-text-secondary);
+  }
+
+  .footer-link__anchor:is(:hover, :focus-visible),
+  .footer-link__anchor[aria-current] {
+    color: var(--color-text-accent);
+  }
+
+  @media (forced-colors: active) {
+    .footer-link__anchor:is(:hover, :focus-visible),
+    .footer-link__anchor[aria-current] {
+      text-decoration: underline;
+    }
+  }
+</style>

@@ -8,11 +8,12 @@ import { build } from "astro";
 
 const projectFile = (path) => fileURLToPath(new URL(`../${path}`, import.meta.url));
 const componentPath = projectFile("src/components/base-components/ratio/Ratio.astro");
-const placeholderPath = projectFile("public/images/ratio-placeholder.png");
 const docsRegistryPath = projectFile("src/data/documentationComponentRegistry.ts");
 const docsPreviewPath = projectFile("src/components/_internal/documentation/DsRatioPreview.astro");
 const interactivePreviewPath = projectFile("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
 const manifestPath = projectFile("src/data/design-system/componentArchitecture.json");
+const componentRulesPath = projectFile(".agentic-rules/05-components.md");
+const ratioRulePath = projectFile(".agentic-rules/components/ratio.md");
 
 const ratios = ["16:9", "1:1", "2.39:1", "2:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4"];
 const aspectRules = new Map([
@@ -28,13 +29,14 @@ const aspectRules = new Map([
 ]);
 
 test("keeps the canonical Ratio CSS and documentation contract", async () => {
-  const [source, placeholder, docs, preview, interactive, manifestSource] = await Promise.all([
+  const [source, docs, preview, interactive, manifestSource, componentRules, ratioRule] = await Promise.all([
     readFile(componentPath, "utf8"),
-    readFile(placeholderPath),
     readFile(docsRegistryPath, "utf8"),
     readFile(docsPreviewPath, "utf8"),
     readFile(interactivePreviewPath, "utf8"),
     readFile(manifestPath, "utf8"),
+    readFile(componentRulesPath, "utf8"),
+    readFile(ratioRulePath, "utf8"),
   ]);
   const manifest = JSON.parse(manifestSource);
   const record = manifest.components.find((component) => component.id === "ratio");
@@ -48,10 +50,11 @@ test("keeps the canonical Ratio CSS and documentation contract", async () => {
   assert.match(source, /overflow:\s*hidden/u);
   assert.match(source, /aspect-ratio:\s*16 \/ 9/u);
   assert.match(source, /background:\s*var\(--color-background-surface\)/u);
-  assert.match(source, /url\("\/images\/ratio-placeholder\.png"\)/u);
+  assert.match(source, /background-image:\s*conic-gradient\(/u);
+  assert.match(source, /var\(--color-background-muted\)\s*25%/u);
+  assert.doesNotMatch(source, /url\("\/images\/ratio-placeholder\.png"\)/u);
   assert.match(source, /background-size:\s*32px 32px/u);
-  assert.match(source, /opacity:\s*0\.1/u);
-  assert.match(source, /\.ratio__content\s*\{[\s\S]*?position:\s*absolute[\s\S]*?inset:\s*0/u);
+  assert.match(source, /\.ratio__content\s*\{[\s\S]*?position:\s*absolute[\s\S]*?inset:\s*0[\s\S]*?z-index:\s*1/u);
   assert.match(source, /object-fit:\s*cover/u);
   assert.doesNotMatch(source, /ratio(?:Md|Lg)|data-ratio-(?:md|lg)|^\s*--[a-z0-9_-]+\s*:/mu);
 
@@ -60,9 +63,6 @@ test("keeps the canonical Ratio CSS and documentation contract", async () => {
     assert.match(source, new RegExp(`:where\\(\\.ratio\\[data-ratio="${escaped}"\\]\\)\\s*\\{[\\s\\S]*?aspect-ratio:\\s*${aspect.replace("/", "\\/")}`, "u"));
   }
 
-  assert.equal(placeholder.subarray(1, 4).toString("ascii"), "PNG");
-  assert.equal(placeholder.readUInt32BE(16), 64);
-  assert.equal(placeholder.readUInt32BE(20), 64);
   assert.match(docs, /componentId:\s*"ratio"/u);
   assert.match(docs, /id:\s*"ratio"[\s\S]*?control:\s*"select"/u);
   assert.match(preview, /data-component-name="DsRatioPreview"/u);
@@ -72,7 +72,11 @@ test("keeps the canonical Ratio CSS and documentation contract", async () => {
   assert.equal(record?.sourcePath, "src/components/base-components/ratio/Ratio.astro");
   assert.equal(record?.agenticRule, ".agentic-rules/components/ratio.md");
   assert.equal(record?.syncStatus, "mapped");
+  assert.deepEqual(record?.tokens, ["--color-background-muted", "--color-background-surface"]);
   assert.deepEqual(record?.tokenGroups, ["global-color"]);
+  assert.match(componentRules, /## CSS Checkerboard Visual Placeholder/u);
+  assert.match(componentRules, /Do not use PNG, JPG, SVG/u);
+  assert.match(ratioRule, /CSS Checkerboard Visual Placeholder/u);
 });
 
 test("renders every Ratio preset, forwarded attributes and slot without hydration", async () => {

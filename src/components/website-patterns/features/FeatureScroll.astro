@@ -1,0 +1,449 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Content from "../content/Content.astro";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "aria-labelledby" | "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  headingLevel = 2,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("FeatureScroll heading must be a non-empty string.");
+}
+for (const [name, value] of [["eyebrow", eyebrow], ["paragraph", paragraph]] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`FeatureScroll ${name} must be a non-empty string when provided.`);
+  }
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("FeatureScroll headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("FeatureScroll requires at least two feature items in its default slot.");
+}
+
+const rootId = id || `feature-scroll-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const hasActions = Astro.slots.has("actions");
+const contentProps = {
+  id: contentId,
+  heading,
+  eyebrow,
+  paragraph,
+  align: "centered" as const,
+  headingLevel,
+};
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["feature-scroll", "l-section", className]}
+  data-padding="large"
+  data-component-name="FeatureScroll"
+  data-feature-scroll-ready="false"
+  data-feature-scroll-valid="pending"
+  aria-labelledby={headingId}
+>
+  <div class="feature-scroll__container l-container" data-container="main">
+    <div class="feature-scroll__header-grid l-grid" data-grid="site" data-gap="site">
+      <div class="feature-scroll__header">
+        {hasActions ? (
+          <Content {...contentProps}>
+            <Fragment slot="actions">
+              <slot name="actions" />
+            </Fragment>
+          </Content>
+        ) : (
+          <Content {...contentProps} />
+        )}
+      </div>
+    </div>
+
+    <div class="feature-scroll__layout l-grid" data-grid="site" data-gap="none">
+      <ol class="feature-scroll__items" data-feature-scroll-items>
+        <slot />
+      </ol>
+
+      <div
+        class="feature-scroll__stage"
+        data-feature-scroll-stage
+        aria-hidden="true"
+      >
+        <div
+          class="feature-scroll__stage-sticky"
+          data-feature-scroll-stage-sticky
+        ></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const featureScrollCleanups = new Map<HTMLElement, () => void>();
+
+  const initializeFeatureScroll = (root: HTMLElement) => {
+    if (root.dataset.featureScrollInitialized === "true") return;
+    root.dataset.featureScrollInitialized = "true";
+
+    const list = root.querySelector<HTMLOListElement>("[data-feature-scroll-items]");
+    const stage = root.querySelector<HTMLElement>("[data-feature-scroll-stage]");
+    const stageSticky = root.querySelector<HTMLElement>("[data-feature-scroll-stage-sticky]");
+    const items = list
+      ? Array.from(list.querySelectorAll<HTMLElement>(":scope > [data-feature-scroll-item]"))
+      : [];
+
+    const itemParts = items.map((item) => {
+      const content = item.querySelector<HTMLElement>(":scope > [data-feature-scroll-content]");
+      const visual = item.querySelector<HTMLElement>(":scope > [data-feature-scroll-visual]");
+      const ratio = visual?.querySelector<HTMLElement>(":scope > [data-component-name=\"Ratio\"][data-ratio=\"16:9\"]");
+      const labelledBy = item.getAttribute("aria-labelledby");
+      const heading = labelledBy ? document.getElementById(labelledBy) : null;
+      const focusableVisual = visual?.querySelector(
+        'a[href], button, input, select, textarea, summary, iframe, video[controls], audio[controls], [tabindex]:not([tabindex="-1"]), [contenteditable="true"]',
+      );
+      return { item, content, visual, ratio, heading, focusableVisual };
+    });
+
+    const isValid = Boolean(
+      list
+      && stage
+      && stageSticky
+      && items.length >= 2
+      && itemParts.every(({ content, visual, ratio, heading, focusableVisual }) => (
+        content && visual && ratio && heading && !focusableVisual
+      )),
+    );
+
+    root.dataset.featureScrollValid = isValid ? "true" : "false";
+    if (!isValid || !stage || !stageSticky) {
+      root.dataset.featureScrollReady = "false";
+      if (!isValid) {
+        console.error(
+          "FeatureScroll requires at least two labelled direct items. Each item needs one direct data-feature-scroll-content region and one non-interactive direct data-feature-scroll-visual region containing Ratio=16:9.",
+        );
+      }
+      return;
+    }
+
+    const clones = itemParts.map(({ visual }, index) => {
+      const clone = visual!.cloneNode(true) as HTMLElement;
+      clone.classList.add("feature-scroll__stage-visual");
+      clone.dataset.featureScrollStageVisual = String(index);
+      clone.dataset.featureScrollActive = index === 0 ? "true" : "false";
+      clone.setAttribute("aria-hidden", "true");
+      clone.querySelector<HTMLElement>(":scope > [data-ratio=\"16:9\"]")
+        ?.classList.add("feature-scroll__stage-ratio");
+      clone.querySelectorAll<HTMLElement>("[id], [data-component-name]").forEach((node) => {
+        node.removeAttribute("id");
+        node.removeAttribute("data-component-name");
+      });
+      for (const attribute of ["id", "aria-labelledby", "aria-describedby", "aria-controls"]) {
+        clone.removeAttribute(attribute);
+      }
+      stageSticky.append(clone);
+      return clone;
+    });
+
+    let currentActiveIndex = -1;
+    const setActive = (nextActiveIndex: number) => {
+      if (nextActiveIndex === currentActiveIndex) return;
+      currentActiveIndex = nextActiveIndex;
+      itemParts.forEach(({ item }, index) => {
+        item.dataset.featureScrollActive = index === currentActiveIndex ? "true" : "false";
+      });
+      clones.forEach((clone, index) => {
+        clone.dataset.featureScrollActive = index === currentActiveIndex ? "true" : "false";
+      });
+    };
+
+    setActive(0);
+    root.dataset.featureScrollReady = "true";
+
+    let animationFrame = 0;
+    const synchronizeActiveVisual = () => {
+      animationFrame = 0;
+      if (getComputedStyle(stage).display === "none") {
+        setActive(0);
+        return;
+      }
+
+      const stickyTop = stageSticky.getBoundingClientRect().top;
+      let nextActiveIndex = 0;
+      for (const [index, { item }] of itemParts.entries()) {
+        if (item.getBoundingClientRect().top <= stickyTop) nextActiveIndex = index;
+        else break;
+      }
+      setActive(nextActiveIndex);
+    };
+    const scheduleSynchronization = () => {
+      if (animationFrame) return;
+      animationFrame = requestAnimationFrame(synchronizeActiveVisual);
+    };
+
+    document.addEventListener("scroll", scheduleSynchronization, { capture: true, passive: true });
+    window.addEventListener("resize", scheduleSynchronization, { passive: true });
+    const resizeObserver = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(scheduleSynchronization);
+    resizeObserver?.observe(root);
+    itemParts.forEach(({ item }) => resizeObserver?.observe(item));
+    scheduleSynchronization();
+
+    featureScrollCleanups.set(root, () => {
+      document.removeEventListener("scroll", scheduleSynchronization, { capture: true });
+      window.removeEventListener("resize", scheduleSynchronization);
+      resizeObserver?.disconnect();
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+    });
+  };
+
+  const initializeFeatureScrolls = () => {
+    document.querySelectorAll<HTMLElement>('[data-component-name="FeatureScroll"]')
+      .forEach(initializeFeatureScroll);
+  };
+
+  initializeFeatureScrolls();
+  document.addEventListener("astro:page-load", initializeFeatureScrolls);
+  document.addEventListener("astro:before-swap", () => {
+    featureScrollCleanups.forEach((cleanup) => cleanup());
+    featureScrollCleanups.clear();
+  });
+</script>
+
+<style>
+  .feature-scroll {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: clip;
+    background: var(--color-background-canvas);
+    container: feature-scroll / inline-size;
+  }
+
+  .feature-scroll__container,
+  .feature-scroll__header-grid,
+  .feature-scroll__header,
+  .feature-scroll__layout,
+  .feature-scroll__items,
+  .feature-scroll__stage,
+  .feature-scroll__stage-sticky {
+    min-inline-size: 0;
+  }
+
+  .feature-scroll__container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-huge);
+  }
+
+  .feature-scroll__header {
+    grid-column: 4 / span 6;
+  }
+
+  .feature-scroll__items {
+    display: grid;
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0;
+    border-block-start: var(--border-width-default) solid var(--color-border-default);
+    border-inline: var(--border-width-default) solid var(--color-border-default);
+    list-style: none;
+  }
+
+  .feature-scroll__items > :global([data-feature-scroll-item]) {
+    display: grid;
+    min-inline-size: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-block-end: var(--border-width-default) solid var(--color-border-default);
+  }
+
+  .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-content]),
+  .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-visual]) {
+    min-inline-size: 0;
+  }
+
+  .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-content]) {
+    display: flex;
+    min-block-size: var(--feature-scroll-item-min-block-size);
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: var(--gap-large);
+    padding: var(--content-padding-xlarge);
+  }
+
+  .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-visual]) {
+    align-self: start;
+    border-inline-start: var(--border-width-default) solid var(--color-border-default);
+  }
+
+  .feature-scroll__items :global([data-feature-scroll-copy]),
+  .feature-scroll__items :global([data-feature-scroll-bullets]) {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--gap-regular);
+  }
+
+  .feature-scroll__items :global([data-feature-scroll-heading]),
+  .feature-scroll__items :global([data-feature-scroll-paragraph]),
+  .feature-scroll__items :global([data-feature-scroll-bullets]) {
+    margin: 0;
+  }
+
+  .feature-scroll__items :global([data-feature-scroll-paragraph]) {
+    color: var(--color-text-secondary);
+  }
+
+  .feature-scroll__items :global([data-feature-scroll-bullets]) {
+    padding: 0;
+    list-style: none;
+  }
+
+  .feature-scroll__items :global([data-feature-scroll-tags]) {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    gap: var(--gap-tag-group);
+  }
+
+  .feature-scroll__items :global([data-feature-scroll-actions]),
+  .feature-scroll__items :global([data-feature-scroll-actions] > [data-component-name="ButtonGroup"]) {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .feature-scroll__items :global([data-feature-scroll-actions]) {
+    margin-block-start: auto;
+  }
+
+  .feature-scroll__stage {
+    display: none;
+  }
+
+  @container feature-scroll (width < 64rem) {
+    .feature-scroll__container {
+      gap: var(--gap-xxlarge);
+    }
+
+    .feature-scroll__header {
+      grid-column: 1 / -1;
+    }
+
+    .feature-scroll__items > :global([data-feature-scroll-item]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-content]) {
+      min-block-size: 0;
+    }
+
+    .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-visual]) {
+      border-block-start: var(--border-width-default) solid var(--color-border-default);
+      border-inline-start: 0;
+    }
+  }
+
+  @container feature-scroll (width >= 64rem) {
+    .feature-scroll[data-feature-scroll-ready="true"] .feature-scroll__items {
+      grid-column: 1 / span 6;
+      border-inline-end: 0;
+    }
+
+    .feature-scroll[data-feature-scroll-ready="true"] .feature-scroll__items > :global([data-feature-scroll-item]) {
+      display: block;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      min-block-size: var(--feature-scroll-item-min-block-size);
+    }
+
+    .feature-scroll[data-feature-scroll-ready="true"] .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-content]) {
+      min-block-size: 100%;
+    }
+
+    .feature-scroll[data-feature-scroll-ready="true"] .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-visual]) {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      clip-path: inset(50%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .feature-scroll[data-feature-scroll-ready="true"] .feature-scroll__stage {
+      display: grid;
+      position: relative;
+      grid-column: 7 / span 6;
+      align-self: stretch;
+      border: var(--border-width-default) solid var(--color-border-default);
+      border-block-end: 0;
+      border-inline-start: 0;
+    }
+
+    .feature-scroll[data-feature-scroll-ready="true"] .feature-scroll__stage::after {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      border-block-end: var(--border-width-default) solid var(--color-border-default);
+      border-inline-start: var(--border-width-default) solid var(--color-border-default);
+      content: "";
+      pointer-events: none;
+    }
+
+    .feature-scroll__stage-sticky {
+      display: grid;
+      position: sticky;
+      inset-block-start: 0;
+      align-self: start;
+      aspect-ratio: 16 / 9;
+      block-size: auto;
+      min-block-size: var(--feature-scroll-item-min-block-size);
+      overflow: hidden;
+    }
+
+    .feature-scroll__stage-sticky > :global(.feature-scroll__stage-visual) {
+      display: grid;
+      grid-area: 1 / 1;
+      min-inline-size: 0;
+      min-block-size: 0;
+      block-size: 100%;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--motion-transition), visibility var(--motion-transition);
+    }
+
+    .feature-scroll__stage-sticky > :global(.feature-scroll__stage-visual[data-feature-scroll-active="true"]) {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .feature-scroll__stage-sticky > :global(.feature-scroll__stage-visual > .feature-scroll__stage-ratio) {
+      block-size: 100%;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .feature-scroll__items,
+    .feature-scroll__items > :global([data-feature-scroll-item]),
+    .feature-scroll__items > :global([data-feature-scroll-item] > [data-feature-scroll-visual]),
+    .feature-scroll__stage,
+    .feature-scroll__stage::after {
+      border-color: CanvasText;
+    }
+  }
+</style>

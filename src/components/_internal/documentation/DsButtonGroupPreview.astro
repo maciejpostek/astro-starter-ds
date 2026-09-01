@@ -6,6 +6,7 @@ import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
 <div
   class="ds-preview-renderer-boundary"
   data-component-name="DsButtonGroupPreview"
+  data-button-group-preview
 >
   <ButtonGroup data-ds-preview-target aria-label="Example actions">
     <Button>Continue</Button>
@@ -13,3 +14,28 @@ import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
     <Button variant="tertiary">Learn more</Button>
   </ButtonGroup>
 </div>
+
+<script>
+  const initializeButtonGroupPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-button-group-preview]").forEach((preview) => {
+      if (preview.dataset.buttonGroupPreviewReady === "true") return;
+      preview.dataset.buttonGroupPreviewReady = "true";
+
+      const buttonGroup = preview.querySelector<HTMLElement>('[data-component-name="ButtonGroup"]');
+      preview.closest("[data-ds-interactive-preview]")?.addEventListener(
+        "astro-ds:preview-change",
+        (event) => {
+          if (!(event instanceof CustomEvent) || !buttonGroup) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+          if (axisId === "buttonGroupAlignment" && ["left", "centered"].includes(value)) {
+            buttonGroup.dataset.buttonGroupAlign = value;
+          }
+        },
+      );
+    });
+  };
+
+  initializeButtonGroupPreviews();
+  document.addEventListener("astro:page-load", initializeButtonGroupPreviews);
+</script>

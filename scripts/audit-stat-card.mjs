@@ -78,8 +78,13 @@ if (!tokenGroup || tokenGroup.owner !== "stat-card" || tokenGroup.consumers?.joi
 if (!docs.includes('componentId: "stat-card"') || !docs.includes("renderer: DsStatCardPreview")) {
   errors.push("StatCard documentation adapter is missing.");
 }
-if (!preview.includes("<StatCard") || !preview.includes("astro-ds:preview-change") || !preview.includes('mode === "matrix"')) {
-  errors.push("StatCard preview does not cover controls, combinations and stress states.");
+if (!preview.includes("<StatCard") || !preview.includes("astro-ds:preview-change")) {
+  errors.push("StatCard canonical preview does not cover its interactive controls.");
+}
+const statCardAdapter = docs.match(/componentId:\s*"stat-card"[\s\S]*?toc:\s*commonToc/u)?.[0] ?? "";
+if (/\bpreviews\s*:|matrix|stress|content-stress|trend-combinations/iu.test(statCardAdapter)
+  || /mode\?:|mode\s*===|stat-card-preview--(?:matrix|stress|responsive)/iu.test(preview)) {
+  errors.push("StatCard documentation must keep trend combinations and content stress in automated fixtures, not extra preview sections.");
 }
 if (!previewRegistry.includes("componentDocumentationAdapters") || !previewRegistry.includes('component.categoryKey === "website-patterns"')) {
   errors.push("StatCard is not covered by the derived Website Pattern preview registry.");

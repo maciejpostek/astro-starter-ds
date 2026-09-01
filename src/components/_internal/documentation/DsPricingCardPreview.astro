@@ -1,0 +1,69 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import Tag from "../../base-components/tag/Tag.astro";
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import PricingCard from "../../website-patterns/pricing-comparison/PricingCard.astro";
+---
+
+<div class="pricing-card-preview" data-component-name="DsPricingCardPreview" data-pricing-card-preview>
+  <PricingCard
+    id="documentation-pricing-card"
+    title="Pro"
+    description="For growing teams that need more capacity and support."
+    price="$25"
+    priceSuffix="/ month"
+    priceNote="Billed monthly. Taxes may apply."
+    featuresTitle="What's included"
+    data-ds-preview-target
+  >
+    <Tag slot="badge" label="Most popular" tone="brand" />
+    <Tag slot="savings" label="Save $120" tone="green" />
+    <Button slot="action" size="large" showIcon={false}>Get started</Button>
+    <Fragment slot="features">
+      <BulletPoint text="Up to 4 vCPU and 8 GB per instance" />
+      <BulletPoint text="Unlimited custom domains" />
+      <BulletPoint text="Priority email support" />
+    </Fragment>
+  </PricingCard>
+</div>
+
+<script>
+  const initializePricingCardPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-pricing-card-preview]").forEach((preview) => {
+      if (preview.dataset.pricingCardPreviewReady === "true") return;
+      preview.dataset.pricingCardPreviewReady = "true";
+
+      const card = preview.querySelector<HTMLElement>('[data-component-name="PricingCard"]');
+      const controls = preview.closest<HTMLElement>("[data-ds-interactive-preview], [data-ds-responsive-preview]");
+      controls?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent) || !card) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const visible = String(event.detail?.value ?? "") === "visible";
+        const selectors: Record<string, string> = {
+          pricingCardBadge: ".pricing-card__badge",
+          pricingCardSuffix: ".pricing-card__price-suffix",
+          pricingCardNote: ".pricing-card__price-note",
+          pricingCardSavings: ".pricing-card__savings",
+        };
+        const selector = selectors[axisId];
+        if (!selector) return;
+        const region = card.querySelector<HTMLElement>(selector);
+        if (region) region.hidden = !visible;
+        if (axisId === "pricingCardBadge") {
+          card.dataset.pricingCardFeatured = visible ? "true" : "false";
+        }
+      });
+    });
+  };
+
+  initializePricingCardPreviews();
+  document.addEventListener("astro:page-load", initializePricingCardPreviews);
+</script>
+
+<style>
+  .pricing-card-preview {
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding-block: var(--space-medium);
+  }
+</style>

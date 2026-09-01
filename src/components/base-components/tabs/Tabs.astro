@@ -20,7 +20,7 @@ if (!ariaLabel?.trim() && !ariaLabelledby?.trim()) {
   throw new TypeError("Tabs requires aria-label or aria-labelledby.");
 }
 if (!Astro.slots.has("default")) {
-  throw new TypeError("Tabs requires Tab children in its default slot.");
+  throw new TypeError("Tabs requires Tab or ProgressTab children in its default slot.");
 }
 ---
 
@@ -49,9 +49,10 @@ if (!Astro.slots.has("default")) {
       if (root.dataset.tabsReady === "true") return;
       root.dataset.tabsReady = "true";
 
+      const tabSelector = ':is([data-component-name="Tab"], [data-component-name="ProgressTab"])[role="tab"]';
       const getTabs = () => Array.from(root.children).filter(
         (child): child is HTMLButtonElement => child instanceof HTMLButtonElement
-          && child.matches('[data-component-name="Tab"][role="tab"]'),
+          && child.matches(tabSelector),
       );
       const getEnabledTabs = () => getTabs().filter((tab) => !tab.disabled);
 
@@ -90,31 +91,43 @@ if (!Astro.slots.has("default")) {
 
       root.addEventListener("focusin", (event) => {
         if (!(event.target instanceof HTMLButtonElement)) return;
-        if (!event.target.matches('[data-component-name="Tab"][role="tab"]')) return;
+        if (!event.target.matches(tabSelector)) return;
         setActive(event.target);
       });
 
       root.addEventListener("click", (event) => {
         if (!(event.target instanceof Element)) return;
-        const tab = event.target.closest<HTMLButtonElement>('[data-component-name="Tab"][role="tab"]');
+        const tab = event.target.closest<HTMLButtonElement>(tabSelector);
         if (tab?.parentElement === root) setActive(tab);
+      });
+
+      root.addEventListener("astro-ds:tabs-select", (event) => {
+        if (!(event instanceof CustomEvent) || typeof event.detail?.id !== "string") return;
+        setActive(getTabs().find((tab) => tab.id === event.detail.id));
       });
 
       root.addEventListener("keydown", (event) => {
         if (!(event.target instanceof HTMLButtonElement)) return;
-        if (!event.target.matches('[data-component-name="Tab"][role="tab"]')) return;
+        if (!event.target.matches(tabSelector)) return;
 
         const tabs = getEnabledTabs();
         const currentIndex = tabs.indexOf(event.target);
         if (currentIndex < 0) return;
 
         const isRtl = getComputedStyle(root).direction === "rtl";
+        const isVertical = root.getAttribute("aria-orientation") === "vertical";
         let targetIndex;
-        if (event.key === "ArrowRight") {
+        if (!isVertical && event.key === "ArrowRight") {
           targetIndex = (currentIndex + (isRtl ? -1 : 1) + tabs.length) % tabs.length;
         }
-        if (event.key === "ArrowLeft") {
+        if (!isVertical && event.key === "ArrowLeft") {
           targetIndex = (currentIndex + (isRtl ? 1 : -1) + tabs.length) % tabs.length;
+        }
+        if (isVertical && event.key === "ArrowDown") {
+          targetIndex = (currentIndex + 1) % tabs.length;
+        }
+        if (isVertical && event.key === "ArrowUp") {
+          targetIndex = (currentIndex - 1 + tabs.length) % tabs.length;
         }
         if (event.key === "Home") targetIndex = 0;
         if (event.key === "End") targetIndex = tabs.length - 1;

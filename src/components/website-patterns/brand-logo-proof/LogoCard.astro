@@ -1,0 +1,89 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+
+type ReservedLogoCardAttribute = "class" | "data-component-name" | "style";
+
+export interface Props
+  extends Omit<HTMLAttributes<"div">, ReservedLogoCardAttribute> {
+  slug: string;
+  alt: string;
+  loading?: "eager" | "lazy";
+  class?: string;
+}
+
+const {
+  slug,
+  alt,
+  loading = "eager",
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof slug !== "string" || slug.trim().length === 0) {
+  throw new TypeError("LogoCard slug must be a non-empty string.");
+}
+if (typeof alt !== "string") {
+  throw new TypeError("LogoCard alt must be a string. Use an empty string for decorative logos.");
+}
+if (loading !== "eager" && loading !== "lazy") {
+  throw new TypeError('LogoCard loading must be either "eager" or "lazy".');
+}
+---
+
+<div
+  {...attributes}
+  class:list={["logo-card", className]}
+  data-component-name="LogoCard"
+>
+  <Ratio ratio="16:9">
+    <div class="logo-card__content" data-theme="light">
+      <span class="logo-card__logo">
+        <LogoAsset slug={slug} variant="full" alt={alt} loading={loading} />
+      </span>
+    </div>
+  </Ratio>
+</div>
+
+<style>
+  .logo-card {
+    inline-size: 100%;
+    min-inline-size: 0;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+  }
+
+  .logo-card__content {
+    display: flex;
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: var(--content-padding-large);
+    background: var(--color-background-canvas);
+  }
+
+  .logo-card__logo {
+    display: inline-flex;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    block-size: var(--logo-card-logo-block-size);
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-card__logo > :global([data-component-name="LogoAsset"]) {
+    max-inline-size: 100%;
+    block-size: 100%;
+  }
+
+  @media (forced-colors: active) {
+    .logo-card {
+      border-color: CanvasText;
+    }
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonGroup from "../../../../../src/components/base-components/buttons/ButtonGroup.astro";
+import Content from "../../../../../src/components/website-patterns/content/Content.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Content alignment contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <ButtonGroup id="button-group-default" aria-label="Default actions">
+        <Button>Continue</Button>
+        <Button variant="secondary">Save</Button>
+      </ButtonGroup>
+
+      <ButtonGroup id="button-group-centered" align="centered" aria-label="Centered actions">
+        <Button>Continue</Button>
+        <Button variant="secondary">Save</Button>
+      </ButtonGroup>
+
+      <Content id="content-left" heading="Left content">
+        <Button slot="actions">Primary action</Button>
+        <Button slot="actions" variant="secondary">Secondary action</Button>
+      </Content>
+
+      <Content id="content-centered" heading="Centered content" align="centered">
+        <Button slot="actions">Primary action</Button>
+        <Button slot="actions" variant="secondary">Secondary action</Button>
+      </Content>
+    </main>
+  </body>
+</html>

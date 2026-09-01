@@ -1,0 +1,87 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export type RatingValue = 0 | 1 | 2 | 3 | 4 | 5;
+
+export interface Props extends Omit<HTMLAttributes<"span">, "class"> {
+  value: RatingValue;
+  ratingLabel: string;
+  class?: string;
+}
+
+const {
+  value,
+  ratingLabel,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (!Number.isInteger(value) || value < 0 || value > 5) {
+  throw new TypeError("Rating value must be an integer from 0 to 5.");
+}
+if (typeof ratingLabel !== "string" || !ratingLabel.trim()) {
+  throw new TypeError("Rating ratingLabel must be a non-empty string.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("Rating requires default-slot label content.");
+}
+
+const normalizedRatingLabel = ratingLabel.trim();
+const awardedStars = Array.from(
+  { length: 5 },
+  (_, index) => index < value,
+);
+---
+
+<span
+  {...attributes}
+  class:list={["rating", "body-small-regular", className]}
+  data-component-name="Rating"
+  data-rating-value={value}
+>
+  <span class="rating__stars" role="img" aria-label={normalizedRatingLabel}>
+    {awardedStars.map((isAwarded) => isAwarded
+      ? <MaterialSymbol name="star_filled" size="1em" />
+      : <MaterialSymbol name="star" size="1em" />
+    )}
+  </span>
+  <span class="rating__label"><slot /></span>
+</span>
+
+<style>
+  .rating {
+    display: inline-flex;
+    inline-size: fit-content;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    align-items: center;
+    gap: var(--gap-small);
+    color: var(--color-text-primary);
+    vertical-align: middle;
+  }
+
+  .rating__stars {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: var(--gap-none);
+    color: var(--color-icon-primary);
+  }
+
+  .rating__stars :global(svg) {
+    display: block;
+    flex: 0 0 auto;
+  }
+
+  .rating__label {
+    min-inline-size: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  @media (forced-colors: active) {
+    .rating,
+    .rating__stars {
+      color: CanvasText;
+    }
+  }
+</style>

@@ -2,6 +2,7 @@
 import type { HTMLAttributes, HTMLTag } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import StatTextInline from "../stats-metrics/StatTextInline.astro";
 
 export type BulletIconCardLayout = "vertical" | "horizontal";
 
@@ -85,17 +86,13 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
     </div>
 
     {stat && (
-      <p class="bullet-icon-card__stat caption-small">
-        <span>{stat}</span>
-        {showStatIcon && (
-          <span class="bullet-icon-card__stat-icon" aria-hidden="true">
-            <MaterialSymbol
-              name="trending_up"
-              size="var(--bullet-icon-card-icon-size)"
-            />
-          </span>
-        )}
-      </p>
+      <StatTextInline
+        class="bullet-icon-card__stat"
+        text={stat}
+        trend="up"
+        iconPosition="trailing"
+        showIcon={showStatIcon}
+      />
     )}
 
     {hasTags && (
@@ -162,8 +159,7 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
     overflow-wrap: var(--overflow-wrap-break-word);
   }
 
-  .bullet-icon-card__title,
-  .bullet-icon-card__stat {
+  .bullet-icon-card__title {
     color: var(--color-text-primary);
   }
 
@@ -172,21 +168,7 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
   }
 
   .bullet-icon-card__stat {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--gap-tiny);
     margin-block-start: var(--space-regular);
-  }
-
-  .bullet-icon-card__stat-icon {
-    display: flex;
-    inline-size: var(--bullet-icon-card-icon-size);
-    block-size: var(--bullet-icon-card-icon-size);
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-icon-accent);
   }
 
   .bullet-icon-card__tags,
@@ -210,15 +192,13 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
 
   .bullet-icon-card__icon[hidden],
   .bullet-icon-card__stat[hidden],
-  .bullet-icon-card__stat-icon[hidden],
   .bullet-icon-card__tags[hidden],
   .bullet-icon-card__actions[hidden] {
     display: none;
   }
 
   @media (forced-colors: active) {
-    .bullet-icon-card__icon,
-    .bullet-icon-card__stat-icon {
+    .bullet-icon-card__icon {
       color: CanvasText;
     }
   }

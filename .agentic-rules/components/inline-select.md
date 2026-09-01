@@ -25,11 +25,11 @@ Provide a text-like, intrinsic single-select control inside compact copy or meta
 
 ## Content contract
 
-Provide a stable id, at least one option, and `aria-label` or `aria-labelledby`. InlineSelect does not expose visual-purpose or validation variants. An option may provide a canonical local `flag` slug or a canonical mark `logo` slug from the local Logos catalog; do not combine `flag`, `logo`, or `visual`.
+Provide a stable id, at least one option, and `aria-label` or `aria-labelledby`. InlineSelect does not expose visual-purpose or validation variants. An option may provide a canonical local `flag` slug or a canonical mark `logo` slug from the local Logos catalog; logos resolve through LogoAsset. Do not combine `flag`, `logo`, or `visual`.
 
 ## Composition and placement
 
-Use it within a line or a small cluster. Do not stretch it as a full-width form field. A selected country keeps its decorative flag and visible name inline without adding a segmented leading surface. Enhanced listbox options show flag and name in rows with at least the medium Control Size height and spacing, while their label typography remains tied to InlineSelect's small profile. The native fallback remains text-only. Hover changes only the selected text and disclosure icon color; it does not introduce a field border or raised surface.
+Use it within a line or a small cluster. Do not stretch it as a full-width form field. A selected country or brand keeps its decorative flag or LogoAsset mark and visible name inline without adding a segmented leading surface. Enhanced listbox options show the visual and name in rows with at least the medium Control Size height and spacing, while their label typography remains tied to InlineSelect's small profile. The existing control icon box owns LogoAsset height. The native fallback remains text-only. Hover changes only the selected text and disclosure icon color; it does not introduce a field border or raised surface.
 
 ## Responsive behavior
 

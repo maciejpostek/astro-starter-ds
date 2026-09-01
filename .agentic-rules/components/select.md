@@ -32,7 +32,7 @@ Let a user choose one value from a finite, known set while preserving native for
 - Provide a visible `label` or an accessible name through `aria-label` or `aria-labelledby`.
 - Keep `hint` supplementary; it must not replace the accessible name.
 - Use `language` and `phone` only for their fixed semantic icons. Country and brand visuals are option data, never arbitrary Material Symbol selection.
-- For country options, set `flag` to a canonical slug from the local [Flags catalog](/design-system/assets/flags). For brand options, set `logo` to a canonical mark slug from the local [Logos catalog](/design-system/assets/logos). Do not derive either asset from the option value or label, and do not combine `flag`, `logo`, or `visual`.
+- For country options, set `flag` to a canonical slug from the local [Flags catalog](/design-system/assets/flags). For brand options, set `logo` to a canonical mark slug from the local [Logos catalog](/design-system/assets/logos); Select resolves it through LogoAsset. Do not derive either asset from the option value or label, and do not combine `flag`, `logo`, or `visual`.
 - Keep image visuals recognisable at the control icon size and provide `alt` only when the adjacent option label does not communicate the same information.
 
 ## Composition and placement
@@ -68,6 +68,7 @@ Let a user choose one value from a finite, known set while preserving native for
 - [CompactSelect](/design-system/base-components/select/compact-select) provides the intrinsic raised control.
 - [InlineSelect](/design-system/base-components/select/inline-select) provides the text-like control.
 - [MaterialSymbol](/design-system/assets/material-symbols) supplies Select's fixed semantic icons, chevron and selected check.
+- [LogoAsset](/design-system/assets/logos#logo-asset) supplies canonical brand marks; Select's existing control icon box owns their height.
 
 ## Naming and token contract
 

@@ -48,14 +48,15 @@ layout; do not pass solved Figma widths, spans or offsets as props.
 
 - Primary strategy: container
 - Mechanisms and references: public twelve-column `.l-grid`, semantic global spacing, and the canonical spans recorded in the manifest
-- Container queries: at an assigned width of 64rem or wider, use the approved horizontal column placements; below 64rem, stack all regions in source order
+- Container queries: at an assigned width of 64rem or wider, use the approved horizontal column placements and align the `copy-actions` copy and action regions to the block end; below 64rem, stack all regions in source order
 - Viewport queries: none; the consuming page may change its site grid independently
 - Reflow, order and visibility: eyebrow, heading, paragraph and optional actions retain DOM order, remain visible, wrap naturally and never require alternate markup for a breakpoint
 
 ## Accessibility and required behavior
 
-The root is a native `header`. The consumer selects `headingLevel` from 2 to 6
-without changing visual size. The optional ButtonGroup is labelled by the
+The root is a native `header`. The consumer selects `headingLevel` from 1 to 6
+without changing visual size; use `h1` only when a page-opening composition
+such as HeroFullVisual delegates its primary heading to SectionHeader. The optional ButtonGroup is labelled by the
 heading through `aria-labelledby`. Attribute forwarding must preserve consumer
 IDs and ARIA data. Reflow must not change reading or focus order, and an absent
 actions slot must not render an empty group.

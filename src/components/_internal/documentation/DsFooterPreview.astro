@@ -1,0 +1,58 @@
+---
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
+import Footer from "../../website-patterns/footer/Footer.astro";
+import FooterGroup from "../../website-patterns/footer/FooterGroup.astro";
+import FooterLink from "../../website-patterns/footer/FooterLink.astro";
+import FooterNewsletterForm from "../../website-patterns/footer/FooterNewsletterForm.astro";
+import FooterSocialLink from "../../website-patterns/footer/FooterSocialLink.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-footer" } = Astro.props;
+---
+
+<div class="ds-footer-preview" data-component-name="DsFooterPreview" data-ds-preview-target>
+  <Footer heading="Stay up to date" copyright="© 2026 Astro Design System">
+    <FooterNewsletterForm
+      slot="action"
+      id={`${idPrefix}-newsletter`}
+      action="#newsletter"
+      emailLabel="Email address"
+      emailPlaceholder="name@example.com"
+      submitLabel="Subscribe"
+    >
+      <span slot="consent">By subscribing, you accept our privacy policy.</span>
+    </FooterNewsletterForm>
+    <FooterGroup id={`${idPrefix}-product`} label="Product" headingLevel={3}>
+      <FooterLink href="#overview">Overview</FooterLink>
+      <FooterLink href="#features">Features</FooterLink>
+      <FooterLink href="#pricing">Pricing</FooterLink>
+    </FooterGroup>
+    <FooterGroup id={`${idPrefix}-company`} label="Company" headingLevel={3}>
+      <FooterLink href="#about">About</FooterLink>
+      <FooterLink href="#careers">Careers</FooterLink>
+      <FooterLink href="#contact">Contact</FooterLink>
+    </FooterGroup>
+    <FooterGroup id={`${idPrefix}-resources`} label="Resources" headingLevel={3}>
+      <FooterLink href="#guides">Guides</FooterLink>
+      <FooterLink href="#support">Support</FooterLink>
+      <FooterLink href="#status">System status</FooterLink>
+    </FooterGroup>
+    <FooterSocialLink slot="social" href="#instagram" platform="instagram" label="Instagram" presentation="icon-only" />
+    <FooterSocialLink slot="social" href="#linkedin" platform="linkedin" label="LinkedIn" presentation="icon-only" />
+    <FooterSocialLink slot="social" href="#youtube" platform="youtube" label="YouTube" presentation="icon-only" />
+    <LogoAsset slot="brand" slug="stripe" variant="full" alt="Stripe" />
+    <FooterLink slot="legal" href="#terms" variant="legal">Terms</FooterLink>
+    <FooterLink slot="legal" href="#privacy" variant="legal">Privacy</FooterLink>
+    <FooterLink slot="legal" href="#cookies" variant="legal">Cookie settings</FooterLink>
+  </Footer>
+</div>
+
+<style>
+  .ds-footer-preview {
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+</style>

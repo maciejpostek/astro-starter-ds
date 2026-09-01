@@ -1,0 +1,75 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import AvatarImage from "./AvatarImage.astro";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class"> {
+  fullName: string;
+  roleOrPosition?: string;
+  class?: string;
+}
+
+const {
+  fullName,
+  roleOrPosition,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof fullName !== "string" || fullName.trim().length === 0) {
+  throw new TypeError("AvatarName fullName must be a non-empty string.");
+}
+if (
+  roleOrPosition !== undefined &&
+  (typeof roleOrPosition !== "string" || roleOrPosition.trim().length === 0)
+) {
+  throw new TypeError("AvatarName roleOrPosition must be a non-empty string when provided.");
+}
+---
+
+<div
+  {...attributes}
+  class:list={["avatar-name", className]}
+  data-component-name="AvatarName"
+>
+  <AvatarImage>
+    <slot name="image" />
+  </AvatarImage>
+
+  <div class="avatar-name__content">
+    <p class="avatar-name__name body-base-semibold">{fullName}</p>
+    {roleOrPosition && (
+      <p class="avatar-name__role body-base-regular">{roleOrPosition}</p>
+    )}
+  </div>
+</div>
+
+<style>
+  .avatar-name {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+    inline-size: fit-content;
+    gap: var(--gap-regular);
+  }
+
+  .avatar-name__content {
+    display: flex;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    flex-direction: column;
+  }
+
+  .avatar-name__name,
+  .avatar-name__role {
+    margin: 0;
+    white-space: var(--white-space-nowrap);
+  }
+
+  .avatar-name__name {
+    color: var(--color-text-primary);
+  }
+
+  .avatar-name__role {
+    color: var(--color-text-secondary);
+  }
+</style>

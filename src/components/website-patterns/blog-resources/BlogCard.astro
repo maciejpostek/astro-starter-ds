@@ -1,0 +1,250 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+
+export type BlogCardLayout = "vertical" | "horizontal";
+export type BlogCardMediaPlacement = "start" | "end";
+export type BlogCardHeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+export interface BlogCardDate {
+  label: string;
+  dateTime: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<"article">, "aria-labelledby" | "class" | "title"> {
+  title: string;
+  description?: string;
+  date?: BlogCardDate;
+  href?: string;
+  ctaLabel?: string;
+  layout?: BlogCardLayout;
+  mediaPlacement?: BlogCardMediaPlacement;
+  headingLevel?: BlogCardHeadingLevel;
+  class?: string;
+}
+
+const hasCtaLabelProp = Object.prototype.hasOwnProperty.call(Astro.props, "ctaLabel");
+const {
+  title,
+  description,
+  date,
+  href,
+  ctaLabel = "Read more",
+  layout = "vertical",
+  mediaPlacement = "start",
+  headingLevel = 3,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof title !== "string" || title.trim().length === 0) {
+  throw new TypeError("BlogCard title must be a non-empty string.");
+}
+if (
+  description !== undefined &&
+  (typeof description !== "string" || description.trim().length === 0)
+) {
+  throw new TypeError("BlogCard description must be a non-empty string when provided.");
+}
+if (
+  date !== undefined &&
+  (
+    typeof date !== "object" ||
+    date === null ||
+    Array.isArray(date) ||
+    typeof date.label !== "string" ||
+    date.label.trim().length === 0 ||
+    typeof date.dateTime !== "string" ||
+    date.dateTime.trim().length === 0
+  )
+) {
+  throw new TypeError("BlogCard date must include non-empty label and dateTime strings.");
+}
+if (href !== undefined && (typeof href !== "string" || href.trim().length === 0)) {
+  throw new TypeError("BlogCard href must be a non-empty string when provided.");
+}
+if (hasCtaLabelProp && href === undefined) {
+  throw new TypeError("BlogCard ctaLabel requires href.");
+}
+if (typeof ctaLabel !== "string" || ctaLabel.trim().length === 0) {
+  throw new TypeError("BlogCard ctaLabel must be a non-empty string when provided.");
+}
+if (!["vertical", "horizontal"].includes(layout)) {
+  throw new TypeError('BlogCard layout must be "vertical" or "horizontal".');
+}
+if (!["start", "end"].includes(mediaPlacement)) {
+  throw new TypeError('BlogCard mediaPlacement must be "start" or "end".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("BlogCard headingLevel must be an integer from 2 to 6.");
+}
+
+const hasVisual = Astro.slots.has("visual");
+const hasTags = Astro.slots.has("tags");
+const headingId = id
+  ? `${id}-heading`
+  : `blog-card-${crypto.randomUUID()}-heading`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+---
+
+<article
+  {...attributes}
+  id={id}
+  class:list={["blog-card", className]}
+  aria-labelledby={headingId}
+  data-component-name="BlogCard"
+  data-blog-card-layout={layout}
+  data-blog-card-media-placement={mediaPlacement}
+>
+  {hasVisual && mediaPlacement === "start" && (
+    <div class="blog-card__media">
+      <Ratio ratio="16:9">
+        <slot name="visual" />
+      </Ratio>
+    </div>
+  )}
+
+  <div class="blog-card__content">
+    <div class="blog-card__copy">
+      {date && (
+        <time class="blog-card__date" datetime={date.dateTime}>
+          {date.label}
+        </time>
+      )}
+
+      {hasTags && (
+        <div class="blog-card__tags">
+          <slot name="tags" />
+        </div>
+      )}
+
+      <div class="blog-card__heading-group">
+        <HeadingTag class="blog-card__title body-large-semibold" id={headingId}>
+          {title}
+        </HeadingTag>
+      </div>
+
+      {description && (
+        <p
+          class:list={[
+            "blog-card__description",
+            layout === "horizontal" ? "body-small-regular" : "body-base-regular",
+          ]}
+        >
+          {description}
+        </p>
+      )}
+    </div>
+
+    {href && (
+      <ButtonLink class="blog-card__cta" href={href} size="small">
+        {ctaLabel}
+      </ButtonLink>
+    )}
+  </div>
+
+  {hasVisual && mediaPlacement === "end" && (
+    <div class="blog-card__media">
+      <Ratio ratio="16:9">
+        <slot name="visual" />
+      </Ratio>
+    </div>
+  )}
+</article>
+
+<style>
+  .blog-card {
+    display: flex;
+    min-inline-size: 0;
+    inline-size: 100%;
+    flex-direction: column;
+    gap: var(--space-media-content);
+  }
+
+  .blog-card[data-blog-card-layout="horizontal"] {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, var(--grid-auto-min-width-card)), 1fr)
+    );
+    align-items: start;
+  }
+
+  .blog-card__media,
+  .blog-card__content,
+  .blog-card__copy,
+  .blog-card__heading-group {
+    min-inline-size: 0;
+  }
+
+  .blog-card__media {
+    inline-size: 100%;
+    overflow: clip;
+    border-radius: var(--radius-image);
+  }
+
+  .blog-card__media > :global([data-component-name="Ratio"]) {
+    inline-size: 100%;
+  }
+
+  .blog-card__content,
+  .blog-card__copy,
+  .blog-card__heading-group {
+    display: flex;
+    inline-size: 100%;
+    flex-direction: column;
+  }
+
+  .blog-card__content {
+    gap: var(--space-medium);
+  }
+
+  .blog-card__copy {
+    gap: var(--space-regular);
+  }
+
+  .blog-card__heading-group {
+    gap: var(--gap-small);
+  }
+
+  .blog-card__tags {
+    display: flex;
+    min-inline-size: 0;
+    inline-size: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-tag-group);
+  }
+
+  .blog-card__date,
+  .blog-card__title,
+  .blog-card__description {
+    min-inline-size: 0;
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .blog-card__date {
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-tiny);
+    font-weight: var(--font-weight-emphasis);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-none);
+    text-transform: var(--text-transform-none);
+  }
+
+  .blog-card__title {
+    color: var(--color-text-primary);
+  }
+
+  .blog-card__description {
+    color: var(--color-text-secondary);
+  }
+
+  .blog-card__cta {
+    align-self: flex-start;
+  }
+</style>

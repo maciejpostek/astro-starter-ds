@@ -106,6 +106,8 @@ const hasLeading = Astro.slots.has("leading");
 
   .tag__leading-visual {
     display: inline-grid;
+    min-width: 0;
+    min-height: 0;
     width: var(--tag-icon-size);
     height: var(--tag-icon-size);
     place-items: center;
@@ -118,6 +120,13 @@ const hasLeading = Astro.slots.has("leading");
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+
+  .tag__leading-visual > :global([data-component-name="LogoAsset"]) {
+    min-inline-size: 0;
+    min-block-size: 0;
+    inline-size: 100%;
+    block-size: 100%;
   }
 
   .tag[data-tag-leading="false"] .tag__leading,

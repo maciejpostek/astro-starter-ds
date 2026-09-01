@@ -4,13 +4,15 @@ import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
 import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro";
 
 export type ContentAlign = "left" | "centered";
+export type ContentTone = "default" | "on-accent" | "inverse";
 
 export interface Props extends Omit<HTMLAttributes<"div">, "align" | "class"> {
   heading: string;
   eyebrow?: string;
   paragraph?: string;
   align?: ContentAlign;
-  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  tone?: ContentTone;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   class?: string;
 }
 
@@ -19,6 +21,7 @@ const {
   eyebrow,
   paragraph,
   align = "left",
+  tone = "default",
   headingLevel = 2,
   id,
   class: className,
@@ -36,13 +39,17 @@ for (const [name, value] of [["eyebrow", eyebrow], ["paragraph", paragraph]] as 
 if (!["left", "centered"].includes(align)) {
   throw new TypeError('Content align must be "left" or "centered".');
 }
-if (![2, 3, 4, 5, 6].includes(headingLevel)) {
-  throw new RangeError("Content headingLevel must be an integer from 2 to 6.");
+if (!["default", "on-accent", "inverse"].includes(tone)) {
+  throw new TypeError('Content tone must be "default", "on-accent" or "inverse".');
+}
+if (![1, 2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("Content headingLevel must be an integer from 1 to 6.");
 }
 
 const hasActions = Astro.slots.has("actions");
 const headingId = id ? `${id}-heading` : `content-${crypto.randomUUID()}-heading`;
 const HeadingTag = `h${headingLevel}` as HTMLTag;
+const eyebrowVariant = tone === "on-accent" ? "alternate" : "default";
 ---
 
 <div
@@ -51,10 +58,11 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
   class:list={["content", className]}
   data-component-name="Content"
   data-content-align={align}
+  data-content-tone={tone}
 >
   <div class="content__text">
     <div class="content__heading-stack">
-      {eyebrow && <Eyebrow text={eyebrow} />}
+      {eyebrow && <Eyebrow text={eyebrow} variant={eyebrowVariant} />}
       <HeadingTag class="content__heading heading-h4" id={headingId}>{heading}</HeadingTag>
     </div>
 
@@ -63,7 +71,7 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
 
   {hasActions && (
     <div class="content__actions">
-      <ButtonGroup aria-labelledby={headingId}>
+      <ButtonGroup align={align} aria-labelledby={headingId}>
         <slot name="actions" />
       </ButtonGroup>
     </div>
@@ -99,6 +107,7 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
   .content__paragraph {
     inline-size: 100%;
     margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
   }
 
   .content__heading {
@@ -107,6 +116,16 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
 
   .content__paragraph {
     color: var(--color-text-secondary);
+  }
+
+  .content[data-content-tone="on-accent"] .content__heading,
+  .content[data-content-tone="on-accent"] .content__paragraph {
+    color: var(--color-text-on-accent);
+  }
+
+  .content[data-content-tone="inverse"] .content__heading,
+  .content[data-content-tone="inverse"] .content__paragraph {
+    color: var(--color-text-inverse);
   }
 
   .content__actions {

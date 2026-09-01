@@ -28,6 +28,8 @@ const { adapter } = Astro.props;
     renderer={adapter.component}
     rendererProps={adapter.props}
     axes={adapter.axes}
+    container={adapter.container}
+    sizing={adapter.sizing}
     scope={`responsive-route-${adapter.id}`}
   />
 </BaseLayout>

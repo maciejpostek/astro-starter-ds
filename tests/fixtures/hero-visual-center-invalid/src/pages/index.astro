@@ -1,0 +1,22 @@
+---
+import HeroVisualCenter from "../../../../../src/components/website-patterns/hero/HeroVisualCenter.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.HERO_VISUAL_CENTER_INVALID_CASE ?? "heading";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { heading: "   ", eyebrow: "Eyebrow" },
+  eyebrow: { heading: "Hero", eyebrow: "" },
+  paragraph: { heading: "Hero", eyebrow: "Eyebrow", paragraph: "   " },
+  headingLevel: { heading: "Hero", eyebrow: "Eyebrow", headingLevel: 7 },
+  visual: { heading: "Hero", eyebrow: "Eyebrow" },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
+---
+
+{invalidCase === "visual" ? (
+  <HeroVisualCenter {...props} />
+) : (
+  <HeroVisualCenter {...props}>
+    <div slot="visual">Valid visual</div>
+  </HeroVisualCenter>
+)}

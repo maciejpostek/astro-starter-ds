@@ -42,6 +42,8 @@ content of a larger statistics pattern. Choose logical `leading` or `trailing`
 icon placement without changing the fixed trend-to-glyph mapping. Use
 `StatCard` for a card-level statistics presentation, `BulletPoint` for an
 included/excluded list item, and native inline text when no trend cue is needed.
+`showIcon` defaults to true and may hide the decorative cue without removing or
+changing the visible trend statement.
 
 ## Responsive behavior
 
@@ -77,7 +79,9 @@ copy Material Symbol SVG paths.
 Figma calls the visual axes `Type` and `Icon`; Astro maps them to semantic
 `trend` and `iconPosition`. Figma's fixed 97×20 sample is presentation
 metadata, while Astro uses intrinsic content-safe sizing. These intentional
-differences are recorded in the manifest.
+differences are recorded in the manifest. The live Figma master does not yet
+expose the Astro-only `showIcon` control; synchronize it only in a later
+explicitly approved Figma task.
 
 ## Core decision
 

@@ -1,0 +1,250 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import Content from "../content/Content.astro";
+import SectionHeader from "../page-headers/SectionHeader.astro";
+
+export type HeroFullVisualComposition = "centered" | "left" | "section-header";
+
+type HeroFullVisualBaseProps = Omit<
+  HTMLAttributes<"section">,
+  "aria-labelledby" | "class"
+> & {
+  heading: string;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  class?: string;
+};
+
+export type Props =
+  | (HeroFullVisualBaseProps & {
+      composition?: "centered" | "left";
+      eyebrow?: string;
+      paragraph?: string;
+    })
+  | (HeroFullVisualBaseProps & {
+      composition: "section-header";
+      eyebrow: string;
+      paragraph: string;
+    });
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  composition = "centered",
+  headingLevel = 1,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("HeroFullVisual heading must be a non-empty string.");
+}
+
+for (const [name, value] of [["eyebrow", eyebrow], ["paragraph", paragraph]] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`HeroFullVisual ${name} must be a non-empty string when provided.`);
+  }
+}
+
+const compositions: HeroFullVisualComposition[] = ["centered", "left", "section-header"];
+if (!compositions.includes(composition)) {
+  throw new TypeError(
+    'HeroFullVisual composition must be "centered", "left", or "section-header".',
+  );
+}
+
+if (![1, 2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("HeroFullVisual headingLevel must be an integer from 1 to 6.");
+}
+
+if (composition === "section-header") {
+  if (typeof eyebrow !== "string" || eyebrow.trim().length === 0) {
+    throw new TypeError(
+      'HeroFullVisual eyebrow is required when composition is "section-header".',
+    );
+  }
+  if (typeof paragraph !== "string" || paragraph.trim().length === 0) {
+    throw new TypeError(
+      'HeroFullVisual paragraph is required when composition is "section-header".',
+    );
+  }
+}
+
+if (!Astro.slots.has("bullet-points")) {
+  throw new TypeError(
+    "HeroFullVisual requires BulletPoint children in its bullet-points slot.",
+  );
+}
+
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("HeroFullVisual requires visual content in its visual slot.");
+}
+
+const rootId = id || `hero-full-visual-${crypto.randomUUID()}`;
+const introId = `${rootId}-intro`;
+const headingId = `${introId}-heading`;
+const hasActions = Astro.slots.has("actions");
+const contentAlign = composition === "centered" ? "centered" : "left";
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["hero-full-visual", "l-section", className]}
+  data-padding="none"
+  data-component-name="HeroFullVisual"
+  data-hero-full-visual-composition={composition}
+  aria-labelledby={headingId}
+>
+  <div class="hero-full-visual__layout l-grid" data-grid="breakout">
+    <div class="hero-full-visual__content-grid l-grid" data-grid="site" data-gap="site">
+      <div class="hero-full-visual__intro">
+        {composition === "section-header" ? (
+          <SectionHeader
+            id={introId}
+            heading={heading}
+            eyebrow={eyebrow as string}
+            paragraph={paragraph as string}
+            composition="copy-actions"
+            headingLevel={headingLevel}
+          >
+            {hasActions && (
+              <Fragment slot="actions">
+                <slot name="actions" />
+              </Fragment>
+            )}
+          </SectionHeader>
+        ) : hasActions ? (
+          <Content
+            id={introId}
+            heading={heading}
+            eyebrow={eyebrow}
+            paragraph={paragraph}
+            align={contentAlign}
+            headingLevel={headingLevel}
+          >
+            <Fragment slot="actions">
+              <slot name="actions" />
+            </Fragment>
+          </Content>
+        ) : (
+          <Content
+            id={introId}
+            heading={heading}
+            eyebrow={eyebrow}
+            paragraph={paragraph}
+            align={contentAlign}
+            headingLevel={headingLevel}
+          />
+        )}
+      </div>
+
+      <ul class="hero-full-visual__bullet-points" aria-labelledby={headingId}>
+        <slot name="bullet-points" />
+      </ul>
+    </div>
+
+    <div class="hero-full-visual__visual">
+      <Ratio ratio="2.39:1">
+        <slot name="visual" />
+      </Ratio>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-full-visual {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: hidden;
+    background: var(--color-background-canvas);
+    container: hero-full-visual / inline-size;
+  }
+
+  .hero-full-visual__layout,
+  .hero-full-visual__intro,
+  .hero-full-visual__bullet-points,
+  .hero-full-visual__visual {
+    min-inline-size: 0;
+  }
+
+  .hero-full-visual__layout,
+  .hero-full-visual__content-grid {
+    min-inline-size: 0;
+    row-gap: 0;
+  }
+
+  .hero-full-visual__content-grid {
+    grid-column: content-start / content-end;
+    padding-block-start: var(--section-padding-hero-top);
+  }
+
+  .hero-full-visual__intro,
+  .hero-full-visual__bullet-points {
+    grid-column: 1 / -1;
+    inline-size:
+      calc(
+        ((100% - (11 * var(--site-grid-column-gap))) / 12 * 5) +
+        (4 * var(--site-grid-column-gap))
+      );
+    justify-self: center;
+  }
+
+  .hero-full-visual__bullet-points {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--gap-large);
+    margin: var(--space-large) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-full-visual__visual {
+    grid-column: full-start / full-end;
+    margin-block-start: var(--space-xlarge);
+  }
+
+  .hero-full-visual[data-hero-full-visual-composition="left"]
+    :is(.hero-full-visual__intro, .hero-full-visual__bullet-points) {
+    grid-column: 1 / span 5;
+    inline-size: 100%;
+    justify-self: start;
+  }
+
+  .hero-full-visual[data-hero-full-visual-composition="left"]
+    .hero-full-visual__bullet-points,
+  .hero-full-visual[data-hero-full-visual-composition="section-header"]
+    .hero-full-visual__bullet-points {
+    justify-content: flex-start;
+  }
+
+  .hero-full-visual[data-hero-full-visual-composition="section-header"]
+    .hero-full-visual__intro {
+    grid-column: 1 / -1;
+    inline-size: 100%;
+  }
+
+  .hero-full-visual[data-hero-full-visual-composition="section-header"]
+    .hero-full-visual__bullet-points {
+    grid-column: 1 / span 5;
+    inline-size: 100%;
+    justify-self: start;
+  }
+
+  @container hero-full-visual (width < 64rem) {
+    .hero-full-visual__intro,
+    .hero-full-visual__bullet-points,
+    .hero-full-visual[data-hero-full-visual-composition="left"]
+      :is(.hero-full-visual__intro, .hero-full-visual__bullet-points),
+    .hero-full-visual[data-hero-full-visual-composition="section-header"]
+      :is(.hero-full-visual__intro, .hero-full-visual__bullet-points) {
+      grid-column: 1 / -1;
+      inline-size: 100%;
+    }
+
+  }
+</style>

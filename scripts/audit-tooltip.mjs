@@ -244,7 +244,9 @@ for (const [id, record, nodeId] of [["tooltip", tooltipRecord, "1371:45"], ["inf
   }
   if (!record?.dependencies?.includes("material-symbol")) errors.push(`${id} must declare MaterialSymbol.`);
   if ((record?.slots?.length ?? 1) !== 0) errors.push(`${id} registry must prohibit slots.`);
-  if (record?.readiness?.visual !== "approved") errors.push(`${id} visual readiness must be approved after the final Figma checkpoint.`);
+  if (!["review", "approved"].includes(record?.readiness?.visual)) {
+    errors.push(`${id} visual readiness must remain review until user approval, or approved after that review.`);
+  }
   if (record?.readiness?.validation !== "passed") errors.push(`${id} validation readiness must be passed.`);
 }
 

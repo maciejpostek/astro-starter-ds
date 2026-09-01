@@ -20,6 +20,7 @@ const source = read(sourcePath);
 const rule = read(rulePath);
 const docs = read("src/data/documentationComponentRegistry.ts");
 const preview = read("src/components/_internal/documentation/DsBulletVisualCardPreview.astro");
+const controller = read("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
 const sizeTokens = read("src/styles/tokens/size-components.css");
 const semanticSizeTokens = read("src/styles/tokens/size-semantic.css");
 const tokenRegistry = JSON.parse(read("src/data/design-system/tokenArchitecture.json") || "{}");
@@ -33,15 +34,14 @@ for (const contract of [
   'Astro.slots.has("visual")',
   'Astro.slots.has("tags")',
   'Astro.slots.has("actions")',
-  'name="trending_up"',
-  'size="var(--bullet-visual-card-stat-icon-size)"',
+  '<StatTextInline',
+  'trend="up"',
+  'iconPosition="trailing"',
   "gap: var(--space-media-content)",
   "gap: var(--space-medium)",
   "gap: var(--space-regular)",
   "gap: var(--gap-tag-group)",
   "border-radius: var(--radius-image)",
-  "color: var(--color-icon-accent)",
-  "@media (forced-colors: active)",
 ]) {
   if (!source.includes(contract)) errors.push(`BulletVisualCard is missing contract: ${contract}`);
 }
@@ -81,8 +81,12 @@ if (
 if (!docs.includes('componentId: "bullet-visual-card"') || !docs.includes("renderer: DsBulletVisualCardPreview")) {
   errors.push("BulletVisualCard does not have a canonical documentation adapter.");
 }
-if (!preview.includes('data-component-name="DsBulletVisualCardPreview"') || !preview.includes('scenario === "stress"')) {
-  errors.push("BulletVisualCard documentation preview does not cover the canonical and stress contracts.");
+if (!preview.includes('data-component-name="DsBulletVisualCardPreview"') || !preview.includes("data-ds-preview-target")) {
+  errors.push("BulletVisualCard documentation preview is missing its single master target.");
+}
+for (const axis of ["bulletVisualCardDescription", "bulletVisualCardStat", "bulletVisualCardTags", "bulletVisualCardActions"]) {
+  if (!docs.includes(`id: "${axis}"`)) errors.push(`BulletVisualCard documentation is missing ${axis}.`);
+  if (!controller.includes(`axisId === "${axis}"`)) errors.push(`BulletVisualCard preview controller is missing ${axis}.`);
 }
 if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePath || record.syncStatus !== "mapped") {
   errors.push("BulletVisualCard registry mapping is incomplete.");
@@ -90,7 +94,7 @@ if (!record || record.sourcePath !== sourcePath || record.agenticRule !== rulePa
 if (record?.figmaCanonicalNodeId !== "1821:5427" || figmaContract?.nodeId !== "1821:5427") {
   errors.push("BulletVisualCard registry does not preserve canonical Figma node 1821:5427.");
 }
-if (record?.dependencies?.join(",") !== "ratio,material-symbol,tag,button-group") {
+if (record?.dependencies?.join(",") !== "ratio,stat-text-inline,tag,button-group") {
   errors.push("BulletVisualCard dependencies do not match the locked composition contract.");
 }
 if (record?.props?.join(",") !== "title,description,stat,headingLevel" || record?.slots?.join(",") !== "visual,tags,actions") {

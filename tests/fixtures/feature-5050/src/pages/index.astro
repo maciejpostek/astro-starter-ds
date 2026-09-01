@@ -1,0 +1,102 @@
+---
+import LogoAsset from "../../../../../src/components/assets/logos/LogoAsset.astro";
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import Feature5050 from "../../../../../src/components/website-patterns/features/Feature5050.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Feature5050 contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="fixture fixture--wide" data-fixture-width="1440">
+        <Feature5050
+          id="feature-5050-end"
+          class="feature-5050-contract-fixture"
+          data-forwarded="yes"
+          heading="Kompletna historia jednej ważnej funkcji"
+          eyebrow="Możliwość"
+          paragraph="Treść, działania, dowody i wizualizacja pozostają częścią jednej dostępnej sekcji."
+          logosTitle="Korzystają z rozwiązania"
+          detailBulletsTitle="Dodatkowe korzyści"
+          headingLevel={3}
+        >
+          <Button slot="actions">Poznaj funkcję</Button>
+          <Button slot="actions" variant="secondary">Zobacz szczegóły</Button>
+          <BulletPoint slot="primaryBullets" text="Treść zawsze poprzedza wizualizację w DOM" status="included" tone="status" />
+          <BulletPoint slot="primaryBullets" text="Listy zachowują natywną semantykę" status="included" tone="status" />
+          <LogoAsset slot="logos" slug="github" variant="full" alt="GitHub" />
+          <LogoAsset slot="logos" slug="jitter" variant="full" alt="Jitter" />
+          <LogoAsset slot="logos" slug="medium" variant="full" alt="Medium" />
+          <BulletPoint slot="detailBullets" text="Logiczne położenie końcowe" />
+          <BulletPoint slot="detailBullets" text="Responsywność właściciela kontenera" />
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstrakcyjna kompozycja geometryczna" />
+        </Feature5050>
+      </div>
+
+      <div class="fixture fixture--desktop" data-fixture-width="1024">
+        <Feature5050
+          id="feature-5050-start"
+          heading="The visual starts wide, but meaningful content stays first"
+          paragraph="This minimal composition verifies the absence of every optional supporting group."
+          visualPosition="start"
+        >
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Wide abstract design-system composition" />
+        </Feature5050>
+      </div>
+
+      <div class="fixture fixture--tablet" data-fixture-width="768">
+        <Feature5050
+          id="feature-5050-localized"
+          heading="Bardzo długi zlokalizowany nagłówek funkcji sprawdzający naturalne zawijanie bez poziomego przepełnienia"
+          eyebrow="Długi wariant treści"
+          paragraph="Opis pozostaje czytelny, gdy komponent otrzymuje pośrednią szerokość, a wszystkie regiony przechodzą do pojedynczej kolumny zgodnie z rozmiarem przydzielonego kontenera."
+          visualPosition="start"
+        >
+          <BulletPoint slot="primaryBullets" text="Dłuższa przetłumaczona informacja wspierająca zawija się w dostępnej szerokości" />
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Kompozycja testująca pośrednią szerokość" />
+        </Feature5050>
+      </div>
+
+      <div class="fixture fixture--narrow" data-fixture-width="320" data-theme="dark" dir="rtl">
+        <Feature5050
+          id="feature-5050-rtl"
+          heading="ميزة موثوقة بمحتوى واضح"
+          eyebrow="المنتج"
+          paragraph="يتحقق هذا المثال من اتجاه الكتابة والتفاف النص وبقاء المحتوى قبل الصورة داخل حاوية ضيقة."
+          visualPosition="end"
+          detailBulletsTitle="الفوائد"
+          headingLevel={4}
+        >
+          <BulletPoint slot="detailBullets" text="ترتيب قراءة ثابت" status="included" tone="status" />
+          <BulletPoint slot="detailBullets" text="تخطيط منطقي متجاوب" status="included" tone="status" />
+          <img slot="visual" src="/images/project-placeholder.svg" alt="تكوين هندسي تجريدي" />
+        </Feature5050>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .fixture {
+    inline-size: min(100%, 90rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--tablet { max-inline-size: 48rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

@@ -49,16 +49,24 @@ UI colors must continue to consume semantic or component color contracts.
 
 ## Public Text Styles
 
-Exactly 23 public classes exist:
+Exactly 31 public classes exist:
 
 - `.heading-h1` through `.heading-h6`,
 - `.body-{large|medium|base|small|tiny}-regular`,
 - `.body-{large|medium|base|small|tiny}-regular-underlined`,
 - `.body-{large|medium|base|small|tiny}-semibold`,
 - `.caption-{small|tiny}`.
+- `.rich-text-heading-h1` through `.rich-text-heading-h6`.
+- `.rich-text-body-{base|large}-regular`.
 
 Standalone `.body-large`, `.body-medium`, `.body-base`, `.body-small` and
 `.body-tiny` classes are not part of the API.
+
+Rich Text is an independent editorial family. Its H1-H6, Body Base and Body
+Large classes consume dedicated family, weight, size, line-height and tracking
+tokens. `RichTextHeading` exposes only semantic H2-H6; Rich Text H1 is reserved
+for a separate entry hero. Use Body Base for ordinary prose and Body Large for
+intentional leads or quotations.
 
 Caption is a global Text Style role alongside Heading and Body. Caption Small
 uses 14px and Caption Tiny uses 12px; both use normal weight, compact line

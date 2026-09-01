@@ -1,14 +1,43 @@
 import { expect, test } from "@playwright/test";
 
-const implementedWebsitePatterns = [
-  { name: "Content", path: "/design-system/website-patterns/content/" },
-  { name: "FAQ", path: "/design-system/website-patterns/faq/" },
-  { name: "SectionHeader", path: "/design-system/website-patterns/page-headers/" },
+const responsiveWebsitePatterns = [
+  { name: "Content", path: "/design-system/website-patterns/content/", container: "main", sizing: "fill" },
+  { name: "FAQ", path: "/design-system/website-patterns/faq/", container: "full", sizing: "fill" },
+  { name: "FeatureProof", path: "/design-system/website-patterns/features/feature-proof/", container: "full", sizing: "fill" },
+  { name: "Feature5050Centered", path: "/design-system/website-patterns/features/feature-50-50-centered/", container: "full", sizing: "fill" },
+  { name: "FeatureSimple", path: "/design-system/website-patterns/features/feature-simple/", container: "full", sizing: "fill" },
+  { name: "SectionHeader", path: "/design-system/website-patterns/page-headers/", container: "main", sizing: "fill" },
+  { name: "TopBanner", path: "/design-system/website-patterns/announcements-banners/", container: "full", sizing: "fill" },
+  { name: "TeamMemberCard", path: "/design-system/website-patterns/team/", container: "main", sizing: "bounded" },
+];
+
+const standardWebsitePatterns = [
+  { name: "BulletPoint", path: "/design-system/website-patterns/bullet-points/bullet-point/" },
+  { name: "BulletCardSimple", path: "/design-system/website-patterns/bullet-points/bullet-card-simple/" },
+  { name: "BulletIconCard", path: "/design-system/website-patterns/bullet-points/bullet-icon-card/" },
+  { name: "BulletVisualCard", path: "/design-system/website-patterns/bullet-points/bullet-visual-card/" },
+  { name: "BulletCardSurface", path: "/design-system/website-patterns/bullet-points/bullet-card-surface/" },
+  { name: "BlogCard", path: "/design-system/website-patterns/blog-resources/" },
+  { name: "LogoCard", path: "/design-system/website-patterns/brand-logo-proof/" },
+  { name: "Rating", path: "/design-system/website-patterns/ratings-reviews/" },
   { name: "StatCard", path: "/design-system/website-patterns/stats-metrics/stat-card/" },
   { name: "StatTextInline", path: "/design-system/website-patterns/stats-metrics/stat-text-inline/" },
-  { name: "TopBanner", path: "/design-system/website-patterns/announcements-banners/" },
-  { name: "TeamMemberCard", path: "/design-system/website-patterns/team/" },
 ];
+
+const openStandardWebsitePatternAtWidth = async (page, path, width) => {
+  await page.goto(path, { waitUntil: "networkidle" });
+  const preview = page.locator('[data-ds-interactive-preview][data-preview-presentation="standard"]').first();
+  const canvas = preview.locator("[data-ds-preview-scene-canvas]").first();
+  const specimen = preview.locator("[data-preview-specimen-frame]").first();
+  await canvas.evaluate((node, assignedWidth) => {
+    node.style.inlineSize = `${assignedWidth}px`;
+  }, width);
+  await specimen.evaluate((node, assignedWidth) => {
+    node.style.inlineSize = `${assignedWidth}px`;
+    node.style.maxInlineSize = "none";
+  }, width);
+  return { preview, canvas };
+};
 
 test("Tabs normalizes direct Tab children and coordinates external panels", async ({ page }) => {
   await page.goto("/design-system/base-components/tabs/tabs/", { waitUntil: "networkidle" });
@@ -474,35 +503,28 @@ test("accordion autoplay advances decoratively, pauses and stops on activation",
   for (const bar of await progress.all()) expect(await bar.evaluate((node) => node.value)).toBe(0);
 });
 
-test("accordion documentation separates standard and progress previews", async ({ page }) => {
+test("accordion documentation uses one canonical full-anatomy preview", async ({ page }) => {
   await page.goto("/design-system/base-components/accordion/accordion/");
   await page.evaluate(() => {
-    document.documentElement.style.setProperty("--motion-duration-accordion-autoplay", "160ms");
+    document.documentElement.style.setProperty("--motion-duration-accordion-autoplay", "800ms");
   });
 
-  const interactivePreviews = page.locator('[data-component-name="DsInteractiveComponentPreview"]');
-  const standardPreview = page.locator("#preview");
-  const progressPreview = page.locator("#preview-progress");
-  await expect(interactivePreviews).toHaveCount(2);
-  const progressHeading = page.getByRole("heading", { name: "With progress", level: 2 });
-  await expect(progressHeading).toBeVisible();
-  await expect(progressHeading.locator('xpath=ancestor::*[@data-component-name="DsSectionHeaderLevel2"][1]')).toHaveCount(1);
-  await expect(standardPreview.locator("[data-accordion-progress]")).toBeHidden();
-  await expect(standardPreview.locator("[data-ds-preview-target]")).not.toHaveAttribute("data-accordion-progress-manual");
-  await expect(standardPreview.getByRole("group", { name: "Progress", exact: true })).toHaveCount(0);
+  const interactivePreviews = page.locator("[data-ds-interactive-preview]");
+  const canonicalPreview = interactivePreviews.first();
+  await expect(interactivePreviews).toHaveCount(1);
 
-  const progress = progressPreview.locator('[data-ds-preview-target] [data-accordion-progress]');
-  const trigger = progressPreview.locator('[data-ds-preview-target] [data-accordion-trigger]');
-  const panel = progressPreview.locator('[data-ds-preview-target] [data-accordion-panel]');
-  const tooltip = progressPreview.locator('[data-ds-preview-target] [data-accordion-help-trigger]');
-  const openState = progressPreview.getByRole("group", { name: "State" }).getByRole("button", { name: "Open" });
-  const defaultState = progressPreview.getByRole("group", { name: "State" }).getByRole("button", { name: "Default" });
-  const tooltipControls = progressPreview.getByRole("group", { name: "Info tooltip" });
+  const progress = canonicalPreview.locator('[data-ds-preview-target] [data-accordion-progress]');
+  const trigger = canonicalPreview.locator('[data-ds-preview-target] [data-accordion-trigger]');
+  const panel = canonicalPreview.locator('[data-ds-preview-target] [data-accordion-panel]');
+  const tooltip = canonicalPreview.locator('[data-ds-preview-target] [data-accordion-help-trigger]');
+  const openState = canonicalPreview.getByRole("group", { name: "State" }).getByRole("button", { name: "Open" });
+  const defaultState = canonicalPreview.getByRole("group", { name: "State" }).getByRole("button", { name: "Default" });
+  const tooltipControls = canonicalPreview.getByRole("group", { name: "Info tooltip" });
   const tooltipTrigger = tooltip.locator("[data-tooltip-trigger]");
   const tooltipSurface = tooltip.locator("[data-tooltip-content]");
 
-  await expect(progressPreview.getByRole("group", { name: "Progress", exact: true })).toHaveCount(0);
-  await expect(progressPreview.getByRole("group", { name: "Progress visibility" })).toHaveCount(0);
+  await expect(canonicalPreview.getByRole("group", { name: "Progress", exact: true })).toHaveCount(0);
+  await expect(canonicalPreview.getByRole("group", { name: "Progress visibility" })).toHaveCount(0);
   await expect(tooltipControls).toBeVisible();
   await expect(tooltip).toBeVisible();
   await tooltipTrigger.focus();
@@ -595,6 +617,13 @@ test("guides are opt-in and synchronize persisted state", async ({ page }) => {
   const toggle = page.locator("[data-guides-button]");
   await toggle.click();
   await expect(page.locator("html")).toHaveAttribute("data-guides", "visible");
+  const documentInfoLayer = page.locator(
+    '[data-component-info-layer][data-component-info-scope="document"]',
+  );
+  await page.locator('main [data-component-name="Button"]:visible').first().hover();
+  await expect(documentInfoLayer).toBeVisible();
+  await expect(documentInfoLayer.locator("[data-component-info-text]")).toHaveText("Button");
+  await expect(documentInfoLayer).toHaveCSS("border-top-color", "rgb(139, 92, 246)");
   await page.reload({ waitUntil: "networkidle" });
   await expect(toggle).toHaveAttribute("aria-pressed", "true");
 });
@@ -787,9 +816,10 @@ test("BulletPoint centers its icon on the first text line at compact widths and 
   page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));
 
   await page.setViewportSize({ width: 1800, height: 900 });
-  await page.goto(
-    "/design-system/website-patterns/bullet-points/bullet-point/preview/?device=custom&width=320",
-    { waitUntil: "networkidle" },
+  await openStandardWebsitePatternAtWidth(
+    page,
+    "/design-system/website-patterns/bullet-points/bullet-point/",
+    320,
   );
   const bullet = page.locator('[data-component-name="BulletPoint"]:visible').first();
   await bullet.locator(".bullet-point__text").evaluate((node) => {
@@ -842,15 +872,15 @@ test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic beh
 
   await page.setViewportSize({ width: 1800, height: 1000 });
   for (const assignedWidth of [320, 549, 1440]) {
-    await page.goto(
-      `/design-system/website-patterns/bullet-points/bullet-card-simple/preview/?device=custom&width=${assignedWidth}`,
-      { waitUntil: "networkidle" },
+    const { canvas: viewport } = await openStandardWebsitePatternAtWidth(
+      page,
+      "/design-system/website-patterns/bullet-points/bullet-card-simple/",
+      assignedWidth,
     );
     const card = page.locator('[data-component-name="BulletCardSimple"]:visible').first();
-    const viewport = page.locator("[data-preview-viewport]");
     await expect(card).toBeVisible();
     const metrics = await card.evaluate((node) => {
-      const viewportNode = node.closest("[data-preview-viewport]");
+      const viewportNode = node.closest("[data-ds-preview-scene-canvas]");
       return {
         viewportOverflow: viewportNode instanceof HTMLElement
           ? viewportNode.scrollWidth - viewportNode.clientWidth
@@ -860,7 +890,7 @@ test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic beh
     });
     expect(metrics.viewportOverflow, `preview overflow at ${assignedWidth}px`).toBeLessThanOrEqual(1);
     expect(metrics.cardOverflow, `component overflow at ${assignedWidth}px`).toBeLessThanOrEqual(1);
-    await expect(viewport).toHaveAttribute("data-device", "custom");
+    await expect(viewport).toBeVisible();
   }
 
   await page.goto("/design-system/website-patterns/bullet-points/bullet-card-simple/", {
@@ -871,8 +901,8 @@ test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic beh
   const description = card.locator(".bullet-card-simple__description");
   const actions = card.locator(".bullet-card-simple__actions");
   const controls = card.locator('xpath=ancestor::*[@data-ds-interactive-preview][1]');
-  await expect(card).toHaveAttribute("aria-labelledby", "bullet-card-simple-preview-title");
-  await expect(title).toHaveAttribute("id", "bullet-card-simple-preview-title");
+  await expect(card).toHaveAttribute("aria-labelledby", "documentation-bullet-card-simple-preview-title");
+  await expect(title).toHaveAttribute("id", "documentation-bullet-card-simple-preview-title");
   await expect(card.locator('[data-material-symbol="language"]')).toHaveAttribute("aria-hidden", "true");
 
   const figmaMetrics = await card.evaluate((node) => {
@@ -952,9 +982,10 @@ test("BulletIconCard preserves both explicit layouts, semantic order and intrins
 
   await page.setViewportSize({ width: 1800, height: 1100 });
   for (const assignedWidth of [320, 517]) {
-    await page.goto(
-      `/design-system/website-patterns/bullet-points/bullet-icon-card/preview/?device=custom&width=${assignedWidth}`,
-      { waitUntil: "networkidle" },
+    await openStandardWebsitePatternAtWidth(
+      page,
+      "/design-system/website-patterns/bullet-points/bullet-icon-card/",
+      assignedWidth,
     );
     const card = page.locator('[data-component-name="BulletIconCard"]:visible').first();
     await card.locator(".bullet-icon-card__title").evaluate((node) => {
@@ -968,7 +999,7 @@ test("BulletIconCard preserves both explicit layouts, semantic order and intrins
     });
 
     const metrics = await card.evaluate((node) => {
-      const viewportNode = node.closest("[data-preview-viewport]");
+      const viewportNode = node.closest("[data-ds-preview-scene-canvas]");
       return {
         viewportOverflow: viewportNode instanceof HTMLElement
           ? viewportNode.scrollWidth - viewportNode.clientWidth
@@ -994,11 +1025,11 @@ test("BulletIconCard preserves both explicit layouts, semantic order and intrins
   const statIcon = card.locator(".bullet-icon-card__stat-icon");
   const controls = card.locator('xpath=ancestor::*[@data-ds-interactive-preview][1]');
 
-  await expect(card).toHaveAttribute("aria-labelledby", "bullet-icon-card-preview-heading");
-  await expect(title).toHaveAttribute("id", "bullet-icon-card-preview-heading");
+  await expect(card).toHaveAttribute("aria-labelledby", "documentation-bullet-icon-card-preview-heading");
+  await expect(title).toHaveAttribute("id", "documentation-bullet-icon-card-preview-heading");
   await expect(card.locator('[data-component-name="ButtonGroup"]')).toHaveAttribute(
     "aria-labelledby",
-    "bullet-icon-card-preview-heading",
+    "documentation-bullet-icon-card-preview-heading",
   );
   await expect(card.locator('[data-material-symbol="language"]')).toHaveAttribute("aria-hidden", "true");
   await expect(card.locator('[data-material-symbol="trending_up"]')).toHaveAttribute("aria-hidden", "true");
@@ -1075,9 +1106,10 @@ test("BulletCardSurface preserves semantic order and switches from stacked to vi
   page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));
 
   await page.setViewportSize({ width: 1800, height: 1100 });
-  await page.goto(
-    "/design-system/website-patterns/bullet-points/bullet-card-surface/preview/?device=custom&width=320",
-    { waitUntil: "networkidle" },
+  await openStandardWebsitePatternAtWidth(
+    page,
+    "/design-system/website-patterns/bullet-points/bullet-card-surface/",
+    320,
   );
 
   const card = page.locator('[data-component-name="BulletCardSurface"]:visible').first();
@@ -1086,8 +1118,8 @@ test("BulletCardSurface preserves semantic order and switches from stacked to vi
   const visual = card.locator(".bullet-card-surface__visual");
   const controls = card.locator('xpath=ancestor::*[@data-ds-interactive-preview][1]');
 
-  await expect(card).toHaveAttribute("aria-labelledby", "bullet-card-surface-preview-title");
-  await expect(card.locator("#bullet-card-surface-preview-title")).toHaveCount(1);
+  await expect(card).toHaveAttribute("aria-labelledby", "documentation-bullet-card-surface-preview-title");
+  await expect(card.locator("#documentation-bullet-card-surface-preview-title")).toHaveCount(1);
   await expect(card.locator('[data-material-symbol="language"]')).toHaveAttribute("aria-hidden", "true");
   await expect(layout).toHaveCSS("display", "grid");
 
@@ -1115,9 +1147,10 @@ test("BulletCardSurface preserves semantic order and switches from stacked to vi
   expect(narrowMetrics.ratio).toBeCloseTo(4 / 3, 1);
   expect(narrowMetrics.documentOverflow).toBeLessThanOrEqual(1);
 
-  await page.goto(
-    "/design-system/website-patterns/bullet-points/bullet-card-surface/preview/?device=custom&width=1440",
-    { waitUntil: "networkidle" },
+  await openStandardWebsitePatternAtWidth(
+    page,
+    "/design-system/website-patterns/bullet-points/bullet-card-surface/",
+    1440,
   );
   await expect(layout).toHaveCSS("display", "flex");
   const wideTracks = await card.evaluate((node) => {
@@ -1162,7 +1195,7 @@ test("StatCard preserves accessible naming, fixed cues and intrinsic content-saf
   page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));
 
   await page.setViewportSize({ width: 320, height: 1100 });
-  await page.goto("/design-system/website-patterns/stats-metrics/stat-card", {
+  await page.goto("/design-system/website-patterns/stats-metrics/stat-card/", {
     waitUntil: "networkidle",
   });
 
@@ -1223,12 +1256,12 @@ test("StatCard preserves accessible naming, fixed cues and intrinsic content-saf
     componentOverflow: node.scrollWidth - node.clientWidth,
     documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     minHeight: Number.parseFloat(getComputedStyle(node).minHeight),
-    height: node.getBoundingClientRect().height,
+    layoutHeight: node.offsetHeight,
   }));
   expect(metrics.componentOverflow).toBeLessThanOrEqual(1);
   expect(metrics.documentOverflow).toBeLessThanOrEqual(1);
   expect(metrics.minHeight).toBe(140);
-  expect(metrics.height).toBeGreaterThanOrEqual(140);
+  expect(metrics.layoutHeight).toBeGreaterThanOrEqual(140);
 
   await expect(page.locator(".stat-card-preview--matrix [data-component-name=\"StatCard\"]")).toHaveCount(4);
   await page.evaluate(() => { document.documentElement.dataset.theme = "dark"; });
@@ -1263,13 +1296,13 @@ test("TopBanner reflows without clipping and emits the shared dismissal contract
     const metrics = await banner.evaluate((node) => ({
       componentOverflow: node.scrollWidth - node.clientWidth,
       minHeight: Number.parseFloat(getComputedStyle(node).minHeight),
-      height: node.getBoundingClientRect().height,
+      layoutHeight: node.offsetHeight,
       documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     }));
     expect(metrics.componentOverflow).toBeLessThanOrEqual(1);
     expect(metrics.documentOverflow).toBeLessThanOrEqual(1);
     expect(metrics.minHeight).toBe(40);
-    expect(metrics.height).toBeGreaterThanOrEqual(40);
+    expect(metrics.layoutHeight).toBeGreaterThanOrEqual(40);
   }
 
   await banner.evaluate((node) => {
@@ -1366,7 +1399,16 @@ test("TopBanner responsive preview opens as an isolated full-width canvas", asyn
   await expect(previewCanvas).toHaveAttribute("data-preview-guides", "visible");
   await expect(guidesButton).toHaveAttribute("aria-pressed", "true");
   await expect(dialog.locator(".ds-responsive-preview-canvas__guides")).toBeVisible();
-  await expect(dialog.locator("[data-preview-guide-label]")).toContainText("TopBanner");
+  await expect(dialog.locator("[data-preview-guide-label]")).toHaveCount(0);
+  const previewInfoLayer = dialog.locator(
+    '[data-component-info-layer][data-component-info-scope="preview"]',
+  );
+  await expect(previewInfoLayer).toBeHidden();
+  await viewport.locator('[data-component-name="TopBanner"]:visible').hover();
+  await expect(previewInfoLayer).toBeVisible();
+  await expect(previewInfoLayer.locator("[data-component-info-text]")).toHaveText("TopBanner");
+  await expect(previewInfoLayer).toHaveCSS("border-top-color", "rgb(139, 92, 246)");
+  await expect(previewInfoLayer).toHaveCSS("background-color", "rgb(245, 240, 255)");
   expect(await page.locator("html").getAttribute("data-guides")).toBe(documentGuidesState);
 
   await page.keyboard.press("Escape");
@@ -1451,6 +1493,18 @@ test("TopBanner responsive preview opens as an isolated full-width canvas", asyn
   expect(runtimeErrors).toEqual([]);
 });
 
+test("BlogCard documentation keeps one standard main bounded preview", async ({ page }) => {
+  await page.goto("/design-system/website-patterns/blog-resources/", { waitUntil: "networkidle" });
+
+  const inlinePreview = page.locator('[data-ds-interactive-preview][data-preview-category="website-patterns"]').first();
+  await expect(inlinePreview).toHaveAttribute("data-preview-presentation", "standard");
+  await expect(inlinePreview).not.toHaveAttribute("data-website-pattern-scale-ready", "true");
+  await expect(inlinePreview).toHaveAttribute("data-preview-container", "main");
+  await expect(inlinePreview).toHaveAttribute("data-preview-sizing", "bounded");
+  await expect(inlinePreview.locator('[data-component-name="BlogCard"]:visible')).toHaveCount(1);
+  await expect(page.locator("[data-responsive-preview-trigger]")).toHaveCount(0);
+});
+
 test("every implemented Website Pattern has one canonical responsive preview", async ({ page }) => {
   test.slow();
   const runtimeErrors = [];
@@ -1461,13 +1515,25 @@ test("every implemented Website Pattern has one canonical responsive preview", a
 
   await page.setViewportSize({ width: 1280, height: 900 });
 
-  for (const pattern of implementedWebsitePatterns) {
+  for (const pattern of responsiveWebsitePatterns) {
     await page.goto(pattern.path, { waitUntil: "networkidle" });
     await page.evaluate(() => { document.documentElement.dataset.theme = "dark"; });
 
     const inlinePreviews = page.locator('[data-ds-interactive-preview][data-preview-category="website-patterns"]');
     await expect(inlinePreviews.first(), `${pattern.name} must use the Website Pattern scale template`)
       .toHaveAttribute("data-website-pattern-scale-ready", "true");
+    await expect(inlinePreviews.first(), `${pattern.name} must expose its canonical preview container`)
+      .toHaveAttribute("data-preview-container", pattern.container);
+    await expect(inlinePreviews.first(), `${pattern.name} must expose its canonical preview sizing`)
+      .toHaveAttribute("data-preview-sizing", pattern.sizing);
+    await expect(
+      inlinePreviews.first().locator("[data-preview-layout-frame]").first(),
+      `${pattern.name} inline preview must use the shared layout frame`,
+    ).toHaveAttribute("data-preview-container", pattern.container);
+    await expect(
+      inlinePreviews.first().locator("[data-preview-specimen-frame]").first(),
+      `${pattern.name} inline preview must use the canonical specimen sizing`,
+    ).toHaveAttribute("data-preview-sizing", pattern.sizing);
     expect(await inlinePreviews.evaluateAll((previews) => previews.every(
       (preview) => preview.dataset.websitePatternScaleReady === "true",
     ))).toBeTruthy();
@@ -1512,6 +1578,18 @@ test("every implemented Website Pattern has one canonical responsive preview", a
     const handle = dialog.getByRole("slider", { name: "Resize preview from the right" });
     await expect(dialog).toBeVisible();
     await expect(canvas).toHaveAttribute("data-theme", "dark");
+    await expect(canvas, `${pattern.name} dialog must preserve the canonical container`)
+      .toHaveAttribute("data-preview-container", pattern.container);
+    await expect(canvas, `${pattern.name} dialog must preserve the canonical sizing`)
+      .toHaveAttribute("data-preview-sizing", pattern.sizing);
+    await expect(
+      viewport.locator("[data-preview-layout-frame]"),
+      `${pattern.name} dialog must use the shared layout frame`,
+    ).toHaveAttribute("data-preview-container", pattern.container);
+    await expect(
+      viewport.locator("[data-preview-specimen-frame]"),
+      `${pattern.name} dialog must use the canonical specimen sizing`,
+    ).toHaveAttribute("data-preview-sizing", pattern.sizing);
 
     for (const [device, expectedWidth] of [["Tablet", 768], ["Mobile", 390]]) {
       await dialog.locator("[data-preview-controls-toggle]").click();
@@ -1526,23 +1604,31 @@ test("every implemented Website Pattern has one canonical responsive preview", a
     const canvasMetrics = await viewport.evaluate((node) => {
       const content = node.querySelector("[data-preview-content]");
       const target = node.querySelector("[data-ds-preview-target]");
-      if (!(content instanceof HTMLElement) || !(target instanceof HTMLElement)) return null;
+      const frame = node.querySelector("[data-preview-container-frame]");
+      if (!(content instanceof HTMLElement)
+        || !(target instanceof HTMLElement)
+        || !(frame instanceof HTMLElement)) return null;
       const contentRect = content.getBoundingClientRect();
       const targetRect = target.getBoundingClientRect();
+      const frameRect = frame.getBoundingClientRect();
+      const viewportRect = node.getBoundingClientRect();
       return {
         horizontalOverflow: node.scrollWidth - node.clientWidth,
         horizontalOffset: Math.abs(
-          (targetRect.left + targetRect.width / 2) - (contentRect.left + contentRect.width / 2),
+          (targetRect.left + targetRect.width / 2) - (frameRect.left + frameRect.width / 2),
         ),
         verticalOffset: Math.abs(
           (targetRect.top + targetRect.height / 2) - (contentRect.top + contentRect.height / 2),
         ),
         targetFitsVertically: targetRect.height <= contentRect.height + 1,
+        frameFitsViewport: frameRect.left >= viewportRect.left - 1
+          && frameRect.right <= viewportRect.right + 1,
       };
     });
     expect(canvasMetrics, `${pattern.name} must expose a measurable canonical target`).not.toBeNull();
     expect(canvasMetrics.horizontalOverflow, `${pattern.name} must not overflow horizontally at 320px`).toBeLessThanOrEqual(1);
     expect(canvasMetrics.horizontalOffset, `${pattern.name} must be horizontally centered`).toBeLessThanOrEqual(1);
+    expect(canvasMetrics.frameFitsViewport, `${pattern.name} frame must stay inside the 320px canvas`).toBeTruthy();
     if (canvasMetrics.targetFitsVertically) {
       expect(canvasMetrics.verticalOffset, `${pattern.name} must be vertically centered when it fits`).toBeLessThanOrEqual(1);
     }
@@ -1555,12 +1641,199 @@ test("every implemented Website Pattern has one canonical responsive preview", a
     expect(duplicateIds, `${pattern.name} must not duplicate document ids`).toEqual([]);
 
     await page.goto(`${pattern.path}preview/`, { waitUntil: "networkidle" });
+    const routeCanvas = page.locator("[data-ds-responsive-preview]");
+    await expect(routeCanvas, `${pattern.name} /preview must preserve the canonical container`)
+      .toHaveAttribute("data-preview-container", pattern.container);
+    await expect(routeCanvas, `${pattern.name} /preview must preserve the canonical sizing`)
+      .toHaveAttribute("data-preview-sizing", pattern.sizing);
+    await expect(
+      routeCanvas.locator("[data-preview-layout-frame]"),
+      `${pattern.name} /preview must use the shared layout frame`,
+    ).toHaveAttribute("data-preview-container", pattern.container);
+    await expect(
+      routeCanvas.locator("[data-preview-specimen-frame]"),
+      `${pattern.name} /preview must use the canonical specimen sizing`,
+    ).toHaveAttribute("data-preview-sizing", pattern.sizing);
+    if (pattern.sizing === "bounded") {
+      const specimenWidth = await routeCanvas.locator("[data-preview-specimen-frame]")
+        .evaluate((node) => node.getBoundingClientRect().width);
+      expect(specimenWidth, `${pattern.name} bounded frame must not exceed the shared card allocation`)
+        .toBeLessThanOrEqual(518);
+    }
     const routeTargetName = await page.locator("[data-ds-responsive-preview] [data-ds-preview-target]").first()
       .getAttribute("data-component-name");
     expect(routeTargetName, `${pattern.name} dialog and /preview renderer must match`).toBe(inlineTargetName);
   }
 
   expect(runtimeErrors).toEqual([]);
+});
+
+test("standard Website Patterns use the regular inline preview without Scale", async ({ page }) => {
+  test.slow();
+  await page.setViewportSize({ width: 1280, height: 900 });
+
+  for (const pattern of standardWebsitePatterns) {
+    await page.goto(pattern.path, { waitUntil: "networkidle" });
+    const preview = page.locator('[data-ds-interactive-preview][data-preview-category="website-patterns"]').first();
+    await expect(preview, `${pattern.name} must expose the standard inline preview`)
+      .toHaveAttribute("data-preview-presentation", "standard");
+    await expect(preview, `${pattern.name} must not initialize the 1440px scale scene`)
+      .not.toHaveAttribute("data-website-pattern-scale-ready", "true");
+    await expect(page.locator("[data-responsive-preview-trigger]"), `${pattern.name} must not expose Scale`)
+      .toHaveCount(0);
+    await expect(page.locator("dialog[data-responsive-preview-dialog]"), `${pattern.name} must not render a responsive dialog`)
+      .toHaveCount(0);
+  }
+});
+
+test("Website Pattern layout frames align main and full profiles with canvas guides", async ({ page }) => {
+  test.slow();
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/design-system/website-patterns/page-headers/", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Open SectionHeader responsive preview" }).click();
+
+  const dialog = page.locator("dialog[data-responsive-preview-dialog][open]");
+  const canvas = dialog.locator("[data-ds-responsive-preview]");
+  const viewport = dialog.locator("[data-preview-viewport]");
+  const controlsToggle = dialog.locator("[data-preview-controls-toggle]");
+  const handle = dialog.getByRole("slider", { name: "Resize preview from the right" });
+  await dialog.locator("[data-preview-guides-button]").click();
+  await expect(canvas).toHaveAttribute("data-preview-guides", "visible");
+
+  const measureMainFrame = () => viewport.evaluate((node) => {
+    const frame = node.querySelector("[data-preview-container-frame]");
+    const sectionHeader = node.querySelector('[data-component-name="SectionHeader"]');
+    const guideColumns = Array.from(node.querySelectorAll("[data-preview-guide-column]"))
+      .filter((column) => getComputedStyle(column).display !== "none");
+    if (!(frame instanceof HTMLElement)
+      || !(sectionHeader instanceof HTMLElement)
+      || guideColumns.length === 0) return null;
+    const frameRect = frame.getBoundingClientRect();
+    const componentRect = sectionHeader.getBoundingClientRect();
+    const viewportRect = node.getBoundingClientRect();
+    const firstGuideRect = guideColumns[0].getBoundingClientRect();
+    const lastGuideRect = guideColumns.at(-1).getBoundingClientRect();
+    return {
+      viewportWidth: Math.round(viewportRect.width),
+      visibleColumns: guideColumns.length,
+      frameGuideStartDelta: Math.abs(frameRect.left - firstGuideRect.left),
+      frameGuideEndDelta: Math.abs(frameRect.right - lastGuideRect.right),
+      componentFrameWidthDelta: Math.abs(componentRect.width - frameRect.width),
+      componentFrameCenterDelta: Math.abs(
+        (componentRect.left + componentRect.width / 2) - (frameRect.left + frameRect.width / 2),
+      ),
+      componentTouchesViewport: componentRect.left <= viewportRect.left + 1
+        || componentRect.right >= viewportRect.right - 1,
+      horizontalOverflow: node.scrollWidth - node.clientWidth,
+      componentStyle: sectionHeader.getAttribute("style") ?? "",
+    };
+  });
+
+  const assertMainFrame = async (expectedWidth, expectedColumns) => {
+    await expect.poll(() => viewport.evaluate((node) => Math.round(node.getBoundingClientRect().width)))
+      .toBe(expectedWidth);
+    const metrics = await measureMainFrame();
+    expect(metrics).not.toBeNull();
+    expect(metrics.visibleColumns).toBe(expectedColumns);
+    expect(metrics.frameGuideStartDelta).toBeLessThanOrEqual(1);
+    expect(metrics.frameGuideEndDelta).toBeLessThanOrEqual(1);
+    expect(metrics.componentFrameWidthDelta).toBeLessThanOrEqual(1);
+    expect(metrics.componentFrameCenterDelta).toBeLessThanOrEqual(1);
+    expect(metrics.componentTouchesViewport).toBeFalsy();
+    expect(metrics.horizontalOverflow).toBeLessThanOrEqual(1);
+    expect(metrics.componentStyle).not.toMatch(/(?:inline-size|width|padding|max-width|max-inline-size)/u);
+  };
+
+  const desktopWidth = await viewport.evaluate((node) => Math.round(node.getBoundingClientRect().width));
+  await assertMainFrame(desktopWidth, 12);
+
+  for (const [device, width, columns] of [["Tablet", 768, 8], ["Mobile", 390, 4]]) {
+    await controlsToggle.click();
+    await dialog.getByRole("tab", { name: device, exact: true }).click();
+    await controlsToggle.click();
+    await assertMainFrame(width, columns);
+  }
+
+  await handle.focus();
+  await handle.press("Home");
+  await assertMainFrame(320, 4);
+  await page.keyboard.press("Escape");
+
+  for (const pattern of [
+    { name: "FAQ", path: "/design-system/website-patterns/faq/" },
+    { name: "FeatureProof", path: "/design-system/website-patterns/features/feature-proof/" },
+    { name: "Feature5050Centered", path: "/design-system/website-patterns/features/feature-50-50-centered/" },
+    { name: "FeatureSimple", path: "/design-system/website-patterns/features/feature-simple/" },
+    { name: "TopBanner", path: "/design-system/website-patterns/announcements-banners/" },
+  ]) {
+    await page.goto(pattern.path, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: `Open ${pattern.name} responsive preview` }).click();
+    const fullDialog = page.locator("dialog[data-responsive-preview-dialog][open]");
+    const fullViewport = fullDialog.locator("[data-preview-viewport]");
+    await fullDialog.locator("[data-preview-controls-toggle]").click();
+    await fullDialog.getByRole("tab", { name: "Mobile", exact: true }).click();
+    await fullDialog.locator("[data-preview-controls-toggle]").click();
+    await fullDialog.locator("[data-preview-guides-button]").click();
+
+    const metrics = await fullViewport.evaluate((node, componentName) => {
+      const frame = node.querySelector("[data-preview-container-frame]");
+      const component = node.querySelector(`[data-component-name="${componentName}"]`);
+      const visibleGuides = Array.from(node.querySelectorAll("[data-preview-guide-column]"))
+        .filter((column) => getComputedStyle(column).display !== "none");
+      if (!(frame instanceof HTMLElement)
+        || !(component instanceof HTMLElement)
+        || visibleGuides.length === 0) return null;
+      const viewportRect = node.getBoundingClientRect();
+      const frameRect = frame.getBoundingClientRect();
+      const componentRect = component.getBoundingClientRect();
+      const firstGuideRect = visibleGuides[0].getBoundingClientRect();
+      const lastGuideRect = visibleGuides.at(-1).getBoundingClientRect();
+      const internalMain = componentName === "FAQ"
+        ? component.querySelector(".faq__container")
+        : componentName === "FeatureProof"
+          ? component.querySelector(".feature-proof__container")
+          : componentName === "Feature5050Centered"
+            ? component.querySelector(".feature-50-50-centered__content-region")
+          : componentName === "FeatureSimple"
+          ? component.querySelector(".feature-simple__container")
+          : null;
+      const internalMainRect = internalMain instanceof HTMLElement
+        ? internalMain.getBoundingClientRect()
+        : null;
+      const frameStyle = getComputedStyle(frame);
+      const componentStyle = getComputedStyle(component);
+      return {
+        frameViewportWidthDelta: Math.abs(frameRect.width - viewportRect.width),
+        componentViewportWidthDelta: Math.abs(componentRect.width - viewportRect.width),
+        visibleColumns: visibleGuides.length,
+        horizontalOverflow: node.scrollWidth - node.clientWidth,
+        framePaddingInline: Number.parseFloat(frameStyle.paddingInlineStart)
+          + Number.parseFloat(frameStyle.paddingInlineEnd),
+        componentPaddingInline: Number.parseFloat(componentStyle.paddingInlineStart)
+          + Number.parseFloat(componentStyle.paddingInlineEnd),
+        internalGuideStartDelta: internalMainRect
+          ? Math.abs(internalMainRect.left - firstGuideRect.left)
+          : null,
+        internalGuideEndDelta: internalMainRect
+          ? Math.abs(internalMainRect.right - lastGuideRect.right)
+          : null,
+      };
+    }, pattern.name);
+
+    expect(metrics, `${pattern.name} must expose a measurable full frame`).not.toBeNull();
+    expect(metrics.frameViewportWidthDelta).toBeLessThanOrEqual(1);
+    expect(metrics.componentViewportWidthDelta).toBeLessThanOrEqual(1);
+    expect(metrics.visibleColumns).toBe(4);
+    expect(metrics.horizontalOverflow).toBeLessThanOrEqual(1);
+    expect(metrics.framePaddingInline).toBe(0);
+    if (pattern.name === "FAQ" || pattern.name === "FeatureProof" || pattern.name === "Feature5050Centered" || pattern.name === "FeatureSimple") {
+      expect(metrics.internalGuideStartDelta).toBeLessThanOrEqual(1);
+      expect(metrics.internalGuideEndDelta).toBeLessThanOrEqual(1);
+    } else {
+      expect(metrics.componentPaddingInline).toBeGreaterThan(0);
+    }
+    await page.keyboard.press("Escape");
+  }
 });
 
 test("FAQ inline Website Pattern preview scales a desktop canvas while the dialog stays 1:1", async ({ page }) => {
@@ -1810,6 +2083,239 @@ test("FAQ coordinates keyboard disclosure modes and container reflow", async ({ 
     } else {
       expect(metrics.detailsLeft).toBeGreaterThan(metrics.introLeft);
       expect(metrics.detailsTop).toBeLessThan(metrics.introBottom);
+    }
+  }
+});
+
+test("Feature5050Centered maps controls, preserves source order and reflows at its container", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 800 });
+  await page.goto("/design-system/website-patterns/features/feature-50-50-centered/", { waitUntil: "networkidle" });
+
+  const visibleFeature = () => page.locator('[data-component-name="Feature5050Centered"]:visible').first();
+  let feature = visibleFeature();
+  await expect(feature).toHaveAttribute("data-feature-50-50-centered-visual-position", "right");
+
+  const sourceOrder = async () => feature.evaluate((node) => {
+    const content = node.querySelector(".feature-50-50-centered__content-region");
+    const visual = node.querySelector(".feature-50-50-centered__visual");
+    if (!(content instanceof HTMLElement) || !(visual instanceof HTMLElement)) return null;
+    return content.compareDocumentPosition(visual) & Node.DOCUMENT_POSITION_FOLLOWING
+      ? "content-visual"
+      : "visual-content";
+  });
+  expect(await sourceOrder()).toBe("content-visual");
+
+  const rightRadii = await feature.locator(".feature-50-50-centered__visual").evaluate((node) => {
+    const style = getComputedStyle(node);
+    return {
+      startStart: style.borderStartStartRadius,
+      startEnd: style.borderStartEndRadius,
+      endStart: style.borderEndStartRadius,
+      endEnd: style.borderEndEndRadius,
+    };
+  });
+  expect(rightRadii.startStart).not.toBe("0px");
+  expect(rightRadii.endStart).not.toBe("0px");
+  expect(rightRadii.startEnd).toBe("0px");
+  expect(rightRadii.endEnd).toBe("0px");
+
+  await page.locator('[data-ds-preview-control][data-axis-id="feature5050CenteredVisualPosition"][data-axis-value="left"]').click();
+  feature = visibleFeature();
+  await expect(feature).toHaveAttribute("data-feature-50-50-centered-visual-position", "left");
+  expect(await sourceOrder()).toBe("content-visual");
+
+  const leftRadii = await feature.locator(".feature-50-50-centered__visual").evaluate((node) => {
+    const style = getComputedStyle(node);
+    return {
+      startStart: style.borderStartStartRadius,
+      startEnd: style.borderStartEndRadius,
+      endStart: style.borderEndStartRadius,
+      endEnd: style.borderEndEndRadius,
+    };
+  });
+  expect(leftRadii.startStart).toBe("0px");
+  expect(leftRadii.endStart).toBe("0px");
+  expect(leftRadii.startEnd).not.toBe("0px");
+  expect(leftRadii.endEnd).not.toBe("0px");
+
+  for (const [axis, selector] of [
+    ["feature5050CenteredEyebrow", '[data-component-name="Eyebrow"]'],
+    ["feature5050CenteredParagraph", ".content__paragraph"],
+    ["feature5050CenteredBulletPoints", ".feature-50-50-centered__bullet-points"],
+    ["feature5050CenteredActions", ".feature-50-50-centered__actions"],
+  ]) {
+    await page.locator(`[data-ds-preview-control][data-axis-id="${axis}"][data-axis-value="hidden"]`).click();
+    await expect(feature.locator(selector)).toBeHidden();
+    await page.locator(`[data-ds-preview-control][data-axis-id="${axis}"][data-axis-value="visible"]`).click();
+    await expect(feature.locator(selector)).toBeVisible();
+  }
+
+  for (const width of [320, 768, 1023, 1024, 1440]) {
+    const metrics = await feature.evaluate((node, assignedWidth) => {
+      node.style.inlineSize = `${assignedWidth}px`;
+      const content = node.querySelector(".feature-50-50-centered__content-region");
+      const stack = node.querySelector(".feature-50-50-centered__content-stack");
+      const visual = node.querySelector(".feature-50-50-centered__visual");
+      if (!(content instanceof HTMLElement) || !(stack instanceof HTMLElement) || !(visual instanceof HTMLElement)) {
+        throw new Error("Feature5050Centered regions are missing.");
+      }
+      const rootBox = node.getBoundingClientRect();
+      const contentBox = content.getBoundingClientRect();
+      const stackBox = stack.getBoundingClientRect();
+      const visualBox = visual.getBoundingClientRect();
+      return {
+        rootLeft: rootBox.left,
+        rootRight: rootBox.right,
+        contentLeft: contentBox.left,
+        contentRight: contentBox.right,
+        contentBottom: contentBox.bottom,
+        stackCenterDelta: Math.abs((stackBox.top + stackBox.height / 2) - (rootBox.top + rootBox.height / 2)),
+        visualLeft: visualBox.left,
+        visualRight: visualBox.right,
+        visualTop: visualBox.top,
+        visualRadius: getComputedStyle(visual).borderStartStartRadius,
+        overflow: node.scrollWidth - node.clientWidth,
+      };
+    }, width);
+
+    expect(metrics.overflow).toBeLessThanOrEqual(1);
+    if (width < 1024) {
+      expect(metrics.visualTop).toBeGreaterThanOrEqual(metrics.contentBottom);
+      expect(Math.abs(metrics.visualLeft - metrics.rootLeft)).toBeLessThanOrEqual(1);
+      expect(Math.abs(metrics.visualRight - metrics.rootRight)).toBeLessThanOrEqual(1);
+      expect(metrics.visualRadius).toBe("0px");
+    } else {
+      expect(metrics.visualRight).toBeLessThanOrEqual(metrics.contentLeft + 1);
+      expect(metrics.stackCenterDelta).toBeLessThanOrEqual(2);
+    }
+  }
+});
+
+test("FeatureSimple maps preview controls, source order and container reflow", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/design-system/website-patterns/features/feature-simple/", { waitUntil: "networkidle" });
+
+  const visibleFeature = () => page.locator('[data-component-name="FeatureSimple"]:visible').first();
+  let feature = visibleFeature();
+  await expect(feature).toHaveAttribute("data-feature-simple-visual-position", "right");
+
+  const sourceOrder = async () => feature.evaluate((node) => {
+    const content = node.querySelector(".feature-simple__content");
+    const visual = node.querySelector(".feature-simple__visual");
+    if (!(content instanceof HTMLElement) || !(visual instanceof HTMLElement)) return null;
+    return content.compareDocumentPosition(visual) & Node.DOCUMENT_POSITION_FOLLOWING
+      ? "content-visual"
+      : "visual-content";
+  });
+  expect(await sourceOrder()).toBe("content-visual");
+
+  await page.locator('[data-ds-preview-control][data-axis-id="featureSimpleVisualPosition"][data-axis-value="left"]').click();
+  feature = visibleFeature();
+  await expect(feature).toHaveAttribute("data-feature-simple-visual-position", "left");
+  expect(await sourceOrder()).toBe("visual-content");
+
+  await page.locator('[data-ds-preview-control][data-axis-id="featureSimpleContentAlign"][data-axis-value="centered"]').click();
+  await expect(feature.locator('[data-component-name="Content"]')).toHaveAttribute("data-content-align", "centered");
+  await page.locator('[data-ds-preview-select][data-axis-id="featureSimpleRatio"]').selectOption("16:9");
+  await expect(feature.locator('[data-component-name="Ratio"]')).toHaveAttribute("data-ratio", "16:9");
+
+  for (const width of [320, 768, 1024, 1440]) {
+    const metrics = await feature.evaluate((node, assignedWidth) => {
+      node.style.inlineSize = `${assignedWidth}px`;
+      const content = node.querySelector(".feature-simple__content");
+      const visual = node.querySelector(".feature-simple__visual");
+      if (!(content instanceof HTMLElement) || !(visual instanceof HTMLElement)) {
+        throw new Error("FeatureSimple regions are missing.");
+      }
+      const contentBox = content.getBoundingClientRect();
+      const visualBox = visual.getBoundingClientRect();
+      return {
+        contentLeft: contentBox.left,
+        contentTop: contentBox.top,
+        contentCenter: contentBox.top + contentBox.height / 2,
+        visualLeft: visualBox.left,
+        visualBottom: visualBox.bottom,
+        visualCenter: visualBox.top + visualBox.height / 2,
+        overflow: node.scrollWidth - node.clientWidth,
+      };
+    }, width);
+
+    expect(metrics.overflow).toBeLessThanOrEqual(1);
+    if (width < 1024) {
+      expect(metrics.contentTop).toBeGreaterThanOrEqual(metrics.visualBottom);
+      expect(Math.abs(metrics.contentLeft - metrics.visualLeft)).toBeLessThanOrEqual(1);
+    } else {
+      expect(metrics.contentLeft).toBeGreaterThan(metrics.visualLeft);
+      expect(metrics.contentTop).toBeLessThan(metrics.visualBottom);
+      expect(Math.abs(metrics.contentCenter - metrics.visualCenter)).toBeLessThanOrEqual(2);
+    }
+  }
+});
+
+test("FeatureProof maps proof controls, source order and container reflow", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1200 });
+  await page.goto("/design-system/website-patterns/features/feature-proof/", { waitUntil: "networkidle" });
+
+  const visibleFeature = () => page.locator('[data-component-name="FeatureProof"]:visible').first();
+  let feature = visibleFeature();
+  await expect(feature).toHaveAttribute("data-feature-proof-visual-position", "right");
+  await expect(feature.locator('[data-component-name="Ratio"]')).toHaveAttribute("data-ratio", "1:1");
+
+  const sourceOrder = async () => feature.evaluate((node) => {
+    const content = node.querySelector(".feature-proof__content");
+    const visual = node.querySelector(".feature-proof__visual");
+    if (!(content instanceof HTMLElement) || !(visual instanceof HTMLElement)) return null;
+    return content.compareDocumentPosition(visual) & Node.DOCUMENT_POSITION_FOLLOWING
+      ? "content-visual"
+      : "visual-content";
+  });
+  expect(await sourceOrder()).toBe("content-visual");
+
+  await page.locator('[data-ds-preview-control][data-axis-id="featureProofVisualPosition"][data-axis-value="left"]').click();
+  feature = visibleFeature();
+  await expect(feature).toHaveAttribute("data-feature-proof-visual-position", "left");
+  expect(await sourceOrder()).toBe("visual-content");
+
+  for (const [axis, selector] of [
+    ["featureProofEyebrow", '[data-component-name="Eyebrow"]'],
+    ["featureProofParagraph", ".content__paragraph"],
+    ["featureProofActions", ".content__actions"],
+    ["featureProofKeyPoints", ".feature-proof__key-points"],
+    ["featureProofLogoProof", ".feature-proof__logo-proof"],
+    ["featureProofSupportingDetails", ".feature-proof__supporting-details"],
+  ]) {
+    await page.locator(`[data-ds-preview-control][data-axis-id="${axis}"][data-axis-value="hidden"]`).click();
+    await expect(feature.locator(selector)).toBeHidden();
+    await page.locator(`[data-ds-preview-control][data-axis-id="${axis}"][data-axis-value="visible"]`).click();
+    await expect(feature.locator(selector)).toBeVisible();
+  }
+
+  for (const width of [320, 768, 1024, 1440]) {
+    const metrics = await feature.evaluate((node, assignedWidth) => {
+      node.style.inlineSize = `${assignedWidth}px`;
+      const content = node.querySelector(".feature-proof__content");
+      const visual = node.querySelector(".feature-proof__visual");
+      if (!(content instanceof HTMLElement) || !(visual instanceof HTMLElement)) {
+        throw new Error("FeatureProof regions are missing.");
+      }
+      const contentBox = content.getBoundingClientRect();
+      const visualBox = visual.getBoundingClientRect();
+      return {
+        contentLeft: contentBox.left,
+        contentTop: contentBox.top,
+        visualLeft: visualBox.left,
+        visualBottom: visualBox.bottom,
+        overflow: node.scrollWidth - node.clientWidth,
+      };
+    }, width);
+
+    expect(metrics.overflow).toBeLessThanOrEqual(1);
+    if (width < 1024) {
+      expect(metrics.contentTop).toBeGreaterThanOrEqual(metrics.visualBottom);
+      expect(Math.abs(metrics.contentLeft - metrics.visualLeft)).toBeLessThanOrEqual(1);
+    } else {
+      expect(metrics.contentLeft).toBeGreaterThan(metrics.visualLeft);
+      expect(metrics.contentTop).toBeLessThan(metrics.visualBottom);
     }
   }
 });

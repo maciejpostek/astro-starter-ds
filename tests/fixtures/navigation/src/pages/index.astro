@@ -1,0 +1,71 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import CompactSelect, { type SelectOption } from "../../../../../src/components/base-components/select/CompactSelect.astro";
+import MegaMenu from "../../../../../src/components/website-patterns/navigation/MegaMenu.astro";
+import MegaMenuPrimaryLink from "../../../../../src/components/website-patterns/navigation/MegaMenuPrimaryLink.astro";
+import MegaMenuSecondaryLink from "../../../../../src/components/website-patterns/navigation/MegaMenuSecondaryLink.astro";
+import NavDropdown from "../../../../../src/components/website-patterns/navigation/NavDropdown.astro";
+import NavDropdownLink from "../../../../../src/components/website-patterns/navigation/NavDropdownLink.astro";
+import NavLink from "../../../../../src/components/website-patterns/navigation/NavLink.astro";
+import Navigation from "../../../../../src/components/website-patterns/navigation/Navigation.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const languageOptions: SelectOption[] = [
+  { value: "en", label: "English" },
+  { value: "pl", label: "Polski" },
+];
+const modes = ["standard", "menu"] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Navigation contract fixture</title>
+  </head>
+  <body>
+    {modes.map((desktopMode, index) => (
+      <div dir={index === 1 ? "rtl" : "ltr"}>
+        <Navigation
+          id={`fixture-navigation-${desktopMode}`}
+          label={`${desktopMode} primary navigation`}
+          openMenuLabel="Open navigation"
+          closeMenuLabel="Close navigation"
+          desktopMode={desktopMode}
+        >
+          <a slot="brand" href={`#home-${desktopMode}`}>Example</a>
+          <NavLink slot="menu" href={`#overview-${desktopMode}`} aria-current="page">Overview</NavLink>
+          <NavDropdown slot="menu" id={`fixture-dropdown-${desktopMode}`} label="Solutions and professional services">
+            <NavDropdownLink href={`#consulting-${desktopMode}`} description="A deliberately longer localized supporting description.">Consulting</NavDropdownLink>
+            <NavDropdownLink href={`#delivery-${desktopMode}`}>Delivery</NavDropdownLink>
+          </NavDropdown>
+          <MegaMenu
+            slot="menu"
+            id={`fixture-mega-${desktopMode}`}
+            label="Resources"
+            primaryLabel="Explore"
+            secondaryLabel="Learn"
+            tertiaryLabel="Company"
+          >
+            <MegaMenuPrimaryLink slot="primary" href={`#guides-${desktopMode}`} description="Practical foundations.">Guides</MegaMenuPrimaryLink>
+            <MegaMenuSecondaryLink slot="secondary" href={`#docs-${desktopMode}`}>Documentation</MegaMenuSecondaryLink>
+            <MegaMenuSecondaryLink slot="tertiary" href={`#about-${desktopMode}`}>About</MegaMenuSecondaryLink>
+          </MegaMenu>
+          <CompactSelect
+            slot="language"
+            id={`fixture-language-${desktopMode}`}
+            name={`fixture-language-${desktopMode}`}
+            aria-label="Language"
+            options={languageOptions}
+            purpose="language"
+            value="en"
+          />
+          <Button slot="action">Get started</Button>
+        </Navigation>
+        <main id={`home-${desktopMode}`}><h1>{desktopMode} fixture</h1></main>
+      </div>
+    ))}
+  </body>
+</html>

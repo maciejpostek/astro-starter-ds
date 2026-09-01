@@ -1,0 +1,33 @@
+---
+import Swiper from "../../../../../src/components/website-patterns/sliders-carousels/Swiper.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const slides = ["One", "Two", "Three", "Four", "Five", "Six"];
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><title>Swiper fixture</title></head>
+  <body>
+    <main>
+      <Swiper
+        aria-label="Fixture carousel"
+        slidesPerView={1}
+        slidesPerViewTablet={2}
+        slidesPerViewDesktop={3.5}
+        gap="small"
+        gapTablet="regular"
+        gapDesktop="large"
+        navigation
+        pagination="fraction"
+        scrollbar
+        speed={600}
+        easing="premium-out"
+        data-forwarded="yes"
+      >
+        {slides.map((slide) => <article data-swiper-slide>{slide}</article>)}
+      </Swiper>
+    </main>
+  </body>
+</html>

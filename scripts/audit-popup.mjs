@@ -99,7 +99,20 @@ for (const axis of ["popupStatus", "popupAlignment", "popupCancel", "popupPrefer
 }
 requireMatch(docs, /componentId: "popup"/u, "Popup documentation adapter is missing.");
 requireMatch(preview, /data-component-name="DsPopupPreview"/u, "Popup preview Guides identity is missing.");
-requireMatch(responsiveRegistry, /base-components-popup-popup/u, "Popup responsive preview is missing.");
+if (/longContent|direction\?:|dir=\{direction\}/u.test(preview)
+  || /popup:\s*\{[^}]*longContent|popup:\s*\{[^}]*direction/u.test(responsiveRegistry)) {
+  errors.push("Popup responsive route must reuse canonical preview content; long-copy and RTL stress belong in automated fixtures.");
+}
+requireMatch(
+  responsiveRegistry,
+  /const baseResponsivePreviewIds = new Set\(\[[\s\S]*?"popup"/u,
+  "Popup is missing from the generated responsive Base Component registry.",
+);
+requireMatch(
+  responsiveRegistry,
+  /id: `\$\{component\.categoryKey\}-\$\{component\.pageKey\}-\$\{component\.id\}`/u,
+  "Responsive preview IDs must remain generated from architecture records.",
+);
 if (!readiness.previewBoundaryComponents?.includes("DsPopupPreview")) errors.push("DsPopupPreview is missing from the readiness boundary contract.");
 
 const benchmark = brand.rules?.find((candidate) => candidate.id === "popup.align-benchmark");

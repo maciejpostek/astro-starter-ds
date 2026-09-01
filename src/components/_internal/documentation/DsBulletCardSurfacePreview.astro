@@ -2,6 +2,13 @@
 import BulletCardSurface from "../../website-patterns/bullet-points/BulletCardSurface.astro";
 import Button from "../../base-components/buttons/Button.astro";
 import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-bullet-card-surface" } = Astro.props;
+const previewId = `${idPrefix}-preview`;
 ---
 
 <div
@@ -14,21 +21,15 @@ import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
   data-bullet-card-visual="visible"
 >
   <BulletCardSurface
-    id="bullet-card-surface-preview"
+    id={previewId}
     title="Benefit title"
     description="Explain the customer benefit in one or two concise sentences."
   >
     <Fragment slot="actions">
       <Button showIcon={false}>Get started</Button>
-      <ButtonLink href="#bullet-card-surface-preview">Learn more</ButtonLink>
+      <ButtonLink href={`#${previewId}`}>Learn more</ButtonLink>
     </Fragment>
-    <img
-      slot="visual"
-      src="/images/project-placeholder.svg"
-      alt="Abstract project preview"
-      width="800"
-      height="600"
-    />
+    <span slot="visual" aria-hidden="true"></span>
   </BulletCardSurface>
 </div>
 
@@ -36,6 +37,5 @@ import ButtonLink from "../../base-components/buttons/ButtonLink.astro";
   .bullet-card-surface-preview {
     inline-size: 100%;
     min-inline-size: 0;
-    max-inline-size: 100%;
   }
 </style>

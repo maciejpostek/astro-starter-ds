@@ -54,11 +54,19 @@ test("keeps the approved SectionHeader API, Figma and documentation contract", a
   assert.match(source, /heading: string/u);
   assert.match(source, /eyebrow: string/u);
   assert.match(source, /paragraph: string/u);
-  assert.match(source, /headingLevel\?: 2 \| 3 \| 4 \| 5 \| 6/u);
+  assert.match(source, /headingLevel\?: 1 \| 2 \| 3 \| 4 \| 5 \| 6/u);
   assert.match(source, /data-component-name="SectionHeader"/u);
   assert.match(source, /data-section-header-composition=\{composition\}/u);
   assert.match(source, /<ButtonGroup aria-labelledby=\{headingId\}>/u);
   assert.match(source, /@container section-header \(min-width: 64rem\)/u);
+  assert.match(
+    source,
+    /margin-block-end:\s*var\(--space-section-header-bottom\)/u,
+  );
+  assert.match(
+    source,
+    /@container section-header \(min-width: 64rem\)[\s\S]*?\.section-header__layout\s*\{[^}]*align-items:\s*end;/u,
+  );
   assert.doesNotMatch(source, /#[0-9a-f]{3,8}\b|--section-header-[a-z0-9-]+\s*:/iu);
   assert.doesNotMatch(source, /<script\b|client:(?:load|idle|visible|media|only)/u);
 
@@ -67,7 +75,7 @@ test("keeps the approved SectionHeader API, Figma and documentation contract", a
     "SectionHeader eyebrow must be a non-empty string.",
     "SectionHeader paragraph must be a non-empty string.",
     'SectionHeader composition must be "copy-actions", "heading-details", or "eyebrow-heading-details".',
-    "SectionHeader headingLevel must be an integer from 2 to 6.",
+    "SectionHeader headingLevel must be an integer from 1 to 6.",
   ]) {
     assert.ok(source.includes(message), `missing runtime validation: ${message}`);
   }
@@ -150,7 +158,7 @@ test("renders three compositions with semantic headings, optional actions and no
       /data-section-header-composition="eyebrow-heading-details"/u,
     );
 
-    assert.match(headers[0].groups.content, /<h2[^>]*id="section-header-copy-heading"/u);
+    assert.match(headers[0].groups.content, /<h1[^>]*id="section-header-copy-heading"/u);
     assert.match(headers[1].groups.content, /<h3[^>]*>/u);
     assert.match(headers[2].groups.content, /<h4[^>]*>/u);
     assert.equal((html.match(/data-component-name="ButtonGroup"/gu) ?? []).length, 2);
@@ -160,7 +168,7 @@ test("renders three compositions with semantic headings, optional actions and no
     for (const header of headers) {
       const content = header.groups.content;
       const eyebrowIndex = content.indexOf('data-component-name="Eyebrow"');
-      const headingIndex = content.search(/<h[2-6]\b/u);
+      const headingIndex = content.search(/<h[1-6]\b/u);
       const paragraphIndex = content.indexOf("section-header__paragraph");
       const actionsIndex = content.indexOf('data-component-name="ButtonGroup"');
       assert.ok(eyebrowIndex >= 0 && headingIndex > eyebrowIndex);
@@ -190,7 +198,7 @@ test("rejects empty content, unknown compositions and invalid heading levels", a
       "composition",
       /SectionHeader composition must be "copy-actions", "heading-details", or "eyebrow-heading-details"\./u,
     ],
-    ["headingLevel", /SectionHeader headingLevel must be an integer from 2 to 6\./u],
+    ["headingLevel", /SectionHeader headingLevel must be an integer from 1 to 6\./u],
   ];
 
   for (const [invalidCase, expectedError] of cases) {

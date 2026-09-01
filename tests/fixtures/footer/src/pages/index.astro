@@ -1,0 +1,61 @@
+---
+import ButtonLink from "../../../../../src/components/base-components/buttons/ButtonLink.astro";
+import Footer from "../../../../../src/components/website-patterns/footer/Footer.astro";
+import FooterGroup from "../../../../../src/components/website-patterns/footer/FooterGroup.astro";
+import FooterLabel from "../../../../../src/components/website-patterns/footer/FooterLabel.astro";
+import FooterLink from "../../../../../src/components/website-patterns/footer/FooterLink.astro";
+import FooterNewsletterForm from "../../../../../src/components/website-patterns/footer/FooterNewsletterForm.astro";
+import FooterSocialLink from "../../../../../src/components/website-patterns/footer/FooterSocialLink.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Footer contract fixture</title>
+  </head>
+  <body>
+    <Footer heading="Stay up to date" copyright="© 2026 Example">
+      <FooterNewsletterForm
+        slot="action"
+        id="fixture-newsletter"
+        action="/newsletter"
+        emailLabel="Email address"
+        emailPlaceholder="name@example.com"
+        submitLabel="Subscribe"
+      >
+        <a slot="consent" href="/privacy">Privacy policy</a>
+      </FooterNewsletterForm>
+      <FooterGroup id="fixture-product" label="Product" headingLevel={3}>
+        <FooterLink href="/overview" aria-current="page">Overview</FooterLink>
+        <FooterLink href="/pricing" lang="en">Pricing</FooterLink>
+      </FooterGroup>
+      <FooterGroup id="fixture-company" label="Company" headingLevel={3}>
+        <FooterLink href="/about">About</FooterLink>
+        <FooterSocialLink href="/linkedin" platform="linkedin" label="LinkedIn" presentation="labelled" />
+      </FooterGroup>
+      <FooterSocialLink slot="social" href="/instagram" platform="instagram" label="Instagram" presentation="icon-only" />
+      <span slot="brand">Example</span>
+      <FooterLink slot="legal" href="/terms" variant="legal">Terms</FooterLink>
+      <FooterLink slot="legal" href="/privacy" variant="legal">Privacy</FooterLink>
+    </Footer>
+
+    <Footer heading="Let’s work together" headingLevel={3} copyright="© 2026 Example">
+      <ButtonLink slot="action" href="/contact">Contact us</ButtonLink>
+      <FooterGroup id="fixture-cta-links" label="Explore" headingLevel={4}>
+        <FooterLink href="/work">Work</FooterLink>
+      </FooterGroup>
+    </Footer>
+
+    <Footer copyright="© 2026 Example">
+      <FooterGroup id="fixture-simple-links" label="Resources" headingLevel={2}>
+        <FooterLink href="/guides">Guides</FooterLink>
+      </FooterGroup>
+    </Footer>
+
+    <div hidden><FooterLabel text="Standalone label" headingLevel={5} /></div>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes, HTMLTag } from "astro/types";
-import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import StatTextInline from "../stats-metrics/StatTextInline.astro";
 
 export type BulletVisualCardHeadingLevel = 2 | 3 | 4 | 5 | 6;
 
@@ -73,14 +73,12 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
       )}
 
       {stat && (
-        <p class="bullet-visual-card__stat body-small-regular">
-          <span>{stat}</span>
-          <MaterialSymbol
-            class="bullet-visual-card__stat-icon"
-            name="trending_up"
-            size="var(--bullet-visual-card-stat-icon-size)"
-          />
-        </p>
+        <StatTextInline
+          class="bullet-visual-card__stat"
+          text={stat}
+          trend="up"
+          iconPosition="trailing"
+        />
       )}
     </div>
 
@@ -144,25 +142,12 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
     overflow-wrap: var(--overflow-wrap-break-word);
   }
 
-  .bullet-visual-card__title,
-  .bullet-visual-card__stat {
+  .bullet-visual-card__title {
     color: var(--color-text-primary);
   }
 
   .bullet-visual-card__description {
     color: var(--color-text-secondary);
-  }
-
-  .bullet-visual-card__stat {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--gap-small);
-  }
-
-  .bullet-visual-card__stat-icon {
-    flex: 0 0 auto;
-    color: var(--color-icon-accent);
   }
 
   .bullet-visual-card__tags,
@@ -183,9 +168,4 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
     max-inline-size: 100%;
   }
 
-  @media (forced-colors: active) {
-    .bullet-visual-card__stat-icon {
-      color: CanvasText;
-    }
-  }
 </style>

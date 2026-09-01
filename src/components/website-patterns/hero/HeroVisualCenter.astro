@@ -1,0 +1,142 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import Content from "../content/Content.astro";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "class"> {
+  heading: string;
+  eyebrow: string;
+  paragraph?: string;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  headingLevel = 1,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("HeroVisualCenter heading must be a non-empty string.");
+}
+if (typeof eyebrow !== "string" || eyebrow.trim().length === 0) {
+  throw new TypeError("HeroVisualCenter eyebrow must be a non-empty string.");
+}
+if (paragraph !== undefined && (typeof paragraph !== "string" || paragraph.trim().length === 0)) {
+  throw new TypeError("HeroVisualCenter paragraph must be a non-empty string when provided.");
+}
+if (![1, 2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("HeroVisualCenter headingLevel must be an integer from 1 to 6.");
+}
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("HeroVisualCenter requires visual content in its visual slot.");
+}
+
+const rootId = id || `hero-visual-center-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const hasActions = Astro.slots.has("actions");
+const hasBulletPoints = Astro.slots.has("bulletPoints");
+const contentProps = {
+  id: contentId,
+  heading,
+  eyebrow,
+  paragraph,
+  align: "centered" as const,
+  headingLevel,
+};
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["hero-visual-center", "l-section", className]}
+  data-padding="hero-top"
+  data-component-name="HeroVisualCenter"
+  aria-labelledby={headingId}
+>
+  <div class="hero-visual-center__container l-container" data-container="main">
+    <div class="hero-visual-center__layout l-grid" data-grid="site" data-gap="site">
+      <div class="hero-visual-center__content">
+        {hasActions ? (
+          <Content {...contentProps}>
+            <Fragment slot="actions">
+              <slot name="actions" />
+            </Fragment>
+          </Content>
+        ) : (
+          <Content {...contentProps} />
+        )}
+      </div>
+
+      {hasBulletPoints && (
+        <ul class="hero-visual-center__bullet-points" aria-labelledby={headingId}>
+          <slot name="bulletPoints" />
+        </ul>
+      )}
+
+      <div class="hero-visual-center__visual">
+        <Ratio ratio="16:9">
+          <slot name="visual" />
+        </Ratio>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-visual-center {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    background: var(--color-background-canvas);
+    container: hero-visual-center / inline-size;
+  }
+
+  .hero-visual-center__container,
+  .hero-visual-center__layout,
+  .hero-visual-center__content,
+  .hero-visual-center__bullet-points,
+  .hero-visual-center__visual {
+    min-inline-size: 0;
+  }
+
+  .hero-visual-center__content {
+    grid-column: 1 / -1;
+    inline-size:
+      calc(
+        ((100% - (11 * var(--site-grid-column-gap))) / 12 * 5) +
+        (4 * var(--site-grid-column-gap))
+      );
+    justify-self: center;
+  }
+
+  .hero-visual-center__bullet-points {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--gap-large);
+    margin: var(--space-large) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-visual-center__visual {
+    grid-column: 2 / span 10;
+    margin-block-start: var(--space-xlarge);
+  }
+
+  @container hero-visual-center (width < 64rem) {
+    .hero-visual-center__content,
+    .hero-visual-center__visual {
+      grid-column: 1 / -1;
+      inline-size: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
+import Button from "../../base-components/buttons/Button.astro";
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import FeatureProof, {
+  type FeatureProofVisualPosition,
+} from "../../website-patterns/features/FeatureProof.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-feature-proof" } = Astro.props;
+const positions = ["right", "left"] as const satisfies ReadonlyArray<FeatureProofVisualPosition>;
+---
+
+<div
+  class="feature-proof-preview"
+  data-component-name="DsFeatureProofPreview"
+  data-feature-proof-preview
+  data-ds-preview-target
+>
+  {positions.map((visualPosition, index) => (
+    <div
+      class="feature-proof-preview__variant"
+      data-feature-proof-preview-variant={visualPosition}
+      hidden={index !== 0}
+    >
+      <FeatureProof
+        id={`${idPrefix}-${visualPosition}`}
+        heading="Evidence that stays connected to the feature claim"
+        eyebrow="Feature proof"
+        paragraph="Combine a focused explanation with tangible benefits, recognizable proof and supporting details."
+        visualPosition={visualPosition}
+        logoProofTitle="Used by teams at"
+        supportingDetailsTitle="Supporting details"
+      >
+        <Button slot="actions">Explore the feature</Button>
+        <Button slot="actions" variant="secondary">View evidence</Button>
+
+        <BulletPoint slot="keyPoints" text="Faster decisions with shared context" />
+        <BulletPoint slot="keyPoints" text="A repeatable workflow across teams" />
+        <BulletPoint slot="keyPoints" text="Accessible by default" />
+
+        <LogoAsset slot="logos" slug="github" variant="mark" alt="GitHub" />
+        <LogoAsset slot="logos" slug="figma" variant="mark" alt="Figma" />
+        <LogoAsset slot="logos" slug="medium" variant="mark" alt="Medium" />
+
+        <BulletPoint slot="supportingDetails" text="No duplicated dependencies" />
+        <BulletPoint slot="supportingDetails" text="Responsive without hydration" />
+
+        <span slot="visual" aria-hidden="true"></span>
+      </FeatureProof>
+    </div>
+  ))}
+</div>
+
+<script>
+  type FeatureProofPreviewState = {
+    visualPosition: "left" | "right";
+    eyebrow: "visible" | "hidden";
+    paragraph: "visible" | "hidden";
+    actions: "visible" | "hidden";
+    keyPoints: "visible" | "hidden";
+    logoProof: "visible" | "hidden";
+    supportingDetails: "visible" | "hidden";
+  };
+
+  const initializeFeatureProofPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-feature-proof-preview]").forEach((preview) => {
+      if (preview.dataset.featureProofPreviewReady === "true") return;
+      preview.dataset.featureProofPreviewReady = "true";
+
+      const state: FeatureProofPreviewState = {
+        visualPosition: "right",
+        eyebrow: "visible",
+        paragraph: "visible",
+        actions: "visible",
+        keyPoints: "visible",
+        logoProof: "visible",
+        supportingDetails: "visible",
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>("[data-feature-proof-preview-variant]").forEach((variant) => {
+          variant.hidden = variant.dataset.featureProofPreviewVariant !== state.visualPosition;
+          variant.querySelectorAll<HTMLElement>('[data-component-name="Eyebrow"]').forEach((node) => {
+            node.hidden = state.eyebrow === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".content__paragraph").forEach((node) => {
+            node.hidden = state.paragraph === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".content__actions").forEach((node) => {
+            node.hidden = state.actions === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".feature-proof__key-points").forEach((node) => {
+            node.hidden = state.keyPoints === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".feature-proof__logo-proof").forEach((node) => {
+            node.hidden = state.logoProof === "hidden";
+          });
+          variant.querySelectorAll<HTMLElement>(".feature-proof__supporting-details").forEach((node) => {
+            node.hidden = state.supportingDetails === "hidden";
+          });
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "featureProofVisualPosition" && (value === "left" || value === "right")) state.visualPosition = value;
+          if (axisId === "featureProofEyebrow" && (value === "visible" || value === "hidden")) state.eyebrow = value;
+          if (axisId === "featureProofParagraph" && (value === "visible" || value === "hidden")) state.paragraph = value;
+          if (axisId === "featureProofActions" && (value === "visible" || value === "hidden")) state.actions = value;
+          if (axisId === "featureProofKeyPoints" && (value === "visible" || value === "hidden")) state.keyPoints = value;
+          if (axisId === "featureProofLogoProof" && (value === "visible" || value === "hidden")) state.logoProof = value;
+          if (axisId === "featureProofSupportingDetails" && (value === "visible" || value === "hidden")) state.supportingDetails = value;
+          render();
+        });
+    });
+  };
+
+  initializeFeatureProofPreviews();
+  document.addEventListener("astro:page-load", initializeFeatureProofPreviews);
+</script>
+
+<style>
+  .feature-proof-preview,
+  .feature-proof-preview__variant {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  :global([data-theme="dark"]) .feature-proof-preview :global([data-component-name="LogoAsset"]) {
+    filter: invert(1);
+  }
+</style>

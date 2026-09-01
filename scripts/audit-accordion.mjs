@@ -24,7 +24,6 @@ const accordionRule = read(".agentic-rules/components/accordion.md");
 const listRule = read(".agentic-rules/components/accordion-list.md");
 const docs = read("src/data/documentationComponentRegistry.ts");
 const accordionPreview = read("src/components/_internal/documentation/DsAccordionPreview.astro");
-const accordionProgressPreview = read("src/components/_internal/documentation/DsAccordionProgressPreview.astro");
 const listPreview = read("src/components/_internal/documentation/DsAccordionListPreview.astro");
 const readiness = read("architecture/component-readiness-contract.json");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
@@ -104,15 +103,10 @@ for (const contract of [
   'componentId: "accordion"',
   'componentId: "accordion-list"',
   "renderer: DsAccordionPreview",
-  "renderer: DsAccordionProgressPreview",
   "renderer: DsAccordionListPreview",
-  'heading: "With progress"',
   'label: "Info tooltip"',
 ]) {
   if (!docs.includes(contract)) errors.push(`Accordion documentation is missing: ${contract}`);
-}
-if (!accordionPreview.includes("<Accordion") || accordionPreview.includes("progress={0}") || accordionPreview.includes("data-accordion-progress")) {
-  errors.push("The standard Accordion preview must render without ProgressBar behavior.");
 }
 for (const contract of [
   "<Accordion",
@@ -123,18 +117,22 @@ for (const contract of [
   'target.closest<HTMLButtonElement>("[data-accordion-trigger]")',
   'axisId === "state" && value === "open"',
 ]) {
-  if (!accordionProgressPreview.includes(contract)) errors.push(`Accordion progress preview is missing: ${contract}`);
+  if (!accordionPreview.includes(contract)) errors.push(`Accordion canonical preview is missing: ${contract}`);
+}
+const accordionAdapter = docs.match(/componentId:\s*"accordion"[\s\S]*?toc:\s*commonToc/u)?.[0] ?? "";
+if (/\bpreviews\s*:|DsAccordionProgressPreview|With progress/u.test(accordionAdapter)) {
+  errors.push("Accordion documentation must expose one canonical full-anatomy preview.");
 }
 if (docs.includes('label: "Progress"')
   || docs.includes('label: "Progress visibility"')
-  || accordionProgressPreview.includes('axisId === "progress"')
-  || accordionProgressPreview.includes("progressVisibility")) {
-  errors.push("The dedicated Accordion progress preview must not expose redundant progress controls.");
+  || accordionPreview.includes('axisId === "progress"')
+  || accordionPreview.includes("progressVisibility")) {
+  errors.push("The canonical Accordion preview must not expose redundant progress controls.");
 }
 if (!listPreview.includes("<AccordionList")) {
   errors.push("Accordion documentation previews are incomplete.");
 }
-for (const previewName of ["DsAccordionPreview", "DsAccordionProgressPreview", "DsAccordionListPreview"]) {
+for (const previewName of ["DsAccordionPreview", "DsAccordionListPreview"]) {
   if (!readiness.includes(`"${previewName}"`)) {
     errors.push(`${previewName} is missing from the readiness boundary contract.`);
   }

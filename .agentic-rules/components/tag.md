@@ -29,7 +29,7 @@ Tag communicates one short categorical value or applied filter. Its optional rem
 ## Content contract
 
 - `label` contains one concise noun, short phrase or status value written in normal sentence case; Tag does not transform it to uppercase.
-- Optional `leading` content is one decorative contextual icon, approved logo, flag or avatar; `label` still carries the meaning.
+- Optional `leading` content is one decorative contextual icon, approved LogoAsset mark, flag or avatar; `label` still carries the meaning.
 - Do not place sentences, headings or multiple unrelated values inside one Tag.
 - Tone distinguishes categories through the component-owned Tag palette. It does not automatically mean success, warning or error, and color must never be the sole cue when surrounding content assigns a status meaning.
 - `removeLabel` names the action and value, for example `Remove Industry: Finance`.
@@ -40,6 +40,7 @@ Tag communicates one short categorical value or applied filter. Its optional rem
 - Keep removable filter Tags near the filter controls or results summary they affect.
 - Use the named `leading` slot only for one non-interactive visual; never place controls or additional text inside it.
 - Use one fixed `close` Material Symbol for the remove action; do not expose arbitrary icons.
+- Tag keeps ownership of the leading visual box through `--tag-icon-size`; a nested LogoAsset fills that box without introducing its own size.
 - The caller owns filter state, removes the value after activation and updates the associated results.
 
 ## Responsive behavior

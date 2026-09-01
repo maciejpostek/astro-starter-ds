@@ -1,0 +1,26 @@
+---
+import Swiper from "../../../../../src/components/website-patterns/sliders-carousels/Swiper.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const invalidCase = process.env.SWIPER_INVALID_CASE;
+const items = ["One", "Two"];
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>Invalid Swiper fixture</title></head>
+  <body>
+    {invalidCase === "name" && <Swiper aria-label="">{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "slides" && <Swiper aria-label="Example" slidesPerView={0}>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "gap" && <Swiper aria-label="Example" gap={"giant" as any}>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "group" && <Swiper aria-label="Example" slidesPerGroup={1.5}>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "speed" && <Swiper aria-label="Example" speed={-1}>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "delay" && <Swiper aria-label="Example" autoplayDelay={0}>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "initial" && <Swiper aria-label="Example" initialSlide={-1}>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "loop-rewind" && <Swiper aria-label="Example" loop rewind>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "advanced-reserved" && <Swiper aria-label="Example" advancedOptions={{ breakpoints: {} }}>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "advanced-function" && <Swiper aria-label="Example" advancedOptions={{ virtualTranslate: () => true } as any}>{items.map((item) => <div data-swiper-slide>{item}</div>)}</Swiper>}
+    {invalidCase === "slot" && <Swiper aria-label="Example" />}
+  </body>
+</html>

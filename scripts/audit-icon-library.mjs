@@ -44,8 +44,8 @@ const documentationThemePicker = read(documentationThemePickerPath);
 const packageJson = JSON.parse(read("package.json"));
 const license = read("LICENSES/material-symbols-Apache-2.0.txt");
 
-if (catalog.schemaVersion !== 2) {
-  errors.push("Icon catalog schemaVersion must equal 2.");
+if (catalog.schemaVersion !== 3) {
+  errors.push("Icon catalog schemaVersion must equal 3.");
 }
 
 if (
@@ -100,8 +100,8 @@ if (!license.includes("Apache License") || !license.includes("Version 2.0")) {
 }
 
 const iconEntries = Object.entries(catalog.icons ?? {});
-if (iconEntries.length !== 50) {
-  errors.push(`Expected 50 curated Material Symbols, found ${iconEntries.length}.`);
+if (iconEntries.length !== 52) {
+  errors.push(`Expected 52 curated Material Symbols, found ${iconEntries.length}.`);
 }
 
 const nodeIds = [];
@@ -109,10 +109,27 @@ for (const [name, icon] of iconEntries) {
   if (!/^[a-z0-9]+(?:_[a-z0-9]+)*$/.test(name)) {
     errors.push(`Invalid canonical Material Symbol name: ${name}.`);
   }
-  if (icon.figmaName !== `Icon/Material/${name}`) {
-    errors.push(`${name} has an invalid Figma component name.`);
+  const googleName = icon.googleName ?? name;
+  if (!/^[a-z0-9]+(?:_[a-z0-9]+)*$/.test(googleName)) {
+    errors.push(`${name} has an invalid canonical Google Material Symbol name.`);
   }
-  if (typeof icon.figmaNodeId !== "string" || !/^\d+:\d+$/.test(icon.figmaNodeId)) {
+  const profileOverride = icon.profileOverride ?? {};
+  if (Object.keys(profileOverride).some((axis) => axis !== "fill")) {
+    errors.push(`${name} has an unsupported per-icon profile override.`);
+  }
+  const fill = profileOverride.fill ?? profile.fill;
+  if (![0, 1].includes(fill)) {
+    errors.push(`${name} has an invalid Material Symbols fill axis.`);
+  }
+  const sourceVariant = fill === 1 ? "fill1" : "default";
+  const figmaPending = icon.figmaSyncStatus === "pending-explicit-operation";
+  if (figmaPending) {
+    if (icon.figmaName !== null || icon.figmaNodeId !== null) {
+      errors.push(`${name} must not invent Figma identity while synchronization is pending.`);
+    }
+  } else if (icon.figmaName !== `Icon/Material/${name}`) {
+    errors.push(`${name} has an invalid Figma component name.`);
+  } else if (typeof icon.figmaNodeId !== "string" || !/^\d+:\d+$/.test(icon.figmaNodeId)) {
     errors.push(`${name} is missing a permanent Figma node ID.`);
   } else {
     nodeIds.push(icon.figmaNodeId);
@@ -125,7 +142,7 @@ for (const [name, icon] of iconEntries) {
   }
   if (
     icon.sourceSvg !==
-    `https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/${name}/default/20px.svg`
+    `https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/${googleName}/${sourceVariant}/20px.svg`
   ) {
     errors.push(`${name} has an invalid official source SVG URL.`);
   }

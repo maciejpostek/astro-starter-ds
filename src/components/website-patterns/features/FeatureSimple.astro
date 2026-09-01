@@ -1,0 +1,179 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Content, { type ContentAlign } from "../content/Content.astro";
+import Ratio, { type RatioValue } from "../../base-components/ratio/Ratio.astro";
+
+export type FeatureSimpleVisualPosition = "left" | "right";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  visualPosition?: FeatureSimpleVisualPosition;
+  contentAlign?: ContentAlign;
+  ratio?: RatioValue;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  visualPosition = "right",
+  contentAlign = "left",
+  ratio = "1:1",
+  headingLevel = 2,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const ratioValues: RatioValue[] = [
+  "16:9",
+  "1:1",
+  "2.39:1",
+  "2:1",
+  "2:3",
+  "3:2",
+  "3:4",
+  "4:3",
+  "4:5",
+  "5:4",
+];
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("FeatureSimple heading must be a non-empty string.");
+}
+for (const [name, value] of [["eyebrow", eyebrow], ["paragraph", paragraph]] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`FeatureSimple ${name} must be a non-empty string when provided.`);
+  }
+}
+if (visualPosition !== "left" && visualPosition !== "right") {
+  throw new TypeError('FeatureSimple visualPosition must be either "left" or "right".');
+}
+if (contentAlign !== "left" && contentAlign !== "centered") {
+  throw new TypeError('FeatureSimple contentAlign must be either "left" or "centered".');
+}
+if (!ratioValues.includes(ratio)) {
+  throw new TypeError("FeatureSimple ratio must be a supported Ratio value.");
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("FeatureSimple headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("FeatureSimple requires visual content in its visual slot.");
+}
+
+const rootId = id || `feature-simple-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const hasActions = Astro.slots.has("actions");
+const contentProps = {
+  id: contentId,
+  heading,
+  eyebrow,
+  paragraph,
+  align: contentAlign,
+  headingLevel,
+};
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["feature-simple", "l-section", className]}
+  data-padding="large"
+  data-component-name="FeatureSimple"
+  data-feature-simple-visual-position={visualPosition}
+  aria-labelledby={headingId}
+>
+  <div class="feature-simple__container l-container" data-container="main">
+    <div class="feature-simple__grid l-grid" data-grid="site" data-gap="site">
+      {visualPosition === "left" && (
+        <div class="feature-simple__visual">
+          <Ratio ratio={ratio}>
+            <slot name="visual" />
+          </Ratio>
+        </div>
+      )}
+
+      <div class="feature-simple__content">
+        {hasActions ? (
+          <Content {...contentProps}>
+            <Fragment slot="actions">
+              <slot name="actions" />
+            </Fragment>
+          </Content>
+        ) : (
+          <Content {...contentProps} />
+        )}
+      </div>
+
+      {visualPosition === "right" && (
+        <div class="feature-simple__visual">
+          <Ratio ratio={ratio}>
+            <slot name="visual" />
+          </Ratio>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .feature-simple {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    background: var(--color-background-canvas);
+    container: feature-simple / inline-size;
+  }
+
+  .feature-simple__container,
+  .feature-simple__grid,
+  .feature-simple__content,
+  .feature-simple__visual {
+    min-inline-size: 0;
+  }
+
+  .feature-simple__grid {
+    align-items: center;
+  }
+
+  .feature-simple[data-feature-simple-visual-position="right"] .feature-simple__content {
+    grid-column: 2 / span 4;
+  }
+
+  .feature-simple[data-feature-simple-visual-position="right"] .feature-simple__visual {
+    grid-column: 7 / span 5;
+  }
+
+  .feature-simple[data-feature-simple-visual-position="left"] .feature-simple__visual {
+    grid-column: 2 / span 5;
+  }
+
+  .feature-simple[data-feature-simple-visual-position="left"] .feature-simple__content {
+    grid-column: 8 / span 4;
+  }
+
+  .feature-simple__visual > :global([data-component-name="Ratio"]) {
+    border-radius: var(--radius-image);
+  }
+
+  @container feature-simple (width < 64rem) {
+    .feature-simple__grid {
+      row-gap: var(--gap-xxlarge);
+    }
+
+    .feature-simple__content,
+    .feature-simple__visual,
+    .feature-simple[data-feature-simple-visual-position="right"] .feature-simple__content,
+    .feature-simple[data-feature-simple-visual-position="right"] .feature-simple__visual,
+    .feature-simple[data-feature-simple-visual-position="left"] .feature-simple__content,
+    .feature-simple[data-feature-simple-visual-position="left"] .feature-simple__visual {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

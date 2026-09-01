@@ -30,6 +30,27 @@
   --button-primary-icon-pressed: var(--color-icon-on-accent);
   --button-primary-icon-disabled: var(--color-state-disabled-icon);
 
+  /* Primary alternate button
+   * High-emphasis inverse action for accent-colored surfaces.
+   */
+  --button-primary-alternate-background-default: var(--color-background-inverse);
+  --button-primary-alternate-background-hover: var(--color-neutral-900);
+  --button-primary-alternate-background-pressed: var(--color-neutral-800);
+  --button-primary-alternate-background-disabled:
+    var(--color-state-disabled-background);
+  --button-primary-alternate-border-default: var(--color-background-inverse);
+  --button-primary-alternate-border-hover: var(--color-neutral-900);
+  --button-primary-alternate-border-pressed: var(--color-neutral-800);
+  --button-primary-alternate-border-disabled: var(--color-state-disabled-border);
+  --button-primary-alternate-text-default: var(--color-text-inverse);
+  --button-primary-alternate-text-hover: var(--color-text-inverse);
+  --button-primary-alternate-text-pressed: var(--color-text-inverse);
+  --button-primary-alternate-text-disabled: var(--color-state-disabled-text);
+  --button-primary-alternate-icon-default: var(--color-icon-inverse);
+  --button-primary-alternate-icon-hover: var(--color-icon-inverse);
+  --button-primary-alternate-icon-pressed: var(--color-icon-inverse);
+  --button-primary-alternate-icon-disabled: var(--color-state-disabled-icon);
+
   /* Secondary button
    * Medium-emphasis action using a neutral surface.
    */
@@ -91,6 +112,18 @@
   --button-link-icon-pressed: var(--color-accent-900);
   --button-link-icon-disabled: var(--color-state-disabled-icon);
 
+  /* Primary alternate link button
+   * Text-only inverse-surface action without a persistent container.
+   */
+  --button-link-primary-alternate-text-default: var(--color-text-primary);
+  --button-link-primary-alternate-text-hover: var(--color-neutral-900);
+  --button-link-primary-alternate-text-pressed: var(--color-neutral-800);
+  --button-link-primary-alternate-text-disabled: var(--color-state-disabled-text);
+  --button-link-primary-alternate-icon-default: var(--color-icon-primary);
+  --button-link-primary-alternate-icon-hover: var(--color-neutral-900);
+  --button-link-primary-alternate-icon-pressed: var(--color-neutral-800);
+  --button-link-primary-alternate-icon-disabled: var(--color-state-disabled-icon);
+
   /* Switch button
    * Persistent binary setting with distinct off and on track states.
    */
@@ -143,7 +176,7 @@
   --input-icon-disabled: var(--color-state-disabled-icon);
   --input-label-default: var(--color-text-primary);
   --input-label-disabled: var(--color-state-disabled-text);
-  --input-helper-default: var(--color-text-secondary);
+  --input-helper-default: var(--color-text-tertiary);
   --input-helper-error: var(--color-status-error-text);
   --input-helper-warning: var(--color-status-warning-text);
   --input-helper-success: var(--color-status-success-text);
@@ -212,7 +245,9 @@
    * Repeated section eyebrow treatment with accent text and marker.
    */
   --eyebrow-text-default: var(--color-text-accent);
-  --eyebrow-marker-default: var(--color-text-accent);
+  --eyebrow-marker-default: var(--color-border-accent-strong);
+  --eyebrow-text-alternate-default: var(--color-text-on-accent);
+  --eyebrow-marker-alternate-default: var(--color-icon-on-accent);
 
   /* Label
    * Compact metadata and field-label text contracts.
@@ -350,10 +385,22 @@
 [data-theme="dark"] {
   --feedback-feature-background-soft: var(--color-accent-900);
 
+  --button-primary-alternate-background-hover: var(--color-neutral-50);
+  --button-primary-alternate-background-pressed: var(--color-neutral-100);
+  --button-primary-alternate-border-hover: var(--color-neutral-50);
+  --button-primary-alternate-border-pressed: var(--color-neutral-100);
+
   --button-link-text-hover: var(--color-accent-400);
   --button-link-text-pressed: var(--color-accent-100);
   --button-link-icon-hover: var(--color-accent-400);
   --button-link-icon-pressed: var(--color-accent-100);
+
+  --button-link-primary-alternate-text-hover: var(--color-neutral-50);
+  --button-link-primary-alternate-text-pressed: var(--color-neutral-100);
+  --button-link-primary-alternate-icon-hover: var(--color-neutral-50);
+  --button-link-primary-alternate-icon-pressed: var(--color-neutral-100);
+
+  --input-helper-default: var(--color-text-secondary);
 
   --link-text-hover: var(--color-accent-200);
   --link-text-visited: var(--color-accent-300);

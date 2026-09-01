@@ -2,9 +2,10 @@
 interface Props {
   label?: string;
   mode?: "overlay" | "static";
+  scope?: "document" | "preview";
 }
 
-const { label = "Component", mode = "overlay" } = Astro.props;
+const { label = "Component", mode = "overlay", scope = "document" } = Astro.props;
 const isOverlay = mode === "overlay";
 ---
 
@@ -13,6 +14,7 @@ const isOverlay = mode === "overlay";
   data-component-name="ComponentInfoLayer"
   data-component-info-layer
   data-component-info-mode={mode}
+  data-component-info-scope={scope}
   hidden={isOverlay ? true : undefined}
   aria-hidden={isOverlay ? "true" : undefined}
 >
@@ -21,20 +23,59 @@ const isOverlay = mode === "overlay";
 </div>
 
 <script>
-  const infoLayer = document.querySelector<HTMLElement>("[data-component-info-layer][data-component-info-mode='overlay']");
-  const infoText = infoLayer?.querySelector<HTMLElement>("[data-component-info-text]");
+  interface InfoContext {
+    layer: HTMLElement;
+    text: HTMLElement;
+    scope: "document" | "preview";
+    root: HTMLElement;
+  }
+
   let activeComponent: HTMLElement | null = null;
+  let activeContext: InfoContext | null = null;
 
-  const canShowInfoLayer = () => document.documentElement.dataset.guides === "visible";
-
-  const getComponentTarget = (target: EventTarget | null) => {
+  const getInfoContext = (target: EventTarget | null): InfoContext | null => {
     if (!(target instanceof Element)) return null;
-    if (target.closest("[data-grid-toggle]")) return null;
-    return target.closest<HTMLElement>("[data-component-name]");
+    const previewRoot = target.closest<HTMLElement>("[data-ds-responsive-preview]");
+    if (previewRoot) {
+      if (previewRoot.dataset.previewGuides !== "visible"
+        || !target.closest("[data-preview-viewport]")) return null;
+      const layer = previewRoot.querySelector<HTMLElement>(
+        "[data-component-info-layer][data-component-info-mode='overlay'][data-component-info-scope='preview']",
+      );
+      const text = layer?.querySelector<HTMLElement>("[data-component-info-text]");
+      return layer && text ? { layer, text, scope: "preview", root: previewRoot } : null;
+    }
+
+    if (document.documentElement.dataset.guides !== "visible") return null;
+    const layer = document.querySelector<HTMLElement>(
+      "[data-component-info-layer][data-component-info-mode='overlay'][data-component-info-scope='document']",
+    );
+    const text = layer?.querySelector<HTMLElement>("[data-component-info-text]");
+    return layer && text
+      ? { layer, text, scope: "document", root: document.documentElement }
+      : null;
+  };
+
+  const isContextActive = (context: InfoContext) => context.scope === "preview"
+    ? context.root.dataset.previewGuides === "visible"
+    : document.documentElement.dataset.guides === "visible";
+
+  const getComponentTarget = (target: EventTarget | null, context: InfoContext) => {
+    if (!(target instanceof Element)) return null;
+    if (target.closest("[data-grid-toggle], [data-preview-guides-button]")) return null;
+    const component = target.closest<HTMLElement>("[data-component-name]");
+    if (!component) return null;
+    if (context.scope === "preview") {
+      const viewport = context.root.querySelector<HTMLElement>("[data-preview-viewport]");
+      if (!viewport?.contains(component)) return null;
+    }
+    return component;
   };
 
   const isGuidesToggle = (target: EventTarget | null) =>
-    target instanceof Element && Boolean(target.closest("[data-grid-toggle]"));
+    target instanceof Element && Boolean(
+      target.closest("[data-grid-toggle], [data-preview-guides-button]"),
+    );
 
   const isInteractiveTarget = (target: EventTarget | null) =>
     target instanceof Element && Boolean(
@@ -52,32 +93,33 @@ const isOverlay = mode === "overlay";
     event.stopImmediatePropagation();
   };
 
-  const setInfoText = (text: string) => {
-    if (!infoText) return;
-    infoText.textContent = text;
+  const setInfoText = (context: InfoContext, text: string) => {
+    context.text.textContent = text;
   };
 
-  const moveInfoLayer = (x: number, y: number) => {
-    if (!infoLayer) return;
-    infoLayer.style.transform = `translate3d(${x + 14}px, ${y + 14}px, 0)`;
+  const moveInfoLayer = (context: InfoContext, x: number, y: number) => {
+    context.layer.style.transform = `translate3d(${x + 14}px, ${y + 14}px, 0)`;
   };
 
   const hideInfoLayer = () => {
-    if (!infoLayer) return;
+    if (activeContext) activeContext.layer.hidden = true;
     activeComponent = null;
-    infoLayer.hidden = true;
+    activeContext = null;
   };
 
-  const showInfoLayer = (target: HTMLElement, x: number, y: number) => {
-    if (!canShowInfoLayer()) {
+  const showInfoLayer = (context: InfoContext, target: HTMLElement, x: number, y: number) => {
+    if (!isContextActive(context)) {
       hideInfoLayer();
       return;
     }
-    if (!infoLayer || !infoText) return;
+    if (activeContext && activeContext.layer !== context.layer) {
+      activeContext.layer.hidden = true;
+    }
     activeComponent = target;
-    setInfoText(getComponentName(target));
-    infoLayer.hidden = false;
-    moveInfoLayer(x, y);
+    activeContext = context;
+    setInfoText(context, getComponentName(target));
+    context.layer.hidden = false;
+    moveInfoLayer(context, x, y);
   };
 
   const writeClipboardText = async (text: string) => {
@@ -126,38 +168,46 @@ const isOverlay = mode === "overlay";
   };
 
   document.addEventListener("pointerover", (event) => {
-    const target = getComponentTarget(event.target);
-    if (!target) return;
-    showInfoLayer(target, event.clientX, event.clientY);
-  });
-
-  document.addEventListener("pointermove", (event) => {
-    if (!activeComponent) return;
-    if (!canShowInfoLayer()) {
+    const context = getInfoContext(event.target);
+    if (!context) {
       hideInfoLayer();
       return;
     }
-    moveInfoLayer(event.clientX, event.clientY);
+    const target = getComponentTarget(event.target, context);
+    if (!target) return;
+    showInfoLayer(context, target, event.clientX, event.clientY);
+  });
+
+  document.addEventListener("pointermove", (event) => {
+    if (!activeComponent || !activeContext) return;
+    if (!isContextActive(activeContext)) {
+      hideInfoLayer();
+      return;
+    }
+    moveInfoLayer(activeContext, event.clientX, event.clientY);
   });
 
   document.addEventListener("pointerout", (event) => {
     if (!activeComponent) return;
     const relatedTarget = event.relatedTarget;
     if (relatedTarget instanceof Node && activeComponent.contains(relatedTarget)) return;
-    const target = getComponentTarget(event.target);
+    if (!activeContext) return;
+    const target = getComponentTarget(event.target, activeContext);
     if (target === activeComponent) hideInfoLayer();
   });
 
   document.addEventListener("focusin", (event) => {
-    if (!canShowInfoLayer()) return;
-    const target = getComponentTarget(event.target);
+    const context = getInfoContext(event.target);
+    if (!context) return;
+    const target = getComponentTarget(event.target, context);
     if (!target) return;
     const rect = target.getBoundingClientRect();
-    showInfoLayer(target, rect.left + rect.width, rect.top);
+    showInfoLayer(context, target, rect.left + rect.width, rect.top);
   });
 
   document.addEventListener("focusout", (event) => {
-    const target = getComponentTarget(event.target);
+    if (!activeContext) return;
+    const target = getComponentTarget(event.target, activeContext);
     if (target === activeComponent) hideInfoLayer();
   });
 
@@ -166,8 +216,9 @@ const isOverlay = mode === "overlay";
       document.addEventListener(
         eventName,
         (event) => {
-          if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
-          if (!getComponentTarget(event.target)) return;
+          const context = getInfoContext(event.target);
+          if (!context || isGuidesToggle(event.target)) return;
+          if (!getComponentTarget(event.target, context)) return;
 
           preventGuidesInteraction(event);
         },
@@ -178,7 +229,7 @@ const isOverlay = mode === "overlay";
   document.addEventListener(
     "keydown",
     (event) => {
-      if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
+      if (!getInfoContext(event.target) || isGuidesToggle(event.target)) return;
       if (!isInteractiveTarget(event.target)) return;
 
       preventGuidesInteraction(event);
@@ -189,7 +240,7 @@ const isOverlay = mode === "overlay";
   document.addEventListener(
     "beforeinput",
     (event) => {
-      if (!canShowInfoLayer() || isGuidesToggle(event.target)) return;
+      if (!getInfoContext(event.target) || isGuidesToggle(event.target)) return;
       if (!isInteractiveTarget(event.target)) return;
 
       preventGuidesInteraction(event);
@@ -200,7 +251,7 @@ const isOverlay = mode === "overlay";
   document.addEventListener(
     "submit",
     (event) => {
-      if (!canShowInfoLayer()) return;
+      if (!getInfoContext(event.target)) return;
       preventGuidesInteraction(event);
     },
     { capture: true }
@@ -209,25 +260,27 @@ const isOverlay = mode === "overlay";
   document.addEventListener(
     "click",
     (event) => {
-      if (!canShowInfoLayer()) return;
+      const context = getInfoContext(event.target);
+      if (!context) return;
       if (isGuidesToggle(event.target)) return;
 
-      const target = getComponentTarget(event.target);
+      const target = getComponentTarget(event.target, context);
       if (!target) return;
 
       preventGuidesInteraction(event);
 
-      showInfoLayer(target, event.clientX, event.clientY);
+      showInfoLayer(context, target, event.clientX, event.clientY);
       void copyComponentName(target);
     },
     { capture: true }
   );
 
   new MutationObserver(() => {
-    if (!canShowInfoLayer()) hideInfoLayer();
-  }).observe(document.documentElement, {
+    if (activeContext && !isContextActive(activeContext)) hideInfoLayer();
+  }).observe(document, {
     attributes: true,
-    attributeFilter: ["data-guides"]
+    subtree: true,
+    attributeFilter: ["data-guides", "data-preview-guides"],
   });
 </script>
 

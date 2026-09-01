@@ -1,0 +1,115 @@
+---
+import type {
+  DocumentationPreviewContainer,
+  DocumentationPreviewSizing,
+} from "../../../data/documentationComponentRegistry";
+
+interface Props {
+  container?: DocumentationPreviewContainer;
+  sizing?: DocumentationPreviewSizing;
+}
+
+const { container = "full", sizing = "fill" } = Astro.props;
+---
+
+<div
+  class="ds-preview-layout-frame"
+  data-component-name="DsPreviewLayoutFrame"
+  data-preview-layout-frame
+  data-preview-container={container}
+>
+  <div class="ds-preview-layout-frame__scope" data-preview-layout-scope>
+    <div
+      class="ds-preview-layout-frame__container l-container"
+      data-container={container}
+      data-preview-container-frame
+    >
+      <div
+        class="ds-preview-layout-frame__specimen"
+        data-preview-sizing={sizing}
+        data-preview-specimen-frame
+      >
+        <slot />
+      </div>
+    </div>
+    <slot name="guides" />
+  </div>
+</div>
+
+<style>
+  .ds-preview-layout-frame {
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+    min-block-size: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    container: ds-preview-layout / inline-size;
+  }
+
+  .ds-preview-layout-frame__scope {
+    --site-padding-inline:
+      clamp(
+        var(--site-padding-inline-min),
+        -0.1429rem + 5.7143cqi,
+        var(--site-padding-inline-max)
+      );
+    --container-main: calc(100% - 2 * var(--site-padding-inline));
+    --container-small:
+      min(
+        calc(100% - 2 * var(--site-padding-inline)),
+        var(--container-small-max)
+      );
+    --container-full: 100%;
+    --site-grid-columns: 12;
+    --site-grid-column-gap:
+      clamp(var(--size-16), 0.9286rem + 0.3571cqi, var(--size-20));
+
+    position: relative;
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+    min-block-size: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    place-items: center;
+  }
+
+  .ds-preview-layout-frame__container {
+    display: grid;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    place-items: center;
+  }
+
+  .ds-preview-layout-frame__specimen {
+    display: grid;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    place-items: center;
+  }
+
+  .ds-preview-layout-frame__specimen[data-preview-sizing="fill"] {
+    inline-size: 100%;
+  }
+
+  .ds-preview-layout-frame__specimen[data-preview-sizing="bounded"] {
+    inline-size: 100%;
+    max-inline-size: 32.3125rem;
+  }
+
+  .ds-preview-layout-frame__specimen[data-preview-sizing="intrinsic"] {
+    inline-size: fit-content;
+  }
+
+  @container ds-preview-layout (width < 64rem) {
+    .ds-preview-layout-frame__scope {
+      --site-grid-columns: 8;
+    }
+  }
+
+  @container ds-preview-layout (width < 48rem) {
+    .ds-preview-layout-frame__scope {
+      --site-grid-columns: 4;
+    }
+  }
+</style>

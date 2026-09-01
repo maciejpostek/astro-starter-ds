@@ -13,7 +13,7 @@ export interface Props extends Omit<HTMLAttributes<"header">, "class"> {
   eyebrow: string;
   paragraph: string;
   composition?: SectionHeaderComposition;
-  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   class?: string;
 }
 
@@ -52,8 +52,8 @@ if (!compositions.includes(composition)) {
   );
 }
 
-if (![2, 3, 4, 5, 6].includes(headingLevel)) {
-  throw new RangeError("SectionHeader headingLevel must be an integer from 2 to 6.");
+if (![1, 2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("SectionHeader headingLevel must be an integer from 1 to 6.");
 }
 
 const hasActions = Astro.slots.has("actions");
@@ -165,6 +165,7 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
     container-type: inline-size;
     min-inline-size: 0;
     inline-size: 100%;
+    margin-block-end: var(--space-section-header-bottom);
   }
 
   .section-header__layout {
@@ -235,6 +236,7 @@ const HeadingTag = `h${headingLevel}` as HTMLTag;
 
   @container section-header (min-width: 64rem) {
     .section-header__layout {
+      align-items: end;
       gap: var(--site-grid-column-gap);
     }
 

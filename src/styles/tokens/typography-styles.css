@@ -36,7 +36,15 @@
 .body-tiny-regular-underlined,
 .body-tiny-semibold,
 .caption-small,
-.caption-tiny {
+.caption-tiny,
+.rich-text-heading-h1,
+.rich-text-heading-h2,
+.rich-text-heading-h3,
+.rich-text-heading-h4,
+.rich-text-heading-h5,
+.rich-text-heading-h6,
+.rich-text-body-base-regular,
+.rich-text-body-large-regular {
   margin: 0;
   color: inherit;
 }
@@ -221,6 +229,64 @@
 .caption-tiny {
   font-size: var(--font-size-body-tiny);
 }
+
+.rich-text-heading-h1,
+.rich-text-heading-h2,
+.rich-text-heading-h3,
+.rich-text-heading-h4,
+.rich-text-heading-h5,
+.rich-text-heading-h6 {
+  font-family: var(--font-family-rich-text-heading);
+  font-weight: var(--font-weight-rich-text-heading);
+  font-style: var(--font-style-normal);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-balance);
+  overflow-wrap: var(--overflow-wrap-normal);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
+}
+
+.rich-text-heading-h1,
+.rich-text-heading-h2,
+.rich-text-heading-h3 {
+  line-height: var(--line-height-rich-text-heading-tight);
+  letter-spacing: var(--letter-spacing-rich-text-heading);
+}
+
+.rich-text-heading-h4,
+.rich-text-heading-h5 {
+  line-height: var(--line-height-rich-text-heading-compact);
+  letter-spacing: var(--letter-spacing-rich-text-heading);
+}
+
+.rich-text-heading-h6 {
+  line-height: var(--line-height-rich-text-heading-compact);
+  letter-spacing: var(--letter-spacing-rich-text-heading-small);
+}
+
+.rich-text-heading-h1 { font-size: var(--font-size-rich-text-h1); }
+.rich-text-heading-h2 { font-size: var(--font-size-rich-text-h2); }
+.rich-text-heading-h3 { font-size: var(--font-size-rich-text-h3); }
+.rich-text-heading-h4 { font-size: var(--font-size-rich-text-h4); }
+.rich-text-heading-h5 { font-size: var(--font-size-rich-text-h5); }
+.rich-text-heading-h6 { font-size: var(--font-size-rich-text-h6); }
+
+.rich-text-body-base-regular,
+.rich-text-body-large-regular {
+  font-family: var(--font-family-rich-text-body);
+  font-weight: var(--font-weight-rich-text-body);
+  font-style: var(--font-style-normal);
+  line-height: var(--line-height-rich-text-body);
+  letter-spacing: var(--letter-spacing-rich-text-body);
+  text-transform: var(--text-transform-none);
+  text-wrap: var(--text-wrap-pretty);
+  overflow-wrap: var(--overflow-wrap-break-word);
+  word-break: var(--word-break-normal);
+  white-space: var(--white-space-normal);
+}
+
+.rich-text-body-base-regular { font-size: var(--font-size-rich-text-body-base); }
+.rich-text-body-large-regular { font-size: var(--font-size-rich-text-body-large); }
 
 .body-large-regular,
 .body-large-regular-underlined,

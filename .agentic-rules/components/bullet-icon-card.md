@@ -29,7 +29,7 @@ BulletIconCard presents one benefit, capability, property or offer detail as a c
 ## Content contract
 
 - `title` and `description` are required, non-empty strings and form the essential semantic anchor.
-- `stat` is optional; omission removes the complete stat region. `showStatIcon` only controls the fixed decorative `trending_up` glyph when stat copy exists.
+- `stat` is optional; omission removes the complete stat region. Astro composes `StatTextInline` with `trend="up"` and trailing placement; `showStatIcon` delegates to its `showIcon` prop.
 - `showIcon` controls the fixed decorative `language` glyph and defaults to true. Consumers cannot replace either icon.
 - `layout` is the bounded `vertical | horizontal` visual composition. `headingLevel` changes document outline semantics without changing the approved visual style.
 - The `tags` slot contains repeatable Tag instances. Prefer static Tags unless the consumer owns removal behavior.
@@ -37,7 +37,7 @@ BulletIconCard presents one benefit, capability, property or offer detail as a c
 
 ## Composition and placement
 
-- The component owns the labelled article, fixed icons, copy, optional stat, Tag relationship spacing and ButtonGroup wrapper.
+- The component owns the labelled article, fixed leading icon, copy, optional StatTextInline composition, Tag relationship spacing and ButtonGroup wrapper.
 - Keep all regions about one subject. Use a parent layout object to arrange collections; the card does not own collection columns or gaps.
 - The component intentionally has no background, border, radius or internal surface padding despite its name.
 
@@ -63,10 +63,15 @@ BulletIconCard presents one benefit, capability, property or offer detail as a c
 - [BulletCardSurface](/design-system/website-patterns/bullet-points/bullet-card-surface) is the bordered-surface alternative.
 - [Tag](/design-system/base-components/tag) is the preferred repeatable metadata child.
 - [ButtonGroup](/design-system/base-components/buttons/button-group) owns action grouping and wrapping.
+- [StatTextInline](/design-system/website-patterns/stats-metrics/stat-text-inline) owns the optional metric and its decorative trend glyph.
 
 ## Naming and token contract
 
 Use the canonical `BulletIconCard` identity, `.bullet-icon-card` root and controlled `data-bullet-icon-card-layout` attribute. Reuse the registered `bullet-icon-card-size`, global color, global size and typography groups. Do not declare local custom properties, add a surface, expose arbitrary icon selection or create layout aliases.
+
+The live Figma master still embeds the stat glyph directly. Astro's nested
+StatTextInline composition and delegated Show Icon behavior are an intentional,
+temporary divergence until a separate Figma synchronization is approved.
 
 ## Core decision
 

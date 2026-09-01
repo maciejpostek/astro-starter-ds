@@ -12,6 +12,7 @@ const errors = [];
 const read = (path) => readFileSync(join(projectRoot, path), "utf8");
 const requiredPaths = [
   "architecture/agent-task.schema.json",
+  "benchmarks/runtime-v1/schemas/terminal-result.schema.json",
   "scripts/route-agent-request.mjs",
   "scripts/resolve-agent-context.mjs",
   "project-context/brand-foundations/brand-expression/contract.json",
@@ -27,6 +28,29 @@ for (const path of requiredPaths) {
 const routerSource = read("AGENTIC-RULES.json");
 if (Buffer.byteLength(routerSource, "utf8") > 8 * 1024) {
   errors.push("AGENTIC-RULES.json exceeds the 8 KB V1.1 router budget.");
+}
+
+const router = JSON.parse(routerSource);
+if (
+  router.visualAssetPolicy?.missingVisualBlocksComposition !== false ||
+  router.visualAssetPolicy?.placeholder !== "css-checkerboard" ||
+  router.visualAssetPolicy?.marker !== "data-visual-placeholder=missing-asset" ||
+  router.visualAssetPolicy?.inventFetchOrGenerate !== "explicit-authorization-only" ||
+  router.visualAssetPolicy?.handoffField !== "assetRequests" ||
+  router.visualAssetPolicy?.releaseReadyWithMissingVisuals !== false ||
+  !router.resultContract?.fields?.includes("assetRequests")
+) {
+  errors.push("Visual asset policy must continue composition with marked checkerboards and structured asset requests.");
+}
+
+const terminalResultSchema = JSON.parse(
+  read("benchmarks/runtime-v1/schemas/terminal-result.schema.json")
+);
+const assetRequestSchema = terminalResultSchema.properties?.assetRequests?.items;
+for (const field of ["location", "purpose", "aspectRatio", "accessibility", "question"]) {
+  if (!assetRequestSchema?.required?.includes(field)) {
+    errors.push(`Terminal assetRequests are missing required field: ${field}`);
+  }
 }
 
 const operationalSources = [
@@ -93,6 +117,15 @@ for (const scenario of scenarios) {
   }
   if (context.declaredSourceBytes > context.sourceLimitBytes) {
     errors.push(`${scenario.expectedIntent} exceeded its materialized source budget.`);
+  }
+  if (scenario.expectedIntent === "compose") {
+    const compositionRules = context.compositionContract?.principles ?? [];
+    if (
+      !compositionRules.some((rule) => rule.includes("data-visual-placeholder=missing-asset")) ||
+      !compositionRules.some((rule) => rule.includes("structured assetRequest"))
+    ) {
+      errors.push("Composition context must preserve missing visual geometry and request assets at handoff.");
+    }
   }
 }
 

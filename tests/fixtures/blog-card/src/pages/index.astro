@@ -1,0 +1,83 @@
+---
+import BlogCard from "../../../../../src/components/website-patterns/blog-resources/BlogCard.astro";
+import Tag from "../../../../../src/components/base-components/tag/Tag.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const date = { label: "August 31, 2026", dateTime: "2026-08-31" };
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BlogCard contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <BlogCard
+        id="vertical-start"
+        title="Vertical start"
+        description="Media appears before content."
+        date={date}
+        href="/articles/vertical-start"
+        ctaLabel="Read vertical start"
+        layout="vertical"
+        mediaPlacement="start"
+        headingLevel={2}
+        class="blog-card-contract-fixture"
+        data-contract="forwarded"
+      >
+        <span slot="visual" aria-hidden="true"></span>
+        <Fragment slot="tags"><Tag label="Astro" /><Tag label="Design systems" /></Fragment>
+      </BlogCard>
+
+      <BlogCard
+        id="vertical-end"
+        title="Vertical end"
+        description="Media appears after content."
+        date={date}
+        href="/articles/vertical-end"
+        layout="vertical"
+        mediaPlacement="end"
+        headingLevel={3}
+      >
+        <span slot="visual" aria-hidden="true"></span>
+      </BlogCard>
+
+      <BlogCard
+        id="horizontal-start"
+        title="Horizontal start"
+        description="Media occupies the first intrinsic track."
+        date={date}
+        href="/articles/horizontal-start"
+        layout="horizontal"
+        mediaPlacement="start"
+        headingLevel={4}
+      >
+        <span slot="visual" aria-hidden="true"></span>
+        <Fragment slot="tags"><Tag label="Responsive" /></Fragment>
+      </BlogCard>
+
+      <BlogCard
+        id="horizontal-end"
+        title="Horizontal end"
+        description="Media occupies the final intrinsic track."
+        date={date}
+        href="/articles/horizontal-end"
+        layout="horizontal"
+        mediaPlacement="end"
+        headingLevel={5}
+      >
+        <span slot="visual" aria-hidden="true"></span>
+      </BlogCard>
+
+      <BlogCard id="text-only" title="Text only" headingLevel={6} />
+      <BlogCard id="description-only" title="Description only" description="Optional description without other regions." />
+      <BlogCard id="date-only" title="Date only" date={date} />
+      <BlogCard id="tags-only" title="Tags only"><Fragment slot="tags"><Tag label="Editorial" /></Fragment></BlogCard>
+      <BlogCard id="cta-default" title="Default CTA" href="/articles/default-cta" />
+    </main>
+  </body>
+</html>

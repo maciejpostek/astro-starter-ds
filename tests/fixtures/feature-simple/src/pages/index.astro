@@ -1,0 +1,89 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import FeatureSimple from "../../../../../src/components/website-patterns/features/FeatureSimple.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FeatureSimple contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="fixture fixture--wide" data-fixture-width="1440">
+        <FeatureSimple
+          id="feature-right"
+          class="feature-simple-contract-fixture"
+          data-forwarded="yes"
+          heading="Prosta funkcja, wyraźna korzyść"
+          eyebrow="Możliwość"
+          paragraph="Zwięzły opis prowadzi do jednej znaczącej wizualizacji i dwóch powiązanych działań."
+        >
+          <Button slot="actions">Poznaj funkcję</Button>
+          <Button slot="actions" variant="secondary">Zobacz szczegóły</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstrakcyjna kompozycja geometryczna" />
+        </FeatureSimple>
+      </div>
+
+      <div class="fixture fixture--desktop" data-fixture-width="1024">
+        <FeatureSimple
+          id="feature-left"
+          heading="Visual begins this feature story"
+          paragraph="The selected left variant retains its visual-first source order at every assigned width."
+          visualPosition="left"
+          contentAlign="centered"
+          ratio="16:9"
+          headingLevel={3}
+        >
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Wide abstract design-system composition" />
+        </FeatureSimple>
+      </div>
+
+      <div class="fixture fixture--tablet" data-fixture-width="768">
+        <FeatureSimple
+          id="feature-tablet"
+          heading="Long localized feature heading that verifies natural wrapping without horizontal overflow"
+          paragraph="Supporting content remains readable when the parent assigns an intermediate width and the component switches to its one-column container layout."
+          ratio="4:3"
+        >
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Intermediate-width abstract composition" />
+        </FeatureSimple>
+      </div>
+
+      <div class="fixture fixture--narrow" data-fixture-width="320" data-theme="dark" dir="rtl">
+        <FeatureSimple
+          id="feature-rtl"
+          heading="ميزة موثوقة"
+          eyebrow="المنتج"
+          paragraph="يتحقق هذا المثال من اتجاه الكتابة والتفاف النص وترتيب المحتوى داخل حاوية ضيقة."
+          visualPosition="left"
+          ratio="3:4"
+          headingLevel={4}
+        >
+          <img slot="visual" src="/images/project-placeholder.svg" alt="تكوين هندسي تجريدي" />
+        </FeatureSimple>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .fixture {
+    inline-size: min(100%, 90rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--tablet { max-inline-size: 48rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

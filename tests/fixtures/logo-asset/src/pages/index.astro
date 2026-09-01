@@ -1,0 +1,49 @@
+---
+import LogoAsset from "../../../../../src/components/assets/logos/LogoAsset.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LogoAsset contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="logo-group" data-logo-group="small">
+        <LogoAsset slug="figma" variant="mark" alt="Figma" class="forwarded-logo" title="Figma logo" />
+        <LogoAsset slug="github" variant="mark" alt="" loading="lazy" />
+      </div>
+      <div class="logo-group" data-logo-group="large">
+        <LogoAsset slug="github" variant="full" alt="GitHub" />
+        <a href="https://medium.com" aria-label="Visit Medium">
+          <LogoAsset slug="medium" variant="full" alt="" />
+        </a>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  .logo-group {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-medium);
+    flex-wrap: wrap;
+  }
+
+  .logo-group[data-logo-group="small"] > * {
+    block-size: var(--size-24);
+  }
+
+  .logo-group[data-logo-group="large"] > * {
+    block-size: var(--size-40);
+  }
+
+  .logo-group > a > :global([data-component-name="LogoAsset"]) {
+    block-size: 100%;
+  }
+</style>

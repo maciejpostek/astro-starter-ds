@@ -112,7 +112,7 @@ if (!foundationData.includes('"tag-colors"')) {
 if (!preview.includes("removable") || !preview.includes("data-ds-preview-target")) {
   errors.push("Tag preview does not expose the removable interaction contract.");
 }
-if (!preview.includes('slot="leading"') || !preview.includes('name="search"') || !preview.includes('platform="figma"')) {
+if (!preview.includes('slot="leading"') || !preview.includes('name="search"') || !preview.includes('<LogoAsset slug="figma" variant="mark"')) {
   errors.push("Tag preview must demonstrate both a contextual leading icon and a brand logo.");
 }
 if (!docs.includes('id: "leading"') || docs.includes("tagSizeAxis")) {
@@ -134,8 +134,8 @@ if (
 ) {
   errors.push("Tag Figma contract must project the 20-variant Adornment by State matrix with Label as its only non-variant property.");
 }
-if (!record?.dependencies?.includes("material-symbol")) {
-  errors.push("Tag registry does not declare the close MaterialSymbol dependency.");
+if (!record?.dependencies?.includes("material-symbol") || !record?.dependencies?.includes("logo-asset")) {
+  errors.push("Tag registry does not declare the close MaterialSymbol and LogoAsset dependencies.");
 }
 if (record?.props?.includes("size") || !record?.slots?.includes("leading") || record?.attributes?.includes("data-tag-size")) {
   errors.push("Tag registry must project the fixed-size API and named leading slot.");

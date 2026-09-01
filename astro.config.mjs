@@ -49,7 +49,11 @@ export default defineConfig({
     "/design-system/website-patterns/modal/popup/preview": "/design-system/base-components/popup/preview",
     "/design-system/website-patterns/popup": "/design-system/base-components/popup",
     "/design-system/website-patterns/popup/preview": "/design-system/base-components/popup/preview",
-    "/design-system/website-patterns/page-headers/section-header": "/design-system/website-patterns/page-headers"
+    "/design-system/website-patterns/page-headers/section-header": "/design-system/website-patterns/page-headers",
+    "/design-system/website-patterns/ratings-reviews/rating": "/design-system/website-patterns/ratings-reviews",
+    "/design-system/website-patterns/ratings-reviews/rating/preview": "/design-system/website-patterns/ratings-reviews",
+    "/design-system/website-patterns/ratings-reviews/trust-badge": "/design-system/website-patterns/ratings-reviews",
+    "/design-system/website-patterns/ratings-reviews/trust-badge/preview": "/design-system/website-patterns/ratings-reviews"
   },
 
   vite: {

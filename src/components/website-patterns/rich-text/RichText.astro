@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class"> {
+  class?: string;
+}
+
+const { class: className, ...attributes } = Astro.props;
+
+if (!Astro.slots.has("default")) {
+  throw new TypeError("RichText requires default-slot content.");
+}
+---
+
+<div
+  {...attributes}
+  class:list={["rich-text", className]}
+  data-component-name="RichText"
+>
+  <slot />
+</div>
+
+<style>
+  .rich-text {
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .rich-text > :global(*) {
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  .rich-text > :global(* + *) {
+    margin-block-start: var(--space-medium);
+  }
+
+  .rich-text > :global(* + [data-component-name="RichTextHeading"]),
+  .rich-text > :global(* + [data-component-name="RichTextQuote"]),
+  .rich-text > :global(* + [data-component-name="RichTextVisual"]),
+  .rich-text > :global([data-component-name="RichTextQuote"] + *),
+  .rich-text > :global([data-component-name="RichTextVisual"] + *) {
+    margin-block-start: var(--space-large);
+  }
+</style>

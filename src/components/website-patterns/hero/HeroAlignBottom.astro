@@ -1,0 +1,125 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Content from "../content/Content.astro";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  headingLevel = 2,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("HeroAlignBottom heading must be a non-empty string.");
+}
+for (const [name, value] of [["eyebrow", eyebrow], ["paragraph", paragraph]] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`HeroAlignBottom ${name} must be a non-empty string when provided.`);
+  }
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("HeroAlignBottom headingLevel must be an integer from 2 to 6.");
+}
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("HeroAlignBottom requires visual content in its visual slot.");
+}
+
+const rootId = id || `hero-align-bottom-${crypto.randomUUID()}`;
+const contentId = `${rootId}-content`;
+const headingId = `${contentId}-heading`;
+const hasActions = Astro.slots.has("actions");
+const contentProps = {
+  id: contentId,
+  heading,
+  eyebrow,
+  paragraph,
+  align: "left" as const,
+  headingLevel,
+};
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["hero-align-bottom", "l-section", className]}
+  data-padding="none"
+  data-component-name="HeroAlignBottom"
+  aria-labelledby={headingId}
+>
+  <div class="hero-align-bottom__container l-container" data-container="main">
+    <div class="hero-align-bottom__grid l-grid" data-grid="site" data-gap="site">
+      <div class="hero-align-bottom__content">
+        {hasActions ? (
+          <Content {...contentProps}>
+            <Fragment slot="actions">
+              <slot name="actions" />
+            </Fragment>
+          </Content>
+        ) : (
+          <Content {...contentProps} />
+        )}
+      </div>
+
+      <div class="hero-align-bottom__visual">
+        <slot name="visual" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-align-bottom {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    padding-block: var(--section-padding-hero-top) var(--section-padding-small);
+    overflow: hidden;
+    background: var(--color-background-canvas);
+    container: hero-align-bottom / inline-size;
+  }
+
+  .hero-align-bottom__container,
+  .hero-align-bottom__grid,
+  .hero-align-bottom__content,
+  .hero-align-bottom__visual {
+    min-inline-size: 0;
+  }
+
+  .hero-align-bottom__grid {
+    align-items: stretch;
+  }
+
+  .hero-align-bottom__content {
+    grid-column: 1 / span 4;
+    align-self: end;
+  }
+
+  .hero-align-bottom__visual {
+    grid-column: 6 / span 7;
+    overflow: hidden;
+    background: var(--color-background-surface);
+    border-radius: var(--radius-image);
+  }
+
+  @container hero-align-bottom (width < 64rem) {
+    .hero-align-bottom__grid {
+      row-gap: var(--gap-xlarge);
+    }
+
+    .hero-align-bottom__content,
+    .hero-align-bottom__visual {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

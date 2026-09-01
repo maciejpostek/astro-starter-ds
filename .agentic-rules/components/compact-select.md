@@ -25,11 +25,11 @@ Provide an intrinsic-width, icon-only single-select trigger for compact toolbars
 
 ## Content contract
 
-Provide a stable id, at least one option, and `aria-label` or `aria-labelledby`. The enhanced trigger hides the selected label visually, so its fixed semantic icon or option-owned visual must remain unambiguous. Country options use a canonical local `flag` slug with `purpose="country"`; brand options use a canonical mark `logo` slug from the local Logos catalog with `purpose="brand"`. Do not combine `flag`, `logo`, or `visual`. Use only the finite semantic purposes owned by the API.
+Provide a stable id, at least one option, and `aria-label` or `aria-labelledby`. The enhanced trigger hides the selected label visually, so its fixed semantic icon or option-owned visual must remain unambiguous. Country options use a canonical local `flag` slug with `purpose="country"`; brand options use a canonical mark `logo` slug from the local Logos catalog with `purpose="brand"` and are resolved through LogoAsset. Do not combine `flag`, `logo`, or `visual`. Use only the finite semantic purposes owned by the API.
 
 ## Composition and placement
 
-Place it in toolbars, clusters, or compact settings rows. The selected country trigger shows only its decorative flag while the accessible name retains the country label; enhanced listbox options show flag and label together. The leading visual and disclosure icon occupy two equal square segments derived from the rendered trigger height. Both segments keep the same control surface; only the leading segment owns the trailing divider. The parent owns surrounding spacing and wrapping.
+Place it in toolbars, clusters, or compact settings rows. The selected country or brand trigger shows only its decorative flag or LogoAsset mark while the accessible name retains the option label; enhanced listbox options show the visual and label together. The leading visual and disclosure icon occupy two equal square segments derived from the rendered trigger height, and the existing control icon box owns the LogoAsset height. Both segments keep the same control surface; only the leading segment owns the trailing divider. The parent owns surrounding spacing and wrapping.
 
 ## Responsive behavior
 

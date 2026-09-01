@@ -19,6 +19,17 @@
   --stat-card-trend-gap: var(--size-2);
   --stat-card-trend-icon-size: var(--size-20);
 
+  /* Logo card */
+  --logo-card-logo-block-size: var(--size-32);
+
+  /* Feature scroll */
+  --feature-scroll-item-min-block-size:
+    calc(var(--size-320) + var(--size-160));
+
+  /* Feature logo proof */
+  --feature-5050-logo-block-size: var(--size-24);
+  --feature-proof-logo-block-size: var(--size-24);
+
   /* Content divider */
   --content-divider-min-height: var(--size-12);
 
@@ -121,4 +132,16 @@
 
   /* Team member card */
   --team-member-card-horizontal-image-size: var(--size-96);
+
+  /* Avatar */
+  --avatar-image-size: var(--size-64);
+
+  /* Navigation */
+  --navigation-bar-height: var(--size-64);
+  --navigation-logo-block-size: var(--size-32);
+  --navigation-backdrop-blur: var(--size-16);
+
+  /* Footer */
+  --footer-social-icon-size: var(--size-20);
+  --footer-logo-block-size: var(--size-32);
 }

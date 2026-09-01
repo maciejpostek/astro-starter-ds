@@ -1,11 +1,13 @@
 ---
 import CopyIconButton from "../../base-components/buttons/CopyIconButton.astro";
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
 
 interface Props {
   id: string;
   name: string;
-  markSrc?: string;
-  fullSrc?: string;
+  slug: string;
+  hasMark: boolean;
+  hasFull: boolean;
   copyLabel: string;
   searchKeywords: string;
   successToastId: string;
@@ -15,8 +17,9 @@ interface Props {
 const {
   id,
   name,
-  markSrc,
-  fullSrc,
+  slug,
+  hasMark,
+  hasFull,
   copyLabel,
   searchKeywords,
   successToastId,
@@ -31,19 +34,19 @@ const {
   data-icon-gallery-keywords={searchKeywords.toLowerCase()}
 >
   <div class="ds-logo-card__visuals" aria-hidden="true">
-    <figure class="ds-logo-card__variant" data-logo-available={markSrc ? "true" : "false"}>
+    <figure class="ds-logo-card__variant" data-logo-available={hasMark ? "true" : "false"}>
       <div class="ds-logo-card__asset" data-logo-variant="mark" data-theme="light">
-        {markSrc
-          ? <img src={markSrc} alt="" loading="lazy" decoding="async" />
+        {hasMark
+          ? <LogoAsset slug={slug} variant="mark" alt="" loading="lazy" />
           : <span class="ds-logo-card__unavailable">Unavailable</span>}
       </div>
       <figcaption>Mark</figcaption>
     </figure>
 
-    <figure class="ds-logo-card__variant" data-logo-available={fullSrc ? "true" : "false"}>
+    <figure class="ds-logo-card__variant" data-logo-available={hasFull ? "true" : "false"}>
       <div class="ds-logo-card__asset" data-logo-variant="full" data-theme="light">
-        {fullSrc
-          ? <img src={fullSrc} alt="" loading="lazy" decoding="async" />
+        {hasFull
+          ? <LogoAsset slug={slug} variant="full" alt="" loading="lazy" />
           : <span class="ds-logo-card__unavailable">Unavailable</span>}
       </div>
       <figcaption>Full</figcaption>
@@ -116,16 +119,13 @@ const {
     padding: var(--content-padding-xsmall);
   }
 
-  .ds-logo-card__asset img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-height: var(--size-64);
-    object-fit: contain;
+  .ds-logo-card__asset > :global([data-component-name="LogoAsset"]) {
+    max-inline-size: 100%;
+    block-size: var(--size-64);
   }
 
-  .ds-logo-card__asset[data-logo-variant="mark"] img {
-    max-width: var(--size-64);
+  .ds-logo-card__asset[data-logo-variant="mark"] > :global([data-component-name="LogoAsset"]) {
+    inline-size: var(--size-64);
   }
 
   .ds-logo-card__variant figcaption,

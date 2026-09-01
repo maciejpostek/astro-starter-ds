@@ -1,0 +1,33 @@
+---
+import AvatarImage from "../../base-components/avatar/AvatarImage.astro";
+import AvatarName from "../../base-components/avatar/AvatarName.astro";
+
+export interface Props {
+  mode?: "image" | "name";
+}
+
+const { mode = "name" } = Astro.props;
+---
+
+<div
+  class="avatar-preview"
+  data-component-name="DsAvatarPreview"
+  data-avatar-preview-mode={mode}
+>
+  {mode === "image" ? (
+    <AvatarImage data-ds-preview-target />
+  ) : (
+    <AvatarName
+      fullName="Maya Thompson"
+      roleOrPosition="Design systems lead"
+      data-ds-preview-target
+    />
+  )}
+</div>
+
+<style>
+  .avatar-preview {
+    min-inline-size: 0;
+    inline-size: fit-content;
+  }
+</style>

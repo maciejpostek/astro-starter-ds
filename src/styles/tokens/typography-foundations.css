@@ -14,6 +14,8 @@
    */
   --font-family-heading: "Inter", Arial, sans-serif;
   --font-family-body: "Inter", Arial, sans-serif;
+  --font-family-rich-text-heading: "Inter", Arial, sans-serif;
+  --font-family-rich-text-body: "Inter", Arial, sans-serif;
   --font-family-mono: "Roboto Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
   /* Font weights
@@ -22,6 +24,8 @@
   --font-weight-normal: 400;
   --font-weight-emphasis: 500;
   --font-weight-strong: 600;
+  --font-weight-rich-text-heading: 500;
+  --font-weight-rich-text-body: 400;
 
   /* Heading sizes
    * H1 through H6 scale fluidly between mobile and desktop limits.
@@ -101,6 +105,83 @@
       var(--font-size-h6-max)
     );
 
+  /* Rich Text heading sizes
+   * Editorial typography owns an independent scale so article presentation can
+   * evolve without changing the primary marketing Text Styles.
+   */
+  --font-size-rich-text-h1-min: 2.5rem;
+  --font-size-rich-text-h1-max: 3.5rem;
+  --font-size-rich-text-h1:
+    clamp(
+      var(--font-size-rich-text-h1-min),
+      calc(
+        var(--font-size-rich-text-h1-min) +
+        (var(--font-size-rich-text-h1-max) - var(--font-size-rich-text-h1-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-rich-text-h1-max)
+    );
+  --font-size-rich-text-h2-min: 2.25rem;
+  --font-size-rich-text-h2-max: 3rem;
+  --font-size-rich-text-h2:
+    clamp(
+      var(--font-size-rich-text-h2-min),
+      calc(
+        var(--font-size-rich-text-h2-min) +
+        (var(--font-size-rich-text-h2-max) - var(--font-size-rich-text-h2-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-rich-text-h2-max)
+    );
+  --font-size-rich-text-h3-min: 2rem;
+  --font-size-rich-text-h3-max: 2.5rem;
+  --font-size-rich-text-h3:
+    clamp(
+      var(--font-size-rich-text-h3-min),
+      calc(
+        var(--font-size-rich-text-h3-min) +
+        (var(--font-size-rich-text-h3-max) - var(--font-size-rich-text-h3-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-rich-text-h3-max)
+    );
+  --font-size-rich-text-h4-min: 1.75rem;
+  --font-size-rich-text-h4-max: 2rem;
+  --font-size-rich-text-h4:
+    clamp(
+      var(--font-size-rich-text-h4-min),
+      calc(
+        var(--font-size-rich-text-h4-min) +
+        (var(--font-size-rich-text-h4-max) - var(--font-size-rich-text-h4-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-rich-text-h4-max)
+    );
+  --font-size-rich-text-h5-min: 1.5rem;
+  --font-size-rich-text-h5-max: 1.75rem;
+  --font-size-rich-text-h5:
+    clamp(
+      var(--font-size-rich-text-h5-min),
+      calc(
+        var(--font-size-rich-text-h5-min) +
+        (var(--font-size-rich-text-h5-max) - var(--font-size-rich-text-h5-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-rich-text-h5-max)
+    );
+  --font-size-rich-text-h6-min: 1.25rem;
+  --font-size-rich-text-h6-max: 1.5rem;
+  --font-size-rich-text-h6:
+    clamp(
+      var(--font-size-rich-text-h6-min),
+      calc(
+        var(--font-size-rich-text-h6-min) +
+        (var(--font-size-rich-text-h6-max) - var(--font-size-rich-text-h6-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-rich-text-h6-max)
+    );
+
   /* Body sizes
    * Reading sizes use the same min/max control-point model as headings.
    * Some roles keep identical min/max values to stay fixed by default.
@@ -166,6 +247,32 @@
       var(--font-size-body-tiny-max)
     );
 
+  /* Rich Text body sizes */
+  --font-size-rich-text-body-base-min: 1rem;
+  --font-size-rich-text-body-base-max: 1rem;
+  --font-size-rich-text-body-base:
+    clamp(
+      var(--font-size-rich-text-body-base-min),
+      calc(
+        var(--font-size-rich-text-body-base-min) +
+        (var(--font-size-rich-text-body-base-max) - var(--font-size-rich-text-body-base-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-rich-text-body-base-max)
+    );
+  --font-size-rich-text-body-large-min: 1.125rem;
+  --font-size-rich-text-body-large-max: 1.25rem;
+  --font-size-rich-text-body-large:
+    clamp(
+      var(--font-size-rich-text-body-large-min),
+      calc(
+        var(--font-size-rich-text-body-large-min) +
+        (var(--font-size-rich-text-body-large-max) - var(--font-size-rich-text-body-large-min)) *
+        ((100vw - var(--fluid-viewport-min)) / (var(--fluid-viewport-max) - var(--fluid-viewport-min)))
+      ),
+      var(--font-size-rich-text-body-large-max)
+    );
+
   /* Line heights
    * Unitless ratios keep vertical rhythm responsive and inherit safely.
    * Figma Text Styles store the equivalent native percentages:
@@ -176,6 +283,9 @@
   --line-height-compact: 1.2;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.6;
+  --line-height-rich-text-heading-tight: 1.1;
+  --line-height-rich-text-heading-compact: 1.2;
+  --line-height-rich-text-body: 1.5;
 
   /* Letter spacing
    * em keeps tracking relative to the active font size. Figma Text Styles
@@ -186,6 +296,9 @@
   --letter-spacing-tighter: -0.02em;
   --letter-spacing-tightest: -0.03em;
   --letter-spacing-ultra-tight: -0.04em;
+  --letter-spacing-rich-text-heading: -0.04em;
+  --letter-spacing-rich-text-heading-small: -0.02em;
+  --letter-spacing-rich-text-body: -0.01em;
 
   /* Font styles
    * Reusable font-style values for semantic text styles.

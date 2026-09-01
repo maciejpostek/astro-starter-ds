@@ -1,0 +1,41 @@
+---
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import HeroFullVisual from "../../../../../src/components/website-patterns/hero/HeroFullVisual.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.HERO_FULL_VISUAL_INVALID_CASE ?? "heading";
+const baseProps = { heading: "Primary promise" };
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { heading: "   " },
+  eyebrow: { ...baseProps, eyebrow: "   " },
+  paragraph: { ...baseProps, paragraph: "   " },
+  composition: { ...baseProps, composition: "split" },
+  headingLevel: { ...baseProps, headingLevel: 7 },
+  sectionEyebrow: {
+    ...baseProps,
+    composition: "section-header",
+    paragraph: "Supporting context",
+  },
+  sectionParagraph: {
+    ...baseProps,
+    composition: "section-header",
+    eyebrow: "Platform",
+  },
+};
+const props = (invalidProps[invalidCase] ?? baseProps) as any;
+---
+
+{invalidCase === "bulletPoints" ? (
+  <HeroFullVisual {...props}>
+    <img slot="visual" src="/images/project-placeholder.svg" alt="Abstract visual" />
+  </HeroFullVisual>
+) : invalidCase === "visual" ? (
+  <HeroFullVisual {...props}>
+    <BulletPoint slot="bullet-points" text="Required supporting point" />
+  </HeroFullVisual>
+) : (
+  <HeroFullVisual {...props}>
+    <BulletPoint slot="bullet-points" text="Required supporting point" />
+    <img slot="visual" src="/images/project-placeholder.svg" alt="Abstract visual" />
+  </HeroFullVisual>
+)}

@@ -4,9 +4,10 @@ import {
   type ArchitectureComponent,
 } from "../../../data/documentationRegistry";
 import type { ComponentRuleDocument } from "../../../data/componentRuleLoader";
-import type {
-  ComponentDocumentationAdapter,
-  DocumentationApiRow,
+import {
+  usesWebsitePatternResponsivePreview,
+  type ComponentDocumentationAdapter,
+  type DocumentationApiRow,
 } from "../../../data/documentationComponentRegistry";
 import { resolveDocumentationLink } from "../../../data/documentationLinkResolver";
 import DsComponentRule from "./DsComponentRule.astro";
@@ -71,12 +72,15 @@ const usedBy = architecture.components
 const previews = adapter?.previews
   ?? (adapter?.preview ? [adapter.preview] : []);
 const previewCategoryKey = component.categoryKey as "base-components" | "website-patterns" | "examples-templates";
+const canonicalPreviewPresentation = previews[0]?.presentation ?? "responsive";
 const responsivePreviewFor = (
   preview: (typeof previews)[number],
   index: number,
-) => component.categoryKey === "website-patterns" && index === 0
+) => usesWebsitePatternResponsivePreview(previewCategoryKey, preview) && index === 0
   ? {
       rendererProps: preview.responsivePreview?.rendererProps,
+      container: preview.container ?? "full",
+      sizing: preview.sizing ?? "fill",
       scope: `${component.id}-${preview.id ?? "preview"}-responsive-preview`,
     }
   : undefined;
@@ -99,6 +103,9 @@ const responsivePreviewFor = (
               rendererProps={preview.props}
               axes={preview.axes}
               categoryKey={previewCategoryKey}
+              previewContainer={preview.container ?? "full"}
+              previewSizing={preview.sizing ?? "fill"}
+              previewPresentation={preview.presentation ?? canonicalPreviewPresentation}
               responsivePreview={responsivePreviewFor(preview, index)}
             />
           </div>
@@ -110,6 +117,9 @@ const responsivePreviewFor = (
             rendererProps={preview.props}
             axes={preview.axes}
             categoryKey={previewCategoryKey}
+            previewContainer={preview.container ?? "full"}
+            previewSizing={preview.sizing ?? "fill"}
+            previewPresentation={preview.presentation ?? canonicalPreviewPresentation}
             responsivePreview={responsivePreviewFor(preview, index)}
           />
         )

@@ -1,0 +1,21 @@
+---
+import ProgressTab from "../../../../../src/components/base-components/tabs/ProgressTab.astro";
+import Tabs from "../../../../../src/components/base-components/tabs/Tabs.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><title>ProgressTab fixture</title></head>
+  <body>
+    <main>
+      <Tabs aria-label="Progress examples">
+        <ProgressTab id="progress-one" controls="panel-one" progress={42} selected data-forwarded="yes">First explanation</ProgressTab>
+        <ProgressTab id="progress-two" controls="panel-two">Second explanation</ProgressTab>
+      </Tabs>
+      <div id="panel-one" role="tabpanel" aria-labelledby="progress-one" tabindex="0">First panel</div>
+      <div id="panel-two" role="tabpanel" aria-labelledby="progress-two" tabindex="0" hidden>Second panel</div>
+    </main>
+  </body>
+</html>

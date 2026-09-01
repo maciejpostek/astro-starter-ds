@@ -1,0 +1,107 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import ButtonGroup from "../../../../../src/components/base-components/buttons/ButtonGroup.astro";
+import Ratio from "../../../../../src/components/base-components/ratio/Ratio.astro";
+import Tag from "../../../../../src/components/base-components/tag/Tag.astro";
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import FeatureScroll from "../../../../../src/components/website-patterns/features/FeatureScroll.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const features = [
+  {
+    heading: "Decisions stay connected to evidence",
+    paragraph: "Each explanation remains paired with the visual that supports it.",
+  },
+  {
+    heading: "Approved building blocks remain reusable",
+    paragraph: "Nested actions, tags, bullet points and media keep their canonical contracts.",
+  },
+  {
+    heading: "Narrow layouts preserve the authored story",
+    paragraph: "Every visual follows its content without changing semantic or focus order.",
+  },
+] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FeatureScroll contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <FeatureScroll
+        id="feature-scroll-canonical"
+        class="feature-scroll-contract-fixture"
+        data-forwarded="yes"
+        heading="Features that progress with their context"
+        eyebrow="Feature scroll"
+        paragraph="An ordered sequence with a progressively enhanced visual stage."
+      >
+        <Button slot="actions">Explore features</Button>
+        <Button slot="actions" variant="secondary">Read guidance</Button>
+
+        {features.map((feature, index) => {
+          const headingId = `feature-scroll-canonical-item-${index + 1}-heading`;
+          return (
+            <li data-feature-scroll-item aria-labelledby={headingId}>
+              <div data-feature-scroll-content>
+                <div data-feature-scroll-copy>
+                  <h3 class="heading-h5" id={headingId} data-feature-scroll-heading>{feature.heading}</h3>
+                  <p class="body-base-regular" data-feature-scroll-paragraph>{feature.paragraph}</p>
+                </div>
+                <ul data-feature-scroll-bullets>
+                  <BulletPoint text="Source-order safe" />
+                  <BulletPoint text="Content-safe growth" />
+                </ul>
+                <div data-feature-scroll-tags>
+                  <Tag label="Accessible" />
+                  <Tag label="Responsive" />
+                </div>
+                {index === 0 && (
+                  <div data-feature-scroll-actions>
+                    <ButtonGroup aria-labelledby={headingId}>
+                      <Button>Read more</Button>
+                    </ButtonGroup>
+                  </div>
+                )}
+              </div>
+              <div data-feature-scroll-visual>
+                <Ratio ratio="4:3">
+                  <img src="/images/project-placeholder.svg" alt={`Abstract visual for ${feature.heading}`} />
+                </Ratio>
+              </div>
+            </li>
+          );
+        })}
+      </FeatureScroll>
+
+      <div data-theme="dark" dir="rtl">
+        <FeatureScroll
+          id="feature-scroll-rtl"
+          heading="ميزات مترابطة"
+          paragraph="يحافظ المثال على ترتيب القراءة والنمو الطبيعي للمحتوى."
+          headingLevel={3}
+        >
+          {["السياق الأول", "السياق الثاني"].map((heading, index) => {
+            const headingId = `feature-scroll-rtl-item-${index + 1}-heading`;
+            return (
+              <li data-feature-scroll-item aria-labelledby={headingId}>
+                <div data-feature-scroll-content>
+                  <h4 class="heading-h5" id={headingId} data-feature-scroll-heading>{heading}</h4>
+                  <p class="body-base-regular" data-feature-scroll-paragraph>نص طويل يتحقق من الالتفاف والاتجاه.</p>
+                </div>
+                <div data-feature-scroll-visual>
+                  <Ratio ratio="4:3" aria-hidden="true" />
+                </div>
+              </li>
+            );
+          })}
+        </FeatureScroll>
+      </div>
+    </main>
+  </body>
+</html>

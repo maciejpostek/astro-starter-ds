@@ -5,11 +5,13 @@ import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import type { ButtonSize, ButtonVariant } from "./Button.astro";
 import "../../../styles/components/button-controls.css";
 
+export type CopyButtonVariant = Exclude<ButtonVariant, "primary-alternate">;
+
 export interface Props extends Omit<HTMLAttributes<"button">, "aria-label" | "class" | "type" | "value"> {
   copyValue: string;
   successToastId: string;
   errorToastId: string;
-  variant?: ButtonVariant;
+  variant?: CopyButtonVariant;
   size?: ButtonSize;
   disabled?: boolean;
   class?: string;

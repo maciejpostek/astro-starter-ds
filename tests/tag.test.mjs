@@ -81,7 +81,7 @@ test("renders all Tag combinations and tones without client hydration", async ()
     assert.match(html, /<span\b(?=[^>]*id="disabled-remove")(?=[^>]*data-tag-disabled="true")[^>]*>/u);
     assert.match(html, /<span\b[^>]*class="tag__leading"[^>]*aria-hidden="true"/u);
     assert.match(html, /data-material-symbol="search"/u);
-    assert.match(html, /data-component-name="SocialIcons"[^>]*data-platform="figma"/u);
+    assert.match(html, /data-component-name="LogoAsset"[^>]*data-logo-slug="figma"[^>]*data-logo-variant="mark"/u);
     assert.match(html, /<section\b[^>]*data-theme="dark"[^>]*>[\s\S]*?<span\b[^>]*id="dark-theme-tag"/u);
     assert.match(html, /aria-label="Remove selected category"/u);
     assert.ok(removeButtons.some((button) => /\sdisabled(?:="")?(?:\s|>)/u.test(`${button}>`)));

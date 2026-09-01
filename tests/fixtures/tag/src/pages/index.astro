@@ -1,6 +1,6 @@
 ---
 import MaterialSymbol from "../../../../../src/components/assets/icons/MaterialSymbol.astro";
-import SocialIcons from "../../../../../src/components/assets/icons/SocialIcons.astro";
+import LogoAsset from "../../../../../src/components/assets/logos/LogoAsset.astro";
 import Tag from "../../../../../src/components/base-components/tag/Tag.astro";
 import "../../../../../src/styles/tokens/tokens.css";
 import "../../../../../src/styles/global.css";
@@ -27,7 +27,7 @@ const tones = ["neutral", "brand", "green", "amber", "red", "sky", "inverse"] as
         <Tag id="remove-only" label="Remove only" removable removeLabel="Remove selected category" />
 
         <Tag id="leading-remove" label="Leading and remove" removable>
-          <SocialIcons platform="figma" variant="brand" slot="leading" />
+          <LogoAsset slug="figma" variant="mark" alt="" slot="leading" />
         </Tag>
 
         <Tag id="disabled-remove" label="Disabled filter" tone="red" removable disabled>
@@ -41,7 +41,7 @@ const tones = ["neutral", "brand", "green", "amber", "red", "sky", "inverse"] as
 
       <section aria-label="Dark theme Tag" data-theme="dark">
         <Tag id="dark-theme-tag" label="Dark theme filter" tone="green" removable>
-          <SocialIcons platform="figma" variant="brand" slot="leading" />
+          <LogoAsset slug="figma" variant="mark" alt="" slot="leading" />
         </Tag>
       </section>
     </main>

@@ -1,0 +1,10 @@
+---
+import AvatarName from "../../../../../src/components/base-components/avatar/AvatarName.astro";
+
+const invalidCase = process.env.AVATAR_INVALID_CASE ?? "full-name";
+---
+
+<AvatarName
+  fullName={invalidCase === "full-name" ? " " : "Maya Thompson"}
+  roleOrPosition={invalidCase === "role" ? " " : undefined}
+/>

@@ -1,0 +1,115 @@
+---
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import Button from "../../base-components/buttons/Button.astro";
+import Feature5050Centered from "../../website-patterns/features/Feature5050Centered.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const {
+  idPrefix = "documentation-feature-50-50-centered",
+} = Astro.props;
+---
+
+<div
+  class="feature-50-50-centered-preview"
+  data-component-name="DsFeature5050CenteredPreview"
+  data-feature-50-50-centered-preview
+  data-ds-preview-target
+>
+  <Feature5050Centered
+    id={`${idPrefix}-feature`}
+    heading="A focused feature with an immersive visual story"
+    eyebrow="Feature"
+    paragraph="Bring one important capability into focus with concise supporting copy, clear benefits and a meaningful edge-reaching visual."
+    visualPosition="right"
+  >
+    <BulletPoint text="Keep the feature claim concrete and easy to scan." status="included" tone="status" />
+    <BulletPoint text="Connect each benefit to the same visual narrative." status="included" tone="status" />
+    <BulletPoint text="Preserve semantic order at every available width." status="included" tone="status" />
+
+    <Button slot="actions">Explore the feature</Button>
+    <Button slot="actions" variant="secondary">View details</Button>
+
+    <span
+      slot="visual"
+      class="feature-50-50-centered-preview__visual-placeholder"
+      aria-hidden="true"
+    ></span>
+  </Feature5050Centered>
+</div>
+
+<script>
+  type Feature5050CenteredPreviewState = {
+    visualPosition: "left" | "right";
+    eyebrow: "visible" | "hidden";
+    paragraph: "visible" | "hidden";
+    bulletPoints: "visible" | "hidden";
+    actions: "visible" | "hidden";
+  };
+
+  const initializeFeature5050CenteredPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-feature-50-50-centered-preview]").forEach((preview) => {
+      if (preview.dataset.feature5050CenteredPreviewReady === "true") return;
+      preview.dataset.feature5050CenteredPreviewReady = "true";
+
+      const state: Feature5050CenteredPreviewState = {
+        visualPosition: "right",
+        eyebrow: "visible",
+        paragraph: "visible",
+        bulletPoints: "visible",
+        actions: "visible",
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>('[data-component-name="Feature5050Centered"]').forEach((feature) => {
+          feature.setAttribute("data-feature-50-50-centered-visual-position", state.visualPosition);
+          feature.querySelectorAll<HTMLElement>('[data-component-name="Eyebrow"]').forEach((node) => {
+            node.hidden = state.eyebrow === "hidden";
+          });
+          feature.querySelectorAll<HTMLElement>(".content__paragraph").forEach((node) => {
+            node.hidden = state.paragraph === "hidden";
+          });
+          feature.querySelectorAll<HTMLElement>(".feature-50-50-centered__bullet-points").forEach((node) => {
+            node.hidden = state.bulletPoints === "hidden";
+          });
+          feature.querySelectorAll<HTMLElement>(".feature-50-50-centered__actions").forEach((node) => {
+            node.hidden = state.actions === "hidden";
+          });
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "feature5050CenteredVisualPosition" && (value === "left" || value === "right")) state.visualPosition = value;
+          if (axisId === "feature5050CenteredEyebrow" && (value === "visible" || value === "hidden")) state.eyebrow = value;
+          if (axisId === "feature5050CenteredParagraph" && (value === "visible" || value === "hidden")) state.paragraph = value;
+          if (axisId === "feature5050CenteredBulletPoints" && (value === "visible" || value === "hidden")) state.bulletPoints = value;
+          if (axisId === "feature5050CenteredActions" && (value === "visible" || value === "hidden")) state.actions = value;
+          render();
+        });
+    });
+  };
+
+  initializeFeature5050CenteredPreviews();
+  document.addEventListener("astro:page-load", initializeFeature5050CenteredPreviews);
+</script>
+
+<style>
+  .feature-50-50-centered-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .feature-50-50-centered-preview__visual-placeholder {
+    position: relative;
+    display: block;
+    inline-size: 100%;
+    min-block-size: 20rem;
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+import MegaMenu from "../../website-patterns/navigation/MegaMenu.astro";
+import MegaMenuPrimaryLink from "../../website-patterns/navigation/MegaMenuPrimaryLink.astro";
+import MegaMenuSecondaryLink from "../../website-patterns/navigation/MegaMenuSecondaryLink.astro";
+---
+<ul class="mega-menu-preview" data-component-name="DsMegaMenuPreview" data-ds-preview-target>
+  <MegaMenu id="documentation-mega-menu" label="Resources" primaryLabel="Explore" secondaryLabel="Learn" tertiaryLabel="Company">
+    <MegaMenuPrimaryLink slot="primary" href="#guides" description="Start with practical guidance.">Guides</MegaMenuPrimaryLink>
+    <MegaMenuPrimaryLink slot="primary" href="#patterns">Patterns</MegaMenuPrimaryLink>
+    <MegaMenuSecondaryLink slot="secondary" href="#docs">Documentation</MegaMenuSecondaryLink>
+    <MegaMenuSecondaryLink slot="secondary" href="#accessibility">Accessibility</MegaMenuSecondaryLink>
+    <MegaMenuSecondaryLink slot="tertiary" href="#about">About</MegaMenuSecondaryLink>
+    <MegaMenuSecondaryLink slot="tertiary" href="#contact">Contact</MegaMenuSecondaryLink>
+  </MegaMenu>
+</ul>
+<style>
+  .mega-menu-preview { min-block-size: 24rem; list-style: none; }
+  :global(.mega-menu-preview .mega-menu__panel) { position: absolute; }
+</style>

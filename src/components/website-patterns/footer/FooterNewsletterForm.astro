@@ -1,0 +1,115 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "../../base-components/buttons/Button.astro";
+import FormField from "../../base-components/inputs/FormField.astro";
+import Input from "../../base-components/inputs/Input.astro";
+
+export interface Props extends Omit<HTMLAttributes<"form">, "action" | "class" | "id" | "method"> {
+  id: string;
+  action: string;
+  emailLabel: string;
+  submitLabel: string;
+  emailName?: string;
+  emailPlaceholder?: string;
+  class?: string;
+}
+
+const {
+  id,
+  action,
+  emailLabel,
+  submitLabel,
+  emailName = "email",
+  emailPlaceholder,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+for (const [name, value] of Object.entries({ id, action, emailLabel, submitLabel, emailName })) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new TypeError(`FooterNewsletterForm ${name} must be a non-empty string.`);
+  }
+}
+if (emailPlaceholder !== undefined && (typeof emailPlaceholder !== "string" || emailPlaceholder.trim().length === 0)) {
+  throw new TypeError("FooterNewsletterForm emailPlaceholder must be a non-empty string when provided.");
+}
+
+const inputId = `${id}-email`;
+---
+
+<form
+  {...attributes}
+  id={id}
+  action={action}
+  class:list={["footer-newsletter-form", className]}
+  data-component-name="FooterNewsletterForm"
+  method="post"
+>
+  <div class="footer-newsletter-form__controls">
+    <div class="footer-newsletter-form__field">
+      <FormField controlId={inputId} label={emailLabel} required size="medium">
+        <Input
+          id={inputId}
+          name={emailName}
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          placeholder={emailPlaceholder}
+          required
+          size="medium"
+        />
+      </FormField>
+    </div>
+    <div class="footer-newsletter-form__submit">
+      <Button type="submit" size="medium" showIcon={false}>{submitLabel}</Button>
+    </div>
+  </div>
+
+  {Astro.slots.has("consent") && (
+    <div class="footer-newsletter-form__consent body-small-regular">
+      <slot name="consent" />
+    </div>
+  )}
+</form>
+
+<style>
+  .footer-newsletter-form {
+    container: footer-newsletter-form / inline-size;
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+    gap: var(--gap-medium);
+  }
+
+  .footer-newsletter-form__controls {
+    display: grid;
+    min-inline-size: 0;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: end;
+    gap: var(--gap-regular);
+  }
+
+  .footer-newsletter-form__field,
+  .footer-newsletter-form__submit {
+    min-inline-size: 0;
+  }
+
+  .footer-newsletter-form__consent {
+    color: var(--color-text-secondary);
+  }
+
+  .footer-newsletter-form__submit > :global(.button) {
+    inline-size: 100%;
+    justify-content: center;
+  }
+
+  @container footer-newsletter-form (min-width: 24rem) {
+    .footer-newsletter-form__controls {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .footer-newsletter-form__submit > :global(.button) {
+      inline-size: auto;
+    }
+  }
+</style>

@@ -2,7 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BulletIconCard from "../components/website-patterns/bullet-points/BulletIconCard.astro";
 import ButtonLink from "../components/base-components/buttons/ButtonLink.astro";
+import Content from "../components/website-patterns/content/Content.astro";
 import Eyebrow from "../components/base-components/eyebrow/Eyebrow.astro";
+import HowItWorks from "../components/website-patterns/how-it-works/HowItWorks.astro";
+import ProgressBar from "../components/base-components/progress-bar/ProgressBar.astro";
+import Ratio from "../components/base-components/ratio/Ratio.astro";
 import Tag from "../components/base-components/tag/Tag.astro";
 import SectionHeader from "../components/website-patterns/page-headers/SectionHeader.astro";
 import StatCard from "../components/website-patterns/stats-metrics/StatCard.astro";
@@ -14,6 +18,29 @@ const tokenGroupCount = tokenArchitecture.groups.length;
 const categoryCount = new Set(
   componentArchitecture.components.map((component) => component.categoryKey),
 ).size;
+
+const howItWorksSteps = [
+  {
+    eyebrow: "Step 01",
+    heading: "Start with the architecture",
+    paragraph: "Define the component role, semantic structure, responsive behavior, and ownership boundaries before implementation begins.",
+  },
+  {
+    eyebrow: "Step 02",
+    heading: "Resolve before you create",
+    paragraph: "Find the single semantic match in the component and token registries, then reuse the approved dependency contract.",
+  },
+  {
+    eyebrow: "Step 03",
+    heading: "Compose with explicit contracts",
+    paragraph: "Build the interface from typed Astro components, stable source order, semantic tokens, and predictable responsive rules.",
+  },
+  {
+    eyebrow: "Step 04",
+    heading: "Validate the complete system",
+    paragraph: "Check accessibility, runtime behavior, documentation, architecture, and build output before treating the work as ready.",
+  },
+] as const;
 ---
 
 <BaseLayout
@@ -46,6 +73,55 @@ const categoryCount = new Set(
       </div>
     </div>
   </section>
+
+  <HowItWorks label="How the design system workflow works">
+    {howItWorksSteps.map((step, index) => {
+      const contentId = `home-how-it-works-step-${index + 1}`;
+      const headingId = `${contentId}-heading`;
+      return (
+        <li data-how-it-works-step aria-labelledby={headingId}>
+          <div data-how-it-works-progress>
+            <ProgressBar value={0} decorative />
+          </div>
+
+          <div data-how-it-works-panel>
+            <div data-how-it-works-content>
+              {index === 0 ? (
+                <Content
+                  id={contentId}
+                  eyebrow={step.eyebrow}
+                  heading={step.heading}
+                  paragraph={step.paragraph}
+                  headingLevel={2}
+                >
+                  <Fragment slot="actions">
+                    <ButtonLink href="/design-system/architecture/component-model">
+                      Explore the architecture
+                    </ButtonLink>
+                  </Fragment>
+                </Content>
+              ) : (
+                <Content
+                  id={contentId}
+                  eyebrow={step.eyebrow}
+                  heading={step.heading}
+                  paragraph={step.paragraph}
+                  headingLevel={2}
+                />
+              )}
+            </div>
+
+            <div data-how-it-works-visual aria-hidden="true">
+              <Ratio
+                ratio="4:3"
+                data-visual-placeholder="missing-asset"
+              />
+            </div>
+          </div>
+        </li>
+      );
+    })}
+  </HowItWorks>
 
   <section class="home-benefits l-section" data-padding="large">
     <div class="l-container l-stack" data-container="main" data-gap="xlarge">

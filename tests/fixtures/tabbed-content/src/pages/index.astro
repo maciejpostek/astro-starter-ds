@@ -1,0 +1,29 @@
+---
+import ProgressTab from "../../../../../src/components/base-components/tabs/ProgressTab.astro";
+import TabbedContent from "../../../../../src/components/website-patterns/tabbed-content/TabbedContent.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+
+const items = ["Evidence", "Impact", "Mastery"];
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><title>TabbedContent fixture</title></head>
+  <body>
+    <main>
+      <TabbedContent aria-label="Product evidence" autoplayDuration={100} data-forwarded="yes">
+        {items.map((label, index) => (
+          <ProgressTab slot="tabs" id={`fixture-tab-${index + 1}`} controls={`fixture-panel-${index + 1}`} selected={index === 0}>
+            {label}
+          </ProgressTab>
+        ))}
+        {items.map((label, index) => (
+          <div id={`fixture-panel-${index + 1}`} role="tabpanel" aria-labelledby={`fixture-tab-${index + 1}`} tabindex="0" hidden={index !== 0}>
+            {label} visual
+          </div>
+        ))}
+      </TabbedContent>
+    </main>
+  </body>
+</html>

@@ -13,7 +13,7 @@ const invalidProps: Record<string, Record<string, unknown>> = {
   eyebrow: { ...validProps, eyebrow: "   " },
   paragraph: { ...validProps, paragraph: "   " },
   composition: { ...validProps, composition: "centered" },
-  headingLevel: { ...validProps, headingLevel: 1 },
+  headingLevel: { ...validProps, headingLevel: 7 },
 };
 const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
 ---

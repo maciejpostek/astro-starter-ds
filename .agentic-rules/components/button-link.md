@@ -31,6 +31,7 @@ Navigate to another resource while using a compact, action-oriented visual treat
 ## Composition and placement
 
 - Use inside content flows, cards, or action groups where a contained surface is unnecessary.
+- Use `primary-alternate` on accent-colored surfaces where the default link treatment does not provide the intended separation.
 - Do not add local height or padding; surrounding composition owns external spacing.
 
 ## Responsive behavior
@@ -58,4 +59,4 @@ Use the canonical identity, public root class, controlled `data-*` attributes an
 
 ## Core decision
 
-Use ButtonLink when the interaction is navigation and the design calls for a compact, uncontained call to action.
+Use ButtonLink when the interaction is navigation and the design calls for a compact, uncontained call to action; reserve Primary Alternate for accent-colored surfaces.

@@ -1,0 +1,227 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import Eyebrow from "../../base-components/eyebrow/Eyebrow.astro";
+
+export interface Props extends Omit<HTMLAttributes<"section">, "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  headingLevel = 1,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("HeroSpaced5050 heading must be a non-empty string.");
+}
+
+if (eyebrow !== undefined && (typeof eyebrow !== "string" || eyebrow.trim().length === 0)) {
+  throw new TypeError("HeroSpaced5050 eyebrow must be a non-empty string when provided.");
+}
+
+if (paragraph !== undefined && (typeof paragraph !== "string" || paragraph.trim().length === 0)) {
+  throw new TypeError("HeroSpaced5050 paragraph must be a non-empty string when provided.");
+}
+
+if (![1, 2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("HeroSpaced5050 headingLevel must be an integer from 1 to 6.");
+}
+
+if (!Astro.slots.has("visual")) {
+  throw new TypeError("HeroSpaced5050 requires visual content in its visual slot.");
+}
+
+const rootId = id || `hero-spaced-50-50-${crypto.randomUUID()}`;
+const headingId = `${rootId}-heading`;
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+const hasActions = Astro.slots.has("actions");
+---
+
+<section
+  {...attributes}
+  id={rootId}
+  class:list={["hero-spaced-50-50", "l-section", className]}
+  data-padding="none"
+  data-component-name="HeroSpaced5050"
+  aria-labelledby={headingId}
+>
+  <div class="hero-spaced-50-50__layout l-grid" data-grid="breakout">
+    <div class="hero-spaced-50-50__content">
+      <div
+        class="hero-spaced-50-50__content-grid l-grid"
+        data-grid="columns"
+        data-columns="6"
+      >
+        <div class="hero-spaced-50-50__heading-region">
+          {eyebrow && <Eyebrow text={eyebrow} />}
+          <HeadingTag class="hero-spaced-50-50__heading heading-h4" id={headingId}>
+            {heading}
+          </HeadingTag>
+        </div>
+
+        {(paragraph || hasActions) && (
+          <div class="hero-spaced-50-50__details-region">
+            {paragraph && (
+              <p class="hero-spaced-50-50__paragraph body-base-regular">
+                {paragraph}
+              </p>
+            )}
+
+            {hasActions && (
+              <div class="hero-spaced-50-50__actions">
+                <ButtonGroup aria-labelledby={headingId}>
+                  <slot name="actions" />
+                </ButtonGroup>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="hero-spaced-50-50__visual">
+      <slot name="visual" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-spaced-50-50 {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    overflow: hidden;
+    background: var(--color-background-canvas);
+    container: hero-spaced-50-50 / inline-size;
+  }
+
+  .hero-spaced-50-50__layout {
+    min-block-size: 100svh;
+  }
+
+  .hero-spaced-50-50__content,
+  .hero-spaced-50-50__content-grid,
+  .hero-spaced-50-50__heading-region,
+  .hero-spaced-50-50__details-region,
+  .hero-spaced-50-50__actions,
+  .hero-spaced-50-50__visual {
+    min-inline-size: 0;
+  }
+
+  .hero-spaced-50-50__content {
+    grid-column: content-start / span 6;
+    padding-block: var(--section-padding-hero-top) var(--section-padding-small);
+  }
+
+  .hero-spaced-50-50__content-grid {
+    min-block-size: 100%;
+    grid-template-rows: auto 1fr auto;
+    gap: 0 var(--site-grid-column-gap);
+  }
+
+  .hero-spaced-50-50__heading-region {
+    grid-column: 1 / span 5;
+    grid-row: 1;
+  }
+
+  .hero-spaced-50-50__details-region {
+    display: flex;
+    grid-column: 1 / span 4;
+    grid-row: 3;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-large);
+  }
+
+  .hero-spaced-50-50__heading,
+  .hero-spaced-50-50__paragraph {
+    inline-size: 100%;
+    margin: 0;
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+
+  .hero-spaced-50-50__heading {
+    color: var(--color-text-primary);
+  }
+
+  .hero-spaced-50-50__paragraph {
+    color: var(--color-text-secondary);
+  }
+
+  .hero-spaced-50-50__actions,
+  .hero-spaced-50-50__actions > :global([data-component-name="ButtonGroup"]) {
+    inline-size: 100%;
+  }
+
+  .hero-spaced-50-50__visual {
+    display: flex;
+    grid-column: content-column 7 / full-end;
+    align-self: stretch;
+    overflow: hidden;
+    background: var(--color-background-surface);
+  }
+
+  .hero-spaced-50-50__visual > :global(img),
+  .hero-spaced-50-50__visual > :global(picture),
+  .hero-spaced-50-50__visual > :global(video) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    object-fit: cover;
+  }
+
+  .hero-spaced-50-50__visual > :global(picture) > :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  @container hero-spaced-50-50 (width < 64rem) {
+    .hero-spaced-50-50__layout {
+      min-block-size: auto;
+    }
+
+    .hero-spaced-50-50__content {
+      grid-column: content-start / content-end;
+    }
+
+    .hero-spaced-50-50__visual {
+      grid-column: full-start / full-end;
+    }
+
+    .hero-spaced-50-50__content-grid {
+      min-block-size: auto;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
+      row-gap: var(--gap-large);
+    }
+
+    .hero-spaced-50-50__heading-region,
+    .hero-spaced-50-50__details-region {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    .hero-spaced-50-50__visual {
+      min-block-size: 0;
+    }
+
+    .hero-spaced-50-50__visual > :global(img),
+    .hero-spaced-50-50__visual > :global(picture),
+    .hero-spaced-50-50__visual > :global(video) {
+      block-size: auto;
+    }
+  }
+</style>

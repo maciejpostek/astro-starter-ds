@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"a">, "class" | "href"> {
+  href: string;
+  class?: string;
+}
+
+const { href, class: className, ...attributes } = Astro.props;
+if (typeof href !== "string" || href.trim().length === 0) throw new TypeError("MegaMenuSecondaryLink href must be a non-empty string.");
+if (!Astro.slots.has("default")) throw new TypeError("MegaMenuSecondaryLink requires label content in its default slot.");
+---
+
+<li class:list={["mega-menu-secondary-link", className]} data-component-name="MegaMenuSecondaryLink">
+  <a {...attributes} class="mega-menu-secondary-link__anchor body-small-semibold" href={href}>
+    <slot />
+  </a>
+</li>
+
+<style>
+  .mega-menu-secondary-link {
+    min-inline-size: 0;
+    list-style: none;
+  }
+
+  .mega-menu-secondary-link__anchor {
+    display: flex;
+    min-block-size: var(--control-size-small-min-height);
+    align-items: center;
+    border-radius: var(--radius-small);
+    padding-inline: var(--content-padding-xsmall);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: color var(--motion-transition), background-color var(--motion-transition);
+  }
+
+  .mega-menu-secondary-link__anchor:is(:hover, :focus-visible) {
+    color: var(--color-text-accent);
+    background: var(--color-background-subtle);
+  }
+</style>

@@ -134,7 +134,7 @@
   --color-text-secondary: var(--color-neutral-300);
   --color-text-tertiary: var(--color-neutral-400);
   --color-text-inverse: var(--color-neutral-950);
-  --color-text-accent: var(--color-accent-400);
+  --color-text-accent: var(--color-accent-300);
   --color-text-on-accent: var(--color-on-accent);
 
   /* Borders */

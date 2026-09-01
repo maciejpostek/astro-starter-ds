@@ -30,12 +30,12 @@ const references = (source) =>
 const canonicalFiles = {
   "color-primitives.css": 69,
   "color-semantic.css": 65,
-  "color-components.css": 219,
+  "color-components.css": 245,
   "size-primitives.css": 27,
   "size-semantic.css": 57,
-  "size-components.css": 68,
+  "size-components.css": 78,
   "control-sizes.css": 28,
-  "typography-foundations.css": 72,
+  "typography-foundations.css": 106,
   "layout-foundations.css": 7,
   "layout-semantic.css": 11,
   "motion-foundations.css": 8,
@@ -120,6 +120,14 @@ for (const contract of [
   }
 }
 for (const contract of [
+  "--eyebrow-text-alternate-default: var(--color-text-on-accent);",
+  "--eyebrow-marker-alternate-default: var(--color-icon-on-accent);"
+]) {
+  if (!colorComponents.includes(contract)) {
+    fail(`Missing Eyebrow alternate color contract: ${contract}`);
+  }
+}
+for (const contract of [
   "--tag-background:",
   "--tag-border:",
   "--tag-content:",
@@ -190,15 +198,23 @@ const publicTypographyClasses = [
   "body-tiny-regular-underlined",
   "body-tiny-semibold",
   "caption-small",
-  "caption-tiny"
+  "caption-tiny",
+  "rich-text-heading-h1",
+  "rich-text-heading-h2",
+  "rich-text-heading-h3",
+  "rich-text-heading-h4",
+  "rich-text-heading-h5",
+  "rich-text-heading-h6",
+  "rich-text-body-base-regular",
+  "rich-text-body-large-regular"
 ];
 for (const className of publicTypographyClasses) {
   if (!typographyStyles.includes(`.${className}`)) {
     fail(`Missing public typography class: .${className}`);
   }
 }
-if (publicTypographyClasses.length !== 23) {
-  fail(`Typography must expose exactly 23 Text Styles; found ${publicTypographyClasses.length}.`);
+if (publicTypographyClasses.length !== 31) {
+  fail(`Typography must expose exactly 31 Text Styles; found ${publicTypographyClasses.length}.`);
 }
 for (const legacyClass of ["body-large", "body-medium", "body-base", "body-small", "body-tiny"]) {
   if (new RegExp(`\\.${legacyClass}(?!-)`).test(typographyStyles)) {
@@ -471,5 +487,5 @@ console.log(
   "Design-system foundation audit passed: " +
     `${declaredTokens.size} unique local token variables, ` +
     `${figmaRepresentedVariableCount} canonical Figma Variables, ` +
-    "23 public class-based typography styles, no typography semantic aliases, and a 12/8/4 responsive grid."
+    "31 public class-based typography styles, no typography semantic aliases, and a 12/8/4 responsive grid."
 );

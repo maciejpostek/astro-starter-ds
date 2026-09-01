@@ -14,9 +14,11 @@ Figma naming: `Icon/Material/<google_snake_case_name>`
 Default optical canvas: `20 × 20`
 License: Apache License 2.0
 
-Use only the 50 curated Google Material Symbols in the manifest. Render each
+Use only the 52 curated Google Material Symbols in the manifest. Render each
 glyph as local inline SVG with the Sharp profile: optical size 20, weight 400,
-grade 0, fill 0. Lucide, icon fonts, runtime requests, Unicode glyphs, and
+grade 0, and fill 0 by default. `star_filled` is the sole bounded profile
+exception: it aliases Google's canonical `star` glyph with fill 1, while
+`star` keeps fill 0. Lucide, icon fonts, runtime requests, Unicode glyphs, and
 pasted SVG paths in consumers are forbidden.
 
 Each Figma icon master uses a `20 × 20` inner group with locked 1:1 aspect
@@ -32,7 +34,7 @@ Do not import the complete Google catalog. Do not expose icon selection from a
 consumer component.
 
 Accordion has one explicit bounded exception: its `brandIcon` prop accepts the
-`MaterialSymbolName` union generated from all 50 entries in the local manifest.
+`MaterialSymbolName` union generated from all 52 entries in the local manifest.
 The disclosure icon remains fixed to `arrow_drop_down`. Figma intentionally
 projects only `language` until a dedicated Accordion icon family is expanded;
 this recorded difference does not narrow the Astro type.

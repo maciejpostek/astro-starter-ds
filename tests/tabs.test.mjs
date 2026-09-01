@@ -66,6 +66,8 @@ test("renders slot-based Tab, Tabs and TabMenu server contracts", async () => {
     const tablists = html.match(/<div\b[^>]*role="tablist"[^>]*>/gu) ?? [];
 
     assert.match(html, /data-component-name="Tab"/u);
+    assert.match(html, /data-component-name="ProgressTab"/u);
+    assert.match(html, /data-component-name="ProgressBar"/u);
     assert.match(html, /data-component-name="Tabs"/u);
     assert.match(html, /data-component-name="TabMenu"/u);
     assert.match(html, /data-contract="three-tabs"[^>]*role="tablist"[^>]*aria-label="Billing period"|role="tablist"[^>]*aria-label="Billing period"[^>]*data-contract="three-tabs"/u);

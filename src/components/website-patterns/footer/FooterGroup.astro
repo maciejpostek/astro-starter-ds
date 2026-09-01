@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import FooterLabel, { type FooterHeadingLevel } from "./FooterLabel.astro";
+
+export interface Props extends Omit<HTMLAttributes<"nav">, "aria-labelledby" | "class" | "id"> {
+  id: string;
+  label: string;
+  headingLevel: FooterHeadingLevel;
+  class?: string;
+}
+
+const {
+  id,
+  label,
+  headingLevel,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof id !== "string" || id.trim().length === 0) {
+  throw new TypeError("FooterGroup id must be a non-empty string.");
+}
+if (typeof label !== "string" || label.trim().length === 0) {
+  throw new TypeError("FooterGroup label must be a non-empty string.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("FooterGroup requires link content in its default slot.");
+}
+
+const labelId = `${id}-label`;
+---
+
+<nav
+  {...attributes}
+  id={id}
+  aria-labelledby={labelId}
+  class:list={["footer-group", className]}
+  data-component-name="FooterGroup"
+>
+  <FooterLabel id={labelId} text={label} headingLevel={headingLevel} />
+  <ul class="footer-group__list">
+    <slot />
+  </ul>
+</nav>
+
+<style>
+  .footer-group {
+    display: grid;
+    min-inline-size: 0;
+    align-content: start;
+    gap: var(--gap-medium);
+  }
+
+  .footer-group__list {
+    display: grid;
+    min-inline-size: 0;
+    gap: var(--gap-small);
+    list-style: none;
+  }
+</style>

@@ -1,0 +1,190 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export interface Props extends Omit<HTMLAttributes<"li">, "class" | "id" | "title"> {
+  id: string;
+  label: string;
+  primaryLabel: string;
+  secondaryLabel: string;
+  tertiaryLabel: string;
+  class?: string;
+}
+
+const { id, label, primaryLabel, secondaryLabel, tertiaryLabel, class: className, ...attributes } = Astro.props;
+for (const [name, value] of Object.entries({ id, label, primaryLabel, secondaryLabel, tertiaryLabel })) {
+  if (typeof value !== "string" || value.trim().length === 0) throw new TypeError(`MegaMenu ${name} must be a non-empty string.`);
+}
+for (const slot of ["primary", "secondary", "tertiary"] as const) {
+  if (!Astro.slots.has(slot)) throw new TypeError(`MegaMenu requires the ${slot} slot.`);
+}
+const triggerId = `${id}-trigger`;
+const panelId = `${id}-panel`;
+---
+
+<li
+  {...attributes}
+  id={id}
+  class:list={["mega-menu", className]}
+  data-component-name="MegaMenu"
+  data-navigation-disclosure="mega-menu"
+  data-navigation-disclosure-state="closed"
+>
+  <button
+    id={triggerId}
+    class="mega-menu__trigger body-small-semibold"
+    type="button"
+    aria-expanded="false"
+    aria-controls={panelId}
+    data-navigation-disclosure-trigger
+  >
+    <span>{label}</span>
+    <MaterialSymbol class="mega-menu__indicator" name="arrow_drop_down" size="var(--control-size-small-icon-size)" />
+  </button>
+  <div
+    id={panelId}
+    class="mega-menu__panel"
+    role="region"
+    aria-labelledby={triggerId}
+    hidden
+    data-navigation-disclosure-panel
+  >
+    <div class="mega-menu__container l-container" data-container="main">
+      <div class="mega-menu__grid">
+        <section class="mega-menu__column" aria-labelledby={`${id}-primary-label`}>
+          <p id={`${id}-primary-label`} class="mega-menu__column-label caption">{primaryLabel}</p>
+          <ul class="mega-menu__list"><slot name="primary" /></ul>
+        </section>
+        <section class="mega-menu__column" aria-labelledby={`${id}-secondary-label`}>
+          <p id={`${id}-secondary-label`} class="mega-menu__column-label caption">{secondaryLabel}</p>
+          <ul class="mega-menu__list"><slot name="secondary" /></ul>
+        </section>
+        <section class="mega-menu__column" aria-labelledby={`${id}-tertiary-label`}>
+          <p id={`${id}-tertiary-label`} class="mega-menu__column-label caption">{tertiaryLabel}</p>
+          <ul class="mega-menu__list"><slot name="tertiary" /></ul>
+        </section>
+      </div>
+    </div>
+  </div>
+</li>
+
+<style>
+  .mega-menu {
+    min-inline-size: 0;
+    list-style: none;
+  }
+
+  .mega-menu__trigger {
+    display: inline-flex;
+    min-block-size: var(--control-size-small-min-height);
+    align-items: center;
+    gap: var(--gap-tiny);
+    border: 0;
+    border-radius: var(--radius-small);
+    padding: 0;
+    color: var(--color-text-primary);
+    background: transparent;
+    cursor: pointer;
+    transition: color var(--motion-transition), background-color var(--motion-transition);
+    white-space: nowrap;
+  }
+
+  .mega-menu__trigger:is(:hover, :focus-visible),
+  .mega-menu[data-navigation-disclosure-state="open"] .mega-menu__trigger {
+    color: var(--color-text-accent);
+  }
+
+  .mega-menu__indicator {
+    flex: 0 0 auto;
+    transition: transform var(--motion-duration-disclosure) var(--motion-ease-premium-out);
+  }
+
+  .mega-menu[data-navigation-disclosure-state="open"] .mega-menu__indicator {
+    transform: rotate(180deg);
+  }
+
+  .mega-menu__panel {
+    position: fixed;
+    z-index: 2;
+    inset-block-start: var(--navigation-bar-height);
+    inset-inline: 0;
+    max-block-size: calc(100dvb - var(--navigation-bar-height));
+    overflow: auto;
+    overscroll-behavior: contain;
+    border-block-start: var(--border-width-default) solid var(--color-border-subtle);
+    background: var(--color-background-canvas);
+    box-shadow: var(--elevation-surface-raised);
+    padding-block: var(--content-padding-xxlarge);
+    animation: mega-menu-enter var(--motion-duration-surface-enter) var(--motion-ease-premium-out) both;
+  }
+
+  .mega-menu__grid {
+    display: grid;
+    min-inline-size: 0;
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    gap: var(--gap-xxlarge);
+  }
+
+  .mega-menu__column,
+  .mega-menu__list {
+    min-inline-size: 0;
+  }
+
+  .mega-menu__column-label {
+    margin: 0 0 var(--space-regular);
+    color: var(--color-text-secondary);
+  }
+
+  .mega-menu__list {
+    display: grid;
+    gap: var(--gap-tiny);
+    list-style: none;
+  }
+
+  :global([data-navigation-presentation="full"]) .mega-menu__trigger {
+    inline-size: 100%;
+    min-block-size: var(--control-size-medium-min-height);
+    justify-content: space-between;
+    padding-inline: var(--content-padding-small);
+    white-space: normal;
+  }
+
+  :global([data-navigation-presentation="full"]) .mega-menu__trigger:is(:hover, :focus-visible) {
+    background: var(--color-background-subtle);
+  }
+
+  :global([data-navigation-presentation="full"]) .mega-menu__panel {
+    position: static;
+    max-block-size: none;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: var(--content-padding-xsmall) 0 0;
+  }
+
+  :global([data-navigation-presentation="full"]) .mega-menu__container {
+    inline-size: 100%;
+  }
+
+  :global([data-navigation-presentation="full"]) .mega-menu__grid {
+    grid-template-columns: 1fr;
+    gap: var(--gap-large);
+    padding-inline: var(--content-padding-small);
+  }
+
+  @keyframes mega-menu-enter {
+    from {
+      opacity: 0;
+      translate: 0 calc(var(--gap-small) * -1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mega-menu__indicator,
+    .mega-menu__panel {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>

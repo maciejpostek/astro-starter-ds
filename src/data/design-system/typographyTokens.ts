@@ -85,6 +85,22 @@ export const fontFamilyRows: TypographyFoundationRow[] = [
     sampleStyle: "font-family: var(--font-family-body); font-size: var(--font-size-body-base);",
   },
   {
+    token: "--font-family-rich-text-heading",
+    value: '"Inter", Arial, sans-serif',
+    minMax: "n/a",
+    role: "Independent heading family for article, case-study and knowledge-base typography.",
+    sample: "Rich Text heading family",
+    sampleStyle: "font-family: var(--font-family-rich-text-heading); font-size: var(--font-size-rich-text-body-base);",
+  },
+  {
+    token: "--font-family-rich-text-body",
+    value: '"Inter", Arial, sans-serif',
+    minMax: "n/a",
+    role: "Independent body family for long-form editorial typography.",
+    sample: "Rich Text body family",
+    sampleStyle: "font-family: var(--font-family-rich-text-body); font-size: var(--font-size-rich-text-body-base);",
+  },
+  {
     token: "--font-family-mono",
     value: '"Roboto Mono", system mono stack',
     minMax: "n/a",
@@ -197,6 +213,49 @@ export const headingSizeControlRows: TypographyFoundationRow[] = headingSizeDefi
   },
 ]);
 
+const richTextHeadingSizeDefinitions = [
+  ["--font-size-rich-text-h1", "Rich Text H1", "2.5rem", "3.5rem", "40px", "56px"],
+  ["--font-size-rich-text-h2", "Rich Text H2", "2.25rem", "3rem", "36px", "48px"],
+  ["--font-size-rich-text-h3", "Rich Text H3", "2rem", "2.5rem", "32px", "40px"],
+  ["--font-size-rich-text-h4", "Rich Text H4", "1.75rem", "2rem", "28px", "32px"],
+  ["--font-size-rich-text-h5", "Rich Text H5", "1.5rem", "1.75rem", "24px", "28px"],
+  ["--font-size-rich-text-h6", "Rich Text H6", "1.25rem", "1.5rem", "20px", "24px"],
+] as const;
+
+export const richTextHeadingSizeRows: TypographyFoundationRow[] = richTextHeadingSizeDefinitions.map(
+  ([token, label, min, max, minPx, maxPx]) => ({
+    token,
+    value: fluidTypeScaleValue(token),
+    minValue: min,
+    maxValue: max,
+    minMax: `${minPx}-${maxPx}`,
+    role: `${label} editorial scale. It remains independent from the primary marketing heading scale.`,
+    sample: label,
+    sampleStyle: `font-family: var(--font-family-rich-text-heading); font-size: var(${token});`,
+  }),
+);
+
+export const richTextHeadingSizeControlRows: TypographyFoundationRow[] = richTextHeadingSizeDefinitions.flatMap(
+  ([token, label, min, max, minPx, maxPx]) => [
+    {
+      token: `${token}-min`,
+      value: min,
+      minMax: minPx,
+      role: `Mobile floor for ${label}.`,
+      sample: label,
+      sampleStyle: `font-size: var(${token}-min);`,
+    },
+    {
+      token: `${token}-max`,
+      value: max,
+      minMax: maxPx,
+      role: `Desktop ceiling for ${label}.`,
+      sample: label,
+      sampleStyle: `font-size: var(${token}-max);`,
+    },
+  ],
+);
+
 const bodySizeDefinitions = [
   {
     token: "--font-size-body-large",
@@ -282,6 +341,45 @@ export const bodySizeControlRows: TypographyFoundationRow[] = bodySizeDefinition
   },
 ]);
 
+const richTextBodySizeDefinitions = [
+  ["--font-size-rich-text-body-base", "Rich Text body base", "1rem", "1rem", "16px", "16px"],
+  ["--font-size-rich-text-body-large", "Rich Text body large", "1.125rem", "1.25rem", "18px", "20px"],
+] as const;
+
+export const richTextBodySizeRows: TypographyFoundationRow[] = richTextBodySizeDefinitions.map(
+  ([token, label, min, max, minPx, maxPx]) => ({
+    token,
+    value: fluidTypeScaleValue(token),
+    minValue: min,
+    maxValue: max,
+    minMax: minPx === maxPx ? minPx : `${minPx}-${maxPx}`,
+    role: `${label} editorial reading scale.`,
+    sample: label,
+    sampleStyle: `font-family: var(--font-family-rich-text-body); font-size: var(${token});`,
+  }),
+);
+
+export const richTextBodySizeControlRows: TypographyFoundationRow[] = richTextBodySizeDefinitions.flatMap(
+  ([token, label, min, max, minPx, maxPx]) => [
+    {
+      token: `${token}-min`,
+      value: min,
+      minMax: minPx,
+      role: `Mobile floor for ${label}.`,
+      sample: label,
+      sampleStyle: `font-size: var(${token}-min);`,
+    },
+    {
+      token: `${token}-max`,
+      value: max,
+      minMax: maxPx,
+      role: `Desktop ceiling for ${label}.`,
+      sample: label,
+      sampleStyle: `font-size: var(${token}-max);`,
+    },
+  ],
+);
+
 export const lineHeightRows: TypographyFoundationRow[] = [
   {
     token: "--line-height-none",
@@ -322,6 +420,30 @@ export const lineHeightRows: TypographyFoundationRow[] = [
     role: "Long-form or more open body text rhythm.",
     sample: "Line relaxed",
     sampleStyle: "line-height: var(--line-height-relaxed);",
+  },
+  {
+    token: "--line-height-rich-text-heading-tight",
+    value: "1.1",
+    minMax: "n/a",
+    role: "Independent Rich Text line height for H1-H3.",
+    sample: "Rich Text heading tight",
+    sampleStyle: "line-height: var(--line-height-rich-text-heading-tight);",
+  },
+  {
+    token: "--line-height-rich-text-heading-compact",
+    value: "1.2",
+    minMax: "n/a",
+    role: "Independent Rich Text line height for H4-H6.",
+    sample: "Rich Text heading compact",
+    sampleStyle: "line-height: var(--line-height-rich-text-heading-compact);",
+  },
+  {
+    token: "--line-height-rich-text-body",
+    value: "1.5",
+    minMax: "n/a",
+    role: "Independent Rich Text body and attribution rhythm.",
+    sample: "Rich Text body line height",
+    sampleStyle: "line-height: var(--line-height-rich-text-body);",
   },
 ];
 
@@ -366,6 +488,30 @@ export const letterSpacingRows: TypographyFoundationRow[] = [
     sample: "Ultra tight spacing",
     sampleStyle: "letter-spacing: var(--letter-spacing-ultra-tight);",
   },
+  {
+    token: "--letter-spacing-rich-text-heading",
+    value: "-0.04em",
+    minMax: "n/a",
+    role: "Independent Rich Text tracking for H1-H5.",
+    sample: "Rich Text heading tracking",
+    sampleStyle: "letter-spacing: var(--letter-spacing-rich-text-heading);",
+  },
+  {
+    token: "--letter-spacing-rich-text-heading-small",
+    value: "-0.02em",
+    minMax: "n/a",
+    role: "Independent Rich Text tracking for H6.",
+    sample: "Rich Text small heading tracking",
+    sampleStyle: "letter-spacing: var(--letter-spacing-rich-text-heading-small);",
+  },
+  {
+    token: "--letter-spacing-rich-text-body",
+    value: "-0.01em",
+    minMax: "n/a",
+    role: "Independent Rich Text body tracking.",
+    sample: "Rich Text body tracking",
+    sampleStyle: "letter-spacing: var(--letter-spacing-rich-text-body);",
+  },
 ];
 
 export const fontWeightRows: TypographyFoundationRow[] = [
@@ -392,6 +538,22 @@ export const fontWeightRows: TypographyFoundationRow[] = [
     role: "Strong metadata, labels and compact hierarchy markers.",
     sample: "Strong weight",
     sampleStyle: "font-weight: var(--font-weight-strong);",
+  },
+  {
+    token: "--font-weight-rich-text-heading",
+    value: "500",
+    minMax: "n/a",
+    role: "Independent Rich Text heading weight.",
+    sample: "Rich Text heading weight",
+    sampleStyle: "font-weight: var(--font-weight-rich-text-heading);",
+  },
+  {
+    token: "--font-weight-rich-text-body",
+    value: "400",
+    minMax: "n/a",
+    role: "Independent Rich Text body weight.",
+    sample: "Rich Text body weight",
+    sampleStyle: "font-weight: var(--font-weight-rich-text-body);",
   },
 ];
 
@@ -601,8 +763,12 @@ export const typographyFoundationRows = [
   ...fontFamilyRows,
   ...headingSizeControlRows,
   ...headingSizeRows,
+  ...richTextHeadingSizeControlRows,
+  ...richTextHeadingSizeRows,
   ...bodySizeControlRows,
   ...bodySizeRows,
+  ...richTextBodySizeControlRows,
+  ...richTextBodySizeRows,
   ...lineHeightRows,
   ...letterSpacingRows,
   ...fontWeightRows,
@@ -823,6 +989,58 @@ export const typographyStyleRows: TypographyStyleRow[] = [
     whiteSpace: "--white-space-normal",
     sample: typographyStyleSample,
   },
+  ...([1, 2, 3, 4, 5, 6] as const).map((level) => ({
+    name: `Rich Text / H${level}`,
+    className: `rich-text-heading-h${level}`,
+    family: "--font-family-rich-text-heading",
+    size: `--font-size-rich-text-h${level}`,
+    weight: "--font-weight-rich-text-heading",
+    lineHeight: level <= 3
+      ? "--line-height-rich-text-heading-tight"
+      : "--line-height-rich-text-heading-compact",
+    letterSpacing: level === 6
+      ? "--letter-spacing-rich-text-heading-small"
+      : "--letter-spacing-rich-text-heading",
+    fontStyle: "--font-style-normal",
+    transform: "--text-transform-none",
+    textWrap: "--text-wrap-balance",
+    overflowWrap: "--overflow-wrap-normal",
+    wordBreak: "--word-break-normal",
+    whiteSpace: "--white-space-normal",
+    sample: typographyStyleSample,
+  })),
+  {
+    name: "Rich Text / Body Base / Regular",
+    className: "rich-text-body-base-regular",
+    family: "--font-family-rich-text-body",
+    size: "--font-size-rich-text-body-base",
+    weight: "--font-weight-rich-text-body",
+    lineHeight: "--line-height-rich-text-body",
+    letterSpacing: "--letter-spacing-rich-text-body",
+    fontStyle: "--font-style-normal",
+    transform: "--text-transform-none",
+    textWrap: "--text-wrap-pretty",
+    overflowWrap: "--overflow-wrap-break-word",
+    wordBreak: "--word-break-normal",
+    whiteSpace: "--white-space-normal",
+    sample: typographyStyleSample,
+  },
+  {
+    name: "Rich Text / Body Large / Regular",
+    className: "rich-text-body-large-regular",
+    family: "--font-family-rich-text-body",
+    size: "--font-size-rich-text-body-large",
+    weight: "--font-weight-rich-text-body",
+    lineHeight: "--line-height-rich-text-body",
+    letterSpacing: "--letter-spacing-rich-text-body",
+    fontStyle: "--font-style-normal",
+    transform: "--text-transform-none",
+    textWrap: "--text-wrap-pretty",
+    overflowWrap: "--overflow-wrap-break-word",
+    wordBreak: "--word-break-normal",
+    whiteSpace: "--white-space-normal",
+    sample: typographyStyleSample,
+  },
   ...bodyStyleRows,
   ...captionStyleRows,
 ];
@@ -995,7 +1213,7 @@ export const typographyAgenticRules: TypographyAgenticRule[] = [
   {
     name: "typography.class-first-interface",
     title: "Classes define visual text style",
-    text: "Use `.heading-h1` through `.heading-h6` and explicit `.body-{size}-{regular|regular-underlined|semibold}` classes as the public typography interface. HTML tags define document semantics, not visual appearance.",
+    text: "Use `.heading-h1` through `.heading-h6`, explicit `.body-{size}-{regular|regular-underlined|semibold}` classes and the bounded `.rich-text-*` editorial family as the public typography interface. HTML tags define document semantics, not visual appearance.",
   },
   {
     name: "typography.body-size-weight-hierarchy",

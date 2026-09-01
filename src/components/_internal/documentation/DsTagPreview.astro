@@ -1,6 +1,6 @@
 ---
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
-import SocialIcons from "../../assets/icons/SocialIcons.astro";
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
 import Tag from "../../base-components/tag/Tag.astro";
 ---
 
@@ -18,7 +18,7 @@ import Tag from "../../base-components/tag/Tag.astro";
         <MaterialSymbol name="search" />
       </span>
       <span data-tag-leading-option="logo" hidden>
-        <SocialIcons platform="figma" variant="brand" />
+        <LogoAsset slug="figma" variant="mark" alt="" />
       </span>
     </span>
   </Tag>
@@ -28,6 +28,8 @@ import Tag from "../../base-components/tag/Tag.astro";
   .ds-tag-preview__leading,
   .ds-tag-preview__leading > span {
     display: grid;
+    min-width: 0;
+    min-height: 0;
     width: 100%;
     height: 100%;
     place-items: center;
@@ -37,7 +39,10 @@ import Tag from "../../base-components/tag/Tag.astro";
     display: none;
   }
 
-  .ds-tag-preview__leading :global(svg) {
+  .ds-tag-preview__leading :global(svg),
+  .ds-tag-preview__leading :global([data-component-name="LogoAsset"]) {
+    min-inline-size: 0;
+    min-block-size: 0;
     width: 100%;
     height: 100%;
   }

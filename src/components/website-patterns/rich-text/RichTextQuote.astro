@@ -1,0 +1,50 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"blockquote">, "class"> {
+  class?: string;
+}
+
+const { class: className, ...attributes } = Astro.props;
+const hasAttribution = Astro.slots.has("attribution");
+
+if (!Astro.slots.has("default")) {
+  throw new TypeError("RichTextQuote requires default-slot content.");
+}
+---
+
+<blockquote
+  {...attributes}
+  class:list={["rich-text-quote", className]}
+  data-component-name="RichTextQuote"
+>
+  <p class="rich-text-quote__text rich-text-body-large-regular"><slot /></p>
+  {hasAttribution && (
+    <footer class="rich-text-quote__attribution rich-text-body-base-regular">
+      <slot name="attribution" />
+    </footer>
+  )}
+</blockquote>
+
+<style>
+  .rich-text-quote {
+    box-sizing: border-box;
+    display: grid;
+    min-inline-size: 0;
+    inline-size: 100%;
+    gap: var(--gap-small);
+    padding-inline-start: var(--content-padding-large);
+    border-inline-start: var(--border-width-strong) solid var(--color-border-accent);
+    color: var(--color-text-primary);
+  }
+
+  .rich-text-quote__text,
+  .rich-text-quote__attribution {
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  .rich-text-quote__attribution {
+    color: var(--color-text-secondary);
+  }
+</style>

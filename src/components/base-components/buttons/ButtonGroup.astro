@@ -1,17 +1,25 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
-export interface Props extends Omit<HTMLAttributes<"div">, "class"> {
+export type ButtonGroupAlign = "left" | "centered";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "align" | "class"> {
+  align?: ButtonGroupAlign;
   class?: string;
 }
 
-const { class: className, ...attributes } = Astro.props;
+const { align = "left", class: className, ...attributes } = Astro.props;
+
+if (!(["left", "centered"] as const).includes(align)) {
+  throw new TypeError('ButtonGroup align must be "left" or "centered".');
+}
 ---
 
 <div
   {...attributes}
   class:list={["button-group", className]}
   data-component-name="ButtonGroup"
+  data-button-group-align={align}
   role="group"
 >
   <slot />
@@ -22,6 +30,11 @@ const { class: className, ...attributes } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: flex-start;
     gap: var(--gap-button-group);
+  }
+
+  .button-group[data-button-group-align="centered"] {
+    justify-content: center;
   }
 </style>

@@ -1,4 +1,6 @@
-export interface LogoAsset {
+export type LogoVariant = "mark" | "full";
+
+export interface LogoAssetRecord {
   fileName: string;
   src: string;
   isFull: boolean;
@@ -8,9 +10,9 @@ export interface LogoAsset {
 export interface LogoRecord {
   name: string;
   slug: string;
-  mark?: LogoAsset;
-  full?: LogoAsset;
-  files: LogoAsset[];
+  mark?: LogoAssetRecord;
+  full?: LogoAssetRecord;
+  files: LogoAssetRecord[];
 }
 
 const logoAssetUrls = import.meta.glob<string>(
@@ -18,7 +20,7 @@ const logoAssetUrls = import.meta.glob<string>(
   { query: "?url", import: "default", eager: true },
 );
 
-const getLogoAsset = ([path, src]: [string, string]): LogoAsset => {
+const getLogoAsset = ([path, src]: [string, string]): LogoAssetRecord => {
   const fileName = path.split("/").at(-1) ?? path;
   const stem = fileName.replace(/\.svg$/i, "");
 
@@ -30,7 +32,7 @@ const getLogoAsset = ([path, src]: [string, string]): LogoAsset => {
   };
 };
 
-const getBrandName = (asset: LogoAsset) =>
+const getBrandName = (asset: LogoAssetRecord) =>
   asset.fileName
     .replace(/\.svg$/i, "")
     .replace(/_full(?=-\d+$|$)/i, "")
@@ -43,7 +45,7 @@ export const slugifyLogoName = (value: string) =>
     .toLowerCase();
 
 const assets = Object.entries(logoAssetUrls).map(getLogoAsset);
-const groupedAssets = new Map<string, LogoAsset[]>();
+const groupedAssets = new Map<string, LogoAssetRecord[]>();
 
 for (const asset of assets) {
   const brandName = getBrandName(asset);
@@ -52,7 +54,7 @@ for (const asset of assets) {
   groupedAssets.set(brandName, current);
 }
 
-const preferCanonicalAsset = (first: LogoAsset, second: LogoAsset) =>
+const preferCanonicalAsset = (first: LogoAssetRecord, second: LogoAssetRecord) =>
   Number(first.hasExportSuffix) - Number(second.hasExportSuffix) ||
   first.fileName.localeCompare(second.fileName, "en", { sensitivity: "base" });
 
@@ -86,9 +88,19 @@ if (duplicateSlugs.length > 0) {
 
 const logoBySlug = new Map(logoRecords.map((record) => [record.slug, record]));
 
-export const resolveLogoMark = (slug: string) => {
+export const resolveLogoAsset = (slug: string, variant: LogoVariant) => {
+  if (variant !== "mark" && variant !== "full") {
+    throw new Error(`Unknown logo variant "${variant}". Expected "mark" or "full".`);
+  }
+
   const logo = logoBySlug.get(slug);
   if (!logo) throw new Error(`Unknown logo slug "${slug}".`);
-  if (!logo.mark) throw new Error(`Logo "${slug}" does not provide a mark asset.`);
-  return logo.mark.src;
+
+  const asset = logo[variant];
+  if (!asset) throw new Error(`Logo "${slug}" does not provide a ${variant} asset.`);
+  return asset;
+};
+
+export const resolveLogoMark = (slug: string) => {
+  return resolveLogoAsset(slug, "mark").src;
 };

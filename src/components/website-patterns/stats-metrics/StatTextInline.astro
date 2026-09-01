@@ -9,6 +9,7 @@ export interface Props extends Omit<HTMLAttributes<"span">, "class"> {
   text: string;
   trend?: StatTextInlineTrend;
   iconPosition?: StatTextInlineIconPosition;
+  showIcon?: boolean;
   class?: string;
 }
 
@@ -16,6 +17,7 @@ const {
   text,
   trend = "up",
   iconPosition = "trailing",
+  showIcon = true,
   class: className,
   ...attributes
 } = Astro.props;
@@ -29,6 +31,9 @@ if (!(["up", "down"] as const).includes(trend)) {
 if (!(["leading", "trailing"] as const).includes(iconPosition)) {
   throw new TypeError('StatTextInline iconPosition must be "leading" or "trailing".');
 }
+if (typeof showIcon !== "boolean") {
+  throw new TypeError("StatTextInline showIcon must be a boolean.");
+}
 
 const normalizedText = text.trim();
 const iconName = trend === "up" ? "trending_up" : "trending_down";
@@ -41,13 +46,13 @@ const iconName = trend === "up" ? "trending_up" : "trending_down";
   data-trend={trend}
   data-icon-position={iconPosition}
 >
-  {iconPosition === "leading" && (
+  {showIcon && iconPosition === "leading" && (
     <span class="stat-text-inline__icon" aria-hidden="true">
       <MaterialSymbol name={iconName} size="var(--stat-text-inline-icon-size)" />
     </span>
   )}
   <span class="stat-text-inline__text">{normalizedText}</span>
-  {iconPosition === "trailing" && (
+  {showIcon && iconPosition === "trailing" && (
     <span class="stat-text-inline__icon" aria-hidden="true">
       <MaterialSymbol name={iconName} size="var(--stat-text-inline-icon-size)" />
     </span>

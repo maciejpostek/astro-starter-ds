@@ -1,0 +1,38 @@
+---
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import LogoAsset from "../../../../../src/components/assets/logos/LogoAsset.astro";
+import FeatureProof from "../../../../../src/components/website-patterns/features/FeatureProof.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.FEATURE_PROOF_INVALID_CASE ?? "heading";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { heading: "   " },
+  optionalString: { heading: "Feature", eyebrow: "" },
+  visualPosition: { heading: "Feature", visualPosition: "center" },
+  headingLevel: { heading: "Feature", headingLevel: 1 },
+  slot: { heading: "Feature" },
+  logosWithoutTitle: { heading: "Feature" },
+  logoTitleWithoutLogos: { heading: "Feature", logoProofTitle: "Trusted by" },
+  supportingWithoutTitle: { heading: "Feature" },
+  supportingTitleWithoutSlot: { heading: "Feature", supportingDetailsTitle: "Details" },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
+---
+
+{invalidCase === "slot" ? (
+  <FeatureProof {...props} />
+) : invalidCase === "logosWithoutTitle" ? (
+  <FeatureProof {...props}>
+    <LogoAsset slot="logos" slug="github" variant="mark" alt="GitHub" />
+    <span slot="visual" aria-hidden="true"></span>
+  </FeatureProof>
+) : invalidCase === "supportingWithoutTitle" ? (
+  <FeatureProof {...props}>
+    <BulletPoint slot="supportingDetails" text="Detail" />
+    <span slot="visual" aria-hidden="true"></span>
+  </FeatureProof>
+) : (
+  <FeatureProof {...props}>
+    <span slot="visual" aria-hidden="true"></span>
+  </FeatureProof>
+)}

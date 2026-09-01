@@ -1,0 +1,118 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Ratio from "../../base-components/ratio/Ratio.astro";
+import Tabs from "../../base-components/tabs/Tabs.astro";
+
+type AccessibleName =
+  | { "aria-label": string; "aria-labelledby"?: never }
+  | { "aria-label"?: never; "aria-labelledby": string };
+
+export type Props = Omit<HTMLAttributes<"div">, "class"> & AccessibleName & {
+  autoplay?: boolean;
+  autoplayDuration?: number;
+  autoplayLoop?: boolean;
+  class?: string;
+};
+
+const {
+  autoplay = true,
+  autoplayDuration = 8000,
+  autoplayLoop = true,
+  class: className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  ...attributes
+} = Astro.props;
+
+if (!ariaLabel?.trim() && !ariaLabelledby?.trim()) {
+  throw new TypeError("TabbedContent requires aria-label or aria-labelledby.");
+}
+for (const [name, value] of [["autoplay", autoplay], ["autoplayLoop", autoplayLoop]] as const) {
+  if (typeof value !== "boolean") throw new TypeError(`TabbedContent ${name} must be a boolean.`);
+}
+if (!Number.isFinite(autoplayDuration) || autoplayDuration <= 0) {
+  throw new RangeError("TabbedContent autoplayDuration must be a finite number greater than 0.");
+}
+if (!Astro.slots.has("tabs")) {
+  throw new TypeError("TabbedContent requires ProgressTab children in its tabs slot.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("TabbedContent requires tabpanel children in its default slot.");
+}
+
+const tabsAccessibleName = ariaLabel
+  ? { "aria-label": ariaLabel }
+  : { "aria-labelledby": ariaLabelledby! };
+---
+
+<div
+  {...attributes}
+  class:list={["tabbed-content", className]}
+  data-component-name="TabbedContent"
+  data-tabbed-content-autoplay={String(autoplay)}
+  data-tabbed-content-autoplay-duration={autoplayDuration}
+  data-tabbed-content-autoplay-loop={String(autoplayLoop)}
+  data-tabbed-content-mode={autoplay ? "autoplay" : "manual"}
+  data-tabbed-content-valid="pending"
+>
+  <Tabs
+    {...tabsAccessibleName}
+    class="tabbed-content__tabs"
+  >
+    <slot name="tabs" />
+  </Tabs>
+
+  <Ratio class="tabbed-content__ratio" ratio="2.39:1">
+    <div class="tabbed-content__panels" data-tabbed-content-panels>
+      <slot />
+    </div>
+  </Ratio>
+</div>
+
+<script>
+  import { setupTabbedContentController } from "../../../lib/tabbed-content/tabbedContentController";
+  setupTabbedContentController();
+</script>
+
+<style>
+  .tabbed-content {
+    display: grid;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    gap: var(--gap-large);
+    container: tabbed-content / inline-size;
+  }
+
+  .tabbed-content__panels,
+  .tabbed-content__panels > :global([role="tabpanel"]) {
+    inline-size: 100%;
+    block-size: 100%;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .tabbed-content__panels {
+    display: grid;
+  }
+
+  .tabbed-content__panels > :global([role="tabpanel"]) {
+    grid-area: 1 / 1;
+  }
+
+  .tabbed-content > :global(.tabbed-content__tabs) {
+    margin-block-end: var(--size-24);
+  }
+
+  @container tabbed-content (max-width: 48rem) {
+    .tabbed-content > :global(.tabbed-content__tabs) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      overflow-x: visible;
+    }
+
+    .tabbed-content > :global(.tabbed-content__tabs) > :global([data-component-name="ProgressTab"]) {
+      min-inline-size: 0;
+    }
+  }
+</style>

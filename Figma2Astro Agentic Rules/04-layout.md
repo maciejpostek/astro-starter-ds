@@ -173,6 +173,16 @@ position. Apply the matching `Layout Grid Columns` mode on the same canonical
 frame or ComponentSet that owns the `Layout Semantic` mode. Do not spray modes
 onto descendants.
 
+When translating a bound `grid/max-width/span/NN` value to Astro, discard the
+fixed pixel measurement and preserve its column meaning: use
+`grid-column-end: span NN` when the start line is inherited, or
+`grid-column: <start> / span NN` when the Figma composition also specifies an
+offset/start. The matching `grid/offset/start/NN` identifies the explicit CSS
+Grid start line; it never becomes a CSS width, margin, padding token, or custom
+property. The fixed Figma numbers are recalculated whenever its viewport,
+padding, column count, or gutter changes, while Astro lets CSS Grid resolve the
+fluid track sizes at runtime.
+
 The collection is synchronized idempotently. It must be present both through
 its recorded ID and in `getLocalVariableCollectionsAsync()` with all 24 IDs in
 `variableIds`; a direct-ID-only object is an invalid orphan and must never pass
@@ -217,8 +227,9 @@ CSS Grid and `fr`; it is not a public token.
 3. Map `Layout/Site Grid` bindings to the public Astro site grid; do not copy a
    numeric column width.
 4. Read `Layout Grid Columns` bindings as Figma authoring constraints. Convert
-   span max-widths and offsets back to CSS Grid column lines; never emit them as
-   custom properties or pixel widths.
+   `span/NN` to `grid-column-end: span NN` or
+   `grid-column: <start> / span NN`, and convert offsets to explicit start
+   lines; never emit them as custom properties or pixel widths.
 5. Map `Desktop` to the wide control point and 12 columns, and `Mobile` to the
    narrow control point and four columns.
 6. Preserve Astro's intermediate eight-column state below 1024 px even though

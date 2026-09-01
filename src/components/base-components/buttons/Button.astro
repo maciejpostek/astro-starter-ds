@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import "../../../styles/components/button-controls.css";
 
-export type ButtonVariant = "primary" | "secondary" | "tertiary";
+export type ButtonVariant = "primary" | "primary-alternate" | "secondary" | "tertiary";
 export type ButtonSize = "small" | "medium" | "large";
 
 export interface Props extends Omit<HTMLAttributes<"button">, "class" | "type"> {

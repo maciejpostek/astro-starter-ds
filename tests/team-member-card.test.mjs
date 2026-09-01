@@ -55,6 +55,7 @@ test("keeps the approved TeamMemberCard source, token and registry contracts", a
   assert.match(source, /data-team-member-card-layout=\{layout\}/u);
   assert.match(source, /class:list=\{\["team-member-card", className\]\}/u);
   assert.match(source, /--team-member-card-horizontal-image-size/u);
+  assert.doesNotMatch(source, /\.team-member-card__content\s*\{[^}]*\bgap\s*:/su);
   assert.doesNotMatch(source, /showImage|showRole|astro-island|client:/u);
   assert.doesNotMatch(source, /(?:inline-size|block-size|width|height):\s*(?:93|350|394)px/u);
 
@@ -80,7 +81,10 @@ test("keeps the approved TeamMemberCard source, token and registry contracts", a
     assert.match(docs, new RegExp(`id: "${axis}"`, "u"));
   }
   assert.match(preview, /astro-ds:preview-change/u);
-  assert.match(preview, /mode === "responsive"/u);
+  assert.doesNotMatch(preview, /mode\?:|mode\s*===|team-member-card-preview--responsive|__example/u);
+  assert.doesNotMatch(docs.match(/componentId:\s*"team-member-card"[\s\S]*?toc:\s*commonToc/u)?.[0] ?? "", /\bpreviews\s*:/u);
+  assert.match(preview, /<span slot="image" aria-hidden="true"><\/span>/u);
+  assert.doesNotMatch(preview, /project-placeholder|<img/u);
   assert.match(previewRegistry, /componentDocumentationAdapters/u);
   assert.match(previewRegistry, /component\.categoryKey === "website-patterns"/u);
   assert.match(rule, /Primary strategy: `intrinsic`/u);

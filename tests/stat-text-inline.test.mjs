@@ -65,6 +65,7 @@ test("keeps the approved API, token, icon, Figma and documentation contracts", a
   assert.match(source, /interface Props extends Omit<HTMLAttributes<"span">, "class">/u);
   assert.match(source, /trend = "up"/u);
   assert.match(source, /iconPosition = "trailing"/u);
+  assert.match(source, /showIcon = true/u);
   assert.match(source, /data-component-name="StatTextInline"/u);
   assert.match(source, /data-trend=\{trend\}/u);
   assert.match(source, /data-icon-position=\{iconPosition\}/u);
@@ -73,7 +74,7 @@ test("keeps the approved API, token, icon, Figma and documentation contracts", a
   assert.match(source, /var\(--stat-text-inline-icon-size\)/u);
   assert.match(source, /var\(--gap-tiny\)/u);
   assert.match(source, /@media \(forced-colors: active\)/u);
-  assert.doesNotMatch(source, /<slot\b|icon\?:|color\?:|size\?:|#[0-9a-f]{3,8}\b/iu);
+  assert.doesNotMatch(source, /<slot\b|\bicon\?:|color\?:|size\?:|#[0-9a-f]{3,8}\b/iu);
   assert.doesNotMatch(source, /--stat-text-inline-[a-z0-9-]+\s*:/u);
   assert.doesNotMatch(source, /client:(?:load|idle|visible|media|only)|<script\b/u);
 
@@ -114,7 +115,7 @@ test("keeps the approved API, token, icon, Figma and documentation contracts", a
   assert.equal(record?.agenticRule, ".agentic-rules/components/stat-text-inline.md");
   assert.equal(record?.syncStatus, "mapped");
   assert.deepEqual(record?.dependencies, ["material-symbol"]);
-  assert.deepEqual(record?.props, ["text", "trend", "iconPosition"]);
+  assert.deepEqual(record?.props, ["text", "trend", "iconPosition", "showIcon"]);
   assert.deepEqual(record?.slots, []);
   assert.equal(record?.readiness?.visual, "review");
   assert.equal(record?.readiness?.validation, "passed");
@@ -133,6 +134,7 @@ test("keeps the approved API, token, icon, Figma and documentation contracts", a
   assert.match(docs, /renderer:\s*DsStatTextInlinePreview/u);
   assert.match(docs, /id:\s*"statTextInlineTrend"/u);
   assert.match(docs, /id:\s*"statTextInlineIconPosition"/u);
+  assert.match(docs, /id:\s*"statTextInlineIcon"/u);
   assert.match(preview, /data-stat-text-inline-option/u);
   assert.match(preview, /astro-ds:preview-change/u);
   assert.match(previewRegistry, /componentDocumentationAdapters/u);
@@ -154,7 +156,7 @@ test("renders all four variants, defaults, safe attributes, logical order and co
     });
 
     const html = await readFile(join(outputDirectory, "index.html"), "utf8");
-    assert.equal((html.match(/data-component-name="StatTextInline"/gu) ?? []).length, 7);
+    assert.equal((html.match(/data-component-name="StatTextInline"/gu) ?? []).length, 8);
     assert.match(html, /<span\b(?=[^>]*id="stat-up-leading")(?=[^>]*class="[^"]*fixture-class[^"]*")(?=[^>]*lang="en")(?=[^>]*aria-label="Revenue increased by twelve percent")(?=[^>]*data-forwarded="yes")[^>]*>/u);
     assert.match(html, /id="stat-default"[^>]*data-trend="up"[^>]*data-icon-position="trailing"/u);
     assert.match(html, />Conversion increased by 4%<\/span>/u);
@@ -177,11 +179,12 @@ test("renders all four variants, defaults, safe attributes, logical order and co
   }
 });
 
-test("rejects empty text and unsupported trend or icon position values", async () => {
+test("rejects empty text, unsupported variants and non-boolean icon visibility", async () => {
   const cases = [
     ["text", /StatTextInline text must be a non-empty string\./u],
     ["trend", /StatTextInline trend must be "up" or "down"\./u],
     ["iconPosition", /StatTextInline iconPosition must be "leading" or "trailing"\./u],
+    ["showIcon", /StatTextInline showIcon must be a boolean\./u],
   ];
 
   for (const [invalidCase, expectedError] of cases) {

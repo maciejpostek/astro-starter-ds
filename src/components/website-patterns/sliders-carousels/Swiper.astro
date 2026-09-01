@@ -1,0 +1,395 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "../../base-components/buttons/Button.astro";
+import ButtonGroup from "../../base-components/buttons/ButtonGroup.astro";
+import "swiper/css";
+import "swiper/css/a11y";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+import {
+  assertSerializableSwiperOptions,
+  defaultSwiperLabels,
+  forbiddenAdvancedSwiperOptions,
+  isPlainRecord,
+  swiperEasingValues,
+  swiperGapValues,
+  swiperPaginationValues,
+  type SerializedSwiperConfig,
+  type SwiperEasing,
+  type SwiperGap,
+  type SwiperLabels,
+  type SwiperPagination,
+  type SwiperSlidesPerView,
+} from "../../../lib/swiper/swiperContract";
+
+type AccessibleName =
+  | { "aria-label": string; "aria-labelledby"?: never }
+  | { "aria-label"?: never; "aria-labelledby": string };
+
+export type Props = Omit<
+  HTMLAttributes<"div">,
+  "aria-label" | "aria-labelledby" | "class" | "role"
+> & AccessibleName & {
+  slidesPerView?: SwiperSlidesPerView;
+  slidesPerViewTablet?: SwiperSlidesPerView;
+  slidesPerViewDesktop?: SwiperSlidesPerView;
+  gap?: SwiperGap;
+  gapTablet?: SwiperGap;
+  gapDesktop?: SwiperGap;
+  slidesPerGroup?: number;
+  loop?: boolean;
+  rewind?: boolean;
+  centeredSlides?: boolean;
+  speed?: number;
+  easing?: SwiperEasing;
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  navigation?: boolean;
+  pagination?: SwiperPagination;
+  scrollbar?: boolean;
+  keyboard?: boolean;
+  allowTouchMove?: boolean;
+  autoHeight?: boolean;
+  initialSlide?: number;
+  labels?: Partial<SwiperLabels>;
+  advancedOptions?: Record<string, unknown>;
+  class?: string;
+};
+
+const {
+  slidesPerView = 1,
+  slidesPerViewTablet = slidesPerView,
+  slidesPerViewDesktop = slidesPerViewTablet,
+  gap = "regular",
+  gapTablet = gap,
+  gapDesktop = gapTablet,
+  slidesPerGroup = 1,
+  loop = false,
+  rewind = false,
+  centeredSlides = false,
+  speed = 300,
+  easing = "standard",
+  autoplay = false,
+  autoplayDelay = 3000,
+  navigation = false,
+  pagination = false,
+  scrollbar = false,
+  keyboard = true,
+  allowTouchMove = true,
+  autoHeight = false,
+  initialSlide = 0,
+  labels,
+  advancedOptions = {},
+  class: className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  ...attributes
+} = Astro.props;
+
+const requireAccessibleName = (name: string | undefined, labelledby: string | undefined) => {
+  if (!name?.trim() && !labelledby?.trim()) {
+    throw new TypeError("Swiper requires aria-label or aria-labelledby.");
+  }
+};
+const assertSlidesPerView = (name: string, value: SwiperSlidesPerView) => {
+  if (value !== "auto" && (!Number.isFinite(value) || value <= 0)) {
+    throw new RangeError(`Swiper ${name} must be "auto" or a finite number greater than 0.`);
+  }
+};
+const assertBoolean = (name: string, value: unknown) => {
+  if (typeof value !== "boolean") throw new TypeError(`Swiper ${name} must be a boolean.`);
+};
+
+requireAccessibleName(ariaLabel, ariaLabelledby);
+[
+  ["slidesPerView", slidesPerView],
+  ["slidesPerViewTablet", slidesPerViewTablet],
+  ["slidesPerViewDesktop", slidesPerViewDesktop],
+].forEach(([name, value]) => assertSlidesPerView(String(name), value as SwiperSlidesPerView));
+
+[
+  ["gap", gap],
+  ["gapTablet", gapTablet],
+  ["gapDesktop", gapDesktop],
+].forEach(([name, value]) => {
+  if (!swiperGapValues.includes(value as SwiperGap)) {
+    throw new RangeError(`Swiper ${name} must use the registered gap scale.`);
+  }
+});
+
+if (!swiperEasingValues.includes(easing)) {
+  throw new RangeError("Swiper easing must be standard, premium-in, or premium-out.");
+}
+if (!swiperPaginationValues.includes(pagination)) {
+  throw new RangeError("Swiper pagination must be false, bullets, fraction, or progressbar.");
+}
+if (!Number.isInteger(slidesPerGroup) || slidesPerGroup < 1) {
+  throw new RangeError("Swiper slidesPerGroup must be an integer greater than or equal to 1.");
+}
+if (!Number.isFinite(speed) || speed < 0) {
+  throw new RangeError("Swiper speed must be a finite number greater than or equal to 0.");
+}
+if (!Number.isFinite(autoplayDelay) || autoplayDelay <= 0) {
+  throw new RangeError("Swiper autoplayDelay must be a finite number greater than 0.");
+}
+if (!Number.isInteger(initialSlide) || initialSlide < 0) {
+  throw new RangeError("Swiper initialSlide must be an integer greater than or equal to 0.");
+}
+for (const [name, value] of [
+  ["loop", loop],
+  ["rewind", rewind],
+  ["centeredSlides", centeredSlides],
+  ["autoplay", autoplay],
+  ["navigation", navigation],
+  ["scrollbar", scrollbar],
+  ["keyboard", keyboard],
+  ["allowTouchMove", allowTouchMove],
+  ["autoHeight", autoHeight],
+] as const) assertBoolean(name, value);
+if (loop && rewind) {
+  throw new TypeError("Swiper loop and rewind cannot both be enabled.");
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("Swiper requires at least two direct data-swiper-slide children.");
+}
+if (!isPlainRecord(advancedOptions)) {
+  throw new TypeError("Swiper advancedOptions must be a plain object.");
+}
+for (const key of Object.keys(advancedOptions)) {
+  if (forbiddenAdvancedSwiperOptions.has(key)) {
+    throw new TypeError(`Swiper advancedOptions cannot control the reserved "${key}" option.`);
+  }
+}
+assertSerializableSwiperOptions(advancedOptions);
+
+const resolvedLabels = { ...defaultSwiperLabels, ...labels };
+for (const [name, value] of Object.entries(resolvedLabels)) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new TypeError(`Swiper labels.${name} must be a non-empty string.`);
+  }
+}
+
+const config: SerializedSwiperConfig = {
+  slidesPerView,
+  slidesPerViewTablet,
+  slidesPerViewDesktop,
+  gap,
+  gapTablet,
+  gapDesktop,
+  slidesPerGroup,
+  loop,
+  rewind,
+  centeredSlides,
+  speed,
+  easing,
+  autoplay,
+  autoplayDelay,
+  navigation,
+  pagination,
+  scrollbar,
+  keyboard,
+  allowTouchMove,
+  autoHeight,
+  initialSlide,
+  labels: resolvedLabels,
+  advancedOptions,
+};
+---
+
+<div
+  {...attributes}
+  aria-label={ariaLabel}
+  aria-labelledby={ariaLabelledby}
+  aria-roledescription="carousel"
+  class:list={["swiper-pattern", className]}
+  data-component-name="Swiper"
+  data-swiper-autoplay={String(autoplay)}
+  data-swiper-easing={easing}
+  data-swiper-gap={gap}
+  data-swiper-gap-desktop={gapDesktop}
+  data-swiper-gap-tablet={gapTablet}
+  data-swiper-loop={String(loop)}
+  data-swiper-navigation={String(navigation)}
+  data-swiper-pagination={String(pagination)}
+  data-swiper-ready="false"
+  data-swiper-scrollbar={String(scrollbar)}
+  data-swiper-slides-per-view={String(slidesPerView)}
+  data-swiper-slides-per-view-desktop={String(slidesPerViewDesktop)}
+  data-swiper-slides-per-view-tablet={String(slidesPerViewTablet)}
+  data-swiper-state="idle"
+  data-swiper-valid="pending"
+  data-swiper-config={JSON.stringify(config)}
+  role="region"
+>
+  <div class="swiper swiper-pattern__viewport" data-swiper-viewport data-swiper-easing={easing}>
+    <div class="swiper-wrapper">
+      <slot />
+    </div>
+  </div>
+
+  <div
+    class="swiper-pagination swiper-pattern__pagination"
+    data-swiper-pagination-element
+    hidden={!pagination}
+  ></div>
+
+  <div
+    class="swiper-scrollbar swiper-pattern__scrollbar"
+    data-swiper-scrollbar-element
+    hidden={!scrollbar}
+  ></div>
+
+  <ButtonGroup
+    aria-label={resolvedLabels.controls}
+    class="swiper-pattern__controls"
+    data-swiper-controls
+    hidden={!navigation && !autoplay}
+  >
+    <Button
+      class="swiper-pattern__previous"
+      data-swiper-previous
+      disabled={!navigation}
+      hidden={!navigation}
+      showIcon={false}
+      variant="secondary"
+    >
+      {resolvedLabels.previous}
+    </Button>
+    <Button
+      class="swiper-pattern__next"
+      data-swiper-next
+      disabled={!navigation}
+      hidden={!navigation}
+      showIcon={false}
+      variant="secondary"
+    >
+      {resolvedLabels.next}
+    </Button>
+    <Button
+      aria-pressed="false"
+      class="swiper-pattern__autoplay"
+      data-swiper-autoplay-toggle
+      hidden={!autoplay}
+      showIcon={false}
+      variant="tertiary"
+    >
+      {resolvedLabels.pause}
+    </Button>
+  </ButtonGroup>
+
+  <span class="swiper-pattern__gap-measure" data-swiper-gap-measure aria-hidden="true"></span>
+</div>
+
+<script>
+  import { setupSwiperController } from "../../../lib/swiper/swiperController";
+  setupSwiperController();
+</script>
+
+<style>
+  .swiper-pattern {
+    display: grid;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    gap: var(--gap-medium);
+  }
+
+  .swiper-pattern__viewport,
+  .swiper-pattern__viewport :global(.swiper-wrapper),
+  .swiper-pattern__viewport :global([data-swiper-slide]) {
+    min-inline-size: 0;
+  }
+
+  .swiper-pattern__viewport {
+    inline-size: 100%;
+  }
+
+  .swiper-pattern__viewport[data-swiper-easing="standard"] :global(.swiper-wrapper) {
+    transition-timing-function: var(--motion-ease-standard);
+  }
+
+  .swiper-pattern__viewport[data-swiper-easing="premium-in"] :global(.swiper-wrapper) {
+    transition-timing-function: var(--motion-ease-premium-in);
+  }
+
+  .swiper-pattern__viewport[data-swiper-easing="premium-out"] :global(.swiper-wrapper) {
+    transition-timing-function: var(--motion-ease-premium-out);
+  }
+
+  .swiper-pattern[data-swiper-ready="false"] :global([data-swiper-slide]) {
+    flex: 0 0 100%;
+  }
+
+  .swiper-pattern__pagination {
+    position: static;
+    min-block-size: var(--gap-small);
+    color: var(--color-text-secondary);
+  }
+
+  .swiper-pattern__pagination :global(.swiper-pagination-bullet) {
+    background: var(--color-background-strong);
+  }
+
+  .swiper-pattern__pagination :global(.swiper-pagination-bullet-active) {
+    background: var(--color-background-accent);
+  }
+
+  .swiper-pattern__pagination :global(button.swiper-pagination-bullet:focus-visible) {
+    outline: 0;
+    box-shadow: var(--effect-focused);
+  }
+
+  .swiper-pattern__pagination :global(.swiper-pagination-progressbar-fill) {
+    background: var(--color-background-accent);
+  }
+
+  .swiper-pattern__scrollbar,
+  .swiper-pattern__scrollbar.swiper-scrollbar-horizontal {
+    position: relative;
+    inset: auto;
+    inline-size: 100%;
+    block-size: var(--border-width-emphasis);
+    border-radius: var(--radius-full);
+    background: var(--color-background-muted);
+  }
+
+  .swiper-pattern__scrollbar :global(.swiper-scrollbar-drag) {
+    border-radius: var(--radius-full);
+    background: var(--color-background-accent);
+  }
+
+  .swiper-pattern__controls {
+    justify-content: flex-end;
+  }
+
+  .swiper-pattern__gap-measure {
+    position: absolute;
+    visibility: hidden;
+    block-size: 0;
+    pointer-events: none;
+  }
+
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="none"] { inline-size: var(--gap-none); }
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="tiny"] { inline-size: var(--gap-tiny); }
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="small"] { inline-size: var(--gap-small); }
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="regular"] { inline-size: var(--gap-regular); }
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="medium"] { inline-size: var(--gap-medium); }
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="large"] { inline-size: var(--gap-large); }
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="xlarge"] { inline-size: var(--gap-xlarge); }
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="xxlarge"] { inline-size: var(--gap-xxlarge); }
+  .swiper-pattern__gap-measure[data-swiper-measure-gap="xxxlarge"] { inline-size: var(--gap-xxxlarge); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .swiper-pattern__viewport :global(.swiper-wrapper) {
+      transition-duration: 0ms !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .swiper-pattern__pagination :global(.swiper-pagination-bullet),
+    .swiper-pattern__pagination :global(.swiper-pagination-progressbar-fill),
+    .swiper-pattern__scrollbar :global(.swiper-scrollbar-drag) {
+      background: CanvasText;
+    }
+  }
+</style>

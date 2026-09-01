@@ -1,0 +1,125 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import BulletPoint from "../../website-patterns/bullet-points/BulletPoint.astro";
+import HeroBreakout from "../../website-patterns/hero/HeroBreakout.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-hero-breakout" } = Astro.props;
+---
+
+<div
+  class="ds-hero-breakout-preview"
+  data-component-name="DsHeroBreakoutPreview"
+  data-hero-breakout-preview
+  data-ds-preview-target
+>
+  <HeroBreakout
+    id={`${idPrefix}-default`}
+    heading="Turn a clear promise into confident action"
+    eyebrow="Design system"
+    paragraph="Combine concise supporting copy, scannable benefits and focused actions with a significant edge-reaching visual."
+    caption="Start with the system"
+    headingLevel={2}
+  >
+    <BulletPoint text="Reusable semantic components" status="included" tone="status" />
+    <BulletPoint text="Responsive layout contracts" status="included" tone="status" />
+    <BulletPoint text="Documented implementation guidance" status="included" tone="status" />
+
+    <Button slot="actions">Start a project</Button>
+    <Button slot="actions" variant="secondary">Explore the system</Button>
+
+    <span
+      slot="visual"
+      class="ds-hero-breakout-preview__visual-placeholder"
+      aria-hidden="true"
+    ></span>
+  </HeroBreakout>
+</div>
+
+<script>
+  type HeroBreakoutPreviewState = {
+    eyebrow: "visible" | "hidden";
+    paragraph: "visible" | "hidden";
+    caption: "visible" | "hidden";
+    actions: "visible" | "hidden";
+  };
+
+  const initializeHeroBreakoutPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-hero-breakout-preview]").forEach((preview) => {
+      if (preview.dataset.heroBreakoutPreviewReady === "true") return;
+      preview.dataset.heroBreakoutPreviewReady = "true";
+
+      const state: HeroBreakoutPreviewState = {
+        eyebrow: "visible",
+        paragraph: "visible",
+        caption: "visible",
+        actions: "visible",
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>('[data-component-name="Eyebrow"]').forEach((node) => {
+          node.hidden = state.eyebrow === "hidden";
+        });
+        preview.querySelectorAll<HTMLElement>(".content__paragraph").forEach((node) => {
+          node.hidden = state.paragraph === "hidden";
+        });
+        preview.querySelectorAll<HTMLElement>(".hero-breakout__caption").forEach((node) => {
+          node.hidden = state.caption === "hidden";
+        });
+        preview.querySelectorAll<HTMLElement>(".hero-breakout__actions").forEach((node) => {
+          node.hidden = state.actions === "hidden";
+          const group = node.querySelector<HTMLElement>('[data-component-name="ButtonGroup"]');
+          const hero = node.closest<HTMLElement>('[data-component-name="HeroBreakout"]');
+          const caption = hero?.querySelector<HTMLElement>(".hero-breakout__caption");
+          const heading = hero?.querySelector<HTMLElement>('[data-component-name="Content"] :is(h1, h2, h3, h4, h5, h6)');
+          const label = state.caption === "visible" ? caption : heading;
+          if (group && label?.id) group.setAttribute("aria-labelledby", label.id);
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+          if (value !== "visible" && value !== "hidden") return;
+
+          if (axisId === "heroBreakoutEyebrow") state.eyebrow = value;
+          if (axisId === "heroBreakoutParagraph") state.paragraph = value;
+          if (axisId === "heroBreakoutCaption") state.caption = value;
+          if (axisId === "heroBreakoutActions") state.actions = value;
+          render();
+        });
+    });
+  };
+
+  initializeHeroBreakoutPreviews();
+  document.addEventListener("astro:page-load", initializeHeroBreakoutPreviews);
+</script>
+
+<style>
+  .ds-hero-breakout-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .ds-hero-breakout-preview__visual-placeholder {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--color-background-surface);
+    background-image: conic-gradient(
+      var(--color-background-muted) 25%,
+      var(--color-background-surface) 0 50%,
+      var(--color-background-muted) 0 75%,
+      var(--color-background-surface) 0
+    );
+    background-position: left top;
+    background-repeat: repeat;
+    background-size: 32px 32px;
+  }
+</style>

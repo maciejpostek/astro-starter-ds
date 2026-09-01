@@ -1,0 +1,22 @@
+---
+import HeroSpaced5050 from "../../../../../src/components/website-patterns/hero/HeroSpaced5050.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.HERO_SPACED_50_50_INVALID_CASE ?? "heading";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { heading: "   " },
+  eyebrow: { heading: "Hero", eyebrow: "" },
+  paragraph: { heading: "Hero", paragraph: "   " },
+  headingLevel: { heading: "Hero", headingLevel: 7 },
+  visual: { heading: "Hero" },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
+---
+
+{invalidCase === "visual" ? (
+  <HeroSpaced5050 {...props} />
+) : (
+  <HeroSpaced5050 {...props}>
+    <div slot="visual">Valid visual</div>
+  </HeroSpaced5050>
+)}

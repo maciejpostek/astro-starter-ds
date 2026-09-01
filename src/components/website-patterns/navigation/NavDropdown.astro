@@ -1,0 +1,157 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
+
+export interface Props extends Omit<HTMLAttributes<"li">, "class" | "id" | "title"> {
+  id: string;
+  label: string;
+  class?: string;
+}
+
+const { id, label, class: className, ...attributes } = Astro.props;
+
+for (const [name, value] of [["id", id], ["label", label]] as const) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new TypeError(`NavDropdown ${name} must be a non-empty string.`);
+  }
+}
+if (!Astro.slots.has("default")) {
+  throw new TypeError("NavDropdown requires NavDropdownLink children in its default slot.");
+}
+
+const triggerId = `${id}-trigger`;
+const panelId = `${id}-panel`;
+---
+
+<li
+  {...attributes}
+  id={id}
+  class:list={["nav-dropdown", className]}
+  data-component-name="NavDropdown"
+  data-navigation-disclosure="dropdown"
+  data-navigation-disclosure-state="closed"
+>
+  <button
+    id={triggerId}
+    class="nav-dropdown__trigger body-small-semibold"
+    type="button"
+    aria-expanded="false"
+    aria-controls={panelId}
+    data-navigation-disclosure-trigger
+  >
+    <span>{label}</span>
+    <MaterialSymbol class="nav-dropdown__indicator" name="arrow_drop_down" size="var(--control-size-small-icon-size)" />
+  </button>
+  <div
+    id={panelId}
+    class="nav-dropdown__panel"
+    role="region"
+    aria-labelledby={triggerId}
+    hidden
+    data-navigation-disclosure-panel
+  >
+    <ul class="nav-dropdown__list">
+      <slot />
+    </ul>
+  </div>
+</li>
+
+<style>
+  .nav-dropdown {
+    position: relative;
+    min-inline-size: 0;
+    list-style: none;
+  }
+
+  .nav-dropdown__trigger {
+    display: inline-flex;
+    min-block-size: var(--control-size-small-min-height);
+    align-items: center;
+    gap: var(--gap-tiny);
+    border: 0;
+    border-radius: var(--radius-small);
+    padding: 0;
+    color: var(--color-text-primary);
+    background: transparent;
+    cursor: pointer;
+    transition: color var(--motion-transition), background-color var(--motion-transition);
+    white-space: nowrap;
+  }
+
+  .nav-dropdown__trigger:is(:hover, :focus-visible),
+  .nav-dropdown[data-navigation-disclosure-state="open"] .nav-dropdown__trigger {
+    color: var(--color-text-accent);
+  }
+
+  .nav-dropdown__indicator {
+    flex: 0 0 auto;
+    transition: transform var(--motion-duration-disclosure) var(--motion-ease-premium-out);
+  }
+
+  .nav-dropdown[data-navigation-disclosure-state="open"] .nav-dropdown__indicator {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown__panel {
+    position: absolute;
+    inset-block-start: calc(100% + var(--gap-small));
+    inset-inline-start: 50%;
+    inline-size: max-content;
+    min-inline-size: min(var(--grid-auto-min-width-small), calc(100dvi - (var(--site-padding-inline) * 2)));
+    max-inline-size: min(var(--grid-auto-min-width-panel), calc(100dvi - (var(--site-padding-inline) * 2)));
+    transform: translateX(-50%);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-medium);
+    background: var(--color-background-canvas);
+    box-shadow: var(--elevation-surface-floating);
+    padding: var(--content-padding-xsmall);
+    animation: nav-dropdown-enter var(--motion-duration-fast) var(--motion-ease-premium-out) both;
+  }
+
+  .nav-dropdown__list {
+    display: grid;
+    min-inline-size: 0;
+    gap: var(--gap-tiny);
+    list-style: none;
+  }
+
+  :global([data-navigation-presentation="full"]) .nav-dropdown__trigger {
+    inline-size: 100%;
+    min-block-size: var(--control-size-medium-min-height);
+    justify-content: space-between;
+    padding-inline: var(--content-padding-small);
+    white-space: normal;
+  }
+
+  :global([data-navigation-presentation="full"]) .nav-dropdown__trigger:is(:hover, :focus-visible) {
+    background: var(--color-background-subtle);
+  }
+
+  :global([data-navigation-presentation="full"]) .nav-dropdown__panel {
+    position: static;
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: none;
+    transform: none;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: var(--content-padding-xsmall) 0 0;
+  }
+
+  @keyframes nav-dropdown-enter {
+    from {
+      opacity: 0;
+      translate: 0 calc(var(--gap-tiny) * -1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-dropdown__indicator,
+    .nav-dropdown__panel {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>

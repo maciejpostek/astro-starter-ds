@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+export type FooterHeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+export interface Props extends Omit<HTMLAttributes<"h2">, "class"> {
+  text: string;
+  headingLevel: FooterHeadingLevel;
+  class?: string;
+}
+
+const {
+  text,
+  headingLevel,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof text !== "string" || text.trim().length === 0) {
+  throw new TypeError("FooterLabel text must be a non-empty string.");
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("FooterLabel headingLevel must be an integer from 2 to 6.");
+}
+
+const HeadingTag = `h${headingLevel}` as HTMLTag;
+---
+
+<HeadingTag
+  {...attributes}
+  class:list={["footer-label", "body-small-semibold", className]}
+  data-component-name="FooterLabel"
+>
+  {text}
+</HeadingTag>
+
+<style>
+  .footer-label {
+    margin: 0;
+    color: var(--color-text-secondary);
+    overflow-wrap: var(--overflow-wrap-break-word);
+  }
+</style>

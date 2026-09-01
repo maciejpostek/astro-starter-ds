@@ -1,0 +1,65 @@
+---
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
+
+const logos = [
+  { slug: "github", variant: "full", alt: "GitHub" },
+  { slug: "jitter", variant: "full", alt: "Jitter" },
+  { slug: "medium", variant: "full", alt: "Medium" },
+] as const;
+---
+
+<div class="ds-logo-asset-preview" data-component-name="DsLogoAssetPreview">
+  <div class="ds-logo-asset-preview__group" data-preview-size="small">
+    {logos.map((logo) => (
+      <span class="ds-logo-asset-preview__box">
+        <LogoAsset {...logo} />
+      </span>
+    ))}
+  </div>
+  <div class="ds-logo-asset-preview__group" data-preview-size="large">
+    {logos.map((logo) => (
+      <span class="ds-logo-asset-preview__box">
+        <LogoAsset {...logo} />
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ds-logo-asset-preview {
+    display: grid;
+    gap: var(--gap-large);
+    border: var(--border-width-default) solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    background: var(--color-background-surface);
+    padding: var(--content-padding-large);
+  }
+
+  .ds-logo-asset-preview__group {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--gap-large);
+    flex-wrap: wrap;
+  }
+
+  .ds-logo-asset-preview__box {
+    display: inline-flex;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+
+  .ds-logo-asset-preview__group[data-preview-size="small"] > .ds-logo-asset-preview__box {
+    block-size: var(--size-24);
+  }
+
+  .ds-logo-asset-preview__group[data-preview-size="large"] > .ds-logo-asset-preview__box {
+    block-size: var(--size-40);
+  }
+
+  .ds-logo-asset-preview__box > :global([data-component-name="LogoAsset"]) {
+    block-size: 100%;
+  }
+</style>

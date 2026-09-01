@@ -63,10 +63,14 @@ Allowed sync statuses: `figma-only`, `astro-only`, `mapped`,
 
 The curated icon contract is `src/data/design-system/iconLibrary.json`.
 
-- Figma keeps 50 `Icon/Material/<google_snake_case_name>` masters.
+- Figma keeps 50 `Icon/Material/<google_snake_case_name>` masters. Astro adds
+  the `star` and `star_filled` rating assets locally; both remain pending until
+  a separate explicit Figma synchronization operation creates safe masters.
 - Astro renders local inline SVG through
   `src/components/assets/icons/MaterialSymbol.astro` or `.tsx`.
-- Active profile: Sharp, optical size 20, weight 400, grade 0, fill 0.
+- Active default profile: Sharp, optical size 20, weight 400, grade 0, fill 0.
+  `star_filled` is the bounded exception and uses the canonical Google `star`
+  geometry with fill 1.
 - Every icon master keeps a `20 × 20` inner group with locked 1:1 aspect ratio
   and horizontal `Fill container` sizing.
 - Astro glyphs inherit color through `currentColor`. The consumer parent owns
@@ -87,7 +91,7 @@ The curated icon contract is `src/data/design-system/iconLibrary.json`.
 - Change a fixed glyph only in the consumer master, then verify color and size
   bindings. Astro hardcodes or types the same MaterialSymbol name.
 - Accordion is an intentional projection exception: Astro types `brandIcon`
-  against all 50 local Material Symbols, while the current Figma master keeps
+  against all 52 local Material Symbols, while the current Figma master keeps
   one `language` brand icon. The disclosure glyph remains fixed to
   `arrow_drop_down`; do not interpret the Figma snapshot as a narrower Astro API.
 
@@ -178,16 +182,117 @@ The canonical social icon contract is the `social` section of
 
 ## Website Pattern mappings
 
-- HeroFullVisual keeps canonical ComponentSet `1788:639` with
-  `Composition=Centered|Left|Section Header`. The ComponentSet owns the
+- BlogCard maps canonical ComponentSet `1852:2902` on page `964:14727` to
+  `src/components/website-patterns/blog-resources/BlogCard.astro` with status
+  `intentional-difference`. Figma's `Layout=Vertical|Horizontal` and
+  `Media Placement=Start|End` axes map to closed Astro unions, while Show
+  Media, Tags, Description, Date and CTA map to optional content, href or Slot
+  presence. Astro owns the semantic labelled article, selectable heading rank,
+  native `time` metadata and ButtonLink interaction. The fixed 600px and 748px
+  Figma frames remain review fixtures; production uses fluid sizing, a fixed
+  16:9 Ratio wrapper and intrinsic horizontal tracks based on
+  `--grid-auto-min-width-card`. Long content grows naturally instead of
+  inheriting Figma text-frame clipping. Ratio, Tag, ButtonLink and its fixed
+  `arrow_forward` Material Symbol remain canonical dependencies; no new token,
+  icon or Figma mutation is part of the mapping.
+- HeroBreakout maps canonical ComponentSet `1800:389` on page `964:14724`
+  to `src/components/website-patterns/hero/HeroBreakout.astro` with status
+  `intentional-difference`. Its single `Type=Default` child is structural
+  metadata, not a public variant. Astro flattens nested Content copy into
+  typed props, wraps required direct BulletPoint children in one semantic
+  list, maps the optional lower Caption and ButtonGroup to content and Slot
+  presence, and requires caller-authored accessible media in `visual`. The
+  Desktop master places Content Region in columns 1–6, Content Stack in its
+  first four columns, and Visual from column seven to `full-end`; unlike
+  Hero5050, that Visual preserves the approved hero-top inset and continues
+  to the section end. Astro adds semantic heading rank and a source-order-
+  preserving stack below the `64rem` component-container threshold; Content
+  retains `content-start / content-end` inline padding while Visual spans
+  `full-start / full-end`. Fixed Figma dimensions and Layout Grid Variables
+  remain authoring metadata.
+- Hero5050 maps canonical Component `1980:3690` inside documentation
+  ComponentSet `2034:5586` on page `964:14724` to
+  `src/components/website-patterns/hero/Hero5050.astro` with status
+  `intentional-difference`. The one-child `Type=Default` structure remains
+  Figma documentation metadata. Astro flattens nested Content copy into
+  `heading`, `eyebrow` and `paragraph`, maps Bullet Points, Caption and Actions
+  visibility to optional content or Slot presence, requires the `visual` Slot
+  and fixes the page-title semantics to `h1`. The Desktop master places the
+  content region across columns 1–6, its compact stack across four columns,
+  the lower action area across six and Visual from column seven to `full-end`.
+  Astro uses `.l-grid[data-grid="breakout"]`, named lines and a nested
+  six-column grid, treats `100svh` as the wide minimum-height equivalent of
+  the 1440 × 800 presentation, and intentionally stacks padded content before
+  a 4:3 crop-safe visual that spans `full-start / full-end` without inline
+  padding below the `64rem` component-container threshold. Content,
+  BulletPoint and ButtonGroup remain canonical dependencies; no Figma
+  measurement becomes a CSS token.
+- HeroAlignBottom maps canonical ComponentSet `2031:402` on page
+  `964:14724` to
+  `src/components/website-patterns/hero/HeroAlignBottom.astro` with status
+  `intentional-difference`. Its one-child `Type=Default` axis is structural
+  Figma documentation metadata and does not become an Astro prop. Astro
+  flattens the nested left-aligned Content copy into `heading`, `eyebrow`,
+  `paragraph` and semantic `headingLevel`, forwards optional actions through
+  Content and requires replaceable `visual` Slot content. At wide sizes the
+  main site grid places Content in columns 1–4, Visual in columns 6–12 and
+  aligns Content to the bottom of the shared row. Below the `64rem` component
+  container threshold Astro intentionally stacks Content before Visual
+  without changing DOM or focus order. The 1440 × 800 master and 738 × 640
+  visual remain documentation review fixtures, not CSS dimensions, props or
+  tokens. Content remains the only direct Astro dependency.
+- HeroSpaced5050 maps canonical ComponentSet `2041:5984` on page
+  `964:14724` to
+  `src/components/website-patterns/hero/HeroSpaced5050.astro` with status
+  `intentional-difference`. The one-child `Type=Default` axis is structural
+  Figma documentation metadata, not an Astro prop. Figma `Show Eyebrow`,
+  `Show Paragraph` and `Show Actions` booleans map to optional content or Slot
+  presence; Astro additionally requires the `visual` Slot and owns semantic
+  `headingLevel`. The approved Desktop master places content across columns
+  1–6, heading across five of those columns, details across four and Visual
+  from column seven to `full-end`. Astro expresses that relationship through
+  `.l-grid[data-grid="breakout"]`, named lines and a nested six-column grid,
+  then intentionally stacks padded content before an edge-to-edge Visual below
+  the `64rem` component container threshold: content remains on
+  `content-start / content-end`, while Visual spans `full-start / full-end`.
+  The fixed 1440 × 800 representation and derived region
+  widths remain Figma presentation metadata, not CSS tokens. Astro reuses the
+  canonical Eyebrow and ButtonGroup contracts; their internal spacing and
+  wrapping must not be overridden for snapshot parity.
+- HeroVisualCenter maps canonical ComponentSet `2018:397` on page
+  `964:14724` to
+  `src/components/website-patterns/hero/HeroVisualCenter.astro` with status
+  `intentional-difference`. Its sole `Type=Default` value remains structural
+  Figma metadata. Required Eyebrow and Heading map to props; Paragraph,
+  Button Group and Bullet Points visibility map to optional content or Slot
+  presence; Astro additionally owns semantic `headingLevel` and requires a
+  meaningful `visual` Slot. The Desktop master centers Content at `span/05`,
+  lets Bullet Points use `span/12` and centers a 16:9 Visual in columns
+  `2 / span 10`. Astro recreates those relationships with the shared site
+  grid and existing tokens, then intentionally gives all three regions the
+  full component width below `64rem` without changing source or focus order.
+  The 1440 × 1102 presentation and Layout Grid Columns remain review metadata,
+  not CSS dimensions or exported tokens. Content, BulletPoint and Ratio are
+  the direct Astro dependencies.
+- HeroFullVisual maps canonical ComponentSet `1788:639` on page `964:14724`
+  to `src/components/website-patterns/hero/HeroFullVisual.astro` with status
+  `intentional-difference`. `Composition=Centered|Left|Section Header` maps to
+  the closed `centered|left|section-header` prop. Centered and Left delegate
+  their copy to Content, while Section Header delegates to
+  `SectionHeader composition=copy-actions`; actions are forwarded through the
+  shared optional Slot. Astro requires direct BulletPoint children in the
+  `bullet-points` Slot and visual content in Ratio at `2.39:1`. The ComponentSet owns the
   explicit Desktop modes for Layout Foundations, Layout Semantic and Layout
   Grid Columns. Each variant root represents the 1440 px full-width section
   shell; its Content Grid follows `site/padding/inline`. Content and Bullet
   Points fill up to `span/05`, SectionHeader fills up to `span/12`, and Visual
   runs from `full-start` to `full-end`. The Figma spans are authoring
-  projections only: Astro must later use a full-width section shell, an inner
-  container/grid and named content/full lines. Mobile and Tablet remain
-  unapproved and must not be inferred.
+  projections only: Astro uses a full-width section shell, the public breakout
+  and site grids and named content/full lines. Figma remains Desktop-only;
+  Astro intentionally expands the bounded content regions below `64rem`,
+  preserves DOM order and keeps the visual full-bleed. Semantic heading rank,
+  including the default `h1`, remains Astro-only. No Device axis or Figma
+  Mobile/Tablet composition is inferred.
 - SectionHeader maps canonical ComponentSet `274:26` to
   `src/components/website-patterns/page-headers/SectionHeader.astro` with
   status `intentional-difference`. Live Figma has three Composition values and
@@ -203,7 +308,9 @@ The canonical social icon contract is the `social` section of
   wrapping. Astro uses the public 12-column grid at `64rem` and above, then
   intentionally stacks all regions below that component-container threshold
   while preserving DOM order. Required eyebrow content and semantic
-  `headingLevel` are also Astro-only. These differences must not be projected
+  `headingLevel` from `h1` through `h6` are also Astro-only; the default remains
+  `h2`, and `h1` is reserved for delegated page-title compositions such as
+  HeroFullVisual. These differences must not be projected
   back to Figma without a separate approved Figma task, and Figma measurements
   must not become CSS tokens.
 - FAQ maps canonical ComponentSet `2131:4214` on page `964:12973` to
@@ -218,6 +325,98 @@ The canonical social icon contract is the `social` section of
   both regions to one full-width column below `64rem` without changing source
   order. The manifest remains the canonical mapping because Code Connect is
   unavailable for the current seat.
+- FeatureSimple maps canonical ComponentSet `1980:5361` on page `964:14722`
+  to `src/components/website-patterns/features/FeatureSimple.astro` with
+  status `intentional-difference`. `Visual Position=Right|Left` maps to the
+  closed `visualPosition` prop. The exposed Content instance maps Heading,
+  optional Eyebrow, Paragraph and actions plus alignment to the flattened
+  Astro content API; the exposed Ratio instance maps to `ratio`, while Astro
+  requires meaningful visual content through the `visual` Slot. The Desktop
+  Right composition places Content in columns 2–5 and Visual in columns 7–11;
+  Left places Visual in columns 2–6 and Content in columns 8–11. Astro uses the
+  public site grid and a named `feature-simple` container, then stacks both
+  regions below `64rem` while retaining the selected variant's source order.
+  Figma's fixed canvas, span Variables and solved pixel widths remain authoring
+  metadata. The manifest remains canonical because Code Connect is unavailable
+  for the current seat.
+- FeatureProof maps canonical ComponentSet `1980:5348` on page `964:14722`
+  to `src/components/website-patterns/features/FeatureProof.astro` with status
+  `intentional-difference`. `Visual Position=Right|Left` maps to the closed
+  `visualPosition` prop. The exposed Content values map to required heading,
+  optional eyebrow and paragraph plus the actions Slot; native Key Points,
+  Logos and Supporting Details Slots map to optional named Astro slots. Logo
+  Proof and Supporting Details titles are required only with their matching
+  slots. Content, Ratio, TitleRow and BulletPoint remain canonical dependencies.
+  Figma retains its `2:3` authoring ratio while Astro intentionally fixes the
+  runtime visual boundary at `1:1`; approved local logos resolve through the
+  Astro-only public LogoAsset renderer inside FeatureProof-owned height boxes.
+  The Desktop Right composition places Content in
+  columns 2–5 and Visual in columns 7–11; Left places Visual in columns 2–6 and
+  Content in columns 8–11. Astro uses the public site grid and a named
+  `feature-proof` container, then stacks both regions below `64rem` while
+  retaining the selected variant's source order. Figma visibility booleans map
+  to content presence, and fixed canvas measurements remain authoring metadata.
+  The manifest remains canonical because Code Connect is unavailable for the
+  current seat.
+- Feature5050 maps canonical ComponentSet `1980:5351` on page `964:14722`
+  to `src/components/website-patterns/features/Feature5050.astro` with status
+  `intentional-difference`. Figma `Visual Position=Left|Right` maps to logical
+  Astro values `start|end`; optional Primary Bullets, Logos and Detail Bullets
+  regions map from Figma booleans and native Slots to named-slot presence.
+  Content owns the heading-led copy and indirect ButtonGroup composition,
+  BulletPoint remains the direct child of semantic Astro lists, and TitleRow
+  labels the logo and detail groups. Astro keeps Content first in the DOM for
+  both wide variants, gives the wide section a `100svh` minimum, stretches the
+  ratio-free Visual through the complete section row and applies
+  `--content-padding-xxlarge` to the Content side adjacent to Visual. It places
+  only the visual through logical breakout grid lines, then removes that
+  viewport minimum and adjacent-side padding while stacking Content before
+  Visual below the `64rem` component threshold. The fixed 1440 × 800 canvas,
+  630/522px derived regions and Layout
+  Grid Columns values remain Figma authoring metadata rather than CSS or
+  tokens. No Variable, icon, logo-asset or Figma mutation is part of this
+  mapping, and the manifest remains canonical while Code Connect is
+  unavailable for the current seat.
+- Feature5050Centered maps canonical ComponentSet `1980:5357` on page
+  `964:14722` to
+  `src/components/website-patterns/features/Feature5050Centered.astro` with
+  status `intentional-difference`. Figma `Visual=Right|Left` maps to the closed
+  Astro `visualPosition="right"|"left"` prop. Content maps to the required
+  heading and optional eyebrow and paragraph props; the native Bullet Points
+  Slot maps to the optional default slot, and Figma visibility booleans map to
+  default- and actions-slot presence. Content, BulletPoint and ButtonGroup stay
+  canonical dependencies, while Astro requires meaningful consumer-owned
+  media through the `visual` Slot. Astro keeps Content first in the DOM for
+  both wide variants, uses CSS placement for the visual half, rounds only its
+  Content-facing edge, and stacks Content before a square, full-bleed Visual
+  below the `64rem` component threshold. The Visual wrapper owns the canonical
+  CSS Checkerboard Visual Placeholder beneath slotted content; it does not add
+  Ratio or request an image asset solely to represent the empty Figma frame.
+  Figma's fixed
+  1440 × 800 canvas maps to a wide `100svh` minimum rather than a new token;
+  narrow layouts remain content-sized. No Variables, tokens, icons or Figma
+  mutation are part of this mapping, and the manifest remains canonical while
+  Code Connect is unavailable for the current seat.
+- FeatureScroll maps canonical ComponentSet `2098:1281` on page `964:14722`
+  to `src/components/website-patterns/features/FeatureScroll.astro` with status
+  `intentional-difference`. The single `Type=Default` variant is structural
+  only and does not create an Astro variant prop. Figma's native `Feature
+  Items` Slot maps to a required default slot with at least two direct,
+  labelled feature items; the private `_Parts/FeatureScroll.Item` helper stays
+  private and does not become another public component. Content owns the
+  section introduction, while Ratio, BulletPoint, Tag and ButtonGroup remain
+  nested dependencies. Astro owns the named `feature-scroll` container,
+  content-safe item growth and progressive scroll enhancement. Wide cards and
+  the sticky visual viewport share the approved minimum height, a preferred
+  16:9 aspect ratio and one non-doubled center border; passive,
+  animation-frame-scheduled synchronization changes the non-interactive,
+  `aria-hidden` stage clone only when the next card top reaches the sticky
+  viewport top. Wide layouts show one sticky visual stage,
+  while narrow, no-JavaScript and invalid-anatomy fallbacks keep every original
+  content/visual pair inline and in source order. The approved Astro-only
+  `feature-scroll-size` token projects the raw 480px item geometry as a minimum;
+  no Figma Variable mutation is authorized. The manifest remains canonical
+  because Code Connect is unavailable for the current seat.
 - StatTextInline maps canonical ComponentSet `1783:1425` on the Stats & Metrics
   page to `src/components/website-patterns/stats-metrics/StatTextInline.astro`.
   Figma's four `Type=Up|Down` × `Icon=Leading|Trailing` variants map to the
@@ -314,6 +513,10 @@ Its Desktop and Mobile values are whole-pixel authoring measurements: calculate
 the exact stretched-grid span or offset first, then round only the final result
 to the nearest integer. Do not round the individual fractional column width
 before composing the span.
+When a component binds `grid/max-width/span/NN`, Astro preserves the semantic
+span as `grid-column-end: span NN` or `grid-column: <start> / span NN`; the
+fixed Figma pixel result never becomes CSS or a token. Offset bindings identify
+the explicit CSS Grid start line, not a runtime width.
 Removed orphan IDs may remain directly readable as unpublished historical
 handles. They are excluded from the checkpoint when they are absent from local
 enumeration and have no canvas consumers.

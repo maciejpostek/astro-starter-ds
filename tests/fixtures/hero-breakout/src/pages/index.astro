@@ -1,0 +1,95 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import BulletPoint from "../../../../../src/components/website-patterns/bullet-points/BulletPoint.astro";
+import HeroBreakout from "../../../../../src/components/website-patterns/hero/HeroBreakout.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HeroBreakout contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <div class="fixture fixture--wide" data-fixture-width="1440">
+        <HeroBreakout
+          id="hero-wide"
+          class="hero-breakout-contract-fixture"
+          data-forwarded="yes"
+          heading="Zbuduj wyraźne pierwsze wrażenie"
+          eyebrow="System projektowy"
+          paragraph="Jedna główna obietnica prowadzi przez konkretne korzyści do dwóch czytelnych działań."
+          caption="Rozpocznij z systemem"
+        >
+          <BulletPoint text="Semantyczne komponenty" status="included" tone="status" />
+          <BulletPoint text="Responsywne kontrakty" status="included" tone="status" />
+          <BulletPoint text="Udokumentowane reguły" status="included" tone="status" />
+          <Button slot="actions">Rozpocznij projekt</Button>
+          <Button slot="actions" variant="secondary">Poznaj system</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstrakcyjna kompozycja geometryczna" />
+        </HeroBreakout>
+      </div>
+
+      <div class="fixture fixture--desktop" data-fixture-width="1024">
+        <HeroBreakout id="hero-minimal" headingLevel={2} heading="A heading, benefit and visual are sufficient">
+          <BulletPoint text="One clear benefit" status="included" tone="status" />
+          <picture slot="visual">
+            <img src="/images/project-placeholder.svg" alt="" />
+          </picture>
+        </HeroBreakout>
+      </div>
+
+      <div class="fixture fixture--tablet" data-fixture-width="768" data-theme="dark">
+        <HeroBreakout
+          id="hero-long"
+          headingLevel={3}
+          eyebrow="Localized content"
+          heading="A deliberately long heading verifies natural wrapping without introducing layout-only public properties"
+          paragraph="Supporting copy and the semantic benefit list may grow under localization and text zoom without horizontal overflow."
+          caption="Continue when ready"
+        >
+          <BulletPoint text="A deliberately long proof statement remains readable inside the assigned width" status="included" tone="status" />
+          <BulletPoint text="The visual follows the action area in source order" status="included" tone="status" />
+          <Button slot="actions">Continue with a deliberately long action label</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="Abstract placeholder" />
+        </HeroBreakout>
+      </div>
+
+      <div class="fixture fixture--narrow" data-fixture-width="320" data-theme="dark" dir="rtl">
+        <HeroBreakout
+          id="hero-rtl"
+          headingLevel={4}
+          eyebrow="نظام التصميم"
+          heading="ابنِ انطباعًا أوليًا واضحًا"
+          paragraph="يتحقق هذا المثال من التفاف النص وترتيب القراءة داخل حاوية ضيقة من اليمين إلى اليسار."
+          caption="ابدأ مع النظام"
+        >
+          <BulletPoint text="مكونات دلالية قابلة لإعادة الاستخدام" status="included" tone="status" />
+          <Button slot="actions">ابدأ الآن</Button>
+          <img slot="visual" src="/images/project-placeholder.svg" alt="تكوين هندسي تجريدي" />
+        </HeroBreakout>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    display: grid;
+    gap: var(--section-padding-small);
+  }
+
+  .fixture {
+    inline-size: min(100%, 90rem);
+    margin-inline: auto;
+    background: var(--color-background-canvas);
+  }
+
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--tablet { max-inline-size: 48rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

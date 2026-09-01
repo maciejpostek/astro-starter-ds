@@ -1,0 +1,39 @@
+---
+import ProgressTab from "../../base-components/tabs/ProgressTab.astro";
+import Tabs from "../../base-components/tabs/Tabs.astro";
+---
+
+<div class="ds-preview-renderer-boundary ds-progress-tab-preview" data-component-name="DsProgressTabPreview">
+  <Tabs aria-label="Progress tab example">
+    <ProgressTab
+      id="progress-tab-preview-trigger"
+      controls="progress-tab-preview-panel"
+      progress={48}
+      selected
+      data-ds-preview-target
+    >
+      Evaluate adoption with reliable evidence
+    </ProgressTab>
+  </Tabs>
+  <div
+    id="progress-tab-preview-panel"
+    role="tabpanel"
+    aria-labelledby="progress-tab-preview-trigger"
+    tabindex="0"
+  >
+    Example panel
+  </div>
+</div>
+
+<style>
+  .ds-progress-tab-preview {
+    display: grid;
+    inline-size: 100%;
+    min-inline-size: 0;
+    gap: var(--gap-small);
+  }
+
+  .ds-progress-tab-preview > :global([role="tabpanel"]) {
+    color: var(--color-text-secondary);
+  }
+</style>

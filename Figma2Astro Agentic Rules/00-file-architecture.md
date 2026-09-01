@@ -61,10 +61,10 @@ they do not map to Astro folders, component records, Variables, or public APIs.
      ↪  ▦  Announcements & Banners
      ↪  ▦  Hero
      ↪  ▦  Page Headers
-     ↪  ▦  Brand & Logo Proof
      ↪  ▦  Ratings & Reviews
      ↪  ▦  Stats & Metrics
      ↪  ▦  Testimonials & Stories
+     ↪  ▦  Brand & Logo Proof
      ↪  ▦  Features
      ↪  ▦  How It Works
      ↪  ▦  Integrations & Security

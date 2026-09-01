@@ -1,0 +1,23 @@
+---
+import FeatureSimple from "../../../../../src/components/website-patterns/features/FeatureSimple.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.FEATURE_SIMPLE_INVALID_CASE ?? "heading";
+const invalidProps: Record<string, Record<string, unknown>> = {
+  heading: { heading: "   " },
+  visualPosition: { heading: "Feature", visualPosition: "center" },
+  contentAlign: { heading: "Feature", contentAlign: "end" },
+  ratio: { heading: "Feature", ratio: "7:3" },
+  headingLevel: { heading: "Feature", headingLevel: 1 },
+  slot: { heading: "Feature" },
+};
+const props = (invalidProps[invalidCase] ?? invalidProps.heading) as any;
+---
+
+{invalidCase === "slot" ? (
+  <FeatureSimple {...props} />
+) : (
+  <FeatureSimple {...props}>
+    <img slot="visual" src="/images/project-placeholder.svg" alt="Valid visual" />
+  </FeatureSimple>
+)}

@@ -60,6 +60,14 @@
       "projection": "data-tag-tone"
     }
   ],
+  "documentationPreview": {
+    "websitePatternContainerProfiles": ["full", "main", "small"],
+    "websitePatternSizingModes": ["fill", "bounded", "intrinsic"],
+    "classificationOrder": ["container-ownership", "specimen-allocation"],
+    "frameOwner": "src/components/_internal/documentation/DsPreviewLayoutFrame.astro",
+    "prohibitsPublicPreviewProps": true,
+    "requiresProjectionParity": ["inline", "dialog", "route"]
+  },
   "creationPolicy": {
     "default": "blocked",
     "requiresTokenDraft": true,

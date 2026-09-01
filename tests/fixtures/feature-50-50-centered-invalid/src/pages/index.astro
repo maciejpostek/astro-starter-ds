@@ -1,0 +1,21 @@
+---
+import Feature5050Centered from "../../../../../src/components/website-patterns/features/Feature5050Centered.astro";
+
+const invalidCase = process.env.FEATURE_5050_CENTERED_INVALID_CASE ?? "heading";
+const cases = {
+  heading: { heading: "" },
+  optionalString: { heading: "Feature", eyebrow: "" },
+  visualPosition: { heading: "Feature", visualPosition: "center" },
+  headingLevel: { heading: "Feature", headingLevel: 1 },
+  visual: { heading: "Feature" },
+} as const;
+const props = (cases[invalidCase as keyof typeof cases] ?? cases.heading) as any;
+---
+
+{invalidCase === "visual" ? (
+  <Feature5050Centered {...props} />
+) : (
+  <Feature5050Centered {...props}>
+    <img slot="visual" src="/images/project-placeholder.svg" alt="Fixture visual" />
+  </Feature5050Centered>
+)}

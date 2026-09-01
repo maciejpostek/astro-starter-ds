@@ -1,0 +1,21 @@
+---
+import FooterNewsletterForm from "../../website-patterns/footer/FooterNewsletterForm.astro";
+---
+
+<div class="ds-footer-newsletter-form-preview" data-component-name="DsFooterNewsletterFormPreview" data-ds-preview-target>
+  <FooterNewsletterForm
+    id="documentation-footer-newsletter"
+    action="#newsletter"
+    emailLabel="Email address"
+    emailPlaceholder="name@example.com"
+    submitLabel="Subscribe"
+  >
+    <span slot="consent">You can unsubscribe at any time.</span>
+  </FooterNewsletterForm>
+</div>
+
+<style>
+  .ds-footer-newsletter-form-preview {
+    inline-size: min(100%, var(--container-small));
+  }
+</style>

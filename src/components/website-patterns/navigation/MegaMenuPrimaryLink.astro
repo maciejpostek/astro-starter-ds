@@ -1,0 +1,49 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends Omit<HTMLAttributes<"a">, "class" | "href"> {
+  href: string;
+  description?: string;
+  class?: string;
+}
+
+const { href, description, class: className, ...attributes } = Astro.props;
+if (typeof href !== "string" || href.trim().length === 0) throw new TypeError("MegaMenuPrimaryLink href must be a non-empty string.");
+if (description !== undefined && (typeof description !== "string" || description.trim().length === 0)) throw new TypeError("MegaMenuPrimaryLink description must be a non-empty string when provided.");
+if (!Astro.slots.has("default")) throw new TypeError("MegaMenuPrimaryLink requires label content in its default slot.");
+---
+
+<li class:list={["mega-menu-primary-link", className]} data-component-name="MegaMenuPrimaryLink">
+  <a {...attributes} class="mega-menu-primary-link__anchor" href={href}>
+    <span class="mega-menu-primary-link__label heading-h5"><slot /></span>
+    {description && <span class="mega-menu-primary-link__description body-small-regular">{description}</span>}
+  </a>
+</li>
+
+<style>
+  .mega-menu-primary-link {
+    min-inline-size: 0;
+    list-style: none;
+  }
+
+  .mega-menu-primary-link__anchor {
+    display: grid;
+    min-inline-size: 0;
+    gap: var(--gap-tiny);
+    border-radius: var(--radius-small);
+    padding: var(--content-padding-xsmall);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: color var(--motion-transition), background-color var(--motion-transition);
+  }
+
+  .mega-menu-primary-link__anchor:is(:hover, :focus-visible) {
+    color: var(--color-text-accent);
+    background: var(--color-background-subtle);
+  }
+
+  .mega-menu-primary-link__description {
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+  }
+</style>

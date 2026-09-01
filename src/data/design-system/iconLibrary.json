@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "provider": {
     "id": "google-material-symbols",
     "name": "Material Symbols",
@@ -279,7 +279,7 @@
       "paths": [
         "M8 14.5V13H12V14.5H8ZM5 10.75V9.25H15V10.75H5ZM3 7V5.5H17V7H3Z"
       ],
-      "requiredBySource": false,
+      "requiredBySource": true,
       "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/filter_list/default/20px.svg"
     },
     "flag_2": {
@@ -451,6 +451,32 @@
       ],
       "requiredBySource": true,
       "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/shield_lock/default/20px.svg"
+    },
+    "star": {
+      "figmaName": null,
+      "figmaNodeId": null,
+      "figmaSyncStatus": "pending-explicit-operation",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "M7.33333 13.89583 10 12.3125l2.6875 1.58333-.70833-3 2.3125-1.97916-3.0625-.27084L10 5.79167 8.77083 8.64583l-3.0625.27084 2.33334 1.97916zM5.0625 17l1.3125-5.54167L2 7.72917l5.75-.5L10 2l2.25 5.25 5.75.47917-4.375 3.72916L14.9375 17 10 14.0625zM10 10.0625"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/star/default/20px.svg"
+    },
+    "star_filled": {
+      "googleName": "star",
+      "profileOverride": {
+        "fill": 1
+      },
+      "figmaName": null,
+      "figmaNodeId": null,
+      "figmaSyncStatus": "pending-explicit-operation",
+      "viewBox": "0 0 20 20",
+      "paths": [
+        "m5.0625 17 1.3125-5.54167L2 7.72917l5.75-.5L10 2l2.25 5.25 5.75.47917-4.375 3.72916L14.9375 17 10 14.0625z"
+      ],
+      "requiredBySource": true,
+      "sourceSvg": "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolssharp/star/fill1/20px.svg"
     },
     "star_rate": {
       "figmaName": "Icon/Material/star_rate",

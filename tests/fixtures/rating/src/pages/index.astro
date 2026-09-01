@@ -1,0 +1,33 @@
+---
+import Rating from "../../../../../src/components/website-patterns/ratings-reviews/Rating.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const values = [0, 1, 2, 3, 4, 5] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8" /><title>Rating contract fixture</title></head>
+  <body>
+    {values.map((value) => (
+      <Rating
+        id={`rating-${value}`}
+        value={value}
+        ratingLabel={`Rating ${value} out of 5 stars`}
+        class={value === 5 ? "fixture-class" : undefined}
+        data-forwarded={value === 5 ? "yes" : undefined}
+      >
+        Trusted by <strong>500</strong> brands
+      </Rating>
+    ))}
+    <div style="inline-size: 10rem">
+      <Rating
+        id="rating-long"
+        value={4}
+        ratingLabel="Rating 4 out of 5 stars"
+      >
+        Trusted by <span>five hundred international technology brands</span>
+      </Rating>
+    </div>
+  </body>
+</html>

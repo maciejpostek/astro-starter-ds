@@ -193,6 +193,12 @@ export const componentColorGroups = {
     description: "High-emphasis action using the accent surface.",
     prefixes: ["--button-primary-"],
   }),
+  "button-primary-alternate": colorGroup({
+    id: "button-primary-alternate",
+    title: "Button primary alternate",
+    description: "High-emphasis inverse action for accent-colored surfaces.",
+    prefixes: ["--button-primary-alternate-"],
+  }),
   "button-secondary": colorGroup({
     id: "button-secondary",
     title: "Button secondary",
@@ -210,6 +216,12 @@ export const componentColorGroups = {
     title: "Button link",
     description: "Low-emphasis navigation without a persistent container.",
     prefixes: ["--button-link-"],
+  }),
+  "button-link-primary-alternate": colorGroup({
+    id: "button-link-primary-alternate",
+    title: "Button link primary alternate",
+    description: "Text-only action for accent-colored surfaces.",
+    prefixes: ["--button-link-primary-alternate-"],
   }),
   "icon-button": colorGroup({
     id: "icon-button",

@@ -56,6 +56,11 @@ const variants: Array<{
 
           if (axisId === "statTextInlineTrend") preview.dataset.previewTrend = value;
           if (axisId === "statTextInlineIconPosition") preview.dataset.previewIconPosition = value;
+          if (axisId === "statTextInlineIcon") {
+            preview.querySelectorAll<HTMLElement>(".stat-text-inline__icon").forEach((icon) => {
+              icon.hidden = value === "hidden";
+            });
+          }
           render();
         });
 

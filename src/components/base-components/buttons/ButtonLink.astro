@@ -3,8 +3,11 @@ import type { HTMLAttributes } from "astro/types";
 import MaterialSymbol from "../../assets/icons/MaterialSymbol.astro";
 import type { ButtonSize } from "./Button.astro";
 
+export type ButtonLinkVariant = "default" | "primary-alternate";
+
 export interface Props extends Omit<HTMLAttributes<"a">, "class" | "href"> {
   href: string;
+  variant?: ButtonLinkVariant;
   size?: ButtonSize;
   showIcon?: boolean;
   disabled?: boolean;
@@ -13,6 +16,7 @@ export interface Props extends Omit<HTMLAttributes<"a">, "class" | "href"> {
 
 const {
   href,
+  variant = "default",
   size = "small",
   showIcon = true,
   disabled = false,
@@ -26,6 +30,7 @@ const {
   aria-disabled={disabled ? "true" : undefined}
   class:list={["button-link", className]}
   data-component-name="ButtonLink"
+  data-button-variant={variant}
   data-control-size={size}
   href={disabled ? undefined : href}
   tabindex={disabled ? -1 : attributes.tabindex}
@@ -66,12 +71,28 @@ const {
     color: var(--button-link-icon-default);
   }
 
+  .button-link[data-button-variant="primary-alternate"] {
+    color: var(--button-link-primary-alternate-text-default);
+  }
+
+  .button-link[data-button-variant="primary-alternate"] .button-link__icon {
+    color: var(--button-link-primary-alternate-icon-default);
+  }
+
   .button-link:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
     color: var(--button-link-text-hover);
   }
 
   .button-link:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) .button-link__icon {
     color: var(--button-link-icon-hover);
+  }
+
+  .button-link[data-button-variant="primary-alternate"]:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) {
+    color: var(--button-link-primary-alternate-text-hover);
+  }
+
+  .button-link[data-button-variant="primary-alternate"]:not([aria-disabled="true"]):is(:hover, [data-ds-preview-state="hover"]) .button-link__icon {
+    color: var(--button-link-primary-alternate-icon-hover);
   }
 
   .button-link:not([aria-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) {
@@ -82,6 +103,14 @@ const {
     color: var(--button-link-icon-pressed);
   }
 
+  .button-link[data-button-variant="primary-alternate"]:not([aria-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) {
+    color: var(--button-link-primary-alternate-text-pressed);
+  }
+
+  .button-link[data-button-variant="primary-alternate"]:not([aria-disabled="true"]):is(:active, [data-ds-preview-state="pressed"]) .button-link__icon {
+    color: var(--button-link-primary-alternate-icon-pressed);
+  }
+
   .button-link[aria-disabled="true"] {
     color: var(--button-link-text-disabled);
     cursor: not-allowed;
@@ -89,6 +118,14 @@ const {
 
   .button-link[aria-disabled="true"] .button-link__icon {
     color: var(--button-link-icon-disabled);
+  }
+
+  .button-link[data-button-variant="primary-alternate"][aria-disabled="true"] {
+    color: var(--button-link-primary-alternate-text-disabled);
+  }
+
+  .button-link[data-button-variant="primary-alternate"][aria-disabled="true"] .button-link__icon {
+    color: var(--button-link-primary-alternate-icon-disabled);
   }
 
   .button-link:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {

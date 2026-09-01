@@ -1,0 +1,18 @@
+---
+import LogoAsset from "../../../../../src/components/assets/logos/LogoAsset.astro";
+
+const invalidCase = process.env.LOGO_ASSET_INVALID_CASE ?? "slug";
+---
+
+<!doctype html>
+<html lang="en">
+  <head><title>Invalid LogoAsset fixture</title></head>
+  <body>
+    {invalidCase === "slug" && <LogoAsset slug="" variant="mark" alt="" />}
+    {invalidCase === "unknownSlug" && <LogoAsset slug="unknown-brand" variant="mark" alt="" />}
+    {invalidCase === "variant" && <LogoAsset slug="github" variant={"badge" as any} alt="" />}
+    {invalidCase === "missingVariant" && <LogoAsset slug="youtube" variant="full" alt="" />}
+    {invalidCase === "alt" && <LogoAsset slug="github" variant="mark" alt={undefined as any} />}
+    {invalidCase === "loading" && <LogoAsset slug="github" variant="mark" alt="" loading={"auto" as any} />}
+  </body>
+</html>

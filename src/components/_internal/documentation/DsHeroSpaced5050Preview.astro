@@ -1,0 +1,105 @@
+---
+import Button from "../../base-components/buttons/Button.astro";
+import HeroSpaced5050 from "../../website-patterns/hero/HeroSpaced5050.astro";
+
+interface Props {
+  idPrefix?: string;
+}
+
+const { idPrefix = "documentation-hero-spaced-50-50" } = Astro.props;
+---
+
+<div
+  class="ds-hero-spaced-50-50-preview"
+  data-component-name="DsHeroSpaced5050Preview"
+  data-hero-spaced-50-50-preview
+  data-ds-preview-target
+>
+  <HeroSpaced5050
+    id={`${idPrefix}-default`}
+    heading="Build a clear first impression"
+    eyebrow="Design system"
+    paragraph="Present one primary promise with concise supporting copy, focused actions and a significant visual that reaches the edge of the page."
+    headingLevel={2}
+  >
+    <Button slot="actions">Start a project</Button>
+    <Button slot="actions" variant="secondary">Explore the system</Button>
+    <span
+      slot="visual"
+      class="ds-hero-spaced-50-50-preview__visual-placeholder"
+      aria-hidden="true"
+    ></span>
+  </HeroSpaced5050>
+</div>
+
+<script>
+  type HeroSpaced5050PreviewState = {
+    eyebrow: "visible" | "hidden";
+    paragraph: "visible" | "hidden";
+    actions: "visible" | "hidden";
+  };
+
+  const initializeHeroSpaced5050Previews = () => {
+    document.querySelectorAll<HTMLElement>("[data-hero-spaced-50-50-preview]").forEach((preview) => {
+      if (preview.dataset.heroSpaced5050PreviewReady === "true") return;
+      preview.dataset.heroSpaced5050PreviewReady = "true";
+
+      const state: HeroSpaced5050PreviewState = {
+        eyebrow: "visible",
+        paragraph: "visible",
+        actions: "visible",
+      };
+
+      const render = () => {
+        preview.querySelectorAll<HTMLElement>('[data-component-name="Eyebrow"]').forEach((node) => {
+          node.hidden = state.eyebrow === "hidden";
+        });
+        preview.querySelectorAll<HTMLElement>(".hero-spaced-50-50__paragraph").forEach((node) => {
+          node.hidden = state.paragraph === "hidden";
+        });
+        preview.querySelectorAll<HTMLElement>(".hero-spaced-50-50__actions").forEach((node) => {
+          node.hidden = state.actions === "hidden";
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          const axisId = String(event.detail?.axisId ?? "");
+          const value = String(event.detail?.value ?? "");
+
+          if (axisId === "heroSpaced5050Eyebrow" && (value === "visible" || value === "hidden")) state.eyebrow = value;
+          if (axisId === "heroSpaced5050Paragraph" && (value === "visible" || value === "hidden")) state.paragraph = value;
+          if (axisId === "heroSpaced5050Actions" && (value === "visible" || value === "hidden")) state.actions = value;
+          render();
+        });
+    });
+  };
+
+  initializeHeroSpaced5050Previews();
+  document.addEventListener("astro:page-load", initializeHeroSpaced5050Previews);
+</script>
+
+<style>
+  .ds-hero-spaced-50-50-preview {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .ds-hero-spaced-50-50-preview__visual-placeholder {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--color-background-surface);
+    background-image: conic-gradient(
+      var(--color-background-muted) 25%,
+      var(--color-background-surface) 0 50%,
+      var(--color-background-muted) 0 75%,
+      var(--color-background-surface) 0
+    );
+    background-position: left top;
+    background-repeat: repeat;
+    background-size: 32px 32px;
+  }
+</style>

@@ -60,6 +60,7 @@ ProgressBar communicates completed proportion or ongoing activity in a compact, 
 ## Related components
 
 - [Accordion](/design-system/base-components/accordion/accordion) composes ProgressBar for manual or autoplay state.
+- [ProgressTab](/design-system/base-components/tabs/progress-tab) composes ProgressBar as a decorative playback indicator.
 - FileUploadCard composes the same canonical accent progress treatment for upload progress.
 
 ## Naming and token contract

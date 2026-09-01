@@ -1,0 +1,95 @@
+---
+import Button from "../../../../../src/components/base-components/buttons/Button.astro";
+import CallToActionCentered from "../../../../../src/components/website-patterns/cta/CallToActionCentered.astro";
+import CallToActionVisual from "../../../../../src/components/website-patterns/cta/CallToActionVisual.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+import "../../../../../src/styles/global.css";
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Call to Action contract fixture</title>
+  </head>
+  <body>
+    <main>
+      <section class="fixture fixture--wide">
+        <div class="l-container" data-container="main">
+          <CallToActionVisual
+            id="cta-visual-right"
+            class="cta-contract-fixture"
+            data-forwarded="yes"
+            heading="Zamień kolejny krok w realny postęp"
+            eyebrow="Call to action"
+            paragraph="Krótki komunikat, wyraźne działanie i jedna wspierająca wizualizacja."
+          >
+            <Button slot="actions" variant="primary-alternate">Zacznij teraz</Button>
+            <span slot="visual" aria-hidden="true"></span>
+          </CallToActionVisual>
+        </div>
+      </section>
+
+      <section class="fixture fixture--desktop">
+        <div class="l-container" data-container="main">
+          <CallToActionVisual
+            id="cta-visual-left"
+            heading="Visual changes sides without changing reading order"
+            paragraph="The inverse variant keeps Content first in the source and Ratio fixed at sixteen by nine."
+            visualPosition="left"
+            surface="inverse"
+            headingLevel={3}
+          >
+            <Button slot="actions">Continue</Button>
+            <span slot="visual" aria-hidden="true"></span>
+          </CallToActionVisual>
+        </div>
+      </section>
+
+      <section class="fixture fixture--narrow" dir="rtl">
+        <div class="l-container" data-container="main">
+          <CallToActionVisual
+            id="cta-visual-narrow"
+            heading="خطوة واضحة"
+            paragraph="يتحقق هذا المثال من التفاف النص وترتيب المحتوى في حاوية ضيقة."
+            visualPosition="left"
+          >
+            <span slot="visual" aria-hidden="true"></span>
+          </CallToActionVisual>
+        </div>
+      </section>
+
+      <section class="fixture fixture--wide">
+        <div class="l-container" data-container="main">
+          <CallToActionCentered
+            id="cta-centered-accent"
+            heading="Gotowy na kolejny krok?"
+            eyebrow="Call to action"
+            paragraph="Wyśrodkowany wariant pozostaje częścią sekcji i nie tworzy własnego landmarku."
+          >
+            <Button slot="actions" variant="primary-alternate">Porozmawiajmy</Button>
+          </CallToActionCentered>
+        </div>
+      </section>
+
+      <section class="fixture fixture--narrow">
+        <div class="l-container" data-container="main">
+          <CallToActionCentered
+            id="cta-centered-inverse"
+            heading="One centered invitation"
+            surface="inverse"
+            headingLevel={4}
+          />
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  main { display: grid; gap: var(--section-padding-small); }
+  .fixture { inline-size: min(100%, 90rem); margin-inline: auto; }
+  .fixture--desktop { max-inline-size: 64rem; }
+  .fixture--narrow { max-inline-size: 20rem; }
+</style>

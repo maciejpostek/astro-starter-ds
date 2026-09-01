@@ -1,0 +1,36 @@
+---
+import CallToActionCentered from "../../../../../src/components/website-patterns/cta/CallToActionCentered.astro";
+import CallToActionVisual from "../../../../../src/components/website-patterns/cta/CallToActionVisual.astro";
+import Content from "../../../../../src/components/website-patterns/content/Content.astro";
+import "../../../../../src/styles/tokens/tokens.css";
+
+const invalidCase = process.env.CALL_TO_ACTION_INVALID_CASE ?? "visual-heading";
+const visualProps: Record<string, Record<string, unknown>> = {
+  "visual-heading": { heading: "   " },
+  "visual-eyebrow": { heading: "CTA", eyebrow: " " },
+  "visual-paragraph": { heading: "CTA", paragraph: " " },
+  "visual-position": { heading: "CTA", visualPosition: "center" },
+  "visual-surface": { heading: "CTA", surface: "muted" },
+  "visual-heading-level": { heading: "CTA", headingLevel: 1 },
+  "visual-slot": { heading: "CTA" },
+};
+const centeredProps: Record<string, Record<string, unknown>> = {
+  "centered-heading": { heading: "   " },
+  "centered-eyebrow": { heading: "CTA", eyebrow: " " },
+  "centered-paragraph": { heading: "CTA", paragraph: " " },
+  "centered-surface": { heading: "CTA", surface: "muted" },
+  "centered-heading-level": { heading: "CTA", headingLevel: 1 },
+};
+---
+
+{invalidCase === "content-tone" ? (
+  <Content heading="Content" tone={"bright" as any} />
+) : invalidCase.startsWith("centered-") ? (
+  <CallToActionCentered {...(centeredProps[invalidCase] as any)} />
+) : invalidCase === "visual-slot" ? (
+  <CallToActionVisual {...(visualProps[invalidCase] as any)} />
+) : (
+  <CallToActionVisual {...(visualProps[invalidCase] as any)}>
+    <span slot="visual" aria-hidden="true"></span>
+  </CallToActionVisual>
+)}

@@ -1,0 +1,139 @@
+---
+import LogoAsset from "../../assets/logos/LogoAsset.astro";
+import Button from "../../base-components/buttons/Button.astro";
+import CompactSelect, { type SelectOption } from "../../base-components/select/CompactSelect.astro";
+import MegaMenu from "../../website-patterns/navigation/MegaMenu.astro";
+import MegaMenuPrimaryLink from "../../website-patterns/navigation/MegaMenuPrimaryLink.astro";
+import MegaMenuSecondaryLink from "../../website-patterns/navigation/MegaMenuSecondaryLink.astro";
+import NavDropdown from "../../website-patterns/navigation/NavDropdown.astro";
+import NavDropdownLink from "../../website-patterns/navigation/NavDropdownLink.astro";
+import NavLink from "../../website-patterns/navigation/NavLink.astro";
+import Navigation from "../../website-patterns/navigation/Navigation.astro";
+
+interface Props { idPrefix?: string; }
+const { idPrefix = "documentation-navigation" } = Astro.props;
+const languageOptions: SelectOption[] = [
+  { value: "en", label: "English" },
+  { value: "pl", label: "Polski" },
+  { value: "de", label: "Deutsch" },
+];
+---
+
+<div class="ds-navigation-preview" data-component-name="DsNavigationPreview" data-navigation-preview data-ds-preview-target>
+  <Navigation
+    id={idPrefix}
+    label="Primary navigation"
+    openMenuLabel="Open navigation"
+    closeMenuLabel="Close navigation"
+    desktopMode="standard"
+  >
+    <a slot="brand" href={`#${idPrefix}-home`} aria-label="Stripe home">
+      <LogoAsset slug="stripe" variant="full" alt="Stripe" />
+    </a>
+    <NavLink slot="menu" href={`#${idPrefix}-overview`} aria-current="page">Overview</NavLink>
+    <NavDropdown slot="menu" id={`${idPrefix}-solutions`} label="Solutions">
+      <NavDropdownLink href={`#${idPrefix}-start`} description="A concise path for new teams.">Get started</NavDropdownLink>
+      <NavDropdownLink href={`#${idPrefix}-scale`} description="Patterns for growing products.">Scale your system</NavDropdownLink>
+      <NavDropdownLink href={`#${idPrefix}-support`}>Support</NavDropdownLink>
+    </NavDropdown>
+    <MegaMenu
+      slot="menu"
+      id={`${idPrefix}-resources`}
+      label="Resources"
+      primaryLabel="Explore"
+      secondaryLabel="Learn"
+      tertiaryLabel="Company"
+    >
+      <MegaMenuPrimaryLink slot="primary" href={`#${idPrefix}-guides`} description="Practical foundations for product teams.">Guides</MegaMenuPrimaryLink>
+      <MegaMenuPrimaryLink slot="primary" href={`#${idPrefix}-patterns`}>Patterns</MegaMenuPrimaryLink>
+      <MegaMenuSecondaryLink slot="secondary" href={`#${idPrefix}-docs`}>Documentation</MegaMenuSecondaryLink>
+      <MegaMenuSecondaryLink slot="secondary" href={`#${idPrefix}-accessibility`}>Accessibility</MegaMenuSecondaryLink>
+      <MegaMenuSecondaryLink slot="tertiary" href={`#${idPrefix}-about`}>About</MegaMenuSecondaryLink>
+      <MegaMenuSecondaryLink slot="tertiary" href={`#${idPrefix}-contact`}>Contact</MegaMenuSecondaryLink>
+    </MegaMenu>
+    <NavLink slot="menu" href={`#${idPrefix}-pricing`}>Pricing</NavLink>
+    <CompactSelect
+      slot="language"
+      id={`${idPrefix}-language`}
+      name={`${idPrefix}-language`}
+      aria-label="Language"
+      options={languageOptions}
+      purpose="language"
+      value="en"
+    />
+    <Button slot="action" size="small">Get started</Button>
+  </Navigation>
+  <main id={`${idPrefix}-home`} class="ds-navigation-preview__page" tabindex="-1">
+    <p class="body-small-regular">Page content remains visible here so the navigation overlay and blur can be reviewed.</p>
+  </main>
+</div>
+
+<script>
+  const initializeNavigationDocumentationPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-navigation-preview]").forEach((preview) => {
+      if (preview.dataset.navigationPreviewReady === "true") return;
+      preview.dataset.navigationPreviewReady = "true";
+      let mode = "standard";
+      let state = "closed";
+
+      const render = () => {
+        const root = preview.querySelector<HTMLElement>("[data-navigation-root]");
+        if (!root) return;
+        const toggle = root.querySelector<HTMLButtonElement>("[data-navigation-toggle]");
+        const disclosures = [...root.querySelectorAll<HTMLElement>("[data-navigation-disclosure]")];
+
+        if (root.dataset.navigationFullOpen === "true") toggle?.click();
+        disclosures.forEach((item) => {
+          if (item.dataset.navigationDisclosureState === "open") {
+            item.querySelector<HTMLButtonElement>("[data-navigation-disclosure-trigger]")?.click();
+          }
+        });
+
+        root.dataset.navigationDesktopMode = mode;
+        root.dataset.navigationPresentation = state === "full-menu" || mode === "menu" ? "full" : "standard";
+        if (state === "full-menu") toggle?.click();
+        if (state === "dropdown" || state === "mega-menu") {
+          const disclosure = disclosures.find((item) => item.dataset.navigationDisclosure === state);
+          disclosure?.querySelector<HTMLButtonElement>("[data-navigation-disclosure-trigger]")?.click();
+        }
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")?.addEventListener("astro-ds:preview-change", (event) => {
+        if (!(event instanceof CustomEvent)) return;
+        const axisId = String(event.detail?.axisId ?? "");
+        const value = String(event.detail?.value ?? "");
+        if (axisId === "navigationDesktopMode") mode = value;
+        if (axisId === "navigationState") state = value;
+        render();
+      });
+    });
+  };
+
+  initializeNavigationDocumentationPreviews();
+  document.addEventListener("astro:page-load", initializeNavigationDocumentationPreviews);
+</script>
+
+<style>
+  .ds-navigation-preview {
+    position: relative;
+    inline-size: 100%;
+    min-block-size: 36rem;
+    overflow: hidden;
+    background: var(--color-background-subtle);
+  }
+
+  .ds-navigation-preview__page {
+    min-block-size: 36rem;
+    padding: calc(var(--navigation-bar-height) + var(--section-padding-medium)) var(--site-padding-inline) var(--section-padding-medium);
+    background: linear-gradient(135deg, var(--color-background-subtle), var(--color-background-accent-subtle));
+  }
+
+  .ds-navigation-preview__page p { max-inline-size: var(--container-small); }
+
+  :global(.ds-navigation-preview .navigation),
+  :global(.ds-navigation-preview .navigation__backdrop),
+  :global(.ds-navigation-preview .navigation__panel),
+  :global(.ds-navigation-preview .mega-menu__panel) {
+    position: absolute;
+  }
+</style>

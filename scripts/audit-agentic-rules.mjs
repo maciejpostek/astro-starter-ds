@@ -134,7 +134,10 @@ for (const record of publicRecords) {
   if (!record.readiness?.visual || !record.readiness?.validation) {
     errors.push(`${record.name} is missing readiness metadata.`);
   }
-  if (record.sourcePath === null && !["figma-only","intentional-difference"].includes(record.syncStatus)) {
+  if (
+    record.sourcePath === null
+    && !["figma-only", "intentional-difference", "deprecated"].includes(record.syncStatus)
+  ) {
     errors.push(`${record.name} has no source but an invalid sync status.`);
   }
   if (record.sourcePath && record.syncStatus === "mapped" && !record.agenticRule) {

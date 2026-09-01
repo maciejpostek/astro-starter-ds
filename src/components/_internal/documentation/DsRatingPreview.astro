@@ -1,0 +1,66 @@
+---
+import Rating, {
+  type RatingValue,
+} from "../../website-patterns/ratings-reviews/Rating.astro";
+
+const values: RatingValue[] = [0, 1, 2, 3, 4, 5];
+---
+
+<div
+  class="rating-preview"
+  data-component-name="DsRatingPreview"
+  data-ds-preview-target
+  data-rating-preview
+  data-preview-rating-value="5"
+>
+  {values.map((value) => (
+    <Rating
+      value={value}
+      ratingLabel={`Rating ${value} out of 5 stars`}
+      data-rating-option={value}
+      hidden={value !== 5}
+      lang="en"
+    >
+      Trusted by <strong>500</strong> brands
+    </Rating>
+  ))}
+</div>
+
+<script>
+  const initializeRatingPreviews = () => {
+    document.querySelectorAll<HTMLElement>("[data-rating-preview]").forEach((preview) => {
+      if (preview.dataset.ratingPreviewReady === "true") return;
+      preview.dataset.ratingPreviewReady = "true";
+
+      const render = () => {
+        const selectedValue = preview.dataset.previewRatingValue ?? "5";
+        preview.querySelectorAll<HTMLElement>("[data-rating-option]").forEach((option) => {
+          option.hidden = option.dataset.ratingOption !== selectedValue;
+        });
+      };
+
+      preview.closest("[data-ds-interactive-preview], [data-ds-responsive-preview]")
+        ?.addEventListener("astro-ds:preview-change", (event) => {
+          if (!(event instanceof CustomEvent)) return;
+          if (String(event.detail?.axisId ?? "") !== "ratingValue") return;
+          preview.dataset.previewRatingValue = String(event.detail?.value ?? "5");
+          render();
+        });
+
+      render();
+    });
+  };
+
+  initializeRatingPreviews();
+  document.addEventListener("astro:page-load", initializeRatingPreviews);
+</script>
+
+<style>
+  .rating-preview {
+    display: flex;
+    min-inline-size: 0;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    align-items: center;
+  }
+</style>

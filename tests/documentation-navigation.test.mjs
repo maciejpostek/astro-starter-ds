@@ -86,10 +86,10 @@ test("resolves stable canonical Figma links for the Buttons and Switch families"
 
 test("resolves the standalone Eyebrow master in Figma", () => {
   const component = architecture.components.find((entry) => entry.id === "eyebrow");
-  assert.equal(component?.figmaCanonicalNodeId, "1472:2907");
+  assert.equal(component?.figmaCanonicalNodeId, "268:5");
   assert.equal(
     resolveFigmaNodeHref(architecture.figma.fileUrl, component.figmaCanonicalNodeId),
-    `${architecture.figma.fileUrl}?node-id=1472-2907`,
+    `${architecture.figma.fileUrl}?node-id=268-5`,
   );
 });
 
@@ -131,8 +131,16 @@ test("resolves singleton, disclosure and empty component documentation consisten
     ["base-components/eyebrow", ["eyebrow", "/design-system/base-components/eyebrow"]],
     ["base-components/progress-bar", ["progress-bar", "/design-system/base-components/progress-bar"]],
     ["website-patterns/content", ["content", "/design-system/website-patterns/content"]],
+    ["website-patterns/faq", ["faq", "/design-system/website-patterns/faq"]],
+    ["website-patterns/blog-resources", ["blog-card", "/design-system/website-patterns/blog-resources"]],
+    ["website-patterns/brand-logo-proof", ["logo-card", "/design-system/website-patterns/brand-logo-proof"]],
+    ["website-patterns/how-it-works", ["how-it-works", "/design-system/website-patterns/how-it-works"]],
+    ["website-patterns/pricing-comparison", ["pricing-card", "/design-system/website-patterns/pricing-comparison"]],
+    ["website-patterns/sliders-carousels", ["swiper", "/design-system/website-patterns/sliders-carousels"]],
+    ["website-patterns/tabbed-content", ["tabbed-content", "/design-system/website-patterns/tabbed-content"]],
     ["website-patterns/announcements-banners", ["top-banner", "/design-system/website-patterns/announcements-banners"]],
     ["website-patterns/page-headers", ["section-header", "/design-system/website-patterns/page-headers"]],
+    ["website-patterns/ratings-reviews", ["rating", "/design-system/website-patterns/ratings-reviews"]],
     ["website-patterns/team", ["team-member-card", "/design-system/website-patterns/team"]],
     ["base-components/popup", ["popup", "/design-system/base-components/popup"]],
   ]);
@@ -234,6 +242,30 @@ test("resolves singleton, disclosure and empty component documentation consisten
   ]);
 
   assert.equal(
+    registry.resolveDocumentationPageMode("website-patterns", "rich-text"),
+    "multi",
+  );
+  assert.equal(
+    registry.resolveDocumentationNavigationMode("website-patterns", "rich-text"),
+    "disclosure",
+  );
+  const richTextComponents = registry.componentsByPage.get("website-patterns/rich-text") ?? [];
+  assert.deepEqual(richTextComponents.map((component) => component.id), [
+    "rich-text",
+    "rich-text-heading",
+    "rich-text-paragraph",
+    "rich-text-quote",
+    "rich-text-visual",
+  ]);
+  assert.deepEqual(richTextComponents.map((component) => registry.documentationComponentHref(component)), [
+    "/design-system/website-patterns/rich-text/rich-text",
+    "/design-system/website-patterns/rich-text/rich-text-heading",
+    "/design-system/website-patterns/rich-text/rich-text-paragraph",
+    "/design-system/website-patterns/rich-text/rich-text-quote",
+    "/design-system/website-patterns/rich-text/rich-text-visual",
+  ]);
+
+  assert.equal(
     registry.resolveDocumentationPageMode("website-patterns", "stats-metrics"),
     "multi",
   );
@@ -246,6 +278,22 @@ test("resolves singleton, disclosure and empty component documentation consisten
     "stat-card",
     "stat-text-inline",
   ]);
+
+  assert.equal(
+    registry.resolveDocumentationPageMode("website-patterns", "features"),
+    "multi",
+  );
+  assert.equal(
+    registry.resolveDocumentationNavigationMode("website-patterns", "features"),
+    "disclosure",
+  );
+  const featureComponents = registry.componentsByPage.get("website-patterns/features") ?? [];
+  const featureProof = featureComponents.find((component) => component.id === "feature-proof");
+  assert.ok(featureProof);
+  assert.equal(
+    registry.documentationComponentHref(featureProof),
+    "/design-system/website-patterns/features/feature-proof",
+  );
   assert.deepEqual(statComponents.map((component) => registry.documentationComponentHref(component)), [
     "/design-system/website-patterns/stats-metrics/stat-card",
     "/design-system/website-patterns/stats-metrics/stat-text-inline",

@@ -50,18 +50,29 @@ Astro scope.
    `tokenDraft` before CSS or token sources change.
 4. Lock the minimal typed API, semantic root, accessibility contract,
    responsive strategy, and optional composition slots.
-5. Implement without local custom properties, invented namespaces, duplicated
+5. Give every Astro-backed component one representative canonical preview by
+   default, using only English or Polish content. Do not turn minimum anatomy,
+   long-copy, localization, RTL, or other QA cases into additional
+   documentation sections unless the user explicitly requests them. Keep that
+   coverage in automated tests. Resolve the preview's `standard` or
+   `responsive` presentation, documentation container profile and specimen
+   sizing mode from the ownership rules in the authoring contract. An explicit
+   user request for a standard-only Website Pattern preview is authoritative.
+6. Implement without local custom properties, invented namespaces, duplicated
    dependencies, or documentation-only public props.
-6. Update the manifest, component UX rule, documentation adapter, preview, and
+7. Update the manifest, component UX rule, documentation adapter, preview, and
    route projections in the same change.
-7. Classify the documentation page as `empty`, `singleton`, or `multi`
+8. Classify the documentation page as `empty`, `singleton`, or `multi`
    from the active public component count. Then apply the canonical Astro
    presentation: `empty` is a heading-only placeholder, `singleton` is the
    direct component detail page, and `multi` in Base Components or Website
    Patterns is a non-clickable sidebar disclosure with direct child pages and
    no family gallery.
-8. Run only the validators selected for the affected scope, plus visual runtime
+9. Run only the validators selected for the affected scope, plus visual runtime
    review when layout, responsive behavior, or interaction changed.
+10. For a missing project visual, preserve the composition with the canonical
+    CSS checkerboard, add the local missing-asset marker, and return a concrete
+    asset request at handoff. Do not invent or source replacement media.
 
 ## Stop conditions
 

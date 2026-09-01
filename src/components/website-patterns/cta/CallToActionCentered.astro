@@ -1,0 +1,104 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Content, { type ContentTone } from "../content/Content.astro";
+
+export type CallToActionSurface = "accent" | "inverse";
+
+export interface Props extends Omit<HTMLAttributes<"div">, "class"> {
+  heading: string;
+  eyebrow?: string;
+  paragraph?: string;
+  surface?: CallToActionSurface;
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  class?: string;
+}
+
+const {
+  heading,
+  eyebrow,
+  paragraph,
+  surface = "accent",
+  headingLevel = 2,
+  id,
+  class: className,
+  ...attributes
+} = Astro.props;
+
+if (typeof heading !== "string" || heading.trim().length === 0) {
+  throw new TypeError("CallToActionCentered heading must be a non-empty string.");
+}
+for (const [name, value] of [["eyebrow", eyebrow], ["paragraph", paragraph]] as const) {
+  if (value !== undefined && (typeof value !== "string" || value.trim().length === 0)) {
+    throw new TypeError(`CallToActionCentered ${name} must be a non-empty string when provided.`);
+  }
+}
+if (surface !== "accent" && surface !== "inverse") {
+  throw new TypeError('CallToActionCentered surface must be either "accent" or "inverse".');
+}
+if (![2, 3, 4, 5, 6].includes(headingLevel)) {
+  throw new RangeError("CallToActionCentered headingLevel must be an integer from 2 to 6.");
+}
+
+const rootId = id || `call-to-action-centered-${crypto.randomUUID()}`;
+const contentTone: ContentTone = surface === "accent" ? "on-accent" : "inverse";
+const hasActions = Astro.slots.has("actions");
+const contentProps = {
+  id: `${rootId}-content`,
+  heading,
+  eyebrow,
+  paragraph,
+  align: "centered" as const,
+  tone: contentTone,
+  headingLevel,
+};
+---
+
+<div
+  {...attributes}
+  id={rootId}
+  class:list={["call-to-action-centered", "l-grid", className]}
+  data-grid="columns"
+  data-columns="12"
+  data-gap="site"
+  data-component-name="CallToActionCentered"
+  data-call-to-action-surface={surface}
+>
+  <div class="call-to-action-centered__content">
+    {hasActions ? (
+      <Content {...contentProps}>
+        <Fragment slot="actions"><slot name="actions" /></Fragment>
+      </Content>
+    ) : (
+      <Content {...contentProps} />
+    )}
+  </div>
+</div>
+
+<style>
+  .call-to-action-centered {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    container: call-to-action-centered / inline-size;
+  }
+
+  .call-to-action-centered[data-call-to-action-surface="accent"] {
+    background: var(--color-background-accent);
+  }
+
+  .call-to-action-centered[data-call-to-action-surface="inverse"] {
+    background: var(--color-background-inverse);
+  }
+
+  .call-to-action-centered__content {
+    min-inline-size: 0;
+    grid-column: 4 / span 6;
+    padding: var(--content-padding-xxxlarge);
+  }
+
+  @container call-to-action-centered (width < 64rem) {
+    .call-to-action-centered__content {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

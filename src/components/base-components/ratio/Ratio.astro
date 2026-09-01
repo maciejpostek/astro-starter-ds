@@ -38,12 +38,16 @@ const {
   :where(.ratio)::before {
     position: absolute;
     inset: 0;
-    background-image: url("/images/ratio-placeholder.png");
+    background-image: conic-gradient(
+      var(--color-background-muted) 25%,
+      var(--color-background-surface) 0 50%,
+      var(--color-background-muted) 0 75%,
+      var(--color-background-surface) 0
+    );
     background-position: left top;
     background-repeat: repeat;
     background-size: 32px 32px;
     content: "";
-    opacity: 0.1;
     pointer-events: none;
   }
 
