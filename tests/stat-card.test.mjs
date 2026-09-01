@@ -15,7 +15,7 @@ const docsRegistryPath = projectFile("src/data/documentationComponentRegistry.ts
 const previewRegistryPath = projectFile("src/data/documentationPreviewRegistry.ts");
 const previewPath = projectFile("src/components/_internal/documentation/DsStatCardPreview.astro");
 const rulePath = projectFile(".agentic-rules/components/stat-card.md");
-const astroConfigPath = projectFile("astro.config.mjs");
+const documentationIntegrationPath = projectFile("src/documentation/integration.mjs");
 
 const buildFixture = async (outputPrefix) => {
   const outputDirectory = await mkdtemp(join(tmpdir(), outputPrefix));
@@ -24,7 +24,7 @@ const buildFixture = async (outputPrefix) => {
 };
 
 test("keeps the approved StatCard Astro, token, Figma and documentation contract", async () => {
-  const [source, sizeTokens, tokenRegistrySource, manifestSource, docs, previewRegistry, preview, rule, astroConfig] = await Promise.all([
+  const [source, sizeTokens, tokenRegistrySource, manifestSource, docs, previewRegistry, preview, rule, documentationIntegration] = await Promise.all([
     readFile(componentPath, "utf8"),
     readFile(sizeTokensPath, "utf8"),
     readFile(tokenRegistryPath, "utf8"),
@@ -33,7 +33,7 @@ test("keeps the approved StatCard Astro, token, Figma and documentation contract
     readFile(previewRegistryPath, "utf8"),
     readFile(previewPath, "utf8"),
     readFile(rulePath, "utf8"),
-    readFile(astroConfigPath, "utf8"),
+    readFile(documentationIntegrationPath, "utf8"),
   ]);
   const tokenRegistry = JSON.parse(tokenRegistrySource);
   const manifest = JSON.parse(manifestSource);
@@ -111,7 +111,7 @@ test("keeps the approved StatCard Astro, token, Figma and documentation contract
   assert.match(previewRegistry, /componentDocumentationAdapters/u);
   assert.match(previewRegistry, /component\.categoryKey === "website-patterns"/u);
   assert.match(rule, /Primary strategy: `intrinsic`/u);
-  assert.doesNotMatch(astroConfig, /"\/design-system\/website-patterns\/stats-metrics\/stat-card"/u);
+  assert.doesNotMatch(documentationIntegration, /"\/design-system\/website-patterns\/stats-metrics\/stat-card"/u);
 });
 
 test("renders every StatCard visibility combination with labelled article semantics", async () => {

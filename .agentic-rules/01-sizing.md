@@ -20,7 +20,7 @@ Source references:
 - `src/styles/tokens/size-primitives.css`
 - `src/styles/tokens/size-semantic.css`
 - `src/styles/tokens/control-sizes.css`
-- `src/pages/design-system/sizing.astro`
+- `src/documentation/design-system/foundations/sizing.astro`
 - `src/data/design-system-roadmap.json`
 
 ## Purpose
@@ -73,7 +73,7 @@ src/styles/tokens/control-sizes.css
   -> small, medium, large
   -> local control aliases such as --control-min-height
 
-src/pages/design-system/sizing.astro
+src/documentation/design-system/foundations/sizing.astro
   -> documentation mirror of the sizing system
 ```
 

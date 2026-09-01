@@ -50,7 +50,7 @@ projections and must never be edited as source data.
   default dependency of Astro production.
 - `views/*.d2` are generated projections.
 - `generated/*.svg` are optional D2 CLI render outputs.
-- `src/pages/architecture/views/[view].json.ts` exposes a bounded, build-time
+- `src/documentation/architecture/views/[view].json.ts` exposes a bounded, build-time
   projection for views that declare `presentation`.
 - `src/components/_internal/documentation/architecture/ArchitectureExplorer.tsx` renders
   the read-only React Flow interface.

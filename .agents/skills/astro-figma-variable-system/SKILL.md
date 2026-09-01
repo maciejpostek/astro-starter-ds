@@ -23,7 +23,7 @@ namespace or a behavior suffix.
    - `src/data/design-system/tokenArchitecture.json`
 4. Classify the request as `exact-edit`, `reuse`, `repair`, `extend`, or
    `create`. Run the smallest applicable `npm run agent:context` request.
-5. Treat `src/pages/design-system/architecture/variables.astro` as a
+5. Treat `src/documentation/design-system/architecture/variables.astro` as a
    documentation projection, not a source of token values.
 6. Before a Figma mutation, read the project Figma rules named in
    [references/figma-sync.md](references/figma-sync.md) and load the mandatory

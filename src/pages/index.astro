@@ -15,6 +15,7 @@ import tokenArchitecture from "../data/design-system/tokenArchitecture.json";
 
 const componentCount = componentArchitecture.components.length;
 const tokenGroupCount = tokenArchitecture.groups.length;
+const documentationEnabled = import.meta.env.DEV || process.env.DOCS_ENABLED === "true";
 const categoryCount = new Set(
   componentArchitecture.components.map((component) => component.categoryKey),
 ).size;
@@ -66,8 +67,8 @@ const howItWorksSteps = [
             and operational documentation that keeps humans and AI agents working
             from the same source of truth.
           </p>
-          <ButtonLink href="/design-system" size="large">
-            Explore the design system
+          <ButtonLink href={documentationEnabled ? "/design-system" : "#starter-benefits"} size="large">
+            {documentationEnabled ? "Explore the design system" : "Explore the starter"}
           </ButtonLink>
         </div>
       </div>
@@ -95,8 +96,8 @@ const howItWorksSteps = [
                   headingLevel={2}
                 >
                   <Fragment slot="actions">
-                    <ButtonLink href="/design-system/architecture/component-model">
-                      Explore the architecture
+                    <ButtonLink href={documentationEnabled ? "/design-system/architecture/component-model" : "#starter-benefits"}>
+                      {documentationEnabled ? "Explore the architecture" : "Explore the starter"}
                     </ButtonLink>
                   </Fragment>
                 </Content>
@@ -123,7 +124,7 @@ const howItWorksSteps = [
     })}
   </HowItWorks>
 
-  <section class="home-benefits l-section" data-padding="large">
+  <section id="starter-benefits" class="home-benefits l-section" data-padding="large">
     <div class="l-container l-stack" data-container="main" data-gap="xlarge">
       <SectionHeader
         eyebrow="Reuse first"
@@ -147,8 +148,8 @@ const howItWorksSteps = [
         >
           <Tag slot="tags" label="Astro" tone="brand" />
           <Tag slot="tags" label="Typed API" />
-          <ButtonLink slot="actions" href="/design-system/base-components/buttons">
-            Browse components
+          <ButtonLink slot="actions" href={documentationEnabled ? "/design-system/base-components/buttons" : "#starter-proof"}>
+            {documentationEnabled ? "Browse components" : "See system coverage"}
           </ButtonLink>
         </BulletIconCard>
 
@@ -159,8 +160,8 @@ const howItWorksSteps = [
         >
           <Tag slot="tags" label="Semantic tokens" tone="brand" />
           <Tag slot="tags" label="Theme ready" />
-          <ButtonLink slot="actions" href="/design-system/architecture/variables">
-            Inspect variables
+          <ButtonLink slot="actions" href={documentationEnabled ? "/design-system/architecture/variables" : "#starter-proof"}>
+            {documentationEnabled ? "Inspect variables" : "See system coverage"}
           </ButtonLink>
         </BulletIconCard>
 
@@ -171,15 +172,15 @@ const howItWorksSteps = [
         >
           <Tag slot="tags" label="Live previews" tone="brand" />
           <Tag slot="tags" label="AI-native" />
-          <ButtonLink slot="actions" href="/design-system/architecture/component-model">
-            See the architecture
+          <ButtonLink slot="actions" href={documentationEnabled ? "/design-system/architecture/component-model" : "#starter-proof"}>
+            {documentationEnabled ? "See the architecture" : "See system coverage"}
           </ButtonLink>
         </BulletIconCard>
       </div>
     </div>
   </section>
 
-  <section class="home-proof l-section" data-padding="large" data-theme="dark">
+  <section id="starter-proof" class="home-proof l-section" data-padding="large" data-theme="dark">
     <div class="l-container l-stack" data-container="main" data-gap="xlarge">
       <SectionHeader
         eyebrow="One source of truth"
@@ -188,8 +189,8 @@ const howItWorksSteps = [
         composition="copy-actions"
         headingLevel={2}
       >
-        <ButtonLink slot="actions" href="/design-system">
-          Open the documentation
+        <ButtonLink slot="actions" href={documentationEnabled ? "/design-system" : "#starter-benefits"}>
+          {documentationEnabled ? "Open the documentation" : "Review starter benefits"}
         </ButtonLink>
       </SectionHeader>
 

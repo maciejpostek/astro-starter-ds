@@ -20,7 +20,7 @@ Source references:
 - `src/styles/tokens/color-primitives.css`
 - `src/styles/tokens/color-semantic.css`
 - `src/styles/tokens/color-components.css`
-- `src/pages/design-system/color.astro`
+- `src/documentation/design-system/foundations/color.astro`
 - `src/data/design-system-roadmap.json`
 
 ## Purpose
@@ -62,7 +62,7 @@ src/styles/tokens/color-components.css
   -> component contracts
   -> button, icon button, input, tab, link, eyebrow, label, tag, card, focus
 
-src/pages/design-system/color.astro
+src/documentation/design-system/foundations/color.astro
   -> documentation mirror of the token system
 ```
 

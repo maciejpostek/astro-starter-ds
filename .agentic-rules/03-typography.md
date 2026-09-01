@@ -17,7 +17,7 @@ Source references:
 - `src/styles/tokens/typography-foundations.css`
 - `src/styles/tokens/typography-styles.css`
 - `src/data/design-system/typographyTokens.ts`
-- `src/pages/design-system/foundations/typography.astro`
+- `src/documentation/design-system/foundations/typography.astro`
 
 ## Architecture
 

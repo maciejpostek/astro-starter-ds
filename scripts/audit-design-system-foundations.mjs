@@ -315,12 +315,12 @@ for (const contract of [
 }
 
 for (const documentationPath of [
-  "src/pages/design-system/foundations/color.astro",
-  "src/pages/design-system/foundations/sizing.astro",
-  "src/pages/design-system/foundations/typography.astro",
-  "src/pages/design-system/foundations/layout.astro",
-  "src/pages/design-system/foundations/motion.astro",
-  "src/pages/design-system/foundations/elevation.astro"
+  "src/documentation/design-system/foundations/color.astro",
+  "src/documentation/design-system/foundations/sizing.astro",
+  "src/documentation/design-system/foundations/typography.astro",
+  "src/documentation/design-system/foundations/layout.astro",
+  "src/documentation/design-system/foundations/motion.astro",
+  "src/documentation/design-system/foundations/elevation.astro"
 ]) {
   read(join(projectRoot, documentationPath));
 }
@@ -331,7 +331,7 @@ const documentationFoundationData = read(join(
 ));
 const colorFoundationPage = read(join(
   projectRoot,
-  "src/pages/design-system/foundations/color.astro",
+  "src/documentation/design-system/foundations/color.astro",
 ));
 const documentationColorRow = read(join(
   projectRoot,

@@ -7,6 +7,28 @@ Documentation helpers live in
 guide and are not public design-system components. They do not receive Figma
 component mappings or public registry records unless explicitly promoted.
 
+## Build boundary
+
+Documentation route sources live under `src/documentation`, outside Astro's
+automatic `src/pages` routing root. The documentation integration injects them
+for `npm run dev` and `npm run build:docs` only.
+
+- `npm run build` and `npm run build:site` produce the client site without
+  `/design-system`, `/architecture`, documentation redirects or documentation
+  CSS and JavaScript.
+- `npm run build:docs` produces the complete internal documentation, previews,
+  architecture views, Grid Guides and Component Info Layer.
+- Do not move documentation routes back into `src/pages` and do not import
+  documentation layouts, registries or preview renderers from project routes.
+- Add new documentation routes under `src/documentation`; the integration
+  discovers their filesystem-shaped route pattern.
+- Keep documentation source files in the repository for humans and AI even
+  when the commercial deployment uses only `build:site`.
+
+`DOCS_ENABLED` is a build contract owned by the npm scripts. Do not replace the
+boundary with `noindex`: robots metadata controls indexing but does not remove
+routes or assets from a deployment.
+
 ## Component detail page order
 
 Every migrated component detail page uses this order:

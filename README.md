@@ -1,9 +1,9 @@
 # Astro Design System Starter
 
 A reusable Astro starter built around a documented, token-driven design system.
-The project is intentionally content-neutral: the home route is empty, while
-the design-system documentation and reusable component library remain ready for
-new products, websites and experiments.
+The home route is a replaceable starter showcase, while the design-system
+documentation and reusable component library remain available during local
+development without becoming part of the default production build.
 
 ## Included
 
@@ -22,16 +22,16 @@ new products, websites and experiments.
 Figma is not required to use this starter. Astro code remains the source of
 truth for tokens, component APIs, `data-*` contracts and implementation rules.
 
-## Routes
+## Development routes
 
-- `/` — empty project canvas;
+- `/` — replaceable starter showcase;
 - `/design-system` — documentation overview;
-- `/design-system/color` — color architecture;
-- `/design-system/sizing` — sizing and component-size contracts;
-- `/design-system/typography` — typography foundations and semantic styles;
-- `/design-system/layout` — layout foundations and responsive contracts;
-- `/design-system/components` — reusable component library;
-- `/design-system/roadmap` — current component readiness.
+- `/design-system/foundations/color` — color architecture;
+- `/design-system/foundations/sizing` — sizing and component-size contracts;
+- `/design-system/foundations/typography` — typography foundations and semantic styles;
+- `/design-system/foundations/layout` — layout foundations and responsive contracts;
+- `/design-system/architecture/component-model` — component architecture and readiness;
+- `/design-system/base-components/buttons` — reusable component documentation.
 
 ## Start locally
 
@@ -39,6 +39,19 @@ truth for tokens, component APIs, `data-*` contracts and implementation rules.
 npm install
 npm run dev
 ```
+
+Local development enables documentation, Grid Guides and Component Info Layer.
+Use the explicit build boundaries instead of moving or deleting documentation:
+
+```bash
+npm run build       # production site only; alias of build:site
+npm run build:site  # client routes without documentation artifacts
+npm run build:docs  # complete internal documentation build
+```
+
+`src/documentation` is a development source of truth and visual projection.
+Its routes are injected only in development and `build:docs`; production site
+builds do not emit `/design-system`, `/architecture` or documentation assets.
 
 Run the production validation before treating a copy as a stable project
 milestone:
@@ -68,7 +81,7 @@ npm run validate
 
 - `src/styles/tokens` — variables and token architecture;
 - `src/components` — reusable implementation contracts;
-- `src/pages/design-system` — rendered documentation;
+- `src/documentation` — opt-in documentation and architecture routes;
 - `src/data/design-system/componentArchitecture.json` — component registry;
 - `project-context` — project-specific strategy, audiences, offer and content;
 - `art-direction/` — universal design knowledge and reusable visual-direction

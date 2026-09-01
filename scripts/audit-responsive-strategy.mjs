@@ -99,7 +99,7 @@ for (const contractText of [
 }
 
 const layoutData = read("src/data/design-system/layoutTokens.ts");
-const layoutPage = read("src/pages/design-system/foundations/layout.astro");
+const layoutPage = read("src/documentation/design-system/foundations/layout.astro");
 const tokenParser = read("src/data/documentationTokenParser.ts");
 if (!layoutData.includes("layoutResponsiveStrategyRows") || !layoutData.includes("Count-aware breakpointless card grid")) {
   errors.push("Canonical Layout data does not document the responsive strategy and count-aware auto-fit.");

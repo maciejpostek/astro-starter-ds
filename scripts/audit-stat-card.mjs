@@ -25,7 +25,7 @@ const sizeTokens = read("src/styles/tokens/size-components.css");
 const tokenRegistry = JSON.parse(read("src/data/design-system/tokenArchitecture.json") || "{}");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
 const iconLibrary = JSON.parse(read("src/data/design-system/iconLibrary.json") || "{}");
-const astroConfig = read("astro.config.mjs");
+const documentationIntegration = read("src/documentation/integration.mjs");
 const syncScript = read("scripts/sync-figma-base-component-contracts.mjs");
 const record = registry.components?.find((component) => component.id === "stat-card");
 const figmaContract = registry.figmaComponentContracts?.["stat-card"];
@@ -107,7 +107,7 @@ for (const [name, nodeId] of [["trending_up", "1050:42"], ["trending_down", "105
 if (!syncScript.includes("StatCard: contract") || !syncScript.includes("contractsByName.StatCard.propertyMapping")) {
   errors.push("StatCard is missing from the Figma contract synchronization source.");
 }
-if (astroConfig.includes('"/design-system/website-patterns/stats-metrics/stat-card"')) {
+if (documentationIntegration.includes('"/design-system/website-patterns/stats-metrics/stat-card"')) {
   errors.push("The obsolete singleton StatCard redirect still blocks the multi-component route.");
 }
 

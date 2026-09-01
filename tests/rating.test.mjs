@@ -14,7 +14,7 @@ const docsRegistryPath = projectFile("src/data/documentationComponentRegistry.ts
 const previewRegistryPath = projectFile("src/data/documentationPreviewRegistry.ts");
 const previewPath = projectFile("src/components/_internal/documentation/DsRatingPreview.astro");
 const rulePath = projectFile(".agentic-rules/components/rating.md");
-const astroConfigPath = projectFile("astro.config.mjs");
+const documentationIntegrationPath = projectFile("src/documentation/integration.mjs");
 
 const buildFixture = async (fixtureName, outputPrefix) => ({
   outputDirectory: await mkdtemp(join(tmpdir(), outputPrefix)),
@@ -22,7 +22,7 @@ const buildFixture = async (fixtureName, outputPrefix) => ({
 });
 
 test("keeps the Rating API, icons, registry, singleton documentation and redirects synchronized", async () => {
-  const [source, componentManifestSource, iconManifestSource, docs, previewRegistry, preview, rule, astroConfig] = await Promise.all([
+  const [source, componentManifestSource, iconManifestSource, docs, previewRegistry, preview, rule, documentationIntegration] = await Promise.all([
     readFile(componentPath, "utf8"),
     readFile(componentManifestPath, "utf8"),
     readFile(iconManifestPath, "utf8"),
@@ -30,7 +30,7 @@ test("keeps the Rating API, icons, registry, singleton documentation and redirec
     readFile(previewRegistryPath, "utf8"),
     readFile(previewPath, "utf8"),
     readFile(rulePath, "utf8"),
-    readFile(astroConfigPath, "utf8"),
+    readFile(documentationIntegrationPath, "utf8"),
   ]);
   const componentManifest = JSON.parse(componentManifestSource);
   const iconManifest = JSON.parse(iconManifestSource);
@@ -97,7 +97,7 @@ test("keeps the Rating API, icons, registry, singleton documentation and redirec
     "/design-system/website-patterns/ratings-reviews/rating/preview",
     "/design-system/website-patterns/ratings-reviews/trust-badge",
     "/design-system/website-patterns/ratings-reviews/trust-badge/preview",
-  ]) assert.ok(astroConfig.includes(`"${legacyPath}"`), `missing redirect: ${legacyPath}`);
+  ]) assert.ok(documentationIntegration.includes(`"${legacyPath}"`), `missing redirect: ${legacyPath}`);
 });
 
 test("renders every whole-star value, rich content and forwarded attributes without hydration", async () => {

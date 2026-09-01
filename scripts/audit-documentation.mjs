@@ -48,7 +48,7 @@ const registry = JSON.parse(read("src/data/design-system/componentArchitecture.j
 const definitionSource = read("src/data/documentationComponentRegistry.ts");
 const foundationRegistry = read("src/data/documentationFoundationRegistry.ts");
 const foundationData = read("src/data/documentationFoundationData.ts");
-const colorFoundationPage = read("src/pages/design-system/foundations/color.astro");
+const colorFoundationPage = read("src/documentation/design-system/foundations/color.astro");
 const tokenRegistry = read("src/data/documentationTokenRegistry.ts");
 const linkResolver = read("src/data/documentationLinkResolver.ts");
 const componentDetail = read("src/components/_internal/documentation/DsComponentDetail.astro");
@@ -72,7 +72,7 @@ const typographyFoundationBlock = read("src/components/_internal/documentation/D
 const typographyStylesBlock = read("src/components/_internal/documentation/DsTypographyStylesBlock.astro");
 const typographyStyleProfile = read("src/components/_internal/documentation/DsTypographyStyleProfile.astro");
 const componentReadiness = read("src/components/_internal/documentation/DsComponentReadiness.astro");
-const internalPartsPage = read("src/pages/design-system/workspace/internal-parts.astro");
+const internalPartsPage = read("src/documentation/design-system/workspace/internal-parts.astro");
 const foundationTableSources = [
   "src/styles/tokens/design-system-components.css",
   "src/components/_internal/documentation/DsAttributeBlock.astro",
@@ -82,9 +82,9 @@ const foundationTableSources = [
   "src/components/_internal/documentation/DsResponsiveStrategyReference.astro",
   "src/components/_internal/documentation/DsTypographyFoundationBlock.astro",
   "src/components/_internal/documentation/DsTypographyStylesBlock.astro",
-  "src/pages/design-system/foundations/elevation.astro",
-  "src/pages/design-system/foundations/layout.astro",
-  "src/pages/design-system/foundations/typography.astro",
+  "src/documentation/design-system/foundations/elevation.astro",
+  "src/documentation/design-system/foundations/layout.astro",
+  "src/documentation/design-system/foundations/typography.astro",
 ].map(read).join("\n");
 const figmaIcon = read("src/assets/documentation/figma.svg");
 const designSystemLayout = read("src/layouts/DesignSystemLayout.astro");
@@ -92,29 +92,29 @@ const docHeader = read("src/components/_internal/documentation/DsDocHeader.astro
 const documentationStyles = read("src/styles/documentation.css");
 const sectionHeading = read("src/components/_internal/documentation/DsSectionHeading.astro");
 const documentationBlockTitle = read("src/components/_internal/documentation/DsDocumentationBlockTitle.astro");
-const typographyFoundationPage = read("src/pages/design-system/foundations/typography.astro");
-const sizingFoundationPage = read("src/pages/design-system/foundations/sizing.astro");
-const materialSymbolsPage = read("src/pages/design-system/assets/material-symbols.astro");
-const socialIconsPage = read("src/pages/design-system/assets/social-icons.astro");
-const flagsPage = read("src/pages/design-system/assets/flags.astro");
+const typographyFoundationPage = read("src/documentation/design-system/foundations/typography.astro");
+const sizingFoundationPage = read("src/documentation/design-system/foundations/sizing.astro");
+const materialSymbolsPage = read("src/documentation/design-system/assets/material-symbols.astro");
+const socialIconsPage = read("src/documentation/design-system/assets/social-icons.astro");
+const flagsPage = read("src/documentation/design-system/assets/flags.astro");
 const documentationSidebar = read("src/components/_internal/documentation/DsDocumentationSidebar.astro");
 const documentationSearch = read("src/components/_internal/documentation/DsDocumentationSearch.astro");
 const documentationSearchResult = read("src/components/_internal/documentation/DsDocumentationSearchResult.astro");
 const documentationSearchRuntime = read("src/lib/documentation/search.mjs");
-const designSystemIndex = read("src/pages/design-system/index.astro");
+const designSystemIndex = read("src/documentation/design-system/index.astro");
 const documentationThemePicker = read("src/components/_internal/documentation/DsDocumentationThemePicker.astro");
 const documentationGuidesToggle = read("src/components/_internal/documentation/DsDocumentationGuidesToggle.astro");
 const documentationPager = read("src/components/_internal/documentation/DsDocumentationPager.astro");
 const tableOfContents = read("src/components/_internal/documentation/DsTableOfContents.astro");
 const documentationRegistry = read("src/data/documentationRegistry.ts");
-const baseComponentIndexRoute = read("src/pages/design-system/base-components/[familyKey]/index.astro");
-const baseComponentDetailRoute = read("src/pages/design-system/base-components/[familyKey]/[componentSlug]/index.astro");
-const baseComponentPreviewRoute = read("src/pages/design-system/base-components/[familyKey]/preview.astro");
-const baseComponentDetailPreviewRoute = read("src/pages/design-system/base-components/[familyKey]/[componentSlug]/preview.astro");
-const websitePatternIndexRoute = read("src/pages/design-system/website-patterns/[familyKey]/index.astro");
-const websitePatternDetailRoute = read("src/pages/design-system/website-patterns/[familyKey]/[componentSlug]/index.astro");
-const websitePatternPreviewRoute = read("src/pages/design-system/website-patterns/[familyKey]/preview.astro");
-const websitePatternDetailPreviewRoute = read("src/pages/design-system/website-patterns/[familyKey]/[componentSlug]/preview.astro");
+const baseComponentIndexRoute = read("src/documentation/design-system/base-components/[familyKey]/index.astro");
+const baseComponentDetailRoute = read("src/documentation/design-system/base-components/[familyKey]/[componentSlug]/index.astro");
+const baseComponentPreviewRoute = read("src/documentation/design-system/base-components/[familyKey]/preview.astro");
+const baseComponentDetailPreviewRoute = read("src/documentation/design-system/base-components/[familyKey]/[componentSlug]/preview.astro");
+const websitePatternIndexRoute = read("src/documentation/design-system/website-patterns/[familyKey]/index.astro");
+const websitePatternDetailRoute = read("src/documentation/design-system/website-patterns/[familyKey]/[componentSlug]/index.astro");
+const websitePatternPreviewRoute = read("src/documentation/design-system/website-patterns/[familyKey]/preview.astro");
+const websitePatternDetailPreviewRoute = read("src/documentation/design-system/website-patterns/[familyKey]/[componentSlug]/preview.astro");
 const componentDetailRoutes = `${baseComponentDetailRoute}\n${websitePatternDetailRoute}`;
 const componentInfoLayer = read("src/components/_internal/dev/ComponentInfoLayer.astro");
 const docSection = read("src/components/_internal/documentation/DsDocSection.astro");
@@ -248,7 +248,7 @@ for (const file of canonicalTokenFiles) {
 if (tokenNames.size === 0) errors.push("Build-time token parser found no canonical CSS Variables.");
 
 for (const foundation of ["color", "sizing", "typography", "layout", "motion", "elevation"]) {
-  const pagePath = `src/pages/design-system/foundations/${foundation}.astro`;
+  const pagePath = `src/documentation/design-system/foundations/${foundation}.astro`;
   const page = read(pagePath);
   if (!page.includes(`documentationFoundationHeader("${foundation}")`)) {
     errors.push(`${pagePath} does not resolve canonical Foundation header content.`);
@@ -267,9 +267,9 @@ for (const foundation of ["color", "sizing", "typography", "layout", "motion", "
   }
 }
 
-const standardDocumentationPages = collectAstroPages("src/pages/design-system")
+const standardDocumentationPages = collectAstroPages("src/documentation/design-system")
   .filter((absolutePage) => !absolutePage.endsWith("/preview.astro"));
-for (const absolutePage of collectAstroPages("src/pages/design-system")) {
+for (const absolutePage of collectAstroPages("src/documentation/design-system")) {
   const pagePath = absolutePage.slice(projectRoot.length + 1);
   if (pagePath.endsWith("/preview.astro")) continue;
   const page = read(pagePath);
@@ -417,8 +417,8 @@ if (!documentationStyles.includes("--ds-documentation-content-max-width: 50rem")
 }
 
 for (const previewPath of [
-  "src/pages/design-system/website-patterns/[familyKey]/[componentSlug]/preview.astro",
-  "src/pages/design-system/examples-templates/[familyKey]/[itemSlug]/preview.astro",
+  "src/documentation/design-system/website-patterns/[familyKey]/[componentSlug]/preview.astro",
+  "src/documentation/design-system/examples-templates/[familyKey]/[itemSlug]/preview.astro",
 ]) {
   const preview = read(previewPath);
   if (!preview.includes("BaseLayout") || !preview.includes("<DsResponsivePreview")) {
@@ -961,9 +961,9 @@ for (const requiredHeading of [
 }
 
 const rawContentHeadingAllowlist = new Map([
-  ["src/pages/design-system/index.astro", /<h2\s+class="heading-h4">/g],
-  ["src/pages/design-system/architecture/component-model.astro", /<h3\s+class="heading-h5">/g],
-  ["src/pages/design-system/foundations/elevation.astro", /<h3\s+class="heading-h6">/g],
+  ["src/documentation/design-system/index.astro", /<h2\s+class="heading-h4">/g],
+  ["src/documentation/design-system/architecture/component-model.astro", /<h3\s+class="heading-h5">/g],
+  ["src/documentation/design-system/foundations/elevation.astro", /<h3\s+class="heading-h6">/g],
   ["src/components/_internal/documentation/DsDocCard.astro", /<h3\s+class="heading-h6">/g],
   ["src/components/_internal/documentation/DsEmptyState.astro", /<h3\s+class="heading-h4">/g],
   ["src/components/_internal/documentation/DsFamilyGallery.astro", /<h3\s+class="heading-h5">/g],

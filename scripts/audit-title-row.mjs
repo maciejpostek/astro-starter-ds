@@ -20,7 +20,7 @@ const source = read(sourcePath);
 const rule = read(rulePath);
 const docs = read("src/data/documentationComponentRegistry.ts");
 const foundationData = read("src/data/documentationFoundationData.ts");
-const foundationPage = read("src/pages/design-system/foundations/color.astro");
+const foundationPage = read("src/documentation/design-system/foundations/color.astro");
 const roadmap = read("Figma2Astro Agentic Rules/07-component-library-roadmap.md");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
 const record = registry.components?.find((component) => component.id === "title-row");

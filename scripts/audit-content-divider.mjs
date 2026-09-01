@@ -21,6 +21,7 @@ const rule = read(rulePath);
 const docs = read("src/data/documentationComponentRegistry.ts");
 const foundationData = read("src/data/documentationFoundationData.ts");
 const previewController = read("src/components/_internal/documentation/DsInteractiveComponentPreview.astro");
+const documentationIntegration = read("src/documentation/integration.mjs");
 const sizeTokens = read("src/styles/tokens/size-components.css");
 const tokenRegistry = JSON.parse(read("src/data/design-system/tokenArchitecture.json") || "{}");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
@@ -95,6 +96,9 @@ if ((record?.dependencies ?? []).length !== 0 || (record?.slots ?? []).length !=
 }
 if (record?.variants?.join(",") !== "line,text" || record?.props?.join(",") !== "variant,text,tone") {
   errors.push("ContentDivider registry does not project the locked public API.");
+}
+if (documentationIntegration.includes('"/design-system/base-components/dividers/content-divider":')) {
+  errors.push("ContentDivider canonical detail route must not be shadowed by a redirect.");
 }
 
 if (errors.length) {

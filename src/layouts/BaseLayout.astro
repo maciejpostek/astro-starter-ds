@@ -27,6 +27,12 @@ const {
   mainClass,
 } = Astro.props;
 const activePath = Astro.url.pathname;
+const developerToolsEnabled = import.meta.env.DEV || process.env.DOCS_ENABLED === "true";
+const renderGridVisualizer = developerToolsEnabled && showGridVisualizer;
+const renderComponentInfo = developerToolsEnabled && showComponentInfo;
+const renderGuidesToggle = developerToolsEnabled
+  && (renderGridVisualizer || renderComponentInfo)
+  && showGuidesToggle;
 ---
 
 <!doctype html>
@@ -65,14 +71,14 @@ const activePath = Astro.url.pathname;
   <body>
     <div class="app">
       <div class="app__workspace">
-        {showGridVisualizer && <GridVisualizer />}
+        {renderGridVisualizer && <GridVisualizer />}
         <main class:list={["main", mainClass]}>
           <slot />
         </main>
       </div>
     </div>
-    {showComponentInfo && <ComponentInfoLayer />}
-    {(showGridVisualizer || showComponentInfo) && showGuidesToggle && (
+    {renderComponentInfo && <ComponentInfoLayer />}
+    {renderGuidesToggle && (
       <div class="guides-toggle" data-grid-toggle>
         <SwitchLabel
           id="ds-guides-toggle"

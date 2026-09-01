@@ -16,7 +16,7 @@ const source = read("src/components/website-patterns/ratings-reviews/Rating.astr
 const preview = read("src/components/_internal/documentation/DsRatingPreview.astro");
 const docs = read("src/data/documentationComponentRegistry.ts");
 const rule = read(".agentic-rules/components/rating.md");
-const config = read("astro.config.mjs");
+const documentationIntegration = read("src/documentation/integration.mjs");
 const manifestSource = read("src/data/design-system/componentArchitecture.json");
 const iconManifestSource = read("src/data/design-system/iconLibrary.json");
 
@@ -94,7 +94,7 @@ for (const legacyPath of [
   "/design-system/website-patterns/ratings-reviews/rating/preview",
   "/design-system/website-patterns/ratings-reviews/trust-badge",
   "/design-system/website-patterns/ratings-reviews/trust-badge/preview",
-]) if (!config.includes(`"${legacyPath}"`)) errors.push(`Missing Rating redirect: ${legacyPath}`);
+]) if (!documentationIntegration.includes(`"${legacyPath}"`)) errors.push(`Missing Rating redirect: ${legacyPath}`);
 
 if (errors.length) {
   console.error("Rating audit failed:");

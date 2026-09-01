@@ -16,7 +16,7 @@ const read = (path) => {
 const sourcePath = "src/components/assets/logos/LogoAsset.astro";
 const resolverPath = "src/lib/logos/logoAssets.ts";
 const rulePath = ".agentic-rules/components/logo-asset.md";
-const docsPath = "src/pages/design-system/assets/logos.astro";
+const docsPath = "src/documentation/design-system/assets/logos.astro";
 const source = read(sourcePath);
 const resolver = read(resolverPath);
 const rule = read(rulePath);
