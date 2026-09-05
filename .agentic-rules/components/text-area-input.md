@@ -13,6 +13,12 @@ Status: active.
 
 Collect limited multiline text while showing the current character count inside the textarea boundary.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Multiline content has a meaningful enforced maximum length.

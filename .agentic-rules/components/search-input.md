@@ -13,6 +13,12 @@ Status: active.
 
 Collect one text query while making search intent immediately recognizable and allowing an entered query to be cleared without replacing the whole field with a custom widget.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A text field filters or searches a list, catalog, table, documentation set or other result collection.

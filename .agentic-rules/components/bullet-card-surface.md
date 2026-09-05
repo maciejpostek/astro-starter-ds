@@ -13,6 +13,12 @@ Status: active.
 
 BulletCardSurface highlights one benefit, capability, service or concise product summary in a bordered surface, with optional actions and an optional supporting 4:3 visual.
 
+## Communication role
+
+- Goals: benefits
+
+Structure a concise set of relevant points. Use the brief to select claims and keep each item focused on one supported benefit.
+
 ## Use when
 
 - A short title and description need stronger emphasis than a plain BulletPoint.

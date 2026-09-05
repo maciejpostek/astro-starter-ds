@@ -13,6 +13,12 @@ Status: active.
 
 FooterLink renders one native destination in either the primary footer navigation or the quieter legal row.
 
+## Communication role
+
+- Goals: navigation
+
+Provide secondary navigation and verified organization information. Keep any subscription promise consistent with the supplied offer.
+
 ## Use when
 
 - A footer item navigates to a page, route, document or policy.
@@ -43,6 +49,7 @@ FooterLink renders one native destination in either the primary footer navigatio
 
 ## Accessibility and required behavior
 
+- Use the existing small-control minimum height on both axes so short labels and legal text remain usable targets.
 - Preserve native anchor keyboard behavior and a visible focus indication.
 - Link text must identify the destination without relying on surrounding position alone.
 
@@ -53,7 +60,7 @@ FooterLink renders one native destination in either the primary footer navigatio
 
 ## Naming and token contract
 
-Use `FooterLink`, `.footer-link`, `data-footer-link-variant` and registered global color, motion and typography tokens. Do not reuse NavLink, whose contract belongs to top navigation.
+Use `FooterLink`, `.footer-link`, `data-footer-link-variant` and registered global color, motion, typography and shared control-size tokens. Do not reuse NavLink, whose contract belongs to top navigation.
 
 ## Core decision
 

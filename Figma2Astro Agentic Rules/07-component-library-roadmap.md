@@ -222,9 +222,8 @@ controlled, transport-agnostic status card for uploading, success and error and
 composes canonical ProgressBar, Button and fixed Material Symbol dependencies.
 Figma represents indeterminate progress as a static midpoint snapshot and keeps
 Status Text editable per instance; transport, animation and derived runtime
-announcements remain Astro-owned mechanics. Align UI is retained only as bounded
-structural evidence; local tokens, fixed Material Symbols and native semantics
-own the production implementation.
+announcements remain Astro-owned mechanics. Local tokens, fixed Material Symbols
+and native semantics own the production implementation.
 
 ### Base Components / Breadcrumbs
 
@@ -314,8 +313,7 @@ Astro source:
 
 Popup is a native modal decision surface with four fixed semantic statuses,
 horizontal and vertical copy layouts, optional Cancel and preference controls,
-and event-driven open, close and result behavior. Align UI is retained only as
-bounded anatomy and overlay-quality evidence. There is no canonical Figma node
+and event-driven open, close and result behavior. There is no canonical Figma node
 for Popup in this file and no separate Overlay component; native
 `dialog::backdrop` owns full-viewport dimming until a separate explicit Figma
 task authorizes a projection.

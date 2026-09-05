@@ -13,6 +13,12 @@ Status: intentional difference.
 
 Feature5050Centered presents one focused feature story in a full-height two-column section. It vertically centers the Content-led copy, optional benefit list and actions beside an equal edge-reaching visual.
 
+## Communication role
+
+- Goals: benefits
+
+Explain how a capability addresses an audience need. Connect each benefit to evidence from the brief; avoid unsupported outcome claims.
+
 ## Use when
 
 - One feature deserves a full-height, immersive section rather than a compact content block.

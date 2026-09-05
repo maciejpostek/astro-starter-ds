@@ -13,6 +13,12 @@ Status: intentional difference.
 
 FeatureSimple pairs one focused feature explanation with one prominent visual in a labelled website section. It provides a repeatable two-region composition without duplicating the Content or Ratio contracts.
 
+## Communication role
+
+- Goals: benefits
+
+Explain how a capability addresses an audience need. Connect each benefit to evidence from the brief; avoid unsupported outcome claims.
+
 ## Use when
 
 - A single feature, capability or benefit needs concise supporting copy and one significant visual.

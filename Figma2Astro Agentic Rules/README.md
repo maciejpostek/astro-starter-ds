@@ -34,5 +34,4 @@ semantics.
    `src/data/design-system/iconLibrary.json`.
 
 Do not load historical family adapters or the full component catalog for an
-exact node sync. [19-align-ui-benchmark.md](./19-align-ui-benchmark.md) is
-reference material, not an operational adapter.
+exact node sync. Retired benchmark material remains available in Git history.

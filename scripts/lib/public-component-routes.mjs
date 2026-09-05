@@ -13,6 +13,8 @@ export function getPublicComponentRecords(projectRoot = process.cwd()) {
   return (registry.components ?? []).filter(
     (component) =>
       component.sourcePath?.endsWith(".astro") &&
+      component.status !== "deprecated" && component.documentationVisible !== false &&
+      registry.pages.some(p => p.categoryKey === component.categoryKey && p.pageKey === component.pageKey && p.documentationVisible !== false) &&
       publicCategories.has(component.categoryKey) &&
       !["internal", "part"].includes(component.role),
   );
@@ -32,6 +34,7 @@ export function getPublicComponentRoutes(projectRoot = process.cwd()) {
     route:
       (registry.components ?? []).filter(
         (candidate) =>
+          candidate.status !== "deprecated" && candidate.documentationVisible !== false &&
           candidate.categoryKey === component.categoryKey &&
           candidate.pageKey === component.pageKey &&
           !["internal", "part"].includes(candidate.role),

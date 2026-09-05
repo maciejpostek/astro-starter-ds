@@ -44,7 +44,7 @@ export const resolveDocumentationLink = (
     const href = documentationComponentHref(component);
     return {
       href: target.kind === "rule" ? `${href}#component-rule` : href,
-      label: target.kind === "rule" ? `${component.name} UX rule` : component.name,
+      label: target.kind === "rule" ? `${component.name} Agentic Rules` : component.name,
       copyValue: component.name,
     };
   }

@@ -14,6 +14,12 @@ Status: active.
 PricingCard presents one purchasable plan with its price, primary action and
 included capabilities in a self-contained comparison unit.
 
+## Communication role
+
+- Goals: comparison
+
+Support a choice between offers using comparable criteria. Prices, inclusions and commercial promises must come from supplied evidence.
+
 ## Use when
 
 - A pricing or packaging view needs one plan card that can sit beside peer plans.

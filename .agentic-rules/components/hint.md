@@ -13,6 +13,12 @@ Status: active.
 
 Explain expected input or communicate a success, warning or error outcome with a fixed semantic icon and tone.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A field needs concise supporting, success or error text.

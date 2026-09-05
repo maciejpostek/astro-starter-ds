@@ -13,6 +13,12 @@ Status: active.
 
 AccordionList arranges peer Accordion disclosures in one vertical group and coordinates whether one or several may remain open.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Two or more peer disclosures should be scanned and operated as a group.

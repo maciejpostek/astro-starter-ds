@@ -2,19 +2,55 @@ import { expect, test } from "@playwright/test";
 import axe from "axe-core";
 import { publicComponentRoutes } from "./public-routes.mjs";
 
+const assertAccessible = async (page, context, label) => {
+  await page.addScriptTag({ content: axe.source });
+  const results = await page.evaluate(async (scope) => window.axe.run(Object.keys(scope).length ? scope : document, {
+    resultTypes: ["violations"],
+    runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] },
+  }), context);
+  const blocking = results.violations.filter(({ impact }) => impact === "critical" || impact === "serious");
+  expect(blocking, `${label}: ${JSON.stringify(blocking, null, 2)}`).toEqual([]);
+};
+
 for (const component of publicComponentRoutes) {
   test(`${component.id} has no serious axe violations`, async ({ page }) => {
-    const route = component.id === "stat-text-inline" || component.id === "faq" || component.id === "feature-50-50-centered" || component.id === "team-member-card" || component.id === "blog-card"
-      ? component.route
-      : component.route.replace(/\/$/u, "");
-    await page.goto(route, { waitUntil: "networkidle" });
-    await page.addScriptTag({ content: axe.source });
-    const results = await page.evaluate(async () => window.axe.run(document, {
-      resultTypes: ["violations"],
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] },
-    }));
-    const blocking = results.violations.filter(({ impact }) => impact === "critical" || impact === "serious");
-    expect(blocking, JSON.stringify(blocking, null, 2)).toEqual([]);
+    await page.goto(component.route, { waitUntil: "networkidle" });
+    const responsive = page.locator('[data-ds-interactive-preview][data-preview-category="website-patterns"][data-preview-presentation="responsive"]');
+    if (await responsive.count()) {
+      // The responsive specimen is a scaled desktop overview. Audit its identical
+      // canonical renderer at 1:1, and audit the surrounding documentation separately.
+      // No axe rule or threshold is disabled; every specimen is checked below.
+      await assertAccessible(page, { exclude: ['[data-ds-interactive-preview][data-preview-category="website-patterns"][data-preview-presentation="responsive"] [data-ds-preview-scene-canvas]'] }, "Documentation UI");
+      await page.setViewportSize({ width: 1920, height: 1440 });
+      await page.goto(`${component.route.replace(/\/$/u, "")}/preview/`, { waitUntil: "networkidle" });
+      const viewport = page.locator('[data-preview-viewport]');
+      await expect(viewport).toHaveCount(1);
+      expect(await viewport.evaluate(node => node.getBoundingClientRect().width / node.offsetWidth), "Preview must be measured at 100% scale").toBeCloseTo(1, 2);
+      await assertAccessible(page, {}, "Canonical component at 100% and preview controls");
+    } else await assertAccessible(page, {}, "Documentation and canonical component");
+  });
+}
+
+for (const theme of ["light", "dark"]) {
+  test(`readable semantic text roles in ${theme} theme`, async ({ page }) => {
+    await page.goto("/design-system/base-components/hint/", { waitUntil: "networkidle" });
+    await page.evaluate(theme => {
+      const fixture = document.createElement("section");
+      fixture.id = "semantic-contrast-fixture";
+      fixture.dataset.theme = theme;
+      fixture.setAttribute("aria-label", "Semantic text contrast fixture");
+      for (const [text, background] of [
+        ["secondary", "canvas"], ["tertiary", "canvas"],
+        ["secondary", "surface"], ["tertiary", "surface"], ["on-accent", "accent"],
+      ]) {
+        const sample = document.createElement("p");
+        sample.textContent = `${text} text on ${background}`;
+        sample.style.cssText = `color:var(--color-text-${text});background:var(--color-background-${background});font-size:14px;font-weight:400;padding:8px`;
+        fixture.append(sample);
+      }
+      document.querySelector("main").append(fixture);
+    }, theme);
+    await assertAccessible(page, { include: ["#semantic-contrast-fixture"] }, `Semantic roles: ${theme}`);
   });
 }
 

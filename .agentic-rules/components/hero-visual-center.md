@@ -15,6 +15,12 @@ HeroVisualCenter introduces one primary page promise in a centered hierarchy,
 then supports it with optional proof points and one prominent visual. It is a
 page-opening section, not a generic centered content utility.
 
+## Communication role
+
+- Goals: introduction
+
+Introduce the page proposition and audience relevance. Use the approved hierarchy and existing visual design; do not redefine the hero pattern per page.
+
 ## Use when
 
 - The page needs a centered hero with one required eyebrow and heading.

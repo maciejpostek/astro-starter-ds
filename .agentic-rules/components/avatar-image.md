@@ -12,6 +12,12 @@ Status: active.
 AvatarImage presents one compact portrait or person visual in a consistent
 circular 1:1 frame.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A testimonial, article byline, case study or social-proof item needs a compact person visual.

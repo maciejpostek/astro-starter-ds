@@ -82,13 +82,13 @@ if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
   .progress-tab__label {
     min-inline-size: 0;
     overflow-wrap: anywhere;
-    opacity: 0.5;
-    transition: opacity var(--motion-transition);
+    color: var(--tab-text-default);
+    transition: color var(--motion-transition);
   }
 
   .progress-tab:not(:disabled):is(:hover, [data-ds-preview-state="hover"]) .progress-tab__label,
   .progress-tab[aria-selected="true"] .progress-tab__label {
-    opacity: 1;
+    color: inherit;
   }
 
   .progress-tab:disabled {
@@ -97,7 +97,7 @@ if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
   }
 
   .progress-tab:disabled .progress-tab__label {
-    opacity: 1;
+    color: inherit;
   }
 
   .progress-tab:is(:focus-visible, [data-ds-preview-state="focus-visible"]) {

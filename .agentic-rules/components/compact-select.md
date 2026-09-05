@@ -13,6 +13,12 @@ Status: active.
 
 Provide an intrinsic-width, icon-only single-select trigger for compact toolbars and locale, phone, country, or brand selection while keeping the same field surface as Select.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - The selected value belongs in a compact control rather than a full labelled field.

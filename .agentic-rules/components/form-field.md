@@ -13,6 +13,12 @@ Status: active.
 
 Provide the canonical Label → native control → Hint structure for one form value without hiding the control's native API.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A control needs a persistent visible label and optional supporting or validation message.

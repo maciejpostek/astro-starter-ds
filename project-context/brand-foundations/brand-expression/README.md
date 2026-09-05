@@ -1,10 +1,9 @@
 # Project Brand and Composition Contract
 
-Status: scoped starter rules are approved in `contract.json`. This is not a configured client brand or approval of a complete visual direction.
+Status: `not-configured`. This is a neutral client scaffold.
 
-This directory contains project-specific visual decisions and their evidence.
-The approved rules currently cover selected starter components; client-specific
-visual direction still requires supplied evidence and human approval.
+Component implementation rules live in their Agentic Rules, not in this project
+contract. Add only supplied, accepted project-specific visual decisions here.
 
 ## Canonical Files
 

@@ -3050,7 +3050,7 @@ const deterministicContextErrors = ({
     if (
       paths.some(
         (path) =>
-          path.startsWith(".agentic-rules/components/") ||
+          (path.startsWith(".agentic-rules/components/") && context.readPlan.some(read => read.path === path && !read.selection)) ||
           path.startsWith(
             "project-context/brand-foundations/brand-expression/"
           )
@@ -3117,7 +3117,7 @@ const deterministicContextErrors = ({
         "component-readiness-rule",
         "component-readiness-contract",
         "creation-family-rule",
-        "registry-projection",
+        "component-gap-evidence",
         "guides-projection",
         "responsive-strategy-rule",
       ];
@@ -3183,11 +3183,11 @@ export const runDeterministicRuntimeGate = async ({
         familyContext = resolveAgentContext({
           task,
           projectRoot: fixtureRoot,
-          creationDraft: scenario.creationTarget
+          creationDraft: {...scenario.creationTarget, approvalStatus: "approved", approvalBasis: "user-request"}
         });
       }
       const actualTerminal =
-        task.status === "blocked" || context.status === "blocked"
+        task.status === "blocked" || context.status === "blocked" || (scenario.control?.safety === "brand-gate" && context.executionReadiness?.visual === "reuse-only")
           ? "blocked"
           : "accepted";
       const expectedIntentMatches =

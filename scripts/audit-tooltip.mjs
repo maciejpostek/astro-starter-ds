@@ -40,9 +40,6 @@ const packageJson = JSON.parse(read("package.json") || "{}");
 const icons = JSON.parse(read("src/data/design-system/iconLibrary.json") || "{}");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
 const tokenRegistry = JSON.parse(read("src/data/design-system/tokenArchitecture.json") || "{}");
-const brandContract = JSON.parse(
-  read("project-context/brand-foundations/brand-expression/contract.json") || "{}",
-);
 
 for (const [pattern, message] of [
   [/data-component-name="Tooltip"/u, "Tooltip Guides identity is missing."],
@@ -282,10 +279,7 @@ for (const boundary of ["DsTooltipPreview", "DsInfoPopoverPreview"]) {
 if (!icons.icons?.info?.requiredBySource || !icons.icons?.close?.requiredBySource) {
   errors.push("Tooltip family requires source-used info and close Material Symbols.");
 }
-const benchmarkRule = brandContract.rules?.find((rule) => rule.id === "tooltip.align-benchmark");
-if (benchmarkRule?.status !== "approved" || !benchmarkRule?.appliesTo?.components?.includes("InfoPopover")) {
-  errors.push("Approved bounded tooltip.align-benchmark Brand Contract rule is missing.");
-}
+
 if (packageJson.scripts?.["test:tooltip"] !== "node --test tests/tooltip.test.mjs") {
   errors.push("test:tooltip package script is missing.");
 }

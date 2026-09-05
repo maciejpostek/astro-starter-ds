@@ -35,8 +35,15 @@ truth for tokens, component APIs, `data-*` contracts and implementation rules.
 
 ## Start locally
 
+Use Node 22.22.0 (`.nvmrc`); supported range: 22.19–22.x. Install from the
+lockfile with `npm ci`. A downloaded folder does not require Git, a remote,
+commits or branches. Keep the dotfiles, `.agents`, `.agentic-rules`, architecture
+and project-context folders in the package. The starter repository itself can
+continue using Git normally; benchmark/history commands are maintainer tools.
+
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -94,3 +101,37 @@ npm run validate
 
 Inter is installed through `@fontsource/inter`; replace it and update the
 typography foundations when a project adopts a different licensed typeface.
+
+## Configure a separate project
+
+Copy the neutral starter into a separate folder before adding a client brand.
+Fill the existing strategy, tone-of-voice and product-brief templates and update
+`project-context/context-index.json`. Configure existing tokens and components
+there. Brand Expression starts unconfigured; only accepted visual decisions
+belong in its JSON contract. Generate its Markdown with `npm run brand:generate`.
+Component Agentic Rules combine UX, communication and technical guidance. After
+changing them, run `npm run agent:rules:generate`; `npm run validate` detects
+stale projections. Source code remains the executable API and token authority.
+
+## Maintainer verification before copying
+
+Run `npm run validate`, then all Node tests with
+`node --test --test-concurrency=1 tests/*.test.mjs`; sequential execution avoids
+shared Astro fixture-cache collisions. Run `npm run audit:runtime:v1.1` for the
+deterministic benchmark and `npm run build:docs` for the documentation boundary.
+Browser commands build documentation automatically; a site-only build does not
+contain the routes they test. When supplying an existing server, it must serve a
+current documentation build.
+
+The accessibility suite checks documentation UI and native-size components.
+Responsive overview thumbnails intentionally scale a desktop specimen; the same
+canonical renderer is tested in its full `/preview` route at 100% scale, with all
+axe rules and thresholds retained. Miniature click geometry is not evidence of a
+production component's target size. Use the full preview for keyboard and touch
+interaction checks. macOS WebKit uses Option+Tab to include all controls.
+
+Copy source files, hidden `.agents` and `.agentic-rules` directories, context
+scaffolding, `.nvmrc`, package metadata and lockfile. Exclude `.git`,
+`node_modules`, `.astro`, `dist`, test reports and private environment files.
+Install with `npm ci` in the copy; keep the original starter repository and its
+Git history intact. Client branding and workshop materials belong to that copy.

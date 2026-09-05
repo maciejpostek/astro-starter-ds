@@ -14,6 +14,12 @@ Status: intentional difference.
 BlogCard presents one editorial article or resource with a required title and
 optional metadata, summary, 16:9 visual and explicit reading action.
 
+## Communication role
+
+- Goals: resources
+
+Offer a real next reading destination. Titles and summaries must describe the linked resource.
+
 ## Use when
 
 - A blog index, resources page or related-content area needs a reusable article card.

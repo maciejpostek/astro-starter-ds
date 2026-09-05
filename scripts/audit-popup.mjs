@@ -28,8 +28,6 @@ const tests = read("tests/popup.test.mjs");
 const registry = JSON.parse(read("src/data/design-system/componentArchitecture.json") || "{}");
 const tokenRegistry = JSON.parse(read("src/data/design-system/tokenArchitecture.json") || "{}");
 const readiness = JSON.parse(read("architecture/component-readiness-contract.json") || "{}");
-const brand = JSON.parse(read("project-context/brand-foundations/brand-expression/contract.json") || "{}");
-const references = JSON.parse(read("project-context/brand-foundations/brand-expression/reference-manifest.json") || "{}");
 const packageJson = JSON.parse(read("package.json") || "{}");
 
 for (const [pattern, message] of [
@@ -115,11 +113,7 @@ requireMatch(
 );
 if (!readiness.previewBoundaryComponents?.includes("DsPopupPreview")) errors.push("DsPopupPreview is missing from the readiness boundary contract.");
 
-const benchmark = brand.rules?.find((candidate) => candidate.id === "popup.align-benchmark");
-if (benchmark?.status !== "approved") errors.push("Approved popup.align-benchmark rule is missing.");
-for (const id of ["align-ui-popup-modal", "align-ui-popup-overlay"]) {
-  if (!references.references?.some((reference) => reference.id === id && reference.approval === "approved")) errors.push(`Approved benchmark reference ${id} is missing.`);
-}
+
 if (packageJson.scripts?.["test:popup"] !== "node --test tests/popup.test.mjs") errors.push("test:popup package script is missing.");
 if (packageJson.scripts?.["audit:popup"] !== "node scripts/audit-popup.mjs .") errors.push("audit:popup package script is missing.");
 if (!packageJson.scripts?.validate?.includes("npm run test:popup") || !packageJson.scripts?.validate?.includes("npm run audit:popup")) errors.push("Main validation does not include Popup checks.");

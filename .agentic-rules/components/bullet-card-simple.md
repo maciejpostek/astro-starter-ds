@@ -13,6 +13,12 @@ Status: active.
 
 BulletCardSimple presents one compact capability, product or service with a required title and optional supporting copy and actions, without adding a visual, metrics, tags or a card surface.
 
+## Communication role
+
+- Goals: benefits
+
+Structure a concise set of relevant points. Use the brief to select claims and keep each item focused on one supported benefit.
+
 ## Use when
 
 - A compact tertiary feature needs more hierarchy than a list item but no surrounding surface.

@@ -52,7 +52,7 @@ if (command === "component") {
   prompt = `Create a brand-sensitive composition for ${positional.join(" ")}`;
 }
 
-if (command !== "task" && value("prompt")) prompt += `; ${value("prompt")}`;
+if (command !== "task" && value("prompt")) prompt = value("prompt");
 
 const task = routeAgentRequest({
   prompt,
@@ -64,9 +64,15 @@ const task = routeAgentRequest({
   })],
   targetFile: value("file"),
   contentMode: value("content-mode"),
+  contentStyle: value("content-style"),
+  requiresStrategicContext: value("strategy") === "true",
+  editScope: value("edit-scope"),
+  communicationGoal: value("goal"),
+  product: value("product"),
+  campaign: value("campaign"),
   language: value("language"),
   brandThemes: values("theme"),
-  intentOverride: intent,
+  intentOverride: value("intent") ?? (value("prompt") ? undefined : intent),
   tokenNeed: jsonValue("token-need"),
   tokenDraft: jsonValue("token-draft"),
   projectRoot
@@ -89,7 +95,9 @@ const creationDraft =
         layer: value("layer"),
         family: value("family"),
         sourcePath: value("source"),
-        docsPath: value("docs")
+        docsPath: value("docs"),
+        approvalStatus: value("creation-approval") ?? "proposed",
+        approvalBasis: value("approval-basis") ?? null
       }
     : undefined;
 const context = resolveAgentContext({ task, projectRoot, creationDraft });

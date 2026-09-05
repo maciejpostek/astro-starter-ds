@@ -177,7 +177,11 @@
       "architectureState": "current",
       "sourcePaths": [
         "scripts/resolve-agent-context.mjs",
-        "scripts/lib/agent-runtime.mjs"
+        "scripts/lib/agent-runtime.mjs",
+        "scripts/lib/task-semantics.mjs",
+        "scripts/lib/strategic-context.mjs",
+        "scripts/lib/project-context-index.mjs",
+        "scripts/lib/validate-json-contract.mjs"
       ],
       "ownership": {
         "owner": "AI-native runtime",
@@ -211,7 +215,11 @@
       "status": "current",
       "architectureState": "current",
       "sourcePaths": [
-        "scripts/lib/agent-runtime.mjs"
+        "scripts/lib/agent-runtime.mjs",
+        "scripts/lib/task-semantics.mjs",
+        "scripts/lib/strategic-context.mjs",
+        "scripts/lib/project-context-index.mjs",
+        "scripts/lib/validate-json-contract.mjs"
       ],
       "ownership": {
         "owner": "AI-native runtime",
@@ -308,14 +316,24 @@
       ],
       "ownership": {
         "owner": "AI-native runtime",
-        "readers": ["AI agent", "Design engineer"],
-        "writers": ["Repository maintainers"],
-        "validatorNodeIds": ["validator.agent-runtime"],
+        "readers": [
+          "AI agent",
+          "Design engineer"
+        ],
+        "writers": [
+          "Repository maintainers"
+        ],
+        "validatorNodeIds": [
+          "validator.agent-runtime"
+        ],
         "contextCost": "low"
       },
       "metadata": {
         "problem": "Styling needs require deterministic semantic ownership, source paths and consumer evidence before implementation.",
-        "primaryFor": ["token-resolution", "token-ownership"]
+        "primaryFor": [
+          "token-resolution",
+          "token-ownership"
+        ]
       }
     },
     {
@@ -334,14 +352,24 @@
       ],
       "ownership": {
         "owner": "AI-native runtime",
-        "readers": ["AI agent", "Design engineer"],
-        "writers": ["Repository maintainers"],
-        "validatorNodeIds": ["validator.agent-runtime"],
+        "readers": [
+          "AI agent",
+          "Design engineer"
+        ],
+        "writers": [
+          "Repository maintainers"
+        ],
+        "validatorNodeIds": [
+          "validator.agent-runtime"
+        ],
         "contextCost": "low"
       },
       "metadata": {
         "problem": "AI needs one exact naming, location, resolution and approval policy without local invention.",
-        "primaryFor": ["component-authoring", "token-approval"]
+        "primaryFor": [
+          "component-authoring",
+          "token-approval"
+        ]
       }
     },
     {
@@ -690,7 +718,11 @@
       "architectureState": "current",
       "sourcePaths": [
         "scripts/lib/agent-runtime.mjs",
-        "AGENTIC-RULES.json"
+        "AGENTIC-RULES.json",
+        "scripts/lib/task-semantics.mjs",
+        "scripts/lib/strategic-context.mjs",
+        "scripts/lib/project-context-index.mjs",
+        "scripts/lib/validate-json-contract.mjs"
       ],
       "ownership": {
         "owner": "AI-native runtime",
@@ -753,7 +785,11 @@
       "architectureState": "current",
       "sourcePaths": [
         "scripts/lib/agent-runtime.mjs",
-        "AGENTIC-RULES.json"
+        "AGENTIC-RULES.json",
+        "scripts/lib/task-semantics.mjs",
+        "scripts/lib/strategic-context.mjs",
+        "scripts/lib/project-context-index.mjs",
+        "scripts/lib/validate-json-contract.mjs"
       ],
       "ownership": {
         "owner": "AI-native runtime",
@@ -3194,7 +3230,7 @@
             "sourceInstanceId": "instance.validate.scope",
             "targetInstanceId": "instance.validate.repair",
             "type": "repair",
-            "label": "fail · attempts remain"
+            "label": "fail \u00b7 attempts remain"
           },
           {
             "id": "connection.repair-validation",

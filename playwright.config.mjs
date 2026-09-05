@@ -23,7 +23,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_SKIP_WEBSERVER
     ? undefined
     : {
-        command: `npm run build && npm run preview -- --host 127.0.0.1 --port ${port}`,
+        command: `npm run build:docs && npm run preview -- --host 127.0.0.1 --port ${port}`,
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 180_000,

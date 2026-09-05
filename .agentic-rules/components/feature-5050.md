@@ -13,6 +13,12 @@ Status: intentional difference.
 
 Feature5050 pairs one heading-led feature narrative and its supporting proof with one prominent visual. It is the detailed 50–50 feature section for content that needs actions, primary bullets, logos or a second labelled bullet group in addition to introductory copy.
 
+## Communication role
+
+- Goals: benefits
+
+Explain how a capability addresses an audience need. Connect each benefit to evidence from the brief; avoid unsupported outcome claims.
+
 ## Use when
 
 - One feature or capability needs a substantial visual and several kinds of supporting evidence in one section.

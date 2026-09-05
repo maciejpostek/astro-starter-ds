@@ -13,6 +13,12 @@ Status: active.
 
 Alert communicates one compact contextual message inside the normal page flow, with explicit status and emphasis.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Feedback belongs beside the content or operation it explains.
@@ -59,6 +65,8 @@ Alert communicates one compact contextual message inside the normal page flow, w
 - MaterialSymbol supplies fixed status and close glyphs.
 
 ## Naming and token contract
+
+Use the fixed status glyphs and at most two text actions. Do not introduce arbitrary icon slots, markup injection or persistence.
 
 Use `.alert`, stable `data-component-name="Alert"`, controlled feedback attributes and registered feedback token groups. Do not add dismissal, actions, component-local properties, arbitrary glyph selection or copied benchmark tokens.
 

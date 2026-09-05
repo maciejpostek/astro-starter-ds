@@ -13,6 +13,12 @@ Status: active.
 
 Tooltip gives a short, non-essential explanation for the fixed information control without interrupting the surrounding task or changing layout.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A nearby label benefits from a brief clarification that is useful but not required to complete the task.
@@ -73,6 +79,8 @@ Tooltip gives a short, non-essential explanation for the fixed information contr
 - Accordion composes Tooltip as the optional, separate help control for an item heading.
 
 ## Naming and token contract
+
+Do not add controlled open state, trigger slots, arbitrary icons or hard word-count enforcement. Keep Tooltip non-interactive.
 
 Use the canonical identity, public root class, controlled placement and narrow-placement attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Tooltip and InfoPopover share parent-owned trigger sizing and approved overlay geometry. Public CSS declares no local custom properties.
 

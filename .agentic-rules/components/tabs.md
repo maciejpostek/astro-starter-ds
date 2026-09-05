@@ -10,6 +10,12 @@ Status: active.
 
 Group any positive number of related Tab or ProgressTab triggers that select external content panels without navigation or page reload.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Related external panels share one context and only one should be visible.

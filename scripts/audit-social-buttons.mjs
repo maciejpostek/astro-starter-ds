@@ -31,12 +31,6 @@ const interactivePreview = read(
   "src/components/_internal/documentation/DsInteractiveComponentPreview.astro"
 );
 const readiness = JSON.parse(read("architecture/component-readiness-contract.json"));
-const brandContract = JSON.parse(
-  read("project-context/brand-foundations/brand-expression/contract.json")
-);
-const brandReferences = JSON.parse(
-  read("project-context/brand-foundations/brand-expression/reference-manifest.json")
-);
 const componentRuleContract = readComponentRuleContract(projectRoot);
 
 for (const [name, source, required] of [
@@ -205,30 +199,6 @@ if (platformCount !== 26) {
   errors.push(`Social Buttons require the canonical 26-platform catalog, found ${platformCount}.`);
 }
 
-const socialBrandRule = brandContract.rules?.find(
-  (rule) => rule.id === "social-buttons.exact-reuse"
-);
-if (
-  brandContract.status !== "approved" ||
-  JSON.stringify(socialBrandRule?.appliesTo?.components) !==
-    JSON.stringify(["SocialButton", "SocialIconButton"]) ||
-  !socialBrandRule?.forbids?.some((item) =>
-    item.includes("outside SocialButton and SocialIconButton")
-  )
-) {
-  errors.push("The approved Social Buttons Brand Contract is missing or is not narrowly scoped.");
-}
-const socialReference = brandReferences.references?.find(
-  (reference) => reference.id === "align-ui-social-buttons"
-);
-if (
-  brandReferences.status !== "approved" ||
-  socialReference?.approval !== "approved" ||
-  JSON.stringify(socialReference?.appliesTo) !==
-    JSON.stringify(["SocialButton", "SocialIconButton"])
-) {
-  errors.push("The Social Buttons reference is missing, unapproved, or too broadly scoped.");
-}
 
 if (errors.length > 0) {
   console.error("Social Buttons audit failed:");

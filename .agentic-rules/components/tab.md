@@ -10,6 +10,12 @@ Status: active.
 
 Represent one labelled choice inside a tablist and expose its external selected-panel relationship.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - The control is a direct child of Tabs or another conforming tablist.

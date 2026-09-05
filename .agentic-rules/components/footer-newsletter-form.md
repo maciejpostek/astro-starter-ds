@@ -13,6 +13,12 @@ Status: active.
 
 FooterNewsletterForm collects one required email address and submits it through a native POST form without owning a provider integration.
 
+## Communication role
+
+- Goals: navigation
+
+Provide secondary navigation and verified organization information. Keep any subscription promise consistent with the supplied offer.
+
 ## Use when
 
 - Footer's action region offers newsletter subscription.

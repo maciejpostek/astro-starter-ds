@@ -15,6 +15,12 @@ Ratio creates a predictable rectangular canvas for media or other visual
 content. It keeps the chosen proportion while the available inline size changes
 and prevents overflowing content from escaping that boundary.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - An image, video, embed or visual composition must keep one documented aspect ratio.

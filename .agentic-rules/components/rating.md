@@ -15,6 +15,12 @@ Rating combines one five-star score with a short trust or review statement.
 Filled stars represent awarded points, outlined stars represent points that
 were not awarded, and the visible label supplies the supporting context.
 
+## Communication role
+
+- Goals: proof
+
+Present supplied ratings with their scale and source. Do not invent endorsements.
+
 ## Use when
 
 - A Hero or another website section needs a compact rating and trust statement.

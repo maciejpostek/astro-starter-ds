@@ -13,6 +13,12 @@ Status: active.
 
 Present one immediately applied binary setting as a bordered selectable surface with optional explanation and decorative leading context.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - The setting benefits from a short description of its consequence.

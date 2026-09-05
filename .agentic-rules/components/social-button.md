@@ -13,6 +13,12 @@ Status: active.
 
 Trigger an action associated with one approved social platform while keeping a visible, outcome-oriented label.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Authentication, connection, sharing, or another action is explicitly associated with a supported social platform.
@@ -59,6 +65,8 @@ Trigger an action associated with one approved social platform while keeping a v
 - [SocialIcons](/design-system/assets/social-icons) supplies the approved platform geometry.
 
 ## Naming and token contract
+
+Provider-owned surfaces and provider color tokens are not part of this component. Reuse Button geometry and local monochrome social marks.
 
 Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
 

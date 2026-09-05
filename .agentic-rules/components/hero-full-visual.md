@@ -16,6 +16,12 @@ benefits and a dominant full-width visual. It owns the relationship between the
 introductory copy, BulletPoint list and panoramic visual without turning those
 dependencies into local recreations.
 
+## Communication role
+
+- Goals: introduction
+
+Introduce the page proposition and audience relevance. Use the approved hierarchy and existing visual design; do not redefine the hero pattern per page.
+
 ## Use when
 
 - A page needs a leading hero whose visual spans the full viewport width.

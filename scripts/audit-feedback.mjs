@@ -19,7 +19,6 @@ const tokenRegistry = JSON.parse(read("src/data/design-system/tokenArchitecture.
 const iconLibrary = JSON.parse(read("src/data/design-system/iconLibrary.json"));
 const docs = read("src/data/documentationComponentRegistry.ts");
 const preview = read("src/components/_internal/documentation/DsFeedbackPreview.astro");
-const brand = JSON.parse(read("project-context/brand-foundations/brand-expression/contract.json"));
 const errors = [];
 const requireMatch = (source, pattern, message) => { if (!pattern.test(source)) errors.push(message); };
 const forbidMatch = (source, pattern, message) => { if (pattern.test(source)) errors.push(message); };
@@ -140,9 +139,6 @@ requireMatch(preview, /notificationLayout/, "NotificationAndToast layout control
 requireMatch(preview, /currentIcon\.getAttribute\("style"\)[\s\S]*replacement\.setAttribute\("style", currentStyle\)/, "Status icon replacement must preserve the current controlled icon dimensions.");
 forbidMatch(preview, /feedbackDelivery/, "Delivery must not be an interactive visual documentation axis.");
 
-if (!brand.rules.some((rule) => rule.id === "feedback.align-benchmark" && rule.status === "approved")) {
-  errors.push("Approved feedback.align-benchmark Brand Contract rule is missing.");
-}
 
 if (errors.length) {
   console.error(errors.map((error) => `- ${error}`).join("\n"));

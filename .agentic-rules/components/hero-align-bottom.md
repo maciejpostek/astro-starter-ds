@@ -13,6 +13,12 @@ Status: intentional difference.
 
 HeroAlignBottom presents one primary promise at the lower edge of a wide hero beside a dominant visual. It is the restrained Hero option for concise content that should share a bounded site grid with the media instead of breaking the visual out to the viewport edge.
 
+## Communication role
+
+- Goals: introduction
+
+Introduce the page proposition and audience relevance. Use the approved hierarchy and existing visual design; do not redefine the hero pattern per page.
+
 ## Use when
 
 - A page needs one leading hero with concise copy anchored to the bottom of a four-column content region.

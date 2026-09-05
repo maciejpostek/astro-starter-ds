@@ -1735,17 +1735,17 @@
       "layoutContract": {
         "modeOwner": "Variants",
         "expectedModeOwner": "ComponentSet",
-      "wide": {
-        "end": "Content spans six columns from content-start with content-padding-xxlarge on its visual-adjacent inline-end; Visual starts at content column seven, reaches full-end and stretches through the full 100svh-minimum section row without a ratio contract.",
-        "start": "Visual reaches from full-start to content column seven and stretches through the full 100svh-minimum section row without a ratio contract; Content spans the remaining six content columns with content-padding-xxlarge on its visual-adjacent inline-start."
-      },
-      "narrow": "Both regions span content-start to content-end below the 64rem component width, with Content before Visual, content-height layout and no visual-adjacent inline padding.",
+        "wide": {
+          "end": "Content spans six columns from content-start with content-padding-xxlarge on its visual-adjacent inline-end; Visual starts at content column seven, reaches full-end and stretches through the full 100svh-minimum section row without a ratio contract.",
+          "start": "Visual reaches from full-start to content column seven and stretches through the full 100svh-minimum section row without a ratio contract; Content spans the remaining six content columns with content-padding-xxlarge on its visual-adjacent inline-start."
+        },
+        "narrow": "Both regions span content-start to content-end below the 64rem component width, with Content before Visual, content-height layout and no visual-adjacent inline padding.",
         "responsiveStrategy": "container",
         "sourceOrder": [
           "content",
           "visual"
         ],
-      "astroMapping": "Use the public breakout grid and logical start/end placement. The ratio-free Visual wrapper owns the canonical CSS checkerboard beneath slotted media; do not request an image asset solely for the placeholder or export Figma Layout Grid Columns measurements or fixed canvas dimensions as CSS tokens."
+        "astroMapping": "Use the public breakout grid and logical start/end placement. The ratio-free Visual wrapper owns the canonical CSS checkerboard beneath slotted media; do not request an image asset solely for the placeholder or export Figma Layout Grid Columns measurements or fixed canvas dimensions as CSS tokens."
       }
     },
     "feature-50-50-centered": {
@@ -3381,6 +3381,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Trigger a user action in the current interface, such as submitting, confirming, saving, or advancing a task.",
+        "ruleHash": "c623576d8245ba789db63eb873453ed5648b19fb9835725667b059452b88c069"
       }
     },
     {
@@ -3459,6 +3464,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Navigate to another resource while using a compact, action-oriented visual treatment.",
+        "ruleHash": "f34f230a63e92a65eaa5379d988eeef4bf16c330c2d23998a1bb39773045d73a"
       }
     },
     {
@@ -3542,6 +3552,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Trigger a compact action where one approved icon is recognizable and space is constrained.",
+        "ruleHash": "6fb741ed81f7f8cc02e2eca136c90aa598a9724c975f7caba27d1be33df561cd"
       }
     },
     {
@@ -3629,6 +3644,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Copy one explicit text value to the system clipboard through a visible, outcome-oriented action and announce both success and failure through addressed Toasts.",
+        "ruleHash": "cdfa6c2f83f357dc2ca4ceb61ac5a9e2e09ae17fc471aab6243941065e15429e"
       }
     },
     {
@@ -3716,6 +3736,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Copy one explicit text value through a compact icon-only action and announce both success and failure through addressed Toasts.",
+        "ruleHash": "6254b8e85c038d3f59248406daf05a0908735dd0ec7065973416072b043aac6d"
       }
     },
     {
@@ -3792,6 +3817,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Trigger an action associated with one approved social platform while keeping a visible, outcome-oriented label.",
+        "ruleHash": "75a44ae91887fd66679de9a3977c3c97647a8300323107076dd3ab55ccfaf63d"
       }
     },
     {
@@ -3864,6 +3894,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Trigger a compact action associated with one approved social platform when surrounding context makes the action understandable without visible text.",
+        "ruleHash": "76ed6006fe719279277864ceb5f6582809ed0a6d508c7b463694c7ec94dc4d9f"
       }
     },
     {
@@ -3943,6 +3978,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Organize related actions into one clear decision area while preserving each child action’s own semantics and emphasis.",
+        "ruleHash": "045b46ad6156f3e46c6a971bcd45328724050db26b75fcfd6fdaa243796e7f07"
       }
     },
     {
@@ -4004,6 +4044,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Expose the native on/off control for one persistent binary setting when another component or surrounding context owns its visible presentation.",
+        "ruleHash": "b8a1f7333093b6847ee17f372bed6de7378c41aea12e6dc6ad577a4a56c9d5c0"
       }
     },
     {
@@ -4078,6 +4123,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Present one immediately applied binary setting with a concise visible label and a generous shared click target.",
+        "ruleHash": "571624be2f22838c3c3f225f2282e76fe1532cac77332d21e5c3e64610d464ac"
       }
     },
     {
@@ -4160,6 +4210,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Present one immediately applied binary setting as a bordered selectable surface with optional explanation and decorative leading context.",
+        "ruleHash": "b3d3945236a2dec99fc50b187e41ca1b40b2e7cf27d76ec38bc72a8d6076326d"
       }
     },
     {
@@ -4239,6 +4294,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Collect a short or multiline text value through a native form control while exposing clear focus, validation and disabled states.",
+        "ruleHash": "49ddd65ccfa7bd5448fbc4a0dd945b9624bf58bcb7eb2ae14c9757c578a65ea5"
       }
     },
     {
@@ -4316,6 +4376,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Name a form control persistently or identify a compact metric while preserving the correct native label relationship for editable fields.",
+        "ruleHash": "cba796072a38dc88e7ad4786d2190629d877dc05dc388f49515724964df50dec"
       }
     },
     {
@@ -4404,6 +4469,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Collect one text query while making search intent immediately recognizable and allowing an entered query to be cleared without replacing the whole field with a custom widget.",
+        "ruleHash": "c0268f579838f8c7c45ceda23b30a5a0c20c462c9cc28c1e4f2828dc4f3ea6ef"
       }
     },
     {
@@ -4482,6 +4552,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Provide the canonical Label → native control → Hint structure for one form value without hiding the control's native API.",
+        "ruleHash": "fef239d88b53a63b9db36bb071f550018d1889a75e3ac4299b94eb978da25a2b"
       }
     },
     {
@@ -4554,6 +4629,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Explain expected input or communicate a success, warning or error outcome with a fixed semantic icon and tone.",
+        "ruleHash": "4ed454ec3a0117f25dab6455f987d2e377d3856c3585e84a967b444b00749d27"
       }
     },
     {
@@ -4632,6 +4712,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Collect a secure web address while keeping the fixed `https://` protocol visible and submitting one complete URL value.",
+        "ruleHash": "b22ae3ded77b56440850c26ecbc54cfcabbc69d4b06b4bad7e49fc2de38895c9"
       }
     },
     {
@@ -4705,6 +4790,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Collect one calendar date through the native browser date control with an explicit calendar picker action.",
+        "ruleHash": "2d302adefe19df2e234ee80c6eddbb7658c59fc5ed3fe8d07060d47d569f1740"
       }
     },
     {
@@ -4782,6 +4872,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Collect one secret with native password semantics and an accessible show or hide action.",
+        "ruleHash": "118d0e44f57a1e0dcda637884f02e0ec88f351567ac0c3e98e6546f4988d108e"
       }
     },
     {
@@ -4855,6 +4950,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Present one read-only share URL and copy it through a keyboard-accessible action with success feedback.",
+        "ruleHash": "0d95c72716ea5a5c7a208538c98c5d3a00a2dc4794a8ec3f7e455649819f420c"
       }
     },
     {
@@ -4943,6 +5043,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Collect one numeric value with native number editing plus explicit decrement and increment actions.",
+        "ruleHash": "96083681b67102d37f84d1a35e7a642950a359a1fcf0d0fdff0fc5c0ee2bdb8b"
       }
     },
     {
@@ -5014,6 +5119,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Collect limited multiline text while showing the current character count inside the textarea boundary.",
+        "ruleHash": "505a4f66508f5e2e5b54a8cd0afb27e3798563a42806916fe4cd9702e5ff7478"
       }
     },
     {
@@ -5103,6 +5213,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Provide the standalone native checkbox picker: a fixed square indicator for unchecked, checked and mixed form states, without owning visible text or a surrounding surface.",
+        "ruleHash": "30db06fc6541eb71cc3dd2ec6ae744a0fce6e1af8cc187746af43ccf4a1343d8"
       }
     },
     {
@@ -5187,6 +5302,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Provide the standalone native radio picker: a fixed circular indicator that fills with the canonical active color and inner dot, without owning visible text or a surrounding surface.",
+        "ruleHash": "0187c508197298c8dbd0b273ef632fd75c7bfa26f3c93ecc7a1a9e57cdba3aac"
       }
     },
     {
@@ -5259,6 +5379,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Combine the canonical Checkbox picker with a visible label and optional short description inside one native click target.",
+        "ruleHash": "699f251103307d86f88e62fd79916d3221c2f5d5597ccb93531ec955d0d935ee"
       }
     },
     {
@@ -5331,6 +5456,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Combine the canonical Radio picker with a visible label and optional short description inside one native click target.",
+        "ruleHash": "d6194b055faa942e4ce5318167cd7c6cfbf99c6e050b34ff7848ef74f44b4a48"
       }
     },
     {
@@ -5411,6 +5541,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Present an independent submitted choice as a bordered selectable surface with optional explanation and decorative leading context.",
+        "ruleHash": "559d140058b1ac5254ed766493aeda7a18c566920cf89dab440ae341d6a87103"
       }
     },
     {
@@ -5491,6 +5626,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Present one mutually exclusive submitted option as a bordered selectable surface with optional explanation and decorative leading context.",
+        "ruleHash": "3916a1a202286374cc2888e1b14bb3252bf3363ed06ae8828cb7bfe6326073e1"
       }
     },
     {
@@ -5596,6 +5736,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Let a user choose one value from a finite, known set while preserving native form submission and offering richer country or brand visuals when they help recognition.",
+        "ruleHash": "e09ee016f08cdb8443ff9d563d0b84bcdb9501837174fb283d809551901f6a7b"
       }
     },
     {
@@ -5681,6 +5826,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Provide an intrinsic-width, icon-only single-select trigger for compact toolbars and locale, phone, country, or brand selection while keeping the same field surface as Select.",
+        "ruleHash": "9c0178fd20876a2399e67fd1131d65840a6f4a774566f00420f8ecb30d546264"
       }
     },
     {
@@ -5751,6 +5901,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Provide a text-like, intrinsic single-select control inside compact copy or metadata compositions.",
+        "ruleHash": "6ecff2eecc04821003eccdca71ff834309459736db5c14380a014c34f1a5d71c"
       }
     },
     {
@@ -5849,6 +6004,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "FileUpload lets a person choose or drop one or more local files, validates the client-side selection and announces the result without owning upload transport.",
+        "ruleHash": "57e5fe91b7729a323c5c02fc1f1633044e7e202b9e8f743541a0757d52446827"
       }
     },
     {
@@ -5888,7 +6048,7 @@
         {
           "kind": "benchmark-adaptation",
           "reason": "Astro uses local card and status tokens, one fixed close action glyph and explicit status text instead of benchmark-specific icons, colors and API.",
-          "instruction": "Preserve the local semantic contract and use Align UI only as structural evidence for anatomy and state coverage."
+          "instruction": "Preserve the canonical Agentic Rules for anatomy, native semantics and state coverage."
         }
       ],
       "agenticRule": ".agentic-rules/components/file-upload-card.md",
@@ -5940,6 +6100,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "FileUploadCard presents one controlled file with uploading, success or error status, optional progress and the action appropriate to that status.",
+        "ruleHash": "740e5d491e675afe985838f2a1f2bf6ea5708177e72f4ef0c5cb55c6fef24c15"
       }
     },
     {
@@ -6012,6 +6177,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Represent one labelled choice inside a tablist and expose its external selected-panel relationship.",
+        "ruleHash": "0c4ddb5b6cd7580dc4ddd4629dcd5a06cd261c9f454bb27c95ce7cd57e7d4067"
       }
     },
     {
@@ -6091,9 +6261,14 @@
         "global-motion",
         "typography-foundations"
       ],
-    "readiness": {
-      "visual": "review",
-      "validation": "passed"
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Represent one descriptive tab choice with a visible determinate playback indicator above its label.",
+        "ruleHash": "b92c829f9071a63522bc165cb55852ef32ef60c8fc632d5d02f0753f86c81871"
       }
     },
     {
@@ -6157,6 +6332,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Group any positive number of related Tab or ProgressTab triggers that select external content panels without navigation or page reload.",
+        "ruleHash": "07b2fa49185ff2abbdb8f84e6bbccc4e9bbd056505e4f2bdcce9824f2636feaa"
       }
     },
     {
@@ -6230,6 +6410,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Navigate between URL-addressable sections and indicate the current section through hash state and scroll position.",
+        "ruleHash": "007d22cb4d3213d78509d8b421506d33d280dd799b4596695e88aee8e56b367a"
       }
     },
     {
@@ -6343,6 +6528,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Accordion is one self-contained disclosure that lets a user reveal or hide supporting content without leaving the current context.",
+        "ruleHash": "b9fea9937e9def982d9299c88e5aec38777475b21ec22f2502690923dcd80804"
       }
     },
     {
@@ -6412,6 +6602,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "AccordionList arranges peer Accordion disclosures in one vertical group and coordinates whether one or several may remain open.",
+        "ruleHash": "186491a3e66e759f8c66e2e320e0cf4ca7b619349525fb1d0f2907a88dccae17"
       }
     },
     {
@@ -6475,6 +6670,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "ProgressBar communicates completed proportion or ongoing activity in a compact, reusable native progress surface.",
+        "ruleHash": "7eb069139bca7b4716d881970c1c9517a3db2f9d5a0b92a159d9e44f0d5cd341"
       }
     },
     {
@@ -6569,6 +6769,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Tooltip gives a short, non-essential explanation for the fixed information control without interrupting the surrounding task or changing layout.",
+        "ruleHash": "9b04145dc1c93b263e075578327182b7cd71f5283ec742a6fa4afdbd1ce60d00"
       }
     },
     {
@@ -6671,6 +6876,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "InfoPopover presents a concise titled explanation that may be deliberately opened, reviewed and dismissed without interrupting the surrounding task.",
+        "ruleHash": "eeea0ac30d04d55e7389e93cb47730c685d1e44a2780a0e10fbf21fa238a4396"
       }
     },
     {
@@ -6738,6 +6948,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "ContentDivider separates adjacent sections, component groups or content blocks whose meaning or task changes at the boundary.",
+        "ruleHash": "e099a93ba1a43242a9286161d04f1ea7723f437b5bd3d44a0ea6457fa6f9f996"
       }
     },
     {
@@ -6803,6 +7018,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "TitleRow names one related group of repeated or supporting content and gives that group a quiet lower boundary. It makes labels such as customer logos, available tags or related resources scannable without introducing a document heading or the category-prelabel relationship owned by Eyebrow.",
+        "ruleHash": "91e0d92fdc75b54e409068bbe62260741981d43f485493c2fe42139ad6d124cd"
       }
     },
     {
@@ -6877,6 +7097,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Ratio creates a predictable rectangular canvas for media or other visual content. It keeps the chosen proportion while the available inline size changes and prevents overflowing content from escaping that boundary.",
+        "ruleHash": "afd18effafc5262a9badbff408471045a4c53b2858a141179e2e0d9235cd2b0a"
       }
     },
     {
@@ -6933,6 +7158,11 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "AvatarImage presents one compact portrait or person visual in a consistent circular 1:1 frame.",
+        "ruleHash": "b343aeaec18a2edaa62e848892db7cbe50c628b24d3196be1698f8c3e9e4280a"
       }
     },
     {
@@ -6995,6 +7225,11 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "AvatarName identifies one person through a compact circular portrait, visible full name and optional role or position.",
+        "ruleHash": "893dc1b38ee3cfb8a246591e15f05ca8bbffff0fc0197f0883a0043b24ecd04c"
       }
     },
     {
@@ -7080,6 +7315,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Breadcrumb is one addressable level inside a Breadcrumbs hierarchy. It owns the label, optional destination, current-page state and the following chevron separator.",
+        "ruleHash": "e7a5f3f17add29db12f89c1614ea3764e8c7ff4f9179025693cc05c1b3cc4319"
       }
     },
     {
@@ -7134,6 +7374,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Breadcrumbs communicates the current page's position inside a hierarchical information structure and provides links back to its ancestors.",
+        "ruleHash": "092294bc1383fb9e01ce1b61d019211c28c4cb00753cef10499f945f07152947"
       }
     },
     {
@@ -7223,6 +7468,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "PaginationItem provides one URL-addressable page, boundary or directional destination with consistent current, disabled and focus behavior.",
+        "ruleHash": "b7934e2c6730a9c8d5fa67ddb116e6fe5cf9775248cca2c569277e6d2edbc760"
       }
     },
     {
@@ -7275,6 +7525,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "PaginationEllipsis marks a discontinuity in a bounded page range without creating an unavailable destination.",
+        "ruleHash": "64d1219e97eb167c313fb020e83c9397c60e8345cc1cee81140a6bf2d4b43fb1"
       }
     },
     {
@@ -7332,6 +7587,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "PaginationGroup provides the semantic list and canonical spacing for a deliberately composed set of pagination destinations.",
+        "ruleHash": "9470b0b6513bf461bee43fc5dd374500004885734433b8a90c7a6b845bd2a357"
       }
     },
     {
@@ -7417,6 +7677,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Pagination lets users move between numbered pages in a larger ordered result set while preserving their understanding of the current page and the available direction of travel.",
+        "ruleHash": "567e84ba0036018ed7e2675455ff25b8e998e6c7add2df3c3a67aa10f48fceb6"
       }
     },
     {
@@ -7524,6 +7789,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Tag communicates one short categorical value or applied filter. Its optional remove action lets users remove an already-applied filter without turning the whole Tag into an action.",
+        "ruleHash": "24fef29cd18af00523c7d1db1f8f7ede4f56d82bb30d30c4520fb0fba0af55d5"
       }
     },
     {
@@ -7602,6 +7872,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Eyebrow is a subtle, short category label placed above a heading. It helps a reader understand which subject, section or information group the following heading belongs to without competing with that heading.",
+        "ruleHash": "ec8b85f02aeac268ef4082712349146f1b2d5fbbc24a239003b941ebc2df143f"
       }
     },
     {
@@ -7677,6 +7952,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "BulletPoint communicates whether one concise capability, condition or package feature is included or excluded. Its icon makes a short comparison easier to scan, while the text remains the complete source of meaning.",
+        "ruleHash": "99077506a94f574b4a05ea70db84a64bb0478b949fde0a44678bdd260dc355f5"
       }
     },
     {
@@ -7767,6 +8049,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "BulletCardSimple presents one compact capability, product or service with a required title and optional supporting copy and actions, without adding a visual, metrics, tags or a card surface.",
+        "ruleHash": "3b5858f13caf0b0b496c77c52c78d0345f2546831eb4072d49e79e47cc8b95a4"
       }
     },
     {
@@ -7873,6 +8162,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "BulletIconCard presents one benefit, capability, property or offer detail as a compact icon-led article with required explanatory copy and optional metric, metadata and actions.",
+        "ruleHash": "6e40a7458ae2aa6f19e4f607c04007e7cb2f61e8d312a964b6beec9a40c016be"
       }
     },
     {
@@ -7977,6 +8273,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "BulletVisualCard presents one visual-led feature, benefit, product or service with a concise title and optional supporting evidence, tags and actions.",
+        "ruleHash": "1f6b451102b0060de56e41d5d796eaa59542aa0e8bcb557f863c15a4e1b884a5"
       }
     },
     {
@@ -8073,6 +8376,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "BulletCardSurface highlights one benefit, capability, service or concise product summary in a bordered surface, with optional actions and an optional supporting 4:3 visual.",
+        "ruleHash": "d624cb7c96bc2fb01deb1676e29497d75b23b2d609bdf811ac27ee81b962c7e0"
       }
     },
     {
@@ -8150,6 +8460,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Alert communicates one compact contextual message inside the normal page flow, with explicit status and emphasis.",
+        "ruleHash": "e4ae14de58ea203059abef95abe5df627fee4ca59a93e49d44102fa710bdee33"
       }
     },
     {
@@ -8248,6 +8563,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "NotificationAndToast presents one actionable or dismissible event message through a shared visual contract. Notification delivery remains persistent in document flow; toast delivery is transient and queued. Delivery changes lifecycle only, never appearance.",
+        "ruleHash": "c13017b2263362bb74f9bc3b08e9241aac64ac735834c2739ef4dba67b932f4f"
       }
     },
     {
@@ -8533,6 +8853,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Content is a reusable text starter for website sections. It keeps Eyebrow, a required heading, supporting copy and related actions in one predictable spacing system while the parent section continues to own layout and placement.",
+        "ruleHash": "c491e144f92321d053f1d847516512391f4903d27a7272ad722cd42ee5ba64fc"
       }
     },
     {
@@ -8594,6 +8919,11 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "RichText is the canonical long-form flow for article, case-study and knowledge-base bodies. It coordinates block rhythm without owning the page article landmark, reading container, title or metadata.",
+        "ruleHash": "92588d9b8e0406eaddceeea2bcf642752f5604e7963101b2dd473a6de8052fe0"
       }
     },
     {
@@ -8659,6 +8989,11 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "RichTextHeading creates a semantic H2-H6 heading using the independent editorial Text Style that corresponds to its document level.",
+        "ruleHash": "d653b21c023116bb8949ca1bfdaa8353dd7b045f5ac3836cf2803a39ec10b6cb"
       }
     },
     {
@@ -8718,6 +9053,11 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "RichTextParagraph renders readable editorial prose with a bounded base or large body style.",
+        "ruleHash": "eec96f4ac74101ad7529ba3e1f125dba0a78a5146f402ff2b69691894e968b9c"
       }
     },
     {
@@ -8779,6 +9119,11 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "RichTextQuote distinguishes a genuine quotation with native semantics, larger editorial copy, an accent border and optional visible attribution.",
+        "ruleHash": "79ec18df4946d097fd84b86bcc0b67512dd2af40a2a400034f9bca88e0c99d0e"
       }
     },
     {
@@ -8840,6 +9185,11 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "RichTextVisual provides semantic figure and optional caption structure around a Ratio-owned image, picture, video or iframe canvas.",
+        "ruleHash": "938936c138ff33a4815b1abf45fa9a98ebe4b5a748c3a66663b0d91a4a055286"
       }
     },
     {
@@ -8914,6 +9264,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Coordinate descriptive progress tabs with one shared panoramic visual stage, optional timed sequencing and a predictable permanent manual mode after explicit activation.",
+        "ruleHash": "7155901dc5a5cac6ad5e2daf292cea1a9332e536d43c77fef6b63ef36158b656"
       }
     },
     {
@@ -9015,7 +9370,8 @@
         "--color-background-muted",
         "--color-background-strong",
         "--color-background-accent",
-        "--effect-focused"
+        "--effect-focused",
+        "--control-size-small-min-height"
       ],
       "tokenGroups": [
         "global-size",
@@ -9028,6 +9384,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Provide one reusable, accessible and container-responsive snap carousel whose content and bounded behavior can change per instance without duplicating the runtime structure.",
+        "ruleHash": "86787aaea804ebcd2d956091b33862beff32d9f083faaf3a424a75b112e958e7"
       }
     },
     {
@@ -9109,6 +9470,13 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [
+          "conversion"
+        ],
+        "summary": "CallToActionVisual pairs one focused action message with one required 16:9 visual inside a bounded promotional surface supplied by the consuming page container.",
+        "ruleHash": "70428a16a62bb6c13e3f9ba00d40f98b7698fc8f4e2c423b664a5b15c983e119"
       }
     },
     {
@@ -9183,6 +9551,13 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [
+          "conversion"
+        ],
+        "summary": "CallToActionCentered presents one focused, centered action message inside a bounded promotional surface when no visual is needed.",
+        "ruleHash": "47c5882376ac6c626d592d79bf3960fafb909a268341f3f75e121647656eae37"
       }
     },
     {
@@ -9273,6 +9648,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "questions"
+        ],
+        "summary": "FAQ presents recurring questions and concise answers as one labelled website section. It combines a clear introduction with a scannable disclosure list while preserving the familiar Accordion interaction model.",
+        "ruleHash": "b5d3f8a326bd291bfb2bf776a18bc39a0db0446f0905711c97c6eae9c54beebb"
       }
     },
     {
@@ -9386,6 +9768,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "FeatureProof pairs one feature explanation and portrait visual with structured evidence: key points, logo proof and supporting details. It keeps proof attached to the claim it supports without rebuilding the Content, Ratio, TitleRow or BulletPoint contracts.",
+        "ruleHash": "80524582b9f484803a824a6410a01fb76ac38d44004582888146294b19fae4f2"
       }
     },
     {
@@ -9507,6 +9896,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "Feature5050 pairs one heading-led feature narrative and its supporting proof with one prominent visual. It is the detailed 50–50 feature section for content that needs actions, primary bullets, logos or a second labelled bullet group in addition to introductory copy.",
+        "ruleHash": "cd4248879d50b0007c2a6de64e1def455049e087d229cb4f037a1b0bbe689bfd"
       }
     },
     {
@@ -9607,6 +10003,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "Feature5050Centered presents one focused feature story in a full-height two-column section. It vertically centers the Content-led copy, optional benefit list and actions beside an equal edge-reaching visual.",
+        "ruleHash": "da1fc3fac14e5163f265999b811e39179d39fb216ee1941dffdb89b85d2cd119"
       }
     },
     {
@@ -9701,6 +10104,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "FeatureSimple pairs one focused feature explanation with one prominent visual in a labelled website section. It provides a repeatable two-region composition without duplicating the Content or Ratio contracts.",
+        "ruleHash": "504cd9e57b4b4988352da487925258a6605daad58b45735f94ccb92f3cedf76a"
       }
     },
     {
@@ -9809,6 +10219,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "benefits"
+        ],
+        "summary": "FeatureScroll presents an ordered sequence of related feature explanations beside a contextually fixed visual. It supports a deliberate reading flow in which each description and its visual remain one semantic pair.",
+        "ruleHash": "f5f6976838240946676087266176ffe13202587298b277451b32876d301db5c8"
       }
     },
     {
@@ -9895,6 +10312,13 @@
       "readiness": {
         "visual": "review",
         "validation": "partial"
+      },
+      "discovery": {
+        "goals": [
+          "process"
+        ],
+        "summary": "HowItWorks presents an ordered process as a full-viewport desktop narrative. Natural page scroll crosses compact step thresholds; each threshold starts a self-completing progress animation and an ordered slide transition, while the same source remains a complete static list everywhere the enhanced experience is unsuitable.",
+        "ruleHash": "16f2b6c45b392f294a0a8f0b5fed2f8b99f401790eb3f0a99f5c66ce5df81a64"
       }
     },
     {
@@ -10004,6 +10428,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "TopBanner presents one site-level announcement before the main page content. It gives a short message a stable, high-visibility location with an optional explanation, destination link and non-persistent dismiss action.",
+        "ruleHash": "6d491fca00707f517432a0216248b7504d3f0e2f75ab03d37b06a5e31f7b04d8"
       }
     },
     {
@@ -10089,6 +10518,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "proof"
+        ],
+        "summary": "TeamMemberCard presents one person with an optional image and role or position in a compact, reusable team-listing pattern.",
+        "ruleHash": "3c83fb2d12d49834fe3baf967619916cc2d1a740a70ab40fea0383808d101c8a"
       }
     },
     {
@@ -10195,6 +10631,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "resources"
+        ],
+        "summary": "BlogCard presents one editorial article or resource with a required title and optional metadata, summary, 16:9 visual and explicit reading action.",
+        "ruleHash": "70de616e305d38863fc652e3f0e816730e401fab7c4d55d1df53e95e358682bf"
       }
     },
     {
@@ -10281,6 +10724,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "introduction"
+        ],
+        "summary": "HeroAlignBottom presents one primary promise at the lower edge of a wide hero beside a dominant visual. It is the restrained Hero option for concise content that should share a bounded site grid with the media instead of breaking the visual out to the viewport edge.",
+        "ruleHash": "9cf788a6b43e0113881e47b9555354fa23e62c79bcbb2df564746e0386f59237"
       }
     },
     {
@@ -10378,6 +10828,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "introduction"
+        ],
+        "summary": "HeroBreakout opens a page with one primary promise, a concise included-benefits list, an optional lower action area and a significant edge-reaching visual.",
+        "ruleHash": "0cf1a0a4e12b894899dbb5585e78c21075eb85f318fe463cd031fbfafefb6fb4"
       }
     },
     {
@@ -10476,6 +10933,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "introduction"
+        ],
+        "summary": "Hero5050 opens a page with one primary promise, concise supporting evidence and an equally prominent crop-safe visual. It keeps the main content compact while reserving a separate lower action area for a caption and related calls to action.",
+        "ruleHash": "4d1beff9b28040686892484e45f382b44da6b35902e57d09e6fcfa9216b7a9ca"
       }
     },
     {
@@ -10566,6 +11030,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "introduction"
+        ],
+        "summary": "HeroSpaced5050 presents one primary promise beside a significant edge-reaching visual. It deliberately separates the eyebrow and heading from supporting details and actions so the opening section can establish hierarchy without becoming a generic content block.",
+        "ruleHash": "59ac05ad190b547a4ca0992cfeca4a1acb626259f22fc8826e66b5b04c9e590a"
       }
     },
     {
@@ -10658,6 +11129,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "introduction"
+        ],
+        "summary": "HeroVisualCenter introduces one primary page promise in a centered hierarchy, then supports it with optional proof points and one prominent visual. It is a page-opening section, not a generic centered content utility.",
+        "ruleHash": "807fcad18de637e6113c530507e83712a1a0220e3be80fb3e22e09a37f12e995"
       }
     },
     {
@@ -10761,6 +11239,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "introduction"
+        ],
+        "summary": "HeroFullVisual opens a page with one primary promise, a short set of structured benefits and a dominant full-width visual. It owns the relationship between the introductory copy, BulletPoint list and panoramic visual without turning those dependencies into local recreations.",
+        "ruleHash": "646ea98da4b17111be9d34b373244f448e458c485267184b40ae6c057056ab43"
       }
     },
     {
@@ -10796,7 +11281,7 @@
       "divergences": [
         {
           "kind": "benchmark-adaptation",
-          "reason": "Popup is an Astro-only native dialog. Align UI supplies a bounded anatomy and quality benchmark but is not a canonical component source.",
+          "reason": "Popup is an Astro-only native dialog; its canonical Agentic Rules define anatomy and native behavior.",
           "instruction": "Keep native dialog semantics, the closed status matrix, system dependencies and Astro runtime canonical; do not copy the external API, tokens, icons or assets."
         }
       ],
@@ -10863,6 +11348,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Popup interrupts the current flow with one bounded decision, confirmation or important status message that must be handled before the user returns to the page.",
+        "ruleHash": "49885b590f5f649209d125fe79b390b7496bab0f4d3a54907b7b5dcba073f9fd"
       }
     },
     {
@@ -10927,6 +11417,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "proof"
+        ],
+        "summary": "LogoCard presents one approved client wordmark inside a consistent, neutral 16:9 surface so different logo proportions retain equal hierarchy when cards are placed together.",
+        "ruleHash": "77acb3d792b81ce6be877edad74e50896c8f388cc9a434ca3f1b979fc739a74f"
       }
     },
     {
@@ -11043,6 +11540,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "proof"
+        ],
+        "summary": "Rating combines one five-star score with a short trust or review statement. Filled stars represent awarded points, outlined stars represent points that were not awarded, and the visible label supplies the supporting context.",
+        "ruleHash": "e4845e491919daa79ede448a3286d97d9f0618c164110414580d42f70af7a266"
       }
     },
     {
@@ -11135,6 +11639,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "proof"
+        ],
+        "summary": "StatCard presents one prominent metric with a short caption, optional fixed trend cues and optional supporting description. The value remains the visual focus while the caption provides the metric's accessible identity.",
+        "ruleHash": "1db8ab4674c85b36f81bb974d453dab75de7b4f8a932415dae36b53fd5b7fadb"
       }
     },
     {
@@ -11220,6 +11731,13 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "proof"
+        ],
+        "summary": "StatTextInline communicates one compact directional metric change in running content, metadata or a statistic summary. The text is the complete statement; the fixed trend glyph and semantic color provide a secondary scanning cue.",
+        "ruleHash": "373f0c5997880712868ec0b5eaaf752b197748b8659acf3b32de1b3cd5520d86"
       }
     },
     {
@@ -11306,6 +11824,11 @@
       "readiness": {
         "visual": "review",
         "validation": "passed"
+      },
+      "discovery": {
+        "goals": [],
+        "summary": "Introduce one page section with a stable relationship between its eyebrow, semantic heading, supporting paragraph and optional action group. SectionHeader owns this relationship and its responsive reflow; the consuming section owns outer spacing, container placement and the content that follows.",
+        "ruleHash": "e27aedcc22b7deea066289451b5c5c8a2231002874d26d25b5338aa689302574"
       }
     },
     {
@@ -11324,24 +11847,85 @@
       "role": "section",
       "layer": "section",
       "family": "navigation",
-      "dependencies": ["navigation-menu", "logo-asset", "compact-select", "button"],
-      "uses": ["navigation-menu"],
+      "dependencies": [
+        "navigation-menu",
+        "logo-asset",
+        "compact-select",
+        "button"
+      ],
+      "uses": [
+        "navigation-menu"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{
-        "kind": "code-first-family",
-        "reason": "The Navigation family is intentionally authored and documented directly in Astro; no Figma operation or canonical node was requested.",
-        "instruction": "Keep the semantic shell, responsive runtime and slot API canonical in Astro until a separate Figma operation is explicitly requested."
-      }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "The Navigation family is intentionally authored and documented directly in Astro; no Figma operation or canonical node was requested.",
+          "instruction": "Keep the semantic shell, responsive runtime and slot API canonical in Astro until a separate Figma operation is explicitly requested."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/navigation.md",
-      "variants": ["standard", "menu"],
-      "props": ["id", "label", "openMenuLabel", "closeMenuLabel", "desktopMode"],
-      "slots": ["brand", "menu", "language", "action"],
-      "attributes": ["data-component-name", "data-navigation-root", "data-navigation-desktop-mode", "data-navigation-presentation", "data-navigation-full-open"],
-      "states": ["closed", "dropdown", "mega-menu", "full-menu"],
-      "tokens": ["--navigation-*", "--container-main", "--site-padding-inline", "--color-background-*", "--color-border-subtle", "--elevation-surface-*", "--motion-*"],
-      "tokenGroups": ["navigation-size", "global-layout", "global-size", "global-color", "global-motion", "global-elevation", "interaction-effect", "typography-foundations"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "variants": [
+        "standard",
+        "menu"
+      ],
+      "props": [
+        "id",
+        "label",
+        "openMenuLabel",
+        "closeMenuLabel",
+        "desktopMode"
+      ],
+      "slots": [
+        "brand",
+        "menu",
+        "language",
+        "action"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-navigation-root",
+        "data-navigation-desktop-mode",
+        "data-navigation-presentation",
+        "data-navigation-full-open"
+      ],
+      "states": [
+        "closed",
+        "dropdown",
+        "mega-menu",
+        "full-menu"
+      ],
+      "tokens": [
+        "--navigation-*",
+        "--container-main",
+        "--site-padding-inline",
+        "--color-background-*",
+        "--color-border-subtle",
+        "--elevation-surface-*",
+        "--motion-*"
+      ],
+      "tokenGroups": [
+        "navigation-size",
+        "global-layout",
+        "global-size",
+        "global-color",
+        "global-motion",
+        "global-elevation",
+        "interaction-effect",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "Navigation provides the fixed site-navigation shell: brand, primary destinations, optional language selection, one primary action, responsive full menu and navigation-wide disclosure coordination.",
+        "ruleHash": "aed644be569c4de3c05db0136139615577a88ee57babb48fecfe07cd8677367f"
+      }
     },
     {
       "id": "navigation-menu",
@@ -11359,20 +11943,56 @@
       "role": "molecule",
       "layer": "molecule",
       "family": "navigation",
-      "dependencies": ["nav-link", "nav-dropdown", "mega-menu"],
-      "uses": ["nav-link", "nav-dropdown", "mega-menu"],
+      "dependencies": [
+        "nav-link",
+        "nav-dropdown",
+        "mega-menu"
+      ],
+      "uses": [
+        "nav-link",
+        "nav-dropdown",
+        "mega-menu"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "NavigationMenu is an Astro-only semantic list shared by standard and full presentations.", "instruction": "Keep one list and let Navigation presentation state reflow it without duplicating focusable content." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "NavigationMenu is an Astro-only semantic list shared by standard and full presentations.",
+          "instruction": "Keep one list and let Navigation presentation state reflow it without duplicating focusable content."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/navigation-menu.md",
       "variants": [],
       "props": [],
-      "slots": ["default"],
-      "attributes": ["data-component-name"],
-      "states": ["standard", "full"],
-      "tokens": ["--gap-medium", "--gap-small"],
-      "tokenGroups": ["global-size"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "standard",
+        "full"
+      ],
+      "tokens": [
+        "--gap-medium",
+        "--gap-small"
+      ],
+      "tokenGroups": [
+        "global-size"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "NavigationMenu groups the top-level navigation items in one semantic list shared by standard and full presentations.",
+        "ruleHash": "b372b5b606b38e75ea21edf33eb93c9530ef9535ee0fff5cdd538709341ae8c0"
+      }
     },
     {
       "id": "nav-link",
@@ -11394,16 +12014,56 @@
       "uses": [],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "NavLink is an Astro-only navigation-specific native anchor.", "instruction": "Use aria-current on the anchor for the active destination and preserve native link behavior." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "NavLink is an Astro-only navigation-specific native anchor.",
+          "instruction": "Use aria-current on the anchor for the active destination and preserve native link behavior."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/nav-link.md",
       "variants": [],
-      "props": ["href"],
-      "slots": ["default"],
-      "attributes": ["data-component-name", "aria-current"],
-      "states": ["default", "hover", "focus-visible", "current"],
-      "tokens": ["--control-size-*", "--color-text-*", "--color-background-subtle", "--motion-transition"],
-      "tokenGroups": ["control-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "href"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "aria-current"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "current"
+      ],
+      "tokens": [
+        "--control-size-*",
+        "--color-text-*",
+        "--color-background-subtle",
+        "--motion-transition"
+      ],
+      "tokenGroups": [
+        "control-size",
+        "global-color",
+        "global-size",
+        "global-motion",
+        "typography-foundations",
+        "interaction-effect"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "NavLink is the direct-destination item in the top-level site navigation.",
+        "ruleHash": "f14e8397709e48e059bc0cba469a33bf1c95a7f9506990c29bba12f2edcab543"
+      }
     },
     {
       "id": "nav-dropdown",
@@ -11421,20 +12081,72 @@
       "role": "molecule",
       "layer": "molecule",
       "family": "navigation",
-      "dependencies": ["nav-dropdown-link", "material-symbol"],
-      "uses": ["nav-dropdown-link", "material-symbol"],
+      "dependencies": [
+        "nav-dropdown-link",
+        "material-symbol"
+      ],
+      "uses": [
+        "nav-dropdown-link",
+        "material-symbol"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "NavDropdown is an Astro-only disclosure with desktop popover and full-menu accordion presentations.", "instruction": "Preserve the shared trigger/panel identity and navigation controller contract across both presentations." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "NavDropdown is an Astro-only disclosure with desktop popover and full-menu accordion presentations.",
+          "instruction": "Preserve the shared trigger/panel identity and navigation controller contract across both presentations."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/nav-dropdown.md",
       "variants": [],
-      "props": ["id", "label"],
-      "slots": ["default"],
-      "attributes": ["data-component-name", "data-navigation-disclosure", "data-navigation-disclosure-state", "aria-expanded", "aria-controls"],
-      "states": ["closed", "open"],
-      "tokens": ["--navigation-bar-height", "--control-size-*", "--color-*", "--elevation-surface-floating", "--motion-*"],
-      "tokenGroups": ["navigation-size", "control-size", "global-layout", "global-size", "global-color", "global-motion", "global-elevation", "interaction-effect", "typography-foundations"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "id",
+        "label"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-navigation-disclosure",
+        "data-navigation-disclosure-state",
+        "aria-expanded",
+        "aria-controls"
+      ],
+      "states": [
+        "closed",
+        "open"
+      ],
+      "tokens": [
+        "--navigation-bar-height",
+        "--control-size-*",
+        "--color-*",
+        "--elevation-surface-floating",
+        "--motion-*"
+      ],
+      "tokenGroups": [
+        "navigation-size",
+        "control-size",
+        "global-layout",
+        "global-size",
+        "global-color",
+        "global-motion",
+        "global-elevation",
+        "interaction-effect",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "NavDropdown reveals a compact list of related destinations from one top-level trigger.",
+        "ruleHash": "1e00b1df3abfa35ed7ec6ac2c4ebc6f744059c26d1993361b95a6b890bffe941"
+      }
     },
     {
       "id": "nav-dropdown-link",
@@ -11456,16 +12168,54 @@
       "uses": [],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "NavDropdownLink is the Astro-only content-safe link row for NavDropdown.", "instruction": "Keep the optional description short and preserve a native anchor as the only interaction." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "NavDropdownLink is the Astro-only content-safe link row for NavDropdown.",
+          "instruction": "Keep the optional description short and preserve a native anchor as the only interaction."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/nav-dropdown-link.md",
       "variants": [],
-      "props": ["href", "description"],
-      "slots": ["default"],
-      "attributes": ["data-component-name"],
-      "states": ["default", "hover", "focus-visible"],
-      "tokens": ["--color-text-*", "--color-background-subtle", "--content-padding-small", "--motion-transition"],
-      "tokenGroups": ["global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "href",
+        "description"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible"
+      ],
+      "tokens": [
+        "--color-text-*",
+        "--color-background-subtle",
+        "--content-padding-small",
+        "--motion-transition"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "global-size",
+        "global-motion",
+        "typography-foundations",
+        "interaction-effect"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "NavDropdownLink presents one destination in a compact dropdown, optionally with short explanatory copy.",
+        "ruleHash": "e7db042732319bee028101d9a8968519439a3469f605fd62acd1d7dd31659d8b"
+      }
     },
     {
       "id": "mega-menu",
@@ -11483,20 +12233,80 @@
       "role": "molecule",
       "layer": "molecule",
       "family": "navigation",
-      "dependencies": ["mega-menu-primary-link", "mega-menu-secondary-link", "material-symbol"],
-      "uses": ["mega-menu-primary-link", "mega-menu-secondary-link", "material-symbol"],
+      "dependencies": [
+        "mega-menu-primary-link",
+        "mega-menu-secondary-link",
+        "material-symbol"
+      ],
+      "uses": [
+        "mega-menu-primary-link",
+        "mega-menu-secondary-link",
+        "material-symbol"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "MegaMenu is an Astro-only three-column navigation disclosure informed by supplied benchmarks.", "instruction": "Keep the three semantic slots, source order and runtime disclosure behavior canonical in Astro." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "MegaMenu is an Astro-only three-column navigation disclosure informed by supplied benchmarks.",
+          "instruction": "Keep the three semantic slots, source order and runtime disclosure behavior canonical in Astro."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/mega-menu.md",
       "variants": [],
-      "props": ["id", "label", "primaryLabel", "secondaryLabel", "tertiaryLabel"],
-      "slots": ["primary", "secondary", "tertiary"],
-      "attributes": ["data-component-name", "data-navigation-disclosure", "data-navigation-disclosure-state", "aria-expanded", "aria-controls"],
-      "states": ["closed", "open"],
-      "tokens": ["--navigation-bar-height", "--control-size-*", "--container-main", "--color-*", "--elevation-surface-raised", "--motion-*"],
-      "tokenGroups": ["navigation-size", "control-size", "global-layout", "global-size", "global-color", "global-motion", "global-elevation", "interaction-effect", "typography-foundations"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "id",
+        "label",
+        "primaryLabel",
+        "secondaryLabel",
+        "tertiaryLabel"
+      ],
+      "slots": [
+        "primary",
+        "secondary",
+        "tertiary"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-navigation-disclosure",
+        "data-navigation-disclosure-state",
+        "aria-expanded",
+        "aria-controls"
+      ],
+      "states": [
+        "closed",
+        "open"
+      ],
+      "tokens": [
+        "--navigation-bar-height",
+        "--control-size-*",
+        "--container-main",
+        "--color-*",
+        "--elevation-surface-raised",
+        "--motion-*"
+      ],
+      "tokenGroups": [
+        "navigation-size",
+        "control-size",
+        "global-layout",
+        "global-size",
+        "global-color",
+        "global-motion",
+        "global-elevation",
+        "interaction-effect",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "MegaMenu reveals a broad destination set with one primary hierarchy column and two supporting columns.",
+        "ruleHash": "7ebcbec5e63cb453c244cfd4831da3129b43b82f1f2d6251ad813ca7a742cd0d"
+      }
     },
     {
       "id": "mega-menu-primary-link",
@@ -11518,16 +12328,54 @@
       "uses": [],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "MegaMenuPrimaryLink is the Astro-only high-emphasis link for the first mega-menu column.", "instruction": "Use only for primary destinations and keep any optional description concise." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "MegaMenuPrimaryLink is the Astro-only high-emphasis link for the first mega-menu column.",
+          "instruction": "Use only for primary destinations and keep any optional description concise."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/mega-menu-primary-link.md",
       "variants": [],
-      "props": ["href", "description"],
-      "slots": ["default"],
-      "attributes": ["data-component-name"],
-      "states": ["default", "hover", "focus-visible"],
-      "tokens": ["--color-text-*", "--color-background-subtle", "--content-padding-xsmall", "--motion-transition"],
-      "tokenGroups": ["global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "href",
+        "description"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible"
+      ],
+      "tokens": [
+        "--color-text-*",
+        "--color-background-subtle",
+        "--content-padding-xsmall",
+        "--motion-transition"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "global-size",
+        "global-motion",
+        "typography-foundations",
+        "interaction-effect"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "MegaMenuPrimaryLink gives the first mega-menu column a larger, high-hierarchy destination style.",
+        "ruleHash": "d20dd57c06321c97a7c394b0931d3ab384e267a296f567c74ee7b77f553042c7"
+      }
     },
     {
       "id": "mega-menu-secondary-link",
@@ -11549,16 +12397,54 @@
       "uses": [],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "MegaMenuSecondaryLink is the Astro-only standard link for the secondary and tertiary columns.", "instruction": "Use the same component in both supporting columns to preserve hierarchy." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "MegaMenuSecondaryLink is the Astro-only standard link for the secondary and tertiary columns.",
+          "instruction": "Use the same component in both supporting columns to preserve hierarchy."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/mega-menu-secondary-link.md",
       "variants": [],
-      "props": ["href"],
-      "slots": ["default"],
-      "attributes": ["data-component-name"],
-      "states": ["default", "hover", "focus-visible"],
-      "tokens": ["--control-size-small-min-height", "--color-text-*", "--color-background-subtle", "--motion-transition"],
-      "tokenGroups": ["control-size", "global-color", "global-size", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "href"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible"
+      ],
+      "tokens": [
+        "--control-size-small-min-height",
+        "--color-text-*",
+        "--color-background-subtle",
+        "--motion-transition"
+      ],
+      "tokenGroups": [
+        "control-size",
+        "global-color",
+        "global-size",
+        "global-motion",
+        "typography-foundations",
+        "interaction-effect"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "MegaMenuSecondaryLink presents standard supporting destinations in the second and third mega-menu columns.",
+        "ruleHash": "b90bdcd40182e171e2f3052db5ac71268569b45bfb8cfaa9667f308c9862c66b"
+      }
     },
     {
       "id": "footer",
@@ -11576,24 +12462,80 @@
       "role": "section",
       "layer": "section",
       "family": "footer",
-      "dependencies": ["footer-group", "footer-social-link", "footer-newsletter-form", "button", "button-link", "logo-asset"],
-      "uses": ["footer-group", "footer-social-link", "footer-newsletter-form", "button", "button-link", "logo-asset"],
+      "dependencies": [
+        "footer-group",
+        "footer-social-link",
+        "footer-newsletter-form",
+        "button",
+        "button-link",
+        "logo-asset"
+      ],
+      "uses": [
+        "footer-group",
+        "footer-social-link",
+        "footer-newsletter-form",
+        "button",
+        "button-link",
+        "logo-asset"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{
-        "kind": "code-first-family",
-        "reason": "The Footer family is intentionally authored and documented directly in Astro; the supplied references informed its shared anatomy, but no Figma operation or canonical node was requested.",
-        "instruction": "Keep the semantic footer shell, source order, responsive reflow and slot API canonical in Astro until a separate Figma operation is explicitly requested."
-      }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "The Footer family is intentionally authored and documented directly in Astro; the supplied references informed its shared anatomy, but no Figma operation or canonical node was requested.",
+          "instruction": "Keep the semantic footer shell, source order, responsive reflow and slot API canonical in Astro until a separate Figma operation is explicitly requested."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/footer.md",
       "variants": [],
-      "props": ["heading", "headingLevel", "copyright"],
-      "slots": ["default", "action", "social", "brand", "legal"],
-      "attributes": ["data-component-name", "data-footer-has-action"],
-      "states": ["without-action", "with-action"],
-      "tokens": ["--footer-logo-block-size", "--container-main", "--site-padding-inline", "--site-grid-column-gap", "--gap-*", "--space-*", "--color-*"],
-      "tokenGroups": ["footer-size", "global-layout", "global-size", "global-color", "typography-foundations"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "heading",
+        "headingLevel",
+        "copyright"
+      ],
+      "slots": [
+        "default",
+        "action",
+        "social",
+        "brand",
+        "legal"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-footer-has-action"
+      ],
+      "states": [
+        "without-action",
+        "with-action"
+      ],
+      "tokens": [
+        "--footer-logo-block-size",
+        "--container-main",
+        "--site-padding-inline",
+        "--site-grid-column-gap",
+        "--gap-*",
+        "--space-*",
+        "--color-*"
+      ],
+      "tokenGroups": [
+        "footer-size",
+        "global-layout",
+        "global-size",
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "Footer closes a page with optional action content, grouped destinations, social links and a supporting legal row in one stable site-wide landmark.",
+        "ruleHash": "76feb6782a8cd36fc944f8d4e011a2f7796b81756dc993dcac1e7b8d459fd913"
+      }
     },
     {
       "id": "footer-group",
@@ -11611,20 +12553,60 @@
       "role": "molecule",
       "layer": "molecule",
       "family": "footer",
-      "dependencies": ["footer-label", "footer-link", "footer-social-link"],
-      "uses": ["footer-label", "footer-link", "footer-social-link"],
+      "dependencies": [
+        "footer-label",
+        "footer-link",
+        "footer-social-link"
+      ],
+      "uses": [
+        "footer-label",
+        "footer-link",
+        "footer-social-link"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "FooterGroup is an Astro-only named navigation landmark for one footer link category.", "instruction": "Preserve the labelled nav and list semantics; compose only footer link items in its default slot." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "FooterGroup is an Astro-only named navigation landmark for one footer link category.",
+          "instruction": "Preserve the labelled nav and list semantics; compose only footer link items in its default slot."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/footer-group.md",
       "variants": [],
-      "props": ["id", "label", "headingLevel"],
-      "slots": ["default"],
-      "attributes": ["data-component-name", "aria-labelledby"],
-      "states": ["default"],
-      "tokens": ["--gap-small"],
-      "tokenGroups": ["global-size", "typography-foundations"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "id",
+        "label",
+        "headingLevel"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--gap-small"
+      ],
+      "tokenGroups": [
+        "global-size",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "FooterGroup gives one related set of footer destinations a visible heading, labelled navigation landmark and native list structure.",
+        "ruleHash": "595d5671b11ef6808fed08230c54e1d816c60be028485512b1952231e4897c35"
+      }
     },
     {
       "id": "footer-label",
@@ -11646,16 +12628,47 @@
       "uses": [],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "FooterLabel is an Astro-only semantic heading whose document level remains independent from its visual style.", "instruction": "Select the heading level from page hierarchy and keep the compact label treatment token-backed." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "FooterLabel is an Astro-only semantic heading whose document level remains independent from its visual style.",
+          "instruction": "Select the heading level from page hierarchy and keep the compact label treatment token-backed."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/footer-label.md",
       "variants": [],
-      "props": ["text", "headingLevel", "id"],
+      "props": [
+        "text",
+        "headingLevel",
+        "id"
+      ],
       "slots": [],
-      "attributes": ["data-component-name"],
-      "states": ["default"],
-      "tokens": ["--color-text-secondary", "--font-*", "--line-height-*"],
-      "tokenGroups": ["global-color", "typography-foundations"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default"
+      ],
+      "tokens": [
+        "--color-text-secondary",
+        "--font-*",
+        "--line-height-*"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "FooterLabel provides the quiet visible heading used to name one footer navigation group while keeping semantic rank consumer-controlled.",
+        "ruleHash": "e997c91a17c6c4a26a1b458037cf37dee3cadbd29600337f98d310acc07ce7c1"
+      }
     },
     {
       "id": "footer-link",
@@ -11677,16 +12690,60 @@
       "uses": [],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "FooterLink is the Astro-only native link item shared by navigation and legal footer lists.", "instruction": "Keep the anchor native, preserve forwarded safe link attributes and use the legal variant only for supporting policy links." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "FooterLink is the Astro-only native link item shared by navigation and legal footer lists.",
+          "instruction": "Keep the anchor native, preserve forwarded safe link attributes and use the legal variant only for supporting policy links."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/footer-link.md",
-      "variants": ["navigation", "legal"],
-      "props": ["href", "variant"],
-      "slots": ["default"],
-      "attributes": ["data-component-name", "data-footer-link-variant", "aria-current"],
-      "states": ["default", "hover", "focus-visible", "current"],
-      "tokens": ["--color-text-*", "--motion-transition", "--font-*"],
-      "tokenGroups": ["global-color", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "variants": [
+        "navigation",
+        "legal"
+      ],
+      "props": [
+        "href",
+        "variant"
+      ],
+      "slots": [
+        "default"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-footer-link-variant",
+        "aria-current"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible",
+        "current"
+      ],
+      "tokens": [
+        "--color-text-*",
+        "--motion-transition",
+        "--font-*",
+        "--control-size-small-min-height"
+      ],
+      "tokenGroups": [
+        "global-color",
+        "global-motion",
+        "typography-foundations",
+        "interaction-effect",
+        "control-size"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "FooterLink renders one native destination in either the primary footer navigation or the quieter legal row.",
+        "ruleHash": "69b79168d785199279c79b6a3d217576eff81942ec177d2fc8aae6d570af4c26"
+      }
     },
     {
       "id": "footer-social-link",
@@ -11704,20 +12761,67 @@
       "role": "atom",
       "layer": "atom",
       "family": "footer",
-      "dependencies": ["social-icons"],
-      "uses": ["social-icons"],
+      "dependencies": [
+        "social-icons"
+      ],
+      "uses": [
+        "social-icons"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "FooterSocialLink is an Astro-only native profile link composed with the existing decorative SocialIcons renderer.", "instruction": "Use icon-only or labelled presentation without changing the native anchor into a button." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "FooterSocialLink is an Astro-only native profile link composed with the existing decorative SocialIcons renderer.",
+          "instruction": "Use icon-only or labelled presentation without changing the native anchor into a button."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/footer-social-link.md",
-      "variants": ["icon-only", "labelled"],
-      "props": ["href", "platform", "label", "presentation"],
+      "variants": [
+        "icon-only",
+        "labelled"
+      ],
+      "props": [
+        "href",
+        "platform",
+        "label",
+        "presentation"
+      ],
       "slots": [],
-      "attributes": ["data-component-name", "data-footer-social-link-presentation", "data-social-platform"],
-      "states": ["default", "hover", "focus-visible"],
-      "tokens": ["--footer-social-icon-size", "--color-*", "--motion-transition", "--font-*"],
-      "tokenGroups": ["footer-size", "global-color", "global-motion", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "attributes": [
+        "data-component-name",
+        "data-footer-social-link-presentation",
+        "data-social-platform"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus-visible"
+      ],
+      "tokens": [
+        "--footer-social-icon-size",
+        "--color-*",
+        "--motion-transition",
+        "--font-*"
+      ],
+      "tokenGroups": [
+        "footer-size",
+        "global-color",
+        "global-motion",
+        "typography-foundations",
+        "interaction-effect"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "FooterSocialLink navigates to one approved social-platform destination with either an icon-only or icon-and-label presentation.",
+        "ruleHash": "fe80c26a47ed18627e77c24f0958899a91f8b42f4b4ea0677233fbb29bfc9e16"
+      }
     },
     {
       "id": "footer-newsletter-form",
@@ -11735,20 +12839,73 @@
       "role": "molecule",
       "layer": "molecule",
       "family": "footer",
-      "dependencies": ["form-field", "input", "button"],
-      "uses": ["form-field", "input", "button"],
+      "dependencies": [
+        "form-field",
+        "input",
+        "button"
+      ],
+      "uses": [
+        "form-field",
+        "input",
+        "button"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
-      "divergences": [{ "kind": "code-first-family", "reason": "FooterNewsletterForm is an Astro-only progressive-enhancement form with no vendor integration or client runtime.", "instruction": "Preserve native POST submission, the label/input association and a submit button; integrate provider behavior outside this component." }],
+      "divergences": [
+        {
+          "kind": "code-first-family",
+          "reason": "FooterNewsletterForm is an Astro-only progressive-enhancement form with no vendor integration or client runtime.",
+          "instruction": "Preserve native POST submission, the label/input association and a submit button; integrate provider behavior outside this component."
+        }
+      ],
       "agenticRule": ".agentic-rules/components/footer-newsletter-form.md",
       "variants": [],
-      "props": ["id", "action", "emailLabel", "submitLabel", "emailName", "emailPlaceholder"],
-      "slots": ["consent"],
-      "attributes": ["data-component-name"],
-      "states": ["default", "valid", "invalid"],
-      "tokens": ["--input-*", "--button-*", "--control-*", "--gap-*", "--color-*"],
-      "tokenGroups": ["control-size", "input-color", "button-color", "global-size", "global-color", "typography-foundations", "interaction-effect"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "props": [
+        "id",
+        "action",
+        "emailLabel",
+        "submitLabel",
+        "emailName",
+        "emailPlaceholder"
+      ],
+      "slots": [
+        "consent"
+      ],
+      "attributes": [
+        "data-component-name"
+      ],
+      "states": [
+        "default",
+        "valid",
+        "invalid"
+      ],
+      "tokens": [
+        "--input-*",
+        "--button-*",
+        "--control-*",
+        "--gap-*",
+        "--color-*"
+      ],
+      "tokenGroups": [
+        "control-size",
+        "input-color",
+        "button-color",
+        "global-size",
+        "global-color",
+        "typography-foundations",
+        "interaction-effect"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "navigation"
+        ],
+        "summary": "FooterNewsletterForm collects one required email address and submits it through a native POST form without owning a provider integration.",
+        "ruleHash": "0a3a1558ed9d0607391ec2a26036388321e54d50eb1805bc3359c092fbd2d67a"
+      }
     },
     {
       "id": "pricing-card",
@@ -11766,8 +12923,18 @@
       "role": "card",
       "layer": "card",
       "family": "pricing-comparison",
-      "dependencies": ["tag", "bullet-point", "button", "button-link"],
-      "uses": ["tag", "bullet-point", "button", "button-link"],
+      "dependencies": [
+        "tag",
+        "bullet-point",
+        "button",
+        "button-link"
+      ],
+      "uses": [
+        "tag",
+        "bullet-point",
+        "button",
+        "button-link"
+      ],
       "syncStatus": "astro-only",
       "status": "astro-only",
       "divergences": [
@@ -11778,11 +12945,35 @@
         }
       ],
       "agenticRule": ".agentic-rules/components/pricing-card.md",
-      "variants": ["default", "featured"],
-      "props": ["title", "description", "price", "priceSuffix", "priceNote", "featuresTitle", "headingLevel", "id"],
-      "slots": ["badge", "savings", "action", "features"],
-      "attributes": ["data-component-name", "data-pricing-card-featured", "aria-labelledby"],
-      "states": ["default", "featured"],
+      "variants": [
+        "default",
+        "featured"
+      ],
+      "props": [
+        "title",
+        "description",
+        "price",
+        "priceSuffix",
+        "priceNote",
+        "featuresTitle",
+        "headingLevel",
+        "id"
+      ],
+      "slots": [
+        "badge",
+        "savings",
+        "action",
+        "features"
+      ],
+      "attributes": [
+        "data-component-name",
+        "data-pricing-card-featured",
+        "aria-labelledby"
+      ],
+      "states": [
+        "default",
+        "featured"
+      ],
       "tokens": [
         "--card-background-default",
         "--card-border-default",
@@ -11795,8 +12986,23 @@
         "--radius-small",
         "--border-width-default"
       ],
-      "tokenGroups": ["card-color", "global-color", "global-size", "typography-foundations"],
-      "readiness": { "visual": "review", "validation": "passed" }
+      "tokenGroups": [
+        "card-color",
+        "global-color",
+        "global-size",
+        "typography-foundations"
+      ],
+      "readiness": {
+        "visual": "review",
+        "validation": "passed"
+      },
+      "discovery": {
+        "goals": [
+          "comparison"
+        ],
+        "summary": "PricingCard presents one purchasable plan with its price, primary action and included capabilities in a self-contained comparison unit.",
+        "ruleHash": "e2c3f5d56c6db74f993370de9a19106ce80e531c6760bf67aa63d0263c2a73da"
+      }
     },
     {
       "id": "dsd-component-page-template",

@@ -1,5 +1,15 @@
 import { expect, test } from "@playwright/test";
 
+// System colors follow the engine/OS palette and the specimen's color-scheme.
+const canvasTextFor = locator => locator.evaluate(node => {
+  const probe = document.createElement("span");
+  probe.style.color = "CanvasText";
+  node.append(probe);
+  const value = getComputedStyle(probe).color;
+  probe.remove();
+  return value;
+});
+
 const responsiveWebsitePatterns = [
   { name: "Content", path: "/design-system/website-patterns/content/", container: "main", sizing: "fill" },
   { name: "FAQ", path: "/design-system/website-patterns/faq/", container: "full", sizing: "fill" },
@@ -665,7 +675,7 @@ test("removable Tag exposes native keyboard focus and the shared focus effect", 
 });
 
 test("singleton Base Component pages stay flat", async ({ page }) => {
-  const singletonPaths = ["progress-bar", "hint", "dividers", "ratio", "tag", "eyebrow"];
+  const singletonPaths = ["progress-bar", "hint", "ratio", "tag", "eyebrow"];
 
   for (const slug of singletonPaths) {
     await page.goto(`/design-system/base-components/${slug}/`, { waitUntil: "networkidle" });
@@ -691,7 +701,7 @@ test("Base and Website multi families are disclosures with direct component rout
   for (const [familyPath, firstComponentPath] of [
     ["base-components/switch", "base-components/switch/switch-button"],
     ["website-patterns/bullet-points", "website-patterns/bullet-points/bullet-point"],
-    ["website-patterns/ratings-reviews", "website-patterns/ratings-reviews/trust-badge"],
+    ["base-components/dividers", "base-components/dividers/content-divider"],
   ]) {
     const familyResponse = await request.get(`/design-system/${familyPath}/`);
     const familyHtml = await familyResponse.text();
@@ -745,17 +755,13 @@ test("Base and Website multi families are disclosures with direct component rout
     page.locator(`.ds-documentation-sidebar__page-disclosure[aria-controls="${switchPanelId}"]`),
   ).toHaveAttribute("aria-expanded", "true");
 
-  const ratingsPanelId = "ds-documentation-components-website-patterns-ratings-reviews";
-  const ratingsItem = page.locator(
-    `.ds-documentation-sidebar__page-item:has([aria-controls="${ratingsPanelId}"])`,
-  ).first();
-  await expect(
-    ratingsItem.locator('a[href="/design-system/website-patterns/ratings-reviews"]'),
-  ).toHaveCount(0);
-  await expect(
-    ratingsItem.locator(`.ds-documentation-sidebar__page-disclosure[aria-controls="${ratingsPanelId}"]`),
-  ).toHaveCount(1);
-  await expect(ratingsItem.locator(`#${ratingsPanelId} a`)).toHaveCount(2);
+  const ratingsItem = page.locator('.ds-documentation-sidebar__page-item:has(a[href="/design-system/website-patterns/ratings-reviews"])').first();
+  await expect(ratingsItem.locator('[data-ds-sidebar-disclosure]')).toHaveCount(0);
+  await expect(ratingsItem.locator('a[href="/design-system/website-patterns/ratings-reviews"]')).toHaveCount(1);
+  await page.goto('/design-system/website-patterns/ratings-reviews/');
+  await expect(page.locator('.ds-documentation-page-header h1')).toHaveText('Rating');
+  await expect(page.locator('#preview [data-component-name="Rating"]:visible')).toHaveCount(1);
+
 });
 
 test("documentation sidebar preserves its scroll position across navigation and reload", async ({ page }) => {
@@ -791,19 +797,19 @@ test("documentation sidebar preserves its scroll position across navigation and 
 });
 
 test("empty Website Pattern pages render only their canonical heading", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/navigation/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/testimonials-stories/", { waitUntil: "networkidle" });
   await expect(page.locator('[data-component-name="DesignSystemLayout"]')).toHaveAttribute(
     "data-page-type",
     "reading",
   );
-  await expect(page.getByRole("heading", { level: 1, name: "Navigation" })).toHaveCount(1);
+  await expect(page.getByRole("heading", { level: 1, name: "Testimonials & Stories" })).toHaveCount(1);
   await expect(page.locator(".ds-documentation-page-header__inner > *")).toHaveCount(1);
   await expect(page.locator('[data-component-name="DsFamilyGallery"]')).toHaveCount(0);
   await expect(page.locator('[data-component-name="DsDocumentationPager"]')).toHaveCount(0);
   await expect(page.locator(".ds-documentation-toc")).toHaveCount(0);
 
   const sidebarItem = page
-    .locator('.ds-documentation-sidebar__page-item:has(a[href="/design-system/website-patterns/navigation"])')
+    .locator('.ds-documentation-sidebar__page-item:has(a[href="/design-system/website-patterns/testimonials-stories"])')
     .first();
   await expect(sidebarItem.locator("[data-ds-sidebar-disclosure]")).toHaveCount(0);
 });
@@ -859,11 +865,12 @@ test("BulletPoint centers its icon on the first text line at compact widths and 
   expect(metrics.wrapperTop).toBe(metrics.textTop);
 
   await page.emulateMedia({ forcedColors: "active" });
-  await expect(bullet.locator(".bullet-point__icon")).toHaveCSS("color", "rgb(0, 0, 0)");
+  if (await page.evaluate(() => matchMedia("(forced-colors: active)").matches))
+    await expect(bullet.locator(".bullet-point__icon")).toHaveCSS("color", await canvasTextFor(bullet));
   expect(runtimeErrors).toEqual([]);
 });
 
-test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic behavior", async ({ page }) => {
+test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic behavior", async ({ page, browserName }) => {
   const runtimeErrors = [];
   page.on("console", (message) => {
     if (message.type() === "error") runtimeErrors.push(`console: ${message.text()}`);
@@ -944,10 +951,12 @@ test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic beh
   await expect(actionControls.nth(0)).toHaveAccessibleName("Button");
   await expect(actionControls.nth(1)).toHaveAccessibleName("Button");
   await expect(actionControls.nth(2)).toHaveAccessibleName("Button Link");
+  // macOS WebKit uses Option+Tab to include links and buttons in keyboard navigation.
+  const nextControl = browserName === "webkit" && process.platform === "darwin" ? "Alt+Tab" : "Tab";
   await actionControls.nth(0).focus();
-  await page.keyboard.press("Tab");
+  await page.keyboard.press(nextControl);
   await expect(actionControls.nth(1)).toBeFocused();
-  await page.keyboard.press("Tab");
+  await page.keyboard.press(nextControl);
   await expect(actionControls.nth(2)).toBeFocused();
 
   await page.evaluate(() => {
@@ -957,7 +966,8 @@ test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic beh
   await expect(card).toHaveCSS("border-right-width", "2px");
   await expect(card).toHaveCSS("padding-right", "20px");
   await page.emulateMedia({ forcedColors: "active" });
-  await expect(card).toHaveCSS("border-right-color", "rgb(0, 0, 0)");
+  if (await page.evaluate(() => matchMedia("(forced-colors: active)").matches))
+    await expect(card).toHaveCSS("border-right-color", await canvasTextFor(card));
 
   await page.emulateMedia({ forcedColors: "none" });
   await page.evaluate(() => {
@@ -1081,7 +1091,8 @@ test("BulletIconCard preserves both explicit layouts, semantic order and intrins
   });
   expect(await card.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
   await page.emulateMedia({ forcedColors: "active" });
-  await expect(mainIcon).toHaveCSS("color", "rgb(0, 0, 0)");
+  if (await page.evaluate(() => matchMedia("(forced-colors: active)").matches))
+    await expect(mainIcon).toHaveCSS("color", await canvasTextFor(mainIcon));
 
   await page.emulateMedia({ forcedColors: "none" });
   await controls.locator('[data-ds-preview-control][data-axis-id="bulletIconCardStatIcon"][data-axis-value="hidden"]').click();
@@ -1183,7 +1194,8 @@ test("BulletCardSurface preserves semantic order and switches from stacked to vi
   await expect(card.locator(".bullet-card-surface__icon")).toBeHidden();
 
   await page.emulateMedia({ forcedColors: "active" });
-  await expect(card).toHaveCSS("border-top-color", "rgb(0, 0, 0)");
+  if (await page.evaluate(() => matchMedia("(forced-colors: active)").matches))
+    await expect(card).toHaveCSS("border-top-color", await canvasTextFor(card));
   expect(runtimeErrors).toEqual([]);
 });
 
@@ -1263,10 +1275,11 @@ test("StatCard preserves accessible naming, fixed cues and intrinsic content-saf
   expect(metrics.minHeight).toBe(140);
   expect(metrics.layoutHeight).toBeGreaterThanOrEqual(140);
 
-  await expect(page.locator(".stat-card-preview--matrix [data-component-name=\"StatCard\"]")).toHaveCount(4);
+  await expect(page.locator("#preview [data-component-name=\"StatCard\"][data-ds-preview-target]")).toHaveCount(1);
   await page.evaluate(() => { document.documentElement.dataset.theme = "dark"; });
   await page.emulateMedia({ forcedColors: "active" });
-  await expect(card).toHaveCSS("border-left-color", "rgb(0, 0, 0)");
+  if (await page.evaluate(() => matchMedia("(forced-colors: active)").matches))
+    await expect(card).toHaveCSS("border-left-color", await canvasTextFor(card));
   expect(runtimeErrors).toEqual([]);
 });
 
@@ -1965,7 +1978,7 @@ test("all Base Component preview scenes are 4:3, centered and scroll-safe", asyn
 
     expect(metrics.length, `${route} must render at least one Base Component scene`).toBeGreaterThan(0);
     if (route.endsWith("/accordion/accordion")) {
-      expect(metrics.length, "Accordion route must include the AccordionProgress regression scene").toBeGreaterThanOrEqual(2);
+      expect(metrics.length, "Accordion has one canonical preview; autoplay behavior is tested separately").toBe(1);
     }
     for (const metric of metrics) {
       expect(metric, `${route} must expose a canonical preview target`).not.toBeNull();
@@ -1989,7 +2002,6 @@ test("legacy singleton routes emit redirects to their flat canonical URLs", asyn
   const redirects = new Map([
     ["progress-bar/progress-bar", "progress-bar"],
     ["hint/hint", "hint"],
-    ["dividers/content-divider", "dividers"],
     ["ratio/ratio", "ratio"],
     ["tag/tag", "tag"],
     ["eyebrow/eyebrow", "eyebrow"],

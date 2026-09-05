@@ -13,6 +13,12 @@ Status: active.
 
 FooterLabel provides the quiet visible heading used to name one footer navigation group while keeping semantic rank consumer-controlled.
 
+## Communication role
+
+- Goals: navigation
+
+Provide secondary navigation and verified organization information. Keep any subscription promise consistent with the supplied offer.
+
 ## Use when
 
 - A footer group needs a visible category heading.

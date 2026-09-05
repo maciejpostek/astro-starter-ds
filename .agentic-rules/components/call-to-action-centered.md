@@ -13,6 +13,12 @@ Status: Astro-only, ready with conditions.
 
 CallToActionCentered presents one focused, centered action message inside a bounded promotional surface when no visual is needed.
 
+## Communication role
+
+- Goals: conversion
+
+Close a decision with one clear next action. Use the campaign goal and approved offer; do not invent urgency or guarantees.
+
 ## Use when
 
 - A call to action needs a heading, optional supporting copy and related actions without media.

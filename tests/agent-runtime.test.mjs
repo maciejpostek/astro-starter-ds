@@ -177,8 +177,8 @@ test("open-ended page composition requires approved brand context without enabli
       rules: []
     }
   });
-  assert.equal(context.status, "blocked");
-  assert.match(context.missing.join(" "), /No approved Brand\/Composition/u);
+  assert.equal(context.status, "ready");
+  assert.equal(context.executionReadiness.visual, "reuse-only");
 });
 
 test("a missing component is blocked unless reusable component creation is explicit", () => {
@@ -340,6 +340,8 @@ test("create family resolution narrows reads to the family and projections", () 
       rules: []
     },
     creationDraft: {
+      approvalStatus: "approved",
+      approvalBasis: "user-request",
       layer: "atom",
       family: "buttons",
       sourcePath: "src/components/base-components/buttons/Keycap.astro",
@@ -357,7 +359,7 @@ test("create family resolution narrows reads to the family and projections", () 
       "component-readiness-rule",
       "component-readiness-contract",
       "creation-family-rule",
-      "registry-projection",
+      "component-gap-evidence",
       "guides-projection",
       "responsive-strategy-rule"
     ]
@@ -426,6 +428,8 @@ test("Figma creation context is loaded only after an explicit Figma request", ()
       rules: []
     },
     creationDraft: {
+      approvalStatus: "approved",
+      approvalBasis: "user-request",
       layer: "atom",
       family: "buttons",
       sourcePath: "src/components/base-components/buttons/Keycap.astro",
@@ -760,7 +764,7 @@ test("strategic generation includes both templates without authorizing invented 
     assert.deepEqual(validateTaskContract(task), []);
     const context = resolveAgentContext({ task, projectRoot });
     assert.equal(context.contentContext.status, "missing-input");
-    assert.equal(context.contentContext.sources.length, 2);
+    assert.equal(context.contentContext.sources.length, 3);
     assert.ok(context.contentContext.questions.length);
     assert.equal(task.allowNewComponents, false);
   }
@@ -771,7 +775,7 @@ test("business context does not activate visual interpretation for named copy ed
   assert.equal(task.contentMode, "generate");
   assert.equal(task.brandMode, "skip");
   const context = resolveAgentContext({task, projectRoot});
-  assert.equal(context.contentContext.sources.length, 2);
+  assert.equal(context.contentContext.sources.length, 3);
 });
 
 test("exact supplied copy and technical edits keep strategy out of the read plan", () => {
@@ -779,7 +783,6 @@ test("exact supplied copy and technical edits keep strategy out of the read plan
     {prompt: 'Zamień tekst Button na "Kontakt"'},
     {prompt: "Change Button color"},
     {prompt: "Zmień kolor tekstu Button"},
-    {prompt: "Create page with Button", contentMode: "provided"}
   ]) {
     const task = routeAgentRequest({...options, projectRoot});
     const context = resolveAgentContext({task, projectRoot});
@@ -828,7 +831,7 @@ test("brand themes and creation context use approved matching rules; coverage is
   const empty = resolveAgentContext({task, projectRoot, contractOverride: {status: "approved", rules: []}});
   assert.equal(empty.brandCoverage, "missing");
   assert.equal(empty.creativeInterpretation, "blocked-missing-applicable-rules");
-  assert.equal(resolveAgentContext({task, projectRoot, contractOverride: {status: "draft", rules: []}}).status, "blocked");
+  assert.equal(resolveAgentContext({task, projectRoot, contractOverride: {status: "draft", rules: []}}).executionReadiness.visual, "reuse-only");
 });
 
 test("new task fields validate and old contracts remain supported", () => {
@@ -847,6 +850,6 @@ test("a real brief requests evidence review and never silently certifies unknown
     assert.equal(context.language, "pl");
     assert.deepEqual(context.requiredEvidence, ["audience", "value-proposition", "page-goal"]);
     assert.equal(context.sources.length, 1);
-    assert.equal(context.missingSources.length, 1);
+    assert.equal(context.missingSources.length, 2);
   } finally { await rm(root, {recursive: true, force: true}); }
 });

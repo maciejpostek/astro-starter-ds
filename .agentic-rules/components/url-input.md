@@ -13,6 +13,12 @@ Status: active.
 
 Collect a secure web address while keeping the fixed `https://` protocol visible and submitting one complete URL value.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Every accepted address uses HTTPS and the user edits only host, path and query content.

@@ -17,7 +17,7 @@
   --color-background-strong: var(--color-neutral-300);
   --color-background-inverse: var(--color-neutral-950);
   --color-background-accent-subtle: var(--color-accent-300);
-  --color-background-accent: var(--color-accent-500);
+  --color-background-accent: var(--color-accent-600);
   --color-background-accent-strong: var(--color-accent-700);
   --color-background-overlay: oklch(0% 0 0 / 20%);
   --color-background-media-overlay: oklch(14.5% 0 0 / 78%);
@@ -26,8 +26,8 @@
    * Content hierarchy plus inverse and accent roles.
    */
   --color-text-primary: var(--color-neutral-950);
-  --color-text-secondary: var(--color-neutral-500);
-  --color-text-tertiary: var(--color-neutral-400);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-tertiary: var(--color-neutral-500);
   --color-text-inverse: var(--color-neutral-0);
   --color-text-accent: var(--color-accent-700);
   --color-text-on-accent: var(--color-on-accent);
@@ -124,7 +124,7 @@
   --color-background-strong: var(--color-neutral-600);
   --color-background-inverse: var(--color-neutral-0);
   --color-background-accent-subtle: var(--color-accent-700);
-  --color-background-accent: var(--color-accent-500);
+  --color-background-accent: var(--color-accent-600);
   --color-background-accent-strong: var(--color-accent-300);
   --color-background-overlay: oklch(0% 0 0 / 20%);
   --color-background-media-overlay: oklch(0% 0 0 / 78%);

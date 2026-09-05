@@ -15,6 +15,12 @@ BulletPoint communicates whether one concise capability, condition or package
 feature is included or excluded. Its icon makes a short comparison easier to
 scan, while the text remains the complete source of meaning.
 
+## Communication role
+
+- Goals: benefits
+
+Structure a concise set of relevant points. Use the brief to select claims and keep each item focused on one supported benefit.
+
 ## Use when
 
 - A feature list needs to distinguish an included item from an excluded item.

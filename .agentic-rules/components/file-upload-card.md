@@ -13,6 +13,12 @@ Status: active.
 
 FileUploadCard presents one controlled file with uploading, success or error status, optional progress and the action appropriate to that status.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A consumer has added a file to its upload queue and needs persistent progress or outcome feedback.
@@ -65,6 +71,8 @@ FileUploadCard presents one controlled file with uploading, success or error sta
 - Alert or notification patterns may announce server-wide failure details outside this compact card.
 
 ## Naming and token contract
+
+This component represents supplied upload state; it does not implement transport, endpoints, queue ownership or automatic retries.
 
 Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
 

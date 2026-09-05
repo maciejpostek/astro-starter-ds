@@ -13,6 +13,12 @@ Status: active.
 
 Navigation provides the fixed site-navigation shell: brand, primary destinations, optional language selection, one primary action, responsive full menu and navigation-wide disclosure coordination.
 
+## Communication role
+
+- Goals: navigation
+
+Help users find the intended destination. Preserve accurate labels, links and current-location semantics.
+
 ## Use when
 
 - A site needs one persistent primary navigation at the top viewport edge.

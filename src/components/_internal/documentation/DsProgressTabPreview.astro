@@ -27,6 +27,7 @@ import Tabs from "../../base-components/tabs/Tabs.astro";
 
 <style>
   .ds-progress-tab-preview {
+    position: relative;
     display: grid;
     inline-size: 100%;
     min-inline-size: 0;
@@ -34,6 +35,9 @@ import Tabs from "../../base-components/tabs/Tabs.astro";
   }
 
   .ds-progress-tab-preview > :global([role="tabpanel"]) {
+    position: absolute;
+    inset-block-start: calc(100% + var(--gap-small));
+    inline-size: 100%;
     color: var(--color-text-secondary);
   }
 </style>

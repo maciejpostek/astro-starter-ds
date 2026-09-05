@@ -10,6 +10,12 @@ Status: active.
 
 Navigate between URL-addressable sections and indicate the current section through hash state and scroll position.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Every item targets an existing same-page section.
@@ -46,6 +52,8 @@ Preserve native anchors, valid hashes, `aria-current="location"`, visible focus,
 - Tab is the atomic tablist button and is not used for anchors.
 
 ## Naming and token contract
+
+Keep the horizontal, non-wrapping medium Control Size profile. Do not add sticky positioning, an offset prop or history-writing scrollspy.
 
 Use `TabMenu`, root `.tab-menu`, controlled current-state attributes, and registered Tab, Control Size, interaction, typography, motion and global size groups. Do not declare local custom properties.
 

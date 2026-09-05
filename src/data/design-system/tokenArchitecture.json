@@ -49,7 +49,7 @@
       "domain": "size",
       "namePattern": "^--control-(?:size-(?:small|medium|large)-)?[a-z0-9-]+$",
       "sourcePaths": ["src/styles/tokens/control-sizes.css"],
-      "consumers": ["button", "button-link", "icon-button", "copy-button", "copy-icon-button", "social-button", "social-icon-button", "input", "form-field", "label", "hint", "search-input", "select", "compact-select", "inline-select", "url-input", "date-input", "password-input", "share-link-input", "counter-input", "text-area-input", "tab", "tabs", "tab-menu"],
+      "consumers": ["button", "button-link", "icon-button", "copy-button", "copy-icon-button", "social-button", "social-icon-button", "input", "form-field", "label", "hint", "search-input", "select", "compact-select", "inline-select", "url-input", "date-input", "password-input", "share-link-input", "counter-input", "text-area-input", "tab", "tabs", "tab-menu", "swiper", "footer-link"],
       "dependencies": ["global-size", "typography-foundations"],
       "properties": ["min-height", "padding-inline", "padding-block", "icon-size", "gap", "font-size", "line-height"],
       "variants": ["small", "medium", "large"],

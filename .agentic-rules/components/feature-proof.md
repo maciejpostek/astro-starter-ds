@@ -13,6 +13,12 @@ Status: intentional difference.
 
 FeatureProof pairs one feature explanation and portrait visual with structured evidence: key points, logo proof and supporting details. It keeps proof attached to the claim it supports without rebuilding the Content, Ratio, TitleRow or BulletPoint contracts.
 
+## Communication role
+
+- Goals: benefits
+
+Explain how a capability addresses an audience need. Connect each benefit to evidence from the brief; avoid unsupported outcome claims.
+
 ## Use when
 
 - A single feature needs a prominent visual and at least one meaningful proof layer.

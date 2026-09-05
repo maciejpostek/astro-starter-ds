@@ -13,6 +13,12 @@ Status: astro-only.
 
 HowItWorks presents an ordered process as a full-viewport desktop narrative. Natural page scroll crosses compact step thresholds; each threshold starts a self-completing progress animation and an ordered slide transition, while the same source remains a complete static list everywhere the enhanced experience is unsuitable.
 
+## Communication role
+
+- Goals: process
+
+Explain the actual sequence of working with or using the product. Derive steps from the brief, keeping their order and prerequisites.
+
 ## Use when
 
 - A process contains at least two ordered steps that benefit from deliberate, full-screen staging without requiring a full viewport of scroll per step.

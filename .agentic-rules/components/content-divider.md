@@ -13,6 +13,12 @@ Status: active.
 
 ContentDivider separates adjacent sections, component groups or content blocks whose meaning or task changes at the boundary.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Two neighboring content groups need a visible horizontal boundary.

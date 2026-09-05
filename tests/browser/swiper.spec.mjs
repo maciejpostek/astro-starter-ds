@@ -8,7 +8,6 @@ const activeSlidesPerView = (root) => root.locator("[data-swiper-viewport]").eva
 
 test("Swiper initializes accessible controls and supports navigation, pagination, keyboard and drag", async ({ page, browserName }) => {
   test.setTimeout(120_000);
-  test.skip(browserName !== "chromium", "Canonical runtime evidence is collected in Chromium.");
   const runtimeErrors = [];
   page.on("console", (message) => { if (message.type() === "error") runtimeErrors.push(message.text()); });
   page.on("pageerror", (error) => runtimeErrors.push(error.message));
@@ -45,7 +44,6 @@ test("Swiper initializes accessible controls and supports navigation, pagination
 
 test("Swiper uses container breakpoints at 320, 768, 1024 and 1440 pixels without overflow", async ({ page, browserName }) => {
   test.setTimeout(120_000);
-  test.skip(browserName !== "chromium", "Canonical runtime evidence is collected in Chromium.");
   await page.setViewportSize({ width: 1800, height: 1000 });
   await page.goto(previewRoute, { waitUntil: "networkidle" });
   const root = page.locator(swiperRoot).first();
@@ -68,7 +66,6 @@ test("Swiper uses container breakpoints at 320, 768, 1024 and 1440 pixels withou
 
 test("Swiper documentation controls rebuild one instance and expose autoplay Pause and Play", async ({ page, browserName }) => {
   test.setTimeout(120_000);
-  test.skip(browserName !== "chromium", "Canonical runtime evidence is collected in Chromium.");
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(previewRoute, { waitUntil: "networkidle" });
   const root = page.locator(swiperRoot).first();
@@ -81,7 +78,10 @@ test("Swiper documentation controls rebuild one instance and expose autoplay Pau
   expect(await root.locator("[data-swiper-viewport]").evaluate((node) => node.swiper?.params?.scrollbar?.draggable)).toBe(true);
   await page.locator('[data-axis-id="swiperLoop"][data-axis-value="true"]').click();
   await expect(root).toHaveAttribute("data-swiper-loop", "true");
+  await expect.poll(() => root.locator("[data-swiper-viewport]").evaluate(node => node.swiper?.params?.loop)).toBe(true);
   await root.locator("[data-swiper-viewport]").evaluate((node) => node.swiper?.slideToLoop(5, 0));
+  // slideToLoop schedules its update; establish the last slide before clicking Next.
+  await expect.poll(() => activeIndex(root)).toBe(5);
   await root.locator("[data-swiper-next]").click();
   await expect.poll(() => activeIndex(root)).toBe(0);
   await page.locator('[data-axis-id="swiperAutoplay"][data-axis-value="true"]').click();
@@ -96,7 +96,6 @@ test("Swiper documentation controls rebuild one instance and expose autoplay Pau
 
 test("Swiper disables autoplay for Reduced Motion and isolates instances across Astro cleanup", async ({ page, browserName }) => {
   test.setTimeout(120_000);
-  test.skip(browserName !== "chromium", "Canonical runtime evidence is collected in Chromium.");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(previewRoute, { waitUntil: "networkidle" });

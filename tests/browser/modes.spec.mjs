@@ -22,8 +22,9 @@ for (const route of representativeRoutes) {
   });
 
   test(`${route} remains usable in forced colors`, async ({ page, browserName }) => {
-    test.skip(browserName !== "chromium", "Forced colors emulation is a Chromium capability.");
     await page.emulateMedia({ forcedColors: "active" });
+    // Verify the media capability rather than assuming support from the engine name.
+    test.skip(!await page.evaluate(() => matchMedia("(forced-colors: active)").matches), "Engine does not expose forced-colors emulation.");
     await page.goto(route, { waitUntil: "networkidle" });
     await expect(page.locator("main")).toBeVisible();
   });

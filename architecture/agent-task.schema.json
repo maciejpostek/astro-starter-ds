@@ -17,17 +17,46 @@
     "excludedContexts"
   ],
   "properties": {
-    "contentMode": {"enum": ["none", "provided", "generate"]},
-    "language": {"type": ["string", "null"]},
-    "editScope": {"enum": ["instance", "component"]},
-    "communicationGoal": {"type": "string"},
-    "brandThemes": {"type": "array", "items": {"type": "string"}},
-
+    "contentMode": {
+      "enum": [
+        "none",
+        "provided",
+        "generate"
+      ]
+    },
+    "language": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"
+    },
+    "editScope": {
+      "enum": [
+        "instance",
+        "component"
+      ]
+    },
+    "communicationGoal": {
+      "type": "string"
+    },
+    "brandThemes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "version": {
-      "enum": ["1.0.0", "1.1.0"]
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
     },
     "status": {
-      "enum": ["ready", "blocked"]
+      "enum": [
+        "ready",
+        "blocked"
+      ]
     },
     "intent": {
       "enum": [
@@ -44,10 +73,19 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["kind", "id", "exists"],
+        "required": [
+          "kind",
+          "id",
+          "exists"
+        ],
         "properties": {
           "kind": {
-            "enum": ["component", "token", "file", "scope"]
+            "enum": [
+              "component",
+              "token",
+              "file",
+              "scope"
+            ]
           },
           "id": {
             "type": "string",
@@ -57,19 +95,29 @@
             "type": "boolean"
           },
           "role": {
-            "enum": ["primary", "dependency", "context"]
+            "enum": [
+              "primary",
+              "dependency",
+              "context"
+            ]
           }
         }
       }
     },
     "targetFile": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?/).+$"
     },
     "constraints": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["prohibitNewComponents", "prohibitedCreations"],
+      "required": [
+        "prohibitNewComponents",
+        "prohibitedCreations"
+      ],
       "properties": {
         "prohibitNewComponents": {
           "type": "boolean"
@@ -88,10 +136,19 @@
       "type": "boolean"
     },
     "brandMode": {
-      "enum": ["skip", "approved-only", "required"]
+      "enum": [
+        "skip",
+        "approved-only",
+        "required"
+      ]
     },
     "contextBudget": {
-      "enum": ["tiny", "small", "medium", "large"]
+      "enum": [
+        "tiny",
+        "small",
+        "medium",
+        "large"
+      ]
     },
     "validationScope": {
       "enum": [
@@ -126,56 +183,203 @@
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "enum": ["responsive", "figma", "component-readiness"]
+        "enum": [
+          "responsive",
+          "figma",
+          "component-readiness"
+        ]
       }
     },
     "tokenNeed": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": false,
-      "required": ["owner", "scope", "domain", "property", "consumer"],
+      "required": [
+        "owner",
+        "scope",
+        "domain",
+        "property",
+        "consumer"
+      ],
       "properties": {
-        "owner": { "type": "string", "minLength": 1 },
-        "scope": { "enum": ["global", "use-case", "component", "section"] },
-        "domain": { "enum": ["color", "size", "typography", "layout", "motion", "elevation"] },
-        "property": { "type": "string", "minLength": 1 },
-        "variant": { "type": ["string", "null"] },
-        "state": { "type": ["string", "null"] },
-        "consumer": { "type": "string", "minLength": 1 },
-        "dependencies": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
-        "useCases": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
-        "proposedAliasSource": { "type": ["string", "null"], "pattern": "^--[a-z0-9-]+$" }
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "enum": [
+            "global",
+            "use-case",
+            "component",
+            "section"
+          ]
+        },
+        "domain": {
+          "enum": [
+            "color",
+            "size",
+            "typography",
+            "layout",
+            "motion",
+            "elevation"
+          ]
+        },
+        "property": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variant": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "consumer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "useCases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "proposedAliasSource": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^--[a-z0-9-]+$"
+        }
       }
     },
     "tokenDraft": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": true,
-      "required": ["approvalStatus", "requestedFor", "extensionTarget", "proposedTokens", "sourcePath"],
+      "required": [
+        "approvalStatus",
+        "requestedFor",
+        "extensionTarget",
+        "proposedTokens",
+        "sourcePath"
+      ],
       "properties": {
-        "approvalStatus": { "enum": ["proposed", "approved"] },
-        "requestedFor": { "type": "string", "minLength": 1 },
-        "extensionTarget": { "type": ["string", "null"] },
-        "sourcePath": { "type": ["string", "null"] },
+        "approvalStatus": {
+          "enum": [
+            "proposed",
+            "approved"
+          ]
+        },
+        "requestedFor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "extensionTarget": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourcePath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "proposedTokens": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["name"],
+            "required": [
+              "name"
+            ],
             "properties": {
-              "name": { "type": "string", "pattern": "^--[a-z0-9-]+$" },
-              "aliasSource": { "type": ["string", "null"], "pattern": "^--[a-z0-9-]+$" }
+              "name": {
+                "type": "string",
+                "pattern": "^--[a-z0-9-]+$"
+              },
+              "aliasSource": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^--[a-z0-9-]+$"
+              }
             }
           }
         },
-        "approvedBy": { "type": "string" },
-        "approvedAt": { "type": "string" }
+        "approvedBy": {
+          "type": "string"
+        },
+        "approvedAt": {
+          "type": "string"
+        }
       }
     },
     "blockedReason": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "suggestedPrompt": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contentStyle": {
+      "enum": [
+        "concrete",
+        "placeholders"
+      ]
+    },
+    "requiresStrategicContext": {
+      "type": "boolean"
+    },
+    "newComposition": {
+      "type": "boolean"
+    },
+    "stylingRequested": {
+      "type": "boolean"
+    },
+    "targetFileMode": {
+      "enum": [
+        "existing",
+        "new"
+      ]
+    },
+    "product": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "campaign": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "allOf": [
@@ -188,11 +392,19 @@
         }
       },
       "then": {
-        "required": ["targetFile", "constraints"],
+        "required": [
+          "targetFile",
+          "constraints"
+        ],
         "properties": {
           "targets": {
             "items": {
-              "required": ["kind", "id", "exists", "role"]
+              "required": [
+                "kind",
+                "id",
+                "exists",
+                "role"
+              ]
             }
           }
         }
@@ -230,7 +442,9 @@
         }
       },
       "then": {
-        "required": ["blockedReason"]
+        "required": [
+          "blockedReason"
+        ]
       }
     }
   ]

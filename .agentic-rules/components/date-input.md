@@ -13,6 +13,12 @@ Status: active.
 
 Collect one calendar date through the native browser date control with an explicit calendar picker action.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - The value represents one date and native ISO form serialization is appropriate.

@@ -13,6 +13,12 @@ Status: active.
 
 RichText is the canonical long-form flow for article, case-study and knowledge-base bodies. It coordinates block rhythm without owning the page article landmark, reading container, title or metadata.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A long-form entry is assembled from RichTextHeading, RichTextParagraph, RichTextQuote and RichTextVisual blocks.

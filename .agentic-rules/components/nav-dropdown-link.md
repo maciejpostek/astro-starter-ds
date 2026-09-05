@@ -13,6 +13,12 @@ Status: active.
 
 NavDropdownLink presents one destination in a compact dropdown, optionally with short explanatory copy.
 
+## Communication role
+
+- Goals: navigation
+
+Help users find the intended destination. Preserve accurate labels, links and current-location semantics.
+
 ## Use when
 
 - A dropdown destination benefits from a label and optional one-line description.

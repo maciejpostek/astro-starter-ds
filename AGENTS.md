@@ -120,21 +120,31 @@ model from neutral starter examples.
 
 ## Strategic composition and copy
 
-For new pages, sections, wireframes, campaign narratives or generated copy, use
-`contentMode=generate` and read the resolver's `contentContext.sources`. Confirm
+For every new page, section or wireframe, and whenever copy is generated or
+rewritten, read the resolver's `contentContext.sources` selected through
+`project-context/context-index.json`: strategy, tone of voice and the matching
+product/campaign brief. Preserve the original prompt and its explicit content
+request. `contentMode` describes none/provided/generate; `contentStyle` separately
+describes concrete/placeholders. New composition requires strategy even with
+provided copy or requested placeholders. Confirm
 source-backed audience, value proposition and page goal before writing dependent
 copy; ask only for missing essentials. Continue independent layout work. Use
 concrete proposed copy, never meta-placeholders unless requested. Separate facts,
 approved assumptions and unknowns; never overwrite shared strategy with a brief.
 Exact supplied copy uses `provided`; technical edits use `none`.
 
-For compose, materialize the selected UX line ranges in `readPlan`. Candidates
+Materialize the selected Agentic Rules line ranges and JSON pointers in
+`readPlan`, not whole files. The canonical component rule includes communication,
+UX and technical sections. Compose and copy edits read communication sections;
+CSS edits read technical sections. `agent:rules:generate` projects discovery
+metadata into the existing registry; `audit:rule-index` detects drift. Candidates
 are suggestions, not an implementation decision: verify purpose, avoid rules and
 content requirements, then resolve the chosen component names. Prefer reuse,
 existing variants and local composition. If no fit exists, explain the gap and
 ask only for the missing design decision or authorization for a public component.
-A targetFile means a local instance edit; do not change shared component behavior
-unless explicitly requested. Strategy is not approval for visual interpretation.
+A targetFile identifies the destination; an explicit shared/global edit takes
+precedence over the default instance scope. New destinations are permitted only
+for explicitly requested Astro pages under src/pages. Strategy is not approval for visual interpretation.
 When brand coverage is missing, reuse exact existing design and defer creative
 interpretation until applicable rules are approved.
 

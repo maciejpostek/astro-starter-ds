@@ -13,6 +13,12 @@ Status: active.
 
 Content is a reusable text starter for website sections. It keeps Eyebrow, a required heading, supporting copy and related actions in one predictable spacing system while the parent section continues to own layout and placement.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A section needs a heading-led content block with optional context, explanation or actions.

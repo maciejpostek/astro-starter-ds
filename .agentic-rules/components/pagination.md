@@ -13,6 +13,12 @@ Status: active.
 
 Pagination lets users move between numbered pages in a larger ordered result set while preserving their understanding of the current page and the available direction of travel.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A server-rendered collection is divided into stable numbered pages.

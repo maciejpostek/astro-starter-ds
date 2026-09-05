@@ -42,9 +42,7 @@ const collectMarkdown = (directory) => {
 
 const figmaDirectory = "Figma2Astro Agentic Rules";
 const figmaFiles = collectMarkdown(figmaDirectory);
-const activeFigmaRules = figmaFiles.filter(
-  (path) => !path.endsWith("/19-align-ui-benchmark.md")
-);
+const activeFigmaRules = figmaFiles;
 const operationalFiles = [
   "AGENTS.md",
   "AGENTIC-RULES.md",
@@ -167,7 +165,7 @@ for (const path of activeFigmaRules.filter((path) => !path.endsWith("/README.md"
     errors.push(`${figmaRouterPath} does not route ${filename}.`);
   }
 }
-for (const contract of ["explicit Figma operation","19-align-ui-benchmark.md","reference material, not an operational adapter"]) {
+for (const contract of ["explicit Figma operation"]) {
   if (!figmaRouter.includes(contract)) errors.push(`${figmaRouterPath} is missing: ${contract}`);
 }
 
@@ -199,9 +197,7 @@ for (const legacy of [
   if (activeSources.includes(legacy)) errors.push(`Active rules contain legacy architecture: ${legacy}`);
 }
 
-if (!figmaFiles.includes(`${figmaDirectory}/19-align-ui-benchmark.md`)) {
-  errors.push("Missing historical Align UI benchmark.");
-}
+
 
 if (errors.length) {
   console.error("Agentic rules audit failed:");

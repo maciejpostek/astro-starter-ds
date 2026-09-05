@@ -13,6 +13,12 @@ Status: Astro-only, ready with conditions.
 
 CallToActionVisual pairs one focused action message with one required 16:9 visual inside a bounded promotional surface supplied by the consuming page container.
 
+## Communication role
+
+- Goals: conversion
+
+Close a decision with one clear next action. Use the campaign goal and approved offer; do not invent urgency or guarantees.
+
 ## Use when
 
 - A call to action needs concise copy, related actions and one meaningful visual.

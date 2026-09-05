@@ -13,6 +13,12 @@ Status: active.
 
 Expose the native on/off control for one persistent binary setting when another component or surrounding context owns its visible presentation.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Building a reusable switch composition such as `SwitchLabel` or `SwitchCard`.

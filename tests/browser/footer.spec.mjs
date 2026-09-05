@@ -4,7 +4,6 @@ const previewRoute = "/design-system/website-patterns/footer/footer/preview/";
 
 for (const width of [320, 360, 380, 768, 1024, 1440]) {
   test(`Footer reflows without horizontal overflow at ${width}px`, async ({ page, browserName }) => {
-    test.skip(browserName !== "chromium", "Canonical responsive evidence is collected in Chromium.");
     await page.setViewportSize({ width, height: 1000 });
     await page.goto(previewRoute, { waitUntil: "networkidle" });
     const footer = page.locator('[data-component-name="Footer"]:visible').first();
@@ -43,7 +42,6 @@ for (const width of [320, 360, 380, 768, 1024, 1440]) {
 }
 
 test("Footer keeps native links and source-order keyboard navigation", async ({ page, browserName }) => {
-  test.skip(browserName !== "chromium", "Canonical keyboard evidence is collected in Chromium.");
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(previewRoute, { waitUntil: "networkidle" });
   const footer = page.locator('[data-component-name="Footer"]:visible').first();
@@ -51,13 +49,12 @@ test("Footer keeps native links and source-order keyboard navigation", async ({ 
   await expect(socialLinks).toHaveCount(3);
   await socialLinks.first().focus();
   await expect(socialLinks.first()).toBeFocused();
-  await page.keyboard.press("Tab");
+  await page.keyboard.press(browserName === "webkit" && process.platform === "darwin" ? "Alt+Tab" : "Tab");
   await expect(socialLinks.nth(1)).toBeFocused();
   expect(await footer.locator('[data-component-name="FooterSocialLink"] > button').count()).toBe(0);
 });
 
 test("Footer remains content-safe in RTL, dark mode, forced colors and 200% zoom", async ({ page, browserName }) => {
-  test.skip(browserName !== "chromium", "Canonical alternate-mode evidence is collected in Chromium.");
   await page.emulateMedia({ colorScheme: "dark", forcedColors: "active" });
   await page.setViewportSize({ width: 768, height: 1000 });
   await page.goto(previewRoute, { waitUntil: "networkidle" });

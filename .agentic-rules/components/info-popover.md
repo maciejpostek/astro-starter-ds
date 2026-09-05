@@ -13,6 +13,12 @@ Status: active.
 
 InfoPopover presents a concise titled explanation that may be deliberately opened, reviewed and dismissed without interrupting the surrounding task.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Supplementary information needs a title and short explanatory paragraph.
@@ -70,6 +76,8 @@ InfoPopover presents a concise titled explanation that may be deliberately opene
 - A modal or workflow dialog owns content that blocks progress, contains multiple actions or requires a decision.
 
 ## Naming and token contract
+
+Do not add controlled open state, trigger slots or arbitrary icons. Keep the interactive dialog semantics distinct from Tooltip.
 
 Use `InfoPopover`, `.info-popover`, component element classes and controlled `data-*` attributes. Reuse the approved `tooltip-size`, global color, size, motion, elevation, typography and interaction-effect groups. Public CSS declares no custom properties and no arbitrary icon namespace.
 

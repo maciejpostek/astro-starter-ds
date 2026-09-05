@@ -15,6 +15,12 @@ StatCard presents one prominent metric with a short caption, optional fixed
 trend cues and optional supporting description. The value remains the visual
 focus while the caption provides the metric's accessible identity.
 
+## Communication role
+
+- Goals: proof
+
+Support a claim with a supplied, contextualized metric. Preserve units, scope and source; never invent a statistic.
+
 ## Use when
 
 - A page needs a compact, self-contained summary of one quantitative metric.

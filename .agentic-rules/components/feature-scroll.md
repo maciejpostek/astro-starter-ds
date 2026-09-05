@@ -13,6 +13,12 @@ Status: intentional difference.
 
 FeatureScroll presents an ordered sequence of related feature explanations beside a contextually fixed visual. It supports a deliberate reading flow in which each description and its visual remain one semantic pair.
 
+## Communication role
+
+- Goals: benefits
+
+Explain how a capability addresses an audience need. Connect each benefit to evidence from the brief; avoid unsupported outcome claims.
+
 ## Use when
 
 - At least two related features should be read in a meaningful sequence.

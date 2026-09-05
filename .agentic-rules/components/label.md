@@ -13,6 +13,12 @@ Status: active.
 
 Name a form control persistently or identify a compact metric while preserving the correct native label relationship for editable fields.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A form control needs visible text connected through `for` and `id`.

@@ -13,6 +13,12 @@ Status: active.
 
 Tag communicates one short categorical value or applied filter. Its optional remove action lets users remove an already-applied filter without turning the whole Tag into an action.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Showing compact metadata such as category, technology, product, service or scope.
