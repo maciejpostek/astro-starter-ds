@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "default": "deny",
+  "allowed": [
+    {
+      "scope": "repository-local",
+      "path": ".agents/skills",
+      "namePattern": "astro-*"
+    },
+    {
+      "scope": "figma",
+      "activation": "explicit-user-request-only"
+    }
+  ],
+  "nonAllowedExamples": [
+    "Webflow",
+    "Lumos",
+    "Vercel",
+    "Sites"
+  ],
+  "nonAllowedAction": "do-not-load-invoke-or-apply",
+  "exceptionGate": {
+    "trigger": "skill-is-critical-to-current-request",
+    "requires": [
+      "name-exact-skill",
+      "explain-why-required",
+      "explicit-user-approval-before-use"
+    ],
+    "approvalScope": "named-skill-and-current-request-only",
+    "priorApprovalPersists": false,
+    "explicitNamedUserRequestCountsAsApproval": true
+  },
+  "doesNotRestrict": [
+    "repository-inspection",
+    "shell-commands",
+    "runtime-required-tools",
+    "validators"
+  ]
+}

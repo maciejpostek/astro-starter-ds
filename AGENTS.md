@@ -3,6 +3,31 @@
 This repository uses the AI-Native Design System V1.1 role-aware, reuse-first
 runtime.
 
+## Skill selection policy
+
+For work in this repository, use only:
+
+- the repository-local Astro skills under `.agents/skills` (the `astro-*`
+  skills); and
+- Figma skills, only when the user explicitly requests a Figma operation.
+
+All other skills are default-deny, including Webflow, Lumos, Vercel, Sites,
+and other globally installed, bundled, plugin-provided, or remotely available
+skills. Do not load, invoke, or apply guidance from a non-allowed skill merely
+because it appears relevant or is available in the environment.
+
+If a non-allowed skill appears critical to completing the current request,
+pause before using it, name the exact skill, explain why it is needed, and ask
+the user for explicit approval. Approval must identify the skill and is scoped
+only to the current request; do not treat prior approval as a persistent
+allowlist entry. An explicit request from the user to use a named non-allowed
+skill counts as approval for that skill in that request. If approval is absent
+or refused, continue with the allowed Astro/Figma skills when possible or
+report the limitation.
+
+This policy governs skills, not ordinary repository inspection, shell commands,
+or the validators and tools required by this runtime.
+
 Before UI, design-system, component, layout, style, token, or documentation
 work:
 

@@ -7,15 +7,7 @@
     "routeCommand": "npm run agent:route -- --prompt=<request>",
     "contextCommand": "npm run agent:context -- <component|token|compose|brand> <targets>",
     "auditCommand": "npm run audit:agent-runtime",
-    "flow": [
-      "classify",
-      "resolve-context",
-      "resolve-token-groups",
-      "approve-drafts",
-      "execute",
-      "validate",
-      "result"
-    ],
+    "flow": ["classify", "resolve-context", "resolve-token-groups", "approve-drafts", "execute", "validate", "result"],
     "singleAgent": true,
     "additionalModelRouter": false,
     "deterministicGateCommand": "npm run audit:runtime:v1.1"
@@ -35,6 +27,7 @@
     "componentReadinessContract": "architecture/component-readiness-contract.json",
     "figmaRouter": "Figma2Astro Agentic Rules/README.md",
     "figmaSyncContract": "Figma2Astro Agentic Rules/FIGMA-ASTRO-SYNC-CONTRACT.md",
+    "skillPolicy": "architecture/skill-selection-policy.json",
     "iconManifest": "src/data/design-system/iconLibrary.json",
     "architectureModel": "architecture/system-map.json"
   },
@@ -44,10 +37,7 @@
     "figma": "explicit-only",
     "browserValidation": "visual-runtime-changes-only",
     "historyOwner": "git",
-    "terminalStates": [
-      "accepted",
-      "blocked"
-    ]
+    "terminalStates": ["accepted", "blocked"]
   },
   "visualAssetPolicy": { "missingVisualBlocksComposition": false, "placeholder": "css-checkerboard", "marker": "data-visual-placeholder=missing-asset", "inventFetchOrGenerate": "explicit-authorization-only", "handoffField": "assetRequests", "releaseReadyWithMissingVisuals": false },
   "creationGate": {
@@ -76,12 +66,7 @@
     "extendExistingOwnerBeforeNewGroup": true,
     "primitiveAndGlobalSemanticRequireSeparateApproval": true
   },
-  "contextBudgets": {
-    "tiny": 4096,
-    "small": 12288,
-    "medium": 40960,
-    "large": 102400
-  },
+  "contextBudgets": { "tiny": 4096, "small": 12288, "medium": 40960, "large": 102400 },
   "profiles": {
     "exact-edit": {
       "budget": "tiny",

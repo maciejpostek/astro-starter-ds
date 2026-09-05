@@ -15,6 +15,7 @@ const requiredPaths = [
   "benchmarks/runtime-v1/schemas/terminal-result.schema.json",
   "scripts/route-agent-request.mjs",
   "scripts/resolve-agent-context.mjs",
+  "architecture/skill-selection-policy.json",
   "project-context/brand-foundations/brand-expression/contract.json",
   "project-context/brand-foundations/brand-expression/contract.schema.json"
 ];
@@ -31,6 +32,31 @@ if (Buffer.byteLength(routerSource, "utf8") > 8 * 1024) {
 }
 
 const router = JSON.parse(routerSource);
+const skillPolicy = JSON.parse(read("architecture/skill-selection-policy.json"));
+const localAstroSkills = skillPolicy.allowed?.some(
+  (entry) =>
+    entry.scope === "repository-local" &&
+    entry.path === ".agents/skills" &&
+    entry.namePattern === "astro-*"
+);
+const explicitFigmaSkills = skillPolicy.allowed?.some(
+  (entry) =>
+    entry.scope === "figma" &&
+    entry.activation === "explicit-user-request-only"
+);
+if (
+  router.sources?.skillPolicy !== "architecture/skill-selection-policy.json" ||
+  skillPolicy.default !== "deny" ||
+  !localAstroSkills ||
+  !explicitFigmaSkills ||
+  skillPolicy.nonAllowedAction !== "do-not-load-invoke-or-apply" ||
+  skillPolicy.exceptionGate?.approvalScope !== "named-skill-and-current-request-only" ||
+  skillPolicy.exceptionGate?.priorApprovalPersists !== false ||
+  skillPolicy.exceptionGate?.explicitNamedUserRequestCountsAsApproval !== true ||
+  !skillPolicy.exceptionGate?.requires?.includes("explicit-user-approval-before-use")
+) {
+  errors.push("Skill policy must default-deny non-Astro/Figma skills and require scoped explicit approval for exceptions.");
+}
 if (
   router.visualAssetPolicy?.missingVisualBlocksComposition !== false ||
   router.visualAssetPolicy?.placeholder !== "css-checkerboard" ||
