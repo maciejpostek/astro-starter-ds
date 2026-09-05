@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Content from "../components/website-patterns/content/Content.astro";
+import Button from "../components/base-components/buttons/Button.astro";
+---
+<BaseLayout title="Zgłoszenia klientów w jednym miejscu" lang="pl">
+  <section class="l-section"><div class="l-container">
+    <Content heading="Zgłoszenia klientów w jednym miejscu" headingLevel={1}
+      paragraph="Zbierz prośby klientów swojej agencji w jednym miejscu." />
+  </div></section>
+  <section class="l-section"><div class="l-container">
+    <Content heading="Zobacz, jak uporządkować zgłoszenia" paragraph="Poproś o demonstrację dla swojej agencji." />
+    <Button type="button">Poproś o demo</Button>
+  </div></section>
+</BaseLayout>

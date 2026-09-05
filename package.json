@@ -99,6 +99,7 @@
     "audit:runtime:v1.1": "node scripts/benchmark-agent-runtime.mjs deterministic --experiment=runtime-v1.1-final",
     "brand:generate": "node scripts/generate-brand-contract-doc.mjs .",
     "brand:check": "node scripts/generate-brand-contract-doc.mjs . --check",
+    "test:strategic-compose": "node scripts/test-strategic-compose-integration.mjs",
     "test:agent-runtime": "node --test tests/agent-runtime.test.mjs",
     "test:button-primary-alternate": "node --test tests/button-primary-alternate.test.mjs",
     "test:eyebrow": "node --test tests/eyebrow.test.mjs",

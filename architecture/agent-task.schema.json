@@ -17,6 +17,12 @@
     "excludedContexts"
   ],
   "properties": {
+    "contentMode": {"enum": ["none", "provided", "generate"]},
+    "language": {"type": ["string", "null"]},
+    "editScope": {"enum": ["instance", "component"]},
+    "communicationGoal": {"type": "string"},
+    "brandThemes": {"type": "array", "items": {"type": "string"}},
+
     "version": {
       "enum": ["1.0.0", "1.1.0"]
     },
@@ -120,7 +126,7 @@
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "enum": ["responsive", "figma"]
+        "enum": ["responsive", "figma", "component-readiness"]
       }
     },
     "tokenNeed": {

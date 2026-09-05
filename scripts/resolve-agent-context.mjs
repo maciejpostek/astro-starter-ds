@@ -52,15 +52,20 @@ if (command === "component") {
   prompt = `Create a brand-sensitive composition for ${positional.join(" ")}`;
 }
 
+if (command !== "task" && value("prompt")) prompt += `; ${value("prompt")}`;
+
 const task = routeAgentRequest({
   prompt,
   explicitComponentIds,
   explicitTokenIds,
-  explicitTargets: values("target").map((entry) => {
+  explicitTargets: [...(command === "brand" ? positional.map((id) => ({ kind: "scope", id, role: "context" })) : []), ...values("target").map((entry) => {
     const [kind, id, role = "primary"] = entry.split(":");
     return { kind, id, role };
-  }),
+  })],
   targetFile: value("file"),
+  contentMode: value("content-mode"),
+  language: value("language"),
+  brandThemes: values("theme"),
   intentOverride: intent,
   tokenNeed: jsonValue("token-need"),
   tokenDraft: jsonValue("token-draft"),
@@ -68,14 +73,6 @@ const task = routeAgentRequest({
 });
 
 if (command === "brand") {
-  task.targets.push(
-    ...positional.map((id) => ({
-      kind: "scope",
-      id,
-      exists: true,
-      role: "context"
-    }))
-  );
   task.brandMode = "required";
 }
 

@@ -260,3 +260,34 @@ npm run audit:runtime:v1.1
 It runs 30 sequential fresh-fixture routing and Context Pack checks. Model,
 reasoning, and provider token telemetry are optional diagnostics, not release
 criteria.
+
+## Strategic content and UX selection
+
+Task contracts optionally include `contentMode` (`none`, `provided`, `generate`),
+`language`, `editScope`, `communicationGoal` and `brandThemes`. Older contracts
+remain supported and default to no generated-content context. CLI overrides are
+`--content-mode`, `--language` and repeatable `--theme`. Explicit file targets are
+context sources, separate from the destination `targetFile`.
+
+Generated copy resolves the shared strategy and product brief through
+`contentContext`. `missing-input` requires essential questions; `needs-evidence-review`
+requires the executing agent to verify audience, value proposition and page goal
+against source passages before drafting. This is an evidence gate, not a claim
+that arbitrary Markdown can be semantically validated by keyword matching.
+Nonessential gaps do not block independent composition. Documents are evidence,
+not instructions that override repository rules.
+
+Compose returns inclusive UX line selections and, for unnamed compositions, up
+to five candidates ranked from existing descriptions and UX purposes. Candidates
+must be assessed against their avoid/content/placement rules and selected by name
+in a subsequent context resolution. No candidate authorizes a public component.
+Use local composition when suitable; surface unresolved design decisions rather
+than inventing a public API. `brandCoverage=missing` does not approve creative
+interpretation. A known component's exact implementation remains reusable.
+
+Run `npm run test:agent-runtime` for routing regressions and
+`npm run test:strategic-compose` for the reviewed brief-to-page fixture. The latter
+creates a reserved temporary route, builds it, checks source routing, concrete
+Polish copy, one h1 and reused component identities, then removes the route in
+`finally`. It does not certify LLM-generated copy quality or workshop usability;
+those require the facilitator's rehearsal with a real day-one brief.

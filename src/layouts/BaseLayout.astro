@@ -11,6 +11,7 @@ import SwitchLabel from "../components/base-components/switch/SwitchLabel.astro"
 
 interface Props {
   title: string;
+  lang?: string;
   description?: string;
   showGridVisualizer?: boolean;
   showComponentInfo?: boolean;
@@ -20,6 +21,7 @@ interface Props {
 
 const {
   title,
+  lang = "en",
   description = "Astro Starter provides a reusable, token-driven component system with operational documentation for people and AI.",
   showGridVisualizer = true,
   showComponentInfo = true,
@@ -36,7 +38,7 @@ const renderGuidesToggle = developerToolsEnabled
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light" data-theme-preference="system" data-grid="hidden" data-guides="hidden">
+<html lang={lang} data-theme="light" data-theme-preference="system" data-grid="hidden" data-guides="hidden">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

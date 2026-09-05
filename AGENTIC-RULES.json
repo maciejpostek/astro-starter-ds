@@ -20,6 +20,8 @@
     "tokenSourceRoot": "src/styles/tokens",
     "categoryRuleRoot": ".agentic-rules",
     "brandContract": "project-context/brand-foundations/brand-expression/contract.json",
+    "brandStrategy": "project-context/brand-foundations/strategy.md",
+    "productBrief": "project-context/content/product-brief.md",
     "projectContext": "project-context/README.md",
     "frameworkStrategy": "DESIGN-SYSTEM-FRAMEWORK.md",
     "responsiveStrategy": ".agentic-rules/09-responsive.md",
@@ -31,6 +33,7 @@
     "iconManifest": "src/data/design-system/iconLibrary.json",
     "architectureModel": "architecture/system-map.json"
   },
+  "contentRouting": {"modes": ["none", "provided", "generate"], "defaultCopy": "concrete-proposal", "essentialEvidence": ["audience", "value-proposition", "page-goal"], "missingEssential": "ask-before-dependent-copy", "businessContextIsVisualApproval": false},
   "defaults": {
     "reuseFirst": true,
     "allowNewComponents": false,
@@ -51,13 +54,7 @@
     "approvedNameRequired": true
   },
   "tokenGate": {
-    "resolutionOrder": [
-      "component",
-      "dependency",
-      "use-case",
-      "global",
-      "primitive-as-approved-alias-source"
-    ],
+    "resolutionOrder": ["component", "dependency", "use-case", "global", "primitive-as-approved-alias-source"],
     "outcomes": ["reuse", "ambiguous", "gap"],
     "ambiguousOutcome": "blocked-for-human-decision",
     "gapOutcome": "blocked-with-tokenDraft",
@@ -70,159 +67,68 @@
   "profiles": {
     "exact-edit": {
       "budget": "tiny",
-      "reads": [
-        "exact target definitions",
-        "referenced aliases"
-      ],
-      "skips": [
-        "component registry",
-        "family rules",
-        "brand contract",
-        "art direction",
-        "Figma",
-        "full build"
-      ],
+      "reads": ["exact target definitions", "referenced aliases"],
+      "skips": ["component registry", "family rules", "brand contract", "art direction", "Figma", "full build"],
       "validation": "token",
       "maxRepairAttempts": 1
     },
     "reuse": {
       "budget": "small",
-      "reads": [
-        "one component context record",
-        "component source",
-        "target file"
-      ],
-      "skips": [
-        "family rules",
-        "brand contract",
-        "art direction",
-        "Figma"
-      ],
+      "reads": ["one component context record", "component source", "target file"],
+      "skips": ["family rules", "brand contract", "art direction", "Figma"],
       "validation": "component-use",
       "maxRepairAttempts": 1
     },
     "compose": {
       "budget": "medium",
-      "reads": [
-        "named component records",
-        "direct dependencies",
-        "component authoring contract",
-        "registered token groups for the named components",
-        "compact layout contract",
-        "compact intrinsic-first responsive contract",
-        "matching approved brand rules when applicable",
-        "target file"
-      ],
-      "skips": [
-        "full component registry",
-        "creation rules",
-        "Figma"
-      ],
+      "reads": ["named component records", "selected component UX line ranges", "strategic sources when contentMode=generate", "direct dependencies", "component authoring contract", "registered token groups for the named components", "compact layout contract", "compact intrinsic-first responsive contract", "matching approved brand rules when applicable", "target file"],
+      "skips": ["full component registry", "creation rules", "Figma"],
       "validation": "page-composition",
       "maxRepairAttempts": 2
     },
     "repair": {
       "budget": "small",
-      "reads": [
-        "component source",
-        "direct dependencies",
-        "matching family rule",
-        "component authoring contract",
-        "registered token groups"
-      ],
-      "skips": [
-        "unrelated families",
-        "Figma"
-      ],
+      "reads": ["component source", "direct dependencies", "matching family rule", "component authoring contract", "registered token groups"],
+      "skips": ["unrelated families", "Figma"],
       "validation": "component-repair",
       "maxRepairAttempts": 2
     },
     "extend": {
       "budget": "large",
-      "reads": [
-        "component source and API",
-        "matching family and category rules",
-        "affected tokens and documentation",
-        "component authoring contract",
-        "token resolution and approved tokenDraft when a gap exists"
-      ],
-      "skips": [
-        "unrelated families",
-        "Figma"
-      ],
+      "reads": ["component source and API", "matching family and category rules", "affected tokens and documentation", "component authoring contract", "token resolution and approved tokenDraft when a gap exists"],
+      "skips": ["unrelated families", "Figma"],
       "validation": "component-contract",
       "maxRepairAttempts": 2
     },
     "create": {
       "budget": "large",
-      "reads": [
-        "phase 1: gap evidence, creation rules, dependencies, Brand Contract status",
-        "phase 2: registered token groups and proposed tokenDraft when needed",
-        "phase 3: selected family rule, responsive strategy and declared registry/Guides projections after approvals"
-      ],
-      "skips": [
-        "Figma unless explicitly requested"
-      ],
+      "reads": ["phase 1: gap evidence, creation rules, dependencies, Brand Contract status", "phase 2: registered token groups and proposed tokenDraft when needed", "phase 3: selected family rule, responsive strategy and declared registry/Guides projections after approvals"],
+      "skips": ["Figma unless explicitly requested"],
       "validation": "component-creation",
       "maxRepairAttempts": 2
     }
   },
   "brandActivation": {
-    "skip": [
-      "exact token edit",
-      "named existing component reuse"
-    ],
-    "approvedOnly": [
-      "composition with named components",
-      "extension that applies existing visual rules"
-    ],
-    "required": [
-      "open-ended composition",
-      "new visual component",
-      "new or changed visual direction"
-    ],
+    "skip": ["exact token edit", "named existing component reuse"],
+    "approvedOnly": ["composition with named components", "extension that applies existing visual rules"],
+    "required": ["open-ended composition", "new visual component", "new or changed visual direction"],
     "unapprovedOutcome": "blocked-for-creative-interpretation",
     "humanApproval": "required-for-new-direction-or-propagation"
   },
   "validationRouting": {
-    "token": [
-      "affected foundation audit"
-    ],
-    "component-use": [
-      "targeted component API or Astro check"
-    ],
-    "page-composition": [
-      "Astro check or build",
-      "browser validation when visual or responsive behavior changed"
-    ],
-    "component-repair": [
-      "matching family audit"
-    ],
-    "component-contract": [
-      "component readiness audit",
-      "component registry audit",
-      "matching family audit",
-      "build"
-    ],
-    "component-creation": [
-      "component readiness audit",
-      "component registry audit",
-      "agent runtime audit",
-      "matching family audit",
-      "documentation validation",
-      "build"
-    ]
+    "token": ["affected foundation audit"],
+    "component-use": ["targeted component API or Astro check"],
+    "page-composition": ["Astro check or build", "browser validation when visual or responsive behavior changed"],
+    "component-repair": ["matching family audit"],
+    "component-contract": ["component readiness audit", "component registry audit", "matching family audit", "build"],
+    "component-creation": ["component readiness audit", "component registry audit", "agent runtime audit", "matching family audit", "documentation validation", "build"]
   },
   "resultContract": {
     "fields": ["status", "intent", "reused", "createdComponents", "changedFiles", "readinessGates", "validation", "assetRequests", "missingInput"],
     "trackedRunHistory": false
   },
   "targetSemantics": {
-    "roles": [
-      "primary",
-      "dependency",
-      "context"
-    ],
+    "roles": ["primary", "dependency", "context"],
     "negations": "constraints.prohibitedCreations",
     "targetFile": "validated repository-relative existing file"
   },
@@ -236,21 +142,7 @@
   },
   "contextPack": {
     "version": "1.1.0",
-    "fields": [
-      "requiredReads",
-      "readPlan",
-      "declaredSourceBytes",
-      "sourceLimitBytes",
-      "phase",
-      "nextStep",
-      "tokenNeed",
-      "tokenResolution",
-      "tokenDraft"
-    ],
-    "createPhases": [
-      "create-planning",
-      "token-planning",
-      "create-family-resolution"
-    ]
+    "fields": ["requiredReads", "readPlan", "declaredSourceBytes", "sourceLimitBytes", "phase", "nextStep", "tokenNeed", "tokenResolution", "tokenDraft"],
+    "createPhases": ["create-planning", "token-planning", "create-family-resolution"]
   }
 }

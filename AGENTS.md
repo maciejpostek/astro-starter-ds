@@ -117,3 +117,28 @@ Figma parity is not part of normal Astro validation.
 Project-specific content belongs in `project-context`, project routes, project
 data, and project assets. Do not infer a brand, audience, offer, or business
 model from neutral starter examples.
+
+## Strategic composition and copy
+
+For new pages, sections, wireframes, campaign narratives or generated copy, use
+`contentMode=generate` and read the resolver's `contentContext.sources`. Confirm
+source-backed audience, value proposition and page goal before writing dependent
+copy; ask only for missing essentials. Continue independent layout work. Use
+concrete proposed copy, never meta-placeholders unless requested. Separate facts,
+approved assumptions and unknowns; never overwrite shared strategy with a brief.
+Exact supplied copy uses `provided`; technical edits use `none`.
+
+For compose, materialize the selected UX line ranges in `readPlan`. Candidates
+are suggestions, not an implementation decision: verify purpose, avoid rules and
+content requirements, then resolve the chosen component names. Prefer reuse,
+existing variants and local composition. If no fit exists, explain the gap and
+ask only for the missing design decision or authorization for a public component.
+A targetFile means a local instance edit; do not change shared component behavior
+unless explicitly requested. Strategy is not approval for visual interpretation.
+When brand coverage is missing, reuse exact existing design and defer creative
+interpretation until applicable rules are approved.
+
+After human approval of a visual change, assess whether it introduces a reusable
+brand rule. Update the existing Brand Expression JSON only for those accepted
+rules and run `npm run brand:generate`; do not promote experiments or isolated
+CSS corrections to brand principles.
