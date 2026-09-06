@@ -16,6 +16,12 @@ that group a quiet lower boundary. It makes labels such as customer logos,
 available tags or related resources scannable without introducing a document
 heading or the category-prelabel relationship owned by Eyebrow.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A collection of logos, tags, metrics or repeated items needs a concise visible label.

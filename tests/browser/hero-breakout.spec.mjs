@@ -15,9 +15,6 @@ test("HeroBreakout preserves semantics, top-inset breakout geometry and responsi
 
   await page.setViewportSize({ width: 1600, height: 1200 });
   await page.goto(previewRoute, { waitUntil: "networkidle" });
-  if (await page.locator("[data-preview-controls-toggle]").count() === 0) {
-    await page.goto(`${previewRoute}/`, { waitUntil: "networkidle" });
-  }
   await page.locator("[data-preview-controls-toggle]").click();
   await page.locator(
     ".ds-responsive-preview-canvas__back, [data-preview-handle]",

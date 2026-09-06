@@ -52,30 +52,33 @@ if (command === "component") {
   prompt = `Create a brand-sensitive composition for ${positional.join(" ")}`;
 }
 
+if (command !== "task" && value("prompt")) prompt = value("prompt");
+
 const task = routeAgentRequest({
   prompt,
   explicitComponentIds,
   explicitTokenIds,
-  explicitTargets: values("target").map((entry) => {
+  explicitTargets: [...(command === "brand" ? positional.map((id) => ({ kind: "scope", id, role: "context" })) : []), ...values("target").map((entry) => {
     const [kind, id, role = "primary"] = entry.split(":");
     return { kind, id, role };
-  }),
+  })],
   targetFile: value("file"),
-  intentOverride: intent,
+  contentMode: value("content-mode"),
+  contentStyle: value("content-style"),
+  requiresStrategicContext: value("strategy") === "true",
+  editScope: value("edit-scope"),
+  communicationGoal: value("goal"),
+  product: value("product"),
+  campaign: value("campaign"),
+  language: value("language"),
+  brandThemes: values("theme"),
+  intentOverride: value("intent") ?? (value("prompt") ? undefined : intent),
   tokenNeed: jsonValue("token-need"),
   tokenDraft: jsonValue("token-draft"),
   projectRoot
 });
 
 if (command === "brand") {
-  task.targets.push(
-    ...positional.map((id) => ({
-      kind: "scope",
-      id,
-      exists: true,
-      role: "context"
-    }))
-  );
   task.brandMode = "required";
 }
 
@@ -92,7 +95,9 @@ const creationDraft =
         layer: value("layer"),
         family: value("family"),
         sourcePath: value("source"),
-        docsPath: value("docs")
+        docsPath: value("docs"),
+        approvalStatus: value("creation-approval") ?? "proposed",
+        approvalBasis: value("approval-basis") ?? null
       }
     : undefined;
 const context = resolveAgentContext({ task, projectRoot, creationDraft });

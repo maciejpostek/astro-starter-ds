@@ -13,6 +13,12 @@ Status: intentional difference.
 
 FAQ presents recurring questions and concise answers as one labelled website section. It combines a clear introduction with a scannable disclosure list while preserving the familiar Accordion interaction model.
 
+## Communication role
+
+- Goals: questions
+
+Resolve audience objections with sourced answers. Do not create policies or capabilities to fill an accordion.
+
 ## Use when
 
 - A page needs a dedicated section for questions that recur across many users.

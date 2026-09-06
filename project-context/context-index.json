@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "sources": [
+    {
+      "id": "brand-strategy",
+      "path": "project-context/brand-foundations/strategy.md",
+      "role": "strategy",
+      "status": "template"
+    },
+    {
+      "id": "brand-voice",
+      "path": "project-context/brand-foundations/tone-of-voice.md",
+      "role": "tone-of-voice",
+      "status": "template"
+    },
+    {
+      "id": "product-brief",
+      "path": "project-context/content/product-brief.md",
+      "role": "brief",
+      "status": "template"
+    }
+  ]
+}

@@ -86,7 +86,7 @@ test("keeps the approved LogoCard source, token, architecture and documentation 
   assert.deepEqual(record?.props, ["slug", "alt", "loading"]);
   assert.deepEqual(record?.slots, []);
   assert.deepEqual(record?.variants, []);
-  assert.equal(route?.route, "/design-system/website-patterns/brand-logo-proof/");
+  assert.equal(route?.route, "/design-system/website-patterns/brand-logo-proof");
 
   assert.match(docs, /componentId:\s*"logo-card"/u);
   assert.match(docs, /renderer:\s*DsLogoCardPreview/u);

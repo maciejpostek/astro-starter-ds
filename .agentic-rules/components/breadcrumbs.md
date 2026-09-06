@@ -13,6 +13,12 @@ Status: active.
 
 Breadcrumbs communicates the current page's position inside a hierarchical information structure and provides links back to its ancestors.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A page sits at least two levels below a recognizable section or home level.

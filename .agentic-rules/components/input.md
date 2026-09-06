@@ -13,6 +13,12 @@ Status: active.
 
 Collect a short or multiline text value through a native form control while exposing clear focus, validation and disabled states.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - The user must enter or edit a free-form textual value.

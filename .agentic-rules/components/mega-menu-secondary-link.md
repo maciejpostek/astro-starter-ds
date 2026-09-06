@@ -13,6 +13,12 @@ Status: active.
 
 MegaMenuSecondaryLink presents standard supporting destinations in the second and third mega-menu columns.
 
+## Communication role
+
+- Goals: navigation
+
+Help users find the intended destination. Preserve accurate labels, links and current-location semantics.
+
 ## Use when
 
 - A destination belongs to either supporting mega-menu column.

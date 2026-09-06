@@ -13,6 +13,12 @@ Status: active.
 
 Represent one descriptive tab choice with a visible determinate playback indicator above its label.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A timed tabbed-content pattern needs to show the remaining interval for its active panel.
@@ -31,7 +37,7 @@ Provide non-empty `id`, `controls` and visible default-slot text. `progress` def
 ## Composition and placement
 
 Use ProgressTab only as a direct child of Tabs or another conforming tablist. ProgressTab composes one decorative ProgressBar; the owning pattern controls its value and owns the external panel.
-The surface stays neutral in every state. Active copy uses the primary text color at full opacity; inactive copy uses the same color at 50% opacity and returns to full opacity on hover. Selection is additionally communicated by the ProgressBar fill rather than a selected background.
+The surface stays neutral in every state. Active copy uses the primary text color at full opacity; inactive copy uses the semantic tab text color and returns to the primary text color on hover. Do not dim readable text with opacity. Selection is additionally communicated by the ProgressBar fill rather than a selected background.
 
 ## Responsive behavior
 

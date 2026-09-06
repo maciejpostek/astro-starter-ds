@@ -13,6 +13,12 @@ Status: active.
 
 Breadcrumb is one addressable level inside a Breadcrumbs hierarchy. It owns the label, optional destination, current-page state and the following chevron separator.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Composing a Breadcrumbs trail from explicit hierarchy levels.

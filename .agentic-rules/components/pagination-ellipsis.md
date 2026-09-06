@@ -13,6 +13,12 @@ Status: active.
 
 PaginationEllipsis marks a discontinuity in a bounded page range without creating an unavailable destination.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A PaginationGroup omits one or more page numbers between visible destinations.

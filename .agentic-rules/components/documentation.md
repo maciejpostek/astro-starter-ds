@@ -40,7 +40,7 @@ Every migrated component detail page uses this order:
 3. Preview controls below the scene.
 4. API.
 5. Linked dependencies with implementation reasons.
-6. The canonical Component UX rule rendered from Markdown.
+6. The canonical Component Agentic Rules rendered from Markdown.
 
 Do not render a Component metadata table, second Overview or Registry Contract
 card. Registry identity, token mappings, sync status and agentic rules remain
@@ -320,7 +320,7 @@ tokens, icons and component rules. Do not store hand-authored internal hrefs in
 component documentation definitions. The same relation graph renders direct
 dependencies, reverse `Used by` references and global search destinations.
 
-Component UX rules are loaded from each component's canonical Markdown file.
+Component Agentic Ruless are loaded from each component's canonical Markdown file.
 The page renders the complete unmodified source as one copyable Markdown code
 snippet instead of duplicating it as a second formatted article. The required
 sections are UX purpose, Use when, Avoid when, Content contract, Composition
@@ -343,7 +343,7 @@ For every implemented registry record:
 4. Reuse the dynamic component route and `DsComponentDetail`; do not create a
    component-specific page route or table.
 5. Pass source and canonical Figma resources to the shared page header and
-   render the canonical Component UX rule. Do not add Component metadata or
+   render the canonical Component Agentic Rules. Do not add Component metadata or
    duplicate Foundation tables on the component page. Do not add a Variables section.
 
 An implemented Base Component or Website Pattern without a documentation

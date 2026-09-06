@@ -117,3 +117,38 @@ Figma parity is not part of normal Astro validation.
 Project-specific content belongs in `project-context`, project routes, project
 data, and project assets. Do not infer a brand, audience, offer, or business
 model from neutral starter examples.
+
+## Strategic composition and copy
+
+For every new page, section or wireframe, and whenever copy is generated or
+rewritten, read the resolver's `contentContext.sources` selected through
+`project-context/context-index.json`: strategy, tone of voice and the matching
+product/campaign brief. Preserve the original prompt and its explicit content
+request. `contentMode` describes none/provided/generate; `contentStyle` separately
+describes concrete/placeholders. New composition requires strategy even with
+provided copy or requested placeholders. Confirm
+source-backed audience, value proposition and page goal before writing dependent
+copy; ask only for missing essentials. Continue independent layout work. Use
+concrete proposed copy, never meta-placeholders unless requested. Separate facts,
+approved assumptions and unknowns; never overwrite shared strategy with a brief.
+Exact supplied copy uses `provided`; technical edits use `none`.
+
+Materialize the selected Agentic Rules line ranges and JSON pointers in
+`readPlan`, not whole files. The canonical component rule includes communication,
+UX and technical sections. Compose and copy edits read communication sections;
+CSS edits read technical sections. `agent:rules:generate` projects discovery
+metadata into the existing registry; `audit:rule-index` detects drift. Candidates
+are suggestions, not an implementation decision: verify purpose, avoid rules and
+content requirements, then resolve the chosen component names. Prefer reuse,
+existing variants and local composition. If no fit exists, explain the gap and
+ask only for the missing design decision or authorization for a public component.
+A targetFile identifies the destination; an explicit shared/global edit takes
+precedence over the default instance scope. New destinations are permitted only
+for explicitly requested Astro pages under src/pages. Strategy is not approval for visual interpretation.
+When brand coverage is missing, reuse exact existing design and defer creative
+interpretation until applicable rules are approved.
+
+After human approval of a visual change, assess whether it introduces a reusable
+brand rule. Update the existing Brand Expression JSON only for those accepted
+rules and run `npm run brand:generate`; do not promote experiments or isolated
+CSS corrections to brand principles.

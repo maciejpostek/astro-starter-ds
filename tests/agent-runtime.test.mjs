@@ -177,8 +177,8 @@ test("open-ended page composition requires approved brand context without enabli
       rules: []
     }
   });
-  assert.equal(context.status, "blocked");
-  assert.match(context.missing.join(" "), /No approved Brand\/Composition/u);
+  assert.equal(context.status, "ready");
+  assert.equal(context.executionReadiness.visual, "reuse-only");
 });
 
 test("a missing component is blocked unless reusable component creation is explicit", () => {
@@ -340,6 +340,8 @@ test("create family resolution narrows reads to the family and projections", () 
       rules: []
     },
     creationDraft: {
+      approvalStatus: "approved",
+      approvalBasis: "user-request",
       layer: "atom",
       family: "buttons",
       sourcePath: "src/components/base-components/buttons/Keycap.astro",
@@ -357,7 +359,7 @@ test("create family resolution narrows reads to the family and projections", () 
       "component-readiness-rule",
       "component-readiness-contract",
       "creation-family-rule",
-      "registry-projection",
+      "component-gap-evidence",
       "guides-projection",
       "responsive-strategy-rule"
     ]
@@ -426,6 +428,8 @@ test("Figma creation context is loaded only after an explicit Figma request", ()
       rules: []
     },
     creationDraft: {
+      approvalStatus: "approved",
+      approvalBasis: "user-request",
       layer: "atom",
       family: "buttons",
       sourcePath: "src/components/base-components/buttons/Keycap.astro",
@@ -750,4 +754,102 @@ test("brand resolution returns only approved matching implementation rules", () 
   assert.deepEqual(resolved.rules[0].implementation.attributes, {
     "data-theme": "dark"
   });
+});
+
+test("strategic generation includes both templates without authorizing invented copy", () => {
+  for (const prompt of ["Stwórz wireframe strony głównej po polsku", "Create a landing page for a campaign", "Zaproponuj landing page", "Przygotuj wireframe strony"]) {
+    const task = routeAgentRequest({ prompt, projectRoot });
+    assert.equal(task.intent, "compose");
+    assert.equal(task.contentMode, "generate");
+    assert.deepEqual(validateTaskContract(task), []);
+    const context = resolveAgentContext({ task, projectRoot });
+    assert.equal(context.contentContext.status, "missing-input");
+    assert.equal(context.contentContext.sources.length, 3);
+    assert.ok(context.contentContext.questions.length);
+    assert.equal(task.allowNewComponents, false);
+  }
+});
+
+test("business context does not activate visual interpretation for named copy edits", () => {
+  const task = routeAgentRequest({ prompt: "Napisz tekst dla Hero5050 na podstawie strategii marki i ICP", projectRoot });
+  assert.equal(task.contentMode, "generate");
+  assert.equal(task.brandMode, "skip");
+  const context = resolveAgentContext({task, projectRoot});
+  assert.equal(context.contentContext.sources.length, 3);
+});
+
+test("exact supplied copy and technical edits keep strategy out of the read plan", () => {
+  for (const options of [
+    {prompt: 'Zamień tekst Button na "Kontakt"'},
+    {prompt: "Change Button color"},
+    {prompt: "Zmień kolor tekstu Button"},
+  ]) {
+    const task = routeAgentRequest({...options, projectRoot});
+    const context = resolveAgentContext({task, projectRoot});
+    assert.equal(context.contentContext.sources.length, 0);
+  }
+});
+
+test("explicit context sources survive routing separately from destination", () => {
+  const task = routeAgentRequest({ prompt: "Reuse Button", projectRoot,
+    targetFile: "src/pages/index.astro",
+    explicitTargets: [{kind: "file", id: "project-context/content/product-brief.md", role: "context"}]
+  });
+  const context = resolveAgentContext({task, projectRoot});
+  assert.ok(context.readPlan.some(r => r.reason === "explicit-context-source" && r.path.endsWith("product-brief.md")));
+  assert.equal(context.editScope, "instance");
+  const invalid = routeAgentRequest({prompt: "Reuse Button", projectRoot, explicitTargets: [{kind: "file", id: "../outside.md", role: "context"}]});
+  assert.equal(resolveAgentContext({task: invalid, projectRoot}).status, "blocked");
+});
+
+test("compose materializes bounded UX sections and discovers candidates from existing records", () => {
+  const task = routeAgentRequest({prompt: "Compose a page with Hero5050 and PricingCard", projectRoot});
+  const context = resolveAgentContext({task, projectRoot});
+  const reads = context.readPlan.filter(r => r.reason === "component-ux-contract");
+  assert.ok(reads.some(r => r.selection.heading === "Avoid when"));
+  assert.ok(reads.every(r => r.selection.startLine <= r.selection.endLine));
+  const unnamed = resolveAgentContext({task: routeAgentRequest({prompt: "Stwórz sekcję wyjaśniającą proces współpracy krok po kroku", projectRoot}), projectRoot});
+  assert.ok(unnamed.componentCandidates.length > 0 && unnamed.componentCandidates.length <= 5);
+  assert.ok(unnamed.componentCandidates.every(c => c.sourcePath && c.decision.includes("candidate-only")));
+});
+
+test("redesign distinguishes local instance from shared component changes", () => {
+  const shared = routeAgentRequest({prompt: "Przeprojektuj Button", projectRoot});
+  assert.equal(shared.intent, "extend");
+  const local = routeAgentRequest({prompt: "Przeprojektuj Button na stronie", targetFile: "src/pages/index.astro", projectRoot});
+  assert.equal(local.intent, "compose");
+  assert.equal(local.editScope, "instance");
+  assert.equal(local.allowNewComponents, false);
+});
+
+test("brand themes and creation context use approved matching rules; coverage is explicit", () => {
+  const contract = {status: "approved", rules: [{id: "sample", status: "approved", appliesTo: {themes: ["editorial"], components: ["NewEditorialCard"]}}]};
+  assert.equal(resolveBrandRules(contract, {themes: ["editorial"]}).rules.length, 1);
+  const task = routeAgentRequest({prompt: "Create a new reusable NewEditorialCard design-system component", projectRoot});
+  const context = resolveAgentContext({task, projectRoot, contractOverride: contract});
+  assert.equal(context.brandRules[0].id, "sample");
+  const empty = resolveAgentContext({task, projectRoot, contractOverride: {status: "approved", rules: []}});
+  assert.equal(empty.brandCoverage, "missing");
+  assert.equal(empty.creativeInterpretation, "blocked-missing-applicable-rules");
+  assert.equal(resolveAgentContext({task, projectRoot, contractOverride: {status: "draft", rules: []}}).executionReadiness.visual, "reuse-only");
+});
+
+test("new task fields validate and old contracts remain supported", () => {
+  const task = routeAgentRequest({prompt: "Reuse Button", contentMode: "invalid", language: "<pl>", projectRoot});
+  assert.ok(validateTaskContract(task).length >= 2);
+});
+
+test("a real brief requests evidence review and never silently certifies unknown facts", async () => {
+  const { resolveContentContext } = await import("../scripts/lib/strategic-context.mjs");
+  const root = await mkdtemp(join(tmpdir(), "strategic-evidence-"));
+  try {
+    await mkdir(join(root, "project-context/content"), { recursive: true });
+    await writeFile(join(root, "project-context/content/product-brief.md"), "# Brief\n## Audience\nSmall agencies.\n## Value proposition\nOne place for project requests.\n## Goal\nRequest a demo.\nPrice unknown.\n");
+    const context = resolveContentContext({ contentMode: "generate", language: "pl" }, root);
+    assert.equal(context.status, "needs-evidence-review");
+    assert.equal(context.language, "pl");
+    assert.deepEqual(context.requiredEvidence, ["audience", "value-proposition", "page-goal"]);
+    assert.equal(context.sources.length, 1);
+    assert.equal(context.missingSources.length, 2);
+  } finally { await rm(root, {recursive: true, force: true}); }
 });

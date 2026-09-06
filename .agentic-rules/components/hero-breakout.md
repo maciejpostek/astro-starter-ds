@@ -13,6 +13,12 @@ Status: intentional difference.
 
 HeroBreakout opens a page with one primary promise, a concise included-benefits list, an optional lower action area and a significant edge-reaching visual.
 
+## Communication role
+
+- Goals: introduction
+
+Introduce the page proposition and audience relevance. Use the approved hierarchy and existing visual design; do not redefine the hero pattern per page.
+
 ## Use when
 
 - A page-opening hero needs structured benefits in addition to introductory copy.

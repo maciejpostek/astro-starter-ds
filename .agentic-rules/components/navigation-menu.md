@@ -13,6 +13,12 @@ Status: active.
 
 NavigationMenu groups the top-level navigation items in one semantic list shared by standard and full presentations.
 
+## Communication role
+
+- Goals: navigation
+
+Help users find the intended destination. Preserve accurate labels, links and current-location semantics.
+
 ## Use when
 
 - Composing the `menu` region of Navigation from `NavLink`, `NavDropdown` and `MegaMenu` children.

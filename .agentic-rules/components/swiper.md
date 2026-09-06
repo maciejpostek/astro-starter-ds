@@ -13,6 +13,12 @@ Status: active; visual review pending.
 
 Provide one reusable, accessible and container-responsive snap carousel whose content and bounded behavior can change per instance without duplicating the runtime structure.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Two or more peer items should be browsed horizontally in one shared region.
@@ -45,6 +51,8 @@ Swiper is a neutral region pattern. It owns the Swiper viewport, wrapper, option
 
 The root is a named `role="region"` with `aria-roledescription="carousel"`. Swiper A11y labels slides and optional controls; Keyboard operates only while the carousel is in the viewport. Autoplay is off by default. When enabled it exposes a Pause/Play button, pauses on hover and focus, and is disabled when Reduced Motion is requested. Loop and rewind are mutually exclusive. The runtime emits `astro-ds:swiper-ready`, `astro-ds:swiper-slide-change` and `astro-ds:swiper-autoplay-state` without moving focus.
 
+Pagination bullets retain a small visual dot inside the existing small-control hit area; never shrink the native button to the dot geometry.
+
 ## Related components
 
 - [Button](/design-system/base-components/buttons/button) owns previous, next and autoplay controls.
@@ -52,7 +60,7 @@ The root is a named `role="region"` with `aria-roledescription="carousel"`. Swip
 
 ## Naming and token contract
 
-Use `Swiper`, `.swiper-pattern`, `data-component-name="Swiper"`, `data-swiper-slide` and bounded `data-swiper-*` runtime attributes. Vendor `.swiper-*` classes are permitted only for Swiper's required structure. Consume existing `global-size`, `global-motion`, `global-color` and `interaction-effect` tokens; let Button dependencies own their control tokens. Do not declare component custom properties or create carousel-specific tokens.
+Use `Swiper`, `.swiper-pattern`, `data-component-name="Swiper"`, `data-swiper-slide` and bounded `data-swiper-*` runtime attributes. Vendor `.swiper-*` classes are permitted only for Swiper's required structure. Consume existing `global-size`, `global-motion`, `global-color` and `interaction-effect` tokens; pagination uses the existing `control-size` small minimum height on both axes; let Button dependencies own their control tokens. Do not declare component custom properties or create carousel-specific tokens.
 
 ## Core decision
 

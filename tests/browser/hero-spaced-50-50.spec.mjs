@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/hero/hero-spaced-50-50/preview/";
+const previewRoute = "/design-system/website-patterns/hero/hero-spaced-50-50/preview";
 const widths = [320, 768, 1024, 1440];
 
 test("HeroSpaced5050 preserves semantics, source order and responsive parity evidence", async ({ page, browserName }) => {

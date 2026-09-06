@@ -13,6 +13,12 @@ Status: active.
 
 RichTextHeading creates a semantic H2-H6 heading using the independent editorial Text Style that corresponds to its document level.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A long-form body needs a section or subsection heading.

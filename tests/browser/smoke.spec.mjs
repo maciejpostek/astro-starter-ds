@@ -13,8 +13,8 @@ for (const component of publicComponentRoutes) {
       await page.setViewportSize(viewport);
       const response = await page.goto(component.route, { waitUntil: "networkidle" });
       expect(response?.ok(), `${component.route} should return a successful response`).toBeTruthy();
-      await expect(page.locator("main")).toBeVisible();
-      await expect(page.locator("h1"), "route must render the requested component documentation").toContainText(component.name);
+      await expect(page.locator("main.main--flush")).toBeVisible();
+      await expect(page.locator(".ds-documentation-page-header h1"), "route must render the requested component documentation").toContainText(component.name);
       const overflow = await page.evaluate(() => ({
         document: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         body: document.body.scrollWidth - document.body.clientWidth,

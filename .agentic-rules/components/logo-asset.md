@@ -13,6 +13,11 @@ Status: Astro-only.
 
 LogoAsset resolves one approved local logo by `slug` and `variant` while leaving visual size ownership with the consuming component. It provides one safe rendering boundary for the Logos catalog without exposing arbitrary asset URLs or per-logo scaling.
 
+## Communication role
+
+- Goals: none
+- Render an approved identity asset. The consumer owns its communication purpose and placement; a logo alone is not evidence of a customer relationship.
+
 ## Use when
 
 - A component needs a canonical brand mark or full wordmark from the local Logos catalog.

@@ -13,6 +13,12 @@ Status: active.
 
 Provide a text-like, intrinsic single-select control inside compact copy or metadata compositions.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A small selection must sit inline with surrounding content.

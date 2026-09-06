@@ -327,11 +327,27 @@ const config: SerializedSwiperConfig = {
   }
 
   .swiper-pattern__pagination :global(.swiper-pagination-bullet) {
-    background: var(--color-background-strong);
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--control-size-small-min-height);
+    block-size: var(--control-size-small-min-height);
+    border: 0;
+    padding: 0;
+    opacity: 1;
+    color: var(--color-icon-tertiary);
+    background: var(--color-transparent);
+  }
+
+  .swiper-pattern__pagination :global(.swiper-pagination-bullet)::before {
+    content: "";
+    inline-size: var(--gap-small);
+    block-size: var(--gap-small);
+    border-radius: var(--radius-full);
+    background: currentColor;
   }
 
   .swiper-pattern__pagination :global(.swiper-pagination-bullet-active) {
-    background: var(--color-background-accent);
+    color: var(--color-background-accent);
   }
 
   .swiper-pattern__pagination :global(button.swiper-pagination-bullet:focus-visible) {
@@ -386,7 +402,13 @@ const config: SerializedSwiperConfig = {
   }
 
   @media (forced-colors: active) {
-    .swiper-pattern__pagination :global(.swiper-pagination-bullet),
+    .swiper-pattern__pagination :global(.swiper-pagination-bullet) {
+      color: CanvasText;
+      background: Canvas;
+    }
+    .swiper-pattern__pagination :global(.swiper-pagination-bullet-active) {
+      color: Highlight;
+    }
     .swiper-pattern__pagination :global(.swiper-pagination-progressbar-fill),
     .swiper-pattern__scrollbar :global(.swiper-scrollbar-drag) {
       background: CanvasText;

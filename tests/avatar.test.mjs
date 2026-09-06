@@ -65,8 +65,8 @@ test("keeps Avatar source, token, registry and documentation contracts aligned",
   assert.match(typographyFoundations, /--font-size-body-base-max:\s*1rem/u);
   assert.match(typographyStyles, /\.body-base-regular,[\s\S]*?\.body-base-semibold\s*\{[\s\S]*?font-size:\s*var\(--font-size-body-base\)/u);
   assert.deepEqual(routes.map((route) => route.route), [
-    "/design-system/base-components/avatar/avatar-image/",
-    "/design-system/base-components/avatar/avatar-name/",
+    "/design-system/base-components/avatar/avatar-image",
+    "/design-system/base-components/avatar/avatar-name",
   ]);
   assert.match(docs, /componentId:\s*"avatar-image"[\s\S]*?renderer:\s*DsAvatarPreview/u);
   assert.match(docs, /componentId:\s*"avatar-name"[\s\S]*?renderer:\s*DsAvatarPreview/u);

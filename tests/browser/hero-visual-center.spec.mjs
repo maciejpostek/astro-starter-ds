@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import axe from "axe-core";
 
-const previewRoute = "/design-system/website-patterns/hero/hero-visual-center/preview/";
+const previewRoute = "/design-system/website-patterns/hero/hero-visual-center/preview";
 const widths = [320, 768, 1024, 1440];
 
 test("HeroVisualCenter preview tools stay fixed while its tall canvas scrolls", async ({ page }) => {

@@ -15,6 +15,12 @@ Eyebrow is a subtle, short category label placed above a heading. It helps a
 reader understand which subject, section or information group the following
 heading belongs to without competing with that heading.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A section heading benefits from one quiet category or subject cue.

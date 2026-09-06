@@ -13,6 +13,12 @@ Status: active.
 
 RichTextParagraph renders readable editorial prose with a bounded base or large body style.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Article copy needs native paragraph semantics.

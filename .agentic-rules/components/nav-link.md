@@ -13,6 +13,12 @@ Status: active.
 
 NavLink is the direct-destination item in the top-level site navigation.
 
+## Communication role
+
+- Goals: navigation
+
+Help users find the intended destination. Preserve accurate labels, links and current-location semantics.
+
 ## Use when
 
 - A top-level item navigates immediately and has no child destinations.

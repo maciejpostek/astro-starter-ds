@@ -13,6 +13,12 @@ Status: active.
 
 FileUpload lets a person choose or drop one or more local files, validates the client-side selection and announces the result without owning upload transport.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A form or workflow must collect local files through a native file picker or drag and drop.
@@ -63,6 +69,8 @@ FileUpload lets a person choose or drop one or more local files, validates the c
 - [FileUploadCard](/design-system/base-components/file-upload/file-upload-card) represents a consumer-controlled queued file.
 
 ## Naming and token contract
+
+This component does not own upload transport, endpoints, queues or retries. Preserve native file input semantics and visible status announcements.
 
 Use the canonical identity, public root class, controlled `data-*` attributes and registered `tokenGroups` from `componentArchitecture.json` and `tokenArchitecture.json`. Resolve existing groups before styling; do not declare local custom properties or invent namespaces. A confirmed gap requires an approved `tokenDraft` before implementation.
 

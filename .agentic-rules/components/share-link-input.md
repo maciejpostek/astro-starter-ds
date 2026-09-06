@@ -13,6 +13,12 @@ Status: active.
 
 Present one read-only share URL and copy it through a keyboard-accessible action with success feedback.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A generated link should be inspected and copied but not edited.

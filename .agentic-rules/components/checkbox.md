@@ -13,6 +13,12 @@ Status: active.
 
 Provide the standalone native checkbox picker: a fixed square indicator for unchecked, checked and mixed form states, without owning visible text or a surrounding surface.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Building a reusable labelled or card composition that needs canonical checkbox behavior and geometry.

@@ -13,6 +13,12 @@ Status: active.
 
 NavDropdown reveals a compact list of related destinations from one top-level trigger.
 
+## Communication role
+
+- Goals: navigation
+
+Help users find the intended destination. Preserve accurate labels, links and current-location semantics.
+
 ## Use when
 
 - A navigation category needs a short, single-column destination list.

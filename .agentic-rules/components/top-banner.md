@@ -13,6 +13,12 @@ Status: active.
 
 TopBanner presents one site-level announcement before the main page content. It gives a short message a stable, high-visibility location with an optional explanation, destination link and non-persistent dismiss action.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A message applies broadly to the current site, product area or visit.

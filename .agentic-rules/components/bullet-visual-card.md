@@ -14,6 +14,12 @@ Status: active.
 BulletVisualCard presents one visual-led feature, benefit, product or service
 with a concise title and optional supporting evidence, tags and actions.
 
+## Communication role
+
+- Goals: benefits
+
+Structure a concise set of relevant points. Use the brief to select claims and keep each item focused on one supported benefit.
+
 ## Use when
 
 - A card needs one prominent 4:3 visual followed by compact explanatory content.

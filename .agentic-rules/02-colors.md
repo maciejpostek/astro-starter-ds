@@ -121,7 +121,7 @@ Allowed primitive usage:
 
 ```css
 :root {
-  --color-background-accent: var(--color-accent-500);
+  --color-background-accent: var(--color-accent-600);
 }
 ```
 

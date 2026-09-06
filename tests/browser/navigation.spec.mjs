@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/navigation/navigation/preview/";
+const previewRoute = "/design-system/website-patterns/navigation/navigation/preview";
 
 test("Navigation coordinates hover, click, Escape, outside activation and backdrop", async ({ page, browserName }) => {
   test.skip(browserName !== "chromium", "Canonical interaction evidence is collected in Chromium.");

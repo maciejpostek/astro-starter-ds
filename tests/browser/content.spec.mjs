@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-const contentRoute = "/design-system/website-patterns/content/";
-const buttonGroupRoute = "/design-system/base-components/buttons/button-group/";
+const contentRoute = "/design-system/website-patterns/content";
+const buttonGroupRoute = "/design-system/base-components/buttons/button-group";
 
 const measureWrappedActions = (content, assignedWidth) => content.evaluate((node, width) => {
   const group = node.querySelector('[data-component-name="ButtonGroup"]');

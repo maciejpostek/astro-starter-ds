@@ -16,6 +16,12 @@ semantic heading, supporting paragraph and optional action group. SectionHeader
 owns this relationship and its responsive reflow; the consuming section owns
 outer spacing, container placement and the content that follows.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 Use SectionHeader when a section needs the canonical eyebrow, heading and

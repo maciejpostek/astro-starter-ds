@@ -1,6 +1,7 @@
 {
   "headings": [
     "UX purpose",
+    "Communication role",
     "Use when",
     "Avoid when",
     "Content contract",
@@ -23,5 +24,36 @@
     "container",
     "viewport",
     "alternate"
+  ],
+  "readProfiles": {
+    "reuse": [
+      "Content contract",
+      "Accessibility and required behavior"
+    ],
+    "technical": [
+      "Naming and token contract",
+      "Responsive behavior"
+    ],
+    "communication": [
+      "UX purpose",
+      "Communication role",
+      "Use when",
+      "Avoid when",
+      "Choose instead",
+      "Content contract",
+      "Composition and placement",
+      "Accessibility and required behavior"
+    ]
+  },
+  "communicationGoals": [
+    "process",
+    "benefits",
+    "comparison",
+    "questions",
+    "conversion",
+    "introduction",
+    "proof",
+    "navigation",
+    "resources"
   ]
 }

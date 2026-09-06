@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/tabbed-content/preview/";
+const previewRoute = "/design-system/website-patterns/tabbed-content/preview";
 
 const createRuntimeClone = async (page, suffix, duration = 180, invalidFirstPair = false) => page.locator('[data-component-name="TabbedContent"]:visible').first().evaluate(
   (source, options) => {
@@ -44,7 +44,6 @@ const createRuntimeClone = async (page, suffix, duration = 180, invalidFirstPair
 
 test("TabbedContent gates autoplay by visibility and permanently locks after pointer activation", async ({ page, browserName }) => {
   test.setTimeout(120_000);
-  test.skip(browserName !== "chromium", "Canonical runtime evidence is collected in Chromium.");
   const runtimeErrors = [];
   page.on("console", (message) => { if (message.type() === "error") runtimeErrors.push(`console: ${message.text()}`); });
   page.on("pageerror", (error) => runtimeErrors.push(`page: ${error.message}`));
@@ -86,7 +85,6 @@ test("TabbedContent gates autoplay by visibility and permanently locks after poi
 
 test("TabbedContent loops without moving focus and keyboard navigation enters manual mode", async ({ page, browserName }) => {
   test.setTimeout(120_000);
-  test.skip(browserName !== "chromium", "Canonical runtime evidence is collected in Chromium.");
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(previewRoute, { waitUntil: "networkidle" });
   await page.evaluate(() => {
@@ -115,7 +113,6 @@ test("TabbedContent loops without moving focus and keyboard navigation enters ma
 
 test("TabbedContent respects Reduced Motion and keeps narrow layout contained", async ({ page, browserName }) => {
   test.setTimeout(120_000);
-  test.skip(browserName !== "chromium", "Canonical runtime evidence is collected in Chromium.");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto(previewRoute, { waitUntil: "networkidle" });
@@ -127,14 +124,17 @@ test("TabbedContent respects Reduced Motion and keeps narrow layout contained", 
   const tabs = root.locator('[data-component-name="ProgressTab"]');
   const labels = root.locator(".progress-tab__label");
   await expect(labels.first()).toHaveCSS("opacity", "1");
-  await expect(labels.nth(1)).toHaveCSS("opacity", "0.5");
+  await expect(labels.nth(1)).toHaveCSS("opacity", "1");
+  const selectedTextColor = await labels.first().evaluate(node => getComputedStyle(node).color);
+  const inactiveTextColor = await labels.nth(1).evaluate(node => getComputedStyle(node).color);
+  expect(inactiveTextColor).not.toBe(selectedTextColor);
   const tabStyles = await tabs.evaluateAll((nodes) => nodes.slice(0, 2).map((node) => ({
     background: getComputedStyle(node).backgroundColor,
     color: getComputedStyle(node).color,
   })));
   expect(tabStyles[0]).toEqual(tabStyles[1]);
   await tabs.nth(1).hover();
-  await expect(labels.nth(1)).toHaveCSS("opacity", "1");
+  await expect(labels.nth(1)).toHaveCSS("color", selectedTextColor);
   const layout = await root.evaluate((node) => {
     const tablist = node.querySelector('[data-component-name="Tabs"]');
     const ratio = node.querySelector('[data-component-name="Ratio"]');
@@ -180,7 +180,6 @@ test("TabbedContent respects Reduced Motion and keeps narrow layout contained", 
 
 test("TabbedContent disables autoplay and selects the first valid pair when relationships are malformed", async ({ page, browserName }) => {
   test.setTimeout(120_000);
-  test.skip(browserName !== "chromium", "Canonical runtime evidence is collected in Chromium.");
   const relationshipErrors = [];
   page.on("console", (message) => {
     if (message.type() === "error" && message.text().includes("TabbedContent requires")) {

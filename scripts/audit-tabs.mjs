@@ -35,8 +35,6 @@ const tabsPreview = read("src/components/_internal/documentation/DsTabsPreview.a
 const foundationData = read("src/data/documentationFoundationData.ts");
 const colorPage = read("src/documentation/design-system/foundations/color.astro");
 const readiness = read("architecture/component-readiness-contract.json");
-const brandContract = JSON.parse(read("project-context/brand-foundations/brand-expression/contract.json") || "{}");
-const referenceManifest = JSON.parse(read("project-context/brand-foundations/brand-expression/reference-manifest.json") || "{}");
 const packageJson = JSON.parse(read("package.json") || "{}");
 
 for (const contract of [
@@ -235,13 +233,6 @@ for (const ruleName of ["tab", "progress-tab", "tabs", "tab-menu"]) {
   }
 }
 
-const benchmarkRule = brandContract.rules?.find((rule) => rule.id === "tabs.align-benchmark");
-if (!benchmarkRule || benchmarkRule.status !== "approved") {
-  errors.push("The bounded Tabs Align UI Brand Expression rule is missing or unapproved.");
-}
-if (!referenceManifest.references?.some((reference) => reference.id === "align-ui-tab-menu")) {
-  errors.push("The bounded Align UI TabMenu reference manifest entry is missing.");
-}
 
 if (!packageJson.scripts?.["test:tabs"] || !packageJson.scripts?.["audit:tabs"]) {
   errors.push("package.json must expose test:tabs and audit:tabs.");

@@ -73,7 +73,7 @@ test("keeps the approved TeamMemberCard source, token and registry contracts", a
   assert.deepEqual(figmaContract?.axes?.Layout, ["Vertical", "Horizontal"]);
   assert.equal(figmaContract?.properties?.["Show Image"], "BOOLEAN");
   assert.equal(figmaContract?.propertyMapping?.["Show Role"], "roleOrPosition-presence");
-  assert.equal(route?.route, "/design-system/website-patterns/team/");
+  assert.equal(route?.route, "/design-system/website-patterns/team");
 
   assert.match(docs, /componentId:\s*"team-member-card"/u);
   assert.match(docs, /renderer:\s*DsTeamMemberCardPreview/u);

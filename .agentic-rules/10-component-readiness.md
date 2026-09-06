@@ -97,7 +97,7 @@ not duplicate the responsibility of a dependency it already composes.
 ### 10. Documentation
 
 An implemented Base Component or Website Pattern has metadata, one canonical
-interactive preview, API, typed dependencies, and its rendered UX rule.
+interactive preview, API, typed dependencies, and its rendered Agentic Rules.
 Component metadata deep-links to canonical semantic color groups in
 Foundations; component pages do not duplicate Foundation variable tables.
 Documentation reuses the shared table, copy, and link resolver components.

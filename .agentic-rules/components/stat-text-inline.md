@@ -15,6 +15,12 @@ StatTextInline communicates one compact directional metric change in running
 content, metadata or a statistic summary. The text is the complete statement;
 the fixed trend glyph and semantic color provide a secondary scanning cue.
 
+## Communication role
+
+- Goals: proof
+
+Support a claim with a supplied, contextualized metric. Preserve units, scope and source; never invent a statistic.
+
 ## Use when
 
 - A concise metric statement must indicate an upward or downward direction.

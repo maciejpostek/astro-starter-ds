@@ -13,6 +13,12 @@ Status: intentional difference.
 
 HeroSpaced5050 presents one primary promise beside a significant edge-reaching visual. It deliberately separates the eyebrow and heading from supporting details and actions so the opening section can establish hierarchy without becoming a generic content block.
 
+## Communication role
+
+- Goals: introduction
+
+Introduce the page proposition and audience relevance. Use the approved hierarchy and existing visual design; do not redefine the hero pattern per page.
+
 ## Use when
 
 - A page needs one leading hero with a six-column content region and a comparably prominent visual.

@@ -13,6 +13,12 @@ Status: active.
 
 FooterGroup gives one related set of footer destinations a visible heading, labelled navigation landmark and native list structure.
 
+## Communication role
+
+- Goals: navigation
+
+Provide secondary navigation and verified organization information. Keep any subscription promise consistent with the supplied offer.
+
 ## Use when
 
 - Several footer links share one category label.

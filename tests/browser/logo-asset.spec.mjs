@@ -3,13 +3,13 @@ import { expect, test } from "@playwright/test";
 const viewports = [320, 768, 1440];
 const featureRoutes = [
   {
-    route: "/design-system/website-patterns/features/feature-5050/preview/",
+    route: "/design-system/website-patterns/features/feature-5050/preview",
     root: '[data-component-name="Feature5050"]',
     group: ".feature-5050__logos",
     expectedCount: 3,
   },
   {
-    route: "/design-system/website-patterns/features/feature-proof/preview/",
+    route: "/design-system/website-patterns/features/feature-proof/preview",
     root: '[data-component-name="FeatureProof"]',
     group: ".feature-proof__logos",
     expectedCount: 3,
@@ -61,13 +61,13 @@ test("LogoAsset consumers keep equal parent-owned heights across responsive widt
   }
 
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/design-system/assets/logos/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/assets/logos", { waitUntil: "networkidle" });
   const catalogLogos = page.locator('.ds-logo-card__asset > [data-component-name="LogoAsset"]:visible');
   expect(await catalogLogos.count()).toBeGreaterThan(10);
   const catalogHeights = await catalogLogos.evaluateAll((nodes) => nodes.slice(0, 12).map((node) => node.getBoundingClientRect().height));
   expect(catalogHeights.every((height) => Math.abs(height - 64) <= 0.5)).toBe(true);
 
-  await page.goto("/design-system/base-components/select/select/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/select/select", { waitUntil: "networkidle" });
   await page.locator('[data-ds-preview-select][data-axis-id="purpose"]').selectOption("brand");
   const brandSelect = page.locator('[data-select-preview-purpose-group="brand"] [data-component-name="Select"]');
   await expect(brandSelect).toBeVisible();
@@ -78,7 +78,7 @@ test("LogoAsset consumers keep equal parent-owned heights across responsive widt
   }));
   expect(Math.abs(selectGeometry.logo - selectGeometry.parent)).toBeLessThanOrEqual(0.5);
 
-  await page.goto("/design-system/base-components/tag/tag/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/tag/tag", { waitUntil: "networkidle" });
   await page.locator('[data-ds-preview-control][data-axis-id="leading"][data-axis-value="logo"]').click();
   const tagLogo = page.locator('[data-component-name="Tag"] [data-logo-slug="figma"]');
   await expect(tagLogo).toBeVisible();

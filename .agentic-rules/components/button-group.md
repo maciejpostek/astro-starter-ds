@@ -13,6 +13,12 @@ Status: active.
 
 Organize related actions into one clear decision area while preserving each child action’s own semantics and emphasis.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Two or more Buttons, ButtonLinks, IconButtons, CopyButtons, CopyIconButtons, SocialButtons, or SocialIconButtons belong to the same local task.

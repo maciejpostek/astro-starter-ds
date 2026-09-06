@@ -108,7 +108,7 @@ test("keeps the approved BlogCard API, Figma mapping and documentation contract"
   assert.match(rule, /Primary strategy: `intrinsic`/u);
   assert.match(roadmap, /BlogCard — `1852:2902`/u);
   assert.match(sync, /BlogCard maps canonical ComponentSet `1852:2902`/u);
-  assert.equal(route?.route, "/design-system/website-patterns/blog-resources/");
+  assert.equal(route?.route, "/design-system/website-patterns/blog-resources");
 });
 
 test("renders all layouts, placements and optional BlogCard regions without hydration", async () => {

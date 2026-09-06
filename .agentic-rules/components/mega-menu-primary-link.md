@@ -13,6 +13,12 @@ Status: active.
 
 MegaMenuPrimaryLink gives the first mega-menu column a larger, high-hierarchy destination style.
 
+## Communication role
+
+- Goals: navigation
+
+Help users find the intended destination. Preserve accurate labels, links and current-location semantics.
+
 ## Use when
 
 - A destination is one of the primary choices in the mega-menu's first column.

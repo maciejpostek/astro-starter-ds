@@ -13,6 +13,12 @@ Status: active.
 
 NotificationAndToast presents one actionable or dismissible event message through a shared visual contract. Notification delivery remains persistent in document flow; toast delivery is transient and queued. Delivery changes lifecycle only, never appearance.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - A compact message needs one short title, one optional action and dismissal.
@@ -63,6 +69,8 @@ NotificationAndToast presents one actionable or dismissible event message throug
 - MaterialSymbol supplies the fixed status and close glyphs.
 
 ## Naming and token contract
+
+Keep delivery separate from visual emphasis. Do not introduce arbitrary icon slots, markup injection or persistent storage.
 
 Use `.notification-and-toast`, stable `data-component-name="NotificationAndToast"`, visual `data-feedback-layout` and the registered feedback and Toast token groups. `data-feedback-delivery` is a code-only lifecycle projection and must not become a Figma visual axis. Do not expose size, position, arbitrary glyphs, component-local custom properties, islands or runtime-created markup.
 

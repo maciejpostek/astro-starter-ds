@@ -1,3 +1,7 @@
+import {validateJsonContract} from "./validate-json-contract.mjs";
+import {actionText, analyzePrompt, describeTask, inferStylingNeed} from "./task-semantics.mjs";
+import {safeRepositoryFile} from "./project-context-index.mjs";
+import { resolveContentContext, discoverComponents, uxSelections, communicationGoals } from "./strategic-context.mjs";
 import {
   existsSync,
   readFileSync,
@@ -358,7 +362,7 @@ const inferIntent = ({
   explicitCreation,
   intentOverride
 }) => {
-  const value = stripNegatedActions(prompt).toLowerCase();
+  const value = actionText(stripNegatedActions(prompt));
   if (intentOverride) return intentOverride;
   if (explicitCreation) return "create";
   if (
@@ -376,50 +380,27 @@ const inferIntent = ({
       /\bextend\b/u,
       /\bchange (?:the )?(?:api|props|contract)\b/u,
       /\brozszerz/u,
+      /\b(?:przeprojektuj|przebuduj|redesign)\b/u,
       /\bzmie[nń] (?:api|props|kontrakt)/u
     ])
   ) {
     return "extend";
   }
   if (tokenIds.length > 0) return "exact-edit";
-  const hasCompositionAction = hasAny(value, [
-    /\bcompose\b/u,
-    /\bassemble\b/u,
-    /\bbuild\b/u,
-    /\bcreate\b/u,
-    /\bstw[oó]rz/u,
-    /\butw[oó]rz/u,
-    /\bzbuduj/u,
-    /\bu[łl][oó][żz]/u,
-    /\bskomponuj/u
-  ]);
-  const hasCompositionTarget = hasAny(value, [
-    /\bpage\b/u,
-    /\bsection\b/u,
-    /\bhero\b/u,
-    /\blayout\b/u,
-    /\bstron/u,
-    /\bsekcj/u,
-    /\bkompozyc/u
-  ]);
-  if (
-    componentIds.length > 1 ||
-    (hasCompositionAction && hasCompositionTarget)
-  ) {
-    return "compose";
-  }
+  const facts = analyzePrompt(prompt, componentIds);
+  if (facts.compositionRequested || componentIds.length > 1) return "compose";
   if (componentIds.length === 1) return "reuse";
   return "reuse";
 };
 
 const hasBrandSensitiveIntent = (prompt) =>
   hasAny(prompt.toLowerCase(), [
-    /\bbrand\b/u,
+    /\bbrand(?:ing| expression| visual| style)\b/u,
     /\bart direction\b/u,
     /\bvisual direction\b/u,
     /\bcreative\b/u,
     /\bredesign\b/u,
-    /\bmark(?:a|i|ę|owy|owa|owe)\b/u,
+    /\b(?:przeprojektuj|stylistyk|identyfikacj|branding)/u,
     /\bkreatywn/u,
     /\bkierunek wizualny\b/u
   ]);
@@ -473,7 +454,7 @@ const normalizeExplicitTargets = ({
   }))
 ];
 
-const inspectTargetFile = (targetFile, projectRoot) => {
+const inspectTargetFile = (targetFile, projectRoot, allowNew = false) => {
   if (targetFile === undefined || targetFile === null || targetFile === "") {
     return { path: null, exists: false, error: null };
   }
@@ -491,22 +472,9 @@ const inspectTargetFile = (targetFile, projectRoot) => {
       error: "targetFile must be a normalized repository-relative path."
     };
   }
-  const absoluteRoot = resolve(projectRoot);
-  const absolutePath = resolve(absoluteRoot, normalizedPath);
-  const relativePath = projectPath(absoluteRoot, absolutePath);
-  if (
-    relativePath === ".." ||
-    relativePath.startsWith("../") ||
-    !existsSync(absolutePath) ||
-    !statSync(absolutePath).isFile()
-  ) {
-    return {
-      path: normalizedPath,
-      exists: false,
-      error: `targetFile does not resolve to an existing repository file: ${normalizedPath}.`
-    };
-  }
-  return { path: relativePath, exists: true, error: null };
+  const absolutePath = safeRepositoryFile(projectRoot, normalizedPath, {allowNew});
+  if (!absolutePath) return {path: normalizedPath, exists: false, error: `targetFile is missing or unsafe: ${normalizedPath}.`};
+  return {path: normalizedPath, exists: existsSync(absolutePath), error: null};
 };
 
 const buildContract = ({
@@ -549,12 +517,13 @@ const buildContract = ({
   };
 };
 
-export const routeAgentRequest = ({
+const routeRequestCore = ({
   prompt = "",
   explicitComponentIds = [],
   explicitTokenIds = [],
   explicitTargets = [],
   targetFile,
+  allowNewTarget = false,
   intentOverride,
   tokenNeed = null,
   tokenDraft = null,
@@ -577,7 +546,7 @@ export const routeAgentRequest = ({
     (target) => target.kind === "token"
   );
   const constraints = extractCreationConstraints(prompt);
-  const inspectedTargetFile = inspectTargetFile(targetFile, projectRoot);
+  const inspectedTargetFile = inspectTargetFile(targetFile, projectRoot, allowNewTarget);
   const tokenIds = unique([
     ...explicitTokenTargets.map((target) => target.id),
     ...extractPromptTokenIds(prompt)
@@ -767,7 +736,7 @@ export const routeAgentRequest = ({
   const compositionScopes =
     intent === "compose"
       ? unique([
-          /\b(?:page|landing page|homepage|stron\w*)\b/iu.test(prompt)
+          /\b(?:page|landing|homepage|wireframe|campaign|kampani\w*|stron\w*)\b/iu.test(prompt)
             ? "page"
             : null,
           /\b(?:section|sekcj\w*)\b/iu.test(prompt) ? "section" : null
@@ -776,6 +745,7 @@ export const routeAgentRequest = ({
   const targets = [
     ...tokenTargets,
     ...componentTargets,
+    ...normalizedExplicitTargets.filter((target) => ["file", "scope"].includes(target.kind)).map((target) => ({ ...target, role: "context", exists: target.kind === "scope" || !inspectTargetFile(target.id, projectRoot).error })),
     ...compositionScopes.map((id) => ({
       kind: "scope",
       id,
@@ -903,6 +873,33 @@ export const routeAgentRequest = ({
     tokenNeed,
     tokenDraft
   });
+};
+
+export const routeAgentRequest = (options = {}) => {
+  const text = actionText(options.prompt);
+  const explicitGlobal = options.editScope === "component" || /\b(?:global\w*|wszystkich|shared|all (?:uses|instances))\b/u.test(text);
+  const localRedesign = options.targetFile && /przeprojektuj|przebuduj|redesign/u.test(text) && !explicitGlobal && !/\b(api|props|kontrakt)\b/u.test(text);
+  const facts = analyzePrompt(options.prompt, options.explicitComponentIds ?? []);
+  options = { ...options, explicitTargets: [...new Map([
+    ...(options.explicitTargets ?? []),
+    ...facts.contextSourcePaths.filter(id => id !== options.targetFile).map(id => ({kind: "file", id, role: "context"})),
+  ].map(target => [`${target.kind}:${target.id}`, target])).values()] };
+  const allowNewTarget = /^src\/pages\/.+\.astro$/.test(options.targetFile ?? "") && facts.newPageRequested;
+  const task = {...routeRequestCore({...options, allowNewTarget, ...(localRedesign ? {intentOverride: options.intentOverride ?? "compose"} : {})}), targetFileMode: "existing"};
+  for (const target of options.explicitTargets ?? []) {
+    if (!["file", "scope"].includes(target.kind)) continue;
+    const inspected = target.kind === "file" ? inspectTargetFile(target.id, options.projectRoot ?? ".") : null;
+    if (!task.targets.some(item => item.kind === target.kind && item.id === target.id)) task.targets.push({...target,role:"context",exists:!inspected?.error});
+    if (inspected?.error) {task.status="blocked";task.blockedReason=inspected.error;}
+  }
+  Object.assign(task, describeTask(options, task));
+  task.targetFileMode = task.targetFile && !existsSync(resolve(options.projectRoot ?? ".",task.targetFile)) ? "new" : "existing";
+  if (task.status !== "blocked" && task.targetFileMode === "new" && (!allowNewTarget || task.intent !== "compose")) {
+    task.status="blocked";task.blockedReason="Only an explicitly requested new Astro page can use a new targetFile.";
+  }
+  // Exclusions describe actual automatic reads, not stale profile defaults.
+  if (task.requiresStrategicContext || task.contentMode === "generate") task.excludedContexts=task.excludedContexts.filter(c=>c!=="family-rules");
+  return task;
 };
 
 const levenshtein = (left, right) => {
@@ -1185,20 +1182,21 @@ const approvedTokenDraftMatches = (approvedDraft, proposedDraft) => {
   );
 };
 
-const matchesBrandRule = (rule, scopes, components) => {
+const matchesBrandRule = (rule, scopes, components, themes) => {
   if (rule.status !== "approved") return false;
   const ruleScopes = rule.appliesTo?.scopes ?? [];
   const ruleComponents = rule.appliesTo?.components ?? [];
-  if (scopes.length === 0 && components.length === 0) return true;
+  if (scopes.length === 0 && components.length === 0 && themes.length === 0) return true;
   return (
     scopes.some((scope) => ruleScopes.includes(scope)) ||
-    components.some((component) => ruleComponents.includes(component))
+    components.some((component) => ruleComponents.includes(component)) ||
+    themes.some((theme) => (rule.appliesTo?.themes ?? []).includes(theme))
   );
 };
 
 export const resolveBrandRules = (
   contract,
-  { scopes = [], components = [] } = {}
+  { scopes = [], components = [], themes = [] } = {}
 ) => {
   if (contract.status !== "approved") {
     return {
@@ -1211,7 +1209,7 @@ export const resolveBrandRules = (
   return {
     status: contract.status,
     rules: (contract.rules ?? []).filter((rule) =>
-      matchesBrandRule(rule, scopes, components)
+      matchesBrandRule(rule, scopes, components, themes)
     ),
     missing: null
   };
@@ -1283,6 +1281,7 @@ const validatePlannedPath = (path, projectRoot, { mustExist = false } = {}) => {
       error: `Repository file does not exist: ${relativePath}.`
     };
   }
+  if (!safeRepositoryFile(absoluteRoot, relativePath, {allowNew:!mustExist})) return {path:relativePath,error:"Path is missing, unsafe or resolves outside the repository."};
   return { path: relativePath, absolutePath, error: null };
 };
 
@@ -1378,6 +1377,8 @@ const resolveProjectionSelection = ({
 const resolveCreationDraft = (draft, registry, projectRoot) => {
   if (!draft) return { draft: null, page: null, errors: [] };
   const errors = [];
+  if (draft.approvalStatus != null && !["proposed", "approved"].includes(draft.approvalStatus)) errors.push("Invalid creationDraft approvalStatus.");
+  if (draft.approvalStatus === "approved" && !["user-request", "follow-up"].includes(draft.approvalBasis)) errors.push("An approved creationDraft requires its user-request or follow-up approvalBasis.");
   const allowedRoles = new Set(registry.roles ?? [
     "asset",
     "base-component",
@@ -1423,6 +1424,8 @@ const resolveCreationDraft = (draft, registry, projectRoot) => {
   }
   return {
     draft: {
+      approvalStatus: draft.approvalStatus ?? "proposed",
+      approvalBasis: draft.approvalBasis ?? null,
       role: draft.layer,
       pageKey: page?.pageKey ?? draft.family,
       sourceDirectory: page?.sourceDirectory ?? null,
@@ -1488,7 +1491,7 @@ export const resolveAgentContext = ({
       .filter((component) => component.role !== "context")
       .flatMap((component) => component.dependencies)
   );
-  const includeDirectDependencies = ["compose", "repair"].includes(task.intent);
+  const includeDirectDependencies = ["compose", "repair", "extend"].includes(task.intent);
   const dependencies = unique([
     ...(includeDirectDependencies ? dependencyNames : []),
     ...(task.intent === "create"
@@ -1518,10 +1521,17 @@ export const resolveAgentContext = ({
       tokenQueue.push(...aliases);
     }
   }
+  tokenNeed ??= inferStylingNeed(task, components);
   const tokenResolution = tokenNeed
     ? resolveTokenNeed(tokenNeed, absoluteRoot)
     : null;
   const missing = [];
+  const tokenImpact = task.intent === "exact-edit" ? (() => {
+    const registryPath=join(absoluteRoot,"src/data/design-system/tokenArchitecture.json");
+    const groups=existsSync(registryPath)?readJson(registryPath).groups:[];
+    const matched=groups.filter(g=>tokens.some(t=>new RegExp(g.namePattern).test(t.id)));
+    return {groups:matched.map(g=>g.id), consumers:unique(matched.flatMap(g=>g.consumers)), scope:"declared-token-consumers", limitation:"Declared consumers are not an exhaustive runtime usage graph; inspect affected usages before a shared edit."};
+  })() : null;
 
   for (const target of componentTargets.filter(
     (candidate) => !candidate.exists && task.intent !== "create"
@@ -1603,15 +1613,29 @@ export const resolveAgentContext = ({
     }
   };
 
+  const addJsonSelection = (path, reason, pointers, values) => {
+    if (!pointers.length) return;
+    addRead(path, reason, null, Buffer.byteLength(JSON.stringify(values)), {kind:"json-pointers", componentId:pointers.join(","), pointers});
+  };
+  const addRegistrySummary = () => {
+    const pointers=records.flatMap((r,i)=>["id","name","role","sourcePath","agenticRule","discovery"].filter(k=>r[k]!==undefined).map(k=>`/components/${i}/${k}`));
+    const values=records.map(r=>({id:r.id,name:r.name,role:r.role,sourcePath:r.sourcePath,agenticRule:r.agenticRule,discovery:r.discovery}));
+    addJsonSelection("src/data/design-system/componentArchitecture.json","component-gap-evidence",pointers,values);
+  };
+  if (task.targetFileMode === "new") addRead("src/layouts/BaseLayout.astro","new-route-layout");
   if (["compose", "repair", "extend", "create"].includes(task.intent) || tokenNeed) {
     addRead(
       "architecture/component-authoring-contract.json",
       "deterministic-authoring-contract"
     );
-    addRead(
-      "src/data/design-system/tokenArchitecture.json",
-      "token-group-registry"
-    );
+    const architecture=readJson(join(absoluteRoot,"src/data/design-system/tokenArchitecture.json"));
+    const owners=unique([...components.map(c=>c.id),...dependencies.map(c=>resolveComponentRecord(c.name,records)?.id)]);
+    const selected=new Set(architecture.groups.filter(g=>tokenNeed ?
+      (g.owner===tokenNeed.owner || (g.consumers??[]).includes(tokenNeed.consumer) || g.scope==="global") && g.domain===tokenNeed.domain :
+      owners.includes(g.owner)||(g.consumers??[]).some(c=>owners.includes(c))||["global-layout","global-size","typography-foundations"].includes(g.id)).map(g=>g.id));
+    for (let size=-1; size!==selected.size;) {size=selected.size;for (const g of architecture.groups.filter(g=>selected.has(g.id)))for(const dep of g.dependencies??[])selected.add(dep);}
+    const indexed=architecture.groups.map((g,i)=>({g,i})).filter(({g})=>selected.has(g.id));
+    addJsonSelection("src/data/design-system/tokenArchitecture.json","token-group-registry",indexed.map(({i})=>`/groups/${i}`),indexed.map(({g})=>g));
   }
 
   if (task.intent === "exact-edit") {
@@ -1646,16 +1670,17 @@ export const resolveAgentContext = ({
       components.filter((component) => component.role === "primary"),
       "component-source-and-api"
     );
-    if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
+    if (task.targetFile && task.targetFileMode !== "new") addRead(task.targetFile, "target-file", task.targetFile);
   } else if (task.intent === "compose") {
     addComponentSources(components, "named-component-source");
     addDependencySources();
-    if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
+    if (task.targetFile && task.targetFileMode !== "new") addRead(task.targetFile, "target-file", task.targetFile);
   } else if (task.intent === "repair") {
     addComponentSources(
       components.filter((component) => component.role === "primary"),
       "component-repair-source"
     );
+    if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
     addDependencySources();
     for (const rule of unique(
       components
@@ -1669,6 +1694,7 @@ export const resolveAgentContext = ({
       (component) => component.role === "primary"
     );
     addComponentSources(primaryComponents, "component-source-and-api");
+    addDependencySources();
     for (const rule of unique(
       primaryComponents.map((component) => component.agenticRule)
     )) {
@@ -1689,7 +1715,7 @@ export const resolveAgentContext = ({
         "guides-adapter"
       );
     }
-    if (task.targetFile) addRead(task.targetFile, "target-file", task.targetFile);
+    if (task.targetFile && task.targetFileMode !== "new") addRead(task.targetFile, "target-file", task.targetFile);
   }
 
   if (
@@ -1719,14 +1745,11 @@ export const resolveAgentContext = ({
     ? "token-planning"
     : task.intent !== "create"
       ? "normal"
-      : draftResolution.draft
+      : draftResolution.draft && creationDraft?.approvalStatus === "approved" && ["user-request","follow-up"].includes(creationDraft?.approvalBasis)
         ? "create-family-resolution"
         : "create-planning";
   if (task.intent === "create" && ["create-planning", "token-planning"].includes(phase)) {
-    addRead(
-      "src/data/design-system/componentArchitecture.json",
-      "component-gap-evidence"
-    );
+    addRegistrySummary();
     addRead(".agentic-rules/00-framework.md", "creation-framework-rule");
     addRead(".agentic-rules/05-components.md", "component-creation-rule");
     addRead("DESIGN-SYSTEM-FRAMEWORK.md", "public-api-framework");
@@ -1746,10 +1769,7 @@ export const resolveAgentContext = ({
       ),
       "creation-family-rule",
     );
-    addRead(
-      "src/data/design-system/componentArchitecture.json",
-      "registry-projection"
-    );
+    addRegistrySummary();
     addRead(
       draftResolution.draft?.docsPath,
       "guides-projection",
@@ -1779,29 +1799,18 @@ export const resolveAgentContext = ({
     const scopes = targets
       .filter((target) => target.kind === "scope")
       .map((target) => target.id);
-    const resolvedBrand =
-      task.intent === "create"
-        ? {
-            status: contract.status,
-            rules: [],
-            missing:
-              contract.status === "approved"
-                ? null
-                : "No approved Brand/Composition Contract is available for this project."
-          }
-        : resolveBrandRules(contract, {
-            scopes,
-            components: components.map((component) => component.name)
-          });
+    const resolvedBrand = resolveBrandRules(contract, {
+      scopes,
+      components: componentTargets.map((component) => resolveComponentRecord(component.id, records)?.name ?? component.id),
+      themes: task.brandThemes ?? []
+    });
     brandRules = resolvedBrand.rules;
-    if (task.brandMode === "required" && resolvedBrand.missing) {
-      missing.push(resolvedBrand.missing);
-    }
+    // Missing visual approval restricts interpretation, not exact structure/reuse.
     if (brandRules.length > 0) {
-      addRead(
-        "project-context/brand-foundations/brand-expression/contract.json",
-        "matching-approved-brand-rules"
-      );
+      if (!contractOverride) {
+        const selected=contract.rules.map((rule,i)=>({rule,i})).filter(({rule})=>brandRules.some(r=>r.id===rule.id));
+        addJsonSelection("project-context/brand-foundations/brand-expression/contract.json","matching-approved-brand-rules",["/status",...selected.map(({i})=>`/rules/${i}`)],{status:contract.status,rules:selected.map(({rule})=>rule)});
+      }
     }
   }
 
@@ -1813,6 +1822,37 @@ export const resolveAgentContext = ({
         ...candidate
       }))
     );
+  const contentContext = resolveContentContext(task, absoluteRoot);
+  missing.push(...(contentContext.errors ?? []));
+  if(contentContext.indexPath) addRead(contentContext.indexPath,"strategic-source-index");
+  for (const path of contentContext.sources) addRead(path, "strategic-content-source");
+  for (const target of targets.filter((target) => target.kind === "file" && target.id !== task.targetFile && !(contentContext.deferredSources ?? []).includes(target.id))) {
+    addRead(target.id, "explicit-context-source");
+  }
+  const componentCandidates = task.intent === "compose" && components.length === 0
+    ? discoverComponents(task.communicationGoal ?? "", records, absoluteRoot) : [];
+  if (["compose", "reuse"].includes(task.intent)) {
+    const profiles = ["reuse"];
+    if (task.intent === "compose" || task.contentMode === "generate") profiles.push("communication");
+    if (task.stylingRequested) profiles.push("technical");
+    for (const component of [...components, ...componentCandidates].filter(c=>c.layer!=="asset")) {
+      for (const excerpt of uxSelections(component, absoluteRoot, profiles)) {
+        addRead(component.agenticRule, "component-ux-contract", component.name,
+          excerpt.bytes, excerpt);
+      }
+    }
+  }
+  if (tokenNeed) {
+    const category={color:"02-colors",size:"01-sizing",typography:"03-typography",layout:"04-layout",motion:"06-motion",elevation:"07-elevation"}[tokenNeed.domain];
+    if(category) {
+      const path=`.agentic-rules/${category}.md`;
+      const lines=readFileSync(join(absoluteRoot,path),"utf8").split("\n");
+      // Lead contract plus the first domain section; component-specific details remain in its rule.
+      const headings=lines.map((l,i)=>/^## /.test(l)?i:-1).filter(i=>i>=0);
+      const end=headings[1]??lines.length;
+      addRead(path,"affected-category-contract",null,Buffer.byteLength(lines.slice(0,end).join("\n")),{kind:"category-rule",componentId:category,startLine:1,endLine:end});
+    }
+  }
   const declaredSourceBytes = readPlan.reduce(
     (total, read) => total + read.bytes,
     0
@@ -1849,6 +1889,7 @@ export const resolveAgentContext = ({
     },
     creationDraft: draftResolution.draft,
     tokenNeed: tokenResolution?.need ?? null,
+    tokenImpact,
     tokenResolution,
     tokenDraft:
       tokenResolution?.status === "gap"
@@ -1859,6 +1900,14 @@ export const resolveAgentContext = ({
     tokens,
     brandStatus,
     brandRules,
+    brandCoverage: brandStatus === "skipped" ? "skipped" : brandRules.length ? "matched" : "missing",
+    creativeInterpretation: task.brandMode === "skip" ? "not-requested" : brandRules.length ? "approved-rules-only" : "blocked-missing-applicable-rules",
+    contentContext,
+    discovery: {needsSectionGoals:task.intent==="compose"&&!components.length&&!communicationGoals(task.communicationGoal).length, goals:communicationGoals(task.communicationGoal), indexSource:"componentArchitecture.json:discovery", selectionRequired:componentCandidates.length>0},
+    componentCandidates,
+    componentSelection: task.intent !== "compose" ? null : components.length ? "verify-selected-ux" : componentCandidates.length ? "review-candidates-then-resolve-selected-names" : "gap: propose local composition from existing base components; ask for unresolved UX or visual decisions; public creation requires explicit approval",
+    editScope: task.editScope ?? (task.targetFile ? "instance" : "component"),
+    documentationCheckpoint: ["repair", "extend", "create"].includes(task.intent) ? "After human visual acceptance, record only new reusable decisions in the existing Brand Expression JSON and regenerate its Markdown. Do not promote experiments or exact CSS edits to approved brand rules." : null,
     compositionContract:
       task.intent === "compose"
         ? {
@@ -1887,11 +1936,32 @@ export const resolveAgentContext = ({
     ])
   };
 
+  const structure=contextPack.status==="blocked"?"blocked":phase==="create-planning"?"planning":"ready";
+  const copy=task.contentMode!=="generate"?"not-requested":task.contentStyle==="placeholders"?"placeholders-only":contentContext.status==="needs-evidence-review"?"needs-evidence-review":"needs-input";
+  const visual=task.brandMode==="skip"?"not-requested":brandRules.length?"approved-rules-only":"reuse-only";
+  const styling=task.stylingRequested&&!tokenResolution&&task.intent!=="exact-edit"?"needs-token-need":tokenResolution?.status??"not-requested";
+  contextPack.executionReadiness={structure,copy,visual,styling};
+  contextPack.nextActions=[
+    ...(structure==="blocked"?["Resolve missing or invalid inputs before implementation."]:[]),
+    ...(phase==="create-planning"?["Record the component scope in creationDraft. A complete explicit user request may be its approvalBasis=user-request; ask only for unresolved decisions or scope expansion."]:[]),
+    ...(copy==="needs-input"?["Ask the listed essential questions before dependent copy; independent layout may continue."]:[]),
+    ...(copy==="needs-evidence-review"?["Identify audience, value and page goal with sources; ask only for missing or conflicting evidence before dependent copy."]:[]),
+    ...(contentContext.status==="needs-selection"?["Select the intended product/campaign brief before using campaign-specific claims."]:[]),
+    ...(visual==="reuse-only"?["Reuse existing visual design. Obtain scoped human visual direction before creative interpretation; do not treat this restriction as a ban on exact composition."]:[]),
+    ...(styling==="needs-token-need"?["Clarify the CSS property and owner; supply tokenNeed before changing styles. No raw-value fallback."]:[]),
+    ...(componentCandidates.length?["Verify candidate UX/content fit, then resolve selected component names to read their code before implementation."]:[])
+  ];
+  if(!contextPack.nextStep&&contextPack.nextActions.length)contextPack.nextStep=contextPack.nextActions[0];
   return enforceBudget(contextPack, task.contextBudget);
 };
 
+const taskSchema = JSON.parse(readFileSync(new URL("../../architecture/agent-task.schema.json", import.meta.url), "utf8"));
 export const validateTaskContract = (task) => {
-  const errors = [];
+  const errors = validateJsonContract(task, taskSchema);
+  if (errors.length || !task || typeof task !== "object") return errors;
+  if (task.contentMode !== undefined && !["none", "provided", "generate"].includes(task.contentMode)) errors.push("Invalid contentMode");
+  if (task.language != null && !/^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(task.language)) errors.push("Invalid language tag");
+  if (task.brandThemes !== undefined && (!Array.isArray(task.brandThemes) || task.brandThemes.some((theme) => typeof theme !== "string"))) errors.push("Invalid brandThemes");
   if (!compatibleTaskContractVersions.includes(task.version)) {
     errors.push(
       `version must be one of: ${compatibleTaskContractVersions.join(", ")}`

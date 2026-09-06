@@ -125,6 +125,7 @@ for (const node of model.nodes) {
   }
   for (const sourcePath of node.sourcePaths ?? []) {
     const absolutePath = join(projectRoot, sourcePath);
+    if (sourcePath === ".git" && !existsSync(absolutePath)) continue; // Git is optional in exported client projects.
     if (!existsSync(absolutePath)) {
       addError(`Node ${node.id} has stale sourcePath: ${sourcePath}`);
       continue;

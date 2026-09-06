@@ -1,9 +1,9 @@
 # Project Brand and Composition Contract
 
-Status: not configured.
+Status: `not-configured`. This is a neutral client scaffold.
 
-This directory contains project-specific visual decisions and their evidence.
-It intentionally contains no brand decisions in the starter.
+Component implementation rules live in their Agentic Rules, not in this project
+contract. Add only supplied, accepted project-specific visual decisions here.
 
 ## Canonical Files
 

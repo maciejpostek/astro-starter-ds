@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const route = "/design-system/website-patterns/pricing-comparison/preview/";
+const route = "/design-system/website-patterns/pricing-comparison/preview";
 const widths = [320, 768, 1024, 1440];
 const themes = ["light", "dark"];
 

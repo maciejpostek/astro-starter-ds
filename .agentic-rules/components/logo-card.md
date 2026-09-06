@@ -15,6 +15,12 @@ LogoCard presents one approved client wordmark inside a consistent, neutral
 16:9 surface so different logo proportions retain equal hierarchy when cards
 are placed together.
 
+## Communication role
+
+- Goals: proof
+
+Show only supplied and authorized identity evidence. A starter logo example is not proof of a client relationship.
+
 ## Use when
 
 - A client, partner or platform wordmark needs a reusable card treatment.

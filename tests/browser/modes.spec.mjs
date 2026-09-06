@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 
 const representativeRoutes = [
-  "/design-system/base-components/buttons/button/",
-  "/design-system/base-components/inputs/input/",
-  "/design-system/base-components/accordion/accordion/",
-  "/design-system/base-components/popup/",
+  "/design-system/base-components/buttons/button",
+  "/design-system/base-components/inputs/input",
+  "/design-system/base-components/accordion/accordion",
+  "/design-system/base-components/popup",
 ];
 
 for (const route of representativeRoutes) {
@@ -22,8 +22,9 @@ for (const route of representativeRoutes) {
   });
 
   test(`${route} remains usable in forced colors`, async ({ page, browserName }) => {
-    test.skip(browserName !== "chromium", "Forced colors emulation is a Chromium capability.");
     await page.emulateMedia({ forcedColors: "active" });
+    // Verify the media capability rather than assuming support from the engine name.
+    test.skip(!await page.evaluate(() => matchMedia("(forced-colors: active)").matches), "Engine does not expose forced-colors emulation.");
     await page.goto(route, { waitUntil: "networkidle" });
     await expect(page.locator("main")).toBeVisible();
   });

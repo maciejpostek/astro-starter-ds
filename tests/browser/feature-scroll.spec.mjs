@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/features/feature-scroll/preview/";
+const previewRoute = "/design-system/website-patterns/features/feature-scroll/preview";
 
 test("FeatureScroll progressively synchronizes visuals and preserves responsive source order", async ({ page, browserName }) => {
   test.setTimeout(120_000);

@@ -23,7 +23,9 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_SKIP_WEBSERVER
     ? undefined
     : {
-        command: `npm run build && npm run preview -- --host 127.0.0.1 --port ${port}`,
+        // The API keeps this server attached to Playwright even in AI environments,
+        // where Astro's CLI otherwise starts preview in the background.
+        command: `npm run build:docs && node --input-type=module -e "import { preview } from 'astro'; await preview({ server: { host: '127.0.0.1', port: ${port} } });"`,
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 180_000,

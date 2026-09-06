@@ -14,6 +14,12 @@ Status: active.
 
 Popup interrupts the current flow with one bounded decision, confirmation or important status message that must be handled before the user returns to the page.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - The user must confirm or cancel a consequential action before work continues.
@@ -70,6 +76,8 @@ Popup interrupts the current flow with one bounded decision, confirmation or imp
 - Alert and NotificationAndToast remain non-modal feedback alternatives.
 
 ## Naming and token contract
+
+Do not introduce a public Overlay component or persistence through localStorage, cookies or a backend. Preserve native modal behavior and viewport-bounded scrolling.
 
 Use `Popup`, `.popup`, the registered `data-popup-*` attributes and the `popup-size` token group. Consume existing global color, size, motion, elevation and typography contracts directly. Do not declare local custom properties or expose arbitrary icon selection.
 

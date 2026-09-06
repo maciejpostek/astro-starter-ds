@@ -13,6 +13,12 @@ Status: active.
 
 Footer closes a page with optional action content, grouped destinations, social links and a supporting legal row in one stable site-wide landmark.
 
+## Communication role
+
+- Goals: navigation
+
+Provide secondary navigation and verified organization information. Keep any subscription promise consistent with the supplied offer.
+
 ## Use when
 
 - A page needs the canonical site footer composition.

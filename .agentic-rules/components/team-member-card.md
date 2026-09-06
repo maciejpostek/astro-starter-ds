@@ -14,6 +14,12 @@ Status: active.
 TeamMemberCard presents one person with an optional image and role or position
 in a compact, reusable team-listing pattern.
 
+## Communication role
+
+- Goals: proof
+
+Identify a real team member using supplied identity and role information.
+
 ## Use when
 
 - A team, leadership or contributor view needs a consistent person card.

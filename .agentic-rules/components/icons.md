@@ -7,6 +7,11 @@ Astro renderers: `src/components/assets/icons/MaterialSymbol.astro`,
 `MaterialSymbol.tsx`, and `SocialIcons.astro`
 Figma page: `     ↪  ◆  Icons`
 
+## Communication role
+
+- Goals: none
+- Icons support the consumer’s action or information hierarchy; the parent owns meaning, accessible naming and communication intent.
+
 ## Material Symbols contract
 
 Provider: Google Material Symbols

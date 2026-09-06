@@ -30,7 +30,7 @@ test("keeps ProgressTab source, registry, token and documentation contracts", as
   for (const contract of [
     'data-component-name="ProgressTab"', "<ProgressBar", "data-progress-tab-progress",
     'role="tab"', "aria-selected", "aria-controls", "progress < 0", "progress > 100",
-    "var(--grid-auto-min-width-small)", "var(--color-text-primary)", "opacity: 0.5",
+    "var(--grid-auto-min-width-small)", "var(--color-text-primary)", "var(--tab-text-default)",
     ".progress-tab[aria-selected=\"true\"] .progress-tab__label", "@media (forced-colors: active)",
   ]) assert.ok(source.includes(contract), `missing ProgressTab contract: ${contract}`);
   assert.doesNotMatch(source, /#[0-9a-f]{3,8}\b|--progress-tab-[a-z0-9-]+\s*:/iu);

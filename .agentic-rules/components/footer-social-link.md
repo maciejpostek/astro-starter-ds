@@ -13,6 +13,12 @@ Status: active.
 
 FooterSocialLink navigates to one approved social-platform destination with either an icon-only or icon-and-label presentation.
 
+## Communication role
+
+- Goals: navigation
+
+Provide secondary navigation and verified organization information. Keep any subscription promise consistent with the supplied offer.
+
 ## Use when
 
 - A footer links to an organization's social profile or channel.

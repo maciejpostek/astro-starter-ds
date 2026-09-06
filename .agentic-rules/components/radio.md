@@ -13,6 +13,12 @@ Status: active.
 
 Provide the standalone native radio picker: a fixed circular indicator that fills with the canonical active color and inner dot, without owning visible text or a surrounding surface.
 
+## Communication role
+
+- Goals: none
+
+This component supports the local interaction or content structure described in UX purpose. It does not define a campaign narrative. Use the selected project strategy and voice when authoring its text; keep client facts in project context.
+
 ## Use when
 
 - Building a reusable labelled or card composition that needs canonical radio behavior and geometry.

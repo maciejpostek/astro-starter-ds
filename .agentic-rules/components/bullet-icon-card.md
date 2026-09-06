@@ -13,6 +13,12 @@ Status: active.
 
 BulletIconCard presents one benefit, capability, property or offer detail as a compact icon-led article with required explanatory copy and optional metric, metadata and actions.
 
+## Communication role
+
+- Goals: benefits
+
+Structure a concise set of relevant points. Use the brief to select claims and keep each item focused on one supported benefit.
+
 ## Use when
 
 - A fixed semantic icon should lead a concise title and description.

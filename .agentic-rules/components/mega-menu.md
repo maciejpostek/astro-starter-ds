@@ -13,6 +13,12 @@ Status: active.
 
 MegaMenu reveals a broad destination set with one primary hierarchy column and two supporting columns.
 
+## Communication role
+
+- Goals: navigation
+
+Help users find the intended destination. Preserve accurate labels, links and current-location semantics.
+
 ## Use when
 
 - A top-level category requires three labelled groups and clear primary-versus-supporting hierarchy.
