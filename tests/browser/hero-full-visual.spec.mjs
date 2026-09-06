@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/hero/hero-full-visual/preview/";
+const previewRoute = "/design-system/website-patterns/hero/hero-full-visual/preview";
 const widths = [320, 768, 1024, 1440];
 const compositions = ["centered", "left", "section-header"];
 

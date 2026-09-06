@@ -11,27 +11,27 @@ const canvasTextFor = locator => locator.evaluate(node => {
 });
 
 const responsiveWebsitePatterns = [
-  { name: "Content", path: "/design-system/website-patterns/content/", container: "main", sizing: "fill" },
-  { name: "FAQ", path: "/design-system/website-patterns/faq/", container: "full", sizing: "fill" },
-  { name: "FeatureProof", path: "/design-system/website-patterns/features/feature-proof/", container: "full", sizing: "fill" },
-  { name: "Feature5050Centered", path: "/design-system/website-patterns/features/feature-50-50-centered/", container: "full", sizing: "fill" },
-  { name: "FeatureSimple", path: "/design-system/website-patterns/features/feature-simple/", container: "full", sizing: "fill" },
-  { name: "SectionHeader", path: "/design-system/website-patterns/page-headers/", container: "main", sizing: "fill" },
-  { name: "TopBanner", path: "/design-system/website-patterns/announcements-banners/", container: "full", sizing: "fill" },
-  { name: "TeamMemberCard", path: "/design-system/website-patterns/team/", container: "main", sizing: "bounded" },
+  { name: "Content", path: "/design-system/website-patterns/content", container: "main", sizing: "fill" },
+  { name: "FAQ", path: "/design-system/website-patterns/faq", container: "full", sizing: "fill" },
+  { name: "FeatureProof", path: "/design-system/website-patterns/features/feature-proof", container: "full", sizing: "fill" },
+  { name: "Feature5050Centered", path: "/design-system/website-patterns/features/feature-50-50-centered", container: "full", sizing: "fill" },
+  { name: "FeatureSimple", path: "/design-system/website-patterns/features/feature-simple", container: "full", sizing: "fill" },
+  { name: "SectionHeader", path: "/design-system/website-patterns/page-headers", container: "main", sizing: "fill" },
+  { name: "TopBanner", path: "/design-system/website-patterns/announcements-banners", container: "full", sizing: "fill" },
+  { name: "TeamMemberCard", path: "/design-system/website-patterns/team", container: "main", sizing: "bounded" },
 ];
 
 const standardWebsitePatterns = [
-  { name: "BulletPoint", path: "/design-system/website-patterns/bullet-points/bullet-point/" },
-  { name: "BulletCardSimple", path: "/design-system/website-patterns/bullet-points/bullet-card-simple/" },
-  { name: "BulletIconCard", path: "/design-system/website-patterns/bullet-points/bullet-icon-card/" },
-  { name: "BulletVisualCard", path: "/design-system/website-patterns/bullet-points/bullet-visual-card/" },
-  { name: "BulletCardSurface", path: "/design-system/website-patterns/bullet-points/bullet-card-surface/" },
-  { name: "BlogCard", path: "/design-system/website-patterns/blog-resources/" },
-  { name: "LogoCard", path: "/design-system/website-patterns/brand-logo-proof/" },
-  { name: "Rating", path: "/design-system/website-patterns/ratings-reviews/" },
-  { name: "StatCard", path: "/design-system/website-patterns/stats-metrics/stat-card/" },
-  { name: "StatTextInline", path: "/design-system/website-patterns/stats-metrics/stat-text-inline/" },
+  { name: "BulletPoint", path: "/design-system/website-patterns/bullet-points/bullet-point" },
+  { name: "BulletCardSimple", path: "/design-system/website-patterns/bullet-points/bullet-card-simple" },
+  { name: "BulletIconCard", path: "/design-system/website-patterns/bullet-points/bullet-icon-card" },
+  { name: "BulletVisualCard", path: "/design-system/website-patterns/bullet-points/bullet-visual-card" },
+  { name: "BulletCardSurface", path: "/design-system/website-patterns/bullet-points/bullet-card-surface" },
+  { name: "BlogCard", path: "/design-system/website-patterns/blog-resources" },
+  { name: "LogoCard", path: "/design-system/website-patterns/brand-logo-proof" },
+  { name: "Rating", path: "/design-system/website-patterns/ratings-reviews" },
+  { name: "StatCard", path: "/design-system/website-patterns/stats-metrics/stat-card" },
+  { name: "StatTextInline", path: "/design-system/website-patterns/stats-metrics/stat-text-inline" },
 ];
 
 const openStandardWebsitePatternAtWidth = async (page, path, width) => {
@@ -50,7 +50,7 @@ const openStandardWebsitePatternAtWidth = async (page, path, width) => {
 };
 
 test("Tabs normalizes direct Tab children and coordinates external panels", async ({ page }) => {
-  await page.goto("/design-system/base-components/tabs/tabs/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/tabs/tabs", { waitUntil: "networkidle" });
 
   const result = await page.locator("main").evaluate((main) => {
     let initializationEvents = 0;
@@ -124,7 +124,7 @@ test("Tabs normalizes direct Tab children and coordinates external panels", asyn
 });
 
 test("accordion list coordinates disclosure and keyboard focus", async ({ page }) => {
-  await page.goto("/design-system/base-components/accordion/accordion-list/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/accordion/accordion-list", { waitUntil: "networkidle" });
   const triggers = page.locator('[data-component-name="Accordion"] [data-accordion-trigger]');
   expect(await triggers.count()).toBeGreaterThan(1);
   const first = triggers.first();
@@ -138,7 +138,7 @@ test("accordion list coordinates disclosure and keyboard focus", async ({ page }
 });
 
 test("single AccordionList normalizes initial state and closes disabled open siblings", async ({ page }) => {
-  await page.goto("/design-system/base-components/accordion/accordion-list/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/accordion/accordion-list", { waitUntil: "networkidle" });
   await page.locator("main").evaluate((main) => {
     main.insertAdjacentHTML("beforeend", `
       <div data-test-single-normalization data-component-name="AccordionList" data-accordion-mode="single" data-accordion-autoplay="false">
@@ -179,7 +179,7 @@ test("single AccordionList normalizes initial state and closes disabled open sib
 });
 
 test("Tooltip inherits parent geometry and exposes documented interaction states", async ({ page }) => {
-  await page.goto("/design-system/base-components/tooltip/tooltip/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/tooltip/tooltip", { waitUntil: "networkidle" });
   const preview = page.locator("#preview");
   const owner = preview.locator(".ds-tooltip-preview__trigger-size");
   const tooltip = preview.locator('[data-component-name="Tooltip"]');
@@ -240,7 +240,7 @@ test("Tooltip inherits parent geometry and exposes documented interaction states
 });
 
 test("InfoPopover inherits parent geometry and aligns its rich surface", async ({ page }) => {
-  await page.goto("/design-system/base-components/tooltip/info-popover/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/tooltip/info-popover", { waitUntil: "networkidle" });
   const preview = page.locator("#preview");
   const owner = preview.locator(".ds-info-popover-preview__trigger-size");
   const popover = preview.locator('[data-component-name="InfoPopover"]');
@@ -353,7 +353,7 @@ test("Tooltip and InfoPopover indicators follow resolved placement and point to 
     }
   };
 
-  await page.goto("/design-system/base-components/tooltip/tooltip/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/tooltip/tooltip", { waitUntil: "networkidle" });
   const tooltip = page.locator("#preview").locator('[data-component-name="Tooltip"]');
   const tooltipTrigger = tooltip.locator("[data-tooltip-trigger]");
   const tooltipSurface = tooltip.locator("[data-tooltip-content]");
@@ -374,7 +374,7 @@ test("Tooltip and InfoPopover indicators follow resolved placement and point to 
     });
   }
 
-  await page.goto("/design-system/base-components/tooltip/info-popover/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/tooltip/info-popover", { waitUntil: "networkidle" });
   const infoPopover = page.locator("#preview").locator('[data-component-name="InfoPopover"]');
   const infoTrigger = infoPopover.locator("[data-info-popover-trigger]");
   const infoSurface = infoPopover.locator("[data-info-popover-content]");
@@ -398,7 +398,7 @@ test("Tooltip and InfoPopover indicators follow resolved placement and point to 
 });
 
 test("InfoPopover reuses the Tooltip inverse palette in light and dark themes", async ({ page }) => {
-  await page.goto("/design-system/base-components/tooltip/info-popover/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/tooltip/info-popover", { waitUntil: "networkidle" });
   const infoPopover = page.locator("#preview").locator('[data-component-name="InfoPopover"]');
   const trigger = infoPopover.locator("[data-info-popover-trigger]");
   const surface = infoPopover.locator("[data-info-popover-content]");
@@ -445,7 +445,7 @@ test("InfoPopover reuses the Tooltip inverse palette in light and dark themes", 
 });
 
 test("Accordion owns a 20 px Tooltip sizing wrapper", async ({ page }) => {
-  await page.goto("/design-system/base-components/accordion/accordion/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/accordion/accordion", { waitUntil: "networkidle" });
   const owner = page.locator("#preview [data-accordion-help-trigger]");
   const trigger = owner.locator("[data-tooltip-trigger]");
   const icon = trigger.locator('[data-material-symbol="info"]');
@@ -457,7 +457,7 @@ test("Accordion owns a 20 px Tooltip sizing wrapper", async ({ page }) => {
 });
 
 test("ProgressBar documentation exposes one fluid accent contract", async ({ page }) => {
-  await page.goto("/design-system/base-components/progress-bar/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/progress-bar", { waitUntil: "networkidle" });
   const preview = page.locator("#preview");
   const progress = preview.locator('[data-component-name="ProgressBar"]');
 
@@ -487,7 +487,7 @@ test("ProgressBar documentation exposes one fluid accent contract", async ({ pag
 });
 
 test("accordion autoplay advances decoratively, pauses and stops on activation", async ({ page }) => {
-  await page.goto("/design-system/base-components/accordion/accordion-list/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/accordion/accordion-list", { waitUntil: "networkidle" });
   const list = page.locator('[data-component-name="AccordionList"][data-accordion-autoplay="true"]').first();
   const triggers = list.locator("[data-accordion-trigger]");
   const progress = list.locator("[data-accordion-progress]");
@@ -514,7 +514,7 @@ test("accordion autoplay advances decoratively, pauses and stops on activation",
 });
 
 test("accordion documentation uses one canonical full-anatomy preview", async ({ page }) => {
-  await page.goto("/design-system/base-components/accordion/accordion/");
+  await page.goto("/design-system/base-components/accordion/accordion");
   await page.evaluate(() => {
     document.documentElement.style.setProperty("--motion-duration-accordion-autoplay", "800ms");
   });
@@ -589,14 +589,14 @@ test("accordion documentation uses one canonical full-anatomy preview", async ({
 
 test("reduced motion disables accordion autoplay", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/design-system/base-components/accordion/accordion-list/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/accordion/accordion-list", { waitUntil: "networkidle" });
   const list = page.locator('[data-component-name="AccordionList"][data-accordion-autoplay="true"]').first();
   const progress = list.locator("[data-accordion-progress]");
   for (const bar of await progress.all()) await expect(bar).toBeHidden();
 });
 
 test("popup opens, traps focus and closes with Escape", async ({ page }) => {
-  await page.goto("/design-system/base-components/popup/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/popup", { waitUntil: "networkidle" });
   const opener = page.locator("button").filter({ hasText: /open|show|launch/i }).first();
   await expect(opener).toBeVisible();
   await opener.click();
@@ -608,7 +608,7 @@ test("popup opens, traps focus and closes with Escape", async ({ page }) => {
 });
 
 test("form controls preserve native disabled and reset behavior", async ({ page }) => {
-  await page.goto("/design-system/base-components/inputs/input/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/inputs/input", { waitUntil: "networkidle" });
   const enabled = page.locator('input[data-input-preview-control="true"]');
   await enabled.fill("temporary value");
   await enabled.evaluate((input) => {
@@ -622,7 +622,7 @@ test("form controls preserve native disabled and reset behavior", async ({ page 
 });
 
 test("guides are opt-in and synchronize persisted state", async ({ page }) => {
-  await page.goto("/design-system/base-components/buttons/button/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/buttons/button", { waitUntil: "networkidle" });
   await expect(page.locator("html")).toHaveAttribute("data-guides", "hidden");
   const toggle = page.locator("[data-guides-button]");
   await toggle.click();
@@ -639,7 +639,7 @@ test("guides are opt-in and synchronize persisted state", async ({ page }) => {
 });
 
 test("removable Tag exposes native keyboard focus and the shared focus effect", async ({ page }) => {
-  await page.goto("/design-system/base-components/tag/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/tag", { waitUntil: "networkidle" });
   const tag = page.locator('[data-component-name="Tag"][data-tag-removable="true"]').first();
   const remove = tag.locator("[data-tag-remove]");
   await expect(remove).toBeVisible();
@@ -678,7 +678,7 @@ test("singleton Base Component pages stay flat", async ({ page }) => {
   const singletonPaths = ["progress-bar", "hint", "ratio", "tag", "eyebrow"];
 
   for (const slug of singletonPaths) {
-    await page.goto(`/design-system/base-components/${slug}/`, { waitUntil: "networkidle" });
+    await page.goto(`/design-system/base-components/${slug}`, { waitUntil: "networkidle" });
     await expect(page.locator('[data-component-name="DesignSystemLayout"]')).toHaveAttribute(
       "data-page-type",
       "component-detail",
@@ -703,7 +703,7 @@ test("Base and Website multi families are disclosures with direct component rout
     ["website-patterns/bullet-points", "website-patterns/bullet-points/bullet-point"],
     ["base-components/dividers", "base-components/dividers/content-divider"],
   ]) {
-    const familyResponse = await request.get(`/design-system/${familyPath}/`);
+    const familyResponse = await request.get(`/design-system/${familyPath}`);
     const familyHtml = await familyResponse.text();
     expect(familyResponse.ok()).toBeTruthy();
     expect(familyHtml).toContain(
@@ -712,7 +712,7 @@ test("Base and Website multi families are disclosures with direct component rout
     expect(familyHtml).not.toContain('data-component-name="DsFamilyGallery"');
   }
 
-  await page.goto("/design-system/base-components/hint/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/hint", { waitUntil: "networkidle" });
   const switchPanelId = "ds-documentation-components-base-components-switch";
   const switchItem = page.locator(
     `.ds-documentation-sidebar__page-item:has([aria-controls="${switchPanelId}"])`,
@@ -744,7 +744,7 @@ test("Base and Website multi families are disclosures with direct component rout
 
   await componentLinks.nth(0).click();
   await expect(page).toHaveURL(/\/design-system\/base-components\/switch\/switch-button\/?$/u);
-  await page.goto("/design-system/base-components/switch/switch-button/", {
+  await page.goto("/design-system/base-components/switch/switch-button", {
     waitUntil: "networkidle",
   });
   await expect(page.locator('[data-component-name="DesignSystemLayout"]')).toHaveAttribute(
@@ -758,7 +758,7 @@ test("Base and Website multi families are disclosures with direct component rout
   const ratingsItem = page.locator('.ds-documentation-sidebar__page-item:has(a[href="/design-system/website-patterns/ratings-reviews"])').first();
   await expect(ratingsItem.locator('[data-ds-sidebar-disclosure]')).toHaveCount(0);
   await expect(ratingsItem.locator('a[href="/design-system/website-patterns/ratings-reviews"]')).toHaveCount(1);
-  await page.goto('/design-system/website-patterns/ratings-reviews/');
+  await page.goto('/design-system/website-patterns/ratings-reviews');
   await expect(page.locator('.ds-documentation-page-header h1')).toHaveText('Rating');
   await expect(page.locator('#preview [data-component-name="Rating"]:visible')).toHaveCount(1);
 
@@ -797,7 +797,7 @@ test("documentation sidebar preserves its scroll position across navigation and 
 });
 
 test("empty Website Pattern pages render only their canonical heading", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/testimonials-stories/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/testimonials-stories", { waitUntil: "networkidle" });
   await expect(page.locator('[data-component-name="DesignSystemLayout"]')).toHaveAttribute(
     "data-page-type",
     "reading",
@@ -824,7 +824,7 @@ test("BulletPoint centers its icon on the first text line at compact widths and 
   await page.setViewportSize({ width: 1800, height: 900 });
   await openStandardWebsitePatternAtWidth(
     page,
-    "/design-system/website-patterns/bullet-points/bullet-point/",
+    "/design-system/website-patterns/bullet-points/bullet-point",
     320,
   );
   const bullet = page.locator('[data-component-name="BulletPoint"]:visible').first();
@@ -881,7 +881,7 @@ test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic beh
   for (const assignedWidth of [320, 549, 1440]) {
     const { canvas: viewport } = await openStandardWebsitePatternAtWidth(
       page,
-      "/design-system/website-patterns/bullet-points/bullet-card-simple/",
+      "/design-system/website-patterns/bullet-points/bullet-card-simple",
       assignedWidth,
     );
     const card = page.locator('[data-component-name="BulletCardSimple"]:visible').first();
@@ -900,7 +900,7 @@ test("BulletCardSimple preserves Figma spacing, semantic order and intrinsic beh
     await expect(viewport).toBeVisible();
   }
 
-  await page.goto("/design-system/website-patterns/bullet-points/bullet-card-simple/", {
+  await page.goto("/design-system/website-patterns/bullet-points/bullet-card-simple", {
     waitUntil: "networkidle",
   });
   const card = page.locator('[data-component-name="BulletCardSimple"]:visible').first();
@@ -994,7 +994,7 @@ test("BulletIconCard preserves both explicit layouts, semantic order and intrins
   for (const assignedWidth of [320, 517]) {
     await openStandardWebsitePatternAtWidth(
       page,
-      "/design-system/website-patterns/bullet-points/bullet-icon-card/",
+      "/design-system/website-patterns/bullet-points/bullet-icon-card",
       assignedWidth,
     );
     const card = page.locator('[data-component-name="BulletIconCard"]:visible').first();
@@ -1022,7 +1022,7 @@ test("BulletIconCard preserves both explicit layouts, semantic order and intrins
     await expect(card).toHaveAttribute("data-bullet-icon-card-layout", "vertical");
   }
 
-  await page.goto("/design-system/website-patterns/bullet-points/bullet-icon-card/", {
+  await page.goto("/design-system/website-patterns/bullet-points/bullet-icon-card", {
     waitUntil: "networkidle",
   });
   const card = page.locator('[data-component-name="BulletIconCard"]:visible').first();
@@ -1119,7 +1119,7 @@ test("BulletCardSurface preserves semantic order and switches from stacked to vi
   await page.setViewportSize({ width: 1800, height: 1100 });
   await openStandardWebsitePatternAtWidth(
     page,
-    "/design-system/website-patterns/bullet-points/bullet-card-surface/",
+    "/design-system/website-patterns/bullet-points/bullet-card-surface",
     320,
   );
 
@@ -1160,7 +1160,7 @@ test("BulletCardSurface preserves semantic order and switches from stacked to vi
 
   await openStandardWebsitePatternAtWidth(
     page,
-    "/design-system/website-patterns/bullet-points/bullet-card-surface/",
+    "/design-system/website-patterns/bullet-points/bullet-card-surface",
     1440,
   );
   await expect(layout).toHaveCSS("display", "flex");
@@ -1180,7 +1180,7 @@ test("BulletCardSurface preserves semantic order and switches from stacked to vi
   expect(wideTracks.visualLeft).toBeGreaterThan(wideTracks.contentLeft);
   expect(wideTracks.visualTop).toBe(wideTracks.contentTop);
 
-  await page.goto("/design-system/website-patterns/bullet-points/bullet-card-surface/", {
+  await page.goto("/design-system/website-patterns/bullet-points/bullet-card-surface", {
     waitUntil: "networkidle",
   });
   await controls.locator('[data-ds-preview-control][data-axis-id="bulletCardVisual"][data-axis-value="hidden"]').click();
@@ -1207,7 +1207,7 @@ test("StatCard preserves accessible naming, fixed cues and intrinsic content-saf
   page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));
 
   await page.setViewportSize({ width: 320, height: 1100 });
-  await page.goto("/design-system/website-patterns/stats-metrics/stat-card/", {
+  await page.goto("/design-system/website-patterns/stats-metrics/stat-card", {
     waitUntil: "networkidle",
   });
 
@@ -1291,7 +1291,7 @@ test("TopBanner reflows without clipping and emits the shared dismissal contract
   page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));
 
   await page.setViewportSize({ width: 320, height: 1000 });
-  await page.goto("/design-system/website-patterns/announcements-banners/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/announcements-banners", { waitUntil: "networkidle" });
   const banner = page.locator('[data-component-name="TopBanner"]:visible').first();
   await expect(banner).toHaveAttribute("data-top-banner-status", "brand");
   await expect(banner).toHaveAttribute("aria-labelledby", "documentation-top-banner-brand-title");
@@ -1356,7 +1356,7 @@ test("TopBanner responsive preview opens as an isolated full-width canvas", asyn
   page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));
 
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/design-system/website-patterns/announcements-banners/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/announcements-banners", { waitUntil: "networkidle" });
   await page.evaluate(() => { document.documentElement.dataset.theme = "dark"; });
   const documentTheme = await page.locator("html").getAttribute("data-theme");
 
@@ -1507,7 +1507,7 @@ test("TopBanner responsive preview opens as an isolated full-width canvas", asyn
 });
 
 test("BlogCard documentation keeps one standard main bounded preview", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/blog-resources/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/blog-resources", { waitUntil: "networkidle" });
 
   const inlinePreview = page.locator('[data-ds-interactive-preview][data-preview-category="website-patterns"]').first();
   await expect(inlinePreview).toHaveAttribute("data-preview-presentation", "standard");
@@ -1653,7 +1653,7 @@ test("every implemented Website Pattern has one canonical responsive preview", a
     });
     expect(duplicateIds, `${pattern.name} must not duplicate document ids`).toEqual([]);
 
-    await page.goto(`${pattern.path}preview/`, { waitUntil: "networkidle" });
+    await page.goto(`${pattern.path}/preview`, { waitUntil: "networkidle" });
     const routeCanvas = page.locator("[data-ds-responsive-preview]");
     await expect(routeCanvas, `${pattern.name} /preview must preserve the canonical container`)
       .toHaveAttribute("data-preview-container", pattern.container);
@@ -1702,7 +1702,7 @@ test("standard Website Patterns use the regular inline preview without Scale", a
 test("Website Pattern layout frames align main and full profiles with canvas guides", async ({ page }) => {
   test.slow();
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/design-system/website-patterns/page-headers/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/page-headers", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Open SectionHeader responsive preview" }).click();
 
   const dialog = page.locator("dialog[data-responsive-preview-dialog][open]");
@@ -1773,11 +1773,11 @@ test("Website Pattern layout frames align main and full profiles with canvas gui
   await page.keyboard.press("Escape");
 
   for (const pattern of [
-    { name: "FAQ", path: "/design-system/website-patterns/faq/" },
-    { name: "FeatureProof", path: "/design-system/website-patterns/features/feature-proof/" },
-    { name: "Feature5050Centered", path: "/design-system/website-patterns/features/feature-50-50-centered/" },
-    { name: "FeatureSimple", path: "/design-system/website-patterns/features/feature-simple/" },
-    { name: "TopBanner", path: "/design-system/website-patterns/announcements-banners/" },
+    { name: "FAQ", path: "/design-system/website-patterns/faq" },
+    { name: "FeatureProof", path: "/design-system/website-patterns/features/feature-proof" },
+    { name: "Feature5050Centered", path: "/design-system/website-patterns/features/feature-50-50-centered" },
+    { name: "FeatureSimple", path: "/design-system/website-patterns/features/feature-simple" },
+    { name: "TopBanner", path: "/design-system/website-patterns/announcements-banners" },
   ]) {
     await page.goto(pattern.path, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: `Open ${pattern.name} responsive preview` }).click();
@@ -1851,7 +1851,7 @@ test("Website Pattern layout frames align main and full profiles with canvas gui
 
 test("FAQ inline Website Pattern preview scales a desktop canvas while the dialog stays 1:1", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/design-system/website-patterns/faq/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/faq", { waitUntil: "networkidle" });
 
   const inlinePreview = page.locator('[data-ds-interactive-preview][data-preview-category="website-patterns"]');
   const inlineCanvas = inlinePreview.locator("[data-ds-preview-scene-canvas]");
@@ -1932,7 +1932,7 @@ test("FAQ inline Website Pattern preview scales a desktop canvas while the dialo
 test("all Base Component preview scenes are 4:3, centered and scroll-safe", async ({ page }) => {
   test.slow();
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/design-system/base-components/hint/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/base-components/hint", { waitUntil: "networkidle" });
   const routes = await page.locator('.ds-documentation-sidebar a[href^="/design-system/base-components/"]')
     .evaluateAll((links) => Array.from(new Set(links
       .map((link) => link.getAttribute("href"))
@@ -1953,7 +1953,7 @@ test("all Base Component preview scenes are 4:3, centered and scroll-safe", asyn
     const routeKey = route.replace(/\/$/u, "");
     if (legacySingletonAliases.has(routeKey)) continue;
     const canonicalRoute = routeKey;
-    await page.goto(`${canonicalRoute.replace(/\/$/u, "")}/`, { waitUntil: "load" });
+    await page.goto(canonicalRoute, { waitUntil: "load" });
     const basePreviews = page.locator('[data-ds-interactive-preview][data-preview-category="base-components"]');
     await expect(basePreviews.first(), `${route} must settle on its component detail route`).toBeAttached();
     const metrics = await basePreviews
@@ -2008,7 +2008,7 @@ test("legacy singleton routes emit redirects to their flat canonical URLs", asyn
   ]);
 
   for (const [legacyPath, canonicalPath] of redirects) {
-    const response = await request.get(`/design-system/base-components/${legacyPath}/`);
+    const response = await request.get(`/design-system/base-components/${legacyPath}`);
     const html = await response.text();
     expect(response.ok()).toBeTruthy();
     expect(html).toContain(
@@ -2019,7 +2019,7 @@ test("legacy singleton routes emit redirects to their flat canonical URLs", asyn
 
 test("FAQ coordinates keyboard disclosure modes and container reflow", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
-  await page.goto("/design-system/website-patterns/faq/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/faq", { waitUntil: "networkidle" });
 
   const visibleFAQ = () => page.locator('[data-component-name="FAQ"]:visible').first();
   let faq = visibleFAQ();
@@ -2101,7 +2101,7 @@ test("FAQ coordinates keyboard disclosure modes and container reflow", async ({ 
 
 test("Feature5050Centered maps controls, preserves source order and reflows at its container", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 800 });
-  await page.goto("/design-system/website-patterns/features/feature-50-50-centered/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/features/feature-50-50-centered", { waitUntil: "networkidle" });
 
   const visibleFeature = () => page.locator('[data-component-name="Feature5050Centered"]:visible').first();
   let feature = visibleFeature();
@@ -2205,7 +2205,7 @@ test("Feature5050Centered maps controls, preserves source order and reflows at i
 
 test("FeatureSimple maps preview controls, source order and container reflow", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
-  await page.goto("/design-system/website-patterns/features/feature-simple/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/features/feature-simple", { waitUntil: "networkidle" });
 
   const visibleFeature = () => page.locator('[data-component-name="FeatureSimple"]:visible').first();
   let feature = visibleFeature();
@@ -2266,7 +2266,7 @@ test("FeatureSimple maps preview controls, source order and container reflow", a
 
 test("FeatureProof maps proof controls, source order and container reflow", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1200 });
-  await page.goto("/design-system/website-patterns/features/feature-proof/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/features/feature-proof", { waitUntil: "networkidle" });
 
   const visibleFeature = () => page.locator('[data-component-name="FeatureProof"]:visible').first();
   let feature = visibleFeature();

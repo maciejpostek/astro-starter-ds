@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/sliders-carousels/preview/";
+const previewRoute = "/design-system/website-patterns/sliders-carousels/preview";
 const swiperRoot = '[data-component-name="Swiper"]';
 
 const activeIndex = (root) => root.locator("[data-swiper-viewport]").evaluate((node) => node.swiper?.realIndex ?? -1);

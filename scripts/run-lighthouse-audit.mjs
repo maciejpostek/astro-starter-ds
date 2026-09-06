@@ -12,10 +12,10 @@ if (!Number.isFinite(lcpBudget) || lcpBudget <= 0) {
   throw new Error("LIGHTHOUSE_LCP_BUDGET_MS must be a positive number.");
 }
 const documentationRoutes = [
-  "/design-system/",
-  "/design-system/foundations/color/",
-  "/design-system/base-components/buttons/button/",
-  "/design-system/base-components/popup/",
+  "/design-system",
+  "/design-system/foundations/color",
+  "/design-system/base-components/buttons/button",
+  "/design-system/base-components/popup",
 ];
 // Match the artifact being measured. The production build deliberately excludes
 // documentation; auditing those missing URLs used to measure Vite's home fallback.

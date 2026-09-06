@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/footer/footer/preview/";
+const previewRoute = "/design-system/website-patterns/footer/footer/preview";
 
 for (const width of [320, 360, 380, 768, 1024, 1440]) {
   test(`Footer reflows without horizontal overflow at ${width}px`, async ({ page, browserName }) => {

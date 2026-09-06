@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/tabbed-content/preview/";
+const previewRoute = "/design-system/website-patterns/tabbed-content/preview";
 
 const createRuntimeClone = async (page, suffix, duration = 180, invalidFirstPair = false) => page.locator('[data-component-name="TabbedContent"]:visible').first().evaluate(
   (source, options) => {

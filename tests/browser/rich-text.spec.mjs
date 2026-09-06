@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const route = "/design-system/website-patterns/rich-text/rich-text/preview/";
+const route = "/design-system/website-patterns/rich-text/rich-text/preview";
 const widths = [320, 768, 1440];
 
 test.describe.configure({ mode: "serial" });

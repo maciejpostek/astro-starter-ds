@@ -39,8 +39,8 @@ export function getPublicComponentRoutes(projectRoot = process.cwd()) {
           candidate.pageKey === component.pageKey &&
           !["internal", "part"].includes(candidate.role),
       ).length === 1
-        ? `/design-system/${component.categoryKey}/${component.pageKey}/`
-        : `/design-system/${component.categoryKey}/${component.pageKey}/${component.id}/`,
+        ? `/design-system/${component.categoryKey}/${component.pageKey}`
+        : `/design-system/${component.categoryKey}/${component.pageKey}/${component.id}`,
     visual: component.readiness?.visual,
     validation: component.readiness?.validation,
   }));

@@ -22,7 +22,7 @@ for (const component of publicComponentRoutes) {
       // No axe rule or threshold is disabled; every specimen is checked below.
       await assertAccessible(page, { exclude: ['[data-ds-interactive-preview][data-preview-category="website-patterns"][data-preview-presentation="responsive"] [data-ds-preview-scene-canvas]'] }, "Documentation UI");
       await page.setViewportSize({ width: 1920, height: 1440 });
-      await page.goto(`${component.route.replace(/\/$/u, "")}/preview/`, { waitUntil: "networkidle" });
+      await page.goto(`${component.route}/preview`, { waitUntil: "networkidle" });
       const viewport = page.locator('[data-preview-viewport]');
       await expect(viewport).toHaveCount(1);
       expect(await viewport.evaluate(node => node.getBoundingClientRect().width / node.offsetWidth), "Preview must be measured at 100% scale").toBeCloseTo(1, 2);
@@ -33,7 +33,7 @@ for (const component of publicComponentRoutes) {
 
 for (const theme of ["light", "dark"]) {
   test(`readable semantic text roles in ${theme} theme`, async ({ page }) => {
-    await page.goto("/design-system/base-components/hint/", { waitUntil: "networkidle" });
+    await page.goto("/design-system/base-components/hint", { waitUntil: "networkidle" });
     await page.evaluate(theme => {
       const fixture = document.createElement("section");
       fixture.id = "semantic-contrast-fixture";
@@ -55,7 +55,7 @@ for (const theme of ["light", "dark"]) {
 }
 
 test("BlogCard exposes a labelled article, native date, explicit CTA and decorative documentation visual", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/blog-resources/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/blog-resources", { waitUntil: "networkidle" });
 
   const card = page.locator('[data-component-name="BlogCard"]:visible').first();
   const heading = card.locator(".blog-card__title");
@@ -82,7 +82,7 @@ test("BlogCard exposes a labelled article, native date, explicit CTA and decorat
 });
 
 test("FAQ exposes one labelled section and valid disclosure relationships", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/faq/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/faq", { waitUntil: "networkidle" });
 
   const faq = page.locator('[data-component-name="FAQ"]:visible').first();
   const heading = faq.locator('[data-component-name="Content"] h2');
@@ -102,7 +102,7 @@ test("FAQ exposes one labelled section and valid disclosure relationships", asyn
 });
 
 test("FeatureSimple exposes one labelled section and a decorative CSS visual placeholder", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/features/feature-simple/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/features/feature-simple", { waitUntil: "networkidle" });
 
   const feature = page.locator('[data-component-name="FeatureSimple"]:visible').first();
   const heading = feature.locator('[data-component-name="Content"] h2');
@@ -123,7 +123,7 @@ test("FeatureSimple exposes one labelled section and a decorative CSS visual pla
 });
 
 test("FeatureProof exposes a labelled section, semantic evidence lists and decorative visual placeholder", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/features/feature-proof/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/features/feature-proof", { waitUntil: "networkidle" });
 
   const feature = page.locator('[data-component-name="FeatureProof"]:visible').first();
   const heading = feature.locator('[data-component-name="Content"] h2');
@@ -151,11 +151,7 @@ test("HeroBreakout exposes a labelled section, one benefit list and labelled act
   const previewRoute = "/design-system/website-patterns/hero/hero-breakout/preview";
   await page.goto(previewRoute, { waitUntil: "networkidle" });
 
-  let hero = page.locator('[data-component-name="HeroBreakout"]:visible').first();
-  if (await hero.count() === 0) {
-    await page.goto(`${previewRoute}/`, { waitUntil: "networkidle" });
-    hero = page.locator('[data-component-name="HeroBreakout"]:visible').first();
-  }
+  const hero = page.locator('[data-component-name="HeroBreakout"]:visible').first();
   const heading = hero.locator('[data-component-name="Content"] h2');
   const list = hero.locator("ul.hero-breakout__bullet-points");
   const caption = hero.locator(".hero-breakout__caption");
@@ -174,7 +170,7 @@ test("HeroBreakout exposes a labelled section, one benefit list and labelled act
 });
 
 test("HeroVisualCenter exposes one labelled section, actions, proof list and decorative CSS placeholder", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/hero/hero-visual-center/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/hero/hero-visual-center", { waitUntil: "networkidle" });
 
   const hero = page.locator('[data-component-name="HeroVisualCenter"]:visible').first();
   const heading = hero.locator('[data-component-name="Content"] h2');
@@ -193,7 +189,7 @@ test("HeroVisualCenter exposes one labelled section, actions, proof list and dec
 });
 
 test("Feature5050Centered exposes a labelled section, semantic bullets and a decorative checkerboard", async ({ page }) => {
-  await page.goto("/design-system/website-patterns/features/feature-50-50-centered/", { waitUntil: "networkidle" });
+  await page.goto("/design-system/website-patterns/features/feature-50-50-centered", { waitUntil: "networkidle" });
 
   const feature = page.locator('[data-component-name="Feature5050Centered"]:visible').first();
   const heading = feature.locator('[data-component-name="Content"] h2');

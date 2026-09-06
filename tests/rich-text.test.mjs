@@ -83,7 +83,7 @@ test("keeps the approved Rich Text API, typography and documentation contracts",
   assert.match(preview, /<span aria-hidden="true"><\/span>/u);
   for (const id of componentIds) {
     assert.match(docs, new RegExp(`componentId: "${id}"[\\s\\S]*?container: "small"[\\s\\S]*?sizing: "fill"`, "u"));
-    assert.equal(routes.get(id), `/design-system/website-patterns/rich-text/${id}/`);
+    assert.equal(routes.get(id), `/design-system/website-patterns/rich-text/${id}`);
     assert.equal(records.get(id)?.syncStatus, "astro-only");
     assert.equal(records.get(id)?.readiness?.visual, "review");
   }

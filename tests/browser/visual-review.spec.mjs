@@ -30,10 +30,7 @@ for (const component of visualReviewRoutes) {
     });
     page.on("pageerror", (error) => runtimeErrors.push(`page: ${error.message}`));
     await page.setViewportSize({ width: 1440, height: 1000 });
-    const route = component.id === "faq" || component.id === "feature-5050" || component.id === "feature-50-50-centered" || component.id === "feature-proof" || component.id === "feature-simple" || component.id === "team-member-card" || component.id === "blog-card"
-      ? component.route
-      : component.route.replace(/\/$/u, "");
-    await page.goto(route, { waitUntil: "networkidle" });
+    await page.goto(component.route, { waitUntil: "networkidle" });
     await page.screenshot({
       path: `artifacts/visual-review/${component.id}.png`,
       fullPage: true,
@@ -324,7 +321,7 @@ for (const component of visualReviewRoutes) {
 
     if (component.id === "hero-align-bottom") {
       await page.setViewportSize({ width: 1600, height: 1200 });
-      await page.goto("/design-system/website-patterns/hero/hero-align-bottom/preview/", {
+      await page.goto("/design-system/website-patterns/hero/hero-align-bottom/preview", {
         waitUntil: "networkidle",
       });
       await page.locator("[data-preview-controls-toggle]").evaluate((node) => {
@@ -429,7 +426,7 @@ for (const component of visualReviewRoutes) {
 
     if (component.id === "faq") {
       await page.setViewportSize({ width: 1600, height: 1200 });
-      await page.goto("/design-system/website-patterns/faq/preview/", {
+      await page.goto("/design-system/website-patterns/faq/preview", {
         waitUntil: "networkidle",
       });
       await page.locator("[data-preview-controls-toggle]").click();
@@ -468,7 +465,7 @@ for (const component of visualReviewRoutes) {
 
     if (component.id === "feature-50-50-centered") {
       await page.setViewportSize({ width: 1600, height: 800 });
-      await page.goto("/design-system/website-patterns/features/feature-50-50-centered/preview/", {
+      await page.goto("/design-system/website-patterns/features/feature-50-50-centered/preview", {
         waitUntil: "networkidle",
       });
       await page.locator("[data-preview-controls-toggle]").click();
@@ -530,7 +527,7 @@ for (const component of visualReviewRoutes) {
     }
 
     if (component.id === "feature-simple") {
-      await page.goto("/design-system/website-patterns/features/feature-simple/preview/", {
+      await page.goto("/design-system/website-patterns/features/feature-simple/preview", {
         waitUntil: "networkidle",
       });
       await page.locator("[data-preview-controls-toggle]").click();
@@ -571,7 +568,7 @@ for (const component of visualReviewRoutes) {
     }
 
     if (component.id === "feature-5050") {
-      await page.goto("/design-system/website-patterns/features/feature-5050/preview/", {
+      await page.goto("/design-system/website-patterns/features/feature-5050/preview", {
         waitUntil: "networkidle",
       });
       await page.locator("[data-preview-controls-toggle]").click();
@@ -690,7 +687,7 @@ for (const component of visualReviewRoutes) {
     }
 
     if (component.id === "feature-proof") {
-      await page.goto("/design-system/website-patterns/features/feature-proof/preview/", {
+      await page.goto("/design-system/website-patterns/features/feature-proof/preview", {
         waitUntil: "networkidle",
       });
       await page.locator("[data-preview-controls-toggle]").click();
@@ -732,7 +729,7 @@ for (const component of visualReviewRoutes) {
 
     if (component.id === "stat-text-inline") {
       await page.goto(
-        "/design-system/website-patterns/stats-metrics/stat-text-inline/",
+        "/design-system/website-patterns/stats-metrics/stat-text-inline",
         { waitUntil: "networkidle" },
       );
       await page.evaluate(() => { document.documentElement.dataset.theme = "light"; });

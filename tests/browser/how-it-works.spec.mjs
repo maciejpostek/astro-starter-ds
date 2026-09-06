@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const previewRoute = "/design-system/website-patterns/how-it-works/preview/";
+const previewRoute = "/design-system/website-patterns/how-it-works/preview";
 
 const readState = (root) => root.evaluate((node) => ({
   ready: node.getAttribute("data-how-it-works-ready"),

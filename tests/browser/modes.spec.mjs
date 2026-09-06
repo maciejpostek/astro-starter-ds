@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 
 const representativeRoutes = [
-  "/design-system/base-components/buttons/button/",
-  "/design-system/base-components/inputs/input/",
-  "/design-system/base-components/accordion/accordion/",
-  "/design-system/base-components/popup/",
+  "/design-system/base-components/buttons/button",
+  "/design-system/base-components/inputs/input",
+  "/design-system/base-components/accordion/accordion",
+  "/design-system/base-components/popup",
 ];
 
 for (const route of representativeRoutes) {

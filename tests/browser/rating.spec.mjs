@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-const familyRoute = "/design-system/website-patterns/ratings-reviews/";
-const previewRoute = `${familyRoute}preview/`;
+const familyRoute = "/design-system/website-patterns/ratings-reviews";
+const previewRoute = `${familyRoute}/preview`;
 const legacyRoutes = [
-  `${familyRoute}rating/`,
-  `${familyRoute}rating/preview/`,
-  `${familyRoute}trust-badge/`,
-  `${familyRoute}trust-badge/preview/`,
+  `${familyRoute}/rating`,
+  `${familyRoute}/rating/preview`,
+  `${familyRoute}/trust-badge`,
+  `${familyRoute}/trust-badge/preview`,
 ];
 
 test.describe.configure({ mode: "serial" });
