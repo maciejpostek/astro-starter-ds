@@ -1,4 +1,5 @@
-import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
+import { preview } from "astro";
 import { launch } from "chrome-launcher";
 import lighthouse from "lighthouse";
 
@@ -10,12 +11,17 @@ const lcpBudget = Number(process.env.LIGHTHOUSE_LCP_BUDGET_MS ?? 2500);
 if (!Number.isFinite(lcpBudget) || lcpBudget <= 0) {
   throw new Error("LIGHTHOUSE_LCP_BUDGET_MS must be a positive number.");
 }
-const routes = [
+const documentationRoutes = [
   "/design-system/",
   "/design-system/foundations/color/",
   "/design-system/base-components/buttons/button/",
   "/design-system/base-components/popup/",
 ];
+// Match the artifact being measured. The production build deliberately excludes
+// documentation; auditing those missing URLs used to measure Vite's home fallback.
+const routes = existsSync(new URL("../dist/design-system/index.html", import.meta.url))
+  ? documentationRoutes
+  : ["/"];
 const thresholds = {
   performance: 0.9,
   accessibility: 0.95,
@@ -39,9 +45,9 @@ const waitForServer = async () => {
 };
 const median = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
 
-const preview = spawn("npm", ["run", "preview", "--", "--host", host, "--port", String(port)], {
-  stdio: "inherit",
-  env: { ...process.env, SITE_URL: baseURL },
+const previewServer = await preview({
+  site: baseURL,
+  server: { host, port },
 });
 let chrome;
 
@@ -51,6 +57,10 @@ try {
   const errors = [];
 
   for (const route of routes) {
+    const response = await fetch(`${baseURL}${route}`);
+    if (!response.ok) {
+      throw new Error(`Lighthouse route ${route} returned HTTP ${response.status}.`);
+    }
     const runs = [];
     for (let index = 0; index < 3; index += 1) {
       const result = await lighthouse(`${baseURL}${route}`, {
@@ -90,5 +100,5 @@ try {
   }
 } finally {
   chrome?.kill();
-  preview.kill("SIGTERM");
+  await previewServer.stop();
 }

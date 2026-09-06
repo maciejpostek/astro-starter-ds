@@ -13,7 +13,7 @@
     "build:site": "DOCS_ENABLED=false npm run build:core && npm run audit:build-boundary -- site",
     "build:docs": "DOCS_ENABLED=true npm run build:core && npm run audit:build-boundary -- docs",
     "build:release": "RELEASE_BUILD=true npm run build:site && npm run audit:release-artifacts",
-    "preview": "vite preview",
+    "preview": "astro preview",
     "check": "astro check",
     "audit:components": "node scripts/audit-component-architecture.mjs .",
     "audit:component-readiness": "node scripts/audit-component-readiness.mjs .",
